@@ -1,0 +1,52 @@
+<%= form_for @material do |f| %>
+
+  <%= f.label :material_name, "食材・資材名" %>
+  <%= f.text_field :material_name %>
+</br>
+</br>
+  <%= f.label :delivery_slip_name, "納品書名" %>
+  <%= f.text_field :delivery_slip_name %>
+</br>
+</br>
+  <%= f.label :calculated_value, "計上単位" %>
+  <%= f.number_field :calculated_value %>
+</br>
+  <%= f.label :calculated_unit, "(単位)" %>
+  <%= f.text_field :calculated_unit %>
+</br>
+</br>
+  <%= f.label :calculated_price, "計上単価" %>
+  <%= f.number_field :calculated_price %>
+</br>
+</br>
+  <%= f.label :cost_unit, "単価単位" %>
+  <%= f.number_field :cost_unit %>
+</br>
+</br>
+  <%= f.label :cost, "単価" %>
+  <%= f.number_field :cost %>
+</br>
+</br>
+  <%= f.label :category, "カテゴリー" %>
+  <%= f.text_field :category %>
+</br>
+</br>
+  <%= f.label :vendor, "仕入先" %>
+  <%= f.text_field :vendor %>
+</br>
+</br>
+  <%= f.label :code, "管理コード" %>
+  <%= f.text_field :code %>
+</br>
+</br>
+  <%= f.label :memo, "メモ" %>
+  <%= f.text_area :memo %>
+</br>
+</br>
+  <%= f.label :status, "終売" %>
+  <%= f.check_box :status %>
+</br>
+</br>
+
+  <%= f.submit "登録" %>
+<% end %>

@@ -1,0 +1,2 @@
+class MenuMaterialsController < ApplicationController
+end

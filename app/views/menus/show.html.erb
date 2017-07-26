@@ -1,0 +1,40 @@
+
+
+<h3>【メニュー名】</h3>
+<%= @menu.name %></br>
+<h3>【メニュー原価】</h3>
+<% sub_total = 0 %>
+<% @materials.zip(@menu_materials).each do |material,menu_material| %>
+<% price = menu_material.amount_used * material.cost %>
+<% sub_total += price %>
+<% end %>
+<%= sub_total %>円
+<h3>【レシピ】</h3>
+<%= @menu.recipe %></br>
+
+<h3>【材料一覧】</h3>
+<table>
+  <thead>
+    <tr>
+      <th>食材</th>
+      <th>分量</th>
+      <th></th>
+      <th>原価</th>
+    </tr>
+  </thead>
+  <% @materials.zip(@menu_materials).each do |material,menu_material| %>
+  <tbody>
+      <tr>
+      <td><%= material.material_name %></td>
+      <td><%= menu_material.amount_used %></td>
+      <td><%= material.cost_unit %></td>
+      <td><%= menu_material.amount_used * material.cost %></td>
+      </tr>
+    <% end %>
+
+  </tbody>
+</table>
+
+
+</br>
+<%= link_to '編集', "/menus/#{@menu.id}/edit", method: :get %>

@@ -1,0 +1,83 @@
+<body>
+  </br>
+  <h3>【食材・資材の新規登録】</h3>
+  <%= button_to '新規登録', "/materials/new", method: :get %>
+  </br>
+
+
+
+  <%= page_entries_info @search %></br>
+  <!-- ページネーション -->
+  <%= form_tag Material, :method => 'get' do %>
+  <p>
+    <h3>【検索】</h3>
+    食材・資材名：
+    <%= text_field_tag :material_name, params[:material_name] %>
+    　納品書名：
+    <%= text_field_tag :delivery_slip_name, params[:delivery_slip_name] %>
+     　仕入先；
+    <%= text_field_tag :vendor, params[:vendor] %>
+    　管理コード：
+    <%= text_field_tag :code, params[:code] %>
+
+    　　<%= submit_tag "検索" %>
+  </p>
+<% end %>
+
+</br>
+<p><%= render :text => "#{@search.length}個の食材・資材" %></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>食材・資材名</th>
+      <th>納品書名</th>
+      <th>計上単位</th>
+      <th>計上単位</th>
+      <th>計上単価(円)</th>
+      <th>原価単位</th>
+      <th>原価単位</th>
+      <th>原価単価(円)</th>
+      <th>カテゴリー</th>
+      <th>仕入先</th>
+      <th>管理コード</th>
+      <th>メモ</th>
+      <th>終売</th>
+      <th>編集</th>
+    </tr>
+  </thead>
+
+  </br>
+  <tbody>
+    <% @search.each do |material| %>
+      <tr>
+        <td><%= material.id %></td>
+        <td><%= material.material_name %></td>
+        <td><%= material.delivery_slip_name %></td>
+        <td><%= number_with_delimiter(material.calculated_value) %></td>
+        <td><%= material.calculated_unit %></td>
+        <td><%= number_with_delimiter(material.calculated_price) %></td>
+        <td>１</td>
+        <td><%= material.cost_unit %></td>
+        <td><%= material.cost %></td>
+        <td><%= material.category %></td>
+        <td><%= material.vendor %></td>
+        <td><%= material.code %></td>
+        <td><%= material.memo %></td>
+        <td><%= material.status %></td>
+        <td><%= link_to '編集', "/materials/#{material.id}/edit", method: :get %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<% if @search.size == 0 then %>
+<p>該当する食材・資材が存在しません</p>
+<% end %>
+
+<br>
+
+  <%= paginate(@search) %>
+  <!-- ページネーション -->
+</body>

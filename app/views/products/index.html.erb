@@ -1,0 +1,64 @@
+<body>
+  </br>
+  <h3>【お弁当の新規登録】</h3>
+  <%= button_to '新規登録', "/products/new", method: :get %>
+  </br>
+
+  <%= page_entries_info @search %></br>
+  <!-- ページネーション -->
+  <%= form_tag Product, :method => 'get' do %>
+  <p>
+    <h3>【お弁当検索】</h3>
+      お弁当名：
+    <%= text_field_tag :product_name, params[:product_name] %>
+    　調理カテゴリー：
+    <%= text_field_tag :cook_category, params[:cook_category] %>
+     お弁当タイプ：
+    <%= text_field_tag :product_type, params[:product_type] %>
+
+    　　<%= submit_tag "検索" %>
+  </p>
+<% end %>
+
+
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>弁当名</th>
+        <th>調理カテゴリー</th>
+        <th>弁当の種類</th>
+        <th>販売価格</th>
+        <th>説明文</th>
+        <th>内容物</th>
+        <th>詳細</th>
+      </tr>
+    </thead>
+    </br>
+    <tbody>
+      <% @search.each do |product| %>
+        <tr>
+          <td><%= product.id %></td>
+          <td><%= product.product_name %></td>
+          <td><%= product.cook_category %></td>
+          <td><%= product.product_type %></td>
+          <td><%= product.sell_price %></td>
+          <td><%= product.description %></td>
+          <td><%= product.contents %></td>
+          <td><%= link_to '詳細', "/products/#{product.id}/", method: :get %></td>
+        </tr>
+        <% end %>
+    </tbody>
+  </table>
+
+
+<% if @search.size == 0 then %>
+<p>該当するお弁当が存在しません</p>
+<% end %>
+
+</br>
+
+  <%= paginate(@search) %>
+  <!-- ページネーション -->
+</body>

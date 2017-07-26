@@ -1,0 +1,2 @@
+module MenuMaterialsHelper
+end

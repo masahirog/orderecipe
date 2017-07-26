@@ -1,0 +1,30 @@
+<%= form_for @product do |f| %>
+
+
+  <%= f.label :product_name, "弁当名" %>
+  <%= f.text_field :product_name %>
+</br>
+</br>
+  <%= f.label :cook_category, "調理カテゴリー" %>
+  <%= f.text_field :cook_category %>
+</br>
+</br>
+  <%= f.label :product_type, "弁当種類" %>
+  <%= f.text_field :product_type %>
+</br>
+</br>
+  <%= f.label :sell_price, "販売価格" %>
+  <%= f.number_field :sell_price %>
+</br>
+</br>
+  <%= f.label :description, "説明文" %>
+  <%= f.text_area :description %>
+</br>
+</br>
+  <%= f.label :contents, "内容物" %>
+  <%= f.text_area :contents %>
+</br>
+</br>
+
+  <%= f.submit "登録" %>
+<% end %>

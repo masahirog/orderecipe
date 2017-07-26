@@ -1,0 +1,57 @@
+<body>
+  </br>
+  <h3>【メニュー一覧】</h3>
+  <%= button_to '新規登録', "/menus/new", method: :get %>
+  </br>
+  <%= page_entries_info @search %></br>
+  <!-- ページネーション -->
+  <%= form_tag Menu, :method => 'get' do %>
+  <p>
+    <h3>【検索】</h3>
+    メニュー名：
+    <%= text_field_tag :name, params[:name] %>
+    　　<%= submit_tag "検索" %>
+  </p>
+<% end %>
+
+</br>
+<p><%= render :text => "#{@search.length}件ヒット" %></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>カテゴリ</th>
+      <th>メニュー名</th>
+      <th>レシピ</th>
+      <th>盛り付けメモ</th>
+      <th>原価</th>
+      <th></th>
+    </tr>
+  </thead>
+
+  </br>
+  <tbody>
+    <% @search.each do |menu| %>
+      <tr>
+        <td><%= menu.id %></td>
+        <td><%= menu.category %></td>
+        <td><%= menu.name %></td>
+        <td><%= menu.recipe %></td>
+        <td><%= menu.serving_memo %></td>
+        <td><%=  %></td>
+        <td><%= link_to '詳細', "/menus/#{menu.id}", method: :get %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<% if @search.size == 0 then %>
+<p>該当するメニューは存在しません</p>
+<% end %>
+
+<br>
+
+  <%= paginate(@search) %>
+  <!-- ページネーション -->
+</body>
