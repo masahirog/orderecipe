@@ -1,0 +1,52 @@
+<body>
+  <%= form_for(@menu) do |f| %>
+    <% if @menu.errors.any? %>
+      <div id="error_explanation">
+        <h2><%= pluralize(@menu.errors.count, "error") %> prohibited this recipe from being saved:</h2>
+
+        <ul>
+        <% @menu.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="field">
+      <%= f.label :name %><br>
+      <%= f.text_field :name, required: true %>
+    </div>
+    <div class="field">
+      <%= f.label :recipe %><br>
+      <%= f.text_field :recipe, required: true %>
+    </div>
+
+    <table class="table table-list">
+      <thead>
+        <tr>
+          <th>食材・資材名</th>
+          <th>使用量</th>
+          <th>原価</th>
+          <th></th>
+        </tr>
+      </thead>
+
+      <div class="form-group">
+        <tbody id='detail-association-insertion-point'>
+        <%= f.fields_for :menu_materials do |builder| %>
+          <%= render 'menu_material_fields', f: builder %>
+        <% end %>
+        </tbody>
+      </div>
+    </table>
+
+      <%= link_to_add_association "add Material", f, :menu_materials,
+            data: {association_insertion_node: '#detail-association-insertion-point',association_insertion_method: 'append' } %>
+
+
+    <div class="actions">
+      <%= f.submit '登録' %>
+    </div>
+  <% end %>
+
+</body>

@@ -1,8 +1,10 @@
+<body>
+
 <%= form_for @product do |f| %>
 
 
-  <%= f.label :product_name, "弁当名" %>
-  <%= f.text_field :product_name %>
+  <%= f.label :name, "弁当名" %>
+  <%= f.text_field :name %>
 </br>
 </br>
   <%= f.label :cook_category, "調理カテゴリー" %>
@@ -28,3 +30,5 @@
 
   <%= f.submit "登録" %>
 <% end %>
+
+</body>

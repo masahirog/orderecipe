@@ -1,5 +1,5 @@
 class MenusController < ApplicationController
-
+  # before_action :set_menu, only: [:edit, :show, :update]
   def index
     @search = Menu.search(params).page(params[:page]).per(20)
     @menus = Menu.all
@@ -15,7 +15,7 @@ class MenusController < ApplicationController
   end
   def edit
     @menu = Menu.find(params[:id])
-
+    @menu.menu_materials.build
   end
 
   def update
@@ -29,6 +29,7 @@ class MenusController < ApplicationController
   end
 
   private
+
     def menu_params
       params.require(:menu).permit(:name, :recipe,
                                      menu_materials_attributes: [:id, :amount_used, :menu_id, :material_id, :_destroy,
@@ -38,6 +39,5 @@ class MenusController < ApplicationController
      params.permit(:name, :recipe,
                                     menu_materials_attributes: [:id, :amount_used, :menu_id, :material_id, :_destroy,
                                     material_attributes:[:name, ]])
-
     end
 end

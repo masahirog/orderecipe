@@ -1,13 +1,8 @@
-<%= form_tag("/menus/#{@menu.id}", method: :patch ) do %>
+<body>
+
   <h3>
     編集する
   </h3>
-  <label for="name">メニュー名：</br>
-  <input name="name" placeholder="name" type="text" value="<%= @menu.name %>" >
-  </br>
-  <label for="recipe">レシピ：</br>
-  <input name="recipe" placeholder="recipe" value="<%= @menu.recipe %>">
-  </br>
-   <input type="submit" value="更新">
-  </br>
-<% end %>
+<%= render 'form', path: edit_menu_path, method: :post %>
+
+</body>

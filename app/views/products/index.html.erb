@@ -1,5 +1,5 @@
 <body>
-  </br>
+
   <h3>【お弁当の新規登録】</h3>
   <%= button_to '新規登録', "/products/new", method: :get %>
   </br>
@@ -10,7 +10,7 @@
   <p>
     <h3>【お弁当検索】</h3>
       お弁当名：
-    <%= text_field_tag :product_name, params[:product_name] %>
+    <%= text_field_tag :name, params[:name] %>
     　調理カテゴリー：
     <%= text_field_tag :cook_category, params[:cook_category] %>
      お弁当タイプ：
@@ -19,8 +19,6 @@
     　　<%= submit_tag "検索" %>
   </p>
 <% end %>
-
-
 
   <table>
     <thead>
@@ -40,7 +38,7 @@
       <% @search.each do |product| %>
         <tr>
           <td><%= product.id %></td>
-          <td><%= product.product_name %></td>
+          <td><%= product.name %></td>
           <td><%= product.cook_category %></td>
           <td><%= product.product_type %></td>
           <td><%= product.sell_price %></td>

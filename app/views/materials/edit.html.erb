@@ -1,9 +1,10 @@
+<body>
 <%= form_tag("/materials/#{@material.id}", method: :patch ) do %>
   <h3>
     編集する
   </h3>
-  <label for="material_name">食材/資材名：</br>
-  <input name="material_name" placeholder="material_name" type="text" value="<%= @material.material_name %>" >
+  <label for="name">食材/資材名：</br>
+  <input name="name" placeholder="name" type="text" value="<%= @material.name %>" >
   </br>
   <label for="delivery_slip_name">納品書名：</br>
   <input name="delivery_slip_name" placeholder="delivery_slip_name" value="<%= @material.delivery_slip_name %>">
@@ -17,8 +18,8 @@
   <label for="calculated_price">計上単価：</br>
   <input name="calculated_price" placeholder="calculated_price" value="<%= @material.calculated_price %>">
   </br>
-  <label for="cost">原価単価：</br>
-  <input name="cost" placeholder="cost" value="<%= @material.cost %>">
+  <label for="cost_price">原価単価：</br>
+  <input name="cost_price" placeholder="cost_price" value="<%= @material.cost_price %>">
   </br>
   <label for="cost_unit">原価単位：</br>
   <input name="cost_unit" placeholder="cost_unit" value="<%= @material.cost_unit %>">
@@ -41,3 +42,4 @@
    <input type="submit" value="更新">
   </br>
 <% end %>
+</body>

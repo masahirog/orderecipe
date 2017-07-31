@@ -9,6 +9,7 @@
   <p>
     <h3>【検索】</h3>
     メニュー名：
+    
     <%= text_field_tag :name, params[:name] %>
     　　<%= submit_tag "検索" %>
   </p>
@@ -50,7 +51,7 @@
 <p>該当するメニューは存在しません</p>
 <% end %>
 
-<br>
+</br>
 
   <%= paginate(@search) %>
   <!-- ページネーション -->

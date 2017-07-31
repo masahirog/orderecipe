@@ -1,7 +1,8 @@
+<body>
 <%= form_for @material do |f| %>
 
-  <%= f.label :material_name, "食材・資材名" %>
-  <%= f.text_field :material_name %>
+  <%= f.label :name, "食材・資材名" %>
+  <%= f.text_field :name %>
 </br>
 </br>
   <%= f.label :delivery_slip_name, "納品書名" %>
@@ -23,8 +24,8 @@
   <%= f.number_field :cost_unit %>
 </br>
 </br>
-  <%= f.label :cost, "単価" %>
-  <%= f.number_field :cost %>
+  <%= f.label :cost_price, "単価" %>
+  <%= f.number_field :cost_price %>
 </br>
 </br>
   <%= f.label :category, "カテゴリー" %>
@@ -50,3 +51,4 @@
 
   <%= f.submit "登録" %>
 <% end %>
+</body>

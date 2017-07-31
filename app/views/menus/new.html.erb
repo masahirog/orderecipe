@@ -1,36 +1,6 @@
-<%= form_for(@menu) do |f| %>
-  <% if @menu.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@menu.errors.count, "error") %> prohibited this recipe from being saved:</h2>
+<body>
 
-      <ul>
-      <% @menu.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
+<h3>【新規登録】</h3>
 
-  <div class="field">
-    <%= f.label :name %><br>
-    <%= f.text_field :name, required: true %>
-  </div>
-  <div class="field">
-    <%= f.label :recipe %><br>
-    <%= f.text_field :recipe, required: true %>
-  </div>
-
-  <div id="material" class="form-group">
-    <label>Material:</label>
-    <%= f.fields_for :menu_materials do |builder| %>
-      <%= render 'menu_material_fields', f: builder %>
-    <div id="links">
-      <%= link_to_add_association "add Material", f, :menu_materials %><br/>
-    </div>
-    <% end %>
-  </div>
-
-  <div class="actions">
-    <%= f.submit %>
-  </div>
-<% end %>
+<%= render 'form', path: menus_path, method: :post %>
+</body>

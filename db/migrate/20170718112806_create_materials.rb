@@ -1,13 +1,12 @@
 class CreateMaterials < ActiveRecord::Migration
   def change
     create_table :materials do |t|
-      t.integer :material_id
-      t.string :material_name
+      t.string :name
       t.string :delivery_slip_name
       t.integer :calculated_value
       t.string :calculated_unit
       t.integer :calculated_price
-      t.float :cost
+      t.float :cost_price
       t.string :cost_unit
       t.string :category
       t.string :vendor

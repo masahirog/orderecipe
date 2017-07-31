@@ -1,10 +1,10 @@
 class CreateMenus < ActiveRecord::Migration
   def change
     create_table :menus do |t|
-      t.integer :menu_id
       t.string :name
       t.text :recipe
-
+      t.string :category
+      t.text :serving_memo
       t.timestamps null: false
     end
   end

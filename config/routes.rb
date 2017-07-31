@@ -1,8 +1,8 @@
 Rails.application.routes.draw do
+  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   root 'top#index'
   resources :materials
-  resources :top
-  resources :products
   resources :menus
-
+  resources :products
+  resources :tops
 end

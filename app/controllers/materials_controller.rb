@@ -25,10 +25,10 @@ class MaterialsController < ApplicationController
 
   private
   def material_params
-    params.require(:material).permit(:material_id, :material_name, :delivery_slip_name, :calculated_value, :calculated_unit, :calculated_price, :cost, :cost_unit, :category, :vendor, :code, :memo, :status)
+    params.require(:material).permit(:name, :delivery_slip_name, :calculated_value, :calculated_unit, :calculated_price, :cost_price, :cost_unit, :category, :vendor, :code, :memo, :status)
   end
   def material_params2
-    params.permit(:material_id, :material_name, :delivery_slip_name, :calculated_value, :calculated_unit, :calculated_price, :cost, :cost_unit, :category, :vendor, :code, :memo, :status)
+    params.permit(:name, :delivery_slip_name, :calculated_value, :calculated_unit, :calculated_price, :cost_price, :cost_unit, :category, :vendor, :code, :memo, :status)
   end
 
 end
