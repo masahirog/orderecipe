@@ -5,4 +5,5 @@ Rails.application.routes.draw do
   resources :menus
   resources :products
   resources :tops
+  resources :vendors
 end

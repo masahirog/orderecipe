@@ -1,7 +1,8 @@
 class Product < ApplicationRecord
-  has_one :recipe
-  has_many :materials
-
+  # has_one :recipe
+  has_many :product_menus, dependent: :destroy
+  has_many :menus, through: :product_menus
+  accepts_nested_attributes_for :product_menus, allow_destroy: true
 
   def self.search(params) #self.でクラスメソッドとしている
    if params

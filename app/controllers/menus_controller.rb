@@ -32,12 +32,12 @@ class MenusController < ApplicationController
 
     def menu_params
       params.require(:menu).permit(:name, :recipe,
-                                     menu_materials_attributes: [:id, :amount_used, :menu_id, :material_id, :_destroy,
+                                     menu_materials_attributes: [:id, :amount_used, :cost_price, :menu_id, :material_id, :_destroy,
                                      material_attributes:[:name, ]])
     end
     def menu_params2
      params.permit(:name, :recipe,
-                                    menu_materials_attributes: [:id, :amount_used, :menu_id, :material_id, :_destroy,
+                                    menu_materials_attributes: [:id, :amount_used, :cost_price, :menu_id, :material_id, :_destroy,
                                     material_attributes:[:name, ]])
     end
 end

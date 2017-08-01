@@ -5,9 +5,12 @@ class ProductsController < ApplicationController
 
   def new
     @product = Product.new
+    @product.product_menus.build
   end
   def show
    @product = Product.find(params[:id])
+   @product_menus = @product.product_menus
+   @menus = @product.menus
  end
 
   def create
@@ -26,10 +29,14 @@ class ProductsController < ApplicationController
 
   private
   def product_params
-    params.require(:product).permit(:name, :cook_category, :product_type, :sell_price, :description, :contents)
+    params.require(:product).permit(:name, :cook_category, :product_type, :sell_price, :description, :contents,
+                    product_menus_attributes: [:id, :product_id, :menu_id, :_destroy,
+                    menu_attributes:[:name, ]])
   end
   def product_params2
-    params.permit(:name, :cook_category, :product_type, :sell_price, :description, :contents)
+    params.permit(:name, :cook_category, :product_type, :sell_price, :description, :contents,
+                    product_menus_attributes: [:id, :product_id, :menu_id, :_destroy,
+                    menu_attributes:[:name, ]])
   end
 
 

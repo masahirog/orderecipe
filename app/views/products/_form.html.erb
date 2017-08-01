@@ -1,0 +1,55 @@
+
+<%= form_for @product do |f| %>
+
+
+  <%= f.label :name, "弁当名" %>
+  <%= f.text_field :name %>
+</br>
+</br>
+  <%= f.label :cook_category, "調理カテゴリー" %>
+  <%= f.text_field :cook_category %>
+</br>
+</br>
+  <%= f.label :product_type, "弁当種類" %>
+  <%= f.text_field :product_type %>
+</br>
+</br>
+  <%= f.label :sell_price, "販売価格" %>
+  <%= f.number_field :sell_price %>
+</br>
+</br>
+  <%= f.label :description, "説明文" %>
+  <%= f.text_area :description %>
+</br>
+</br>
+  <%= f.label :contents, "内容物" %>
+  <%= f.text_area :contents %>
+</br>
+</br>
+
+<table class="table table-list">
+  <thead>
+    <tr>
+      <th>メニュー名</th>
+      <th>原価</th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <div class="form-group">
+    <tbody id='detail-association-insertion-point'>
+    <%= f.fields_for :product_menus do |builder| %>
+      <%= render 'product_menu_fields', f: builder %>
+    <% end %>
+    </tbody>
+  </div>
+</table>
+
+  <%= link_to_add_association "add Menu", f, :product_menus,
+        data: {association_insertion_node: '#detail-association-insertion-point',association_insertion_method: 'append' } %>
+
+
+
+
+  <%= f.submit "登録" %>
+<% end %>

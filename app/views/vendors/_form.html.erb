@@ -1,0 +1,50 @@
+<body>
+  <%= form_for(@vendor) do |f| %>
+
+    <div class="field">
+      <%= f.label :company_name, "企業名" %><br>
+      <%= f.text_field :company_name, required: true %>
+    </div>
+    <div class="field">
+      <%= f.label :company_phone, "電話番号" %><br>
+      <%= f.text_field :company_phone %>
+    </div>
+    <div class="field">
+      <%= f.label :company_fax, "FAX番号" %><br>
+      <%= f.text_field :company_fax %>
+    </div>
+    <div class="field">
+      <%= f.label :company_mail, "メールアドレス" %><br>
+      <%= f.text_field :company_mail %>
+    </div>
+    <div class="field">
+      <%= f.label :zip, "郵便番号" %><br>
+      <%= f.text_field :zip %>
+    </div>
+    <div class="field">
+      <%= f.label :address, "住所" %><br>
+      <%= f.text_field :address %>
+    </div>
+    <div class="field">
+      <%= f.label :staff_name, "担当者名" %><br>
+      <%= f.text_field :staff_name %>
+    </div>
+    <div class="field">
+      <%= f.label :staff_phone, "担当者電話番号" %><br>
+      <%= f.text_field :staff_phone %>
+    </div>
+    <div class="field">
+      <%= f.label :staff_mail, "担当者メールアドレス" %><br>
+      <%= f.text_field :staff_mail %>
+    </div>
+    <div class="field">
+      <%= f.label :memo, "メモ" %><br>
+      <%= f.text_field :memo %>
+    </div>
+
+    <div class="actions">
+      <%= f.submit '登録' %>
+    </div>
+  <% end %>
+
+</body>

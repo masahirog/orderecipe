@@ -1,4 +1,4 @@
-<body>
+
   <%= form_for(@menu) do |f| %>
     <% if @menu.errors.any? %>
       <div id="error_explanation">
@@ -13,12 +13,24 @@
     <% end %>
 
     <div class="field">
-      <%= f.label :name %><br>
+      <%= f.label :name ,'メニュー名' %><br>
       <%= f.text_field :name, required: true %>
     </div>
     <div class="field">
-      <%= f.label :recipe %><br>
+      <%= f.label :category ,'カテゴリー' %><br>
+      <%= f.text_field :category %>
+    </div>
+    <div class="field">
+      <%= f.label :recipe ,'調理メモ' %><br>
       <%= f.text_field :recipe, required: true %>
+    </div>
+    <div class="field">
+      <%= f.label :serving_memo ,'盛り付けメモ' %><br>
+      <%= f.text_field :serving_memo %>
+    </div>
+    <div class="field">
+      <%= f.label :cost_price ,'原価' %><br>
+      <%= f.text_field :cost_price %>
     </div>
 
     <table class="table table-list">
@@ -48,5 +60,3 @@
       <%= f.submit '登録' %>
     </div>
   <% end %>
-
-</body>

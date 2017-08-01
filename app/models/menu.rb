@@ -3,6 +3,9 @@ class Menu < ApplicationRecord
   has_many :materials, through: :menu_materials
   accepts_nested_attributes_for :menu_materials, allow_destroy: true
 
+  has_many :product_menus, dependent: :destroy
+  has_many :products, through: :product_menus
+
 
   def self.search(params) #self.でクラスメソッドとしている
    if params # 入力がある場合の処理

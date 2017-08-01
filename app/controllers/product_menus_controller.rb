@@ -1,0 +1,2 @@
+class ProductMenusController < ApplicationController
+end

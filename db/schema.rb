@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170730105856) do
+ActiveRecord::Schema.define(version: 20170731141703) do
 
   create_table "materials", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.string   "name"
@@ -48,6 +48,14 @@ ActiveRecord::Schema.define(version: 20170730105856) do
     t.float    "cost_price",   limit: 24
   end
 
+  create_table "product_menus", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+    t.integer  "product_id"
+    t.integer  "menu_id"
+    t.float    "menu_cost_price", limit: 24
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+  end
+
   create_table "products", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.string   "name"
     t.string   "cook_category"
@@ -56,6 +64,21 @@ ActiveRecord::Schema.define(version: 20170730105856) do
     t.text     "description",   limit: 65535
     t.text     "contents",      limit: 65535
     t.float    "cost_price",    limit: 24
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+  end
+
+  create_table "vendors", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+    t.string   "company_name"
+    t.string   "company_phone"
+    t.string   "company_fax"
+    t.string   "company_mail"
+    t.string   "zip"
+    t.text     "address",       limit: 65535
+    t.string   "staff_name"
+    t.string   "staff_phone"
+    t.string   "staff_mail"
+    t.text     "memo",          limit: 65535
     t.datetime "created_at",                  null: false
     t.datetime "updated_at",                  null: false
   end

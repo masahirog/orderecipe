@@ -1,4 +1,49 @@
 <body>
  <%= simple_format(@product.name) %>
 
+
+
+ <h3>【お弁当名】</h3>
+ <%= @product.name %></br>
+ <h3>【調理カテゴリー】</h3>
+ <%= @product.cook_category %></br>
+ <h3>【弁当種類】</h3>
+ <%= @product.product_type %></br>
+ <h3>【販売価格】</h3>
+ <%= @product.sell_price %></br>
+ <h3>【原価価格】</h3>
+
+ </br>
+
+ <h3>【説明文】</h3>
+<%= @product.description %></br>
+ <h3>【内容物】</h3>
+ <%= @product.contents %></br>
+
+
+
+
+
+ <h3>【使用メニュー一覧】</h3>
+ <table>
+   <thead>
+     <tr>
+       <th>メニュー名</th>
+       <th>原価</th>
+     </tr>
+   </thead>
+   <% @menus.zip(@product_menus).each do |menu,product_menu| %>
+   <tbody>
+       <tr>
+       <td><%= menu.name %></td>
+       <td><%= "原価" %></td>
+       </tr>
+     <% end %>
+   </tbody>
+ </table>
+
+
+
+ <%= link_to '編集', "/products/#{@product.id}/edit", method: :get %>
+
  </body>

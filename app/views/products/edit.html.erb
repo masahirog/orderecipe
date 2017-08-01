@@ -1,29 +1,8 @@
 <body>
 
-<%= form_tag("/products/#{@product.id}", method: :patch ) do %>
   <h3>
     編集する
   </h3>
-  <label for="name">お弁当名：</br>
-  <input name="name" placeholder="name" type="text" value="<%= @product.name %>" >
-  </br>
-  <label for="cook_category">調理カテゴリー：</br>
-  <input name="cook_category" placeholder="cook_category" value="<%= @product.cook_category %>">
-  </br>
-  <label for="product_type">お弁当種類：</br>
-  <input name="product_type"placeholder="product_type" value="<%= @product.product_type %>">
-  </br>
-  <label for="sell_price">販売価格：</br>
-  <input name="sell_price" placeholder="sell_price" value="<%= @product.sell_price %>">
-  </br>
-  <label for="description">説明：</br>
-  <input name="description" placeholder="description" value="<%= @product.description %>">
-  </br>
-  <label for="contents">内容物：</br>
-  <input name="contents" placeholder="contents" value="<%= @product.contents %>">
-  </br>
-   <input type="submit" value="更新">
-  </br>
-<% end %>
+<%= render 'form', path: edit_product_path, method: :post %>
 
 </body>
