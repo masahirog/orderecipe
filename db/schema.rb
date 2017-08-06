@@ -10,7 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170731141703) do
+ActiveRecord::Schema.define(version: 20170801114729) do
+
+  create_table "material_vendors", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+    t.integer  "material_id"
+    t.integer  "vendor_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
 
   create_table "materials", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.string   "name"
@@ -43,9 +50,9 @@ ActiveRecord::Schema.define(version: 20170731141703) do
     t.text     "recipe",       limit: 65535
     t.string   "category"
     t.text     "serving_memo", limit: 65535
+    t.float    "cost_price",   limit: 24
     t.datetime "created_at",                 null: false
     t.datetime "updated_at",                 null: false
-    t.float    "cost_price",   limit: 24
   end
 
   create_table "product_menus", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|

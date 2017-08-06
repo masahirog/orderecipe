@@ -1,15 +1,30 @@
 
+
+
 <tr class="nested-fields">
-  <td>
+  <td id='select'>
   <%= f.select :material_id, options_from_collection_for_select(Material.all, :id, :name), class: 'searchable' %>
   </td>
+  <td class="aaa">
+    <script>
+      $(document).ready(function(){
+        $("#detail-association-insertion-point .aaa").on("click",function(){
+          alert('AAA');
+        });
+     });
+     </script>
+
+      <%= "aaa" %>
+  </td>
+
   <td>
   <%= f.number_field :amount_used, step: '0.1', min: '0.0', required: true, :class => 'form-control' %>
   </td>
   <td>
-  
+    <%= 0 %>
   </td>
   <td>
   <%= link_to_remove_association '削除', f %>
   </td>
+
 </tr>

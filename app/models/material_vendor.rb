@@ -1,0 +1,2 @@
+class MaterialVendor < ApplicationRecord
+end
