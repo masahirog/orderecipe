@@ -6,7 +6,7 @@ class Material < ApplicationRecord
    if params # 入力がある場合の処理
      data = Material.all
      data = data.where(['name LIKE ?', "%#{params["name"]}%"]) if params["name"].present?
-     data = data.where(['delivery_slip_name LIKE ?', "%#{params["delivery_slip_name"]}%"]) if params["delivery_slip_name"].present?
+     data = data.where(['order_name LIKE ?', "%#{params["order_name"]}%"]) if params["order_name"].present?
      data = data.where(['vendor LIKE ?', "%#{params["vendor"]}%"]) if params["vendor"].present?
      data = data.where(['code LIKE ?', "%#{params["code"]}%"]) if params["code"].present?
      data

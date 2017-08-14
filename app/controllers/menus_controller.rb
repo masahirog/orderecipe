@@ -1,5 +1,12 @@
 class MenusController < ApplicationController
   # before_action :set_menu, only: [:edit, :show, :update]
+  def get_cost_price
+    @material = Material.find(params[:id])
+    respond_to do |format|
+      format.html
+      format.json
+    end
+  end
   def index
     @search = Menu.search(params).page(params[:page]).per(20)
     @menus = Menu.all
@@ -28,16 +35,18 @@ class MenusController < ApplicationController
     @materials = @menu.materials
   end
 
+
+
   private
 
     def menu_params
       params.require(:menu).permit(:name, :recipe,
-                                     menu_materials_attributes: [:id, :amount_used, :cost_price, :menu_id, :material_id, :_destroy,
+                                     menu_materials_attributes: [:id, :amount_used, :menu_id, :material_id, :_destroy,
                                      material_attributes:[:name, ]])
     end
     def menu_params2
      params.permit(:name, :recipe,
-                                    menu_materials_attributes: [:id, :amount_used, :cost_price, :menu_id, :material_id, :_destroy,
+                                    menu_materials_attributes: [:id, :amount_used, :menu_id, :material_id, :_destroy,
                                     material_attributes:[:name, ]])
     end
 end

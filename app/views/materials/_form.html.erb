@@ -1,0 +1,64 @@
+<%= form_for @material do |f| %>
+  <% if @material.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@material.errors.count, "error") %> prohibited this recipe from being saved:</h2>
+
+      <ul>
+      <% @material.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+    <div class="field">
+      <%= f.label :name, "食材・資材名" %></br>
+      <%= f.text_field :name %>
+    </div>
+    <div class="field">
+      <%= f.label :order_name, "発注名" %></br>
+      <%= f.text_field :order_name %>
+    </div>
+    <div class="field">
+      <%= f.label :calculated_value, "計上単位" %></br>
+      <%= f.number_field :calculated_value %>
+    </div>
+    <div class="field">
+      <%= f.label :calculated_unit, "(単位)" %></br>
+      <%= f.text_field :calculated_unit %>
+    </div>
+    <div class="field">
+      <%= f.label :calculated_price, "計上単価" %></br>
+      <%= f.number_field :calculated_price %>
+    </div>
+    <div class="field">
+      <%= f.label :cost_unit, "単価単位" %></br>
+      <%= f.text_field :cost_unit %>
+    </div>
+    <div class="field">
+      <%= f.label :cost_price, "単価" %></br>
+      <%= f.number_field :cost_price %>
+    </div>
+    <div class="field">
+      <%= f.label :category, "カテゴリー" %></br>
+      <%= f.text_field :category %>
+    </div>
+    <div class="field">
+      <%= f.label :vendor, "仕入先" %></br>
+      <%= f.text_field :vendor %>
+    </div>
+    <div class="field">
+      <%= f.label :code, "管理コード" %></br>
+      <%= f.text_field :code %>
+    </div>
+    <div class="field">
+      <%= f.label :memo, "メモ" %></br>
+      <%= f.text_area :memo %>
+    </div>
+    <div class="field">
+      <%= f.label :status, "終売" %></br>
+      <%= f.check_box :status %>
+    </div>
+    <div class="action">
+      <%= f.submit "登録" %>
+    </div>
+    <% end %>

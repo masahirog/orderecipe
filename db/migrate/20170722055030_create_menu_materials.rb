@@ -4,7 +4,6 @@ class CreateMenuMaterials < ActiveRecord::Migration
       t.integer :menu_id
       t.integer :material_id
       t.float :amount_used
-      t.float :cost_price
       t.timestamps null: false
     end
   end

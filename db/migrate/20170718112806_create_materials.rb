@@ -2,7 +2,7 @@ class CreateMaterials < ActiveRecord::Migration
   def change
     create_table :materials do |t|
       t.string :name
-      t.string :delivery_slip_name
+      t.string :order_name
       t.integer :calculated_value
       t.string :calculated_unit
       t.integer :calculated_price

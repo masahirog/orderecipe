@@ -13,8 +13,8 @@
     <h3>【検索】</h3>
     食材・資材名：
     <%= text_field_tag :name, params[:name] %>
-    　納品書名：
-    <%= text_field_tag :delivery_slip_name, params[:delivery_slip_name] %>
+    　発注名：
+    <%= text_field_tag :order_name, params[:order_name] %>
      　仕入先；
     <%= text_field_tag :vendor, params[:vendor] %>
     　管理コード：
@@ -31,7 +31,7 @@
     <tr>
       <th>ID</th>
       <th>食材・資材名</th>
-      <th>納品書名</th>
+      <th>発注名</th>
       <th>計上単位</th>
       <th>計上単位</th>
       <th>計上単価(円)</th>
@@ -52,7 +52,7 @@
       <tr>
           <td><%= link_to material.id, "/materials/#{material.id}/edit", method: :get %></td>
         <td><%= material.name %></td>
-        <td><%= material.delivery_slip_name %></td>
+        <td><%= material.order_name %></td>
         <td><%= number_with_delimiter(material.calculated_value) %></td>
         <td><%= material.calculated_unit %></td>
         <td><%= number_with_delimiter(material.calculated_price) %></td>

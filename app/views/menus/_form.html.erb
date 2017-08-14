@@ -1,6 +1,6 @@
 
 
-  <%= form_for(@menu) do |f| %>
+  <%= form_for @menu do |f| %>
     <% if @menu.errors.any? %>
       <div id="error_explanation">
         <h2><%= pluralize(@menu.errors.count, "error") %> prohibited this recipe from being saved:</h2>
@@ -30,8 +30,8 @@
       <%= f.text_field :serving_memo %>
     </div>
     <div class="field">
-      <%= f.label :cost_price ,'メニュー原価' %><br>
-      <%= f.text_field :cost_price %>
+      <%= 'メニュー原価' %><br>
+      <%= 0 %>
     </div>
 
     <table class="table table-list">
