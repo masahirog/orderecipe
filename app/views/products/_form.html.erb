@@ -1,55 +1,106 @@
-
 <%= form_for @product do |f| %>
+<% if @product.errors.any? %>
+  <div id="error_explanation">
+    <h2><%= pluralize(@product.errors.count, "error") %> prohibited this recipe from being saved:</h2>
 
-
-  <%= f.label :name, "弁当名" %>
-  <%= f.text_field :name %>
-</br>
-</br>
-  <%= f.label :cook_category, "調理カテゴリー" %>
-  <%= f.text_field :cook_category %>
-</br>
-</br>
-  <%= f.label :product_type, "弁当種類" %>
-  <%= f.text_field :product_type %>
-</br>
-</br>
-  <%= f.label :sell_price, "販売価格" %>
-  <%= f.number_field :sell_price %>
-</br>
-</br>
-  <%= f.label :description, "説明文" %>
-  <%= f.text_area :description %>
-</br>
-</br>
-  <%= f.label :contents, "内容物" %>
-  <%= f.text_area :contents %>
-</br>
-</br>
-
-<table class="table table-list">
-  <thead>
-    <tr>
-      <th>メニュー名</th>
-      <th>原価</th>
-      <th></th>
-    </tr>
-  </thead>
-
-  <div class="form-group">
-    <tbody id='detail-association-insertion-point'>
-    <%= f.fields_for :product_menus do |builder| %>
-      <%= render 'product_menu_fields', f: builder %>
+    <ul>
+    <% @product.errors.full_messages.each do |message| %>
+      <li><%= message %></li>
     <% end %>
-    </tbody>
+    </ul>
   </div>
-</table>
+<% end %>
 
-  <%= link_to_add_association "add Menu", f, :product_menus,
-        data: {association_insertion_node: '#detail-association-insertion-point',association_insertion_method: 'append' } %>
+  <div class="container form-group">
+    <%= f.label :name, "弁当名" %><br>
+    <div class="col-xs-12 col-md-6">
+      <%= f.text_field :name, id: "menu_search", autocomplete: "off", class:"name form-control" %>
+    </div>
+  </div>
+  <div class="container form-group">
+    <%= f.label :cook_category, "調理カテゴリー" %><br>
+    <div class="col-xs-12 col-md-6">
+    <%= f.select :cook_category, {グリル: "グリル", コンロ: "コンロ", フライヤー: "フライヤー", 前日コンロ: "前日コンロ",
+                                  フライヤー・グリル: "フライヤー・グリル", グリル・コンロ: "グリルコンロ", 前日グリル: "前日グリル",
+                                   その他: "その他"},{include_blank: true}, { class: "form-control"} %>
+    </div>
+  </div>
+  <div class="container form-group">
+    <%= f.label :product_type, "弁当種類" %><br>
+    <div class="col-xs-12 col-md-6">
+    <%= f.select :product_type, {デラックス: "デラックス", ヘルシー: "ヘルシー", プレミアム: "プレミアム",
+                                ボウル: "ボウル", 麺: "麺", その他: "その他"}, {include_blank: true}, { class: "form-control"} %>
+    </div>
+  </div>
 
+  <div class="container form-group">
+    <%= f.label :sell_price, "販売価格" %><br>
+    <div class="col-xs-11 col-md-5">
+      <%= f.number_field :sell_price, class:"price form-control" %>
+    </div>
+    <div class="col-xs-1 col-md-1">
+      円
+    </div>
+  </div>
+  <div class="container form-group">
+    <%= f.label :description, "説明文" %><br>
+    <div class="col-xs-12 col-md-6">
+      <%= f.text_area :description, class:"form-control", style:"height:10em;" %>
+    </div>
+  </div>
+  <div class="container form-group">
+    <%= f.label :contents, "内容物" %><br>
+    <div class="col-xs-12 col-md-6">
+      <%= f.text_area :contents, class:"form-control", style:"height:10em;" %>
+    </div>
+  </div>
+  <div class="container form-group">
+    <%= f.label :cost_price, "弁当原価" %><br>
+    <div class="col-xs-11 col-md-5">
+      <%= f.text_field :cost_price, :readonly => 'readonly', class:"price form-control" %>
+    </div>
+    <div class="col-xs-1 col-md-1">
+      円
+    </div>
+  </div>
+  <table class="table menu-table table-striped">
+    <thead>
+      <tr>
+        <th>メニュー名</th>
+        <th>原価</th>
+        <th></th>
+      </tr>
+    </thead>
 
+    <tbody id='used_menu_table_body'>
+      <%= f.fields_for :product_menus do |pr| %>
+      <tr class="add_tr_menu" id="add_tr0">
+        <td class="trno", style="display:none;">
+          <div></div>
+        </td>
+        <td class="search_menu">
+          <input type="text" id="search_menu0" autocomplete="off" class="search_menu_input form-control">
+          <ul id="result0", class="result list-group",style="list-style:none">
+          </ul>
+        </td>
+        <td class="select", style="display:none;">
+            <%= pr.text_field :menu_id, id: "select_menu0"%>
+        </td>
 
+        <td class="cost_price">
+          <div id="cost_price_id0"></div>
+        </td>
+        <td>
+          <a class ="remove btn btn-danger" >削除</a>
+        </td>
+      </tr>
+      <%= pr.hidden_field :_destroy, :value => 0 %>
+      <% end %>
+    </tbody>
+  </table>
+  <a class="add_menu btn btn-primary">品目追加</a>
 
-  <%= f.submit "登録" %>
+  <div class="action">
+    <input type="button" onclick="submit();" value="登録する" class="btn btn-success">
+  </div>
 <% end %>

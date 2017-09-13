@@ -1,32 +1,38 @@
-<body>
-  </br>
-  <h3>【食材・資材の新規登録】</h3>
-  <%= button_to '新規登録', "/materials/new", method: :get %>
-  </br>
+  <h3>食材資材の新規登録
+    <a href="/materials/new">
+      <span class="glyphicon glyphicon-plus-sign" aria-hidden="true">
+      </span>
+    </a>
+  </h3>
 
 
-
-  <%= page_entries_info @search %></br>
-  <!-- ページネーション -->
   <%= form_tag Material, :method => 'get' do %>
-  <p>
-    <h3>【検索】</h3>
-    食材・資材名：
-    <%= text_field_tag :name, params[:name] %>
-    　発注名：
-    <%= text_field_tag :order_name, params[:order_name] %>
-     　仕入先；
-    <%= text_field_tag :vendor, params[:vendor] %>
-    　管理コード：
-    <%= text_field_tag :code, params[:code] %>
 
-    　　<%= submit_tag "検索" %>
-  </p>
+  <div class="col-xs-12 col-md-3">
+    <p>食材・資材名：</p>
+    <%= text_field_tag :name, params[:name], class:"form-control" %>
+  </div>
+  <div class="col-xs-12 col-md-3">
+    <p>発注名：</p>
+    <%= text_field_tag :order_name, params[:order_name], class:"form-control" %>
+  </div>
+  <div class="col-xs-12 col-md-2">
+    <p>仕入先：</p>
+    <%= text_field_tag :vendor_id, params[:vendor_id], class:"form-control" %>
+  </div>
+  <div class="col-xs-12 col-md-2">
+    <p>管理コード：</p>
+    <%= text_field_tag :order_code, params[:order_code], class:"form-control" %>
+  </div>
+    <div class="kensaku form-group">
+      <p>　</p>
+      　<%= submit_tag "検索" ,class:"btn btn-primary" %>
+    </div>
 <% end %>
 
 
 
-<table>
+<table class="table table-hover">
   <thead>
     <tr>
       <th>ID</th>
@@ -35,12 +41,10 @@
       <th>計上単位</th>
       <th>計上単位</th>
       <th>計上単価(円)</th>
-      <th>原価単位</th>
-      <th>原価単位</th>
       <th>原価単価(円)</th>
       <th>カテゴリー</th>
       <th>仕入先</th>
-      <th>管理コード</th>
+      <th>発注コード</th>
       <th>メモ</th>
       <th>終売</th>
     </tr>
@@ -49,21 +53,19 @@
   </br>
   <tbody>
     <% @search.each do |material| %>
-      <tr>
-          <td><%= link_to material.id, "/materials/#{material.id}/edit", method: :get %></td>
+      <tr class="materials_tr" style="cursor: pointer">
+          <td class="materials_index"><%= link_to material.id, "/materials/#{material.id}/edit", method: :get %></td>
         <td><%= material.name %></td>
         <td><%= material.order_name %></td>
         <td><%= number_with_delimiter(material.calculated_value) %></td>
         <td><%= material.calculated_unit %></td>
         <td><%= number_with_delimiter(material.calculated_price) %></td>
-        <td>１</td>
-        <td><%= material.cost_unit %></td>
         <td><%= material.cost_price.round(2) %></td>
         <td><%= material.category %></td>
-        <td><%= material.vendor %></td>
-        <td><%= material.code %></td>
+        <td><%= material.vendor.company_name%></td>
+        <td><%= material.order_code %></td>
         <td><%= material.memo %></td>
-        <td><%= material.status %></td>
+        <td><%= p "✔" if material.end_of_sales == 1 %></td>
       </tr>
     <% end %>
   </tbody>
@@ -77,4 +79,3 @@
 
   <%= paginate(@search) %>
   <!-- ページネーション -->
-</body>

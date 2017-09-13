@@ -7,12 +7,11 @@ class CreateMaterials < ActiveRecord::Migration
       t.string :calculated_unit
       t.integer :calculated_price
       t.float :cost_price
-      t.string :cost_unit
       t.string :category
-      t.string :vendor
-      t.integer :code
+      t.string :order_code
       t.text :memo
-      t.string :status
+      t.integer :end_of_sales
+      t.integer :vendor_id
 
       t.timestamps null: false
     end

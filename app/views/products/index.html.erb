@@ -1,26 +1,33 @@
-<body>
+  <h3>お弁当の新規登録
+    <a href="/products/new">
+      <span class="glyphicon glyphicon-plus-sign" aria-hidden="true">
+      </span>
+    </a>
+  </h3>
+  <p>　</p>
+  <div>
+    <%= form_tag Product, :method => 'get', class:"form-inline" do %>
+    <div class="kensaku form-group">
+      <p>お弁当名▼</p>
+      <%= text_field_tag :name, params[:name], class:"form-control" %>
+    </div>
+    <div class="kensaku form-group">
+      <p>調理カテゴリー▼</p>
+      <%= text_field_tag :cook_category, params[:cook_category], class:"form-control" %>
+    </div>
+    <div class="kensaku form-group">
+       <p>お弁当タイプ▼</p>
+      <%= text_field_tag :product_type, params[:product_type], class:"form-control" %>
+    </div>
+    <div class="kensaku form-group">
+      <p>　</p>
+    　<%= submit_tag "検索" ,class:"btn btn-primary" %>
+    </div>
+  </div>
 
-  <h3>【お弁当の新規登録】</h3>
-  <%= button_to '新規登録', "/products/new", method: :get %>
-  </br>
 
-  <%= page_entries_info @search %></br>
-  <!-- ページネーション -->
-  <%= form_tag Product, :method => 'get' do %>
-  <p>
-    <h3>【お弁当検索】</h3>
-      お弁当名：
-    <%= text_field_tag :name, params[:name] %>
-    　調理カテゴリー：
-    <%= text_field_tag :cook_category, params[:cook_category] %>
-     お弁当タイプ：
-    <%= text_field_tag :product_type, params[:product_type] %>
-
-    　　<%= submit_tag "検索" %>
-  </p>
 <% end %>
-
-  <table>
+<table class="table table-hover">
     <thead>
       <tr>
         <th>ID</th>
@@ -28,23 +35,23 @@
         <th>調理カテゴリー</th>
         <th>弁当の種類</th>
         <th>販売価格</th>
+        <th>原価</th>
         <th>説明文</th>
         <th>内容物</th>
-        <th>詳細</th>
       </tr>
     </thead>
     </br>
     <tbody>
       <% @search.each do |product| %>
-        <tr>
-          <td><%= product.id %></td>
+        <tr class="products_tr" style="cursor: pointer">
+          <td class="products_index"><%= link_to "#{product.id}", "/products/#{product.id}/", method: :get %></td>
           <td><%= product.name %></td>
           <td><%= product.cook_category %></td>
           <td><%= product.product_type %></td>
-          <td><%= product.sell_price %></td>
-          <td><%= product.description %></td>
-          <td><%= product.contents %></td>
-          <td><%= link_to '詳細', "/products/#{product.id}/", method: :get %></td>
+          <td class="price text-right"><%= product.sell_price %>円</td>
+          <td class="price text-right"><%= product.cost_price %>円</td>
+          <td><%= truncate(product.description,length:10) %></td>
+          <td><%= truncate(product.contents,length:10) %></td>
         </tr>
         <% end %>
     </tbody>
@@ -59,4 +66,3 @@
 
   <%= paginate(@search) %>
   <!-- ページネーション -->
-</body>

@@ -1,47 +1,42 @@
-<body>
-  </br>
-  <h3>【メニュー一覧】</h3>
-  <%= button_to '新規登録', "/menus/new", method: :get %>
-  </br>
-  <%= page_entries_info @search %></br>
-  <!-- ページネーション -->
-  <%= form_tag Menu, :method => 'get' do %>
-  <p>
-    <h3>【検索】</h3>
+<h3>メニューの新規登録
+  <a href="/menus/new">
+    <span class="glyphicon glyphicon-plus-sign" aria-hidden="true">
+    </span>
+  </a>
+</h3>
+<p>　</p>
+  <%= form_tag Menu, :method => 'get', class:"form-inline" do %>
+  <div class="kensaku form-group">
     メニュー名：
-    
-    <%= text_field_tag :name, params[:name] %>
-    　　<%= submit_tag "検索" %>
-  </p>
-<% end %>
+    <%= text_field_tag :name, params[:name], class:"name form-control" %>
+  </div>
+  <div class="kensaku form-group">
+    　<%= submit_tag "検索" ,class:"btn btn-primary" %>
+  </div>
+  <% end %>
 
-</br>
-<p><%= render :text => "#{@search.length}件ヒット" %></p>
-
-<table>
+<table class="table table-hover">
   <thead>
     <tr>
       <th>ID</th>
-      <th>カテゴリ</th>
       <th>メニュー名</th>
+      <th>カテゴリ</th>
       <th>レシピ</th>
       <th>盛り付けメモ</th>
       <th>原価</th>
-      <th></th>
     </tr>
   </thead>
 
   </br>
   <tbody>
     <% @search.each do |menu| %>
-      <tr>
-        <td><%= menu.id %></td>
-        <td><%= menu.category %></td>
+      <tr class="menus_tr" style="cursor: pointer">
+        <td class="menus_index"><%= link_to "#{menu.id}", "/menus/#{menu.id}", method: :get %></td>
         <td><%= menu.name %></td>
+        <td><%= menu.category %></td>
         <td><%= menu.recipe %></td>
         <td><%= menu.serving_memo %></td>
-        <td><%=  %></td>
-        <td><%= link_to '詳細', "/menus/#{menu.id}", method: :get %></td>
+        <td class="cost_price_td"><%= menu.cost_price %>円</td>
       </tr>
     <% end %>
   </tbody>
@@ -55,4 +50,3 @@
 
   <%= paginate(@search) %>
   <!-- ページネーション -->
-</body>

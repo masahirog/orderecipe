@@ -1,11 +1,15 @@
 class Menu < ApplicationRecord
   has_many :menu_materials, dependent: :destroy
   has_many :materials, through: :menu_materials
-  accepts_nested_attributes_for :menu_materials, allow_destroy: true
-
+  accepts_nested_attributes_for :menu_materials, allow_destroy: true, update_only: true
   has_many :product_menus, dependent: :destroy
   has_many :products, through: :product_menus
 
+  after_update :update_product_cost_price
+
+  validates :name, presence: true, uniqueness: true
+  validates :category, presence: true
+  # validates :cost_price, presence: true, numericality: true
 
   def self.search(params) #self.でクラスメソッドとしている
    if params # 入力がある場合の処理
@@ -17,4 +21,24 @@ class Menu < ApplicationRecord
    end
   end
 
+  private
+  def update_product_cost_price
+    #id（食材）をもった中間テーブル（→メニュー）
+    product_menus = ProductMenu.where( menu_id: self.id )
+
+    product_menus.each do |product_menu|
+
+      id = product_menu.product_id
+      aaa = ProductMenu.where(product_id: id)
+
+      kingaku = 0
+      aaa.each do |a|
+        cost = a.menu.cost_price
+        kingaku = kingaku + cost
+      end
+
+      product = Product.find(id)
+      product.update(cost_price: kingaku)
+    end
+  end
 end

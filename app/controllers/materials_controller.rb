@@ -2,6 +2,7 @@ class MaterialsController < ApplicationController
   def index
     @search = Material.search(params).page(params[:page]).per(20)
     @materials = Material.page(params[:page]).per(20)
+    @vendors = Vendor.all
   end
 
   def new
@@ -9,8 +10,12 @@ class MaterialsController < ApplicationController
   end
 
   def create
-    Material.create(material_params)
-    redirect_to materials_path
+    @material = Material.create(material_params)
+       if @material.save
+         redirect_to materials_path
+       else
+         render 'new'
+       end
   end
 
   def edit
@@ -20,15 +25,13 @@ class MaterialsController < ApplicationController
 
   def update
     material = Material.find(params[:id])
-    material.update(material_params2)
+    material.update(material_params)
   end
 
   private
   def material_params
-    params.require(:material).permit(:name, :order_name, :calculated_value, :calculated_unit, :calculated_price, :cost_price, :cost_unit, :category, :vendor, :code, :memo, :status)
-  end
-  def material_params2
-    params.permit(:name, :order_name, :calculated_value, :calculated_unit, :calculated_price, :cost_price, :cost_unit, :category, :vendor, :code, :memo, :status)
+    params.require(:material).permit(:name, :order_name, :calculated_value, :calculated_unit,
+     :calculated_price, :cost_price, :category, :order_code, :memo, :end_of_sales, :vendor_id)
   end
 
 end

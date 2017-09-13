@@ -1,33 +1,44 @@
-<body>
-<h3>【メニュー名】</h3>
-<%= @menu.name %></br>
-<h3>【メニュー原価】</h3>
-<% sub_total = 0 %>
-<% @materials.zip(@menu_materials).each do |material,menu_material| %>
-<% price = menu_material.amount_used * material.cost_price %>
-<% sub_total += price %>
-<% end %>
-<%= sub_total %>円
-<h3>【レシピ】</h3>
-<%= @menu.recipe %></br>
-
-<h3>【材料一覧】</h3>
-<table>
+<table class="table">
   <thead>
-    <tr>
-      <th>食材</th>
-      <th>分量</th>
-      <th></th>
-      <th>原価</th>
+    <tr class="active">
+      <th>メニュー名</th>
+      <th>メニュー原価</th>
+      <th>カテゴリー</th>
+      <th>調理メモ</th>
+      <th>盛り付けメモ</th>
+      <th>調理メモ</th>
     </tr>
   </thead>
-  <% @materials.zip(@menu_materials).each do |material,menu_material| %>
   <tbody>
+    <tr>
+      <td><%= @menu.name %></td>
+      <td><%= @menu.cost_price %> 円</td>
+      <td><%= @menu.category %></td>
+      <td><%= @menu.recipe %></td>
+      <td><%= @menu.serving_memo %></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<table class="table">  <thead>
+    <tr class="active">
+      <th>食材</th>
+      <th>原価</th>
+      <th>仕入先</th>
+      <th colspan="2" class="text-center">分量</th>
+      <th class="text-right">使用価格</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @materials.zip(@menu_materials).each do |material,menu_material| %>
       <tr>
-      <td><%= material.name %></td>
-      <td><%= menu_material.amount_used %></td>
-      <td><%= material.cost_unit %></td>
-      <td><%= menu_material.amount_used * material.cost_price %></td>
+      <td><%= link_to material.name, "/materials/#{material.id}/edit", method: :get %></td>
+      <td><%= material.cost_price %> 円</td>
+      <td><%= link_to material.vendor.company_name, "/vendors/#{material.vendor.id}", method: :get %></td>
+      <td class="text-right"><%= menu_material.amount_used %></td>
+      <td class="text-left"><%= material.calculated_unit %></td>
+      <td class="text-right"><%= (menu_material.amount_used * material.cost_price).round(1) %>円</td>
       </tr>
     <% end %>
 
@@ -35,6 +46,6 @@
 </table>
 
 
-</br>
-<%= link_to '編集', "/menus/#{@menu.id}/edit", method: :get %>
-</body>
+<div>
+  <%= button_to 'メニュー編集', "/menus/#{@menu.id}/edit", method: :get,class: "btn btn-primary" %>
+</div>

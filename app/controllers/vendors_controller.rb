@@ -7,15 +7,24 @@ class VendorsController < ApplicationController
     @vendor = Vendor.new
   end
   def create
-    Vendor.create(create_params)
-    redirect_to vendors_path
+    @vendor = Vendor.create(create_params)
+    if @vendor.save
+      redirect_to vendors_path
+    else
+      render 'new'
+    end
   end
   def edit
     @vendor = Vendor.find(params[:id])
   end
   def update
-    vendor = Vendor.find(params[:id])
-    vendor.update(update_params)
+    @vendor = Vendor.find(params[:id])
+    @vendor.update(update_params)
+    if @vendor.save
+      redirect_to vendors_path
+    else
+      render 'edit'
+    end
   end
 
 

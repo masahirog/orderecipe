@@ -9,8 +9,25 @@
  * compiled file so the styles you add here take precedence over styles defined in any styles
  * defined in the other CSS/SCSS files in this directory. It is generally better to create a new
  * file per style scope.
- *
- *= require select2
- *= require_tree .
- *= require_self
+ *require は使わない
+ * require_tree .
+ * require_self
  */
+
+ // Bootstrap Sass
+@import "bootstrap-sprockets";
+@import "bootstrap";
+@import "menus.scss";
+@import "products.scss";
+@import "top.scss";
+@import "devise_bootstrap_views";
+
+.all_body{
+   padding: 0 20px 0 20px;
+ }
+.footer{
+  height: 40px;
+}
+.menu_li{
+  padding-left: 10px;
+}

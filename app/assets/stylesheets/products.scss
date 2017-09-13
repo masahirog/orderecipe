@@ -1,3 +1,47 @@
-// Place all the styles related to the products controller here.
-// They will automatically be included in application.css.
-// You can use Sass (SCSS) here: http://sass-lang.com/
+.li1:hover{
+  background-color: #EEEEEE;
+}
+.large_input{
+  width: 400px;
+  height: 200px;
+  border: 1px solid #CACACA;
+  -webkit-border-radius: 3px;    /* Safari,Google Chrome用 */
+  -moz-border-radius: 3px;
+  border-radius: 3px;        /* CSS3草案 */
+  border: 1px solid #ccc
+}
+
+
+.result{
+  width: 280px;
+  max-height: 300px;
+  overflow: scroll;
+  z-index: 1;
+  position: absolute;
+  background-color: #FAFAFA;
+  margin: 3px 0 0 10px;
+  padding: 0 0 0 5px;
+  text-align: left;
+  list-style: none;
+}
+
+.search_menu{
+  text-align: center;
+  position: relative;
+}
+
+.price{
+  text-align: right;
+}
+.cost_price{
+  text-align: right;
+}
+
+.action{
+  text-align: center;
+  padding-top: 50px;
+}
+
+.kensaku{
+  margin-right: 30px;
+}

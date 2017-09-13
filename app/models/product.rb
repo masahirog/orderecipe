@@ -4,6 +4,12 @@ class Product < ApplicationRecord
   has_many :menus, through: :product_menus
   accepts_nested_attributes_for :product_menus, allow_destroy: true
 
+  validates :name, presence: true, uniqueness: true
+  validates :cook_category, presence: true
+  validates :product_type, presence: true
+  validates :sell_price, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validates :cost_price, presence: true, numericality: true
+
   def self.search(params) #self.でクラスメソッドとしている
    if params
      data = Product.all

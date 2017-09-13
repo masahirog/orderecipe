@@ -44,9 +44,15 @@ group :development do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'pry-rails'
-  gem 'kaminari'
-  gem 'cocoon'
-  gem 'select2-rails'
-  gem 'jquery-turbolinks'
+end
+gem 'kaminari'
+gem 'select2-rails'
+gem 'jquery-turbolinks'
+gem 'rails-i18n'
+gem 'bootstrap-sass', '~> 3.3.6'
+gem 'devise'
+gem 'devise-bootstrap-views'
 
+group :production do
+  gem 'rails_12factor'
 end

@@ -1,45 +1,42 @@
-<body>
-  </br>
-  <h3>【仕入先企業の新規登録】</h3>
-  <%= button_to '新規登録', "/vendors/new", method: :get %>
-  </br>
+<h3>仕入先企業の新規登録
+  <a href="/vendors/new">
+    <span class="glyphicon glyphicon-plus-sign" aria-hidden="true">
+    </span>
+  </a>
+</h3>
 
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>企業名</th>
+      <th>電話番号</th>
+      <th>FAX番号</th>
+      <th>メールアドレス</th>
+      <th>郵便番号</th>
+      <th>住所</th>
+      <th>担当者名</th>
+      <th>担当者電話番号</th>
+      <th>担当者メールアドレス</th>
+      <th>メモ</th>
+    </tr>
+  </thead>
 
-
-  <table>
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>企業名</th>
-        <th>電話番号</th>
-        <th>FAX番号</th>
-        <th>メールアドレス</th>
-        <th>郵便番号</th>
-        <th>住所</th>
-        <th>担当者名</th>
-        <th>担当者電話番号</th>
-        <th>担当者メールアドレス</th>
-        <th>メモ</th>
+  <tbody>
+    <% @vendors.each do |vendor| %>
+      <tr class="vendors_tr" style="cursor: pointer">
+          <td class="vendors_index"><%= link_to vendor.id, "/vendors/#{vendor.id}/edit", method: :get %></td>
+        <td><%= vendor.company_name %></td>
+        <td><%= vendor.company_phone %></td>
+        <td><%= vendor.company_fax %></td>
+        <td><%= vendor.company_mail %></td>
+        <td><%= vendor.zip %></td>
+        <td><%= vendor.address %></td>
+        <td><%= vendor.staff_name %></td>
+        <td><%= vendor.staff_phone %></td>
+        <td><%= vendor.staff_mail %></td>
+        <td><%= vendor.memo %></td>
       </tr>
-    </thead>
-
-    </br>
-    <tbody>
-      <% @vendors.each do |vendor| %>
-        <tr>
-            <td><%= link_to vendor.id, "/vendors/#{vendor.id}/edit", method: :get %></td>
-          <td><%= vendor.company_name %></td>
-          <td><%= vendor.company_phone %></td>
-          <td><%= vendor.company_fax %></td>
-          <td><%= vendor.company_mail %></td>
-          <td><%= vendor.zip %></td>
-          <td><%= vendor.address %></td>
-          <td><%= vendor.staff_name %></td>
-          <td><%= vendor.staff_phone %></td>
-          <td><%= vendor.staff_mail %></td>
-          <td><%= vendor.memo %></td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
-</body>
+    <% end %>
+  </tbody>
+</table>

@@ -1,64 +1,109 @@
-
-
   <%= form_for @menu do |f| %>
-    <% if @menu.errors.any? %>
-      <div id="error_explanation">
-        <h2><%= pluralize(@menu.errors.count, "error") %> prohibited this recipe from being saved:</h2>
+  <% if @menu.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@menu.errors.count, "箇所") %>入力に不備があります </h2>
 
-        <ul>
-        <% @menu.errors.full_messages.each do |message| %>
-          <li><%= message %></li>
-        <% end %>
-        </ul>
-      </div>
-    <% end %>
+      <ul>
+      <% @menu.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <div class="container form-group">
+    <%= f.label :name ,'メニュー名' %><br>
+    <div class="col-xs-12 col-md-6">
+      <%= f.text_field :name, class: "form-control" %>
+    </div>
+  </div>
+  <div class="container form-group">
+    <%= f.label :category ,'カテゴリー' %><br>
+    <div class="col-xs-12 col-md-6">
+      <%= f.select :category, [["主食：ご飯など", "主食"],[ "主菜：メインのおかず", "主菜"],[ "副菜：副菜、漬物など", "副菜"]],{include_blank: true}, { class: "form-control"} %>
+    </div>
+  </div>
+  <div class="container form-group">
+    <%= f.label :recipe ,'調理メモ' %><br>
+    <div class="col-xs-12 col-md-6">
+      <%= f.text_area :recipe, style:"height:10em;", class:"form-control" %>
+    </div>
+  </div>
+  <div class="container form-group">
+    <%= f.label :serving_memo ,'盛り付けメモ' %><br>
+    <div class="col-xs-12 col-md-6">
+      <%= f.text_area :serving_memo,style:"height:10em;", class: "form-control" %>
+    </div>
+  </div>
+  <div class="container form-group">
+    <%= f.label :cost_price, "メニュー原価" %></br>
+    <div class="col-xs-11 col-md-5">
+      <%= f.text_field :cost_price, readonly: 'readonly',class: "menu_cost_price form-control" %>
+    </div>
+    <div class="col-xs-1 col-md-1">
+      円
+    </div>
+  </div>
 
-    <div class="field">
-      <%= f.label :name ,'メニュー名' %><br>
-      <%= f.text_field :name, required: true %>
-    </div>
-    <div class="field">
-      <%= f.label :category ,'カテゴリー' %><br>
-      <%= f.text_field :category %>
-    </div>
-    <div class="field">
-      <%= f.label :recipe ,'調理メモ' %><br>
-      <%= f.text_field :recipe, required: true %>
-    </div>
-    <div class="field">
-      <%= f.label :serving_memo ,'盛り付けメモ' %><br>
-      <%= f.text_field :serving_memo %>
-    </div>
-    <div class="field">
-      <%= 'メニュー原価' %><br>
-      <%= 0 %>
-    </div>
-
-    <table class="table table-list">
+    <table class="table table-list table-striped form-group" id="material_table">
       <thead>
         <tr>
+          <th, style="display:none;">No.</th>
           <th>食材・資材名</th>
+            <th, style="display:none;"></th>
           <th>原価</th>
-          <th>使用量</th>
+          <th>仕入先</th>
+          <th colspan="2">使用量</th>
           <th>使用価格</th>
           <th></th>
         </tr>
       </thead>
 
 
-        <tbody id='detail-association-insertion-point'>
-        <%= f.fields_for :menu_materials do |builder| %>
-          <%= render 'menu_material_fields', f: builder %>
+      <tbody id='table_body'>
+      <%= f.fields_for :menu_materials do |m| %>
+        <tr class="add_tr_material" id="add_tr0" >
+          <td class="trno", style="display:none;">
+            <div></div>
+          </td>
+          <td class="search_material">
+            <input type="text" id="search_material0" autocomplete="off" class="search_material_input form-control">
+            <ul id="result0" class="result list-group">
+            </ul>
+          </td>
+          <td class="select", style="display:none;">
+            <%= m.text_field :material_id, id: "select_material0" %>
+          </td>
+          <td class="cost_price">
+            <div id="cost_price_id0"></div>
+          </td>
+
+          <td class="vendor">
+            <div id="vendor_id0"></div>
+          </td>
+
+          <td class="amount_used">
+          <%= m.text_field :amount_used, class:'amount_used_select form-control', :id => 'amount_used_id0' %>
+          </td>
+
+          <td class="calculated_unit">
+            <div id="calculated_unit0"></div>
+          </td>
+
+          <td class="price_used">
+            <div id="price_used_id0"></div>
+          </td>
+          <td class="removetd">
+            <a class ="remove btn btn-danger" >削除</a>
+          </td>
+        </tr>
+        <%= m.hidden_field :_destroy, :value => 0 %>
         <% end %>
-        </tbody>
 
+      </tbody>
     </table>
+    <a class="add_material btn btn-primary">食材追加</a>
 
-      <%= link_to_add_association "add Material", f, :menu_materials,
-            data: {association_insertion_node: '#detail-association-insertion-point',association_insertion_method: 'append' } %>
-
-
-    <div class="actions">
-      <%= f.submit '登録' %>
+    <div class="action">
+      <input type="button" onclick="submit();" value="登録する" class="btn btn-success">
     </div>
   <% end %>

@@ -1,32 +1,52 @@
-<body>
-<div class="bottun">
-<h1>Recipe&Order</h1>
+
+
+
+<div class="top_menu col-xs-12 col-md-12">
+  <h3>【お弁当】</h3>
+  <div class="child_menu col-xs-6 col-md-3">
+    <!-- <h4 class="top_title">お弁当一覧</h4> -->
+    <%= button_to '一覧を見る', "/products", method: :get, class:"top_button btn btn-primary"%>
+  </div>
+  <div class="child_menu col-xs-6 col-md-3">
+    <!-- <h4 class="top_title">お弁当の新規登録</h4> -->
+    <%= button_to '新規登録', "/products/new", method: :get, class:"top_button btn btn-primary" %>
+  </div>
 </div>
-<h3>【お弁当マスタ】</h3>
-<h4>お弁当一覧</h4>
-<%= button_to '一覧', "/products", method: :get %>
-<h4>お弁当の新規登録</h4>
-<%= button_to '新規登録', "/products/new", method: :get %>
-
-<h3>【メニューマスタ】</h3>
-<h4>メニュー一覧</h4>
-<%= button_to '一覧', "/menus", method: :get %>
-<h4>メニュー新規登録</h4>
-<%= button_to '新規登録', "/menus/new", method: :get %>
 
 
-<h3>【食材・資材マスタ】</h3>
-<h4>食材資材の一覧</h4>
-<%= button_to '一覧', "/materials", method: :get %>
-<h4>食材資材の新規登録</h4>
-<%= button_to '新規登録', "/materials/new", method: :get %>
+<div class="top_menu col-xs-12 col-md-12">
+  <h3>【メニュー】</h3>
+  <div class="child_menu col-xs-6 col-md-3">
+    <!-- <h4 class="top_title">メニュー一覧</h4> -->
+    <%= button_to '一覧を見る', "/menus", method: :get, class:"top_button btn btn-primary" %>
+  </div>
+  <div class="child_menu col-xs-6 col-md-3">
+    <!-- <h4 class="top_title">メニュー新規登録</h4> -->
+    <%= button_to '新規登録', "/menus/new", method: :get, class:"top_button btn btn-primary" %>
+  </div>
+</div>
 
 
-<h3>【仕入先企業マスタ】</h3>
-<h4>仕入先企業の一覧</h4>
-<%= button_to '一覧', "/vendors", method: :get %>
-<h4>企業の新規登録</h4>
-<%= button_to '新規登録', "/vendors/new", method: :get %>
+<div class="top_menu col-xs-12 col-md-12">
+  <h3>【食材・資材】</h3>
+  <div class="child_menu col-xs-6 col-md-3">
+    <!-- <h4 class="top_title">食材資材の一覧</h4> -->
+    <%= button_to '一覧を見る', "/materials", method: :get, class:"top_button btn btn-primary" %>
+  </div>
+  <div class="child_menu col-xs-6 col-md-3">
+    <!-- <h4 class="top_title">食材資材の新規登録</h4> -->
+    <%= button_to '新規登録', "/materials/new", method: :get, class:"top_button btn btn-primary" %>
+  </div>
+</div>
 
-</br>
-</body>
+<div class="top_menu col-xs-12 col-md-12">
+  <h3>【仕入先企業】</h3>
+  <div class="child_menu col-xs-6 col-md-3">
+    <!-- <h4 class="top_title">仕入先企業の一覧</h4> -->
+    <%= button_to '一覧を見る', "/vendors", method: :get, class:"top_button btn btn-primary" %>
+  </div>
+  <div class="child_menu col-xs-6 col-md-3">
+    <!-- <h4 class="top_title">企業の新規登録</h4> -->
+    <%= button_to '新規登録', "/vendors/new", method: :get, class:"top_button btn btn-primary" %>
+  </div>
+</div>
