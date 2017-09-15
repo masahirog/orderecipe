@@ -10,7 +10,7 @@ class Material < ApplicationRecord
   validates :calculated_value, presence: true, numericality: true
   validates :calculated_unit, presence: true
   validates :calculated_price, presence: true, numericality: true
-  validates :cost_price, presence: true #, numericality: true
+  # validates :cost_price, presence: true, numericality: true
   validates :vendor_id, presence: true
 
   def self.search(params) #self.でクラスメソッドとしている
