@@ -6,11 +6,11 @@ require "csv"
 #   :vendor_id => row[7], :order_code => row[8],:memo => row[9], :end_of_sales => row[10])
 # end
 
-CSV.foreach('db/h_material_seed2.csv') do |row|
-  Material.create!(:name => row[0], :order_name => row[1], :calculated_value => row[2], :calculated_unit => row[3],
-  :calculated_price => row[4], :cost_price => row[5], :category => row[6],
-  :vendor_id => row[7], :order_code => row[8],:memo => row[9], :end_of_sales => row[10])
-end
+# CSV.foreach('db/h_material_seed2.csv') do |row|
+#   Material.create!(:name => row[0], :order_name => row[1], :calculated_value => row[2], :calculated_unit => row[3],
+#   :calculated_price => row[4], :cost_price => row[5], :category => row[6],
+#   :vendor_id => row[7], :order_code => row[8],:memo => row[9], :end_of_sales => row[10])
+# end
 
 CSV.foreach('db/h_menu_material_seed.csv') do |row|
   MenuMaterial.create!(:menu_id => row[0], :material_id => row[1], :amount_used => row[2])
