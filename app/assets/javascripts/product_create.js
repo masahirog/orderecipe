@@ -1,3 +1,6 @@
+//税率は最終的なproduct_cost_priceに1.08をかけている
+
+
 
 $(function(){
   $(document).on('turbolinks:load', function(){ //リロードしなくてもjsが動くようにする
@@ -84,7 +87,7 @@ $(function(){
         }
           kingaku += ffff;
         };
-    parseFloat(document.getElementById('product_cost_price').value=　kingaku.toFixed(1));
+    parseFloat(document.getElementById('product_cost_price').value=　(kingaku * 1.08).toFixed(1));
   }});
 
 
@@ -149,7 +152,7 @@ $(function(){
                     }
                       product_cost_price += menu_price ;
                     };
-                    parseFloat(document.getElementById('product_cost_price').value=　product_cost_price.toFixed(1));
+                    parseFloat(document.getElementById('product_cost_price').value=　(product_cost_price * 1.08).toFixed(1));
 
               })
               .fail(function(){
@@ -166,7 +169,7 @@ $(function(){
                     }
                       product_cost_price += menu_price ;
                     };
-                    parseFloat(document.getElementById('product_cost_price').value=　product_cost_price.toFixed(1));
+                    parseFloat(document.getElementById('product_cost_price').value=　(product_cost_price * 1.08).toFixed(1));
 
                 console.log("ajax failed");
                 //ajax失敗した時
@@ -200,7 +203,7 @@ $(function(){
               }
                 kingaku += ffff;
               };
-          parseFloat(document.getElementById('product_cost_price').value=　kingaku.toFixed(1));
+          parseFloat(document.getElementById('product_cost_price').value=　(kingaku * 1.08).toFixed(1));
 
          });
       });
