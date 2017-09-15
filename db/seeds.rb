@@ -12,13 +12,13 @@ require "csv"
 #   :vendor_id => row[7], :order_code => row[8],:memo => row[9], :end_of_sales => row[10])
 # end
 
-CSV.foreach('db/h_menu_material_seed.csv') do |row|
-  MenuMaterial.create!(:menu_id => row[0], :material_id => row[1], :amount_used => row[2])
-end
+# CSV.foreach('db/h_menu_material_seed.csv') do |row|
+#   MenuMaterial.create!(:menu_id => row[0], :material_id => row[1], :amount_used => row[2])
+# end
 
-CSV.foreach('db/h_menu_seed.csv') do |row|
-  Menu.create!(:name => row[1], :recipe => row[2], :category => row[0], :serving_memo => row[3])
-end
+# CSV.foreach('db/h_menu_seed.csv') do |row|
+#   Menu.create!(:name => row[1], :recipe => row[2], :category => row[0], :serving_memo => row[3])
+# end
 
 # CSV.foreach('db/product_seed.csv') do |row|
 #   Product.create!(:name => row[0], :cook_category => row[1], :product_type => row[2],
