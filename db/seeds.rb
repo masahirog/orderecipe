@@ -1,4 +1,4 @@
-require "csv"
+# require "csv"
 
 # CSV.foreach('db/h_material_seed1.csv') do |row|
 #   Material.create!(:name => row[0], :order_name => row[1], :calculated_value => row[2], :calculated_unit => row[3],
@@ -25,12 +25,12 @@ require "csv"
 #                   :sell_price => row[3], :description => row[4], :contents => row[5])
 # end
 
-CSV.foreach('db/h_vendor_seed.csv') do |row|
-  Vendor.create!(:company_name => row[0], :company_phone => row[1], :company_fax => row[2], :company_mail => row[3],
-                :zip => row[4],:address => row[5], :staff_name => row[6], :staff_phone => row[7], :staff_mail => row[8], :memo => row[9])
-end
-
-User.find_or_create_by(id: 1) do |user|
-  user.email = 'gon@bento.jp'
-  user.password = 'password'
-end
+# CSV.foreach('db/h_vendor_seed.csv') do |row|
+#   Vendor.create!(:company_name => row[0], :company_phone => row[1], :company_fax => row[2], :company_mail => row[3],
+#                 :zip => row[4],:address => row[5], :staff_name => row[6], :staff_phone => row[7], :staff_mail => row[8], :memo => row[9])
+# end
+#
+# User.find_or_create_by(id: 1) do |user|
+#   user.email = 'gon@bento.jp'
+#   user.password = 'password'
+# end

@@ -1,4 +1,8 @@
 class MenusController < ApplicationController
+  def typeahead_action
+    render json: Material.where(Material.arel_table[:name].matches("%#{params[:term]}%"))
+  end
+
   def get_cost_price
     @material = Material.includes(:vendor).find(params[:id])
     respond_to do |format|

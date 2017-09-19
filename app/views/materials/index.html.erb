@@ -18,7 +18,8 @@
   </div>
   <div class="col-xs-12 col-md-2">
     <p>仕入先：</p>
-    <%= text_field_tag :vendor_id, params[:vendor_id], class:"form-control" %>
+    <%= select_tag :vendor_id, options_from_collection_for_select(Vendor.all, :id, :company_name), include_blank: true, class: "form-control" %>
+
   </div>
   <div class="col-xs-12 col-md-2">
     <p>管理コード：</p>

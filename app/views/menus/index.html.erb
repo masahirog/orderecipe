@@ -11,6 +11,10 @@
     <%= text_field_tag :name, params[:name], class:"name form-control" %>
   </div>
   <div class="kensaku form-group">
+    調理カテゴリー:
+    <%= select_tag :category, options_from_collection_for_select(Menu.select(:category).uniq, :category, :category), include_blank: true, class: "form-control" %>
+  </div>
+  <div class="kensaku form-group">
     　<%= submit_tag "検索" ,class:"btn btn-primary" %>
   </div>
   <% end %>

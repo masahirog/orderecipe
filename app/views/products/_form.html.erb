@@ -34,6 +34,24 @@
   </div>
 
   <div class="container form-group">
+    <%= f.label :product_image, "弁当写真" %><br>
+    <%= f.file_field :product_image %>
+    <%= f.hidden_field :product_image_cache %>
+  </div>
+
+  <div class="container form-group">
+    <% if @product.product_image? %>
+      <%= image_tag @product.product_image.url %>
+        <div class="form-group">
+            <%= f.label :remove_product_image,"削除する" %>
+            <%= f.check_box :remove_product_image %>
+          
+
+        </div>
+    <% end %>
+  </div>
+
+  <div class="container form-group">
     <%= f.label :sell_price, "販売価格" %><br>
     <div class="col-xs-11 col-md-5">
       <%= f.number_field :sell_price, class:"price form-control" %>

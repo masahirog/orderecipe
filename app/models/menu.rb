@@ -9,12 +9,13 @@ class Menu < ApplicationRecord
 
   validates :name, presence: true, uniqueness: true
   validates :category, presence: true
-  # validates :cost_price, presence: true, numericality: true
+  validates :cost_price, presence: true, numericality: true
 
   def self.search(params) #self.でクラスメソッドとしている
    if params # 入力がある場合の処理
      data = Menu.all
      data = data.where(['name LIKE ?', "%#{params["name"]}%"]) if params["name"].present?
+     data = data.where(category: params["category"]) if params["category"].present?
      data
    else
      Menu.all   # 全て表示する

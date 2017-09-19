@@ -61,6 +61,7 @@ ActiveRecord::Schema.define(version: 20170904113528) do
     t.text     "description",   limit: 65535
     t.text     "contents",      limit: 65535
     t.float    "cost_price",    limit: 24
+    t.string   "product_image"
     t.datetime "created_at",                  null: false
     t.datetime "updated_at",                  null: false
   end

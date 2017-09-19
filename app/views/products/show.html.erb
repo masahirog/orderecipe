@@ -7,7 +7,6 @@
 <div class="amount_number col-xs-12 col-md-12">
 
 </div>
-
 <br>
 <br>
 
@@ -17,6 +16,21 @@
        <th>弁当名</th>
        <th>調理カテゴリー</th>
        <th>弁当種類</th>
+       <th>画像</th>
+     </tr>
+   </thead>
+   <tbody>
+     <tr>
+       <td><%= @product.name %></td>
+       <td><%= @product.cook_category %></td>
+       <td><%= @product.product_type %></td>
+       <td><%= image_tag @product.product_image.to_s %></td>
+     </tr>
+   </tbody>
+ </table>
+ <table class="table">
+   <thead>
+     <tr class="active">
        <th>販売価格</th>
        <th>原価価格</th>
        <th>説明文</th>
@@ -25,9 +39,6 @@
    </thead>
    <tbody>
      <tr>
-       <td><%= @product.name %></td>
-       <td><%= @product.cook_category %></td>
-       <td> <%= @product.product_type %></td>
        <td class="text-right"> <%= @product.sell_price %>円</td>
        <td class="text-right"><%= @product.cost_price %>円</td>
        <td><%= truncate(@product.description,length:8) %></td>

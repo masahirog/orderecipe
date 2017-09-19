@@ -18,7 +18,7 @@ class Material < ApplicationRecord
      data = Material.all
      data = data.where(['name LIKE ?', "%#{params["name"]}%"]) if params["name"].present?
      data = data.where(['order_name LIKE ?', "%#{params["order_name"]}%"]) if params["order_name"].present?
-    #  data = data.where(['vendor LIKE ?', "%#{params["vendor"]}%"]) if params["vendor"].present?
+     data = data.where(vendor_id: params["vendor_id"]) if params["vendor_id"].present?
      data = data.where(['order_code LIKE ?', "%#{params["order_code"]}%"]) if params["order_code"].present?
      data
    else

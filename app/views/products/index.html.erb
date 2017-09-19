@@ -13,11 +13,11 @@
     </div>
     <div class="kensaku form-group">
       <p>調理カテゴリー▼</p>
-      <%= text_field_tag :cook_category, params[:cook_category], class:"form-control" %>
+      <%= select_tag :cook_category, options_from_collection_for_select(Product.select(:cook_category).uniq, :cook_category, :cook_category), include_blank: true, class: "form-control" %>
     </div>
     <div class="kensaku form-group">
        <p>お弁当タイプ▼</p>
-      <%= text_field_tag :product_type, params[:product_type], class:"form-control" %>
+      <%= select_tag :product_type, options_from_collection_for_select(Product.select(:product_type).uniq, :product_type, :product_type), include_blank: true, class: "form-control" %>
     </div>
     <div class="kensaku form-group">
       <p>　</p>
@@ -35,9 +35,10 @@
         <th>調理カテゴリー</th>
         <th>弁当の種類</th>
         <th>販売価格</th>
-        <th>原価</th>
+        <th>原価(税8%含)</th>
         <th>説明文</th>
         <th>内容物</th>
+        <th>画像</th>
       </tr>
     </thead>
     </br>
@@ -52,6 +53,9 @@
           <td class="price text-right"><%= product.cost_price %>円</td>
           <td><%= truncate(product.description,length:10) %></td>
           <td><%= truncate(product.contents,length:10) %></td>
+          <td>
+            <%= image_tag product.product_image.thumb.url if product.product_image.present? %>
+          </td>
         </tr>
         <% end %>
     </tbody>

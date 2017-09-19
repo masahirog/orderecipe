@@ -46,12 +46,14 @@ group :development do
   gem 'pry-rails'
 end
 gem 'kaminari'
-gem 'select2-rails'
+# gem 'select2-rails'
 gem 'jquery-turbolinks'
 gem 'rails-i18n'
 gem 'bootstrap-sass', '~> 3.3.6'
 gem 'devise'
 gem 'devise-bootstrap-views'
+gem 'carrierwave'
+gem 'rmagick'
 
 group :production do
   gem 'rails_12factor'

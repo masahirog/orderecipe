@@ -11,7 +11,7 @@ $(function(){
       $(this).attr("id","first_tr"+ii);
       $(this).children(".first_tr_td").attr("class","first_tr_td"+ii);
       var g = $(this).children(".menu_materials_length").text()
-      console.log(g);
+      // console.log(g);
       $(".first_tr_td"+ii).attr("rowspan",g)
       ii += 1;
     });

@@ -12,7 +12,7 @@ Rails.application.routes.draw do
   get 'menus/material_search' => 'menus#material_search'
   get 'menus/material_exist' => 'menus#material_exist'
   get 'products/menu_exist' => 'products#menu_exist'
-
+  get  '/typeahead' => 'menus#typeahead_action'
   resources :menus
   resources :products
   resources :tops
