@@ -1,8 +1,6 @@
 class MaterialsController < ApplicationController
   def index
-    @search = Material.search(params).page(params[:page]).per(20)
-    @materials = Material.page(params[:page]).per(20)
-    @vendors = Vendor.all
+    @search = Material.search(params).includes(:vendor).page(params[:page]).per(20)
   end
 
   def new
