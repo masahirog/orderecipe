@@ -1,9 +1,8 @@
   <%= form_for @menu do |f| %>
   <% if @menu.errors.any? %>
     <div id="error_explanation">
-      <h2><%= pluralize(@menu.errors.count, "箇所") %>入力に不備があります </h2>
-
-      <ul>
+      <b><%= pluralize(@menu.errors.count, "箇所") %>入力に不備があります</b>
+      <ul style="list-style:none;">
       <% @menu.errors.full_messages.each do |message| %>
         <li><%= message %></li>
       <% end %>
@@ -65,13 +64,8 @@
           <td class="trno", style="display:none;">
             <div></div>
           </td>
-          <td class="search_material">
-            <input type="text" id="search_material0" autocomplete="off" class="search_material_input form-control">
-            <ul id="result0" class="result list-group">
-            </ul>
-          </td>
-          <td class="select", style="display:none;">
-            <%= m.text_field :material_id, id: "select_material0" %>
+          <td class="select">
+           <%= m.select :material_id, Material.where(end_of_sales:0).pluck(:name, :id),{include_blank: true}, class:'input_select'%>
           </td>
           <td class="cost_price">
             <div id="cost_price_id0"></div>

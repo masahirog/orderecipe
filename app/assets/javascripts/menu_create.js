@@ -1,14 +1,11 @@
 
 $(function(){
-  $(document).on('turbolinks:load', function(){ //リロードしなくてもjsが動くようにする
+  $(document).on('turbolinks:load', function(){
     //ナンバーの振り直し
     var u = 0
     $("tr.add_tr_material").each(function() {
       set(this,u);
-      $(".search_material").children("ul").hide();
-
         var id = parseInt(document.getElementById("select_material"+u).value);
-
         //空の時は起動しない
         if (isNaN(id) == true) {} else{
         $.ajax({
@@ -18,30 +15,27 @@ $(function(){
             async: false
         })
         .done(function(data) {
-
-          var name = data.material.name;
-          $('#search_material' + u).val(name);
-
-          get_material_info_and_material_price(data,u)
+          get_material_info(data,u)
       })};
       u = u+1;
     });
+    // calculate_menu_price()
 
   //addアクション、materialの追加
   $(".add_material").on('click', function addInput(){
-    var u = parseInt(document.getElementById("table_body").rows.length);
-    //tbodyに1行追加z
+      var u = parseInt(document.getElementById("table_body").rows.length);
+      //tbodyに1行追加z
+      $(".input_select").select2('destroy');
       $("#add_tr0").clone().appendTo("table");
       set("tr:last",u)
-
-      $("#search_material" + u ).val("");
-      $("#select_material" + u ).val("");
+      $("#select_material" + u).val("");
+      $(".input_select").select2({width:"300px",placeholder: "食材資材を選択してください"});
       $("#cost_price_id" + u ).empty();
       $("#vendor_id" + u ).empty();
       $("#amount_used_id" +u ).val("");
       $("#price_used_id" + u ).empty();
       $("#calculated_unit" + u).empty();
-      });
+    });
 
   //removeアクション、materialの削除
   $("#table_body").on('click','.remove', function(){
@@ -61,74 +55,23 @@ $(function(){
       calculate_menu_price();
   }});
 
-//search_materialカラムのinput時にmaterialモデル内をキーワード検索する
-    $("#table_body").on('keyup', '.search_material_input', function(e){
-      e.preventDefault();
+
+// input内のチェックと各カラムへの代入、materialデータベースに無ければ空欄にする
+      $("#table_body").on('change','.input_select', function(){
       var u = $(this).parent().parent().children(".trno").children().html();
-      if ($(this).val()=="") {
-        $(".search_material").children("ul").hide();
-      } else {
-
-      $('#result'+u).show();
-      var input = $.trim($(this).val());
-      $.ajax({
-        url: '/menus/material_search',
-        type: 'GET',
-        data: ('keyword=' + input),
-        processData: false,
-        contentType: false,
-        dataType: 'json'
-      })
-      .done(function(data){
-      $('#result'+u).find('li').remove();
-      if($("#search_material"+u).val()==""||$("#search_material"+u).val()==" "){}else{
-        $(data).each(function(d, material){
-        $('#result'+u).append('<li class="li1 list-group-item" value='+material.id+', style="cursor: pointer">' + material.name + '</li>');
-      });
-      }});
-    }});
-
-//リスト内のliをカーソルでinputに表示する
-    $("#table_body").on("mouseover",".li1", function(){
-      var name = $(this).text();
-      var u = $(this).parent().parent().parent().children(".trno").children().html();
-      $("#search_material"+u).val(name);
-    });
-
-//input内のチェックと各カラムへの代入、materialデータベースに無ければ空欄にする
-    $("#table_body").on('blur', '.search_material_input', function(){
-      var u = $(this).parent().parent().children(".trno").children().html();
-      var input = $(this).val();
+      var id = $(this).val();
+        if (isNaN(id) == true) {} else{
         $.ajax({
-          url: '/menus/material_exist',
-          type: 'GET',
-          data: ('keyword=' + input),
-          processData: false,
-          contentType: false,
-          dataType: 'json'
+            url: "/menus/get_cost_price/" + id,
+            data: { id : id },
+            dataType: "json",
+            async: false
         })
         .done(function(data){
-          //ajaxうまくいったとき
-          $(".search_material").children("ul").hide();
-          var id = data.material.id
-          $("#select_material"+u).val(id);
-
-          get_material_info_and_material_price(data,u)
+          get_material_info(data,u)
           calculate_menu_price()
         })
-        .fail(function(){
-          $("#search_material"+u).val("");
-          $(".search_material").children("ul").hide();
-          $("#vendor_id" + u ).empty();
-          $("#cost_price_id" + u ).empty();
-          $("#price_used_id" + u ).empty();
-          $("#calculated_unit" + u).text("")
-          calculate_menu_price()
-
-          console.log("ajax failed");
-          //ajax失敗した時
-        });
-      });
+      }});
 
     //amount_used変更でprice_used取得
     $("#table_body").on('change','.amount_used', function(){
@@ -145,13 +88,11 @@ $(function(){
 
           calculate_menu_price()
     });
-  });
+
 
   function set(elm,u){
   $(elm).attr('id', "add_tr" + u );
   $(elm).children(".trno").children().text(u);
-  $(elm).children(".search_material").children("input").attr('id', "search_material" + u );
-  $(elm).children(".search_material").children("ul").attr('id', "result" + u );
   $(elm).children(".select").children().attr('id', "select_material" + u );
   $(elm).children(".cost_price").children().attr('id', "cost_price_id" + u );
   $(elm).children(".vendor").children().attr('id', "vendor_id" + u );
@@ -160,7 +101,7 @@ $(function(){
   $(elm).children(".select").children().attr('name', "menu[menu_materials_attributes]["+u+"][material_id]" );
   $(elm).children(".amount_used").children().attr('name', "menu[menu_materials_attributes]["+u+"][amount_used]" );
   $(elm).children(".calculated_unit").children().attr('id', "calculated_unit" + u );
-};
+  };
 
 //メニュー価格の変更
   function calculate_menu_price(){
@@ -176,7 +117,7 @@ $(function(){
         document.getElementById('menu_cost_price').value=　menu_price.toFixed(1);
       };
 
-  function get_material_info_and_material_price(data,u){
+  function get_material_info(data,u){
     var amount_used = parseFloat(document.getElementById("amount_used_id" + u).value);
     var cost = data.material.cost_price;
     var unit = data.material.calculated_unit;
@@ -191,5 +132,5 @@ $(function(){
       var calculate_price = (cost * amount_used).toFixed(1)}
     $('#price_used_id' + u).text(calculate_price+"円");
   };
-
+});
 });

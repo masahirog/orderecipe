@@ -7,20 +7,6 @@ class ProductsController < ApplicationController
     end
   end
 
-  def menu_search
-    @menus = Menu.where('name LIKE(?)', "%#{params[:keyword]}%") #paramsとして送られてきたkeyword（入力された語句）で、Userモデルのnameカラムを検索し、その結果を@usersに代入する
-    respond_to do |format|
-      format.json { render 'index', json: @menus } #json形式のデータを受け取ったら、@usersをデータとして返す そしてindexをrenderで表示する
-    end
-  end
-
-  def menu_exist
-    @menu = Menu.find_by(name:params[:keyword])
-      respond_to do |format|
-          format.json
-    end
-  end
-
   def index
     @search = Product.search(params).page(params[:page]).per(20)
   end

@@ -45,7 +45,7 @@
         <div class="form-group">
             <%= f.label :remove_product_image,"削除する" %>
             <%= f.check_box :remove_product_image %>
-          
+
 
         </div>
     <% end %>
@@ -96,13 +96,9 @@
         <td class="trno", style="display:none;">
           <div></div>
         </td>
-        <td class="search_menu">
-          <input type="text" id="search_menu0" autocomplete="off" class="search_menu_input form-control">
-          <ul id="result0", class="result list-group",style="list-style:none">
-          </ul>
-        </td>
-        <td class="select", style="display:none;">
-            <%= pr.text_field :menu_id, id: "select_menu0"%>
+
+        <td class="select">
+            <%= pr.select :menu_id, Menu.pluck(:name, :id),{include_blank: true}, class:'input_select'%>
         </td>
 
         <td class="cost_price">

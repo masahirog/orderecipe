@@ -1,5 +1,4 @@
 $(function(){
-  $(document).on('turbolinks:load', function(){
     $("#material_calculated_value").on('blur', function(){
       var amount = parseInt(document.getElementById("material_calculated_value").value);
       var price = parseInt(document.getElementById("material_calculated_price").value);
@@ -19,4 +18,3 @@ $(function(){
       $("#material_cost_price").val(cost_price);
     }});
   });
-});

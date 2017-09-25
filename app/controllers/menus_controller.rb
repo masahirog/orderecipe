@@ -1,7 +1,4 @@
 class MenusController < ApplicationController
-  def typeahead_action
-    render json: Material.where(Material.arel_table[:name].matches("%#{params[:term]}%"))
-  end
 
   def get_cost_price
     @material = Material.includes(:vendor).find(params[:id])
@@ -11,21 +8,6 @@ class MenusController < ApplicationController
     end
   end
 
-  def material_search
-    # ("(id = ?) OR (id = ?)", 11, 12)
-    @materials = Material.where(end_of_sales: 0).where('name LIKE(?)', "%#{params[:keyword]}%") #paramsとして送られてきたkeyword（入力された語句）で、Userモデルのnameカラムを検索し、その結果を@usersに代入する
-    respond_to do |format|
-      format.json { render 'index', json: @materials } #json形式のデータを受け取ったら、@materialsをデータとして返す そしてindexをrenderで表示する
-    end
-  end
-
-  def material_exist
-    @material = Material.includes(:vendor).where(end_of_sales: 0).find_by(name:params[:keyword])
-      respond_to do |format|
-        format.html
-        format.json
-    end
-  end
 
   def index
     @search = Menu.search(params).page(params[:page]).per(20)
