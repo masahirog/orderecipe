@@ -28,7 +28,7 @@
   <div class="container form-group">
     <%= f.label :product_type, "弁当種類" %><br>
     <div class="col-xs-12 col-md-6">
-    <%= f.select :product_type, {デラックス: "デラックス", ヘルシー: "ヘルシー", プレミアム: "プレミアム",
+    <%= f.select :product_type, {デラックス: "デラックス", ヘルシー: "ヘルシー", ノーマル: "ノーマル", プレミアム: "プレミアム",
                                 ボウル: "ボウル", 麺: "麺", その他: "その他"}, {include_blank: true}, { class: "form-control"} %>
     </div>
   </div>
@@ -73,10 +73,19 @@
     </div>
   </div>
   <div class="container form-group">
-    <%= f.label :cost_price, "弁当原価(税率8%含む)" %><br>
-    <div class="col-xs-11 col-md-5">
+    <div class="col-xs-3 col-md-2">
+      <label>食材原価合計</label>
+      <input name="a" type="text" disabled="disabled" class="form-control" id="sum_material_cost">
+    </div>
+    <div class="col-xs-3 col-md-2">
+      <label>消費税8%</label>
+      <input name="a" type="text" disabled="disabled" class="form-control"  id="tax">
+    </div>
+    <div class="col-xs-3 col-md-2">
+      <%= f.label :cost_price, "弁当原価" %><br>
       <%= f.text_field :cost_price, :readonly => 'readonly', class:"price form-control" %>
     </div>
+    <br><br>
     <div class="col-xs-1 col-md-1">
       円
     </div>
@@ -85,7 +94,9 @@
     <thead>
       <tr>
         <th>メニュー名</th>
-        <th>原価</th>
+        <th >原価</th>
+        <th>食材名</th>
+        <th colspan="2">使用量</th>
         <th></th>
       </tr>
     </thead>
@@ -98,12 +109,26 @@
         </td>
 
         <td class="select">
-            <%= pr.select :menu_id, Menu.pluck(:name, :id),{include_blank: true}, class:'input_select'%>
+            <%= pr.select :menu_id, Menu.pluck(:name, :id),{include_blank: true}, class:'input_select_menu'%>
         </td>
 
         <td class="cost_price">
           <div id="cost_price_id0"></div>
         </td>
+
+        <td class="material_name">
+          <ul style="list-style:none;" id="material_name0"></ul>
+        </td>
+
+        <td class="amount_used">
+          <ul style="list-style:none;" id="amount_used0"></ul>
+        </td>
+
+        <td class="calculated_unit">
+          <ul style="list-style:none;" id="calculated_unit0"></ul>
+        </td>
+
+
         <td>
           <a class ="remove btn btn-danger" >削除</a>
         </td>

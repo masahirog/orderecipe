@@ -18,22 +18,25 @@ $(function(){
 
 
     $("#amount_calculation").on('click', function (){
+
+      var re = /(?:^|[^.])(\d)(?=(\d\d\d)+(?!\d))/g;
       var u = $("#amount_number_input").val();
+      var ninmae = String(u).replace(re, '$1,');
+
       if (u == ""){
         $(".amount_number").text("1人分のレシピを表示しています")
         $(".calculate_amount_used_th").hide();
         $(".calculate_amount_used").hide();
         $(".calculate_unit").hide();
       }else{
-        $(".amount_number").text("黄色列が"+ u +"人分の使用量です")
+        $(".amount_number").text("黄色列が"+ ninmae +"人分の使用量です")
         $(".calculate_amount_used").attr('class', "calculate_amount_used warning text-right");
         $(".calculate_unit").attr('class', "calculate_unit warning");
         $(".calculate_amount_used_th").attr('class', "calculate_amount_used_th warning");
         var i = 0
         $(".table_tr").each(function() {
           var t = $("#original_amount_used"+ i).text();
-          var zz = (t*u).toFixed(1)
-          // .toString().replace(/(\d)(?=(\d{3})+$)/g , '$1,');
+          var zz = String(t*u).replace(re, '$1,');
           $("#calculate_amount_used"+ i).text(zz)
 
           i = i+1;

@@ -1,6 +1,7 @@
 class ProductsController < ApplicationController
   def get_menu_cost_price
-    @menu = Menu.find(params[:id])
+    @menu = Menu.includes(:menu_materials,:materials).find(params[:id])
+    # binding.pry
     respond_to do |format|
       format.html
       format.json

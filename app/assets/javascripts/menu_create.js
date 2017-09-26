@@ -1,6 +1,11 @@
 
 $(function(){
   $(document).on('turbolinks:load', function(){
+    $('.input_select_material').select2({
+    width:"300px",
+    placeholder: "食材資材を選択してください",
+    // allowClear: true //
+    })
     //ナンバーの振り直し
     var u = 0
     $("tr.add_tr_material").each(function() {
@@ -25,11 +30,11 @@ $(function(){
   $(".add_material").on('click', function addInput(){
       var u = parseInt(document.getElementById("table_body").rows.length);
       //tbodyに1行追加z
-      $(".input_select").select2('destroy');
+      $(".input_select_material").select2('destroy');
       $("#add_tr0").clone().appendTo("table");
       set("tr:last",u)
       $("#select_material" + u).val("");
-      $(".input_select").select2({width:"300px",placeholder: "食材資材を選択してください"});
+      $(".input_select_material").select2({width:"300px",placeholder: "食材資材を選択してください"});
       $("#cost_price_id" + u ).empty();
       $("#vendor_id" + u ).empty();
       $("#amount_used_id" +u ).val("");
@@ -57,7 +62,7 @@ $(function(){
 
 
 // input内のチェックと各カラムへの代入、materialデータベースに無ければ空欄にする
-      $("#table_body").on('change','.input_select', function(){
+      $("#table_body").on('change','.input_select_material', function(){
       var u = $(this).parent().parent().children(".trno").children().html();
       var id = $(this).val();
         if (isNaN(id) == true) {} else{
@@ -83,7 +88,7 @@ $(function(){
           if (isNaN(amount_used) == true){
             var calculate_price = 0;
           }else {
-            var calculate_price = (cost_price * amount_used).toFixed(1)}
+            var calculate_price = (cost_price * amount_used).toFixed(2)}
             $('#price_used_id' + u).text(calculate_price+"円");
 
           calculate_menu_price()
@@ -114,7 +119,7 @@ $(function(){
         }
           menu_price += price_used ;
         };
-        document.getElementById('menu_cost_price').value=　menu_price.toFixed(1);
+        document.getElementById('menu_cost_price').value=　menu_price.toFixed(2);
       };
 
   function get_material_info(data,u){
@@ -129,7 +134,7 @@ $(function(){
     if (isNaN(amount_used) == true){
       var calculate_price = 0;
     }else {
-      var calculate_price = (cost * amount_used).toFixed(1)}
+      var calculate_price = (cost * amount_used).toFixed(2)}
     $('#price_used_id' + u).text(calculate_price+"円");
   };
 });

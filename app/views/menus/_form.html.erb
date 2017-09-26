@@ -65,7 +65,7 @@
             <div></div>
           </td>
           <td class="select">
-           <%= m.select :material_id, Material.where(end_of_sales:0).pluck(:name, :id),{include_blank: true}, class:'input_select'%>
+           <%= m.select :material_id, Material.where(end_of_sales:0).pluck(:name, :id),{include_blank: true}, class:'input_select_material'%>
           </td>
           <td class="cost_price">
             <div id="cost_price_id0"></div>
