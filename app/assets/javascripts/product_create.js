@@ -119,8 +119,7 @@ $(function(){
           var amount_used = data.menu.menu_materials[ii].amount_used
           var unit = data.menu.materials[ii].calculated_unit
           $("#material_name"+i).append("<li>"+name+"</li>");
-          $("#amount_used"+i).append("<li>"+amount_used+"</li>");
-          $("#calculated_unit"+i).append("<li>"+unit+"</li>");
+          $("#amount_used"+i).append("<li class='text-right'>"+amount_used+" "+unit+"</li>");
 
       }};
   });

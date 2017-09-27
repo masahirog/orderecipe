@@ -1,97 +1,113 @@
+
 <div class="col-xs-11 col-md-4 form-inline">
- <input type="number" id="amount_number_input" class="form-control text-right" placeholder="1">
-  <input id="amount_calculation" type="button" onclick="" value="人分" class="btn btn-primary">
+ <input type="number" id="amount_number_input" class="form-control text-right" placeholder="食数を入力">
+  <input id="amount_calculation" type="button" onclick="" value="計算" class="btn btn-primary">
 </div>
-<br>
-<br>
+
+<div class="form-inline text-right">
+  <%= link_to "印刷ページを表示", "/products/print/#{@product.id}",method:"get", class:"btn btn-success",:target=>"_blank"%>
+</div>
+
 <div class="amount_number col-xs-12 col-md-12">
-
 </div>
 <br>
 <br>
-
+<div class="col-md-6">
  <table class="table">
-   <thead>
-     <tr class="active">
-       <th>弁当名</th>
-       <th>調理カテゴリー</th>
-       <th>弁当種類</th>
-       <th>画像</th>
-     </tr>
-   </thead>
-   <tbody>
-     <tr>
-       <td><%= @product.name %></td>
+     <tr class="">
+       <th class="active col-md-4">弁当名</th>
+       <td class=""><%= @product.name %></td>
+      </tr>
+      <tr class="">
+       <th class="active col-md-4">調理カテゴリー</th>
        <td><%= @product.cook_category %></td>
+       </tr>
+      <tr class="">
+       <th class="active col-md-4">弁当種類</th>
        <td><%= @product.product_type %></td>
-       <td><%= image_tag @product.product_image.to_s %></td>
      </tr>
-   </tbody>
+     <tr class="">
+      <th class="active col-md-4">販売価格</th>
+      <td><%= @product.sell_price %>円</td>
+    </tr>
+    <tr class="">
+     <th class="active col-md-4">原価価格</th>
+     <td><%= @product.cost_price %>円</td>
+   </tr>
+   <tr class="">
+    <th class="active col-md-4">説明文</th>
+    <td><%= @product.description %></td>
+  </tr>
+  <tr class="">
+   <th class="active col-md-4">内容物</th>
+   <td><%= @product.contents %></td>
+ </tr>
  </table>
- <table class="table">
-   <thead>
-     <tr class="active">
-       <th>販売価格</th>
-       <th>原価価格</th>
-       <th>説明文</th>
-       <th>内容物</th>
-     </tr>
-   </thead>
-   <tbody>
-     <tr>
-       <td class="text-right"> <%= @product.sell_price %>円</td>
-       <td class="text-right"><%= @product.cost_price %>円</td>
-       <td><%= truncate(@product.description,length:8) %></td>
-       <td><%= truncate(@product.contents,length:8) %></td>
-     </tr>
-   </tbody>
- </table>
- <br>
- <table class="table">
-   <thead>
-     <tr class="active">
-       <th>メニュー名</th>
-       <th>カテゴリー</th>
-       <th>メニュー原価</th>
-       <th>レシピ</th>
-       <th>盛り付けメモ</th>
-       <th>食材資材名</th>
-       <th colspan="2">使用量</th>
-       <th colspan="2" class="calculate_amount_used_th" style="display: none;">使用量</th>
-
-     </tr>
-   </thead>
+ </div>
+<div class="col-md-6 text-center">
+<%= image_tag @product.product_image.to_s ,class:"text-center img-responsive center-block" %>
+</div>
+  <!-- <table class="table">
+    <thead>
+      <tr class="active">
+        <th class="col-md-6">説明文</th>
+        <th class="col-md-6">内容物</th>
+      </tr>
+    </thead>
     <tbody>
-      <% @menus.each do |menu| %>
-      <tr  class="first_tr table_tr">
-        <td class="menu_materials_length" style="display:none;"><%= menu.materials.length %></td>
-       <td class="first_tr_td"><%= link_to "#{menu.name}", "/menus/#{menu.id}/edit", method: :get %></td>
-       <td class="first_tr_td"><%= menu.category %></td>
-       <td class="text-right first_tr_td"><%= menu.cost_price %>円</td>
-       <td class="first_tr_td"><%= menu.recipe %></td>
-       <td class="first_tr_td"><%= menu.serving_memo %></td>
-       <% i = 1 %>
-       <% u = menu.materials.length %>
-       <% menu.materials.zip(menu.menu_materials).each do |material, menu_material|%>
-       <td><%= link_to material.name, "/materials/#{material.id}/edit", method: :get %></td>
-       <td class="original_amount_used text-right"><%= menu_material.amount_used %></td>
-       <td><%= material.calculated_unit %></td>
-       <td class="calculate_amount_used" style="display: none;"></td>
-       <td class="calculate_unit" style="display: none;"><%= material.calculated_unit %></td>
-        </tr>
-        <% if i == menu.materials.length  %>
-          <% else %>
-            <tr class="table_tr">
-            <!-- <td></td> -->
-            <!-- <td></td>
-            <td></td>
-            <td></td>
-            <td></td> -->
-            <% i += 1 %>
-        <% end %>
-      <% end %>
-     <% end %>
-   </tbody>
- </table>
+      <tr>
+        <td><%= truncate(@product.description,length:8) %></td>
+        <td><%= truncate(@product.contents,length:8) %></td>
+        <td><%= @product.description %></td>
+        <td><%= @product.contents %></td>
+      </tr>
+    </tbody>
+  </table> -->
+   <table class="table">
+     <thead>
+       <tr class="active">
+         <th>メニュー名</th>
+         <th>カテゴリー</th>
+         <th>メニュー原価</th>
+         <th>レシピ</th>
+         <th>盛り付けメモ</th>
+         <th>食材資材名</th>
+         <th colspan="2">使用量</th>
+         <th colspan="2" class="calculate_amount_used_th" style="display: none;">使用量</th>
 
- <%= button_to 'お弁当編集', "/products/#{@product.id}/edit", method: :get,class: "btn btn-primary" %>
+       </tr>
+     </thead>
+      <tbody>
+        <% @menus.each do |menu| %>
+        <tr  class="first_tr table_tr">
+          <td class="menu_materials_length" style="display:none;"><%= menu.materials.length %></td>
+         <td class="first_tr_td"><%= link_to "#{menu.name}", "/menus/#{menu.id}/edit", method: :get %></td>
+         <td class="first_tr_td"><%= menu.category %></td>
+         <td class="text-right first_tr_td"><%= menu.cost_price %>円</td>
+         <td class="first_tr_td"><%= menu.recipe %></td>
+         <td class="first_tr_td"><%= menu.serving_memo %></td>
+         <% i = 1 %>
+         <% u = menu.materials.length %>
+         <% menu.materials.zip(menu.menu_materials).each do |material, menu_material|%>
+         <td><%= link_to material.name, "/materials/#{material.id}/edit", method: :get %></td>
+         <td class="original_amount_used text-right"><%= menu_material.amount_used %></td>
+         <td><%= material.calculated_unit %></td>
+         <td class="calculate_amount_used" style="display: none;"></td>
+         <td class="calculate_unit" style="display: none;"><%= material.calculated_unit %></td>
+          </tr>
+          <% if i == menu.materials.length  %>
+            <% else %>
+              <tr class="table_tr">
+              <!-- <td></td> -->
+              <!-- <td></td>
+              <td></td>
+              <td></td>
+              <td></td> -->
+              <% i += 1 %>
+          <% end %>
+        <% end %>
+       <% end %>
+     </tbody>
+   </table>
+
+   <%= button_to 'お弁当を編集', "/products/#{@product.id}/edit", method: :get,class: "btn btn-primary" %>

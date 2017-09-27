@@ -16,3 +16,16 @@
 //= require jquery.turbolinks
 //= require turbolinks
 //= require_tree .
+
+
+  function kanma (number) {
+    var number = parseFloat(number);
+    var number1 = number * 100;
+    // //四捨五入したあと、小数点の位置を元に戻す
+    number1 = Math.round(number1) / 100;
+    var numData = number1.toString().split('.');
+    // 整数部分を3桁カンマ区切りへ
+    numData[0] = Number(numData[0]).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    // 小数部分と結合して返却
+    return numData.join('.');
+  };

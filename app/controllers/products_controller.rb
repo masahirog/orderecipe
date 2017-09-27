@@ -43,8 +43,15 @@ class ProductsController < ApplicationController
     else
       render 'edit'
     end
-
   end
+
+  def print
+    @product = Product.find(params[:id])
+    @product_menus = @product.product_menus
+    @menus = @product.menus.includes(:materials, :menu_materials)
+    render :print, layout: false #このページでlayoutを適用させない
+  end
+
 
   private
     def product_create_update

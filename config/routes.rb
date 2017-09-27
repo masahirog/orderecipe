@@ -8,11 +8,7 @@ Rails.application.routes.draw do
   root 'top#index'
   get 'menus/get_cost_price/:id' => 'menus#get_cost_price'
   get 'products/get_menu_cost_price/:id' => 'products#get_menu_cost_price'
-  get 'products/menu_search' => 'products#menu_search'
-  get 'menus/material_search' => 'menus#material_search'
-  get 'menus/material_exist' => 'menus#material_exist'
-  get 'products/menu_exist' => 'products#menu_exist'
-  get  '/typeahead' => 'menus#typeahead_action'
+  get 'products/print/:id' => 'products#print'
   resources :menus
   resources :products
   resources :tops
