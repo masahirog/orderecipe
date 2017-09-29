@@ -1,5 +1,4 @@
 $(function(){
-  $(document).on('turbolinks:load', function(){
     $(".products_tr").click(function(e) {
       if(!$(e.target).is('a')){
         window.location = $(this).children(".products_index").children("a").attr('href');
@@ -22,5 +21,4 @@ $(function(){
         window.location = $(this).children(".vendors_index").children("a").attr('href');
       };
     });
-  });
 });

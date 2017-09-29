@@ -1,5 +1,4 @@
 $(function(){
-  $(document).on('turbolinks:load', function(){ //リロードしなくてもjsが動くようにする
     var i = 0
     var ii = 0
     $(".table_tr").each(function() {
@@ -46,5 +45,4 @@ $(function(){
         $(".calculate_unit").show();
       };
     });
-  });
 });

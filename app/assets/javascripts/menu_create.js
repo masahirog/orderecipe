@@ -1,6 +1,5 @@
 
 $(function(){
-  $(document).on('turbolinks:load', function(){
     $('.input_select_material').select2({
     width:"300px",
     placeholder: "食材資材を選択してください",
@@ -137,5 +136,4 @@ $(function(){
       var calculate_price = (cost * amount_used).toFixed(2)}
     $('#price_used_id' + u).text(calculate_price+"円");
   };
-});
 });

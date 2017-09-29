@@ -4,7 +4,7 @@ class Product < ApplicationRecord
   has_many :menus, through: :product_menus
   accepts_nested_attributes_for :product_menus, allow_destroy: true
 
-  mount_uploader :product_image, ImageUploader
+  mount_uploader :product_image, ProductImageUploader
 
   validates :name, presence: true, uniqueness: true
   validates :cook_category, presence: true

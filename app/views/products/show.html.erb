@@ -38,31 +38,19 @@
     <th class="active col-md-4">説明文</th>
     <td><%= @product.description %></td>
   </tr>
-  <tr class="">
-   <th class="active col-md-4">内容物</th>
-   <td><%= @product.contents %></td>
- </tr>
+    <tr class="">
+     <th class="active col-md-4">内容物</th>
+     <td><%= @product.contents %></td>
+   </tr>
  </table>
  </div>
-<div class="col-md-6 text-center">
-<%= image_tag @product.product_image.to_s ,class:"text-center img-responsive center-block" %>
+ <div class="col-md-1">
 </div>
-  <!-- <table class="table">
-    <thead>
-      <tr class="active">
-        <th class="col-md-6">説明文</th>
-        <th class="col-md-6">内容物</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><%= truncate(@product.description,length:8) %></td>
-        <td><%= truncate(@product.contents,length:8) %></td>
-        <td><%= @product.description %></td>
-        <td><%= @product.contents %></td>
-      </tr>
-    </tbody>
-  </table> -->
+<!-- <div class="col-md-6 text-center"> -->
+<div class="col-md-3 text-center">
+<%= image_tag @product.product_image.to_s ,class:"text-center img-responsive center-block" %>
+<!-- </div> -->
+</div>
    <table class="table">
      <thead>
        <tr class="active">
@@ -84,6 +72,7 @@
          <td class="first_tr_td"><%= link_to "#{menu.name}", "/menus/#{menu.id}/edit", method: :get %></td>
          <td class="first_tr_td"><%= menu.category %></td>
          <td class="text-right first_tr_td"><%= menu.cost_price %>円</td>
+         <!-- <td class="first_tr_td"><%= simple_format(menu.recipe) %></td> -->
          <td class="first_tr_td"><%= menu.recipe %></td>
          <td class="first_tr_td"><%= menu.serving_memo %></td>
          <% i = 1 %>

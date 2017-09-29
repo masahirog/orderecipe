@@ -1,11 +1,8 @@
 //税率は最終的なproduct_cost_priceに1.08をかけている
-
 $(function(){
-  $(document).on('turbolinks:load', function(){
     $('.input_select_menu').select2({
     width:"300px",
     placeholder: "メニューを選択してください",
-    // allowClear: true //
   });
     //ナンバーの振り直し
     var u = 0
@@ -122,5 +119,4 @@ $(function(){
           $("#amount_used"+i).append("<li class='text-right'>"+amount_used+" "+unit+"</li>");
 
       }};
-  });
 });
