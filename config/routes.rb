@@ -9,9 +9,12 @@ Rails.application.routes.draw do
   get 'menus/get_cost_price/:id' => 'menus#get_cost_price'
   get 'products/get_menu_cost_price/:id' => 'products#get_menu_cost_price'
   get 'products/print/:id' => 'products#print'
+  post 'orders/confirm' => 'orders#confirm'
+  get'orders/order_print' => 'orders#order_print'
   resources :menus
   resources :products
   resources :tops
   resources :vendors
   resources :materials
+  resources :orders
 end

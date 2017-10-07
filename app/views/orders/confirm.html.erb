@@ -1,0 +1,35 @@
+  <div class="form-inline text-right">
+    <%= link_to "印刷ページを表示", orders_order_print_path, class:"btn btn-success",:target=>"_blank"%>
+  </div>
+  <row class="col-md-12">
+    <div>　</div>
+  </row>
+  <% for i in 0..3 %>
+    <%= render :partial => "products_materials", locals: {num: "num#{i}",id: "id#{i}"} %>
+  <% end %>
+  <row class="col-md-12" style="background-color:#F5F5F5;">
+    <h4 class="col-md-3">
+      必要食材一覧
+    </h4>
+  </row>
+
+    <% @hash.each do |material|%>
+      <row class="row_0 col-md-12">
+        <div class="col-md-1">
+          <%= material["material_id"] %>
+        </div>
+        <div class="material_name col-md-3">
+          <%= Material.find(material["material_id"]).name %>
+        </div>
+        <div class="col-md-2 text-right">
+          <%= material["amount_used"].to_f%>
+        </div>
+        <!-- <input value"<%= material["amount_used"].to_f%>"> -->
+        <div class="col-md-2">
+          <%= Material.find(material["material_id"]).calculated_unit %>
+        </div>
+        <div class="col-md-3">
+          <%= Vendor.find(material["vendor_id"]).company_name %>
+        </div>
+      </row>
+    <% end %>

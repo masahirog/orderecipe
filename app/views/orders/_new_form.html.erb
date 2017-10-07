@@ -1,0 +1,15 @@
+<row class="col-md-12">
+  <div class="select col-md-2 text-right">
+    <h4>お弁当<%= i+1 %>：</h4>
+  </div>
+  <div class="select col-md-4">
+    <%= select_tag(:id, options_from_collection_for_select(@products,:id,:name),include_blank: true,class:"input_select_product",name:"id#{i}") %>
+  </div>
+
+  <div class="col-md-2">
+    <%= number_field :num,{}, name:"num#{i}",class:'cook_num form-control', :id => "cook_num#{i}", placeholder:"食数を入力"%>
+  </div>
+</row>
+<div>
+  <br>　
+</div>

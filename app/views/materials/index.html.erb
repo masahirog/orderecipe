@@ -36,7 +36,7 @@
 <table class="table table-hover">
   <thead>
     <tr>
-      <th>ID</th>
+      <th style="display: none;">ID</th>
       <th>食材・資材名</th>
       <th>発注名</th>
       <th>計上単位</th>
@@ -55,7 +55,7 @@
   <tbody>
     <% @search.each do |material| %>
       <tr class="materials_tr" style="cursor: pointer">
-          <td class="materials_index"><%= link_to material.id, "/materials/#{material.id}/edit", method: :get %></td>
+          <td class="materials_index" style="display: none;"><%= link_to material.id, "/materials/#{material.id}/edit", method: :get %></td>
         <td><%= material.name %></td>
         <td><%= material.order_name %></td>
         <td><%= number_with_delimiter(material.calculated_value) %></td>

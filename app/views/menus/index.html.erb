@@ -22,7 +22,7 @@
 <table class="table table-hover">
   <thead>
     <tr>
-      <th>ID</th>
+      <th style="display: none;">ID</th>
       <th>メニュー名</th>
       <th>カテゴリ</th>
       <th>レシピ</th>
@@ -35,7 +35,7 @@
   <tbody>
     <% @search.each do |menu| %>
       <tr class="menus_tr" style="cursor: pointer">
-        <td class="menus_index"><%= link_to "#{menu.id}", "/menus/#{menu.id}", method: :get %></td>
+        <td class="menus_index" style="display: none;"><%= link_to "#{menu.id}", "/menus/#{menu.id}", method: :get %></td>
         <td><%= menu.name %></td>
         <td><%= menu.category %></td>
         <td><%= menu.recipe %></td>

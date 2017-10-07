@@ -1,0 +1,38 @@
+<% if params[id].present? %>
+  <row class="col-md-12" style="background-color:#F5F5F5;">
+    <h4 class="col-md-2">
+      弁当名：
+    </h4>
+    <h4 class="col-md-2" style="">
+      <%= Product.find(params[id]).name%>
+    </h4>
+
+    <h4 class="col-md-2">
+      製造数：
+    </h4>
+    <h4 class="col-md-2">
+      <%= params[num]%>人分
+    </h4>
+  </row>
+  <% Product.find(params[id]).menus.each do |menu|%>
+    <% menu.menu_materials.each do |menu_material|%>
+        <row class="col-md-12">
+          <div class="material_id col-md-1">
+            <%= menu_material.material.id %>
+          </div>
+          <div class="material_name col-md-3">
+            <%= menu_material.material.name %>
+          </div>
+          <div class="amount_used col-md-2 text-right">
+            <%= menu_material.amount_used.to_f * params[num].to_i%>
+          </div>
+          <div class="col-md-2">
+            <%= menu_material.material.calculated_unit %>
+          </div>
+          <div class="vendor_name col-md-3">
+            <%= menu_material.material.vendor.company_name %>
+          </div>
+        </row>
+    <% end %>
+  <% end %>
+<% end %>

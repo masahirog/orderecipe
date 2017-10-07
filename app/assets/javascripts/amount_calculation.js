@@ -29,7 +29,7 @@ $(function(){
         $(".amount_number").text("黄色の列が"+ ninmae +"人分の使用量です")
         $(".calculate_amount_used").attr('class', "calculate_amount_used warning text-right");
         $(".calculate_unit").attr('class', "calculate_unit warning");
-        $(".calculate_amount_used_th").attr('class', "calculate_amount_used_th warning");
+        $(".calculate_amount_used_th").attr('class', "calculate_amount_used_th warning text-center");
         var i = 0
         $(".table_tr").each(function() {
           var oau = $("#original_amount_used"+ i).text();

@@ -1,0 +1,8 @@
+<%= form_tag(:controller => "orders", :action => "confirm") do %>
+  <% for i in 0..3 %>
+    <%= render :partial => "new_form",locals: {i:i} %>
+  <% end %>
+  <div class=" text-center col-md-12">
+    <input type="button" onclick="submit();" value="発注量を計算" class="btn btn-primary">
+  </div>
+<% end %>

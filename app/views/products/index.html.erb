@@ -30,7 +30,7 @@
 <table class="table table-hover">
     <thead>
       <tr>
-        <th>ID</th>
+        <th style="display: none;">ID</th>
         <th>弁当名</th>
         <th>調理カテゴリー</th>
         <th>弁当の種類</th>
@@ -45,7 +45,7 @@
     <tbody>
       <% @search.each do |product| %>
         <tr class="products_tr" style="cursor: pointer">
-          <td class="products_index"><%= link_to "#{product.id}", "/products/#{product.id}/", method: :get %></td>
+          <td class="products_index" style="display: none;"><%= link_to "#{product.id}", "/products/#{product.id}/", method: :get %></td>
           <td><%= product.name %></td>
           <td><%= product.cook_category %></td>
           <td><%= product.product_type %></td>

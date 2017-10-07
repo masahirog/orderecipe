@@ -4,14 +4,17 @@ class Material < ApplicationRecord
 
   belongs_to :vendor
   after_save :update_cache
-
-  validates :name, presence: true, uniqueness: true
-  validates :order_name, presence: true
+  validates :name, presence: true, uniqueness: true, format: { with: /\A[^！”＃＄％＆’（）＝～｜‘｛＋＊｝＜＞？＿－＾￥＠「；：」。　０-９ａ-ｚＡ-Ｚ]+\z/,
+    message: "：全角英数字スペース及び、全角記号^！”＃＄％＆’（）＝～｜‘｛＋＊｝＜＞？＿－＾￥＠「；：」。は使用出来ません。"}
+  validates :order_name, presence: true, format: { with: /\A[^！”＃＄％＆’（）＝～｜‘｛＋＊｝＜＞？＿－＾￥＠「；：」。　０-９ａ-ｚＡ-Ｚ]+\z/,
+    message: "：全角英数字スペース及び、全角記号^！”＃＄％＆’（）＝～｜‘｛＋＊｝＜＞？＿－＾￥＠「；：」。は使用出来ません。"}
   validates :calculated_value, presence: true, numericality: true
   validates :calculated_unit, presence: true
   validates :calculated_price, presence: true, numericality: true
   validates :cost_price, presence: true, numericality: true
   validates :vendor_id, presence: true
+  validates :order_code, format: { with: /\A[^！”＃＄％＆’（）＝～｜‘｛＋＊｝＜＞？＿－＾￥＠「；：」。　０-９ａ-ｚＡ-Ｚ]+\z/,
+    message: "：全角英数字スペース及び、全角記号^！”＃＄％＆’（）＝～｜‘｛＋＊｝＜＞？＿－＾￥＠「；：」。は使用出来ません。"}
 
   def self.search(params) #self.でクラスメソッドとしている
    if params # 入力がある場合の処理
@@ -24,8 +27,36 @@ class Material < ApplicationRecord
    else
      Material.all   # 全て表示する
    end
- end
+  end
 
+  def self.calculate_products_materials(params)
+    hoge = []
+    for i in 0..3
+      if params["id#{i}"].present?
+        Product.find(params["id#{i}"]).menus.each do |menu|
+          menu.menu_materials.each do |menu_material|
+            hash={}
+            hash.store("material_id", menu_material.material_id)
+            hash.store("amount_used", menu_material.amount_used.to_f * params["num#{i}"].to_i)
+            hash.store("vendor_id", menu_material.material.vendor_id)
+            hoge << hash
+          end
+        end
+      end
+    end
+
+    fuga = []
+    hoge.each_with_object({}) do | h, obj |
+     obj[h["material_id"]] ||= { "amount_used" =>  0}
+     obj[h["material_id"]]["amount_used"] += h["amount_used"]
+     obj[h["material_id"]]["vendor_id"] = h["vendor_id"]
+     fuga = obj.map{|k, v| {"material_id"=> k}.merge(v)}
+    end
+    fuga.sort! do |a, b|
+      a["vendor_id"] <=> b["vendor_id"]
+    end
+    return fuga
+  end
 
   private
   def update_cache

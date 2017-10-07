@@ -6,6 +6,7 @@ class MenusController < ApplicationController
       format.html
       format.json
     end
+    binding.pry
   end
 
 

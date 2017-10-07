@@ -7,7 +7,8 @@ class Menu < ApplicationRecord
 
   after_update :update_product_cost_price
 
-  validates :name, presence: true, uniqueness: true
+  validates :name, presence: true, uniqueness: true, format: { with: /\A[\A[0-9a-zA-Zぁ-んァ-ンー-龥:\(\)、\/]+\z]+\z/,
+    message: "：全角 [かな、カナ、漢字、句点]　　半角 [英数字、括弧、スラッシュ] が使用可能です"}
   validates :category, presence: true
   validates :cost_price, presence: true, numericality: true
 

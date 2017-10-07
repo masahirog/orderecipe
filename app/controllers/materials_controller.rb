@@ -22,8 +22,13 @@ class MaterialsController < ApplicationController
   end
 
   def update
-    material = Material.find(params[:id])
-    material.update(material_params)
+    @material = Material.find(params[:id])
+    @material.update(material_params)
+    if @material.save
+      redirect_to materials_path
+    else
+      render 'edit'
+    end
   end
 
   private

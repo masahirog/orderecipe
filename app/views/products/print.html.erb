@@ -44,10 +44,6 @@
          </tr>
        </tbody>
     </table>
-
-      <div class ="product_image_l col-xs-12 col-md-4">
-        <%= image_tag @product.product_image.to_s, class:"img-responsive" %>
-      </div>
     <div class ="col-xs-12 col-md-8">
       <table class="table">
          <thead class="">
@@ -58,7 +54,7 @@
              <th class="col-md-2">盛り付けメモ</th>
              <th class="col-md-2">食材資材名</th>
              <th class="col-md-1" colspan="2">使用量</th>
-             <th colspan="2" class="calculate_amount_used_th col-md-1" style="display: none;">使用量</th>
+             <th colspan="2" class="calculate_amount_used_th col-md-1" style="display: none; font-size:20px;">使用量</th>
            </tr>
          </thead>
           <tbody class="">
@@ -75,8 +71,8 @@
              <td class=""><%= material.name %></td>
              <td class="original_amount_used text-right"><%= menu_material.amount_used %></td>
              <td class=""><%= material.calculated_unit %></td>
-             <td class="calculate_amount_used" style="display: none;"></td>
-             <td class="calculate_unit" style="display: none;"><%= material.calculated_unit %></td>
+             <td class="calculate_amount_used" style="display: none; font-weight:bold; font-size:20px;"></td>
+             <td class="calculate_unit" style="display: none; font-weight:bold;"><%= material.calculated_unit %></td>
               </tr>
               <% if i == menu.materials.length  %>
                 <% else %>
@@ -88,5 +84,9 @@
        </tbody>
      </table>
      </div>
+
+      <div class ="product_image_l col-xs-12 col-md-4">
+        <%= image_tag @product.product_image.to_s, class:"img-responsive" %>
+      </div>
    </div>
  </body>
