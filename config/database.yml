@@ -19,14 +19,14 @@ default: &default
 
 development:
   <<: *default
-  database: order_development
+  database: orderecipe_development
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  database: order_test
+  database: orderecipe_test
 
 # As with config/secrets.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
@@ -49,6 +49,6 @@ test:
 #
 production:
   <<: *default
-  database: order_production
+  database: orderecipe_production
   username: order
   password: <%= ENV['ORDER_DATABASE_PASSWORD'] %>

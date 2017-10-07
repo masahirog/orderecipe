@@ -1,35 +1,50 @@
-  <div class="form-inline text-right">
-    <%= link_to "印刷ページを表示", orders_order_print_path, class:"btn btn-success",:target=>"_blank"%>
+<div class="form-inline text-right">
+  <%= link_to "印刷ページを表示", orders_order_print_path, class:"btn btn-success",:target=>"_blank"%>
+</div>
+  <h4 class="col-md-12">
+    <strong>食材別使用量</strong>
+  </h4>
+<row class="col-md-12" style="background-color:#F5F5F5;">
+  <div class="col-md-1">
+    <h5><strong>食材id</strong></h5>
   </div>
-  <row class="col-md-12">
-    <div>　</div>
+  <div class="material_name col-md-3">
+    <h5><strong>食材名</strong></h5>
+  </div>
+  <div class="col-md-2 text-right">
+    <h5><strong>使用量</strong></h5>
+  </div>
+  <div class="col-md-2">
+  </div>
+  <div class="col-md-3">
+    <h5><strong>仕入先</strong></h5>
+  </div>
+</row>
+<% @hash.each do |material|%>
+  <row class="row_0 col-md-12">
+    <div class="col-md-1">
+      <%= material["material_id"] %>
+    </div>
+    <div class="material_name col-md-3">
+      <%= Material.find(material["material_id"]).name %>
+    </div>
+    <div class="col-md-2">
+      <!-- <%= material["amount_used"].to_f%> -->
+      <input type="text" value="<%= material["amount_used"].to_f%>", class="text-right col-md-8 pull-right">
+    </div>
+    <div class="col-md-2">
+      <%= Material.find(material["material_id"]).calculated_unit %>
+    </div>
+    <div class="col-md-3">
+      <%= Vendor.find(material["vendor_id"]).company_name %>
+    </div>
   </row>
-  <% for i in 0..3 %>
-    <%= render :partial => "products_materials", locals: {num: "num#{i}",id: "id#{i}"} %>
-  <% end %>
-  <row class="col-md-12" style="background-color:#F5F5F5;">
-    <h4 class="col-md-3">
-      必要食材一覧
-    </h4>
-  </row>
+<% end %>
 
-    <% @hash.each do |material|%>
-      <row class="row_0 col-md-12">
-        <div class="col-md-1">
-          <%= material["material_id"] %>
-        </div>
-        <div class="material_name col-md-3">
-          <%= Material.find(material["material_id"]).name %>
-        </div>
-        <div class="col-md-2 text-right">
-          <%= material["amount_used"].to_f%>
-        </div>
-        <!-- <input value"<%= material["amount_used"].to_f%>"> -->
-        <div class="col-md-2">
-          <%= Material.find(material["material_id"]).calculated_unit %>
-        </div>
-        <div class="col-md-3">
-          <%= Vendor.find(material["vendor_id"]).company_name %>
-        </div>
-      </row>
-    <% end %>
+
+<h4 class="col-md-12">
+  <strong>使用量の内訳</strong>
+</h4>
+<% for i in 0..3 %>
+  <%= render :partial => "products_materials", locals: {num: "num#{i}",id: "id#{i}"} %>
+<% end %>
