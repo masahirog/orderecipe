@@ -1,0 +1,37 @@
+<div class="order_new panel panel-primary">
+    <div class="panel-heading col-md-12">
+      <h4><strong class="col-md-3">食材・資材の発注</strong></h4>
+      <div>
+        お弁当の種類と食数を選択し、発注計算のボタンを押してください
+      </div>
+    </div>
+    <div class="panel-body">
+      <div>
+        <br>　
+      </div>
+
+    <%= form_tag(:controller => "orders", :action => "new") do %>
+      <% for i in 0..3 %>
+        <%= render :partial => "new_form",locals: {i:i} %>
+      <% end %>
+      <div class="text-right col-md-10">
+        <input type="button" onclick="submit();" value="発注計算" class="btn btn-primary">
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<div class="col-md-12">
+  <h4><strong>過去の発注一覧</strong></h4>
+</div>
+
+<% @orders.each do |order| %>
+  <div class="col-md-12">
+    <div class="col-md-1">
+      <%= order.id %>
+    </div>
+    <div class="col-md-2">
+      <%= order.delivery_date %>
+    </div>
+  </div>
+<% end %>

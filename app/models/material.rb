@@ -2,8 +2,13 @@ class Material < ApplicationRecord
   has_many :menu_materials, dependent: :destroy
   has_many :menus, through: :menu_materials
 
+  has_many :order_materials, dependent: :destroy
+  has_many :orders, through: :order_materials
+
   belongs_to :vendor
+
   after_save :update_cache
+  
   validates :name, presence: true, uniqueness: true, format: { with: /\A[^！”＃＄％＆’（）＝～｜‘｛＋＊｝＜＞？＿－＾￥＠「；：」。　０-９ａ-ｚＡ-Ｚ]+\z/,
     message: "：全角英数字スペース及び、全角記号^！”＃＄％＆’（）＝～｜‘｛＋＊｝＜＞？＿－＾￥＠「；：」。は使用出来ません。"}
   validates :order_name, presence: true, format: { with: /\A[^！”＃＄％＆’（）＝～｜‘｛＋＊｝＜＞？＿－＾￥＠「；：」。　０-９ａ-ｚＡ-Ｚ]+\z/,

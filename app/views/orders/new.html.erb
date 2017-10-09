@@ -1,8 +1,79 @@
-<%= form_tag(:controller => "orders", :action => "confirm") do %>
-  <% for i in 0..3 %>
-    <%= render :partial => "new_form",locals: {i:i} %>
+<div class="">
+  <%= form_for @order, url: {action: 'confirm'} do |f| %>
+    <% if @order.errors.any? %>
+      <div id="error_explanation">
+        <b><%= pluralize(@order.errors.count, "箇所") %>入力に不備があります</b>
+        <ul style="list-style:none;">
+        <% @order.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+        <div class="form-inline text-right">
+          <input type="button" onclick="submit();" value="発注量の編集・確定＞＞" class="btn btn-success">
+        </div>
+
+
+    <h4><strong>食材別使用量の確認</strong></h4>
+    <div class="panel panel-primary">
+      <div class="panel-heading col-md-12">
+        <div class="panel-title col-md-1", style="display:none;">
+          <strong>食材id</strong>
+        </div>
+        <div class="panel-title material_name col-md-3">
+          <strong>食材名</strong>
+        </div>
+        <div class="panel-title col-md-2 text-right">
+          <strong>使用量</strong>
+        </div>
+        <div class="panel-title col-md-2">
+        </div>
+        <div class="panel-title col-md-3">
+          <strong>仕入先</strong>
+        </div>
+      </div>
+      <ul class="list-group panel-body">
+        <% i = 0 %>
+        <%= f.fields_for :order_materials do |m| %>
+          <% @hash.each do |material|%>
+            <li class="list-group-item col-md-12">
+              <div class="col-md-1", style="display:none;">
+                <%= m.text_field :material_id,value: material["material_id"],
+                 class:'form-control',name:"order[order_materials_attributes][#{i}][material_id]", readonly: true %>
+              </div>
+              <div class="material_name col-md-3">
+                <%= Material.find(material["material_id"]).name %>
+              </div>
+              <div class="col-md-2">
+                <%= m.text_field :order_quantity,value: material["amount_used"].to_f,
+                 class:'text-right col-md-6 pull-right form-control',
+                   name:"order[order_materials_attributes][#{i}][order_quantity]", readonly: true %>
+
+              </div>
+              <div class="col-md-2">
+                <%= Material.find(material["material_id"]).calculated_unit %>
+              </div>
+              <div class="col-md-3">
+                <%= Vendor.find(material["vendor_id"]).company_name %>
+              </div>
+            </li>
+            <% i = i + 1 %>
+          <% end %>
+        <% end %>
+      </ul>
+    </div>
   <% end %>
-  <div class=" text-center col-md-12">
-    <input type="button" onclick="submit();" value="発注量を計算" class="btn btn-primary">
-  </div>
-<% end %>
+</div>
+
+<h4><strong>弁当毎の内訳</strong></h4>
+<div class="">
+  <% for i in 0..3 %>
+    <% if params["id#{i}"].present? %>
+    <div class="panel panel-default">
+      <%= render :partial => "products_materials", locals: {num: "num#{i}",id: "id#{i}"} %>
+    </div>
+    <% end %>
+  <% end %>
+</div>

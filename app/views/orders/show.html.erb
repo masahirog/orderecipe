@@ -1,0 +1,55 @@
+<div class="col-md-12">
+  <div class="order_id col-md-4">
+    <h4>発注ID：<%= @order.id %></h4>
+  </div>
+
+  <div class="order_id col-md-4">
+    <h4>納品日：<%= @order.delivery_date %></h4>
+  </div>
+
+  <div class="order_id col-md-4">
+      <%= link_to "印刷ページを表示", "/orders/order_print/#{@order.id}",method:"get", class:"btn btn-success",:target=>"_blank"%>
+
+  </div>
+
+</div>
+
+<div class="col-md-12">
+<h4 class=""><strong>発注食材・資材一覧</strong></h4>
+</div>
+<div class="col-md-12">
+  <div class="orders_all panel panel-primary">
+    <div class="panel-heading col-md-12">
+      <div class="panel-title material_name col-md-3">
+        <strong>食材名</strong>
+      </div>
+      <div class="panel-title col-md-2 text-right">
+        <strong>発注量</strong>
+      </div>
+      <div class="panel-title col-md-2">
+      </div>
+      <div class="panel-title col-md-3">
+        <strong>仕入先</strong>
+      </div>
+    </div>
+
+    <ul class="order_materials_ul list-group panel-body">
+      <% @order_materials.each do |om| %>
+        <li  class="list-group-item col-md-12">
+          <div class="material_name col-md-3">
+             <%= Material.find(om.material_id).name %>
+          </div>
+          <div class="order_quantity col-md-2">
+            <%= om.order_quantity %>
+          </div>
+          <div class="material_unit col-md-2">
+            <%= Material.find(om.material_id).calculated_unit %>
+          </div>
+          <div class="vendor_company_name col-md-3">
+            <%= Vendor.find(Material.find(om.material_id).vendor_id).company_name %>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</div>
