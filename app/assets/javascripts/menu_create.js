@@ -4,7 +4,7 @@ $(function(){
     width:"300px",
     placeholder: "食材資材を選択してください",
     // allowClear: true //
-    })
+  });
     //ナンバーの振り直し
     var u = 0
     $("tr.add_tr_material").each(function() {
