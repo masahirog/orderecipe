@@ -12,7 +12,7 @@ Rails.application.routes.draw do
   post 'orders/new' => 'orders#new'
   post 'orders/confirm' => 'orders#confirm'
   get 'orders/material_info/:id' => 'orders#material_info'
-  get'orders/order_print/:id' => 'orders#order_print'
+  post'orders/order_print/:id' => 'orders#order_print'
   resources :menus
   resources :products
   resources :tops

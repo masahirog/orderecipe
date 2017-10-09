@@ -34,11 +34,15 @@ class OrdersController < ApplicationController
     @order = Order.find(params[:id])
     @order_materials = @order.order_materials
     @materials = @order.materials
+    @vendors = Vendor.vendor_index(params)
 
   end
 
   def order_print
     @order = Order.find(params[:id])
+    @order_materials = @order.order_materials
+    @vendor = Vendor.find(params[:vendor][:id])
+    @materials_this_vendor = Material.get_material_this_vendor(params)
     render :order_print, layout: false #このページでlayoutを適用させない
   end
 

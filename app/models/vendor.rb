@@ -9,4 +9,16 @@ class Vendor < ApplicationRecord
   validates :staff_phone, allow_blank: true, format: {with: /\A\d{3}[-]\d{4}[-]\d{4}\z|\A\d{2}[-]\d{4}[-]\d{4}\z|\A\d{11}\z|\A\d{10}\z/}
   validates :staff_mail, allow_blank: true, format: {with: /\A\S+@\S+\.\S+\z/}
 
+  def self.vendor_index(params)
+    hoge = []
+    order = Order.find(params[:id])
+    order.materials.each do |om|
+      hash={}
+      hash.store("vendor_id", om.vendor_id)
+      hash.store("company_name", Vendor.find(om.vendor_id).company_name)
+      hoge << hash
+    end
+    hoge.uniq!
+  end
+
 end

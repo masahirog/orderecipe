@@ -8,7 +8,7 @@ class Material < ApplicationRecord
   belongs_to :vendor
 
   after_save :update_cache
-  
+
   validates :name, presence: true, uniqueness: true, format: { with: /\A[^！”＃＄％＆’（）＝～｜‘｛＋＊｝＜＞？＿－＾￥＠「；：」。　０-９ａ-ｚＡ-Ｚ]+\z/,
     message: "：全角英数字スペース及び、全角記号^！”＃＄％＆’（）＝～｜‘｛＋＊｝＜＞？＿－＾￥＠「；：」。は使用出来ません。"}
   validates :order_name, presence: true, format: { with: /\A[^！”＃＄％＆’（）＝～｜‘｛＋＊｝＜＞？＿－＾￥＠「；：」。　０-９ａ-ｚＡ-Ｚ]+\z/,
@@ -61,6 +61,12 @@ class Material < ApplicationRecord
       a["vendor_id"] <=> b["vendor_id"]
     end
     return fuga
+  end
+
+  def self.get_material_this_vendor(params)
+    order = Order.find(params[:id])
+    materials_this_vendor = order.materials.where(vendor_id:params[:vendor][:id])
+    return materials_this_vendor
   end
 
   private

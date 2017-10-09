@@ -27,9 +27,12 @@
 
 <% @orders.each do |order| %>
   <div class="col-md-12">
-    <div class="col-md-1">
-      <%= order.id %>
+
+    <div class="orders_index col-md-1">
+      <%= link_to "#{order.id}", "/orders/#{order.id}", method: :get %>
     </div>
+
+
     <div class="col-md-2">
       <%= order.delivery_date %>
     </div>
