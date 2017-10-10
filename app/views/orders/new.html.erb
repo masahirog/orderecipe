@@ -1,5 +1,14 @@
   <%= form_for @order do |f| %>
-
+    <% if @order.errors.any? %>
+      <div id="error_explanation">
+        <b><%= pluralize(@order.errors.count, "箇所") %>入力に不備があります</b>
+        <ul style="list-style:none;">
+          <% @order.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
     <h4><%= f.label :delivery_date ,'納品日' %></h4>
     <div class="container form-group">
       <div class="form-inline col-md-12">
@@ -11,27 +20,27 @@
     </div>
 
     <h4><strong>発注食材・資材一覧</strong></h4>
-    <div class="orders_all panel panel-primary">
-      <div class="panel-heading col-md-12">
-        <div class="panel-title col-md-1", style="display:none;">
+    <div class="orders_all">
+      <div class="col-md-12">
+        <div class="col-md-1", style="display:none;">
           <strong>食材id</strong>
         </div>
-        <div class="panel-title order_material_name_h col-md-3">
+        <div class="order_material_name_h col-md-3">
           <strong>食材名</strong>
         </div>
-        <div class="panel-title col-md-2 text-right">
+        <div class="col-md-2 text-right">
           <strong>使用量</strong>
         </div>
-        <div class="panel-title col-md-2">
+        <div class="col-md-2">
         </div>
-        <div class="panel-title col-md-3">
+        <div class="col-md-3">
           <strong>仕入先</strong>
         </div>
       </div>
 
 
 
-      <ul class="order_materials_ul list-group panel-body">
+      <ul class="order_materials_ul list-group">
         <% i = 0 %>
         <%= f.fields_for :order_materials do |m| %>
           <% @hash.each do |material|%>
@@ -74,7 +83,7 @@
 <div>
   <% for i in 0..3 %>
     <% if params["id#{i}"].present? %>
-    <div class="panel panel-default">
+    <div>
       <%= render :partial => "products_materials", locals: {num: "num#{i}",id: "id#{i}"} %>
     </div>
     <% end %>
