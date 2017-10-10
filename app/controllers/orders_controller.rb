@@ -17,6 +17,7 @@ class OrdersController < ApplicationController
     # @search = Order.search(params).page(params[:page]).per(20)
   end
   def new
+    @products = Product.all
     @order = Order.new
     @order.order_materials.build
     @hash = Material.calculate_products_materials(params)

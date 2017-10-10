@@ -1,4 +1,4 @@
-<div>
+<!-- <div>
   <%= form_for @order do |f| %>
     <% if @order.errors.any? %>
       <div id="error_explanation">
@@ -89,4 +89,28 @@
     </div>
     <% end %>
   <% end %>
+</div> -->
+
+
+<div class="order_new panel panel-primary">
+    <div class="panel-heading col-md-12">
+      <h4><strong class="col-md-3">食材・資材の発注</strong></h4>
+      <div>
+        お弁当の種類と食数を選択し、発注計算のボタンを押してください
+      </div>
+    </div>
+    <div class="panel-body">
+      <div>
+        <br>　
+      </div>
+
+    <%= form_tag(:controller => "orders", :action => "new") do %>
+      <% for i in 0..3 %>
+        <%= render :partial => "new_form",locals: {i:i} %>
+      <% end %>
+      <div class="text-right col-md-10">
+        <input type="button" onclick="submit();" value="発注計算" class="btn btn-success">
+      </div>
+    <% end %>
+  </div>
 </div>
