@@ -19,17 +19,19 @@ $(function(){
       var u = $(".order_materials_li").length;
       $(".select_order_materials").select2('destroy');
       $("li.order_materials_li").first().clone().appendTo(".order_materials_ul");
-      $(".order_materials_li").last().children(".material_name").children(".select_order_materials").val("");
-      $(".order_materials_li").last().children(".material_name").children("select").attr('name', "order[order_materials_attributes]["+ u +"][material_id]" );
-      $(".order_materials_li").last().children(".material_name").children("select").attr('id', "order_order_materials_attributes_"+ u +"_material_id" );
-      $(".order_materials_li").last().children(".order_quantity").children("").attr('name', "order[order_materials_attributes]["+ u +"][order_quantity]" );
-      $(".order_materials_li").last().children(".order_quantity").children("").attr('id', "order_order_materials_attributes_"+ u +"_order_quantity" );
-      $(".order_materials_li").last().children(".destroy_order_material").children(".destroy_order_materials").attr('name', "order[order_materials_attributes]["+ u +"][_destroy]" );
-      $(".order_materials_li").last().children(".destroy_order_material").children(".destroy_order_materials").attr('id', "order_order_materials_attributes_"+ u +"__destroy" );
+      
+      var last_li =$(".order_materials_li").last()
+      last_li.children(".material_name").children(".select_order_materials").val("");
+      last_li.children(".material_name").children("select").attr('name', "order[order_materials_attributes]["+ u +"][material_id]" );
+      last_li.children(".material_name").children("select").attr('id', "order_order_materials_attributes_"+ u +"_material_id" );
+      last_li.children(".order_quantity").children("").attr('name', "order[order_materials_attributes]["+ u +"][order_quantity]" );
+      last_li.children(".order_quantity").children("").attr('id', "order_order_materials_attributes_"+ u +"_order_quantity" );
+      last_li.children(".destroy_order_material").children(".destroy_order_materials").attr('name', "order[order_materials_attributes]["+ u +"][_destroy]" );
+      last_li.children(".destroy_order_material").children(".destroy_order_materials").attr('id', "order_order_materials_attributes_"+ u +"__destroy" );
       $(".select_order_materials").select2({width:"200px",placeholder: "発注する食材を選択"});
-      $(".order_materials_li").last().children(".order_quantity").children().val("");
-      $(".order_materials_li").last().children(".material_unit").empty();
-      $(".order_materials_li").last().children(".vendor_company_name").empty();
+      last_li.children(".order_quantity").children().val("");
+      last_li.children(".material_unit").empty();
+      last_li.children(".vendor_company_name").empty();
       });
 
   // input内のチェックと各カラムへの代入、materialデータベースに無ければ空欄にする

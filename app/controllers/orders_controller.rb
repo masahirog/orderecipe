@@ -7,9 +7,9 @@ class OrdersController < ApplicationController
       end
     end
 
-  def confirm
-    @order = Order.new(order_create_update)
-  end
+  # def confirm
+  #   @order = Order.new(order_create_update)
+  # end
 
   def index
     @products = Product.all
@@ -23,6 +23,7 @@ class OrdersController < ApplicationController
   end
 
   def create
+    binding.pry
     @order = Order.create(order_create_update)
      if @order.save
        redirect_to "/orders/#{@order.id}"
