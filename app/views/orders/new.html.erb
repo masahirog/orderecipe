@@ -79,7 +79,7 @@
 </div> -->
 
 
-<h4><strong>弁当毎の内訳</strong></h4>
+<!-- <h4><strong>弁当毎の内訳</strong></h4>
 <div>
   <% for i in 0..3 %>
     <% if params["id#{i}"].present? %>
@@ -87,7 +87,7 @@
       <%= render :partial => "products_materials", locals: {num: "num#{i}",id: "id#{i}"} %>
     </div>
     <% end %>
-  <% end %>
+  <% end %> -->
   <div class="add">
     <a class="add_order_materials btn btn-primary">発注食材追加</a>
   </div>
