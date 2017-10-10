@@ -8,7 +8,6 @@ class Order < ApplicationRecord
 
 
   # def self.search(params)
-  #   binding.pry
   #   if params
   #     from = params[:from]
   #     to = params[:to]
