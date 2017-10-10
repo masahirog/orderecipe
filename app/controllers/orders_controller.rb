@@ -8,7 +8,7 @@ class OrdersController < ApplicationController
     end
 
   def confirm
-    @order = Order.new(order_create_update) # <=POSTされたパラメータを取得
+    @order = Order.new(order_create_update)
   end
 
   def index

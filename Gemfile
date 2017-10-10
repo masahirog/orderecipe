@@ -45,6 +45,7 @@ group :development do
   gem 'spring'
   gem 'pry-rails'
 end
+
 gem 'kaminari'
 gem 'rails-i18n'
 gem 'bootstrap-sass', '~> 3.3.6'

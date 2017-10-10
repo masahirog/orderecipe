@@ -43,7 +43,7 @@
              <%= Material.find(om.material_id).name %>
           </div>
           <div class="order_quantity col-md-2">
-            <%= om.order_quantity %>
+            <%= kanma(om.order_quantity) %>
           </div>
           <div class="material_unit col-md-2">
             <%= Material.find(om.material_id).calculated_unit %>
