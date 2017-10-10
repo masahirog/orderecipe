@@ -1,3 +1,27 @@
+<div class="order_new panel panel-primary">
+    <div class="panel-heading col-md-12">
+      <h4><strong class="col-md-3">食材・資材の発注</strong></h4>
+      <div>
+        お弁当の種類と食数を選択し、発注計算のボタンを押してください
+      </div>
+    </div>
+    <div class="panel-body">
+      <div>
+        <br>　
+      </div>
+
+    <%= form_tag(:controller => "orders", :action => "new") do %>
+      <% for i in 0..3 %>
+        <%= render :partial => "new_form",locals: {i:i} %>
+      <% end %>
+      <div class="text-right col-md-10">
+        <input type="button" onclick="submit();" value="発注計算" class="btn btn-success">
+      </div>
+    <% end %>
+  </div>
+</div>
+
+
   <%= form_for @order do |f| %>
     <% if @order.errors.any? %>
       <div id="error_explanation">
@@ -13,10 +37,9 @@
     <div class="container form-group">
       <div class="form-inline col-md-12">
         <%= f.date_select :delivery_date,{}, class: "form-control col-md-2",style: "width: 100px;" %>
-
-
-
-
+        <div class="form-inline text-right">
+          <input type="button" onclick="submit();" value="発注確定する" class="btn btn-success">
+        </div>
       </div>
     </div>
 
@@ -65,11 +88,7 @@
               <div class="col-md-1 destroy_order_material">
                 <%= m.hidden_field :_destroy, :value => 0,class:"destroy_order_materials",id:"order_order_materials_attributes_#{i}__destroy",
                 name:"order[order_materials_attributes][#{i}][_destroy]" %>
-
-
-
-
-
+                <a class ="remove btn btn-danger" >削除</a>
               </div>
             </li>
             <% i = i + 1 %>
@@ -77,12 +96,9 @@
         <% end %>
       </ul>
     </div>
-
-
-
-
-
-
+    <div class="add">
+      <a class="add_order_materials btn btn-primary">発注食材追加</a>
+    </div>
   <% end %>
 </div>
 <h4><strong>弁当毎の内訳</strong></h4>
