@@ -1,4 +1,4 @@
-  <!-- <%= form_for @order do |f| %>
+  <%= form_for @order do |f| %>
     <% if @order.errors.any? %>
       <div id="error_explanation">
         <b><%= pluralize(@order.errors.count, "箇所") %>入力に不備があります</b>
@@ -13,9 +13,10 @@
     <div class="container form-group">
       <div class="form-inline col-md-12">
         <%= f.date_select :delivery_date,{}, class: "form-control col-md-2",style: "width: 100px;" %>
-        <div class="form-inline text-right">
-          <input type="button" onclick="submit();" value="発注確定する" class="btn btn-success">
-        </div>
+
+
+
+
       </div>
     </div>
 
@@ -64,7 +65,11 @@
               <div class="col-md-1 destroy_order_material">
                 <%= m.hidden_field :_destroy, :value => 0,class:"destroy_order_materials",id:"order_order_materials_attributes_#{i}__destroy",
                 name:"order[order_materials_attributes][#{i}][_destroy]" %>
-                <a class ="remove btn btn-danger" >削除</a>
+
+
+
+
+
               </div>
             </li>
             <% i = i + 1 %>
@@ -72,14 +77,15 @@
         <% end %>
       </ul>
     </div>
-    <div class="add">
-      <a class="add_order_materials btn btn-primary">発注食材追加</a>
-    </div>
+
+
+
+
+
+
   <% end %>
-</div> -->
-
-
-<!-- <h4><strong>弁当毎の内訳</strong></h4>
+</div>
+<h4><strong>弁当毎の内訳</strong></h4>
 <div>
   <% for i in 0..3 %>
     <% if params["id#{i}"].present? %>
@@ -87,7 +93,4 @@
       <%= render :partial => "products_materials", locals: {num: "num#{i}",id: "id#{i}"} %>
     </div>
     <% end %>
-  <% end %> -->
-  <div class="add">
-    <a class="add_order_materials btn btn-primary">発注食材追加</a>
-  </div>
+  <% end %>
