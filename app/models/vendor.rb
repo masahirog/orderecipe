@@ -19,6 +19,7 @@ class Vendor < ApplicationRecord
       hoge << hash
     end
     hoge.uniq!
+    return hoge
   end
 
 end

@@ -9,7 +9,7 @@
 
   <%= form_tag({:controller => "orders", :action => "order_print"},{:target => "_blank"}) do %>
     <div class="col-md-3">
-      <%= select :vendor,:id, @vendors.map{|t| [t["company_name"], t["vendor_id"]]},{include_blank: true},class:"form-control" %>
+      <%= select :vendor,:id, @vendors.map{|t| [t["company_name"], t["vendor_id"]]},{},class:"form-control" %>
     </div>
     <div class="col-md-2">
       <input type="button" onclick="submit();" value="印刷ページ" class="btn btn-primary">
@@ -43,7 +43,7 @@
              <%= Material.find(om.material_id).name %>
           </div>
           <div class="order_quantity col-md-2">
-            <%= kanma(om.order_quantity) %>
+            <%= om.order_quantity %>
           </div>
           <div class="material_unit col-md-2">
             <%= Material.find(om.material_id).calculated_unit %>

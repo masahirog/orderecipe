@@ -15,26 +15,57 @@
         <%= render :partial => "new_form",locals: {i:i} %>
       <% end %>
       <div class="text-right col-md-10">
-        <input type="button" onclick="submit();" value="発注計算" class="btn btn-primary">
+        <input type="button" onclick="submit();" value="発注計算" class="btn btn-success">
       </div>
     <% end %>
   </div>
 </div>
 
+<!-- <%= form_tag Order, :method => 'get' do %>
+  <div class="col-xs-12 col-md-12">
+    <p>納品日：</p>
+    <div class="col-xs-12 col-md-3 form-inline">
+      <%= date_select :from, :date, {}, class:"form-control",style: "width: 70px;" %>
+    </div>
+    <div class="col-xs-12 col-md-1 form-inline">
+      〜
+    </div>
+    <div class="col-xs-12 col-md-3 form-inline">
+      <%= date_select :to, :date, {}, class:"form-control",style: "width: 70px;" %>
+    </div>
+    <div class="kensaku col-md-2">
+      　<%= submit_tag "検索する" ,class:"btn btn-primary" %>
+    </div>
+
+  </div>
+<% end %> -->
+
+
 <div class="col-md-12">
   <h4><strong>過去の発注一覧</strong></h4>
 </div>
 
-<% @orders.each do |order| %>
-  <div class="col-md-12">
-
-    <div class="orders_index col-md-1">
-      <%= link_to "#{order.id}", "/orders/#{order.id}", method: :get %>
-    </div>
-
-
-    <div class="col-md-2">
-      <%= order.delivery_date %>
-    </div>
+<div class="col-md-12">
+  <div class="col-md-1">
+    ID
   </div>
-<% end %>
+  <div class="col-md-2">
+    納品日
+  </div>
+</div>
+<ul class="list-group">
+  <% @orders.each do |order| %>
+  	<li class="list-group-item col-md-12">
+        <div class="orders_index col-md-1">
+          <%= order.id %>
+        </div>
+        <div class="col-md-2">
+          <%= order.delivery_date %>
+        </div>
+        <div class="col-md-2">
+          <%= link_to "詳細", "/orders/#{order.id}", method: :get,class:"order btn btn-default" %>
+        </div>
+    </li>
+  <% end %>
+</ul>
+<%= paginate @orders %>

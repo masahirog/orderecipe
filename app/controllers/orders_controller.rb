@@ -13,7 +13,8 @@ class OrdersController < ApplicationController
 
   def index
     @products = Product.all
-    @orders = Order.all
+    @orders = Order.page(params[:page]).order("id DESC")
+    # @search = Order.search(params).page(params[:page]).per(20)
   end
   def new
     @order = Order.new
@@ -35,7 +36,6 @@ class OrdersController < ApplicationController
     @order_materials = @order.order_materials
     @materials = @order.materials
     @vendors = Vendor.vendor_index(params)
-
   end
 
   def order_print

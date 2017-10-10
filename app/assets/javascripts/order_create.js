@@ -3,10 +3,10 @@ $(function(){
     width:"300px",
     placeholder: "お弁当を選択してください"
   });
-  //   $('.select_order_materials').select2({
-  //   width:"200px",
-  //   placeholder: "発注する食材を選択"
-  // });
+    $('.select_order_materials').select2({
+    width:"200px",
+    placeholder: "発注する食材を選択"
+  });
 
   //removeアクション、materialの削除
   $(".orders_all").on('click','.remove', function(){
@@ -18,17 +18,19 @@ $(function(){
   $(".add_order_materials").on('click', function(){
       var u = $(".order_materials_li").length;
       $(".select_order_materials").select2('destroy');
-      $("#order_materials_list_0").clone().attr('id', "order_materials_list_" + u ).appendTo(".order_materials_ul");
-      $("#order_materials_list_" + u).children(".material_name").children(".select_order_materials").val("");
+      $("li.order_materials_li").first().clone().appendTo(".order_materials_ul");
+      $(".order_materials_li").last().children(".material_name").children(".select_order_materials").val("");
+      $(".order_materials_li").last().children(".material_name").children("select").attr('name', "order[order_materials_attributes]["+ u +"][material_id]" );
+      $(".order_materials_li").last().children(".material_name").children("select").attr('id', "order_order_materials_attributes_"+ u +"_material_id" );
+      $(".order_materials_li").last().children(".order_quantity").children("").attr('name', "order[order_materials_attributes]["+ u +"][order_quantity]" );
+      $(".order_materials_li").last().children(".order_quantity").children("").attr('id', "order_order_materials_attributes_"+ u +"_order_quantity" );
+      $(".order_materials_li").last().children(".destroy_order_material").children(".destroy_order_materials").attr('name', "order[order_materials_attributes]["+ u +"][_destroy]" );
+      $(".order_materials_li").last().children(".destroy_order_material").children(".destroy_order_materials").attr('id', "order_order_materials_attributes_"+ u +"__destroy" );
       $(".select_order_materials").select2({width:"200px",placeholder: "発注する食材を選択"});
-      $("#order_materials_list_" + u).children(".order_quantity").children().val("");
-      $("#order_materials_list_" + u).children(".material_unit").empty();
-      $("#order_materials_list_" + u).children(".vendor_company_name").empty();
-      $("#vendor_id" + u ).empty();
-      $("#amount_used_id" +u ).val("");
-      $("#price_used_id" + u ).empty();
-      $("#calculated_unit" + u).empty();
-    });
+      $(".order_materials_li").last().children(".order_quantity").children().val("");
+      $(".order_materials_li").last().children(".material_unit").empty();
+      $(".order_materials_li").last().children(".vendor_company_name").empty();
+      });
 
   // input内のチェックと各カラムへの代入、materialデータベースに無ければ空欄にする
   $(".orders_all").on('change','.select_order_materials', function(){
@@ -45,9 +47,8 @@ $(function(){
     .done(function(data){
       var unit = data.material.calculated_unit;
       var vendor = data.material.vendor_company_name;
-      $("#order_materials_list_" + u).children(".vendor_company_name").text(vendor);
-      $("#order_materials_list_" + u).children(".material_unit").text(unit);
+      $(".order_materials_li").eq(u).children(".vendor_company_name").text(vendor);
+      $(".order_materials_li").eq(u).children(".material_unit").text(unit);
     });
   }});
-
 });
