@@ -1,4 +1,4 @@
-<div class="">
+<div>
   <%= form_for @order do |f| %>
     <% if @order.errors.any? %>
       <div id="error_explanation">
@@ -81,7 +81,7 @@
 
 
 <h4><strong>弁当毎の内訳</strong></h4>
-<div class="">
+<div>
   <% for i in 0..3 %>
     <% if params["id#{i}"].present? %>
     <div class="panel panel-default">

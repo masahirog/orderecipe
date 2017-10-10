@@ -2,7 +2,7 @@
 $(function(){
     $('.input_select_material').select2({
     width:"300px",
-    placeholder: "食材資材を選択してください",
+    placeholder: "食材資材を選択してください"
     // allowClear: true //
   });
     //ナンバーの振り直し
