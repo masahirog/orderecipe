@@ -18,7 +18,6 @@ $(function(){
             dataType: "json",
             async: false
         })
-
         .done(function(data) {
           get_menu_price(data,u)
       })};
