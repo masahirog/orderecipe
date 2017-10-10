@@ -1,14 +1,5 @@
   <%= form_for @order do |f| %>
-    <% if @order.errors.any? %>
-      <div id="error_explanation">
-        <b><%= pluralize(@order.errors.count, "箇所") %>入力に不備があります</b>
-        <ul style="list-style:none;">
-          <% @order.errors.full_messages.each do |message| %>
-            <li><%= message %></li>
-          <% end %>
-        </ul>
-      </div>
-    <% end %>
+
     <h4><%= f.label :delivery_date ,'納品日' %></h4>
     <div class="container form-group">
       <div class="form-inline col-md-12">
