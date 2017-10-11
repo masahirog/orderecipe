@@ -1,23 +1,16 @@
 $(function(){
-    $('.input_select_product').select2({
-    width:"300px",
-    placeholder: "お弁当を選択してください"
-  });
-
-
   //removeアクション、materialの削除
   $(".orders_all").on('click','.remove', function(){
     $(this).parent().children(".destroy_order_materials").val(true);
         $(this).parent().parent("li").hide();
   });
-
   //addアクション、materialの追加
   $(".add_order_materials").on('click', function(){
       var u = $(".order_materials_li").length;
       $(".input_select_product").select2('destroy');
       $("li.order_materials_li").first().clone().appendTo(".order_materials_ul");
 
-      var last_li =$(".order_materials_li").last()
+      var last_li = $(".order_materials_li").last()
       last_li.children(".order_material_name").children(".input_select_product").val("");
       last_li.children(".order_material_name").children("select").attr('name', "order[order_materials_attributes]["+ u +"][material_id]" );
       last_li.children(".order_material_name").children("select").attr('id', "order_order_materials_attributes_"+ u +"_material_id" );
@@ -29,7 +22,7 @@ $(function(){
       last_li.children(".order_quantity").children().val("");
       last_li.children(".order_material_unit").empty();
       last_li.children(".vendor_company_name").empty();
-      });
+    });
 
   // input内のチェックと各カラムへの代入、materialデータベースに無ければ空欄にする
   $(".orders_all").on('change','.input_select_product', function(){
