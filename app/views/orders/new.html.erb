@@ -1,33 +1,28 @@
-
-
-  <%= form_for @order do |f| %>
+<div>
+  <%= form_for @order, url: {action: 'confirm'} do |f| %>
     <% if @order.errors.any? %>
       <div id="error_explanation">
         <b><%= pluralize(@order.errors.count, "箇所") %>入力に不備があります</b>
         <ul style="list-style:none;">
-          <% @order.errors.full_messages.each do |message| %>
-            <li><%= message %></li>
-          <% end %>
+        <% @order.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
         </ul>
       </div>
     <% end %>
-    <h4><%= f.label :delivery_date ,'納品日' %></h4>
-    <div class="container form-group">
-      <div class="form-inline col-md-12">
-        <%= f.date_select :delivery_date,{}, class: "form-control col-md-2",style: "width: 100px;" %>
-        <div class="form-inline text-right">
-          <input type="button" onclick="submit();" value="発注確定する" class="btn btn-success">
-        </div>
-      </div>
-    </div>
 
-    <h4><strong>発注食材・資材一覧</strong></h4>
-    <div class="orders_all panel panel-primary">
+        <div class="form-inline text-right">
+          <input type="button" onclick="submit();" value="発注量の編集・確定＞＞" class="btn btn-success">
+        </div>
+
+
+    <h4><strong>食材別使用量の確認</strong></h4>
+    <div class="panel panel-primary">
       <div class="panel-heading col-md-12">
         <div class="panel-title col-md-1", style="display:none;">
           <strong>食材id</strong>
         </div>
-        <div class="panel-title order_material_name_h col-md-3">
+        <div class="panel-title material_name col-md-3">
           <strong>食材名</strong>
         </div>
         <div class="panel-title col-md-2 text-right">
@@ -39,34 +34,29 @@
           <strong>仕入先</strong>
         </div>
       </div>
-
-
-
-      <ul class="order_materials_ul list-group panel-body">
+      <ul class="list-group panel-body">
         <% i = 0 %>
         <%= f.fields_for :order_materials do |m| %>
           <% @hash.each do |material|%>
-            <li class="order_materials_li list-group-item col-md-12">
-              <div class="order_material_name col-md-3">
-                 <%= m.select :material_id, Material.where(end_of_sales:0).pluck(:name, :id),
-                 {:selected => material["material_id"],include_blank: true}, class:'select_order_materials',id:"order_order_materials_attributes_#{i}_material_id",
-                 name:"order[order_materials_attributes][#{i}][material_id]" %>
+            <li class="list-group-item col-md-12">
+              <div class="col-md-1", style="display:none;">
+                <%= m.text_field :material_id,value: material["material_id"],
+                 class:'form-control',name:"order[order_materials_attributes][#{i}][material_id]", readonly: true %>
               </div>
-              <div class="order_quantity col-md-2">
+              <div class="material_name col-md-3">
+                <%= Material.find(material["material_id"]).name %>
+              </div>
+              <div class="col-md-2">
                 <%= m.text_field :order_quantity,value: material["amount_used"].to_f,
-                 class:'text-right col-md-6 pull-right form-control',id:"order_order_materials_attributes_#{i}_order_quantity",
-                   name:"order[order_materials_attributes][#{i}][order_quantity]" %>
+                 class:'text-right col-md-6 pull-right form-control',
+                   name:"order[order_materials_attributes][#{i}][order_quantity]", readonly: true %>
+
               </div>
-              <div class="order_material_unit col-md-2">
+              <div class="col-md-2">
                 <%= Material.find(material["material_id"]).calculated_unit %>
               </div>
-              <div class="vendor_company_name col-md-3">
+              <div class="col-md-3">
                 <%= Vendor.find(material["vendor_id"]).company_name %>
-              </div>
-              <div class="col-md-1 destroy_order_material">
-                <%= m.hidden_field :_destroy, :value => 0,class:"destroy_order_materials",id:"order_order_materials_attributes_#{i}__destroy",
-                name:"order[order_materials_attributes][#{i}][_destroy]" %>
-                <a class ="remove btn btn-danger" >削除</a>
               </div>
             </li>
             <% i = i + 1 %>
@@ -74,13 +64,11 @@
         <% end %>
       </ul>
     </div>
-    <div class="add">
-      <a class="add_order_materials btn btn-primary">発注食材追加</a>
-    </div>
   <% end %>
 </div>
+
 <h4><strong>弁当毎の内訳</strong></h4>
-<div>
+<div class="">
   <% for i in 0..3 %>
     <% if params["id#{i}"].present? %>
     <div class="panel panel-default">
@@ -88,3 +76,4 @@
     </div>
     <% end %>
   <% end %>
+</div>

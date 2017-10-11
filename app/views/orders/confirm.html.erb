@@ -1,4 +1,4 @@
-<!-- <%= form_for @order do |f| %>
+<%= form_for @order do |f| %>
   <% if @order.errors.any? %>
     <div id="error_explanation">
       <b><%= pluralize(@order.errors.count, "箇所") %>入力に不備があります</b>
@@ -43,13 +43,13 @@
       <% i = 0 %>
       <%= f.fields_for :order_materials do |m| %>
         <li class="order_materials_li list-group-item col-md-12">
-          <div class="material_name col-md-3">
+          <div class="order_material_name col-md-3">
              <%= m.select :material_id, Material.where(end_of_sales:0).pluck(:name, :id),{include_blank: true}, class:'select_order_materials' %>
           </div>
           <div class="order_quantity col-md-2">
             <%= m.text_field :order_quantity, class:'text-right col-md-6 pull-right form-control' %>
           </div>
-          <div class="material_unit col-md-2">
+          <div class="order_material_unit col-md-2">
             <%= Material.find(params["order"]["order_materials_attributes"]["#{i}"]["material_id"]).calculated_unit %>
           </div>
           <div class="vendor_company_name col-md-3">
@@ -67,4 +67,4 @@
   <div class="add">
     <a class="add_order_materials btn btn-primary">発注食材追加</a>
   </div>
-<% end %> -->
+<% end %>
