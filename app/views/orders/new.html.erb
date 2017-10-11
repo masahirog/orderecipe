@@ -1,39 +1,3 @@
-<div class="order_new panel panel-primary">
-    <div class="panel-heading col-md-12">
-      <h4><strong class="col-md-3">食材・資材の発注</strong></h4>
-      <div>
-        お弁当の種類と食数を選択し、発注計算のボタンを押してください
-      </div>
-    </div>
-    <div class="panel-body">
-      <div>
-        <br>　
-      </div>
-
-    <%= form_tag(:controller => "orders", :action => "new") do %>
-      <% for i in 0..3 %>
-        <row class="col-md-12">
-          <div class="select col-md-2 text-right">
-            <h4>お弁当<%= i+1 %>：</h4>
-          </div>
-          <div class="select col-md-5">
-            <%= select_tag(:id, options_from_collection_for_select(@products,:id,:name),include_blank: true,class:"input_select_product col-md-8",name:"id#{i}") %>
-          </div>
-
-          <div class="col-md-2">
-            <%= number_field :num,{}, name:"num#{i}",class:'cook_num form-control', :id => "cook_num#{i}", placeholder:"食数を入力"%>
-          </div>
-          <div>
-            <br>　
-          </div>
-        </row>
-      <% end %>
-      <div class="text-right col-md-10">
-        <input type="button" onclick="submit();" value="発注計算" class="btn btn-success">
-      </div>
-    <% end %>
-  </div>
-</div>
 
 
   <%= form_for @order do |f| %>
