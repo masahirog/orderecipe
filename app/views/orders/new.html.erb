@@ -17,7 +17,7 @@
             <h4>お弁当<%= i+1 %>：</h4>
           </div>
           <div class="select col-md-5">
-            <%= select_tag(:id, options_from_collection_for_select(@products,:id,:name),include_blank: true,class:"input_select_product col-md-8",name:"id#{i}") %>
+            <%= select_tag(:id, options_from_collection_for_select(@products,:id,:name),include_blank: true,class:"select_order_materials col-md-8",name:"id#{i}") %>
           </div>
 
           <div class="col-md-2">
