@@ -17,7 +17,7 @@
             <h4>お弁当<%= i+1 %>：</h4>
           </div>
           <div class="select col-md-5">
-            <%= select_tag(:id, options_from_collection_for_select(@products,:id,:name),include_blank: true,class:"select_order_materials col-md-8",name:"id#{i}") %>
+            <%= select_tag(:id, options_from_collection_for_select(@products,:id,:name),include_blank: true,class:"input_select_product col-md-8",name:"id#{i}") %>
           </div>
 
           <div class="col-md-2">
@@ -85,7 +85,7 @@
             <li class="order_materials_li list-group-item col-md-12">
               <div class="order_material_name col-md-3">
                  <%= m.select :material_id, Material.where(end_of_sales:0).pluck(:name, :id),
-                 {:selected => material["material_id"],include_blank: true}, class:'select_order_materials',id:"order_order_materials_attributes_#{i}_material_id",
+                 {:selected => material["material_id"],include_blank: true}, class:'input_select_product',id:"order_order_materials_attributes_#{i}_material_id",
                  name:"order[order_materials_attributes][#{i}][material_id]" %>
               </div>
               <div class="order_quantity col-md-2">
