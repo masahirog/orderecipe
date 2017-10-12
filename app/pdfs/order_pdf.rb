@@ -145,7 +145,7 @@ class OrderPdf < Prawn::Document
         data << ["#{@order_materials.find_by(material_id:mtv.id).order_quantity}" "#{mtv.calculated_unit}"]
     end
 
-     l = @order.order_materials.length
+     l = @materials_this_vendor.length
      if l < 10
        u = 15 - l
      elsif l < 20
