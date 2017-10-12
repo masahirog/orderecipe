@@ -102,7 +102,7 @@ class OrderPdf < Prawn::Document
       data << ["#{mtv.order_name}","",""]
     end
 
-     l = @order.order_materials.length
+     l = @materials_this_vendor.length
      if l < 10
        u = 15 - l
      elsif l < 20
