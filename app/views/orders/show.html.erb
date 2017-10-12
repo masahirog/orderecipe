@@ -7,13 +7,14 @@
     <h4>納品日：<%= @order.delivery_date.strftime("%Y年%-m月%-d日(#{%w(日 月 火 水 木 金 土)[@order.delivery_date.wday]})") %></h4>
   </div>
 
-  <%= form_tag({:controller => "orders", :action => "order_print"},{:target => "_blank"}) do %>
+  <%= form_tag({:controller => "orders", :action => "order_print", format: "pdf"},{:target => "_blank"}) do %>
     <div class="col-md-3">
       <%= select :vendor,:id, @vendors.map{|t| [t["company_name"], t["vendor_id"]]},{},class:"form-control" %>
     </div>
     <div class="col-md-2">
       <input type="button" onclick="submit();" value="印刷ページ" class="btn btn-primary">
     </div>
+
   <% end %>
 </div>
 

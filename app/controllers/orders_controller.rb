@@ -16,6 +16,7 @@ class OrdersController < ApplicationController
     @orders = Order.page(params[:page]).order("id DESC")
     # @search = Order.search(params).page(params[:page]).per(20)
   end
+
   def new
     @products = Product.all
     @order = Order.new
@@ -37,6 +38,7 @@ class OrdersController < ApplicationController
     @order_materials = @order.order_materials
     @materials = @order.materials
     @vendors = Vendor.vendor_index(params)
+
   end
 
   def order_print
@@ -44,7 +46,16 @@ class OrdersController < ApplicationController
     @order_materials = @order.order_materials
     @vendor = Vendor.find(params[:vendor][:id])
     @materials_this_vendor = Material.get_material_this_vendor(params)
-    render :order_print, layout: false #このページでlayoutを適用させない
+    respond_to do |format|
+     format.html
+     format.pdf do
+       pdf = OrderPdf.new(@materials_this_vendor,@order,@order_materials)
+       send_data pdf.render,
+         filename:    "#{@order.delivery_date}_#{@vendor.company_name}.pdf",
+         type:        "application/pdf",
+         disposition: "inline"
+     end
+   end
   end
 
   private

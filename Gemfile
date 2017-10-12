@@ -54,6 +54,8 @@ gem 'devise-bootstrap-views'
 gem 'carrierwave'
 gem 'rmagick'
 gem 'fog'
+gem 'prawn'
+gem 'prawn-table'
 
 group :production do
   gem 'rails_12factor'
