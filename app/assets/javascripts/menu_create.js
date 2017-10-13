@@ -3,14 +3,12 @@ $(function(){
     $('.input_select_material').select2({
     width:"300px",
     placeholder: "食材資材を選択してください"
-    // allowClear: true //
   });
     //ナンバーの振り直し
     var u = 0
     $("tr.add_tr_material").each(function() {
       set(this,u);
         var id = parseInt(document.getElementById("select_material"+u).value);
-        //空の時は起動しない
         if (isNaN(id) == true) {} else{
         $.ajax({
             url: "/menus/get_cost_price/" + id,
@@ -23,23 +21,22 @@ $(function(){
       })};
       u = u+1;
     });
-    // calculate_menu_price()
 
   //addアクション、materialの追加
   $(".add_material").on('click', function addInput(){
-      var u = parseInt(document.getElementById("table_body").rows.length);
-      //tbodyに1行追加z
-      $(".input_select_material").select2('destroy');
-      $("#add_tr0").clone().appendTo("table");
-      set("tr:last",u)
-      $("#select_material" + u).val("");
-      $(".input_select_material").select2({width:"300px",placeholder: "食材資材を選択してください"});
-      $("#cost_price_id" + u ).empty();
-      $("#vendor_id" + u ).empty();
-      $("#amount_used_id" +u ).val("");
-      $("#price_used_id" + u ).empty();
-      $("#calculated_unit" + u).empty();
-    });
+    var u = parseInt(document.getElementById("table_body").rows.length);
+    //tbodyに1行追加z
+    $(".input_select_material").select2('destroy');
+    $("#add_tr0").clone().appendTo("table");
+    set("tr:last",u)
+    $("#select_material" + u).val("");
+    $(".input_select_material").select2({width:"300px",placeholder: "食材資材を選択してください"});
+    $("#cost_price_id" + u ).empty();
+    $("#vendor_id" + u ).empty();
+    $("#amount_used_id" +u ).val("");
+    $("#price_used_id" + u ).empty();
+    $("#calculated_unit" + u).empty();
+  });
 
   //removeアクション、materialの削除
   $("#table_body").on('click','.remove', function(){
@@ -84,10 +81,10 @@ $(function(){
           //使用価格の計算ゾーン
           var cost_price = parseFloat(document.getElementById("cost_price_id" + u).innerHTML);
           var amount_used = parseFloat(document.getElementById("amount_used_id" + u).value);
-          if (isNaN(amount_used) == true){
-            var calculate_price = 0;
-          }else {
-            var calculate_price = (cost_price * amount_used).toFixed(2)}
+          // if (isNaN(amount_used) == true){
+          //   var calculate_price = 0;
+          // }else {
+          //   var calculate_price = (cost_price * amount_used).toFixed(2)}
             $('#price_used_id' + u).text(calculate_price+"円");
 
           calculate_menu_price()

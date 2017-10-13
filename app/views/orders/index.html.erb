@@ -46,25 +46,31 @@
 </div>
 
 <div class="col-md-12">
-  <div class="col-md-1">
-    ID
-  </div>
+
   <div class="col-md-2">
     納品日
+  </div>
+  <div class="col-md-2">
+    発注先企業一覧
   </div>
 </div>
 <ul class="list-group">
   <% @orders.each do |order| %>
   	<li class="list-group-item col-md-12">
-        <div class="orders_index col-md-1">
-          <%= order.id %>
+      <div class="col-md-2">
+        <%= order.delivery_date %>
+      </div>
+        <div class="col-md-8">
+          <% vendors = Vendor.vendor_index(order) %>
+          <% vendors.each do |vendor| %>
+            <div class="col-md-2">
+              <%= vendor["company_name"] %>
+            </div>
+          <% end %>
         </div>
-        <div class="col-md-2">
-          <%= order.delivery_date %>
-        </div>
-        <div class="col-md-2">
-          <%= link_to "詳細", "/orders/#{order.id}", method: :get,class:"order btn btn-default" %>
-        </div>
+      <div class="col-md-2">
+        <%= link_to "詳細", "/orders/#{order.id}", method: :get,class:"order btn btn-default" %>
+      </div>
     </li>
   <% end %>
 </ul>

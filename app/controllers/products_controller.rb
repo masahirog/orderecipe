@@ -1,5 +1,18 @@
 class ProductsController < ApplicationController
+  def get_by_category
+    if params[:category].present?
+      @menu = Menu.where(category:params["category"])
+      respond_to do |format|
+        format.html
+        format.json
+      end
+    else
+      @menu = Menu.all
+    end
+  end
+
   def get_menu_cost_price
+
     @menu = Menu.includes(:menu_materials,:materials).find(params[:id])
     respond_to do |format|
       format.html

@@ -40,11 +40,11 @@ class Material < ApplicationRecord
       if params["id#{i}"].present?
         Product.find(params["id#{i}"]).menus.each do |menu|
           menu.menu_materials.each do |menu_material|
-            hash={}
-            hash.store("material_id", menu_material.material_id)
-            hash.store("amount_used", menu_material.amount_used.to_f * params["num#{i}"].to_i)
-            hash.store("vendor_id", menu_material.material.vendor_id)
-            hoge << hash
+              hash={}
+              hash.store("material_id", menu_material.material_id)
+              hash.store("amount_used", menu_material.amount_used.to_f * params["num#{i}"].to_i)
+              hash.store("vendor_id", menu_material.material.vendor_id)
+              hoge << hash
           end
         end
       end

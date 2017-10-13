@@ -93,6 +93,7 @@
   <table class="table menu-table table-striped">
     <thead>
       <tr>
+        <th>カテゴリ</th>
         <th>メニュー名</th>
         <th >原価</th>
         <th>食材名</th>
@@ -107,7 +108,9 @@
         <td class="trno", style="display:none;">
           <div></div>
         </td>
-
+        <td class="col-md-1">
+          <%= select :category,:category, [["主食"],[ "主菜"],[ "副菜"],["容器"]],{include_blank: true}, { class: "category_select form-control"} %>
+        </td>
         <td class="select">
             <%= pr.select :menu_id, Menu.pluck(:name, :id),{include_blank: true}, class:'input_select_menu'%>
         </td>

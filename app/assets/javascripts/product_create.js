@@ -25,8 +25,27 @@ $(function(){
       calculate_product_price()
     });
 
+    $("#used_menu_table_body").on('change','.category_select', function(){
+      u = $(this).parent().parent().children(".trno").children().html();
+      c = $(this).val();
+      $.ajax({
+          url: "/products/get_by_category/",
+          data: { category: c },
+          dataType: "json",
+          async: false
+      })
+      .done(function(data) {
+        $("#select_menu"+u+" option").remove();
+        first = $('<option>').text("").attr('value',"")
+        $("#select_menu"+u).append(first)
+        $.each(data.product, function(index,value){
+          option = $('<option>').text(this.name).attr('value',this.id)
+          $("#select_menu"+u).append(option);
+        });
+      });
+    });
 
-  //addアクション、materialの追加
+  //addアクション、menuの追加
   $(".add_menu").on('click', function addInput(){
     var i = parseInt(document.getElementById("used_menu_table_body").rows.length);
     //tbodyに1行追加

@@ -40,8 +40,8 @@
           <% @hash.each do |material|%>
             <li class="list-group-item col-md-12">
               <div class="col-md-1", style="display:none;">
-                <%= m.text_field :material_id,value: material["material_id"],
-                 class:'form-control',name:"order[order_materials_attributes][#{i}][material_id]", readonly: true %>
+                  <%= m.text_field :material_id,value: material["material_id"],
+                  class:'form-control',name:"order[order_materials_attributes][#{i}][material_id]", readonly: true %>
               </div>
               <div class="material_name col-md-3">
                 <%= Material.find(material["material_id"]).name %>
@@ -50,7 +50,6 @@
                 <%= m.text_field :order_quantity,value: material["amount_used"].to_f,
                  class:'text-right col-md-6 pull-right form-control',
                    name:"order[order_materials_attributes][#{i}][order_quantity]", readonly: true %>
-
               </div>
               <div class="col-md-2">
                 <%= Material.find(material["material_id"]).calculated_unit %>

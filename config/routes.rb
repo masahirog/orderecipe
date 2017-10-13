@@ -13,6 +13,8 @@ Rails.application.routes.draw do
   post 'orders/confirm' => 'orders#confirm'
   get 'orders/material_info/:id' => 'orders#material_info'
   post'orders/order_print/:id' => 'orders#order_print'
+  get 'products/get_by_category' => 'products#get_by_category'
+
   resources :menus
   resources :products
   resources :tops

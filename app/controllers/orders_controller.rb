@@ -10,11 +10,25 @@ class OrdersController < ApplicationController
   def confirm
     @order = Order.new(order_create_update)
   end
+  def edit
+    @order = Order.find(params[:id])
+  end
 
   def index
     @products = Product.all
     @orders = Order.page(params[:page]).order("id DESC")
+
     # @search = Order.search(params).page(params[:page]).per(20)
+  end
+  def update
+    @order = Order.find(params[:id])
+    @order.update(order_create_update)
+
+    if @order.save
+      redirect_to order_path
+    else
+      render "edit"
+    end
   end
 
   def new
@@ -38,7 +52,6 @@ class OrdersController < ApplicationController
     @order_materials = @order.order_materials
     @materials = @order.materials
     @vendors = Vendor.vendor_index(params)
-
   end
 
   def order_print
