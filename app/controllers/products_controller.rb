@@ -57,13 +57,29 @@ class ProductsController < ApplicationController
     end
   end
 
-  def print
+  def serving_detail
     @product = Product.find(params[:id])
     @product_menus = @product.product_menus
     @menus = @product.menus.includes(:materials, :menu_materials)
-    render :print, layout: false #このページでlayoutを適用させない
+    render :serving_detail, layout: false #このページでlayoutを適用させない
   end
 
+  def print
+    @params = params
+    @product = Product.find(params[:id])
+    @product_menus = @product.product_menus
+    @menus = @product.menus.includes(:materials, :menu_materials)
+    respond_to do |format|
+     format.html
+     format.pdf do
+       pdf = ProductPdf.new(@params,@product,@product_menus,@menus)
+       send_data pdf.render,
+         filename:    "#{@product.id}.pdf",
+         type:        "application/pdf",
+         disposition: "inline"
+     end
+   end
+  end
 
   private
     def product_create_update
