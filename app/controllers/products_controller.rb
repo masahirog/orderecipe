@@ -74,7 +74,7 @@ class ProductsController < ApplicationController
      format.pdf do
        pdf = ProductPdf.new(@params,@product,@product_menus,@menus)
        send_data pdf.render,
-         filename:    "#{@product.id}.pdf",
+         filename:    "#{@product.name}.pdf",
          type:        "application/pdf",
          disposition: "inline"
      end

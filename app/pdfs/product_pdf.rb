@@ -14,7 +14,7 @@ class ProductPdf < Prawn::Document
     # メソッドを作成。下記に内容あり。
     # content
     # render_table
-    sen
+    
     header
     header_lead
     table_content
