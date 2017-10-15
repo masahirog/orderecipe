@@ -1,5 +1,5 @@
 class ProductPdf < Prawn::Document
-  def initialize(params,product,product_menus,menus)
+  def initialize(params,product,menus)
     # 初期設定。ここでは用紙のサイズを指定している。
     super(
       page_size: 'A4',
@@ -9,12 +9,11 @@ class ProductPdf < Prawn::Document
     #インスタンス変数
     @num = params[:volume][:num]
     @product = product
-    @product_menus = product_menus
     @menus = menus
     # メソッドを作成。下記に内容あり。
     # content
     # render_table
-    
+
     header
     header_lead
     table_content

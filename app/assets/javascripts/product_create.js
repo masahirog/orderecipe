@@ -1,140 +1,123 @@
-//税率は最終的なproduct_cost_priceに1.08をかけている
 $(function(){
-    $('.input_select_menu').select2({
-    width:"300px",
-    placeholder: "メニューを選択してください",
+  $('.input_select_menu').select2({
+  width:"300px",
+  placeholder: "メニューを選択してください",
   });
-    //ナンバーの振り直し
-    var u = 0
-    $("tr.add_tr_menu").each(function() {
-      set_pr(this,u)
-
-        var id = parseInt(document.getElementById("select_menu"+u).value);
-        //空の時は起動しない
-        if (isNaN(id) == true) {} else{
-        $.ajax({
-            url: "/products/get_menu_cost_price/" + id,
-            data: { id : id },
-            dataType: "json",
-            async: false
-        })
-        .done(function(data) {
-          get_menu_price(data,u)
-      })};
-      u = u+1;
-      calculate_product_price()
-    });
-
-    $("#used_menu_table_body").on('change','.category_select', function(){
-      u = $(this).parent().parent().children(".trno").children().html();
-      c = $(this).val();
+  //materialの表示、原価計算
+  var u = 0
+  $("tr.add_tr_menu").each(function() {
+      var id = $(this).children(".select_menu").children().val();
+      if (isNaN(id) == true) {} else{
       $.ajax({
-          url: "/products/get_by_category/",
-          data: { category: c },
+          url: "/products/get_menu_cost_price/" + id,
+          data: { id : id },
           dataType: "json",
           async: false
       })
       .done(function(data) {
-        $("#select_menu"+u+" option").remove();
-        first = $('<option>').text("").attr('value',"")
-        $("#select_menu"+u).append(first)
-        $.each(data.product, function(index,value){
-          option = $('<option>').text(this.name).attr('value',this.id)
-          $("#select_menu"+u).append(option);
-        });
+        get_menu_price(data,u);
+    })};
+    u = u+1;
+    calculate_product_price();
+  });
+
+  //カテゴリーを変更時に、メニューを絞る機能
+  $(".used_menu_table_body").on('change','.category_select', function(){
+    var u = $(".add_tr_menu ").index($(this).parent().parent("tr.add_tr_menu"));
+    c = $(this).val();
+    $.ajax({
+      url: "/products/get_by_category/",
+      data: { category: c },
+      dataType: "json",
+      async: false
+    })
+    .done(function(data) {
+      $("#product_product_menus_attributes_"+u+"_menu_id option").remove();
+      first = $('<option>').text("").attr('value',"");
+      $("tr.add_tr_menu").eq(u).children(".select_menu").children(".input_select_menu").append(first);
+      $.each(data.product, function(index,value){
+        option = $('<option>').text(this.name).attr('value',this.id)
+        $("tr.add_tr_menu").eq(u).children(".select_menu").children(".input_select_menu").append(option);
       });
     });
+  });
 
   //addアクション、menuの追加
   $(".add_menu").on('click', function addInput(){
-    var i = parseInt(document.getElementById("used_menu_table_body").rows.length);
-    //tbodyに1行追加
+    var u =  $("tr.add_tr_menu").length;
     $(".input_select_menu").select2('destroy');
-    $("#add_tr0").clone().appendTo("table");
-    set_pr("tr:last",i)
-    $("#select_menu" + i ).val("");
+    $("tr.add_tr_menu").first().clone().appendTo("table.menu-table");
+    var last_tr =$(".add_tr_menu").last();
+    last_tr.children(".select_menu").children().attr('name', "product[product_menus_attributes]["+u+"][menu_id]" );
+    last_tr.children(".select_menu").children().attr('id', "product_product_menus_attributes_"+u+"_menu_id" );
+    last_tr.children(".remove_menu").children(".destroy_menu").attr('id', "product_product_menus_attributes_"+u+"__destroy");
+    last_tr.children(".remove_menu").children(".destroy_menu").attr('name', "product[product_menus_attributes]["+u+"][_destroy]");
+    last_tr.children(".select_menu").children().val("");
     $(".input_select_menu").select2({ width:"300px",placeholder: "メニューを選択してください" });
-    $("#cost_price_id" + i ).empty();
-    $("#material_name"+i).children().remove();
-    $("#amount_used"+i).children().remove();
-    $("#calculated_unit"+i).children().remove();
+    last_tr.children(".cost_price").empty();
+    last_tr.children(".material_name").children().children().remove();
+    last_tr.children(".amount_used").children().children().remove();
+    last_tr.children(".material_unit").children().children().remove();
+    last_tr.children(".remove_material").children(".destroy_materials").prop('checked',false);
+    last_tr.show();
   });
 
-  //removeアクション、materialの削除
-  $("#used_menu_table_body").on('click','.remove', function(){
-    //1行目は残す
-    var q = $(this).parent().parent().children(".trno").children().html();
-    if (q == 0){} else{
-       $("#product_product_menus_attributes_"+q+"__destroy").val(true);
+  //menuのdestroyのチェックtrueとtrのhide、原価再計算
+  $(".used_menu_table_body").on('click','.remove_menu_btn', function(){
+    $(this).parent().children(".destroy_menu").prop('checked', true);
+    $(this).parent().parent("tr.add_tr_menu").hide();
+      calculate_product_price();
+    });
 
-        $(this).parent().parent().remove();
-
-    //ナンバーの振り直し
-      var u = 0
-      $("tr.add_tr_menu").each(function () {
-        set_pr(this,u)
-        u = u+1;
-      });
-
-      calculate_product_price()
-    }});
-
-      $("#used_menu_table_body").on('change','.input_select_menu', function(){
-        var id = $(this).val();
-        var i = $(this).parent().parent().children(".trno").children().html();
-        $("#select_menu"+i).val(id);
-          $.ajax({
-              url: "/products/get_menu_cost_price/" + id,
-              data: { id : id },
-              dataType: "json",
-          })
-          .done(function(data) {
-            get_menu_price(data,i)
-            calculate_product_price()
-         });
-      });
-
-
-      function set_pr(elm,u){
-        $(elm).attr('id', "add_tr" + u );
-        $(elm).children(".trno").children().text(u);
-        $(elm).children(".select").children().attr('id', "select_menu" + u );
-        $(elm).children(".cost_price").children().attr('id', "cost_price_id" + u );
-        $(elm).children(".material_name").children().attr('id', "material_name" + u );
-        $(elm).children(".amount_used").children().attr('id', "amount_used" + u );
-        $(elm).children(".calculated_unit").children().attr('id', "calculated_unit" + u );
-        $(elm).children(".select").children().attr('name', "product[product_menus_attributes]["+u+"][menu_id]" );
-      };
-
-      function calculate_product_price(){
-        //product_cost_priceの変更
-        var row = parseFloat($("tr:last").find(".trno").children().html()+1);
-        var  kingaku = 0;
-        for (var i_row = 0; i_row < row ; i_row++){
-          var ffff = parseFloat($('#cost_price_id'+i_row).html());
-          if (isNaN(ffff)){
-            continue;
-          }
-            kingaku += ffff;
-          };
-        parseFloat(document.getElementById('sum_material_cost').value=　(kingaku).toFixed(2));
-        parseFloat(document.getElementById('tax').value=　(kingaku*0.08).toFixed(2));
-        parseFloat(document.getElementById('product_cost_price').value=　(kingaku*1.08).toFixed(1));
-      };
-      function get_menu_price(data,i){
-        var cost = data.menu.cost_price;
-        $('#cost_price_id' + i).text(cost+"円");
-         $("#material_name"+i).children().remove();
-         $("#amount_used"+i).children().remove();
-         $("#calculated_unit"+i).children().remove();
-
-        var maxi = data.menu.materials.length
-        for(var ii = 0; ii < maxi; ii++) {
-          var name = data.menu.materials[ii].name
-          var amount_used = data.menu.menu_materials[ii].amount_used
-          var unit = data.menu.materials[ii].calculated_unit
-          $("#material_name"+i).append("<li>"+name+"</li>");
-          $("#amount_used"+i).append("<li class='text-right'>"+amount_used+" "+unit+"</li>");
-
-      }};
+  //メニュー変更時
+  $(".used_menu_table_body").on('change','.input_select_menu', function(){
+    var id = $(this).val();
+    var u = $("tr.add_tr_menu").index($(this).parent().parent("tr.add_tr_menu"));
+      $.ajax({
+          url: "/products/get_menu_cost_price/" + id,
+          data: { id : id },
+          dataType: "json",
+      })
+      .done(function(data) {
+        get_menu_price(data,u);
+        calculate_product_price();
+     });
+  });
+  //原価計算
+  function calculate_product_price(){
+    var row_len =  $("tr.add_tr_menu").length;
+    var sum_menu_cost = 0;
+    $("tr.add_tr_menu").each(function(){
+      if ($(this).children(".remove_menu").children(".destroy_menu").is(':checked')){
+      }else{
+      var menu_price = parseFloat($(this).children(".cost_price").html());
+      if (isNaN(menu_price) == true ){}else{
+      sum_menu_cost += menu_price;
+    }}});
+    var sum_menu_cost_tax = (sum_menu_cost * 0.08).toFixed(2);
+    var product_cost_price = (sum_menu_cost * 1.08).toFixed(1);
+    $(".sum_menu_cost").val(sum_menu_cost.toFixed(2));
+    $(".sum_menu_cost_tax").val(sum_menu_cost_tax);
+    $(".product_cost_price").val(product_cost_price);
+  };
+  //メニューの情報取得とmaterialの表示
+  function get_menu_price(data,u){
+    var cost = data.menu.cost_price;
+    $("tr.add_tr_menu").eq(u).children(".cost_price").text(cost);
+    $("tr.add_tr_menu").eq(u).children(".material_name").children().children().remove();
+    $("tr.add_tr_menu").eq(u).children(".amount_used").children().children().remove();
+    $("tr.add_tr_menu").eq(u).children(".material_unit").children().children().remove();
+    var materials = data.menu.materials;
+    var menu_materials = data.menu.menu_materials;
+    $.each(materials,function(index,material){
+      var name =  material.name;
+      var unit = material.calculated_unit;
+      $("tr.add_tr_menu").eq(u).children(".material_name").children().append("<li>"+name+"</li>");
+      $("tr.add_tr_menu").eq(u).children(".material_unit").children().append("<li class='text-left'>"+unit+"</li>");
+    });
+    $.each(menu_materials,function(index,mm){
+      var amount_used = mm.amount_used;
+      $("tr.add_tr_menu").eq(u).children(".amount_used").children().append("<li class='text-right'>"+amount_used+"</li>");
+    });
+  };
 });

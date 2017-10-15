@@ -5,7 +5,7 @@ $(function(){
     placeholder: "お弁当を選択してください"
   });
     $('.select_order_materials').select2({
-    width:"300px",
+    width:"200px",
     placeholder: "発注する食材を選択"
   });
 
@@ -42,7 +42,7 @@ $(function(){
     last_li.children(".order_quantity").children().val("");
     last_li.children(".order_material_unit").empty();
     last_li.children(".vendor_company_name").empty();
-    last_li.children(".destroy_order_material").children().prop('checked', false);
+    last_li.children(".destroy_order_material").children().prop('checked',false);
     last_li.children(".order_material_name").children(".select_order_materials").removeAttr("disabled");
     last_li.children(".order_quantity").children().removeAttr("disabled");
     input_check()
@@ -74,18 +74,19 @@ $(function(){
   }});
   //送信前のバリデーション
   $('.order_submit').on('click', function check(){
-      error = false
+    //発注しないチェックがはいっていた場合は、inputの検証をスルーする
+      destroy_check = 0
       $('.order_materials_li').each(function(){
-        if ($(this).children(".destroy_order_material").children().val()== "true"){}else{
-        var material_id = $(this).children(".order_material_name").children().val()
-        var order_quantity = $(this).children(".order_quantity").children().val()
-        if (material_id=="" || order_quantity== ""){
-          error = true
-          alert("入力が不完全です");
-          return false;
+        if ($(this).children(".destroy_order_material").children(".destroy_order_materials").is(':checked')){}else{
+          var material_id = $(this).children(".order_material_name").children().val()
+          var order_quantity = $(this).children(".order_quantity").children().val()
+          if (material_id=="" || order_quantity== ""){
+            destroy_check = 1
+            alert("入力が不完全です");
+            return false;
         }else {};
       }});
-      if (error == true){return false} //errorがtrueならonclickを抜ける
+      if (destroy_check == 1){return false} //errorがtrueならonclickを抜ける
     });
 
   //入力チェックと色付け

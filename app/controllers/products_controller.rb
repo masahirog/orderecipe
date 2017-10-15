@@ -12,7 +12,6 @@ class ProductsController < ApplicationController
   end
 
   def get_menu_cost_price
-
     @menu = Menu.includes(:menu_materials,:materials).find(params[:id])
     respond_to do |format|
       format.html
@@ -30,7 +29,6 @@ class ProductsController < ApplicationController
   end
   def show
    @product = Product.find(params[:id])
-   @product_menus = @product.product_menus
    @menus = @product.menus.includes(:materials, :menu_materials)
   end
 
@@ -51,7 +49,7 @@ class ProductsController < ApplicationController
     @product = Product.find(params[:id])
     @product.update(product_create_update)
     if @product.save
-      redirect_to products_path
+      redirect_to product_path
     else
       render 'edit'
     end
@@ -59,7 +57,6 @@ class ProductsController < ApplicationController
 
   def serving_detail
     @product = Product.find(params[:id])
-    @product_menus = @product.product_menus
     @menus = @product.menus.includes(:materials, :menu_materials)
     render :serving_detail, layout: false #このページでlayoutを適用させない
   end
@@ -67,12 +64,11 @@ class ProductsController < ApplicationController
   def print
     @params = params
     @product = Product.find(params[:id])
-    @product_menus = @product.product_menus
     @menus = @product.menus.includes(:materials, :menu_materials)
     respond_to do |format|
      format.html
      format.pdf do
-       pdf = ProductPdf.new(@params,@product,@product_menus,@menus)
+       pdf = ProductPdf.new(@params,@product,@menus)
        send_data pdf.render,
          filename:    "#{@product.name}.pdf",
          type:        "application/pdf",

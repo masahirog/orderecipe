@@ -36,7 +36,7 @@ class MenusController < ApplicationController
     @menu.update(menu_create_update)
 
     if @menu.save
-      redirect_to menus_path
+      redirect_to menu_path
     else
       render "edit"
     end
@@ -45,7 +45,6 @@ class MenusController < ApplicationController
   def show
     @menu = Menu.find(params[:id])
     @menu_materials = @menu.menu_materials
-    @materials = @menu.materials
   end
 
   private

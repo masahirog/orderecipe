@@ -5,32 +5,34 @@
     </a>
   </h3>
 
-
+<div class="col-xs-13 col-md-12">
   <%= form_tag Material, :method => 'get' do %>
-
-  <div class="col-xs-12 col-md-3">
-    <p>食材・資材名：</p>
-    <%= text_field_tag :name, params[:name], class:"form-control" %>
-  </div>
-  <div class="col-xs-12 col-md-3">
-    <p>発注名：</p>
-    <%= text_field_tag :order_name, params[:order_name], class:"form-control" %>
-  </div>
-  <div class="col-xs-12 col-md-2">
-    <p>仕入先：</p>
-    <%= select_tag :vendor_id, options_from_collection_for_select(Vendor.all, :id, :company_name), include_blank: true, class: "form-control" %>
-
-  </div>
-  <div class="col-xs-12 col-md-2">
-    <p>管理コード：</p>
-    <%= text_field_tag :order_code, params[:order_code], class:"form-control" %>
-  </div>
-    <div class="kensaku form-group">
-      <p>　</p>
+    <div class="col-xs-3 col-md-2">
+      <p>食材・資材名：</p>
+      <%= text_field_tag :name, params[:name], class:"form-control" %>
+    </div>
+    <div class="col-xs-3 col-md-2">
+      <p>発注名：</p>
+      <%= text_field_tag :order_name, params[:order_name], class:"form-control" %>
+    </div>
+    <div class="col-xs-3 col-md-2">
+      <p>仕入先：</p>
+      <%= select_tag :vendor_id, options_from_collection_for_select(Vendor.all, :id, :company_name),
+       include_blank: true, class: "form-control" %>
+    </div>
+    <div class="col-xs-3 col-md-2">
+      <p>管理コード：</p>
+      <%= text_field_tag :order_code, params[:order_code], class:"form-control" %>
+    </div>
+    <div class="col-xs-3 col-md-1">
+      <p>終売：</p>
+      <%= select :end_of_sales, :value, [["販売のみ", 0], ["終売のみ", 1]], {include_blank: true},class:"form-control" %>
+    </div>
+    <div class="kensaku form-group col-md-2">
       　<%= submit_tag "検索" ,class:"btn btn-primary" %>
     </div>
-<% end %>
-
+  <% end %>
+</div>
 
 
 <table class="table table-hover">

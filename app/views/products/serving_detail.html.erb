@@ -57,20 +57,20 @@
          </thead>
           <tbody class="">
             <% @menus.each do |menu| %>
-            <tr  class="first_tr table_tr">
-              <td class="menu_materials_length" style="display:none;"><%= menu.materials.length %></td>
-             <td class="first_tr_td"><%= menu.name %></td>
-             <td class="first_tr_td"><%= menu.category %></td>
-             <td class="first_tr_td"><%= menu.recipe %></td>
-             <td class="first_tr_td"><%= menu.serving_memo %></td>
-             <% i = 1 %>
-             <% u = menu.materials.length %>
-             <% menu.materials.zip(menu.menu_materials).each do |material, menu_material|%>
-             <td class=""><%= material.name %></td>
-             <td class="original_amount_used text-right"><%= menu_material.amount_used %></td>
-             <td class=""><%= material.calculated_unit %></td>
-             <td class="calculate_amount_used" style="display: none; font-weight:bold; font-size:20px;"></td>
-             <td class="calculate_unit" style="display: none; font-weight:bold;"><%= material.calculated_unit %></td>
+                <tr  class="first_tr table_tr">
+                  <td class="menu_materials_length" style="display:none;"><%= menu.materials.length %></td>
+                   <td class="first_tr_td"><%= menu.name %></td>
+                   <td class="first_tr_td"><%= menu.category %></td>
+                   <td class="first_tr_td"><%= menu.recipe %></td>
+                   <td class="first_tr_td"><%= menu.serving_memo %></td>
+                   <% i = 1 %>
+                   <% u = menu.materials.length %>
+                   <% menu.menu_materials.each do |mm|%>
+                   <td class=""><%= mm.material.name %></td>
+                   <td class="original_amount_used text-right"><%= mm.amount_used %></td>
+                   <td class=""><%= mm.material.calculated_unit %></td>
+                   <td class="calculate_amount_used" style="display: none; font-weight:bold; font-size:20px;"></td>
+                   <td class="calculate_unit" style="display: none; font-weight:bold;"><%= mm.material.calculated_unit %></td>
               </tr>
               <% if i == menu.materials.length  %>
                 <% else %>

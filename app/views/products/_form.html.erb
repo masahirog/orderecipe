@@ -75,15 +75,15 @@
   <div class="container form-group">
     <div class="col-xs-3 col-md-2">
       <label>食材原価合計</label>
-      <input name="a" type="text" disabled="disabled" class="form-control" id="sum_material_cost">
+      <input name="a" type="text" disabled="disabled" class="form-control sum_menu_cost">
     </div>
     <div class="col-xs-3 col-md-2">
       <label>消費税8%</label>
-      <input name="a" type="text" disabled="disabled" class="form-control"  id="tax">
+      <input name="a" type="text" disabled="disabled" class="form-control sum_menu_cost_tax">
     </div>
     <div class="col-xs-3 col-md-2">
       <%= f.label :cost_price, "弁当原価" %><br>
-      <%= f.text_field :cost_price, :readonly => 'readonly', class:"price form-control" %>
+      <%= f.text_field :cost_price, :readonly => 'readonly', class:"product_cost_price form-control" %>
     </div>
     <br><br>
     <div class="col-xs-1 col-md-1">
@@ -102,36 +102,35 @@
       </tr>
     </thead>
 
-    <tbody id='used_menu_table_body'>
+    <tbody class='used_menu_table_body'>
       <%= f.fields_for :product_menus do |pr| %>
-      <tr class="add_tr_menu" id="add_tr0">
-        <td class="trno", style="display:none;">
-          <div></div>
-        </td>
+      <tr class="add_tr_menu">
         <td class="col-md-1">
           <%= select :category,:category, [["主食"],[ "主菜"],[ "副菜"],["容器"]],{include_blank: true}, { class: "category_select form-control"} %>
         </td>
-        <td class="select">
+        <td class="select_menu">
             <%= pr.select :menu_id, Menu.pluck(:name, :id),{include_blank: true}, class:'input_select_menu'%>
         </td>
 
         <td class="cost_price">
-          <div id="cost_price_id0"></div>
         </td>
 
         <td class="material_name">
-          <ul style="list-style:none;" id="material_name0"></ul>
+          <ul style="list-style:none;"></ul>
         </td>
 
         <td class="amount_used">
-          <ul style="list-style:none;" id="amount_used0"></ul>
+          <ul style="list-style:none;"></ul>
+        </td>
+        <td class="material_unit">
+          <ul style="list-style:none;"></ul>
         </td>
 
-        <td>
-          <a class ="remove btn btn-danger" >削除</a>
+        <td class="remove_menu">
+          <a class ="remove_menu_btn btn btn-danger" >削除</a>
+          <%= pr.check_box :_destroy,class:"destroy_menu", style: "display:none;" %>
         </td>
       </tr>
-      <%= pr.hidden_field :_destroy, :value => 0 %>
       <% end %>
     </tbody>
   </table>

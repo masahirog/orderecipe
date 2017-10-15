@@ -58,39 +58,33 @@
       </thead>
 
 
-      <tbody id='table_body'>
+      <tbody class='table_body'>
       <%= f.fields_for :menu_materials do |m| %>
-        <tr class="add_tr_material" id="add_tr0" >
-          <td class="trno", style="display:none;">
-            <div></div>
-          </td>
-          <td class="select">
+        <tr class="add_tr_material">
+          <td class="select_material">
            <%= m.select :material_id, Material.where(end_of_sales:0).pluck(:name, :id),{include_blank: true}, class:'input_select_material'%>
           </td>
           <td class="cost_price">
-            <div id="cost_price_id0"></div>
           </td>
 
           <td class="vendor">
-            <div id="vendor_id0"></div>
           </td>
 
           <td class="amount_used">
-          <%= m.text_field :amount_used, class:'amount_used_select form-control', :id => 'amount_used_id0' %>
+          <%= m.text_field :amount_used, class:'amount_used_input form-control' %>
           </td>
 
           <td class="calculated_unit">
-            <div id="calculated_unit0"></div>
           </td>
 
-          <td class="price_used">
-            <div id="price_used_id0"></div>
+          <td class="price_used form-inline">
+            <div class="price_used_value form-group"></div><div class="form-group">　円</div>
           </td>
-          <td class="removetd">
-            <a class ="remove btn btn-danger" >削除</a>
+          <td class="remove_material">
+            <a class ="remove_btn btn btn-danger" >削除</a>
+            <%= m.check_box :_destroy,class:"destroy_materials check_box form-control", style: "display:none;" %>
           </td>
         </tr>
-        <%= m.hidden_field :_destroy, :value => 0 %>
         <% end %>
 
       </tbody>

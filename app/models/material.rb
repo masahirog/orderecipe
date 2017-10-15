@@ -9,17 +9,15 @@ class Material < ApplicationRecord
 
   after_save :update_cache
 
-  validates :name, presence: true, uniqueness: true, format: { with: /\A[^！”＃＄％＆’（）＝～｜‘｛＋＊｝＜＞？＿－＾￥＠「；：」。　０-９ａ-ｚＡ-Ｚ]+\z/,
-    message: "：全角英数字スペース及び、全角記号^！”＃＄％＆’（）＝～｜‘｛＋＊｝＜＞？＿－＾￥＠「；：」。は使用出来ません。"}
-  validates :order_name, presence: true, format: { with: /\A[^！”＃＄％＆’（）＝～｜‘｛＋＊｝＜＞？＿－＾￥＠「；：」。　０-９ａ-ｚＡ-Ｚ]+\z/,
-    message: "：全角英数字スペース及び、全角記号^！”＃＄％＆’（）＝～｜‘｛＋＊｝＜＞？＿－＾￥＠「；：」。は使用出来ません。"}
+  validates :name, presence: true, uniqueness: true, format: { with:/\A[^！”＃＄％＆’（）＝～｜‘｛＋＊｝＜＞？＿－＾￥＠「；：」。０-９ａ-ｚＡ-Ｚ]+\z/,
+    message: "：全角英数字及び、全角記号^！”＃＄％＆’（）＝～｜‘｛＋＊｝＜＞？＿－＾￥＠「；：」。は使用出来ません。"}
+  validates :order_name, presence: true, format: { with:/\A[^！”＃＄％＆’（）＝～｜‘｛＋＊｝＜＞？＿－＾￥＠「；：」。０-９ａ-ｚＡ-Ｚ]+\z/,
+    message: "：全角英数字及び、全角記号^！”＃＄％＆’（）＝～｜‘｛＋＊｝＜＞？＿－＾￥＠「；：」。は使用出来ません。"}
   validates :calculated_value, presence: true, numericality: true
   validates :calculated_unit, presence: true
   validates :calculated_price, presence: true, numericality: true
   validates :cost_price, presence: true, numericality: true
   validates :vendor_id, presence: true
-  validates :order_code, format: { with: /\A[^！”＃＄％＆’（）＝～｜‘｛＋＊｝＜＞？＿－＾￥＠「；：」。　０-９ａ-ｚＡ-Ｚ]+\z/,
-    message: "：全角英数字スペース及び、全角記号^！”＃＄％＆’（）＝～｜‘｛＋＊｝＜＞？＿－＾￥＠「；：」。は使用出来ません。"}
 
   def self.search(params) #self.でクラスメソッドとしている
    if params # 入力がある場合の処理
@@ -28,6 +26,7 @@ class Material < ApplicationRecord
      data = data.where(['order_name LIKE ?', "%#{params["order_name"]}%"]) if params["order_name"].present?
      data = data.where(vendor_id: params["vendor_id"]) if params["vendor_id"].present?
      data = data.where(['order_code LIKE ?', "%#{params["order_code"]}%"]) if params["order_code"].present?
+     data = data.where(['end_of_sales LIKE ?', "%#{params["end_of_sales"]["value"]}%"]) if params["end_of_sales"].present?
      data
    else
      Material.all   # 全て表示する

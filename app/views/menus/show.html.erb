@@ -31,14 +31,14 @@
     </tr>
   </thead>
   <tbody>
-    <% @materials.zip(@menu_materials).each do |material,menu_material| %>
+    <% @menu_materials.each do |mm| %>
       <tr>
-      <td><%= link_to material.name, "/materials/#{material.id}/edit", method: :get %></td>
-      <td><%= material.cost_price %> 円</td>
-      <td><%= link_to material.vendor.company_name, "/vendors/#{material.vendor.id}", method: :get %></td>
-      <td class="text-right"><%= menu_material.amount_used %></td>
-      <td class="text-left"><%= material.calculated_unit %></td>
-      <td class="text-right"><%= (menu_material.amount_used * material.cost_price).round(1) %>円</td>
+      <td><%= link_to mm.material.name, "/materials/#{mm.material.id}/edit", method: :get %></td>
+      <td><%= mm.material.cost_price %> 円</td>
+      <td><%= link_to mm.material.vendor.company_name, "/vendors/#{mm.material.vendor.id}", method: :get %></td>
+      <td class="text-right"><%= mm.amount_used %></td>
+      <td class="text-left"><%= mm.material.calculated_unit %></td>
+      <td class="text-right"><%= (mm.amount_used * mm.material.cost_price).round(1) %>円</td>
       </tr>
     <% end %>
 
