@@ -1,42 +1,37 @@
-<h3>仕入先企業の新規登録
-  <a href="/vendors/new">
-    <span class="glyphicon glyphicon-plus-sign" aria-hidden="true">
-    </span>
-  </a>
-</h3>
-
-<table class="table table-hover">
-  <thead>
-    <tr>
-      <th style="display: none;">ID</th>
-      <th>企業名</th>
-      <th>電話番号</th>
-      <th>FAX番号</th>
-      <th>メールアドレス</th>
-      <th>郵便番号</th>
-      <th>住所</th>
-      <th>担当者名</th>
-      <th>担当者電話番号</th>
-      <th>担当者メールアドレス</th>
-      <th>メモ</th>
-    </tr>
-  </thead>
-
-  <tbody>
+<div class="form-inline col-md-12" style="padding:10px;">
+  <h3>仕入先企業の新規登録
+    <a href="/vendors/new">
+      <span class="glyphicon glyphicon-plus-sign" aria-hidden="true">
+      </span>
+    </a>
+  </h3>
+</div>
+<div class="">
+  <div class="col-md-12" style="padding:10px;">
+    <div class="col-md-2">企業名</div>
+    <div class="col-md-1">TEL</div>
+    <div class="col-md-1">FAX</div>
+    <div class="col-md-1">mail</div>
+    <div class="col-md-1">郵便番号</div>
+    <div class="col-md-1">住所</div>
+    <div class="col-md-1">担当者</div>
+    <div class="col-md-1">担当TEL</div>
+    <div class="col-md-1">担当mail</div>
+  </div>
+  <ul class='list-group' style="list-style-type: none;">
     <% @vendors.each do |vendor| %>
-      <tr class="vendors_tr" style="cursor: pointer">
-          <td class="vendors_index" style="display: none;"><%= link_to vendor.id, "/vendors/#{vendor.id}/edit", method: :get %></td>
-        <td><%= vendor.company_name %></td>
-        <td><%= vendor.company_phone %></td>
-        <td><%= vendor.company_fax %></td>
-        <td><%= vendor.company_mail %></td>
-        <td><%= vendor.zip %></td>
-        <td><%= vendor.address %></td>
-        <td><%= vendor.staff_name %></td>
-        <td><%= vendor.staff_phone %></td>
-        <td><%= vendor.staff_mail %></td>
-        <td><%= vendor.memo %></td>
-      </tr>
+    <li class="li-active vendors_li col-md-12 list-group-item"  style="cursor: pointer">
+        <div class="vendor_name col-md-2"><%= link_to "#{vendor.company_name}",
+         "/vendors/#{vendor.id}/edit", method: :get %></div>
+        <div class="col-md-1"><%= vendor.company_phone %></div>
+        <div class="col-md-1"><%= vendor.company_fax %></div>
+        <div class="col-md-1"><%= vendor.company_mail %></div>
+        <div class="col-md-1"><%= vendor.zip %></div>
+        <div class="col-md-1"><%= vendor.address %></div>
+        <div class="col-md-1"><%= vendor.staff_name %></div>
+        <div class="col-md-1"><%= vendor.staff_phone %></div>
+        <div class="col-md-1"><%= vendor.staff_mail %></div>
+      </li>
     <% end %>
-  </tbody>
-</table>
+  </ul>
+</div>

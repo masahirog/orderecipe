@@ -90,52 +90,52 @@
       円
     </div>
   </div>
-  <table class="table menu-table table-striped">
-    <thead>
-      <tr>
-        <th>カテゴリ</th>
-        <th>メニュー名</th>
-        <th >原価</th>
-        <th>食材名</th>
-        <th>使用量</th>
-        <th></th>
-      </tr>
-    </thead>
+  <div class="menu-area table-striped">
+    <div class="col-md-12">
+        <div class="col-md-2">カテゴリ</div>
+        <div class="col-md-3">メニュー名</div>
+        <div class="col-md-1">原価</div>
+        <div class="col-md-2">食材名</div>
+        <div class="col-md-1">使用量</div>
+        <div class="col-md-1">単位</div>
+        <div class="col-md-1"></div>
+    </div>
 
-    <tbody class='used_menu_table_body'>
+    <ul class='used_menu_ul list-group' style="list-style:none;">
       <%= f.fields_for :product_menus do |pr| %>
-      <tr class="add_tr_menu">
-        <td class="col-md-1">
+      <li class="add_li_menu col-md-12 list-group-item">
+        <div class="col-md-2">
           <%= select :category,:category, [["主食"],[ "主菜"],[ "副菜"],["容器"]],{include_blank: true}, { class: "category_select form-control"} %>
-        </td>
-        <td class="select_menu">
+        </div>
+        <div class="select_menu col-md-3">
             <%= pr.select :menu_id, Menu.pluck(:name, :id),{include_blank: true}, class:'input_select_menu'%>
-        </td>
+        </div>
 
-        <td class="cost_price">
-        </td>
+        <div class="cost_price col-md-1">
+        </div>
 
-        <td class="material_name">
+        <div class="material_name col-md-2">
           <ul style="list-style:none;"></ul>
-        </td>
+        </div>
 
-        <td class="amount_used">
+        <div class="amount_used col-md-1">
           <ul style="list-style:none;"></ul>
-        </td>
-        <td class="material_unit">
+        </div>
+        <div class="material_unit col-md-1">
           <ul style="list-style:none;"></ul>
-        </td>
+        </div>
 
-        <td class="remove_menu">
+        <div class="remove_menu col-md-1">
           <a class ="remove_menu_btn btn btn-danger" >削除</a>
           <%= pr.check_box :_destroy,class:"destroy_menu", style: "display:none;" %>
-        </td>
-      </tr>
+        </div>
+      </li>
       <% end %>
-    </tbody>
-  </table>
-  <a class="add_menu btn btn-primary">品目追加</a>
-
+    </ul>
+  </div>
+  <div class="col-md-12" style="margin:10px 10px 30px 0;">
+    <a class="add_menu btn btn-primary">品目追加</a>
+  </div>
   <div class="action">
     <input type="button" onclick="submit();" value="登録する" class="btn btn-success">
   </div>

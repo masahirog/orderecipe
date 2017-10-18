@@ -1,51 +1,46 @@
-<h3>メニューの新規登録
-  <a href="/menus/new">
-    <span class="glyphicon glyphicon-plus-sign" aria-hidden="true">
-    </span>
-  </a>
-</h3>
-<p>　</p>
-  <%= form_tag Menu, :method => 'get', class:"form-inline" do %>
-  <div class="kensaku form-group">
-    メニュー名：
-    <%= text_field_tag :name, params[:name], class:"name form-control" %>
-  </div>
-  <div class="kensaku form-group">
-    調理カテゴリー:
-    <%= select_tag :category, options_from_collection_for_select(Menu.select(:category).uniq, :category, :category), include_blank: true, class: "form-control" %>
-  </div>
-  <div class="kensaku form-group">
-    　<%= submit_tag "検索" ,class:"btn btn-primary" %>
-  </div>
+<div class="form-inline col-md-12" style="padding:10px;">
+  <h3 class="form-group">メニューの新規登録
+    <a href="/menus/new">
+      <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+    </a>
+  </h3>
+</div>
+<div class="form-inline col-md-12" style="padding:10px;">
+  <%= form_tag Menu, :method => 'get', class:"form-group" do %>
+    <div class="kensaku form-group">
+      メニュー名：
+      <%= text_field_tag :name, params[:name], class:"name form-control" %>
+    </div>
+    <div class="kensaku form-group">
+      調理カテゴリー:
+      <%= select_tag :category, options_from_collection_for_select(Menu.select(:category).uniq,
+       :category, :category), include_blank: true, class:"form-control",style:"width:150px;" %>
+    </div>
+    <div class="kensaku form-group">
+      　<%= submit_tag "検索" ,class:"btn btn-primary" %>
+    </div>
   <% end %>
-
-<table class="table table-hover">
-  <thead>
-    <tr>
-      <th style="display: none;">ID</th>
-      <th>メニュー名</th>
-      <th>カテゴリ</th>
-      <th>レシピ</th>
-      <th>盛り付けメモ</th>
-      <th>原価</th>
-    </tr>
-  </thead>
-
-  </br>
-  <tbody>
+</div>
+<div>
+  <div class="col-md-12" style="padding:10px;">
+    <div class="col-md-2">メニュー名</div>
+    <div class="col-md-1">カテゴリ</div>
+    <div class="col-md-3">レシピ</div>
+    <div class="col-md-3">盛り付けメモ</div>
+    <div class="col-md-1">原価</div>
+  </div>
+  <ul class='list-group' style="list-style-type: none;">
     <% @search.each do |menu| %>
-      <tr class="menus_tr" style="cursor: pointer">
-        <td class="menus_index" style="display: none;"><%= link_to "#{menu.id}", "/menus/#{menu.id}", method: :get %></td>
-        <td><%= menu.name %></td>
-        <td><%= menu.category %></td>
-        <td><%= menu.recipe %></td>
-        <td><%= menu.serving_memo %></td>
-        <td class="cost_price_td"><%= menu.cost_price %>円</td>
-      </tr>
+      <li class="li-active menus_li col-md-12 list-group-item"  style="cursor: pointer">
+        <div class="menu_name col-md-2"><%= link_to "#{menu.name}", "/menus/#{menu.id}", method: :get %></div>
+        <div class="col-md-1"><%= menu.category %></div>
+        <div class="col-md-3"><%= menu.recipe %></div>
+        <div class="col-md-3"><%= menu.serving_memo %></div>
+        <div class="cost_price_td col-md-1"><%= menu.cost_price %>円</div>
+      </li>
     <% end %>
-  </tbody>
-</table>
-
+  </ul>
+</div>
 <% if @search.size == 0 then %>
 <p>該当するメニューは存在しません</p>
 <% end %>

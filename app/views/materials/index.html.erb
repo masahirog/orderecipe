@@ -1,11 +1,14 @@
+<div class="form-inline col-md-12" style="padding:10px;">
   <h3>食材資材の新規登録
     <a href="/materials/new">
       <span class="glyphicon glyphicon-plus-sign" aria-hidden="true">
       </span>
     </a>
   </h3>
+</div>
 
-<div class="col-xs-13 col-md-12">
+
+<div class="col-xs-12 col-md-12">
   <%= form_tag Material, :method => 'get' do %>
     <div class="col-xs-3 col-md-2">
       <p>食材・資材名：</p>
@@ -29,50 +32,41 @@
       <%= select :end_of_sales, :value, [["販売のみ", 0], ["終売のみ", 1]], {include_blank: true},class:"form-control" %>
     </div>
     <div class="kensaku form-group col-md-2">
+      <p>　</p>
       　<%= submit_tag "検索" ,class:"btn btn-primary" %>
     </div>
   <% end %>
 </div>
-
-
-<table class="table table-hover">
-  <thead>
-    <tr>
-      <th style="display: none;">ID</th>
-      <th>食材・資材名</th>
-      <th>発注名</th>
-      <th>計上単位</th>
-      <th>計上単位</th>
-      <th>計上単価(円)</th>
-      <th>原価単価(円)</th>
-      <th>カテゴリー</th>
-      <th>仕入先</th>
-      <th>発注コード</th>
-      <th>メモ</th>
-      <th>終売</th>
-    </tr>
-  </thead>
-
-  </br>
-  <tbody>
+<div>
+  <div class="col-md-12" style="padding:10px;">
+    <div class="col-md-2">食材・資材名</div>
+    <div class="col-md-2">発注名</div>
+    <div class="col-md-1">計上単位</div>
+    <div class="col-md-1">計上単位</div>
+    <div class="col-md-1">計上単価(円)</div>
+    <div class="col-md-1">原価単価(円)</div>
+    <div class="col-md-1">カテゴリー</div>
+    <div class="col-md-1">仕入先</div>
+    <div class="col-md-1">発注コード</div>
+    <div class="col-md-1">終売</div>
+  </div>
+  <ul class='list-group' style="list-style-type: none;">
     <% @search.each do |material| %>
-      <tr class="materials_tr" style="cursor: pointer">
-          <td class="materials_index" style="display: none;"><%= link_to material.id, "/materials/#{material.id}/edit", method: :get %></td>
-        <td><%= material.name %></td>
-        <td><%= material.order_name %></td>
-        <td><%= number_with_delimiter(material.calculated_value) %></td>
-        <td><%= material.calculated_unit %></td>
-        <td><%= number_with_delimiter(material.calculated_price) %></td>
-        <td><%= material.cost_price.round(2) %></td>
-        <td><%= material.category %></td>
-        <td><%= material.vendor.company_name%></td>
-        <td><%= material.order_code %></td>
-        <td><%= material.memo %></td>
-        <td><%= p "✔" if material.end_of_sales == 1 %></td>
-      </tr>
+      <li class="li-active materials_li col-md-12 list-group-item"  style="cursor: pointer">
+        <div class="material_name col-md-2"><%=link_to "#{material.name}", "/materials/#{material.id}/edit", method: :get %></div>
+        <div class="col-md-2"><%= material.order_name %></div>
+        <div class="col-md-1"><%= number_with_delimiter(material.calculated_value) %></div>
+        <div class="col-md-1"><%= material.calculated_unit %></div>
+        <div class="col-md-1"><%= number_with_delimiter(material.calculated_price) %></div>
+        <div class="col-md-1"><%= material.cost_price.round(2) %></div>
+        <div class="col-md-1"><%= material.category %></div>
+        <div class="col-md-1"><%= material.vendor.company_name%></div>
+        <div class="col-md-1"><%= material.order_code %></div>
+        <div class="col-md-1"><%= p "✔" if material.end_of_sales == 1 %></div>
+      </li>
     <% end %>
-  </tbody>
-</table>
+  </ul>
+</div>
 
 <% if @search.size == 0 then %>
 <p>該当する食材・資材が存在しません</p>

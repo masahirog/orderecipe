@@ -1,4 +1,4 @@
-  <%= form_for @menu do |f| %>
+<%= form_for @menu do |f| %>
   <% if @menu.errors.any? %>
     <div id="error_explanation">
       <b><%= pluralize(@menu.errors.count, "箇所") %>入力に不備があります</b>
@@ -18,7 +18,8 @@
   <div class="container form-group">
     <%= f.label :category ,'カテゴリー' %><br>
     <div class="col-xs-12 col-md-6">
-      <%= f.select :category, [["主食：ご飯など", "主食"],[ "主菜：メインのおかず", "主菜"],[ "副菜：副菜、漬物など", "副菜"],[ "容器：お弁当箱と箸等", "容器"]],{include_blank: true}, { class: "form-control"} %>
+      <%= f.select :category, [["主食：ご飯など", "主食"],[ "主菜：メインのおかず", "主菜"],
+      [ "副菜：副菜、漬物など", "副菜"],[ "容器：お弁当箱と箸等", "容器"]],{include_blank: true}, { class: "form-control"} %>
     </div>
   </div>
   <div class="container form-group">
@@ -43,55 +44,56 @@
     </div>
   </div>
 
-    <table class="table table-list table-striped form-group" id="material_table">
-      <thead>
-        <tr>
-          <th, style="display:none;">No.</th>
-          <th>食材・資材名</th>
-            <th, style="display:none;"></th>
-          <th>原価</th>
-          <th>仕入先</th>
-          <th colspan="2">使用量</th>
-          <th>使用価格</th>
-          <th></th>
-        </tr>
-      </thead>
-
-
-      <tbody class='table_body'>
-      <%= f.fields_for :menu_materials do |m| %>
-        <tr class="add_tr_material">
-          <td class="select_material">
-           <%= m.select :material_id, Material.where(end_of_sales:0).pluck(:name, :id),{include_blank: true}, class:'input_select_material'%>
-          </td>
-          <td class="cost_price">
-          </td>
-
-          <td class="vendor">
-          </td>
-
-          <td class="amount_used">
-          <%= m.text_field :amount_used, class:'amount_used_input form-control' %>
-          </td>
-
-          <td class="calculated_unit">
-          </td>
-
-          <td class="price_used form-inline">
-            <div class="price_used_value form-group"></div><div class="form-group">　円</div>
-          </td>
-          <td class="remove_material">
-            <a class ="remove_btn btn btn-danger" >削除</a>
-            <%= m.check_box :_destroy,class:"destroy_materials check_box form-control", style: "display:none;" %>
-          </td>
-        </tr>
-        <% end %>
-
-      </tbody>
-    </table>
+  <div class="material_area">
+        <div class="col-md-12">
+          <div class="col-md-3">食材・資材名</div>
+          <div class="col-md-1">原価</div>
+          <div class="col-md-1">仕入先</div>
+          <div class="col-md-2">使用量</div>
+          <div class="col-md-1">使用価格</div>
+          <div class="col-md-1">仕込み内容</div>
+          <div class="col-md-2">持ち場</div>
+          <div class="col-md-1"></div>
+        </div>
+    <ul class='material_ul list-group' style="list-style-type: none;">
+    <%= f.fields_for :menu_materials do |m| %>
+      <li class="add_li_material col-md-12 list-group-item" >
+        <div class="select_material col-md-3">
+         <%= m.select :material_id, Material.where(end_of_sales:0).pluck(:name, :id),{include_blank: true}, class:'input_select_material'%>
+       </div>
+        <div class="cost_price col-md-1 form-inline">
+          <div class="cost_price_value form-group"></div><div class="form-group">　円</div>
+        </div>
+        <div class="vendor col-md-1">
+        </div>
+        <div class="amount_used col-md-2 form-inline">
+          <%= m.text_field :amount_used, class:'amount_used_input form-control form-group',style:"width:140px;" %>
+          <div class="calculated_unit form-group">
+          </div>
+        </div>
+        <div class="preparation col-md-2">
+          <%= m.text_field :preparation, class:'preparation_input form-control',style:"width:250px;" %>
+        </div>
+        <div class="price_used form-inline col-md-1">
+          <div class="price_used_value form-group"></div><div class="form-group">　円</div>
+        </div>
+        <div class="col-md-1">
+          <%= m.select :post, [["調理場", "調理場"],[ "切り出し", "切り出し"],[ "切出/調理場", "切出/調理場"]],{include_blank: true}, { class: "form-control"} %>
+        </div>
+        <div class="remove_material col-md-1">
+          <a class ="remove_btn btn btn-danger" >削除</a>
+          <%= m.check_box :_destroy,class:"destroy_materials check_box form-control", style: "display:none;" %>
+        </div>
+      </li>
+      <% end %>
+    </ul>
+  </div>
+  <div class="col-md-12">
     <a class="add_material btn btn-primary">食材追加</a>
+  </div>
 
-    <div class="action">
-      <input type="button" onclick="submit();" value="登録する" class="btn btn-success">
-    </div>
-  <% end %>
+
+  <div class="action">
+    <input type="button" onclick="submit();" value="登録する" class="btn btn-success">
+  </div>
+<% end %>

@@ -43,13 +43,13 @@ class ProductPdf < Prawn::Document
     bounding_box([20, 480], :width => 380, :height => 400) do
     # tableメソッドは2次元配列を引数(line_item_rows)にとり、それをテーブルとして表示する
     # ブロック(do...end)内でテーブルの書式の設定をしている
-      table line_item_rows, cell_style: { size: 8 } do
+      table line_item_rows, cell_style: { size: 7 } do
       # 全体設定
 
-      cells.padding = 2          # セルのpadding幅
+      cells.padding = 2         # セルのpadding幅
       cells.borders = [:bottom,] # 表示するボーダーの向き(top, bottom, right, leftがある)
       cells.border_width = 0.5   # ボーダーの太さ
-      cells.height = 15
+      cells.height = 12
       # 個別設定
       # row(0) は0行目、row(-1) は最後の行を表す
       row(0).border_width = 1
@@ -87,13 +87,13 @@ class ProductPdf < Prawn::Document
     bounding_box([405, 480], :width => 60, :height => 400) do
     # tableメソッドは2次元配列を引数(line_item_rows)にとり、それをテーブルとして表示する
     # ブロック(do...end)内でテーブルの書式の設定をしている
-      table right_item_rows, cell_style: { size: 8,align: :right } do
+      table right_item_rows, cell_style: { size: 7,align: :right } do
       # 全体設定
 
-      cells.padding = 2          # セルのpadding幅
+      cells.padding = 2         # セルのpadding幅
       cells.borders = [:bottom,] # 表示するボーダーの向き(top, bottom, right, leftがある)
       cells.border_width = 0.5   # ボーダーの太さ
-      cells.height = 15
+      cells.height = 12
       # 個別設定
       # row(0) は0行目、row(-1) は最後の行を表す
       row(0).border_width = 1

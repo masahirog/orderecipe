@@ -1,51 +1,50 @@
-<table class="table">
-  <thead>
-    <tr class="active">
-      <th>メニュー名</th>
-      <th>メニュー原価</th>
-      <th>カテゴリー</th>
-      <th>調理メモ</th>
-      <th>盛り付けメモ</th>
-      <th>調理メモ</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><%= @menu.name %></td>
-      <td><%= @menu.cost_price %> 円</td>
-      <td><%= @menu.category %></td>
-      <td><%= @menu.recipe %></td>
-      <td><%= @menu.serving_memo %></td>
-    </tr>
-  </tbody>
-</table>
-
-
-<table class="table">  <thead>
-    <tr class="active">
-      <th>食材</th>
-      <th>原価</th>
-      <th>仕入先</th>
-      <th colspan="2" class="text-center">分量</th>
-      <th class="text-right">使用価格</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @menu_materials.each do |mm| %>
-      <tr>
-      <td><%= link_to mm.material.name, "/materials/#{mm.material.id}/edit", method: :get %></td>
-      <td><%= mm.material.cost_price %> 円</td>
-      <td><%= link_to mm.material.vendor.company_name, "/vendors/#{mm.material.vendor.id}", method: :get %></td>
-      <td class="text-right"><%= mm.amount_used %></td>
-      <td class="text-left"><%= mm.material.calculated_unit %></td>
-      <td class="text-right"><%= (mm.amount_used * mm.material.cost_price).round(1) %>円</td>
-      </tr>
-    <% end %>
-
-  </tbody>
-</table>
+<div>
+  <div class="active col-md-12" style="padding:10px">
+    <div class="col-md-3">メニュー名</div>
+    <div class="col-md-1">メニュー原価</div>
+    <div class="col-md-2">カテゴリー</div>
+    <div class="col-md-3">調理メモ</div>
+    <div class="col-md-3">盛り付けメモ</div>
+  </div>
+  <ul class="list list-group">
+    <li class="list-group-item col-md-12">
+      <div class="col-md-3"><%= @menu.name %></div>
+      <div class="col-md-1"><%= @menu.cost_price %> 円</div>
+      <div class="col-md-2"><%= @menu.category %></div>
+      <div class="col-md-3"><%= simple_format(@menu.recipe) %></div>
+      <div class="col-md-3"><%= simple_format(@menu.serving_memo) %></div>
+    </li>
+  </ul>
+</div>
 
 
 <div>
-  <%= button_to 'メニュー編集', "/menus/#{@menu.id}/edit", method: :get,class: "btn btn-primary" %>
+    <div class="col-md-12" style="padding:10px">
+      <div class="col-md-2">食材</div>
+      <div class="col-md-1">原価</div>
+      <div class="col-md-2">仕入先</div>
+      <div class="col-md-1">分量</div>
+      <div class="col-md-1">使用価格</div>
+      <div class="col-md-2">仕込み内容</div>
+      <div class="col-md-1">持ち場</div>
+  </div>
+  <ul class="list list-group">
+    <% @menu_materials.each do |mm| %>
+      <li class="list-group-item col-md-12">
+      <div class="col-md-2"><%= link_to mm.material.name, "/materials/#{mm.material.id}/edit", method: :get %></div>
+      <div class="col-md-1"><%= mm.material.cost_price %> 円</div>
+      <div class="col-md-2"><%= link_to mm.material.vendor.company_name, "/vendors/#{mm.material.vendor.id}", method: :get %></div>
+      <div class="col-md-1"><%= mm.amount_used %> <%= mm.material.calculated_unit %></div>
+      <div class="col-md-1"><%= (mm.amount_used * mm.material.cost_price).round(1) %>円</div>
+      <div class="col-md-2"><%= mm.preparation %></div>
+      <div class="col-md-1"><%= mm.post %></div>
+    </li>
+    <% end %>
+
+  </ul>
+</div>
+
+
+<div>
+  <%= button_to 'メニュー編集', "/menus/#{@menu.id}/edit", method: :get,class: "btn btn-primary",style:"margin:10px;" %>
 </div>

@@ -13,9 +13,9 @@ class Product < ApplicationRecord
   validates :product_type, presence: true
   validates :sell_price, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :cost_price, presence: true, numericality: true
-  validates :description, presence: true, format: { with: /\A[^”’（）｜‘＿＾；　０-９ａ-ｚＡ-Ｚ]+\z/,
+  validates :description, format: { with: /\A[^”’（）｜‘＿＾；　０-９ａ-ｚＡ-Ｚ]+\z/,
     message: "：全角英数字スペース及び、全角記号^”’（）｜‘＿＾；は使用出来ません。"}
-  validates :contents, presence: true, format: { with: /\A[^”’（）｜‘＿＾；　０-９ａ-ｚＡ-Ｚ]+\z/,
+  validates :contents, format: { with: /\A[^”’（）｜‘＿＾；　０-９ａ-ｚＡ-Ｚ]+\z/,
     message: "：全角英数字スペース及び、全角記号^”’（）｜‘＿＾；は使用出来ません。"}
 
   def self.search(params) #self.でクラスメソッドとしている

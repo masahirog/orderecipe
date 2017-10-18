@@ -1,72 +1,75 @@
+<div class="form-inline col-md-12" style="padding:10px;">
   <h3>お弁当の新規登録
     <a href="/products/new">
-      <span class="glyphicon glyphicon-plus-sign" aria-hidden="true">
-      </span>
+      <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
     </a>
   </h3>
-  <p>　</p>
-  <div>
-    <%= form_tag Product, :method => 'get', class:"form-inline" do %>
-    <div class="kensaku form-group">
-      <p>お弁当名▼</p>
-      <%= text_field_tag :name, params[:name], class:"form-control" %>
-    </div>
-    <div class="kensaku form-group">
-      <p>調理カテゴリー▼</p>
-      <%= select_tag :cook_category, options_from_collection_for_select(Product.select(:cook_category).uniq, :cook_category, :cook_category), include_blank: true, class: "form-control" %>
-    </div>
-    <div class="kensaku form-group">
-       <p>お弁当タイプ▼</p>
-      <%= select_tag :product_type, options_from_collection_for_select(Product.select(:product_type).uniq, :product_type, :product_type), include_blank: true, class: "form-control" %>
-    </div>
-    <div class="kensaku form-group">
-      <p>　</p>
-    　<%= submit_tag "検索" ,class:"btn btn-primary" %>
-    </div>
+</div>
+<div class="form-inline col-md-12" style="padding:10px;">
+  <%= form_tag Product, :method => 'get', class:"form-group" do %>
+  <div class="kensaku form-group">
+    <p>お弁当名▼</p>
+    <%= text_field_tag :name, params[:name], class:"form-control" %>
   </div>
+  <div class="kensaku form-group">
+    <p>調理カテゴリー▼</p>
+    <%= select_tag :cook_category, options_from_collection_for_select(Product.select(:cook_category).uniq, :cook_category, :cook_category), include_blank: true, class: "form-control" %>
+  </div>
+  <div class="kensaku form-group">
+     <p>お弁当タイプ▼</p>
+    <%= select_tag :product_type, options_from_collection_for_select(Product.select(:product_type).uniq, :product_type, :product_type), include_blank: true, class: "form-control" %>
+  </div>
+  <div class="kensaku form-group">
+    <p>　</p>
+  　<%= submit_tag "検索" ,class:"btn btn-primary" %>
+  </div>
+  <% end %>
+</div>
 
-
-<% end %>
-<table class="table table-hover">
-    <thead>
-      <tr>
-        <th style="display: none;">ID</th>
-        <th>弁当名</th>
-        <th>調理カテゴリー</th>
-        <th>弁当の種類</th>
-        <th>販売価格</th>
-        <th>原価(税8%含)</th>
-        <th>説明文</th>
-        <th>内容物</th>
-        <th>画像</th>
-      </tr>
-    </thead>
-    </br>
-    <tbody>
-      <% @search.each do |product| %>
-        <tr class="products_tr" style="cursor: pointer">
-          <td class="products_index" style="display: none;"><%= link_to "#{product.id}", "/products/#{product.id}/", method: :get %></td>
-          <td><%= product.name %></td>
-          <td><%= product.cook_category %></td>
-          <td><%= product.product_type %></td>
-          <td class="price text-right"><%= product.sell_price %>円</td>
-          <td class="price text-right"><%= product.cost_price %>円</td>
-          <td><%= truncate(product.description,length:10) %></td>
-          <td><%= truncate(product.contents,length:10) %></td>
-          <td>
-            <%= image_tag product.product_image.thumb.url if product.product_image.present? %>
-          </td>
-        </tr>
-        <% end %>
-    </tbody>
-  </table>
-
-
+<div class="">
+  <div class="col-md-12" style="padding:10px;">
+    <div class="col-md-2">弁当名</div>
+    <div class="col-md-1">調理カテゴリ</div>
+    <div class="col-md-1">弁当種類</div>
+    <div class="col-md-1">販売価格</div>
+    <div class="col-md-1">原価(税8%含)</div>
+    <div class="col-md-2">説明文</div>
+    <div class="col-md-2">内容物</div>
+    <div class="col-md-2">画像</div>
+  </div>
+  <ul class='list-group' style="list-style-type: none;">
+    <% @search.each do |product| %>
+      <li class="li-active products_li col-md-12 list-group-item"  style="cursor: pointer">
+        <div class="product_name col-md-2">
+          <%= link_to "#{product.name}", "/products/#{product.id}/", method: :get %>
+        </div>
+        <div class="col-md-1">
+          <%= product.cook_category %>
+        </div>
+        <div class="col-md-1">
+          <%= product.product_type %>
+        </div>
+        <div class="col-md-1 price text-right">
+          <%= product.sell_price %>円
+        </div>
+        <div class="col-md-1 price text-right">
+          <%= product.cost_price %>円
+        </div>
+        <div class="col-md-2">
+          <%= truncate(product.description,length:10) %>
+        </div>
+        <div class="col-md-2">
+          <%= truncate(product.contents,length:10) %>
+        </div>
+        <div class="col-md-2">
+          <%= image_tag product.product_image.thumb.url if product.product_image.present? %>
+        </div>
+      </li>
+      <% end %>
+  </ul>
+</div>
 <% if @search.size == 0 then %>
-<p>該当するお弁当が存在しません</p>
+  <p>該当するお弁当が存在しません</p>
 <% end %>
-
 </br>
-
   <%= paginate(@search) %>
-  <!-- ページネーション -->

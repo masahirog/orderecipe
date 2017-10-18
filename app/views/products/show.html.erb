@@ -1,23 +1,15 @@
+<div class="col-xs-11 col-md-12 form-inline">
+  <div class="col-xs-11 col-md-12 form-group">
+    <%= form_tag({:controller => "products", :action => "print", format: "pdf"},{:target => "_blank"}) do %>
+    <%= number_field(:volume,:num,class:"form-control text-right",id:"amount_number_input",placeholder:"食数を入力") %>
+    <input id="amount_calculation" type="button" onclick="" value="計算" class="btn btn-primary form-group" style="margin:0 0 0 10px;width:80px">
+    <input type="button" onclick="submit();" value="印刷ページ" class="btn btn-primary" style="margin:0 0 0 10px;">
+    <%= link_to "盛付用VIEW", "/products/serving_detail/#{@product.id}",method:"get", class:"btn btn-success",:target=>"_blank", style:"margin:0 0 0 10px;"%>
+  </div>
 
-<div class="col-xs-11 col-md-5 form-inline">
 
-  <%= form_tag({:controller => "products", :action => "print", format: "pdf"},{:target => "_blank"}) do %>
-  <%= number_field(:volume,:num,class:"form-control text-right",id:"amount_number_input",placeholder:"食数を入力") %>
- <!-- <input type="number" id="amount_number_input" class="form-control text-right" placeholder="食数を入力"> -->
-  <input id="amount_calculation" type="button" onclick="" value="計算" class="btn btn-primary">
+  <% end %>
 </div>
-
-<div class="col-md-1 pull-right">
-  <%= link_to "盛付用VIEW", "/products/serving_detail/#{@product.id}",method:"get", class:"btn btn-success",:target=>"_blank"%>
-</div>
-<!-- <div class="col-md-1 pull-right">
-  <%= link_to("印刷する",{:controller => "products", :action => "print", format: "pdf"},{:target => "_blank",class:"btn btn-success"}) %>
-</div> -->
-
-<div class="col-md-2 pull-right">
-  <input type="button" onclick="submit();" value="印刷ページ" class="btn btn-success">
-</div>
-<% end %>
 
 
 <div class="amount_number col-xs-12 col-md-12">
@@ -48,11 +40,11 @@
    </tr>
    <tr class="">
     <th class="active col-md-4">説明文</th>
-    <td><%= @product.description %></td>
+    <td><%= simple_format(@product.description) %></td>
   </tr>
     <tr class="">
      <th class="active col-md-4">内容物</th>
-     <td><%= @product.contents %></td>
+     <td><%=simple_format( @product.contents) %></td>
    </tr>
  </table>
  </div>
@@ -62,46 +54,54 @@
 <div class="col-md-2 text-center">
 <%= image_tag @product.product_image.to_s ,class:"text-center img-responsive center-block" %>
 </div>
-   <table class="table">
-     <thead>
-       <tr class="active">
-         <th>メニュー名</th>
-         <th>カテゴリー</th>
-         <th>メニュー原価</th>
-         <th>レシピ</th>
-         <th>盛り付けメモ</th>
-         <th>食材資材名</th>
-         <th colspan="2">使用量</th>
-         <th colspan="2" class="calculate_amount_used_th" style="display: none;">使用量</th>
-
-       </tr>
-     </thead>
-      <tbody>
-        <% @menus.each do |menu| %>
-          <tr  class="first_tr table_tr">
-            <td class="menu_materials_length" style="display:none;"><%= menu.materials.length %></td>
-            <td class="first_tr_td"><%= link_to "#{menu.name}", "/menus/#{menu.id}/edit", method: :get %></td>
-            <td class="first_tr_td"><%= menu.category %></td>
-            <td class="text-right first_tr_td"><%= menu.cost_price %>円</td>
-            <td class="first_tr_td"><%= menu.recipe %></td>
-            <td class="first_tr_td"><%= menu.serving_memo %></td>
-            <% i = 1 %>
-            <% u = menu.materials.length %>
-            <% menu.menu_materials.each do |mm|%>
-              <td><%= link_to mm.material.name, "/materials/#{mm.material_id}/edit", method: :get %></td>
-              <td class="original_amount_used text-right"><%= mm.amount_used %></td>
-              <td><%= mm.material.calculated_unit %></td>
-              <td class="calculate_amount_used" style="display: none;"></td>
-              <td class="calculate_unit" style="display: none;"><%= mm.material.calculated_unit %></td>
-          </tr>
-          <% if i == menu.materials.length  %>
-            <% else %>
-              <tr class="table_tr">
-              <% i += 1 %>
-            <% end %>
+  <div class="col-md-12 active" style="padding:10px;">
+    <div class="col-md-2">メニュー名</div>
+    <div class="col-md-1">カテゴリ</div>
+    <div class="col-md-1">原価</div>
+    <div class="col-md-2">レシピ</div>
+    <div class="col-md-2">盛り付けメモ</div>
+    <div class="col-md-2">食材資材名</div>
+    <div class="col-md-1">使用量</div>
+    <div class="col-md-1 calculate_amount_used_th text-right" style="display:none;"></div>
+  </div>
+    <ul class='list-group' style="list-style-type: none;">
+    <% @menus.each do |menu| %>
+      <li class="first_tr table_tr col-md-12 list-group-item">
+        <div class="first_tr_td col-md-2"><%= link_to "#{menu.name}", "/menus/#{menu.id}/edit", method: :get %></div>
+        <div class="first_tr_td col-md-1"><%= menu.category %></div>
+        <div class="text-right first_tr_td col-md-1"><%= menu.cost_price %>円</div>
+        <div class="first_tr_td col-md-2"><%= simple_format(menu.recipe) %></div>
+        <div class="first_tr_td col-md-2"><%= simple_format(menu.serving_memo) %></div>
+        <% i = 1 %>
+        <% u = menu.materials.length %>
+        <div class="first_tr_td col-md-4">
+        <ul class='list-group' style="list-style-type: none;">
+          <% menu.menu_materials.each do |mm|%>
+            <li class="menu_materials">
+              <div class="col-md-5"><%= link_to mm.material.name, "/materials/#{mm.material_id}/edit", method: :get %></div>
+              <div class="original_amount_used text-right col-md-3 form-inline">
+                <div class="original_amount_used_value form-group">
+                  <%= mm.amount_used %>
+                </div>
+                <div class="form-group">
+                  <%= mm.material.calculated_unit %>
+               </div>
+              </div>
+              <div class="calculate_unit col-md-4 form-inline text-right" style="display:none;">
+                <div class="calculate_amount_used form-group">111</div>
+                  <div class="form-group">
+                    <%= mm.material.calculated_unit %>
+                  </div>
+                </div>
+          <% if i == u  %>
+            </li></div>
+          <% else %>
+            <li class="col-md-12">
+            <% i += 1 %>
+          <% end %>
         <% end %>
-       <% end %>
-     </tbody>
-   </table>
-
+    <% end %>
+  </ul>
+<div class="col-md-12" style="margin:10px 10px 30px 0;">
    <%= button_to 'お弁当を編集', "/products/#{@product.id}/edit", method: :get,class: "btn btn-primary" %>
+</div>
