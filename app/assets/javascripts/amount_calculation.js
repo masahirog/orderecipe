@@ -14,14 +14,15 @@ $(function(){
         var i = 0
         $(".menu_materials").each(function() {
           var oau = $(this).children(".original_amount_used").children(".original_amount_used_value").text();
-            oau = Number(oau);
+          oau = Number(oau);
           var calculate_amount_used = kanma(oau*num);
-          $(this).children(".calculate_unit").children(".calculate_amount_used").text(calculate_amount_used);
+          console.log(calculate_amount_used);
+          $(this).children(".calculated_unit").children(".calculate_amount_used").text(calculate_amount_used);
         });
 
         $(".calculate_amount_used_th").text(kanma(num)+"人分");
         $(".calculate_amount_used_th").show();
-        $(".calculate_unit").show();
+        $(".calculated_unit").show().addClass("bg-warning")
       };
     });
 });

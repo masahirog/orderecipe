@@ -46,7 +46,7 @@ $(function(){
   $(".add_menu").on('click', function addInput(){
     var u =  $(".add_li_menu").length;
     $(".input_select_menu").select2('destroy');
-    $(".add_li_menu").first().clone().appendTo(".menu-area");
+    $(".add_li_menu").first().clone().appendTo(".used_menu_ul");
     var last_li =$(".add_li_menu").last();
     last_li.children(".select_menu").children().attr('name', "product[product_menus_attributes]["+u+"][menu_id]" );
     last_li.children(".select_menu").children().attr('id', "product_product_menus_attributes_"+u+"_menu_id" );
@@ -71,6 +71,7 @@ $(function(){
 
   //メニュー変更時
   $(".used_menu_ul").on('change','.input_select_menu', function(){
+    console.log("saa");
     var id = $(this).val();
     var u = $(".add_li_menu").index($(this).parent().parent(".add_li_menu"));
       $.ajax({
@@ -107,17 +108,15 @@ $(function(){
     $(".add_li_menu").eq(u).children(".material_name").children().children().remove();
     $(".add_li_menu").eq(u).children(".amount_used").children().children().remove();
     $(".add_li_menu").eq(u).children(".material_unit").children().children().remove();
-    var materials = data.menu.materials;
-    var menu_materials = data.menu.menu_materials;
-    $.each(materials,function(index,material){
-      var name =  material.name;
-      var unit = material.calculated_unit;
+    var menu_materials_info = data.menu.menu_materials_info;
+    $.each(menu_materials_info,function(index,mmi){
+      var amount_used = mmi.amount_used;
+      var name =  mmi.material_name;
+      var unit = mmi.calculated_unit;
+      var prepa = mmi.preparation;
       $(".add_li_menu").eq(u).children(".material_name").children().append("<li>"+name+"</li>");
-      $(".add_li_menu").eq(u).children(".material_unit").children().append("<li>"+unit+"</li>");
-    });
-    $.each(menu_materials,function(index,mm){
-      var amount_used = mm.amount_used;
-      $(".add_li_menu").eq(u).children(".amount_used").children().append("<li class='text-right'>"+amount_used+"</li>");
+      $(".add_li_menu").eq(u).children(".amount_used").children().append("<li class='text-right'>"+amount_used+" ("+unit+")"+"</li>");
+      $(".add_li_menu").eq(u).children(".preparation").children().append("<li>"+prepa+"</li>");
     });
   };
 });

@@ -1,6 +1,3 @@
-
-<!-- ヘッダー等を非表示にしたため、コントローラーでfalseにし、ヘッドを読み込んでいる -->
-
   <head>
     <title>Order</title>
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
@@ -42,49 +39,41 @@
          </tr>
        </tbody>
     </table>
-    <div class ="col-xs-12 col-md-8">
-      <table class="table">
-         <thead class="">
-           <tr class="active">
-             <th class="col-md-2">メニュー名</th>
-             <th class="col-md-1">カテゴリ</th>
-             <th class="col-md-2">レシピ</th>
-             <th class="col-md-2">盛り付けメモ</th>
-             <th class="col-md-2">食材資材名</th>
-             <th class="col-md-1" colspan="2">使用量</th>
-             <th colspan="2" class="calculate_amount_used_th col-md-1" style="display: none; font-size:20px;">使用量</th>
-           </tr>
-         </thead>
-          <tbody class="">
-            <% @menus.each do |menu| %>
-                <tr  class="first_tr table_tr">
-                  <td class="menu_materials_length" style="display:none;"><%= menu.materials.length %></td>
-                   <td class="first_tr_td"><%= menu.name %></td>
-                   <td class="first_tr_td"><%= menu.category %></td>
-                   <td class="first_tr_td"><%= menu.recipe %></td>
-                   <td class="first_tr_td"><%= menu.serving_memo %></td>
-                   <% i = 1 %>
-                   <% u = menu.materials.length %>
-                   <% menu.menu_materials.each do |mm|%>
-                   <td class=""><%= mm.material.name %></td>
-                   <td class="original_amount_used text-right"><%= mm.amount_used %></td>
-                   <td class=""><%= mm.material.calculated_unit %></td>
-                   <td class="calculate_amount_used" style="display: none; font-weight:bold; font-size:20px;"></td>
-                   <td class="calculate_unit" style="display: none; font-weight:bold;"><%= mm.material.calculated_unit %></td>
-              </tr>
-              <% if i == menu.materials.length  %>
-                <% else %>
-                  <tr class="table_tr">
-                  <% i += 1 %>
-              <% end %>
-            <% end %>
-           <% end %>
-       </tbody>
-     </table>
-     </div>
-
-      <div class ="product_image_l col-xs-12 col-md-4">
+      <div class="col-md-7">
+        <div class="col-md-4">盛り付けメモ</div>
+        <div class="col-md-3">材料名</div>
+        <div class="col-md-3">使用量</div>
+        <div class="calculate_amount_used_th col-md-2" style="display: none; font-size:20px;"></div>
+      </div>
+      <ul class="list-group col-md-7" style="list-style:none;">
+        <% @menus.each do |menu| %>
+        <li class="product_menus col-md-12 list-group-item">
+          <div class="col-md-3"><%= menu.serving_memo %></div>
+          <% i = 1 %>
+          <% u = menu.materials.length %>
+            <ul class="col-md-9 menu_materials" style="list-style:none;">
+            <% menu.menu_materials.each do |mm|%>
+                <li class="menu_materials col-md-12">
+                  <div class="col-md-6"><%= mm.material.name %></div>
+                  <div class="col-md-3 original_amount_used form-inline">
+                    <div class="original_amount_used_value text-right form-group"><%= mm.amount_used %></div>
+                    <div class="form-group"><%= mm.material.calculated_unit %></div>
+                  </div>
+                  <div class="calculated_unit col-md-3 form-inline text-right" style="display:none;">
+                    <div class="calculate_amount_used form-group" style="font-weight:bold; font-size:20px;"></div>
+                    <div class="form-group" style="font-weight:bold;"><%= mm.material.calculated_unit %></div>
+                  </div>
+      <% if i == menu.materials.length  %>
+    </li></ul>
+      <% else %>
+      </li>
+      <% i += 1 %>
+          <% end %>
+        <% end %>
+       <% end %>
+   </ul>
+      <div class ="product_image_l col-xs-12 col-md-5">
         <%= image_tag @product.product_image.to_s, class:"img-responsive" %>
       </div>
-   </div>
+      </div>
  </body>

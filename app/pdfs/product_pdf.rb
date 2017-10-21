@@ -13,11 +13,17 @@ class ProductPdf < Prawn::Document
     # メソッドを作成。下記に内容あり。
     # content
     # render_table
-
+    sen
     header
     header_lead
     table_content
     table_right
+    preparation_cut_title
+    preparation_cut
+    preparation_cook_title
+    preparation_cook
+    preparation_duble_title
+    preparation_duble
   end
 
 
@@ -59,21 +65,21 @@ class ProductPdf < Prawn::Document
 
       self.header     = true  # 1行目をヘッダーとするか否か
       # self.row_colors = ['FBFAFA', 'ffffff'] # 列の色
-      self.column_widths = [80,30,120,100,50] # 列の幅
+      self.column_widths = [80,40,110,100,50] # 列の幅
       end
     end
   end
   # テーブルに表示するデータを作成(2次元配列)
   def line_item_rows
     # テーブルのヘッダ部
-    data= [["メニュー名","カテゴリ","盛り付けメモ","食材・資材","使用量"]]
+    data= [["メニュー名","カテゴリ","調理メモ","食材・資材","使用量"]]
     @menus.each do |menu|
       u = menu.materials.length
       s_data = []
       menu.menu_materials.each_with_index do |mm,i|
         if i == 0
           data << [{:content => "#{menu.name}", :rowspan => u},{:content => "#{menu.category}", :rowspan => u},
-            {:content => "#{menu.serving_memo}", :rowspan => u},"#{Material.find(mm.material_id).name}",
+            {:content => "#{menu.recipe}", :rowspan => u},"#{Material.find(mm.material_id).name}",
             "#{mm.amount_used} #{Material.find(mm.material_id).calculated_unit}"]
         else
           data << ["#{Material.find(mm.material_id).name}","#{mm.amount_used} #{Material.find(mm.material_id).calculated_unit}"]
@@ -82,6 +88,7 @@ class ProductPdf < Prawn::Document
     end
     data
   end
+
 
   def table_right
     bounding_box([405, 480], :width => 60, :height => 400) do
@@ -125,7 +132,65 @@ class ProductPdf < Prawn::Document
     data
   end
 
+  def preparation_cut_title
+    bounding_box([500, 520], :width => 250, :height => 20) do
+      text "切り出し"
+    end
+  end
 
+  def preparation_cut
+    bounding_box([500, 500], :width => 250, :height => 130) do
+      stroke_bounds
+      pad(10){
+      @menus.each do |menu|
+        menu.menu_materials.each do |mm|
+          if mm.post == "切り出し"
+          text "　＜#{mm.material.name}＞ #{mm.amount_used.round * @num.to_i} #{mm.material.calculated_unit}を#{mm.preparation}", size: 9,leading: 5
+          end
+        end
+      end}
+    end
+  end
+
+  def preparation_cook_title
+    bounding_box([500, 350], :width => 250, :height => 20) do
+      text "調理場"
+    end
+  end
+
+  def preparation_cook
+    bounding_box([500,330], :width => 250, :height => 130) do
+      stroke_bounds
+      pad(10){
+      @menus.each do |menu|
+        menu.menu_materials.each do |mm|
+          if mm.post == "調理場"
+            text "　＜#{mm.material.name}＞ #{mm.amount_used.round * @num.to_i} #{mm.material.calculated_unit}を#{mm.preparation}", size: 9,leading: 5
+          end
+        end
+      end}
+    end
+  end
+
+  def preparation_duble_title
+    bounding_box([500, 180], :width => 250, :height => 20) do
+      text "切出/調理場"
+    end
+  end
+
+  def preparation_duble
+    bounding_box([500,160], :width => 250, :height => 130) do
+      stroke_bounds
+      pad(10){
+      @menus.each do |menu|
+        menu.menu_materials.each do |mm|
+          if mm.post == "切出/調理場"
+            text "　＜#{mm.material.name}＞ #{mm.amount_used.round * @num.to_i} #{mm.material.calculated_unit}を#{mm.preparation}", size: 9,leading: 5
+          end
+        end
+      end}
+    end
+  end
 
   def sen
     stroke_axis

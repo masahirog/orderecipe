@@ -23,6 +23,21 @@ class Menu < ApplicationRecord
    end
   end
 
+
+  def self.menu_materials_info(params)
+    menu = Menu.find(params[:id])
+    hoge = []
+    menu.menu_materials.each do |mm|
+      hash = {}
+      hash.store("material_name", mm.material.name)
+      hash.store("amount_used", mm.amount_used)
+      hash.store("calculated_unit", mm.material.calculated_unit)
+      hash.store("preparation", mm.preparation)
+      hoge << hash
+    end
+    return hoge
+  end
+
   private
   def update_product_cost_price
     #id（食材）をもった中間テーブル（→メニュー）

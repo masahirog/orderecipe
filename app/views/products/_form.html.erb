@@ -1,15 +1,14 @@
 <%= form_for @product do |f| %>
-<% if @product.errors.any? %>
-  <div id="error_explanation">
-    <h2><%= pluralize(@product.errors.count, "error") %> prohibited this recipe from being saved:</h2>
-
-    <ul>
-    <% @product.errors.full_messages.each do |message| %>
-      <li><%= message %></li>
-    <% end %>
-    </ul>
-  </div>
-<% end %>
+  <% if @product.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@product.errors.count, "error") %> prohibited this recipe from being saved:</h2>
+      <ul>
+        <% @product.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
 
   <div class="container form-group">
     <%= f.label :name, "弁当名" %><br>
@@ -92,19 +91,19 @@
   </div>
   <div class="menu-area table-striped">
     <div class="col-md-12">
-        <div class="col-md-2">カテゴリ</div>
+        <div class="col-md-1">カテゴリ</div>
         <div class="col-md-3">メニュー名</div>
-        <div class="col-md-1">原価</div>
-        <div class="col-md-2">食材名</div>
+        <div class="col-md-1  text-right">原価</div>
+        <div class="col-md-2">材料名</div>
         <div class="col-md-1">使用量</div>
-        <div class="col-md-1">単位</div>
-        <div class="col-md-1"></div>
+        <div class="col-md-1">仕込み</div>
+        <div class="col-md-2 text-right"></div>
     </div>
 
     <ul class='used_menu_ul list-group' style="list-style:none;">
       <%= f.fields_for :product_menus do |pr| %>
       <li class="add_li_menu col-md-12 list-group-item">
-        <div class="col-md-2">
+        <div class="col-md-1">
           <%= select :category,:category, [["主食"],[ "主菜"],[ "副菜"],["容器"]],{include_blank: true}, { class: "category_select form-control"} %>
         </div>
         <div class="select_menu col-md-3">
@@ -117,15 +116,14 @@
         <div class="material_name col-md-2">
           <ul style="list-style:none;"></ul>
         </div>
-
         <div class="amount_used col-md-1">
           <ul style="list-style:none;"></ul>
         </div>
-        <div class="material_unit col-md-1">
+        <div class="preparation col-md-1">
           <ul style="list-style:none;"></ul>
         </div>
 
-        <div class="remove_menu col-md-1">
+        <div class="remove_menu col-md-2 text-right">
           <a class ="remove_menu_btn btn btn-danger" >削除</a>
           <%= pr.check_box :_destroy,class:"destroy_menu", style: "display:none;" %>
         </div>
