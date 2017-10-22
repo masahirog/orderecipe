@@ -1,15 +1,12 @@
-<row class="col-md-12">
-  <div class="select col-md-2 text-right">
+<li class="form_li col-md-12"  style="padding-top:10px;">
+  <div class="col-md-2 text-right">
     <h4>お弁当<%= i+1 %>：</h4>
   </div>
   <div class="select col-md-5">
     <%= select_tag(:id, options_from_collection_for_select(@products,:id,:name),include_blank: true,class:"input_select_product col-md-8",name:"id#{i}") %>
   </div>
 
-  <div class="col-md-2">
-    <%= number_field :num,{}, name:"num#{i}",class:'cook_num form-control', :id => "cook_num#{i}", placeholder:"食数を入力"%>
+  <div class="cook_num col-md-2">
+    <%= number_field :num,{}, name:"num#{i}",class:'input_cook_num form-control', :id => "cook_num#{i}", placeholder:"食数を入力"%>
   </div>
-  <div>
-    <br>　
-  </div>
-</row>
+</li>

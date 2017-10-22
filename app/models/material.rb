@@ -70,22 +70,18 @@ class Material < ApplicationRecord
 
   private
   def update_cache
-    #id（食材）をもった中間テーブル（→メニュー）
     menu_materials = MenuMaterial.where( material_id: self.id )
-
     menu_materials.each do |menu_material|
-
       id = menu_material.menu_id
-      aaa = MenuMaterial.where(menu_id: id)
-
+      menu_materials = MenuMaterial.where(menu_id: id)
       kingaku = 0
-      aaa.each do |a|
-        used = a.amount_used
-        cost = a.material.cost_price
+      menu_materials.each do |mm|
+        used = mm.amount_used
+        cost = mm.material.cost_price
         price = used * cost
         kingaku = kingaku + price
       end
-
+      cost_price = kingaku.round(2)
       menu = Menu.find(id)
       menu.update(cost_price: kingaku)
     end

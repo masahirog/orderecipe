@@ -31,6 +31,19 @@ class MaterialsController < ApplicationController
     end
   end
 
+  def include_material
+    @menu_materials = MenuMaterial.where(material_id: params[:id]).page(params[:page]).per(20)
+    @materials = Material.all
+  end
+  def include_update
+    update_mms = params[:post]
+    update_mms.each do |mm|
+      @mm = MenuMaterial.find(mm[:mm_id])
+      @mm.update_attribute(:material_id, mm[:material_id])
+    end
+    redirect_to :back
+  end
+
   private
   def material_params
     params.require(:material).permit(:name, :order_name, :calculated_value, :calculated_unit,

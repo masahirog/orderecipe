@@ -1,0 +1,64 @@
+
+<div class="col-md-12">
+  <h4>材料名「 <%= Material.find(params[:id]).name %> 」を含むmenuの一覧</h4>
+</div>
+
+
+<div class="col-md-12" style="margin:10px;">
+  <div class="col-md-12" style="margin:10px;">
+    チェックの付いたmenuに含まれている「 <%= Material.find(params[:id]).name %> 」を選択した食材に一括変更が出来ます
+  </div>
+  <div class="col-md-4">
+  <%= select :material_id,:material_id, Material.where(end_of_sales:0).pluck(:name, :id),{include_blank: true}, class:'all_select_material'%>
+  </div>
+
+
+</div>
+
+<%= form_tag(:controller => "materials", :action => "include_update") do %>
+  <div class="col-md-12">
+    <input type="button" onclick="submit();" value="材料の変更" class="btn btn-success pull-right">
+  </div>
+  <div class="col-md-12">
+    <div class="col-md-1">
+      <label>all</label>
+      <input type="checkbox" class="all_box">
+    </div>
+    <div class="col-md-3">
+      menu名
+    </div>
+    <div class="col-md-2">
+      使用量
+    </div>
+    <div class="col-md-2">
+      変更後の材料
+    </div>
+
+  </div>
+  <ul class="col-md-12 list-group" style="list-style:none;">
+    <% i = 0 %>
+    <% @menu_materials.each do |mm| %>
+      <% hash = {} %>
+      <li class="menu_include_material col-md-12 list-group-item">
+        <div class="col-md-1 menu_check">
+          <input type="checkbox" class="form-control">
+        </div>
+        <div class="col-md-3">
+          <%=link_to "#{mm.menu.name}", "/menus/#{mm.menu.id}", method: :get %>
+        </div>
+        <div class="col-md-2">
+          <%= mm.amount_used %> <%= mm.material.calculated_unit %>
+        </div>
+        <div class="col-md-1" style="display:none;">
+          <%= text_field_tag :id, mm.id, name:"post[][mm_id]" %>
+        </div>
+        <div class="col-md-2 select_material">
+          <%= select_tag(:material_id, options_from_collection_for_select(@materials,:id,:name, :selected => mm.material_id), include_blank: true,
+          class:"input_select_material", name:"post[][material_id]") %>
+        </div>
+      </li>
+      <% i += 1 %>
+    <% end %>
+  </ul>
+<% end %>
+<%= paginate @menu_materials %>

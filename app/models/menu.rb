@@ -40,22 +40,16 @@ class Menu < ApplicationRecord
 
   private
   def update_product_cost_price
-    #id（食材）をもった中間テーブル（→メニュー）
-    product_menus = ProductMenu.where( menu_id: self.id )
-
-    product_menus.each do |product_menu|
-
-      id = product_menu.product_id
-      aaa = ProductMenu.where(product_id: id)
-
+    product_menus_selected_menu = ProductMenu.where( menu_id: self.id )
+    product_menus_selected_menu.each do |pmsm|
+      id = pmsm.product_id
+      product_menus = ProductMenu.where(product_id: id)
       kingaku = 0
-      aaa.each do |a|
-        cost = a.menu.cost_price
-        kingaku = kingaku + cost
+      product_menus.each do |pm|
+        kingaku += pm.menu.cost_price
       end
-
-      product = Product.find(id)
-      product.update(cost_price: kingaku)
+      cost_price = (kingaku * 1.08).round(1)
+      Product.find(id).update(cost_price: cost_price)
     end
   end
 end

@@ -20,6 +20,10 @@ class ProductsController < ApplicationController
     end
   end
 
+  def multiple_show
+    @num = params[:num0]
+  end
+
   def index
     @search = Product.search(params).page(params[:page]).per(20)
   end
@@ -64,14 +68,14 @@ class ProductsController < ApplicationController
 
   def print
     @params = params
-    @product = Product.find(params[:id])
+    @product = Product.find(params[:volume][:id])
     @menus = @product.menus.includes(:materials, :menu_materials)
     respond_to do |format|
      format.html
      format.pdf do
        pdf = ProductPdf.new(@params,@product,@menus)
        send_data pdf.render,
-         filename:    "#{@product.name}.pdf",
+         filename:    "#{@product.name}_#{params[:volume][:num]}shoku.pdf",
          type:        "application/pdf",
          disposition: "inline"
      end

@@ -9,13 +9,15 @@ Rails.application.routes.draw do
   get 'menus/get_cost_price/:id' => 'menus#get_cost_price'
   get 'products/get_menu_cost_price/:id' => 'products#get_menu_cost_price'
   get 'products/serving_detail/:id' => 'products#serving_detail'
-  post 'products/print/:id' => 'products#print'
+  post 'products/print' => 'products#print'
   post 'orders/new' => 'orders#new'
   post 'orders/confirm' => 'orders#confirm'
   get 'orders/material_info/:id' => 'orders#material_info'
   post'orders/order_print/:id' => 'orders#order_print'
   get 'products/get_by_category' => 'products#get_by_category'
-
+  post 'products/multiple_show' => 'products#multiple_show'
+  get 'materials/include_material/:id' => 'materials#include_material'
+  post'materials/include_update' => 'materials#include_update'
   resources :menus
   resources :products
   resources :tops

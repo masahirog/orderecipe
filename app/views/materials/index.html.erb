@@ -47,8 +47,8 @@
     <div class="col-md-1">原価単価(円)</div>
     <div class="col-md-1">カテゴリー</div>
     <div class="col-md-1">仕入先</div>
-    <div class="col-md-1">発注コード</div>
     <div class="col-md-1">終売</div>
+    <div class="col-md-1"</div>
   </div>
   <ul class='list-group' style="list-style-type: none;">
     <% @search.each do |material| %>
@@ -61,8 +61,10 @@
         <div class="col-md-1"><%= material.cost_price.round(2) %></div>
         <div class="col-md-1"><%= material.category %></div>
         <div class="col-md-1"><%= material.vendor.company_name%></div>
-        <div class="col-md-1"><%= material.order_code %></div>
         <div class="col-md-1"><%= p "✔" if material.end_of_sales == 1 %></div>
+        <div class="col-md-1">
+          <%=link_to "使用メニュー", "/materials/include_material/#{material.id}", method: :get %>
+        </div>
       </li>
     <% end %>
   </ul>

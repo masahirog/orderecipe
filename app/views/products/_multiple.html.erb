@@ -1,0 +1,60 @@
+<div class="panel-heading col-md-12">
+  <h4 class="panel-title col-md-1">
+    弁当名：
+  </h4>
+  <h4 class="panel-title col-md-3" style="">
+    <%= Product.find(params[id]).name%>
+  </h4>
+
+  <h4 class="panel-title col-md-1">
+    製造数：
+  </h4>
+  <h4 class="panel-title col-md-1">
+    <%= params[num]%>人分
+  </h4>
+  <div class="col-md-2">
+    <%= form_tag({:controller => "products", :action => "print", format: "pdf"},{:target => "_blank"}) do %>
+      <%= number_field(:volume,:id,value:params[id],style:"display:none;") %>
+      <%= number_field(:volume,:num,value:params[num],id:"amount_number_input",style:"display:none;") %>
+      <input type="button" onclick="submit();" value="印刷ページ" class="btn btn-primary" >
+    <% end %>
+  </div>
+    <%= link_to "盛付用VIEW", "/products/serving_detail/#{params[id]}",method:"get", class:"btn btn-success",:target=>"_blank"%>
+</div>
+<div class="panel-body">
+  <div class="col-md-12 active" style="padding:6px;">
+    <div class="col-md-2">メニュー名</div>
+    <div class="col-md-1">カテゴリ</div>
+    <div class="col-md-2">レシピ</div>
+    <div class="col-md-2" style="margin-right:70px;padding-left:30px;">食材資材名</div>
+    <div class="col-md-1">使用量</div>
+    <div class="col-md-2" style="padding-left:40px;">仕込み</div>
+    <div class="col-md-1">仕込場</div>
+  </div>
+  <ul class='list-group' style="list-style-type:none;">
+    <% Product.find(params[id]).menus.each do |menu|%>
+    <li class="first_tr table_tr col-md-12 list-group-item" style="padding:5px;">
+      <div class="first_tr_td col-md-2"><%= link_to "#{menu.name}", "/menus/#{menu.id}/edit", method: :get %></div>
+      <div class="first_tr_td col-md-1"><%= menu.category %></div>
+      <div class="first_tr_td col-md-2"><%= simple_format(menu.recipe) %></div>
+      <% i = 1 %>
+      <% u = menu.materials.length %>
+      <div class="first_tr_td col-md-7">
+        <ul class='col-md-12' style="list-style-type: none;">
+          <% menu.menu_materials.each do |mm|%>
+            <li class="menu_materials">
+              <div class="col-md-4"><%= link_to mm.material.name, "/materials/#{mm.material_id}/edit", method: :get %></div>
+              <div class="original_amount_used text-right col-md-3">
+                  <%= (mm.amount_used.to_f * params[num].to_f).round.to_s(:delimited) %> <%= mm.material.calculated_unit %></div>
+              <div class="col-md-3"><%= mm.preparation %></div>
+              <div class="col-md-2"><%= mm.post %></div>
+            <% if i == u  %>
+              </li></div>
+            <% else %>
+              <li class="col-md-12">
+              <% i += 1 %>
+            <% end %>
+          <% end %>
+        <% end %>
+      </ul>
+</div>

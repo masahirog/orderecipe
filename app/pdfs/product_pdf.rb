@@ -28,7 +28,7 @@ class ProductPdf < Prawn::Document
 
 
   def header_lead
-    bounding_box([75, 520], :width => 150, :height => 50) do
+    bounding_box([75, 520], :width => 350, :height => 50) do
       text "#{@product.name}", size: 9,leading: 3
       text "#{@product.cook_category}", size: 9,leading: 3
       text "#{@product.cost_price} 円", size: 9,leading: 3

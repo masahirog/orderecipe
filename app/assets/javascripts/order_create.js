@@ -9,6 +9,27 @@ $(function(){
     placeholder: "発注する食材を選択"
   });
 
+  $(".input_select_product").on('change', function(){
+    var id = $(this).val();
+    var li =  $(this).parent().parent("li")
+    var index = $(".form_li").index(li)
+    $(".hidden_form").children().children("li").eq(index).children(".select").children().val(id);
+  });
+
+  $(".input_cook_num").on('change', function(){
+    var num = $(this).val();
+    var li =  $(this).parent().parent("li")
+    var index = $(".form_li").index(li)
+    $(".hidden_form").children().children("li").eq(index).children(".cook_num").children().val(num);
+  });
+
+$(".recipe-btn").on('click', function(){
+  $(".product_btn").click();
+})
+
+
+
+
   //削除チェックを監視
   $('.orders_all').on('change','.check_box', function(){
   	if ($(this).is(':checked')) {

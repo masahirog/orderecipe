@@ -1,45 +1,35 @@
 <div class="order_new panel panel-primary">
-    <div class="panel-heading col-md-12">
-      <h4><strong class="col-md-3">食材・資材の発注</strong></h4>
-      <div>
-        お弁当の種類と食数を選択し、発注計算のボタンを押してください
-      </div>
+  <div class="panel-heading col-md-12">
+    <h4><strong class="col-md-3">食材・資材の発注</strong></h4>
+    <div>
+      お弁当の種類と食数を選択し、発注計算のボタンを押してください
     </div>
-    <div class="panel-body">
-      <div>
-        <br>　
-      </div>
-
+  </div>
+  <div class="panel-body">
     <%= form_tag(:controller => "orders", :action => "new") do %>
+    <ul class= "orderform" style="list-style:none;">
       <% for i in 0..3 %>
         <%= render :partial => "new_form",locals: {i:i} %>
       <% end %>
-      <div class="text-right col-md-10">
-        <input type="button" onclick="submit();" value="発注計算" class="btn btn-success">
+      </ul>
+      <div class="text-right form-group col-md-10">
+        <input type="button" onclick="submit();" value="発注の計算" class="btn btn-success text-right form-inline">
+        　<input type="button" value="レシピ表示" class="btn btn-primary recipe-btn form-inline">
       </div>
     <% end %>
+
+    <div class="hidden_form" style="display:none;" >
+      <%= form_tag({:controller => "products", :action => "multiple_show"},{:target => "_blank"}) do %>
+        <% for i in 0..3 %>
+          <%= render :partial => "new_form",locals: {i:i} %>
+        <% end %>
+        <div class="text-right col-md-10">
+          <input type="button" onclick="submit();" value="multiple" class="btn btn-success product_btn">
+        </div>
+      <% end %>
+    </div>
   </div>
 </div>
-
-<!-- <%= form_tag Order, :method => 'get' do %>
-  <div class="col-xs-12 col-md-12">
-    <p>納品日：</p>
-    <div class="col-xs-12 col-md-3 form-inline">
-      <%= date_select :from, :date, {}, class:"form-control",style: "width: 70px;" %>
-    </div>
-    <div class="col-xs-12 col-md-1 form-inline">
-      〜
-    </div>
-    <div class="col-xs-12 col-md-3 form-inline">
-      <%= date_select :to, :date, {}, class:"form-control",style: "width: 70px;" %>
-    </div>
-    <div class="kensaku col-md-2">
-      　<%= submit_tag "検索する" ,class:"btn btn-primary" %>
-    </div>
-
-  </div>
-<% end %> -->
-
 
 <div class="col-md-12">
   <h4><strong>過去の発注一覧</strong></h4>

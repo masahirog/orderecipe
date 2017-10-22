@@ -1,0 +1,7 @@
+<% for i in 0..3 %>
+  <% if params["id#{i}"].present? %>
+  <div class="panel panel-default">
+    <%= render :partial => "multiple", locals: {num: "num#{i}",id: "id#{i}"} %>
+  </div>
+  <% end %>
+<% end %>
