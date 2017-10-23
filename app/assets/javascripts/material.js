@@ -1,6 +1,6 @@
 $(function(){
   $('.all_select_material').select2({
-  width:"220px",
+  width:"270px",
   placeholder: "食材資材を選択してください"
   });
 

@@ -59,7 +59,8 @@
     <%= f.fields_for :menu_materials do |m| %>
       <li class="add_li_material col-md-12 list-group-item" style="padding:5px 5px;" >
         <div class="select_material col-md-3">
-         <%= m.select :material_id, Material.where(end_of_sales:0).pluck(:name, :id),{include_blank: true}, class:'input_select_material'%>
+         <%= m.select :material_id, Material.where(end_of_sales:0).pluck(:name, :id),{include_blank: true},
+          class:'input_select_material'%>
        </div>
         <div class="cost_price col-md-1 form-inline">
           <div class="cost_price_value form-group"></div><div class="form-group">　円</div>
@@ -77,8 +78,9 @@
         <div class="preparation col-md-2">
           <%= m.text_field :preparation, class:'preparation_input form-control',style:"width:250px;" %>
         </div>
-        <div class="col-md-1">
-          <%= m.select :post, [["調理場", "調理場"],[ "切り出し", "切り出し"],[ "切出/調理場", "切出/調理場"]],{include_blank: true}, { class: "form-control"} %>
+        <div class="select_post col-md-1">
+          <%= m.select :post, [["調理場", "調理場"],[ "切り出し", "切り出し"],[ "切出/調理場", "切出/調理場"]],
+          {include_blank: true}, { class: "form-control"} %>
         </div>
         <div class="remove_material col-md-1">
           <a class ="remove_btn btn btn-danger" >削除</a>

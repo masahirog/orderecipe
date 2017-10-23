@@ -56,6 +56,7 @@ gem 'rmagick'
 gem 'fog'
 gem 'prawn'
 gem 'prawn-table'
+gem 'paper_trail'
 
 group :production do
   gem 'rails_12factor'

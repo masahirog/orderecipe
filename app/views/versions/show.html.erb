@@ -1,0 +1,12 @@
+<ul class="list-group">
+  <% @versions.each do |version| %>
+      <li class="col-md-12 list-group-item">
+        <div class="col-md-1">
+          <%= version.id %>
+        </div>
+        <div class="col-md-10">
+          <%= version.object %>
+        </div>
+      </li>
+    <% end %>
+</ul>

@@ -21,7 +21,7 @@ class VendorsController < ApplicationController
     @vendor = Vendor.find(params[:id])
     @vendor.update(update_params)
     if @vendor.save
-      redirect_to vendor_path
+      redirect_to vendors_path
     else
       render 'edit'
     end

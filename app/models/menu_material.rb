@@ -1,4 +1,6 @@
 class MenuMaterial < ApplicationRecord
+  has_paper_trail
+
   belongs_to :menu
   belongs_to :material
 

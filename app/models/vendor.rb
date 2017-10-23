@@ -1,6 +1,7 @@
 class Vendor < ApplicationRecord
-  has_many :materials
+  has_paper_trail
 
+  has_many :materials
   validates :company_name, presence: true, uniqueness: true
   validates :zip, allow_blank: true, format: {with: /\A\d{3}[-]\d{4}\z|\A\d{7}\z/}
   validates :company_phone, allow_blank: true, format: {with: /\A\d{3}[-]\d{4}[-]\d{4}\z|\A\d{2}[-]\d{4}[-]\d{4}\z|\A\d{11}\z|\A\d{10}\z/}

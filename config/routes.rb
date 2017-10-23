@@ -18,10 +18,12 @@ Rails.application.routes.draw do
   post 'products/multiple_show' => 'products#multiple_show'
   get 'materials/include_material/:id' => 'materials#include_material'
   post'materials/include_update' => 'materials#include_update'
+  post "versions/:id/revert" => "versions#revert", :as => "revert_version"
   resources :menus
   resources :products
   resources :tops
   resources :vendors
   resources :materials
   resources :orders
+  resources :versions
 end

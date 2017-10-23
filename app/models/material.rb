@@ -1,4 +1,6 @@
 class Material < ApplicationRecord
+  has_paper_trail
+
   has_many :menu_materials, dependent: :destroy
   has_many :menus, through: :menu_materials
 
@@ -6,9 +8,7 @@ class Material < ApplicationRecord
   has_many :orders, through: :order_materials
 
   belongs_to :vendor
-
   after_save :update_cache
-
   validates :name, presence: true, uniqueness: true, format: { with:/\A[^！”＃＄％＆’（）＝～｜‘｛＋＊｝＜＞？＿－＾￥＠「；：」。０-９ａ-ｚＡ-Ｚ]+\z/,
     message: "：全角英数字及び、全角記号^！”＃＄％＆’（）＝～｜‘｛＋＊｝＜＞？＿－＾￥＠「；：」。は使用出来ません。"}
   validates :order_name, presence: true, format: { with:/\A[^！”＃＄％＆’（）＝～｜‘｛＋＊｝＜＞？＿－＾￥＠「；：」。０-９ａ-ｚＡ-Ｚ]+\z/,
@@ -48,7 +48,6 @@ class Material < ApplicationRecord
         end
       end
     end
-
     fuga = []
     hoge.each_with_object({}) do | h, obj |
      obj[h["material_id"]] ||= { "amount_used" =>  0}

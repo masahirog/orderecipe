@@ -21,7 +21,7 @@ class MenusController < ApplicationController
   def create
     @menu = Menu.create(menu_create_update)
      if @menu.save
-       redirect_to menus_path
+       redirect_to menus_path, notice: "「#{@menu.name}」を作成しました。: #{revert_link_menu}"
      else
        render 'new'
      end
@@ -36,7 +36,7 @@ class MenusController < ApplicationController
     @menu.update(menu_create_update)
 
     if @menu.save
-      redirect_to menu_path
+      redirect_to menu_path, notice: "「#{@menu.name}」を更新しました。: #{revert_link_menu}"
     else
       render "edit"
     end

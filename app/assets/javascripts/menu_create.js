@@ -32,8 +32,15 @@ $(function(){
     last_li.children(".amount_used").children().attr('name', "menu[menu_materials_attributes]["+u+"][amount_used]" );
     last_li.children(".amount_used").children().attr('id', "menu_menu_materials_attributes_"+u+"_amount_used" );
     last_li.children(".remove_material").children(".destroy_materials").attr('id', "menu_menu_materials_attributes_"+u+"__destroy");
-    last_li.children(".remove_material").children(".destroy_materials").attr('name', "menu[menu_materials_attributes]["+u+"][_destroy]");
+    last_li.children(".remove_material").children("").attr('name', "menu[menu_materials_attributes]["+u+"][_destroy]");
+
     last_li.children(".select_material").children().val("");
+    last_li.children(".preparation").children().attr('id', "menu_menu_materials_attributes_"+u+"_preparation" );
+    last_li.children(".preparation").children().attr('name', "menu[menu_materials_attributes]["+u+"][preparation]" );
+    last_li.children(".select_post").children().attr('id', "menu_menu_materials_attributes_"+u+"_post" );
+    last_li.children(".select_post").children().attr('name', "menu[menu_materials_attributes]["+u+"][post]" );
+    last_li.children(".preparation").children().val("");
+    last_li.children(".select_post").children().val("");
     $(".input_select_material").select2({width:"270px",placeholder: "食材資材を選択してください"});
     last_li.children(".cost_price").children(".cost_price_value").empty();
     last_li.children(".vendor").empty();

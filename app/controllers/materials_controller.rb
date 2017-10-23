@@ -10,7 +10,7 @@ class MaterialsController < ApplicationController
   def create
     @material = Material.create(material_params)
        if @material.save
-         redirect_to materials_path
+         redirect_to materials_path, notice: "「#{@material.name}」を作成しました！: #{revert_link}"
        else
          render 'new'
        end
@@ -25,7 +25,7 @@ class MaterialsController < ApplicationController
     @material = Material.find(params[:id])
     @material.update(material_params)
     if @material.save
-      redirect_to materials_path
+      redirect_to materials_path, notice: "「#{@material.name}」を更新しました！: #{revert_link}/#{versions_link}"
     else
       render 'edit'
     end

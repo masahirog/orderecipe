@@ -1,23 +1,21 @@
 
-<div class="col-md-12">
-  <h4>材料名「 <%= Material.find(params[:id]).name %> 」を含むmenuの一覧</h4>
+<div class="col-md-6">
+  <h4>材料名「 <%= Material.find(params[:id]).name %> 」を含むメニュー一覧</h4>
 </div>
 
 
-<div class="col-md-12" style="margin:10px;">
-  <div class="col-md-12" style="margin:10px;">
-    チェックの付いたmenuに含まれている「 <%= Material.find(params[:id]).name %> 」を選択した食材に一括変更が出来ます
+<div class="col-md-5" style="padding:0px;">
+  <div class="col-md-12" style="padding:0 0 10px 0;">
+    ▼チェックの付いたメニューの食材を一括変更する
   </div>
-  <div class="col-md-4">
+  <div class="col-md-4" style="padding:0px;">
   <%= select :material_id,:material_id, Material.where(end_of_sales:0).pluck(:name, :id),{include_blank: true}, class:'all_select_material'%>
   </div>
-
-
 </div>
 
 <%= form_tag(:controller => "materials", :action => "include_update") do %>
   <div class="col-md-12">
-    <input type="button" onclick="submit();" value="材料の変更" class="btn btn-success pull-right">
+    <%= submit_tag "材料の変更", class:"btn btn-success pull-right", data: { confirm: "変更してよろしいですか？"} %>
   </div>
   <div class="col-md-12">
     <div class="col-md-1">
@@ -25,7 +23,7 @@
       <input type="checkbox" class="all_box">
     </div>
     <div class="col-md-3">
-      menu名
+      メニュー名
     </div>
     <div class="col-md-2">
       使用量
@@ -38,7 +36,6 @@
   <ul class="col-md-12 list-group" style="list-style:none;">
     <% i = 0 %>
     <% @menu_materials.each do |mm| %>
-      <% hash = {} %>
       <li class="menu_include_material col-md-12 list-group-item">
         <div class="col-md-1 menu_check">
           <input type="checkbox" class="form-control">

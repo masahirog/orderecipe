@@ -54,6 +54,9 @@
       	</div>
       </nav>
     </header>
+    <% flash.each do |name, msg| %>
+      <%= content_tag :div, raw(msg), :id => name, :class => "alert" %>
+    <% end %>
     <div class="all_body">
       <%= yield %>
     </div>
