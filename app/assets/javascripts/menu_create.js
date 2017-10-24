@@ -1,8 +1,7 @@
 
 $(function(){
     $('.input_select_material').select2({
-    width:"270px",
-    placeholder: "食材資材を選択してください"
+      placeholder: "食材資材を選択してください"
   });
     var u = 0
     $(".add_li_material").each(function() {

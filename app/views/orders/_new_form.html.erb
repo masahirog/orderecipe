@@ -2,7 +2,7 @@
   <div class="col-md-2 text-right">
     <h4>お弁当<%= i+1 %>：</h4>
   </div>
-  <div class="select col-md-5">
+  <div class="select col-md-3">
     <%= select_tag(:id, options_from_collection_for_select(@products,:id,:name),include_blank: true,class:"input_select_product col-md-8",name:"id#{i}") %>
   </div>
 

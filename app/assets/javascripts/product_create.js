@@ -22,7 +22,7 @@ $(function(){
   });
 
   //カテゴリーを変更時に、メニューを絞る機能
-  $(".menu-area").on('change','.category_select', function(){
+  $(".menu-area").on('change','.input_category_select', function(){
     var u = $(".add_li_menu").index($(this).parent().parent(".add_li_menu"));
     c = $(this).val();
     $.ajax({
@@ -48,6 +48,7 @@ $(function(){
     $(".input_select_menu").select2('destroy');
     $(".add_li_menu").first().clone().appendTo(".used_menu_ul");
     var last_li =$(".add_li_menu").last();
+    last_li.children(".select_menu").children().children("option")
     last_li.children(".select_menu").children().attr('name', "product[product_menus_attributes]["+u+"][menu_id]" );
     last_li.children(".select_menu").children().attr('id', "product_product_menus_attributes_"+u+"_menu_id" );
     last_li.children(".remove_menu").children(".destroy_menu").attr('id', "product_product_menus_attributes_"+u+"__destroy");
@@ -115,7 +116,11 @@ $(function(){
       var prepa = mmi.preparation;
       $(".add_li_menu").eq(u).children(".material_name").children().append("<li>"+name+"</li>");
       $(".add_li_menu").eq(u).children(".amount_used").children().append("<li class='text-right'>"+amount_used+" ("+unit+")"+"</li>");
-      $(".add_li_menu").eq(u).children(".preparation").children().append("<li>"+prepa+"</li>");
+      if (prepa){
+        $(".add_li_menu").eq(u).children(".preparation").children().append("<li>"+prepa+"</li>");
+      }else{
+        $(".add_li_menu").eq(u).children(".preparation").children().append("<li>　</li>");
+      };
     });
   };
 });

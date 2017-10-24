@@ -2,91 +2,72 @@
   <% if @material.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@material.errors.count, "error") %> prohibited this recipe from being saved:</h2>
-
       <ul>
-      <% @material.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
+        <% @material.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
       </ul>
     </div>
   <% end %>
-    <div class="container form-group">
-      <div class="col-xs-12 col-md-8">
-        <%= f.label :name, "食材・資材名" %></br>
-        <%= f.text_field :name, class:'form-control' %>
-      </div>
+  <div class="col-xs-12 col-md-12">
+    <div class="col-xs-12 col-md-6">
+      <%= f.label :name, "食材・資材名" %></br>
+      <%= f.text_field :name, class:'form-control' %>
     </div>
-    <div class="container form-group">
-      <div class="col-xs-12 col-md-8">
-        <%= f.label :order_name, "発注書名" %></br>
-        <%= f.text_field :order_name, class:'form-control' %>
-      </div>
+    <div class="col-xs-12 col-md-6">
+      <%= f.label :order_name, "発注書記載名" %></br>
+      <%= f.text_field :order_name, class:'form-control' %>
     </div>
-    <div class="container form-group">
-      <div class="col-xs-12 col-md-3">
-        <%= f.label :calculated_value, "計上単位量" %></br>
-        <%= f.text_field :calculated_value, class:'form-control' %>
-      </div>
-      <div class="col-xs-12 col-md-2">
-        <%= f.label :calculated_unit, "単位" %></br>
-        <%= f.select :calculated_unit, {ml: "ml", g: "g", 袋: "袋",尾: "尾", 本: "本", 枚: "枚",
-                                        切: "切", 個: "個"},{include_blank: true}, { class: "form-control"} %>
-      </div>
-      <div class="col-xs-12 col-md-2">
-        <%= f.label :calculated_price, "価格" %></br>
-        <%= f.number_field :calculated_price, class:'form-control' %>
-      </div>
-      <div class="col-xs-12 col-md-1 h4"></br>
-        円
-      </div>
+  </div>
+  <div class="col-xs-12 col-md-12" style="padding-top:20px;">
+    <div class="col-xs-12 col-md-2">
+      <%= f.label :category, "カテゴリー" %></br>
+      <%= f.select :category, [["食材", "食材"], ["弁当備品", "弁当備品"], ["厨房備品", "厨房備品"],
+                            ["弁当容器", "弁当容器"]],{include_blank: true}, { class: "form-control"} %>
     </div>
-    <div class="container form-group">
-      <div class="col-xs-12 col-md-5">
-        <%= f.label :cost_price, "単位単価" %></br>
-        <%= f.text_field :cost_price, class:'form-control', readonly: 'readonly' %>
-      </div>
-      <div class="col-xs-12 col-md-1 h4"></br>
-        円
-      </div>
+    <div class="col-xs-12 col-md-3">
+      <%= f.label :vendor_id, "仕入先企業名" %></br>
+      <%= f.collection_select :vendor_id, Vendor.all, :id, :company_name, {include_blank: true}, { class: "form-control"} %>
     </div>
-    <div class="container form-group">
-      <div class="col-xs-12 col-md-3">
-        <%= f.label :order_unit, "発注時の単位" %></br>
-        <%= f.text_field :order_unit, class:'form-control' %>
-      </div>
-      <div class="col-xs-12 col-md-3">
-        <%= f.label :category, "カテゴリー" %></br>
-        <%= f.select :category, [["食材", "食材"], ["弁当備品", "弁当備品"], ["厨房備品", "厨房備品"],
-                              ["弁当容器", "弁当容器"]],{include_blank: true}, { class: "form-control"} %>
-      </div>
+    <div class="col-xs-12 col-md-4">
+      <%= f.label :order_code, "管理コード" %></br>
+      <%= f.text_field :order_code, class:'form-control' %>
     </div>
-
-    <div class="container form-group">
-      <div class="col-xs-12 col-md-8">
-        <%= f.label :vendor_id, "仕入先" %></br>
-        <%= f.collection_select :vendor_id, Vendor.all, :id, :company_name, {include_blank: true}, { class: "form-control"} %>
-      </div>
+  </div>
+  <div class="col-md-12" style="padding-top:20px;">
+    <div class="col-xs-12 col-md-2">
+      <%= f.label :calculated_value, "計上量" %></br>
+      <%= f.text_field :calculated_value, class:'form-control' %>
     </div>
-
-    <div class="container form-group">
-      <div class="col-xs-12 col-md-8">
-        <%= f.label :order_code, "管理コード" %></br>
-        <%= f.text_field :order_code, class:'form-control' %>
-      </div>
+    <div class="col-xs-12 col-md-2">
+      <%= f.label :calculated_unit, "計上単位" %></br>
+      <%= f.select :calculated_unit, {ml: "ml", g: "g", 袋: "袋",尾: "尾", 本: "本", 枚: "枚",
+                                      切: "切", 個: "個"},{include_blank: true}, { class: "form-control"} %>
     </div>
-    <div class="container form-group">
-      <div class="col-xs-12 col-md-8">
-        <%= f.label :memo, "メモ" %></br>
-        <%= f.text_area :memo, class:'form-control', style:"height:10em;" %>
-      </div>
+    <div class="col-xs-12 col-md-2">
+      <%= f.label :calculated_price, "計上価格" %></br>
+      <%= f.number_field :calculated_price, class:'form-control' %>
     </div>
-    <div class="container form-group">
-      <div class="col-xs-12 col-md-2 check_box">
-        <%= f.label :end_of_sales, "終売" %></br>
-        <%= f.check_box :end_of_sales, class:"check_box form-control" %>
-      </div>
+    <div class="col-xs-12 col-md-2">
+      <%= f.label :cost_price, "単位単価" %></br>
+      <%= f.text_field :cost_price, class:'form-control', readonly: 'readonly' %>
     </div>
-    <div class="action">
-      <input type="button" onclick="submit();" value="登録する" class="btn btn-success">
+    <div class="col-xs-12 col-md-3">
+      <%= f.label :order_unit, "発注時の単位" %></br>
+      <%= f.text_field :order_unit, class:'form-control' %>
     </div>
-    <% end %>
+  </div>
+  <div class="col-md-12" style="padding-top:20px;">
+    <div class="col-xs-12 col-md-8">
+      <%= f.label :memo, "メモ" %></br>
+      <%= f.text_area :memo, class:'form-control', style:"height:10em;" %>
+    </div>
+    <div class="col-xs-12 col-md-1 check_box">
+      <%= f.label :end_of_sales, "終売" %></br>
+      <%= f.check_box :end_of_sales, class:"check_box form-control" %>
+    </div>
+  </div>
+  <div class="action col-md-12">
+    <input type="button" onclick="submit();" value="登録する" class="btn btn-success">
+  </div>
+  <% end %>
