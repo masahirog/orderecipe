@@ -71,7 +71,6 @@ $(function(){
 
   //メニュー変更時
   $(".used_menu_ul").on('change','.input_select_menu', function(){
-    console.log("saa");
     var id = $(this).val();
     var u = $(".add_li_menu").index($(this).parent().parent(".add_li_menu"));
       $.ajax({

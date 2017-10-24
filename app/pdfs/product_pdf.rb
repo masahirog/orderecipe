@@ -13,7 +13,7 @@ class ProductPdf < Prawn::Document
     # メソッドを作成。下記に内容あり。
     # content
     # render_table
-    sen
+
     header
     header_lead
     table_content
@@ -133,19 +133,19 @@ class ProductPdf < Prawn::Document
   end
 
   def preparation_cut_title
-    bounding_box([500, 520], :width => 250, :height => 20) do
+    bounding_box([500, 515], :width => 250, :height => 20) do
       text "切り出し"
     end
   end
 
   def preparation_cut
-    bounding_box([500, 500], :width => 250, :height => 130) do
+    bounding_box([500, 500], :width => 250, :height => 145) do
       stroke_bounds
-      pad(10){
+      pad(6){
       @menus.each do |menu|
         menu.menu_materials.each do |mm|
           if mm.post == "切り出し"
-          text "　＜#{mm.material.name}＞ #{mm.amount_used.round * @num.to_i} #{mm.material.calculated_unit}を#{mm.preparation}", size: 9,leading: 5
+          text "　＜#{mm.material.name}＞ #{(mm.amount_used.round * @num.to_i).to_s(:delimited)} #{mm.material.calculated_unit}を#{mm.preparation}", size: 8,leading: 5
           end
         end
       end}
@@ -153,19 +153,19 @@ class ProductPdf < Prawn::Document
   end
 
   def preparation_cook_title
-    bounding_box([500, 350], :width => 250, :height => 20) do
+    bounding_box([500, 345], :width => 250, :height => 20) do
       text "調理場"
     end
   end
 
   def preparation_cook
-    bounding_box([500,330], :width => 250, :height => 130) do
+    bounding_box([500,330], :width => 250, :height => 145) do
       stroke_bounds
-      pad(10){
+      pad(6){
       @menus.each do |menu|
         menu.menu_materials.each do |mm|
           if mm.post == "調理場"
-            text "　＜#{mm.material.name}＞ #{mm.amount_used.round * @num.to_i} #{mm.material.calculated_unit}を#{mm.preparation}", size: 9,leading: 5
+            text "　＜#{mm.material.name}＞ #{mm.amount_used.round * @num.to_i} #{mm.material.calculated_unit}を#{mm.preparation}", size: 8,leading: 5
           end
         end
       end}
@@ -173,19 +173,19 @@ class ProductPdf < Prawn::Document
   end
 
   def preparation_duble_title
-    bounding_box([500, 180], :width => 250, :height => 20) do
+    bounding_box([500, 175], :width => 250, :height => 20) do
       text "切出/調理場"
     end
   end
 
   def preparation_duble
-    bounding_box([500,160], :width => 250, :height => 130) do
+    bounding_box([500,160], :width => 250, :height => 145) do
       stroke_bounds
-      pad(10){
+      pad(6){
       @menus.each do |menu|
         menu.menu_materials.each do |mm|
           if mm.post == "切出/調理場"
-            text "　＜#{mm.material.name}＞ #{mm.amount_used.round * @num.to_i} #{mm.material.calculated_unit}を#{mm.preparation}", size: 9,leading: 5
+            text "　＜#{mm.material.name}＞ #{mm.amount_used.round * @num.to_i} #{mm.material.calculated_unit}を#{mm.preparation}", size: 8,leading: 5
           end
         end
       end}

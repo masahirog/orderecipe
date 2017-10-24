@@ -50,7 +50,11 @@
       </div>
     </div>
     <div class="container form-group">
-      <div class="col-xs-12 col-md-8">
+      <div class="col-xs-12 col-md-3">
+        <%= f.label :order_unit, "発注時の単位" %></br>
+        <%= f.text_field :order_unit, class:'form-control' %>
+      </div>
+      <div class="col-xs-12 col-md-3">
         <%= f.label :category, "カテゴリー" %></br>
         <%= f.select :category, [["食材", "食材"], ["弁当備品", "弁当備品"], ["厨房備品", "厨房備品"],
                               ["弁当容器", "弁当容器"]],{include_blank: true}, { class: "form-control"} %>

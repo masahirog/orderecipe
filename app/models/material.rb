@@ -9,10 +9,10 @@ class Material < ApplicationRecord
 
   belongs_to :vendor
   after_save :update_cache
-  validates :name, presence: true, uniqueness: true, format: { with:/\A[^！”＃＄％＆’（）＝～｜‘｛＋＊｝＜＞？＿－＾￥＠「；：」。０-９ａ-ｚＡ-Ｚ]+\z/,
-    message: "：全角英数字及び、全角記号^！”＃＄％＆’（）＝～｜‘｛＋＊｝＜＞？＿－＾￥＠「；：」。は使用出来ません。"}
-  validates :order_name, presence: true, format: { with:/\A[^！”＃＄％＆’（）＝～｜‘｛＋＊｝＜＞？＿－＾￥＠「；：」。０-９ａ-ｚＡ-Ｚ]+\z/,
-    message: "：全角英数字及び、全角記号^！”＃＄％＆’（）＝～｜‘｛＋＊｝＜＞？＿－＾￥＠「；：」。は使用出来ません。"}
+  validates :name, presence: true, uniqueness: true, format: { with:/\A[^０-９ａ-ｚＡ-Ｚ]+\z/,
+    message: "：全角英数字は使用出来ません。"}
+  validates :order_name, presence: true, format: { with:/\A[^０-９ａ-ｚＡ-Ｚ]+\z/,
+    message: "：全角英数字は使用出来ません。"}
   validates :calculated_value, presence: true, numericality: true
   validates :calculated_unit, presence: true
   validates :calculated_price, presence: true, numericality: true
