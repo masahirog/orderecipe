@@ -118,10 +118,8 @@ $(function(){
       $(".add_li_menu").eq(u).children(".material_name").children().append("<li>"+name+"</li>");
       $(".add_li_menu").eq(u).children(".amount_used").children().append("<li class='text-right'>"+amount_used+" ("+unit+")"+"</li>");
       if (prepa){
-        console.log("あり");
         $(".add_li_menu").eq(u).children(".preparation").children().append("<li>"+prepa+"</li>");
       }else{
-        console.log("なし");
         $(".add_li_menu").eq(u).children(".preparation").children().append("<li>　</li>");
       };
     });
