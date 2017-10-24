@@ -109,6 +109,7 @@ $(function(){
     $(".add_li_menu").eq(u).children(".material_name").children().children().remove();
     $(".add_li_menu").eq(u).children(".amount_used").children().children().remove();
     $(".add_li_menu").eq(u).children(".material_unit").children().children().remove();
+    $(".add_li_menu").eq(u).children(".preparation").children().children().remove();
     var menu_materials_info = data.menu.menu_materials_info;
     $.each(menu_materials_info,function(index,mmi){
       var amount_used = mmi.amount_used;
