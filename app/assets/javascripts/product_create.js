@@ -59,6 +59,7 @@ $(function(){
     last_li.children(".material_name").children().children().remove();
     last_li.children(".amount_used").children().children().remove();
     last_li.children(".material_unit").children().children().remove();
+    last_li.children(".preparation").children().children().remove();
     last_li.children(".remove_material").children(".destroy_materials").prop('checked',false);
     last_li.show();
   });
@@ -117,8 +118,10 @@ $(function(){
       $(".add_li_menu").eq(u).children(".material_name").children().append("<li>"+name+"</li>");
       $(".add_li_menu").eq(u).children(".amount_used").children().append("<li class='text-right'>"+amount_used+" ("+unit+")"+"</li>");
       if (prepa){
+        console.log("あり");
         $(".add_li_menu").eq(u).children(".preparation").children().append("<li>"+prepa+"</li>");
       }else{
+        console.log("なし");
         $(".add_li_menu").eq(u).children(".preparation").children().append("<li>　</li>");
       };
     });
