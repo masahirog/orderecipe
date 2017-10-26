@@ -19,7 +19,6 @@ $(function(){
       var prop = $(this).children(".menu_check").children().prop('checked');
       if (prop) {
         var j = $(this).children(".select_material").children().val();
-        console.log(name);
         $(this).children(".select_material").children().val(id);
         $(this).children(".select_material").find(".select2-selection__rendered").text(name);
       }else{

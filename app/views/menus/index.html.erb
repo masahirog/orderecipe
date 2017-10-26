@@ -28,6 +28,7 @@
     <div class="col-md-3">レシピ</div>
     <div class="col-md-3">盛り付けメモ</div>
     <div class="col-md-1">原価</div>
+    <div class="col-md-1 text-right">使用お弁当</div>
   </div>
   <ul class='list-group' style="list-style-type: none;">
     <% @search.each do |menu| %>
@@ -37,6 +38,9 @@
         <div class="col-md-3"><%= menu.recipe %></div>
         <div class="col-md-3"><%= menu.serving_memo %></div>
         <div class="cost_price_td col-md-1"><%= menu.cost_price %>円</div>
+        <div class="col-md-1 text-right">
+          <%=button_to "確認", "/menus/include_menu/#{menu.id}", method: :get,class:"btn btn-primary" %>
+        </div>
       </li>
     <% end %>
   </ul>

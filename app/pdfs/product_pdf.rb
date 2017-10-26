@@ -165,7 +165,7 @@ class ProductPdf < Prawn::Document
       @menus.each do |menu|
         menu.menu_materials.each do |mm|
           if mm.post == "調理場"
-            text "　＜#{mm.material.name}＞ #{mm.amount_used.round * @num.to_i} #{mm.material.calculated_unit}を#{mm.preparation}", size: 8,leading: 5
+            text "　＜#{mm.material.name}＞ #{(mm.amount_used.round * @num.to_i).to_s(:delimited)} #{mm.material.calculated_unit}を#{mm.preparation}", size: 8,leading: 5
           end
         end
       end}
@@ -185,7 +185,7 @@ class ProductPdf < Prawn::Document
       @menus.each do |menu|
         menu.menu_materials.each do |mm|
           if mm.post == "切出/調理場"
-            text "　＜#{mm.material.name}＞ #{mm.amount_used.round * @num.to_i} #{mm.material.calculated_unit}を#{mm.preparation}", size: 8,leading: 5
+            text "　＜#{mm.material.name}＞ #{(mm.amount_used.round * @num.to_i).to_s(:delimited)} #{mm.material.calculated_unit}を#{mm.preparation}", size: 8,leading: 5
           end
         end
       end}

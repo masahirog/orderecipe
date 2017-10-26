@@ -1,8 +1,15 @@
 
 $(function(){
-    $('.input_select_material').select2({
-      placeholder: "食材資材を選択してください"
+  $('.all_select_menu').select2({
+  width:"270px",
+  placeholder: "メニュー名を選択してください"
   });
+  $('.input_select_material').select2({
+    placeholder: "食材資材を選択してください"
+  });
+
+
+
     var u = 0
     $(".add_li_material").each(function() {
         var id = $(this).children(".select_material").children(".input_select_material").val()
@@ -88,7 +95,28 @@ $(function(){
     calculate_menu_price();
   });
 
+  $(".all_box").on("change",function(){
+    var prop = $('.all_box').prop('checked');
+    if (prop) {
+     $('.product_check').children().prop('checked', true);
+    } else {
+     $('.product_check').children().prop('checked', false);
+   };
+  });
 
+  $(".all_select_menu").on("change",function(){
+    var id = $(this).val();
+    var name = $(".all_select_menu option:selected").text();
+    $(".product_include_menu").each(function(){
+      var prop = $(this).children(".product_check").children().prop('checked');
+      if (prop) {
+        var j = $(this).children(".select_menu").children().val();
+        $(this).children(".select_menu").children().val(id);
+        $(this).children(".select_menu").find(".select2-selection__rendered").text(name);
+      }else{
+      };
+    });
+  });
 //メニュー価格の変更
   function calculate_menu_price(){
     var row_len =  $(".add_li_material").length

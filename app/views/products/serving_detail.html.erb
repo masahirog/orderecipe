@@ -19,41 +19,36 @@
     <div class="amount_number col-xs-12 col-md-12">
 
     </div>
-    <br>
-    <br>
-    <table class="table">
-       <thead>
-         <tr class="active">
-           <th>弁当名</th>
-           <th>調理カテゴリー</th>
-           <th>弁当種類</th>
-           <th>原価価格</th>
-         </tr>
-       </thead>
-       <tbody>
-         <tr>
-           <td><%= @product.name %></td>
-           <td><%= @product.cook_category %></td>
-           <td><%= @product.product_type %></td>
-           <td class="text-right"><%= @product.cost_price %>円</td>
-         </tr>
-       </tbody>
-    </table>
-      <div class="col-md-7">
-        <div class="col-md-3">盛り付けメモ</div>
-        <div class="col-md-3">材料名</div>
-        <div class="col-md-3">1人分</div>
-        <div class="calculate_amount_used_th col-md-2" style="display: none; font-size:20px;font-weight:bold; "></div>
+
+     <div class="col-md-12" style="margin-top:20px;">
+       <label class="col-md-3">弁当名</label>
+       <label class="col-md-3">調理カテゴリー</label>
+       <label class="col-md-3">弁当種類</label>
+       <label class="col-md-3">原価価格</label>
+     </div>
+     <li class="list-group-item col-md-12">
+         <div class="col-md-3"><%= @product.name %></div>
+         <div class="col-md-3"><%= @product.cook_category %></div>
+         <div class="col-md-3"><%= @product.product_type %></div>
+         <div class="text-right col-md-3"><%= @product.cost_price %>円</div>
+     </li>
+      <div class="col-md-7" style="margin-top:20px;">
+        <label class="col-md-2">メニュー名</label>
+        <label class="col-md-3">盛り付けメモ</label>
+        <label class="col-md-2">材料名</label>
+        <label class="col-md-3">1人分</label>
+        <label class="calculate_amount_used_th col-md-2" style="display: none; font-size:20px;font-weight:bold; "></label>
       </div>
       <ul class="list-group col-md-7" style="list-style:none;">
         <% @menus.each do |menu| %>
         <li class="product_menus col-md-12 list-group-item" style="padding:3;">
+          <div class="col-md-2"><%= menu.name %></div>
           <div class="col-md-3"><%= menu.serving_memo %></div>
           <% i = 1 %>
           <% u = menu.materials.length %>
-            <ul class="col-md-9 menu_materials" style="list-style:none;">
+            <ul class="col-md-7 menu_materials" style="list-style:none;padding:0;">
             <% menu.menu_materials.each do |mm|%>
-                <li class="menu_materials col-md-12">
+                <li class="menu_materials col-md-12" style="padding:0;">
                   <div class="col-md-4" style="padding:2px 2px;"><%= mm.material.name %></div>
                   <div class="col-md-2 original_amount_used form-inline text-right" style="padding:0;">
                     <div class="original_amount_used_value text-right form-group"><%= mm.amount_used %></div>
@@ -65,9 +60,9 @@
                     <div class="calculate_amount_used form-group" style="font-weight:bold; font-size:20px;"></div>
                     <div class="form-group" style="font-weight:bold;"><%= mm.material.calculated_unit %></div>
                   </div>
-                  <div class="cal_val_order_unit col-md-2 form-inline" style="display:none;">
+                  <div class="cal_val_order_unit col-md-2 form-inline" style="display:none;padding:0;">
                     <div class="calculate_amount_used form-group"></div>
-                    <div class="form-group"><%= mm.material.order_unit %></div>
+                    <div class="form-group" style="padding:0;"><%= mm.material.order_unit %></div>
                   </div>
       <% if i == menu.materials.length  %>
     </li></ul>

@@ -19,6 +19,8 @@ Rails.application.routes.draw do
   get 'materials/include_material/:id' => 'materials#include_material'
   post'materials/include_update' => 'materials#include_update'
   post "versions/:id/revert" => "versions#revert", :as => "revert_version"
+  get 'menus/include_menu/:id' => 'menus#include_menu'
+  post'menus/include_update' => 'menus#include_update'
   resources :menus
   resources :products
   resources :tops

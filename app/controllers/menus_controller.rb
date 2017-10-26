@@ -47,6 +47,19 @@ class MenusController < ApplicationController
     @menu_materials = @menu.menu_materials
   end
 
+  def include_menu
+    @product_menus = ProductMenu.where(menu_id: params[:id]).page(params[:page]).per(20)
+    @menus = Menu.all
+  end
+  def include_update
+    update_pms = params[:post]
+    update_pms.each do |pm|
+      @pm = ProductMenu.find(pm[:pm_id])
+      @pm.update_attribute(:menu_id, pm[:menu_id])
+    end
+    redirect_to :back
+  end
+
   private
 
     def menu_create_update

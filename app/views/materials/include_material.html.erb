@@ -1,6 +1,6 @@
 
 <div class="col-md-6">
-  <h4>材料名「 <%= Material.find(params[:id]).name %> 」を含むメニュー一覧</h4>
+  <h4>材料名「<%=link_to "#{Material.find(params[:id]).name}", "/materials/#{params[:id]}", method: :get %> 」を含むmenu一覧</h4>
 </div>
 
 
@@ -58,4 +58,6 @@
     <% end %>
   </ul>
 <% end %>
-<%= paginate @menu_materials %>
+<div class="col-md-12">
+  <%= paginate @menu_materials %>
+</div>

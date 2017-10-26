@@ -57,7 +57,7 @@
   <div class="col-md-1">カテゴリ</div>
   <div class="col-md-2">レシピ</div>
   <div class="col-md-2">盛り付けメモ</div>
-  <div class="col-md-1" style="margin-right:70px;padding-left:30px;">食材資材名</div>
+  <div class="col-md-1" style="margin-right:70px;">食材資材名</div>
   <div class="col-md-1">使用量</div>
   <div class="col-md-1" style="padding-left:0px;">仕込み</div>
   <div class="col-md-1">仕込場</div>
@@ -72,13 +72,13 @@
     <% i = 1 %>
     <% u = menu.materials.length %>
     <div class="first_tr_td col-md-5">
-      <ul class='col-md-12' style="list-style-type: none;">
+      <ul class='col-md-12' style="list-style-type: none;padding:0;">
         <% menu.menu_materials.each do |mm|%>
           <li class="menu_materials">
-            <div class="col-md-3"><%= link_to mm.material.name, "/materials/#{mm.material_id}/edit", method: :get %></div>
+            <div class="col-md-3" style="padding:0;"><%= link_to mm.material.name, "/materials/#{mm.material_id}/edit", method: :get %></div>
             <div class="original_amount_used text-right col-md-3">
                 <%= mm.amount_used %> <%= mm.material.calculated_unit %></div>
-            <div class="col-md-3"><%= mm.preparation %></div>
+            <div class="col-md-3" style="padding:0;"><%= mm.preparation %></div>
             <div class="col-md-3"><%= mm.post %></div>
           <% if i == u  %>
             </li></div>

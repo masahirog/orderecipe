@@ -24,22 +24,8 @@ $(function(){
   //カテゴリーを変更時に、メニューを絞る機能
   $(".menu-area").on('change','.input_category_select', function(){
     var u = $(".add_li_menu").index($(this).parent().parent(".add_li_menu"));
-    c = $(this).val();
-    $.ajax({
-      url: "/products/get_by_category/",
-      data: { category: c },
-      dataType: "json",
-      async: false
-    })
-    .done(function(data) {
-      $("#product_product_menus_attributes_"+u+"_menu_id option").remove();
-      first = $('<option>').text("").attr('value',"");
-      $(".add_li_menu").eq(u).children(".select_menu").children(".input_select_menu").append(first);
-      $.each(data.product, function(index,value){
-        option = $('<option>').text(this.name).attr('value',this.id)
-        $(".add_li_menu").eq(u).children(".select_menu").children(".input_select_menu").append(option);
-      });
-    });
+    category = $(this).val();
+    select_option_change(u,category)
   });
 
   //addアクション、menuの追加
@@ -48,6 +34,7 @@ $(function(){
     $(".input_select_menu").select2('destroy');
     $(".add_li_menu").first().clone().appendTo(".used_menu_ul");
     var last_li =$(".add_li_menu").last();
+    var c = last_li.children(".category_select").children().val()
     last_li.children(".select_menu").children().children("option")
     last_li.children(".select_menu").children().attr('name', "product[product_menus_attributes]["+u+"][menu_id]" );
     last_li.children(".select_menu").children().attr('id', "product_product_menus_attributes_"+u+"_menu_id" );
@@ -61,6 +48,7 @@ $(function(){
     last_li.children(".material_unit").children().children().remove();
     last_li.children(".preparation").children().children().remove();
     last_li.children(".remove_material").children(".destroy_materials").prop('checked',false);
+    select_option_change(u,c)
     last_li.show();
   });
 
@@ -123,6 +111,24 @@ $(function(){
       }else{
         $(".add_li_menu").eq(u).children(".preparation").children().append("<li>　</li>");
       };
+    });
+  };
+ //メニューセレクトのoptionを変更する
+  function select_option_change(u,category){
+    $.ajax({
+      url: "/products/get_by_category/",
+      data: { category: category },
+      dataType: "json",
+      async: false
+    })
+    .done(function(data) {
+      $("#product_product_menus_attributes_"+u+"_menu_id option").remove();
+      first = $('<option>').text("").attr('value',"");
+      $(".add_li_menu").eq(u).children(".select_menu").children(".input_select_menu").append(first);
+      $.each(data.product, function(index,value){
+        option = $('<option>').text(this.name).attr('value',this.id)
+        $(".add_li_menu").eq(u).children(".select_menu").children(".input_select_menu").append(option);
+      });
     });
   };
 });
