@@ -142,7 +142,7 @@ class OrderPdf < Prawn::Document
     data= [["計算欄"]]
 
     @materials_this_vendor.each do |mtv|
-        data << ["#{@order_materials.find_by(material_id:mtv.id).order_quantity}" "#{mtv.calculated_unit}"]
+        data << ["#{@order_materials.find_by(material_id:mtv.id).order_quantity.to_s(:delimited)}" "#{mtv.calculated_unit}"]
     end
 
      l = @materials_this_vendor.length

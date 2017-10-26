@@ -1,5 +1,4 @@
 class Product < ApplicationRecord
-  # has_one :recipe
   has_many :product_menus, dependent: :destroy
   has_many :menus, through: :product_menus
   accepts_nested_attributes_for :product_menus, allow_destroy: true
@@ -14,7 +13,7 @@ class Product < ApplicationRecord
   validates :sell_price, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :cost_price, presence: true, numericality: true
 
-  def self.search(params) #self.でクラスメソッドとしている
+  def self.search(params)
    if params
      data = Product.all
      data = data.where(cook_category: params["cook_category"]) if params["cook_category"].present?

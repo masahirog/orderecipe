@@ -13,7 +13,6 @@ class ProductPdf < Prawn::Document
     # メソッドを作成。下記に内容あり。
     # content
     # render_table
-
     header
     header_lead
     table_content
@@ -46,7 +45,7 @@ class ProductPdf < Prawn::Document
 
 
   def table_content
-    bounding_box([20, 480], :width => 380, :height => 400) do
+    bounding_box([20, 480], :width => 380) do
     # tableメソッドは2次元配列を引数(line_item_rows)にとり、それをテーブルとして表示する
     # ブロック(do...end)内でテーブルの書式の設定をしている
       table line_item_rows, cell_style: { size: 7 } do
@@ -91,7 +90,7 @@ class ProductPdf < Prawn::Document
 
 
   def table_right
-    bounding_box([405, 480], :width => 60, :height => 400) do
+    bounding_box([405, 480], :width => 60) do
     # tableメソッドは2次元配列を引数(line_item_rows)にとり、それをテーブルとして表示する
     # ブロック(do...end)内でテーブルの書式の設定をしている
       table right_item_rows, cell_style: { size: 7,align: :right } do
