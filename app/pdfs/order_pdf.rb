@@ -124,13 +124,12 @@ class OrderPdf < Prawn::Document
       cells.height = 20
       # 個別設定
       # row(0) は0行目、row(-1) は最後の行を表す
-      row(0).border_width = 1.5
+      row(0).border_width = 1
       #一番下の行
       # row(-1).background_color = "f0ad4e"
       # row(-1).borders = []
 
       self.header     = true  # 1行目をヘッダーとするか否か
-      self.row_colors = ['FBFAFA', 'ffffff'] # 列の色
       self.column_widths = [60] # 列の幅
       end
     end
