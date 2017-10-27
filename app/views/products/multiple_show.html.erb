@@ -1,3 +1,13 @@
+<%= form_tag({:controller => "products", :action => "preparation_all", format: "pdf"},{:target => "_blank"}) do %>
+  <% for i in 0..3 %>
+    <% if params["id#{i}"].present? %>
+      <%= number_field(:volume,:id,value:params["id#{i}"],name:"id#{i}",style:"display:none;") %>
+      <%= number_field(:volume,:num,value:params["num#{i}"],name:"num#{i}",style:"display:none;") %>
+    <% end %>
+  <% end %>
+  <input type="button" onclick="submit();" value="仕込み一覧" class="btn btn-primary" style="margin:0 0 0 10px;" >
+<% end %>
+
 <% for i in 0..3 %>
   <% if params["id#{i}"].present? %>
   <div class="panel panel-default">

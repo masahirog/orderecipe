@@ -1,4 +1,4 @@
-class ProductPdf < Prawn::Document
+  class ProductPdf < Prawn::Document
   def initialize(params,product,menus)
     # 初期設定。ここでは用紙のサイズを指定している。
     super(
@@ -6,23 +6,25 @@ class ProductPdf < Prawn::Document
       page_layout: :landscape)
     #日本語のフォント
     font "vendor/assets/fonts/ipaexm.ttf"
-    #インスタンス変数
+
     @num = params[:volume][:num]
     @product = product
     @menus = menus
-    # メソッドを作成。下記に内容あり。
-    # content
-    # render_table
+
+    # sen
     header
     header_lead
     table_content
     table_right
-    preparation_cut_title
-    preparation_cut
-    preparation_cook_title
-    preparation_cook
-    preparation_duble_title
-    preparation_duble
+    preparation_title("切り出し",450,520)
+    table_prepa(prepa_item_rows("切り出し"),450,510)
+    prepa_item_rows("切り出し")
+    preparation_title("調理場",450,340)
+    table_prepa(prepa_item_rows("調理場"),450,330)
+    prepa_item_rows("調理場")
+    preparation_title("切出/調理場",450,160)
+    table_prepa(prepa_item_rows("切出/調理場"),450,150)
+    prepa_item_rows("切出/調理場")
   end
 
 
@@ -45,36 +47,26 @@ class ProductPdf < Prawn::Document
 
 
   def table_content
-    bounding_box([20, 480], :width => 380) do
+    bounding_box([0, 480], :width => 370) do
     # tableメソッドは2次元配列を引数(line_item_rows)にとり、それをテーブルとして表示する
     # ブロック(do...end)内でテーブルの書式の設定をしている
       table line_item_rows, cell_style: { size: 7 } do
-      # 全体設定
+      cells.padding = 2
+      cells.borders = [:bottom] # 表示するボーダーの向き(top, bottom, right, leftがある)
+      cells.border_width = 0.2
+      cells.height = 13
 
-      cells.padding = 2         # セルのpadding幅
-      cells.borders = [:bottom,] # 表示するボーダーの向き(top, bottom, right, leftがある)
-      cells.border_width = 0.5   # ボーダーの太さ
-      cells.height = 12
-      # 個別設定
-      # row(0) は0行目、row(-1) は最後の行を表す
+
       row(0).border_width = 1
-      #一番下の行
-      # row(-1).background_color = "f0ad4e"
-      # row(-1).borders = []
-
-      self.header     = true  # 1行目をヘッダーとするか否か
-      # self.row_colors = ['FBFAFA', 'ffffff'] # 列の色
-      self.column_widths = [80,40,110,100,50] # 列の幅
+      self.header = true
+      self.column_widths = [80,40,110,100,40]
       end
     end
   end
-  # テーブルに表示するデータを作成(2次元配列)
   def line_item_rows
-    # テーブルのヘッダ部
-    data= [["メニュー名","カテゴリ","調理メモ","食材・資材","使用量"]]
+    data= [["メニュー名","カテゴリ","調理メモ","食材・資材","1人前"]]
     @menus.each do |menu|
       u = menu.materials.length
-      s_data = []
       menu.menu_materials.each_with_index do |mm,i|
         if i == 0
           data << [{:content => "#{menu.name}", :rowspan => u},{:content => "#{menu.category}", :rowspan => u},
@@ -90,36 +82,22 @@ class ProductPdf < Prawn::Document
 
 
   def table_right
-    bounding_box([405, 480], :width => 60) do
-    # tableメソッドは2次元配列を引数(line_item_rows)にとり、それをテーブルとして表示する
-    # ブロック(do...end)内でテーブルの書式の設定をしている
-      table right_item_rows, cell_style: { size: 7,align: :right } do
-      # 全体設定
-
-      cells.padding = 2         # セルのpadding幅
-      cells.borders = [:bottom,] # 表示するボーダーの向き(top, bottom, right, leftがある)
-      cells.border_width = 0.5   # ボーダーの太さ
-      cells.height = 12
-      # 個別設定
-      # row(0) は0行目、row(-1) は最後の行を表す
+    bounding_box([375, 480], :width => 60) do
+      table right_item_rows, cell_style: { size: 9,align: :right } do
+      cells.padding = 2
+      cells.borders = [:bottom,]
+      cells.border_width = 0.2
+      cells.height = 13
       row(0).border_width = 1
-      #一番下の行
-      # row(-1).background_color = "f0ad4e"
-      # row(-1).borders = []
-
-      self.header     = true  # 1行目をヘッダーとするか否か
-      self.row_colors = ['FFFEA9'] # 列の色
-      self.column_widths = [60] # 列の幅
+      self.header     = true
+      self.column_widths = [60]
       end
     end
   end
-  # テーブルに表示するデータを作成(2次元配列)
   def right_item_rows
-    # テーブルのヘッダ部
     data= [["#{@num}人分"]]
     @menus.each do |menu|
       u = menu.materials.length
-      s_data = []
       menu.menu_materials.each_with_index do |mm,i|
         if i == 0
           data << ["#{((mm.amount_used * @num.to_i).round).to_s(:delimited)} #{Material.find(mm.material_id).calculated_unit}"]
@@ -131,63 +109,46 @@ class ProductPdf < Prawn::Document
     data
   end
 
-  def preparation_cut_title
-    bounding_box([500, 515], :width => 250, :height => 20) do
-      text "切り出し"
+
+  def preparation_title(a,x,y)
+    bounding_box([x, y], :width => 250, :height => 10) do
+      text a, size: 8
     end
   end
 
-  def preparation_cut
-    bounding_box([500, 500], :width => 250, :height => 145) do
-      stroke_bounds
-      pad(6){
-      @menus.each do |menu|
-        menu.menu_materials.each do |mm|
-          if mm.post == "切り出し"
-          text "　＜#{mm.material.name}＞ #{(mm.amount_used.round * @num.to_i).to_s(:delimited)} #{mm.material.calculated_unit}を#{mm.preparation}", size: 8,leading: 5
-          end
+  def table_prepa(b,x,y)
+    bounding_box([x, y], :width => 310) do
+      table b, cell_style: { size: 7,align: :left } do
+        cells.padding = 2
+        column(2).align = :right
+        column(2).padding = [2,6,2,2]
+        column(3).padding = [2,2,2,6]
+        cells.border_width = 0.2
+        self.column_widths = [20,90,60,140]
+      end
+    end
+  end
+
+  def prepa_item_rows(c)
+    data = []
+    @menus.each do |menu|
+      u = menu.materials.length
+      menu.menu_materials.each do |mm|
+        if mm.post == c
+          data << ["","#{mm.material.name}", "#{(mm.amount_used * @num.to_i).round.to_s(:delimited)} #{mm.material.calculated_unit}",
+          "#{mm.preparation}"]
         end
-      end}
+      end
     end
-  end
-
-  def preparation_cook_title
-    bounding_box([500, 345], :width => 250, :height => 20) do
-      text "調理場"
-    end
-  end
-
-  def preparation_cook
-    bounding_box([500,330], :width => 250, :height => 145) do
-      stroke_bounds
-      pad(6){
-      @menus.each do |menu|
-        menu.menu_materials.each do |mm|
-          if mm.post == "調理場"
-            text "　＜#{mm.material.name}＞ #{(mm.amount_used.round * @num.to_i).to_s(:delimited)} #{mm.material.calculated_unit}を#{mm.preparation}", size: 8,leading: 5
-          end
-        end
-      end}
-    end
-  end
-
-  def preparation_duble_title
-    bounding_box([500, 175], :width => 250, :height => 20) do
-      text "切出/調理場"
-    end
-  end
-
-  def preparation_duble
-    bounding_box([500,160], :width => 250, :height => 145) do
-      stroke_bounds
-      pad(6){
-      @menus.each do |menu|
-        menu.menu_materials.each do |mm|
-          if mm.post == "切出/調理場"
-            text "　＜#{mm.material.name}＞ #{(mm.amount_used.round * @num.to_i).to_s(:delimited)} #{mm.material.calculated_unit}を#{mm.preparation}", size: 8,leading: 5
-          end
-        end
-      end}
+    i = data.length
+    if i < 5
+      data += [["　","　","　","　"]]*(5)
+    elsif i< 10
+      data += [["　","　","　","　"]]*(10-i)
+    elsif i<15
+      data += [["　","　","　","　"]]*(10-i)
+    else
+      data
     end
   end
 

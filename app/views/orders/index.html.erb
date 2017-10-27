@@ -12,9 +12,9 @@
         <%= render :partial => "new_form",locals: {i:i} %>
       <% end %>
       </ul>
-      <div class="text-right form-group col-md-7" style="margin-top:10px;">
-        <input type="button" onclick="submit();" value="発注の計算" class="btn btn-success text-right form-inline">
-        　<input type="button" value="レシピ表示" class="btn btn-primary recipe-btn form-inline">
+      <div class="text-right form-group col-md-9" style="margin-top:10px;">
+        <input type="button" value="レシピ表示" class="btn btn-primary recipe-btn form-inline" style="margin-right:20px">
+        <input type="button" onclick="submit();" value="発注の計算" class="btn btn-success text-right form-inline" style="margin-right:20px">
       </div>
     <% end %>
 

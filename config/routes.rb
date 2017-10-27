@@ -16,6 +16,7 @@ Rails.application.routes.draw do
   post'orders/order_print/:id' => 'orders#order_print'
   get 'products/get_by_category' => 'products#get_by_category'
   post 'products/multiple_show' => 'products#multiple_show'
+  post 'products/preparation_all' => 'products#preparation_all'
   get 'materials/include_material/:id' => 'materials#include_material'
   post'materials/include_update' => 'materials#include_update'
   post "versions/:id/revert" => "versions#revert", :as => "revert_version"

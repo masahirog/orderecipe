@@ -81,6 +81,19 @@ class ProductsController < ApplicationController
      end
    end
   end
+  def preparation_all
+    @params = params
+    respond_to do |format|
+     format.html
+     format.pdf do
+       pdf = PreparationPdf.new(@params)
+       send_data pdf.render,
+         filename:    "preparation_all.pdf",
+         type:        "application/pdf",
+         disposition: "inline"
+     end
+   end
+  end
 
   private
     def product_create_update
