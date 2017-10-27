@@ -63,19 +63,30 @@ class PreparationPdf < Prawn::Document
       @menus.each do |menu|
         u = menu.materials.length
         menu.menu_materials.each do |mm|
+
           if mm.post == c
             data << ["#{mm.material.name}", "#{(mm.amount_used * num.to_i).round.to_s(:delimited)} #{mm.material.calculated_unit}",
             "#{mm.preparation}"]
           end
         end
       end
+
       l = data.length
-      if l < 10
-        data += [["　","　","　"]]*(10-l)
-      elsif l <15
-        data += [["　","　","　"]]*(15-l)
+      if c == "切出/調理場"
+
+        if l < 8
+          data += [["　","　","　"]]*(8-l)
+        else
+          data
+        end
       else
-        data
+        if l < 10
+          data += [["　","　","　"]]*(10-l)
+        elsif l <15
+          data += [["　","　","　"]]*(15-l)
+        else
+          data
+        end
       end
     end
   end
