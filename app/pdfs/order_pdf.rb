@@ -75,19 +75,18 @@ class OrderPdf < Prawn::Document
       table line_item_rows, cell_style: { size: 10 } do
       # 全体設定
       cells.padding = 3          # セルのpadding幅
-      cells.borders = [:bottom,] # 表示するボーダーの向き(top, bottom, right, leftがある)
+      cells.borders = [:bottom,:top,:left,:right] # 表示するボーダーの向き(top, bottom, right, leftがある)
       cells.border_width = 0.5   # ボーダーの太さ
       cells.height = 20
       # 個別設定
       # row(0) は0行目、row(-1) は最後の行を表す
-      row(0).border_width = 1.5
+      row(0).border_width = 1
       #一番下の行
       # row(-1).background_color = "f0ad4e"
       # row(-1).borders = []
 
       self.header     = true  # 1行目をヘッダーとするか否か
-      self.row_colors = ['FBFAFA', 'ffffff'] # 列の色
-      self.column_widths = [300, 60,40] # 列の幅
+      self.column_widths = [280, 80,40] # 列の幅
       end
       text "　"
       text "＜備考＞", size: 11
