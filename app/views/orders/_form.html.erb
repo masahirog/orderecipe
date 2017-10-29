@@ -45,12 +45,12 @@
     <ul class="order_materials_ul list-group panel-body">
       <% i = 0 %>
       <%= f.fields_for :order_materials do |m| %>
-        <li class="order_materials_li list-group-item col-md-12">
+        <li class="order_materials_li list-group-item col-md-12" style="padding:5px;">
           <div class="order_material_name col-md-3">
             <%= m.select :material_id, Material.where(end_of_sales:0).pluck(:name, :id),{include_blank: true}, class:'select_order_materials'%>
           </div>
           <div class="order_quantity col-md-2">
-            <%= m.text_field :order_quantity, class:'text-right col-md-6 pull-right form-control' %>
+            <%= m.text_field :order_quantity, class:'text-right col-md-6 pull-right form-control',style:"height:27.78px;" %>
           </div>
           <!-- editとnewで分岐させる -->
           <% if local_assigns[:locals][:edit_flag] == true %>
@@ -73,7 +73,7 @@
           <% end %>
 
           <div class="col-md-2 destroy_order_material">
-            <%= m.check_box :_destroy,class:"destroy_order_materials check_box form-control" %>
+            <%= m.check_box :_destroy,class:"destroy_order_materials check_box",style:"width: 20px; height: 20px;" %>
           </div>
         </li>
         <% i = i + 1 %>
