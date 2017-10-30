@@ -15,13 +15,14 @@ Rails.application.routes.draw do
   get 'orders/material_info/:id' => 'orders#material_info'
   post'orders/order_print/:id' => 'orders#order_print'
   get 'products/get_by_category' => 'products#get_by_category'
-  post 'products/multiple_show' => 'products#multiple_show'
-  post 'products/preparation_all' => 'products#preparation_all'
+  get 'products/preparation_all/:id' => 'products#preparation_all'
+  get 'products/product_pdf_all/:id' => 'products#product_pdf_all'
   get 'materials/include_material/:id' => 'materials#include_material'
   post'materials/include_update' => 'materials#include_update'
   post "versions/:id/revert" => "versions#revert", :as => "revert_version"
   get 'menus/include_menu/:id' => 'menus#include_menu'
   post'menus/include_update' => 'menus#include_update'
+  post'orders/order_print_all/:id' => 'orders#order_print_all'
   resources :menus
   resources :products
   resources :tops

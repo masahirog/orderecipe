@@ -5,6 +5,9 @@ class Order < ApplicationRecord
   has_many :materials, through: :order_materials
   accepts_nested_attributes_for :order_materials, allow_destroy: true, update_only: true
 
+  has_many :order_products, dependent: :destroy
+  has_many :products, through: :order_products
+  accepts_nested_attributes_for :order_products, allow_destroy: true, update_only: true
 
 
   # def self.search(params)

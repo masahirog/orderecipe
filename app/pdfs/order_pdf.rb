@@ -81,10 +81,6 @@ class OrderPdf < Prawn::Document
       # 個別設定
       # row(0) は0行目、row(-1) は最後の行を表す
       row(0).border_width = 1
-      #一番下の行
-      # row(-1).background_color = "f0ad4e"
-      # row(-1).borders = []
-
       self.header     = true  # 1行目をヘッダーとするか否か
       self.column_widths = [280, 80,40] # 列の幅
       end
@@ -116,7 +112,7 @@ class OrderPdf < Prawn::Document
     bounding_box([455, 640], :width => 100, :height => 550) do
     # tableメソッドは2次元配列を引数(line_item_rows)にとり、それをテーブルとして表示する
     # ブロック(do...end)内でテーブルの書式の設定をしている
-      table line_item_right_rows, cell_style: { size: 7.5 } do
+      table line_item_right_rows, cell_style: { size: 7.5,align: :right } do
       # 全体設定
       cells.padding = 3          # セルのpadding幅
       cells.borders = [:bottom,] # 表示するボーダーの向き(top, bottom, right, leftがある)

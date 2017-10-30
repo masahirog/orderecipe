@@ -1,25 +1,24 @@
 class PreparationPdf < Prawn::Document
-  def initialize(params)
+  def initialize(order)
     super(
       page_size: 'A4',
       page_layout: :landscape)
     font "vendor/assets/fonts/ipaexm.ttf"
-    @params = params
+    @order_products = order.order_products
     x = 0
-    for i in 0..3
-      id = params["id#{i}"]
-      if id.present?
-        if x == 0
-          preparation_title("[切り出し]",x,510)
-          preparation_title("[調理場]",x,310)
-          preparation_title("[切出/調理場]",x,120)
-        end
-        title(id,x+40,520)
-        table_prepa(prepa_item_rows("切り出し", i),x,500)
-        table_prepa(prepa_item_rows("調理場", i),x,300)
-        table_prepa(prepa_item_rows("切出/調理場", i),x,110)
-        x += 190
+    @order_products.each_with_index do |op,i|
+      id = op.product_id
+      num = op.serving_for
+      if i == 0
+        preparation_title("[切り出し]",x,510)
+        preparation_title("[調理場]",x,310)
+        preparation_title("[切出/調理場]",x,120)
       end
+      title(id,x+40,520)
+      table_prepa(prepa_item_rows("切り出し", id, num),x,500)
+      table_prepa(prepa_item_rows("調理場", id, num),x,300)
+      table_prepa(prepa_item_rows("切出/調理場", id, num),x,110)
+      x += 190
     end
   end
   def title(id,x,y)
@@ -54,23 +53,21 @@ class PreparationPdf < Prawn::Document
     end
   end
 
-  def prepa_item_rows(c,i)
+  def prepa_item_rows(c,id,num)
     data = []
-    product_id = @params["id#{i}"]
-    num = @params["num#{i}"]
-    if product_id.present?
-      @menus = Product.find(product_id).menus
-      @menus.each do |menu|
+    id = id
+    num = num
+    if id.present?
+      menus = Product.find(id).menus
+      menus.each do |menu|
         u = menu.materials.length
         menu.menu_materials.each do |mm|
-
           if mm.post == c
             data << ["#{mm.material.name}", "#{(mm.amount_used * num.to_i).round.to_s(:delimited)} #{mm.material.calculated_unit}",
             "#{mm.preparation}"]
           end
         end
       end
-
       l = data.length
       if c == "切出/調理場"
 
@@ -90,11 +87,6 @@ class PreparationPdf < Prawn::Document
       end
     end
   end
-
-
-
-
-
   def sen
     stroke_axis
   end

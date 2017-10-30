@@ -35,6 +35,7 @@ class OrdersController < ApplicationController
     @products = Product.all
     @order = Order.new
     @order.order_materials.build
+    @order.order_products.build
     @hash = Material.calculate_products_materials(params)
   end
 
@@ -71,10 +72,29 @@ class OrdersController < ApplicationController
    end
   end
 
+  def order_print_all
+    @order = Order.find(params[:id])
+    @order_materials = @order.order_materials
+    @vendors = params[:vendor]
+    respond_to do |format|
+     format.html
+     format.pdf do
+       pdf = OrderAll.new(@order,@order_materials,@vendors)
+       send_data pdf.render,
+         filename:    "#{@order.delivery_date}.pdf",
+         type:        "application/pdf",
+         disposition: "inline"
+     end
+   end
+  end
+
+
   private
 
   def order_create_update
-    params.require(:order).permit(:delivery_date,order_materials_attributes: [:id, :order_quantity, :order_id, :material_id, :_destroy])
+    params.require(:order).permit(:delivery_date,
+      order_materials_attributes: [:id, :order_quantity, :order_id, :material_id, :_destroy],
+      order_products_attributes: [:id, :serving_for, :order_id, :product_id, :_destroy])
   end
 
 end

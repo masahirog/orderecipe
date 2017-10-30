@@ -11,14 +11,40 @@
       </div>
     <% end %>
 
-        <div class="form-inline text-right">
-          <input type="button" onclick="submit();" value="発注量の編集・確定＞＞" class="btn btn-success">
-        </div>
+    <div class="form-inline text-right">
+      <input type="button" onclick="submit();" value="発注量の編集・確定＞＞" class="btn btn-success">
+    </div>
 
+    <h4><strong>発注弁当</strong></h4>
+    <ul class="list-group col-md-12">
+      <%= f.fields_for :order_products do |m| %>
+        <% i =0 %>
+        <% for i in 0..3 do %>
+          <% id = params["id#{i}"] %>
+          <% num = params["num#{i}"] %>
+          <% if id %>
+            <li class="list-group-item col-md-12" style="padding:5px;">
+              <%= m.text_field :product_id,value:id, class:'form-group col-md-2',style:"display:none;",
+              name:"order[order_products_attributes][#{i}][product_id]",id:"order_order_products_attributes_#{i}_product_id" %>
+              <div class="col-md-5">
+                <%= Product.find(id).name %>
+              </div>
+              <div class="col-md-3 form-inline">
+                <%= m.text_field :serving_for,value:num, class:'form-control form-group',style:"width:70%;",readonly:true,
+                name:"order[order_products_attributes][#{i}][serving_for]",id:"order_order_products_attributes_#{i}_serving_for" %>
+              <div class="form-group">
+                人分
+              </div>
+              </div>
+            </li>
+          <% end %>
+        <% end %>
+      <% end %>
+    </ul>
 
     <h4><strong>食材別使用量の確認</strong></h4>
     <div class="panel panel-primary">
-      <div class="panel-heading col-md-12">
+      <div class="panel-heading col-md-12" style="padding:5px;">
         <div class="panel-title col-md-1", style="display:none;">
           <strong>食材id</strong>
         </div>
@@ -38,7 +64,7 @@
         <% i = 0 %>
         <%= f.fields_for :order_materials do |m| %>
           <% @hash.each do |material|%>
-            <li class="list-group-item col-md-12">
+            <li class="list-group-item col-md-12" style="padding:5px;">
               <div class="col-md-1", style="display:none;">
                   <%= m.text_field :material_id,value: material["material_id"],
                   class:'form-control',name:"order[order_materials_attributes][#{i}][material_id]", readonly: true %>
@@ -47,7 +73,7 @@
                 <%= Material.find(material["material_id"]).name %>
               </div>
               <div class="col-md-2">
-                <%= m.text_field :order_quantity,value: material["amount_used"].to_f,
+                <%= m.text_field :order_quantity,value: material["amount_used"].round(1),
                  class:'text-right col-md-6 pull-right form-control',
                    name:"order[order_materials_attributes][#{i}][order_quantity]", readonly: true %>
               </div>

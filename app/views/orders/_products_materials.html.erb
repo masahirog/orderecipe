@@ -21,7 +21,7 @@
                 <%= menu_material.material.name %>
               </div>
               <div class="amount_used col-md-2 text-right">
-                <%= menu_material.amount_used.to_f * params[num].to_i%>
+                <%= (menu_material.amount_used.to_f * params[num].to_i).round(1)%>
               </div>
               <div class="col-md-2">
                 <%= menu_material.material.calculated_unit %>

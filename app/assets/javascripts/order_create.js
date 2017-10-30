@@ -23,13 +23,6 @@ $(function(){
     $(".hidden_form").children().children("li").eq(index).children(".cook_num").children().val(num);
   });
 
-$(".recipe-btn").on('click', function(){
-  $(".product_btn").click();
-})
-
-
-
-
   //削除チェックを監視
   $('.orders_all').on('change','.check_box', function(){
   	if ($(this).is(':checked')) {

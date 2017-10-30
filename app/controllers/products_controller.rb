@@ -20,9 +20,7 @@ class ProductsController < ApplicationController
     end
   end
 
-  def multiple_show
-    @num = params[:num0]
-  end
+
 
   def index
     @search = Product.search(params).page(params[:page]).per(20)
@@ -63,7 +61,7 @@ class ProductsController < ApplicationController
   def serving_detail
     @product = Product.find(params[:id])
     @menus = @product.menus.includes(:materials, :menu_materials)
-    render :serving_detail, layout: false #このページでlayoutを適用させない
+    render :serving_detail, layout: false
   end
 
   def print
@@ -82,13 +80,27 @@ class ProductsController < ApplicationController
    end
   end
   def preparation_all
-    @params = params
+    @order = Order.find(params[:id])
     respond_to do |format|
      format.html
      format.pdf do
-       pdf = PreparationPdf.new(@params)
+       pdf = PreparationPdf.new(@order)
        send_data pdf.render,
-         filename:    "preparation_all.pdf",
+       filename:    "preparation_all.pdf",
+       type:        "application/pdf",
+       disposition: "inline"
+     end
+   end
+  end
+
+  def product_pdf_all
+    @order = Order.find(params[:id])
+    respond_to do |format|
+     format.html
+     format.pdf do
+       pdf = ProductPdfAll.new(@order)
+       send_data pdf.render,
+         filename:    "#{@order.id}.pdf",
          type:        "application/pdf",
          disposition: "inline"
      end

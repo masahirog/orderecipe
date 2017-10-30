@@ -20,7 +20,6 @@ class MenusController < ApplicationController
 
   def create
     @menu = Menu.create(menu_create_update)
-    binding.pry
      if @menu.save
        redirect_to menus_path, notice: "「#{@menu.name}」を作成しました。: #{revert_link_menu}"
      else
