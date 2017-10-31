@@ -11,8 +11,9 @@ class ProductPdfAll < Prawn::Document
     order.order_products.each_with_index do |op,i|
       product = op.product
       menus = op.product.menus
-      header
-      header_lead(product)
+      num = op.serving_for
+      header_date(order)
+      header_table(product,num)
       table_content(menus)
       table_right(menus,op)
       start_new_page if i<max_i-1
@@ -20,23 +21,35 @@ class ProductPdfAll < Prawn::Document
   end
 
 
-  def header_lead(product)
-    bounding_box([75, 520], :width => 350, :height => 50) do
-      text "#{product.name}", size: 9,leading: 3
-      text "#{product.cook_category}", size: 9,leading: 3
-      text "#{product.cost_price} 円", size: 9,leading: 3
-    end
-  end
-  def header
-    bounding_box([0, 520], :width => 60, :height => 50) do
-      text "お弁当名:", size: 9,leading: 3,align: :right
-      text "調理カテゴリ:", size: 9,leading: 3,align: :right
-      text "原価:", size: 9,leading: 3,align: :right
+
+  def header_table(product,num)
+    bounding_box([150, 525], :width => 500) do
+      data = [["お弁当名","製造数","調理カテゴリ","原価"],
+              ["#{product.name}","#{num}人分","#{product.cook_category}","#{product.cost_price} 円"]]
+      table data, cell_style: { size: 9 } do
+      cells.padding = 2
+
+      row(0).borders = [:bottom]
+      columns(0..2).borders = [:right]
+      row(0).columns(0..2).borders = [:bottom, :right]
+      row(1).columns(3).borders = [:left,:top]
+      cells.border_width = 0.2
+      cells.height = 14
+      self.header = true
+      self.column_widths = [200,100,100,100]
+      end
     end
   end
 
+  def header_date(order)
+    bounding_box([0, 515], :width => 200) do
+      text "#{order.delivery_date.strftime("%Y年%-m月%-d日(#{%w(日 月 火 水 木 金 土)[order.delivery_date.wday]})")}", size: 12,leading: 3
+    end
+  end
+
+
   def table_content(menus)
-    bounding_box([0, 480], :width => 520) do
+    bounding_box([0, 490], :width => 600) do
       table line_item_rows(menus), cell_style: { size: 9 } do
       cells.padding = 2
       cells.borders = [:bottom]
@@ -44,7 +57,7 @@ class ProductPdfAll < Prawn::Document
       cells.height = 14
       row(0).border_width = 1
       self.header = true
-      self.column_widths = [130,40,140,150,60]
+      self.column_widths = [160,40,160,160,70]
       end
     end
   end
@@ -65,7 +78,7 @@ class ProductPdfAll < Prawn::Document
     data
   end
   def table_right(menus,op)
-    bounding_box([530, 480], :width => 100) do
+    bounding_box([600, 490], :width => 100) do
       table right_item_rows(menus,op), cell_style: { size: 9,align: :right } do
       cells.padding = 2
       cells.borders = [:bottom,]

@@ -2,21 +2,20 @@ class OrderAll < Prawn::Document
   def initialize(order,order_materials,vendors)
     super(page_size: 'A4')
     font "vendor/assets/fonts/ipaexm.ttf"
-    @order = order
-    @order_materials = order_materials
+    order = order
+    order_materials = order_materials
     max = vendors.length - 1
     for i in 0..max
-
       u= "id#{i}"
       id = vendors[u].to_i
-      materials_this_vendor = @order.materials.where(vendor_id: id)
+      materials_this_vendor = order.materials.where(vendor_id: id)
       header
       header_lead(id)
-      header_date
+      header_date(order)
       header_adress
       header_hello
       table_content(materials_this_vendor)
-      table_right(materials_this_vendor)
+      table_right(materials_this_vendor,order_materials)
       start_new_page if i < max
       i += 1
     end
@@ -34,10 +33,10 @@ class OrderAll < Prawn::Document
       text "#{Vendor.find(id).company_name}　御中", size: 15
     end
   end
-  def header_date
+  def header_date(order)
     bounding_box([280, 730], :width => 140, :height => 20) do
         font_size 10.5
-        text "#{@order.delivery_date.strftime("%Y年%-m月%-d日(#{%w(日 月 火 水 木 金 土)[@order.delivery_date.wday]})")} 納品分"
+        text "#{order.delivery_date.strftime("%Y年%-m月%-d日(#{%w(日 月 火 水 木 金 土)[order.delivery_date.wday]})")} 納品分"
     end
   end
   def header_adress
@@ -95,9 +94,9 @@ class OrderAll < Prawn::Document
      data += [["","",""]] * u
   end
 
-  def table_right(materials_this_vendor)
+  def table_right(materials_this_vendor,order_materials)
     bounding_box([455, 640], :width => 100, :height => 550) do
-      table line_item_right_rows(materials_this_vendor), cell_style: { size: 7.5,align: :right } do
+      table line_item_right_rows(materials_this_vendor,order_materials), cell_style: { size: 7.5,align: :right } do
       cells.padding = 3
       cells.borders = [:bottom,]
       cells.border_width = 0.5
@@ -109,11 +108,11 @@ class OrderAll < Prawn::Document
     end
   end
 
-  def line_item_right_rows(materials_this_vendor)
+  def line_item_right_rows(materials_this_vendor,order_materials)
     data= [["計算欄"]]
 
     materials_this_vendor.each do |mtv|
-        data << ["#{@order_materials.find_by(material_id:mtv.id).order_quantity.to_s(:delimited)}" "#{mtv.calculated_unit}"]
+        data << ["#{order_materials.find_by(material_id:mtv.id).order_quantity.to_s(:delimited)}" "#{mtv.calculated_unit}"]
     end
 
      l = materials_this_vendor.length

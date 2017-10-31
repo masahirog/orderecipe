@@ -4,21 +4,27 @@ class PreparationPdf < Prawn::Document
       page_size: 'A4',
       page_layout: :landscape)
     font "vendor/assets/fonts/ipaexm.ttf"
-    @order_products = order.order_products
+    order_products = order.order_products
     x = 0
-    @order_products.each_with_index do |op,i|
+    order_products.each_with_index do |op,i|
       id = op.product_id
       num = op.serving_for
-      if i == 0
-        preparation_title("[切り出し]",x,510)
-        preparation_title("[調理場]",x,310)
-        preparation_title("[切出/調理場]",x,120)
-      end
-      title(id,x+40,520)
+      # if i == 0
+      #   preparation_title("[切り出し]",x,510)
+      #   preparation_title("[調理場]",x,310)
+      #   preparation_title("[切出/調理場]",x,120)
+      # end
+      date(order)
+      title(id,x,510)
       table_prepa(prepa_item_rows("切り出し", id, num),x,500)
       table_prepa(prepa_item_rows("調理場", id, num),x,300)
       table_prepa(prepa_item_rows("切出/調理場", id, num),x,110)
       x += 190
+    end
+  end
+  def date(order)
+    bounding_box([0, 525], :width => 150) do
+      text "#{order.delivery_date.strftime("%Y年%-m月%-d日(#{%w(日 月 火 水 木 金 土)[order.delivery_date.wday]})")}"
     end
   end
   def title(id,x,y)
@@ -39,7 +45,7 @@ class PreparationPdf < Prawn::Document
         column(0).borders = [:bottom,:top,:left]
         column(1..2).borders = [:bottom,:top]
         column(2).borders = [:bottom,:top,:right]
-        row(0).border_lines =  [:solid, :solid, :dotted, :solid]
+        row(0).border_width = 1.5
         row(1..-2).border_lines =  [:dotted, :solid, :dotted, :solid]
         row(-1).border_lines =  [:dotted, :solid, :solid, :solid]
 
@@ -59,6 +65,7 @@ class PreparationPdf < Prawn::Document
     num = num
     if id.present?
       menus = Product.find(id).menus
+      data << [c,"",""]
       menus.each do |menu|
         u = menu.materials.length
         menu.menu_materials.each do |mm|
