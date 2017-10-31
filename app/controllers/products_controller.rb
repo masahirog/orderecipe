@@ -20,8 +20,6 @@ class ProductsController < ApplicationController
     end
   end
 
-
-
   def index
     @search = Product.search(params).page(params[:page]).per(20)
   end
@@ -31,8 +29,14 @@ class ProductsController < ApplicationController
     @product.product_menus.build
   end
   def show
-   @product = Product.find(params[:id])
-   @menus = @product.menus.includes(:materials, :menu_materials)
+  @product = Product.find(params[:id])
+  @menus = @product.menus.includes(:materials, :menu_materials)
+    respond_to do |format|
+      format.html
+      format.csv do
+        send_data render_to_string, filename: "hoge.csv", type: :csv
+      end
+    end
   end
 
   def create

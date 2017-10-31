@@ -6,6 +6,7 @@ class OrderAll < Prawn::Document
     order_materials = order_materials
     max = vendors.length - 1
     for i in 0..max
+      sen2
       u= "id#{i}"
       id = vendors[u].to_i
       materials_this_vendor = order.materials.where(vendor_id: id)
@@ -14,8 +15,7 @@ class OrderAll < Prawn::Document
       header_date(order)
       header_adress
       header_hello
-      table_content(materials_this_vendor)
-      table_right(materials_this_vendor,order_materials)
+      table_content(materials_this_vendor,order_materials)
       start_new_page if i < max
       i += 1
     end
@@ -61,70 +61,41 @@ class OrderAll < Prawn::Document
     stroke_vertical_line 0, 800, :at => 450
   end
 
-  def table_content(materials_this_vendor)
-    bounding_box([20, 640], :width => 400, :height => 550) do
-      table line_item_rows(materials_this_vendor), cell_style: { size: 10 } do
-      cells.padding = 3
-      cells.borders = [:bottom,:top,:left,:right]
-      cells.border_width = 0.5
-      cells.height = 20
-      row(0).border_width = 1
-      self.header = true
-      self.column_widths = [280, 80,40]
+  def table_content(materials_this_vendor,order_materials)
+    bounding_box([0, 640], :width => 530) do
+      l = materials_this_vendor.length
+      if l < 10
+        u = 15 - l
+      elsif l < 20
+        u = 25 - l
+      else
+        u = 3
       end
-      text "　"
-      text "＜備考＞", size: 11
+
+      table line_item_rows(materials_this_vendor,u,order_materials), cell_style: { size: 9 } do
+        row(0).height = 18
+        row(l+1..l+u).height = 18
+        cells.padding = 4
+        columns(4).borders = [:left]
+        columns(5).borders = [:bottom]
+        cells.border_width = 0.2
+        self.header = true
+        self.column_widths = [80,240,60,40,50,60]
+        end
+        text "　"
+        text "＜備考＞", size: 11
+      end
     end
-  end
-  def line_item_rows(materials_this_vendor)
-    data= [["品名・品番","数量","単位"]]
+  def line_item_rows(materials_this_vendor,u,order_materials)
+    data= [["管理コード","品名","数量","単位","","計算欄"]]
     materials_this_vendor.each do |mtv|
       s_data = []
-      data << ["#{mtv.order_name}","",""]
+      data << ["#{mtv.order_code}","#{mtv.order_name}","","","",
+        "#{order_materials.find_by(material_id:mtv.id).order_quantity.to_s(:delimited)}" "#{mtv.calculated_unit}"]
     end
-
-     l = materials_this_vendor.length
-     if l < 10
-       u = 15 - l
-     elsif l < 20
-       u = 25 - l
-     else
-       u = 5
-     end
-     data += [["","",""]] * u
+     data += [["","","","","",""]] * u
   end
 
-  def table_right(materials_this_vendor,order_materials)
-    bounding_box([455, 640], :width => 100, :height => 550) do
-      table line_item_right_rows(materials_this_vendor,order_materials), cell_style: { size: 7.5,align: :right } do
-      cells.padding = 3
-      cells.borders = [:bottom,]
-      cells.border_width = 0.5
-      cells.height = 20
-      row(0).border_width = 1
-      self.header = true
-      self.column_widths = [60]
-      end
-    end
-  end
-
-  def line_item_right_rows(materials_this_vendor,order_materials)
-    data= [["計算欄"]]
-
-    materials_this_vendor.each do |mtv|
-        data << ["#{order_materials.find_by(material_id:mtv.id).order_quantity.to_s(:delimited)}" "#{mtv.calculated_unit}"]
-    end
-
-     l = materials_this_vendor.length
-     if l < 10
-       u = 15 - l
-     elsif l < 20
-       u = 25 - l
-     else
-       u = 5
-     end
-     data += [[""]] * u
-  end
   # def sen
   #   stroke_axis
   # end

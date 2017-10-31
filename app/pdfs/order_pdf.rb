@@ -1,22 +1,17 @@
 class OrderPdf < Prawn::Document
   def initialize(materials_this_vendor,order,order_materials)
-    # 初期設定。ここでは用紙のサイズを指定している。
     super(page_size: 'A4')
-    #日本語のフォント
     font "vendor/assets/fonts/ipaexm.ttf"
-    #インスタンス変数
     order = order
     materials_this_vendor = materials_this_vendor
     order_materials = order_materials
-
+    sen2
     header
     header_lead(materials_this_vendor)
     header_date(order)
     header_adress
     header_hello
-    table_content(materials_this_vendor)
-    table_right(materials_this_vendor,order_materials)
-    sen2
+    table_content(materials_this_vendor,order_materials)
   end
 
   def header
@@ -59,76 +54,42 @@ class OrderPdf < Prawn::Document
     stroke_vertical_line 0, 800, :at => 450
   end
 
-  def table_content(materials_this_vendor)
-    bounding_box([20, 640], :width => 400, :height => 550) do
-    # tableメソッドは2次元配列を引数(line_item_rows)にとり、それをテーブルとして表示する
-    # ブロック(do...end)内でテーブルの書式の設定をしている
-      table line_item_rows(materials_this_vendor), cell_style: { size: 10 } do
-      # 全体設定
-      cells.padding = 3          # セルのpadding幅
-      cells.borders = [:bottom,:top,:left,:right] # 表示するボーダーの向き(top, bottom, right, leftがある)
-      cells.border_width = 0.5   # ボーダーの太さ
-      cells.height = 20
-      # 個別設定
-      # row(0) は0行目、row(-1) は最後の行を表す
-      row(0).border_width = 1
-      self.header     = true  # 1行目をヘッダーとするか否か
-      self.column_widths = [280, 80,40] # 列の幅
+  def table_content(materials_this_vendor,order_materials)
+    bounding_box([0, 640], :width => 530) do
+      l = materials_this_vendor.length
+      if l < 10
+        u = 15 - l
+      elsif l < 20
+        u = 25 - l
+      else
+        u = 3
       end
-      text "　"
-      text "＜備考＞", size: 11
+
+      table line_item_rows(materials_this_vendor,u,order_materials), cell_style: { size: 9 } do
+        row(0).height = 18
+        row(l+1..l+u).height = 18
+        cells.padding = 4
+        columns(4).borders = [:left]
+        columns(5).borders = [:bottom]
+        cells.border_width = 0.2
+        self.header = true
+        self.column_widths = [80,240,60,40,50,60]
+        end
+        text "　"
+        text "＜備考＞", size: 11
+      end
     end
-  end
-  # テーブルに表示するデータを作成(2次元配列)
-  def line_item_rows(materials_this_vendor)
-    # テーブルのヘッダ部
-    data= [["品名・品番","数量","単位"]]
+  def line_item_rows(materials_this_vendor,u,order_materials)
+    data= [["管理コード","品名","数量","単位","","計算欄"]]
     materials_this_vendor.each do |mtv|
       s_data = []
-      data << ["#{mtv.order_name}","",""]
+      data << ["#{mtv.order_code}","#{mtv.order_name}","","","",
+        "#{order_materials.find_by(material_id:mtv.id).order_quantity.to_s(:delimited)}" "#{mtv.calculated_unit}"]
     end
-
-     l = materials_this_vendor.length
-     if l < 10
-       u = 15 - l
-     elsif l < 20
-       u = 25 - l
-     else
-       u = 5
-     end
-     data += [["","",""]] * u
+     data += [["","","","","",""]] * u
   end
 
-  def table_right(materials_this_vendor,order_materials)
-    bounding_box([455, 640], :width => 100, :height => 550) do
-      table line_item_right_rows(materials_this_vendor,order_materials), cell_style: { size: 7.5,align: :right } do
-      cells.padding = 3
-      cells.borders = [:bottom,]
-      cells.border_width = 0.5
-      cells.height = 20
-      row(0).border_width = 1
-      self.header     = true
-      self.column_widths = [60]
-      end
-    end
+  def sen
+    stroke_axis
   end
-
-  def line_item_right_rows(materials_this_vendor,order_materials)
-    data= [["計算欄"]]
-
-    materials_this_vendor.each do |mtv|
-        data << ["#{order_materials.find_by(material_id:mtv.id).order_quantity.to_s(:delimited)}" "#{mtv.calculated_unit}"]
-    end
-
-     l = materials_this_vendor.length
-     if l < 10
-       u = 15 - l
-     elsif l < 20
-       u = 25 - l
-     else
-       u = 5
-     end
-     data += [[""]] * u
-  end
-
 end

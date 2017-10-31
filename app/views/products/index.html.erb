@@ -29,13 +29,13 @@
 <div class="">
   <div class="col-md-12" style="padding:10px;">
     <div class="col-md-2">弁当名</div>
-    <div class="col-md-1">調理カテゴリ</div>
+    <div class="col-md-1">カテゴリ</div>
     <div class="col-md-1">弁当種類</div>
     <div class="col-md-1">販売価格</div>
-    <div class="col-md-1">原価(税8%含)</div>
-    <div class="col-md-2">説明文</div>
-    <div class="col-md-2">内容物</div>
-    <div class="col-md-2">画像</div>
+    <div class="col-md-1">原価(税込)</div>
+    <div class="col-md-4"></div>
+    <div class="col-md-1">csv</div>
+    <div class="col-md-1">画像</div>
   </div>
   <ul class='list-group' style="list-style-type: none;">
     <% @search.each do |product| %>
@@ -55,13 +55,13 @@
         <div class="col-md-1 price text-right">
           <%= product.cost_price %>円
         </div>
-        <div class="col-md-2">
-          <%= truncate(product.description,length:10) %>
+        <div class="col-md-4">
+
         </div>
-        <div class="col-md-2">
-          <%= truncate(product.contents,length:10) %>
+        <div class="col-md-1">
+          <%= link_to "CSV", "/products/#{product.id}.csv", class: "btn btn-default" %>
         </div>
-        <div class="col-md-2">
+        <div class="col-md-1">
           <%= image_tag product.product_image.thumb.url if product.product_image.present? %>
         </div>
       </li>

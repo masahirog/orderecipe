@@ -12,9 +12,11 @@
 
   <h4><%= f.label :delivery_date ,'納品日' %></h4>
   <div class="container form-group">
-    <div class="form-inline col-md-12">
-      <%= f.date_select :delivery_date,{}, class: "form-control col-md-2",style: "width: 100px;" %>
-      <div class="form-inline text-right">
+    <div class="col-md-12">
+      <div class="col-md-4">
+        <%= f.date_select :delivery_date,{}, class: "form-control col-md-2",style: "width: 100px;" %>
+      </div>
+      <div class="col-md-2">
         <input value="発注確定する" class="order_submit btn btn-success" type="submit">
       </div>
     </div>
@@ -22,11 +24,16 @@
 
   <h4><strong>発注弁当</strong></h4>
   <ul class="list-group col-md-12">
+    <% i = 0 %>
     <%= f.fields_for :order_products do |m| %>
       <li class="list-group-item col-md-12" style="padding:5px;">
         <%= m.text_field :product_id, class:'form-group col-md-2',style:"display:none;" %>
         <div class="col-md-5">
-          弁当名
+          <% if local_assigns[:locals][:edit_flag] == true %>
+          <%= @order.products[i].name %>
+          <% else %>
+            <%= Product.find(params["order"]["order_products_attributes"]["#{i}"]["product_id"]).name %>
+          <% end %>
         </div>
         <div class="col-md-3 form-inline">
           <%= m.text_field :serving_for, class:'form-control form-group',style:"width:70%;",readonly:true %>
@@ -35,6 +42,7 @@
         </div>
         </div>
       </li>
+      <% i += 1 %>
     <% end %>
   </ul>
 
@@ -42,18 +50,21 @@
   <div class="orders_all panel panel-primary">
     <div class="panel-heading col-md-12" style="padding:5px;">
       <div class="panel-title material_name col-md-3">
-        <strong>食材名</strong>
+        食材名
       </div>
       <div class="panel-title col-md-2 text-right">
-        <strong>使用量</strong>
+        発注量
+      </div>
+      <div class="panel-title col-md-1">
       </div>
       <div class="panel-title col-md-2">
-      </div>
-      <div class="panel-title col-md-3">
-        <strong>仕入先</strong>
+        計算値
       </div>
       <div class="panel-title col-md-2">
-        <strong>発注しない</strong>
+        仕入先
+      </div>
+      <div class="panel-title col-md-1">
+        発注しない
       </div>
     </div>
 
@@ -70,24 +81,30 @@
           <!-- editとnewで分岐させる -->
           <% if local_assigns[:locals][:edit_flag] == true %>
             <!-- editの時 -->
-            <div class="order_material_unit col-md-2">
+            <div class="order_material_unit col-md-1">
               <%= @order.materials[i].calculated_unit %>
             </div>
-            <div class="vendor_company_name col-md-3">
+            <div class="calculated_value col-md-2 text-center">
+              <%= @order.order_materials[i].order_quantity.to_s(:delimited) %> <%= @order.materials[i].calculated_unit %>
+            </div>
+            <div class="vendor_company_name col-md-2">
               <%= @order.materials[i].vendor.company_name %>
             </div>
 
           <% else %>
             <!-- confirmの時 -->
-            <div class="order_material_unit col-md-2">
+            <div class="order_material_unit col-md-1">
               <%= Material.find(params["order"]["order_materials_attributes"]["#{i}"]["material_id"]).calculated_unit %>
             </div>
-            <div class="vendor_company_name col-md-3">
+            <div class="calculated_value col-md-2 text-center">
+              <%= (params["order"]["order_materials_attributes"]["#{i}"]["order_quantity"]).to_i.to_s(:delimited) %> <%= Material.find(params["order"]["order_materials_attributes"]["#{i}"]["material_id"]).calculated_unit %>
+            </div>
+            <div class="vendor_company_name col-md-2">
               <%= Vendor.find(Material.find(params["order"]["order_materials_attributes"]["#{i}"]["material_id"]).vendor_id).company_name %>
             </div>
           <% end %>
 
-          <div class="col-md-2 destroy_order_material">
+          <div class="col-md-1 destroy_order_material">
             <%= m.check_box :_destroy,class:"destroy_order_materials check_box",style:"width: 20px; height: 20px;" %>
           </div>
         </li>
