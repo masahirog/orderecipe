@@ -34,7 +34,7 @@ class ProductsController < ApplicationController
     respond_to do |format|
       format.html
       format.csv do
-        send_data render_to_string, filename: "hoge.csv", type: :csv
+        send_data render_to_string, filename: "#{@product.id}_#{Time.now.strftime('%Y%m%d')}.csv", type: :csv
       end
     end
   end

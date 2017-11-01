@@ -39,7 +39,7 @@
   </div>
   <ul class='list-group' style="list-style-type: none;">
     <% @search.each do |product| %>
-      <li class="li-active products_li col-md-12 list-group-item"  style="cursor: pointer">
+      <li class="li-active products_li col-md-12 list-group-item"  style="cursor: pointer" id="aaa">
         <div class="product_name col-md-2">
           <%= link_to "#{product.name}", "/products/#{product.id}/", method: :get %>
         </div>
