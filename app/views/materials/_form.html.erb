@@ -54,7 +54,20 @@
     </div>
     <div class="col-xs-12 col-md-3">
       <%= f.label :order_unit, "発注時の単位" %></br>
-      <%= f.text_field :order_unit, class:'form-control' %>
+      <%= f.text_field :order_unit, class:'form-control',
+        autocomplete:"on", list:"unit_list" %>
+      <datalist id="unit_list">
+        <option value="kg">
+        <option value="袋">
+        <option value="p/c">
+        <option value="c/s">
+        <option value="箱">
+        <option value="枚">
+        <option value="個">
+        <option value="本">
+        <option value="匹">
+        <option value="缶">
+      </datalist>
     </div>
   </div>
   <div class="col-md-12" style="padding-top:20px;">

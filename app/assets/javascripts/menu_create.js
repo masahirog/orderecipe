@@ -27,35 +27,7 @@ $(function(){
     });
     calculate_menu_price();
 
-  //addアクション、materialの追加
-  $(".add_material").on('click', function addInput(){
-    var u = $(".add_li_material").length
-    $(".input_select_material").select2('destroy');
-    $(".add_li_material").first().clone().appendTo(".material_ul");
-    var last_li =$(".add_li_material").last()
-    last_li.children(".select_material").children().attr('name', "menu[menu_materials_attributes]["+u+"][material_id]" );
-    last_li.children(".select_material").children().attr('id', "menu_menu_materials_attributes_"+u+"_material_id" );
-    last_li.children(".amount_used").children().attr('name', "menu[menu_materials_attributes]["+u+"][amount_used]" );
-    last_li.children(".amount_used").children().attr('id', "menu_menu_materials_attributes_"+u+"_amount_used" );
-    last_li.children(".remove_material").children(".destroy_materials").attr('id', "menu_menu_materials_attributes_"+u+"__destroy");
-    last_li.children(".remove_material").children("").attr('name', "menu[menu_materials_attributes]["+u+"][_destroy]");
 
-    last_li.children(".select_material").children().val("");
-    last_li.children(".preparation").children().attr('id', "menu_menu_materials_attributes_"+u+"_preparation" );
-    last_li.children(".preparation").children().attr('name', "menu[menu_materials_attributes]["+u+"][preparation]" );
-    last_li.children(".select_post").children().attr('id', "menu_menu_materials_attributes_"+u+"_post" );
-    last_li.children(".select_post").children().attr('name', "menu[menu_materials_attributes]["+u+"][post]" );
-    last_li.children(".preparation").children().val("");
-    last_li.children(".select_post").children().val("");
-    $(".input_select_material").select2({width:"270px",placeholder: "食材資材を選択してください"});
-    last_li.children(".cost_price").children(".cost_price_value").empty();
-    last_li.children(".vendor").empty();
-    last_li.children(".amount_used").children().val("");
-    last_li.children(".price_used").children(".price_used_value").empty();
-    last_li.children().children(".calculated_unit").empty();
-    last_li.children(".remove_material").children(".destroy_materials").prop('checked',false);
-    last_li.show();
-  });
 
   //removeのチェックと、trをhide
   $(".material_ul").on('click','.remove_btn', function(){
@@ -117,6 +89,23 @@ $(function(){
       };
     });
   });
+
+
+  $(".add_material").on('click', function (){
+    addInput();
+  });
+
+
+  $(".add_material").keypress(function (e) {
+    addInput();
+    var code = e.which ? e.which : e.keyCode;
+    if (code == 13) {
+    var last_li =$(".add_li_material").last()
+    last_li.children(".select_material").children().select2('open');
+    e.preventDefault();
+    }
+  });
+
 //メニュー価格の変更
   function calculate_menu_price(){
     var row_len =  $(".add_li_material").length
@@ -145,4 +134,35 @@ $(function(){
       var calculate_price = (cost * amount_used).toFixed(2)}
     $(".add_li_material").eq(u).children(".price_used").children(".price_used_value").text(calculate_price);
   };
+
+  //addアクション、materialの追加
+  function addInput(){
+    var u = $(".add_li_material").length
+    $(".input_select_material").select2('destroy');
+    $(".add_li_material").first().clone().appendTo(".material_ul");
+    var last_li =$(".add_li_material").last()
+    last_li.children(".select_material").children().attr('name', "menu[menu_materials_attributes]["+u+"][material_id]" );
+    last_li.children(".select_material").children().attr('id', "menu_menu_materials_attributes_"+u+"_material_id" );
+    last_li.children(".amount_used").children().attr('name', "menu[menu_materials_attributes]["+u+"][amount_used]" );
+    last_li.children(".amount_used").children().attr('id', "menu_menu_materials_attributes_"+u+"_amount_used" );
+    last_li.children(".remove_material").children(".destroy_materials").attr('id', "menu_menu_materials_attributes_"+u+"__destroy");
+    last_li.children(".remove_material").children("").attr('name', "menu[menu_materials_attributes]["+u+"][_destroy]");
+
+    last_li.children(".select_material").children().val("");
+    last_li.children(".preparation").children().attr('id', "menu_menu_materials_attributes_"+u+"_preparation" );
+    last_li.children(".preparation").children().attr('name', "menu[menu_materials_attributes]["+u+"][preparation]" );
+    last_li.children(".select_post").children().attr('id', "menu_menu_materials_attributes_"+u+"_post" );
+    last_li.children(".select_post").children().attr('name', "menu[menu_materials_attributes]["+u+"][post]" );
+    last_li.children(".preparation").children().val("");
+    last_li.children(".select_post").children().val("");
+    $(".input_select_material").select2({width:"270px",placeholder: "食材資材を選択してください"});
+    last_li.children(".cost_price").children(".cost_price_value").empty();
+    last_li.children(".vendor").empty();
+    last_li.children(".amount_used").children().val("");
+    last_li.children(".price_used").children(".price_used_value").empty();
+    last_li.children().children(".calculated_unit").empty();
+    last_li.children(".remove_material").children(".destroy_materials").prop('checked',false);
+    last_li.show();
+  };
+
 });

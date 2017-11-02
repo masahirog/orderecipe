@@ -72,7 +72,20 @@
           <div class="price_used_value form-group"></div><div class="form-group">　円</div>
         </div>
         <div class="preparation col-md-2" style="padding:0;">
-          <%= m.text_field :preparation, class:'preparation_input form-control' %>
+          <%= m.text_field :preparation, class:'preparation_input form-control',
+            autocomplete:"on", list:"unit_list" %>
+          <datalist id="unit_list">
+            <option value="ボイル">
+            <option value="カット">
+            <option value="タレ">
+            <option value="千切り">
+            <option value="みじん切り">
+            <option value="計量">
+            <option value="こ">
+            <option value="個">
+            <option value="束">
+            <option value="匹">
+          </datalist>
         </div>
         <div class="select_post col-md-1">
           <%= m.select :post, [["調理場", "調理場"],[ "切り出し", "切り出し"],[ "切出/調理場", "切出/調理場"]],
@@ -87,7 +100,7 @@
     </ul>
   </div>
   <div class="col-md-12" style="margin-top:20px;">
-    <a class="add_material btn btn-primary">食材追加</a>
+    <input type="button" value="材料追加" class="add_material btn btn-primary">
   </div>
 
   <div class="action col-md-12" style="margin-bottom:20px;">

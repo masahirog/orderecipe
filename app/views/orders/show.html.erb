@@ -27,7 +27,7 @@
     <% @order.order_products.each do |op| %>
       <li class="col-md-12 list-group-item">
         <div class="col-md-4">
-          <%= Product.find(op.product_id).name %>
+          <%=  link_to "#{Product.find(op.product_id).name}","/products/#{op.product_id}" %>
         </div>
         <div class="col-md-3">
           <%= op.serving_for %>食

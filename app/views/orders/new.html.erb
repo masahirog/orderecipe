@@ -22,7 +22,7 @@
         <% for i in 0..3 do %>
           <% id = params["id#{i}"] %>
           <% num = params["num#{i}"] %>
-          <% if id %>
+          <% if id.present? %>
             <li class="list-group-item col-md-12" style="padding:5px;">
               <%= m.text_field :product_id,value:id, class:'form-group col-md-2',style:"display:none;",
               name:"order[order_products_attributes][#{i}][product_id]",id:"order_order_products_attributes_#{i}_product_id" %>
