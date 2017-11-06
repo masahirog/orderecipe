@@ -23,7 +23,7 @@ class OrderPdf < Prawn::Document
   def header_lead(materials_this_vendor)
     bounding_box([0, 720], :width => 270, :height => 50) do
       font_size 10.5
-      text "#{Vendor.find(materials_this_vendor[0].vendor_id).company_name}　御中", size: 15
+      text "#{Vendor.find(materials_this_vendor[0].material.vendor_id).company_name}　御中", size: 15
     end
   end
   def header_date(order)
@@ -83,8 +83,8 @@ class OrderPdf < Prawn::Document
     data= [["管理コード","品名","数量","単位","","計算欄"]]
     materials_this_vendor.each do |mtv|
       s_data = []
-      data << ["#{mtv.order_code}","#{mtv.order_name}","","","",
-        "#{order_materials.find_by(material_id:mtv.id).order_quantity.to_s(:delimited)}" "#{mtv.calculated_unit}"]
+      data << ["#{mtv.material.order_code}","#{mtv.material.order_name}","","","",
+        "#{mtv.order_quantity.to_s(:delimited)}" "#{mtv.material.calculated_unit}"]
     end
      data += [["","","","","",""]] * u
   end

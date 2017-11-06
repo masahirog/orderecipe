@@ -1,3 +1,9 @@
+<ol class="breadcrumb">
+	<li><a href="/">ホーム</a></li>
+  <li><a href="/products">お弁当一覧</a></li>
+	<li class="active"><%= @product.name %></li>
+</ol>
+
 <div class="col-xs-11 col-md-12 form-inline">
   <div class="col-xs-11 col-md-12 form-group">
     <%= form_tag({:controller => "products", :action => "print", format: "pdf"},{:target => "_blank"}) do %>

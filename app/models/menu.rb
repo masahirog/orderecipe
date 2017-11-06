@@ -15,12 +15,12 @@ class Menu < ApplicationRecord
 
   def self.search(params)
    if params
-     data = Menu.all
+     data = Menu.order(id: "DESC").all
      data = data.where(['name LIKE ?', "%#{params["name"]}%"]) if params["name"].present?
      data = data.where(category: params["category"]) if params["category"].present?
      data
    else
-     Menu.all
+     Menu.order(id: "DESC").all
    end
   end
 

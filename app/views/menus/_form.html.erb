@@ -9,7 +9,9 @@
       </ul>
     </div>
   <% end %>
-
+  <nav class="alert alert-danger eos-alert navbar-fixed-top" style="display:none;">
+      終売の食材を選択しています。食材を変更してください(((；ﾟДﾟ)))
+  </nav>
   <div class="form-group col-md-6">
     <%= f.label :name ,'メニュー名' %><br>
     <%= f.text_field :name, class: "form-control", id: "material_name",style:"width:100%;" %>
@@ -55,9 +57,13 @@
     <%= f.fields_for :menu_materials do |m| %>
       <li class="add_li_material col-md-12 list-group-item" >
         <div class="select_material col-md-3" style="padding:3px;">
-         <%= m.select :material_id, Material.where(end_of_sales:0).pluck(:name, :id),{include_blank: true},
+         <%= m.select :material_id, Material.pluck(:name, :id),{include_blank: true},
           class:'input_select_material col-md-12'%>
        </div>
+       <div class="sales_check" style="display:none;">
+
+      </div>
+
         <div class="cost_price col-md-1 form-inline">
           <div class="cost_price_value form-group"></div><div class="form-group">　円</div>
         </div>
@@ -102,6 +108,9 @@
   <div class="col-md-12" style="margin-top:20px;">
     <input type="button" value="材料追加" class="add_material btn btn-primary">
   </div>
+
+  <%= f.hidden_field :back_to, :value => @back_to %>
+
 
   <div class="action col-md-12" style="margin-bottom:20px;">
     <input type="button" onclick="submit();" value="登録する" class="btn btn-success">

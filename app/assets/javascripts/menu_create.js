@@ -7,10 +7,8 @@ $(function(){
   $('.input_select_material').select2({
     placeholder: "食材資材を選択してください"
   });
-
-
-
     var u = 0
+    var x = 0
     $(".add_li_material").each(function() {
         var id = $(this).children(".select_material").children(".input_select_material").val()
         if (isNaN(id) == true) {} else{
@@ -21,7 +19,7 @@ $(function(){
             async: false
         })
         .done(function(data) {
-          get_material_info(data,u)
+          get_material_info(data,u,x)
       })};
       u = u+1;
     });
@@ -39,6 +37,9 @@ $(function(){
 
 // input内のチェックと各カラムへの代入、materialデータベースに無ければ空欄にする
   $(".material_ul").on('change','.input_select_material', function(){
+    $('.eos-alert').hide();
+    $('body').css('padding-top',0);
+
     var u = $(".add_li_material").index($(this).parent().parent(".add_li_material"))
     var id = $(this).val();
     if (isNaN(id) == true) {} else{
@@ -120,14 +121,25 @@ $(function(){
     $(".menu_cost_price").val(menu_price.toFixed(1))
   };
 
-  function get_material_info(data,u){
+  function get_material_info(data,u,x){
     amount_used = $(".add_li_material").eq(u).children(".amount_used").children().val();
     var cost = data.material.cost_price;
     var unit = data.material.calculated_unit;
     var vendor = data.material.vendor_company_name;
+    var eos = data.material.end_of_sales;
+    $(".add_li_material").eq(u).children(".sales_check").text(eos);
     $(".add_li_material").eq(u).children(".vendor").text(vendor);
     $(".add_li_material").eq(u).children(".cost_price").children(".cost_price_value").text(cost);
     $(".add_li_material").eq(u).children().children(".calculated_unit").text(unit);
+    //終売のアラートon
+    if (eos==1) {
+      $(".add_li_material").eq(u).attr("style","background-color:gray;")
+      var height = $('.eos-alert').innerHeight();
+      $('body').css('padding-top',height);
+      $('.eos-alert').show();
+    }else {
+      $(".add_li_material").eq(u).attr("style","background-color:white;")
+    }
     if (isNaN(amount_used) == true){
       var calculate_price = 0;
     }else {
@@ -147,12 +159,12 @@ $(function(){
     last_li.children(".amount_used").children().attr('id', "menu_menu_materials_attributes_"+u+"_amount_used" );
     last_li.children(".remove_material").children(".destroy_materials").attr('id', "menu_menu_materials_attributes_"+u+"__destroy");
     last_li.children(".remove_material").children("").attr('name', "menu[menu_materials_attributes]["+u+"][_destroy]");
-
     last_li.children(".select_material").children().val("");
     last_li.children(".preparation").children().attr('id', "menu_menu_materials_attributes_"+u+"_preparation" );
     last_li.children(".preparation").children().attr('name', "menu[menu_materials_attributes]["+u+"][preparation]" );
     last_li.children(".select_post").children().attr('id', "menu_menu_materials_attributes_"+u+"_post" );
     last_li.children(".select_post").children().attr('name', "menu[menu_materials_attributes]["+u+"][post]" );
+    last_li.children(".sales_check").empty();
     last_li.children(".preparation").children().val("");
     last_li.children(".select_post").children().val("");
     $(".input_select_material").select2({width:"270px",placeholder: "食材資材を選択してください"});

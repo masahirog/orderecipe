@@ -46,8 +46,24 @@
     <% end %>
   </ul>
 
-  <h4><strong>発注食材・資材一覧</strong></h4>
-  <div class="orders_all panel panel-primary">
+  <div class="col-md-12" style="padding-bottom:10px;">
+    <div class="col-md-6">
+      <strong>発注食材・資材一覧</strong>
+    </div>
+
+      <label class="col-md-2 text-right">企業絞込：</label>
+
+    <div class="col-md-3">
+      <select class="vendor_select form-control">
+        <option value=""></option>
+        <% omv = @order.materials.select(:vendor_id).uniq %>
+        <% omv.each do |v| %>
+        <%= "<option value=#{v.vendor_id}>#{Vendor.find(v.vendor_id).company_name}</option>".html_safe %>
+        <% end %>
+      </select>
+    </div>
+  </div>
+  <div class="orders_all panel panel-primary col-md-12" style="padding:0;">
     <div class="panel-heading col-md-12" style="padding:5px;">
       <div class="panel-title material_name col-md-3">
         食材名
@@ -67,6 +83,7 @@
         発注しない
       </div>
     </div>
+
 
     <ul class="order_materials_ul list-group panel-body">
       <% i = 0 %>
@@ -97,7 +114,8 @@
               <%= Material.find(params["order"]["order_materials_attributes"]["#{i}"]["material_id"]).calculated_unit %>
             </div>
             <div class="calculated_value col-md-2 text-center">
-              <%= (params["order"]["order_materials_attributes"]["#{i}"]["order_quantity"]).to_i.to_s(:delimited) %> <%= Material.find(params["order"]["order_materials_attributes"]["#{i}"]["material_id"]).calculated_unit %>
+              <%= (params["order"]["order_materials_attributes"]["#{i}"]["order_quantity"]).to_i.to_s(:delimited) %>
+               <%= Material.find(params["order"]["order_materials_attributes"]["#{i}"]["material_id"]).calculated_unit %>
             </div>
             <div class="vendor_company_name col-md-2">
               <%= Vendor.find(Material.find(params["order"]["order_materials_attributes"]["#{i}"]["material_id"]).vendor_id).company_name %>

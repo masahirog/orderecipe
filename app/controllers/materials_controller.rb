@@ -10,22 +10,41 @@ class MaterialsController < ApplicationController
   def create
     @material = Material.create(material_params)
        if @material.save
-         redirect_to materials_path, notice: "「#{@material.name}」を作成しました！: #{revert_link}"
+         redirect_to @material, notice: "
+         <div class='alert alert-success' role='alert' style='font-size:15px;'>「#{@material.name}」を作成しました： #{revert_link}
+         　　続けて食材を作成する：<a href='/materials/new'>新規作成</a></div>".html_safe
        else
          render 'new'
        end
   end
+  def show
+    @material = Material.find(params[:id])
+  end
 
   def edit
+    if request.referer.include?("products")
+      @back_to = request.referer
+    elsif request.referer.include?("menus")
+      @back_to = request.referer
+    end
     @material = Material.find(params[:id])
-
   end
 
   def update
     @material = Material.find(params[:id])
     @material.update(material_params)
     if @material.save
-      redirect_to materials_path, notice: "「#{@material.name}」を更新しました！: #{revert_link}/#{versions_link}"
+      if params["material"]["back_to"].blank?
+        redirect_to material_path, notice: "
+        <div class='alert alert-success' role='alert' style='font-size:15px;'>
+        「#{@material.name}」を更新しました。: #{revert_link}/#{versions_link}
+        　　続けて食材を作成する：<a href='/materials/new'>新規作成</a></div>".html_safe
+
+      else
+        redirect_to params["material"]["back_to"],
+        notice: "<div class='alert alert-success' role='alert' style='font-size:15px;'>
+        「#{@material.name}」を更新しました。: #{revert_link}/#{versions_link}".html_safe
+      end
     else
       render 'edit'
     end

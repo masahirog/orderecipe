@@ -9,6 +9,22 @@ $(function(){
     placeholder: "発注する食材を選択"
   });
 
+
+  $(".vendor_select").on("change",function(){
+    $(".order_materials_li").show();
+      var chosen_company = $.trim($(".vendor_select option:selected").text());
+    $(".order_materials_li").each(function(){
+      var company_name = $.trim($(this).children(".vendor_company_name").text());
+      if(chosen_company=="") {
+        $(this).show();
+      } else {
+      if (chosen_company == company_name) {
+      }else {
+        $(this).hide();
+      }};
+    });
+  });
+
   $(".input_select_product").on('change', function(){
     var id = $(this).val();
     var li =  $(this).parent().parent("li")

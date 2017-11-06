@@ -80,6 +80,9 @@
       <%= f.check_box :end_of_sales, class:"check_box form-control" %>
     </div>
   </div>
+
+    <%= f.hidden_field :back_to, :value => @back_to %>
+
   <div class="action col-md-12">
     <input type="button" onclick="submit();" value="登録する" class="btn btn-success">
   </div>

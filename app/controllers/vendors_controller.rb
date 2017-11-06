@@ -14,6 +14,10 @@ class VendorsController < ApplicationController
       render 'new'
     end
   end
+  def show
+    @vendor = Vendor.find(params[:id])
+  end
+
   def edit
     @vendor = Vendor.find(params[:id])
   end

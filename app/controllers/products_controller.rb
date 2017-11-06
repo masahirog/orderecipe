@@ -50,6 +50,7 @@ class ProductsController < ApplicationController
 
   def edit
     @product = Product.find(params[:id])
+    @product.product_menus.build  if @product.menus.length == 0
   end
 
   def update

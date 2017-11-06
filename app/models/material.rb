@@ -8,6 +8,7 @@ class Material < ApplicationRecord
   has_many :orders, through: :order_materials
 
   belongs_to :vendor
+
   after_save :update_cache
   validates :name, presence: true, uniqueness: true, format: { with:/\A[^０-９ａ-ｚＡ-Ｚ]+\z/,
     message: "：全角英数字は使用出来ません。"}
@@ -19,9 +20,9 @@ class Material < ApplicationRecord
   validates :cost_price, presence: true, numericality: true
   validates :vendor_id, presence: true
 
-  def self.search(params) #self.でクラスメソッドとしている
-   if params # 入力がある場合の処理
-     data = Material.all
+  def self.search(params)
+   if params
+     data = Material.order(id: "DESC").all
      data = data.where(['name LIKE ?', "%#{params["name"]}%"]) if params["name"].present?
      data = data.where(['order_name LIKE ?', "%#{params["order_name"]}%"]) if params["order_name"].present?
      data = data.where(vendor_id: params["vendor_id"]) if params["vendor_id"].present?
@@ -29,7 +30,7 @@ class Material < ApplicationRecord
      data = data.where(['end_of_sales LIKE ?', "%#{params["end_of_sales"]["value"]}%"]) if params["end_of_sales"].present?
      data
    else
-     Material.all   # 全て表示する
+     Material.order(id: "DESC").all
    end
   end
 
@@ -63,8 +64,20 @@ class Material < ApplicationRecord
 
   def self.get_material_this_vendor(params)
     order = Order.find(params[:id])
-    materials_this_vendor = order.materials.where(vendor_id:params[:vendor][:id])
+    ordermaterials = order.order_materials
+    materials_this_vendor = []
+    pvi = params[:vendor][:id].to_i
+    ordermaterials.each do |om|
+      vendorid = om.material.vendor_id
+      if pvi == vendorid
+        materials_this_vendor << om
+      end
+    end
     return materials_this_vendor
+    # order = Order.find(params[:id])
+    # materials_this_vendor = order.materials.where(vendor_id:params[:vendor][:id])
+    # return materials_this_vendor
+
   end
 
   private

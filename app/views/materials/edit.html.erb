@@ -1,1 +1,7 @@
+<ol class="breadcrumb">
+	<li><a href="/">ホーム</a></li>
+  <li><a href="/materials">食材資材一覧</a></li>
+  <li><%= link_to "#{@material.name}","/materials/#{@material.id}" %></li>
+	<li class="active">編集</li>
+</ol>
 <%= render 'form', path: edit_material_path, method: :post %>

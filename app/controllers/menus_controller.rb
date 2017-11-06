@@ -21,14 +21,21 @@ class MenusController < ApplicationController
   def create
     @menu = Menu.create(menu_create_update)
      if @menu.save
-       redirect_to menus_path, notice: "「#{@menu.name}」を作成しました。: #{revert_link_menu}"
+       redirect_to @menu,
+       notice: "
+       <div class='alert alert-success' role='alert' style='font-size:15px;'>「#{@menu.name}」を作成しました： #{revert_link_menu}
+       　　続けてメニューを作成する：<a href='/menus/new'>新規作成</a></div>".html_safe
      else
        render 'new'
      end
   end
 
   def edit
+    if request.referer.include?("products")
+      @back_to = request.referer
+    end
     @menu = Menu.find(params[:id])
+    @menu.menu_materials.build  if @menu.materials.length == 0
   end
 
   def update
@@ -36,7 +43,15 @@ class MenusController < ApplicationController
     @menu.update(menu_create_update)
 
     if @menu.save
-      redirect_to menu_path, notice: "「#{@menu.name}」を更新しました。: #{revert_link_menu}"
+      if params["menu"]["back_to"].blank?
+        redirect_to menu_path, notice: "
+        <div class='alert alert-success' role='alert' style='font-size:15px;'>「#{@menu.name}」を更新しました： #{revert_link_menu}
+        　　続けてメニューを作成する：<a href='/menus/new'>新規作成</a></div>".html_safe
+
+      else
+        redirect_to params["menu"]["back_to"], notice: "
+        <div class='alert alert-success' role='alert' style='font-size:15px;'>「#{@menu.name}」を更新しました： #{revert_link_menu}".html_safe
+      end
     else
       render "edit"
     end

@@ -9,7 +9,15 @@ class OrderAll < Prawn::Document
       sen2
       u= "id#{i}"
       id = vendors[u].to_i
-      materials_this_vendor = order.materials.where(vendor_id: id)
+
+      ordermaterials = order_materials
+      materials_this_vendor = []
+      ordermaterials.each do |om|
+        vendorid = om.material.vendor_id
+        if id == vendorid
+          materials_this_vendor << om
+        end
+      end
       header
       header_lead(id)
       header_date(order)
@@ -90,8 +98,8 @@ class OrderAll < Prawn::Document
     data= [["管理コード","品名","数量","単位","","計算欄"]]
     materials_this_vendor.each do |mtv|
       s_data = []
-      data << ["#{mtv.order_code}","#{mtv.order_name}","","","",
-        "#{order_materials.find_by(material_id:mtv.id).order_quantity.to_s(:delimited)}" "#{mtv.calculated_unit}"]
+      data << ["#{mtv.material.order_code}","#{mtv.material.order_name}","","","",
+        "#{mtv.order_quantity.to_s(:delimited)}" "#{mtv.material.calculated_unit}"]
     end
      data += [["","","","","",""]] * u
   end
