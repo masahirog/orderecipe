@@ -58,13 +58,14 @@ class PreparationPdf < Prawn::Document
           break
         end
       end
+
       if @i<4
         size = 11
-      elsif @i<7
+      elsif @i<5
         size = 10
-      elsif @i<10
+      elsif @i<7
         size = 9
-      elsif @i<15
+      elsif @i<10
         size = 7
       end
 
