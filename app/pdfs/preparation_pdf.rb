@@ -65,7 +65,7 @@ class PreparationPdf < Prawn::Document
         size = 10
       elsif @i<7
         size = 9
-      elsif @i<10
+      else
         size = 7
       end
 
