@@ -80,17 +80,18 @@
   <label class="">発注食材・資材一覧</label>
   <div class=" orders_all panel panel-primary">
     <div class="panel-heading col-md-12" style="padding:5px;">
-      <div class="panel-title material_name col-md-3">
-        <strong>食材名</strong>
-      </div>
-      <div class="panel-title col-md-2 text-right">
-        <strong>発注量</strong>
-      </div>
-      <div class="panel-title col-md-2">
-      </div>
-      <div class="panel-title col-md-3">
-        <strong>仕入先</strong>
-      </div>
+      <label class="panel-title material_name col-md-3">
+        食材名
+      </label>
+      <label class="panel-title col-md-2 text-center">
+        発注量
+      </label>
+      <label class="panel-title col-md-2 text-center">
+        計算量
+      </label>
+      <label class="panel-title col-md-2">
+        仕入先
+      </label>
     </div>
 
     <ul class="order_materials_ul list-group panel-body">
@@ -99,13 +100,19 @@
           <div class="material_name col-md-3">
              <%= Material.find(om.material_id).name %>
           </div>
-          <div class="order_quantity col-md-2">
+          <div class="order_quantity col-md-1 text-right">
             <%= om.order_quantity %>
           </div>
-          <div class="material_unit col-md-2">
+          <div class="material_unit col-md-1">
+            <%= Material.find(om.material_id).order_unit %>
+          </div>
+          <div class="material_unit col-md-1 text-right">
+            <%= om.calculated_quantity %>
+          </div>
+          <div class="material_unit col-md-1">
             <%= Material.find(om.material_id).calculated_unit %>
           </div>
-          <div class="vendor_company_name col-md-3">
+          <div class="vendor_company_name col-md-2">
             <%= Vendor.find(Material.find(om.material_id).vendor_id).company_name %>
           </div>
         </li>

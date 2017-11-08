@@ -17,13 +17,10 @@ class OrdersController < ApplicationController
   def index
     @products = Product.all
     @orders = Order.page(params[:page]).order("id DESC")
-
-    # @search = Order.search(params).page(params[:page]).per(20)
   end
   def update
     @order = Order.find(params[:id])
     @order.update(order_create_update)
-
     if @order.save
       redirect_to order_path
     else
@@ -32,11 +29,10 @@ class OrdersController < ApplicationController
   end
 
   def new
-    @products = Product.all
+    @hash = Material.calculate_products_materials(params)
     @order = Order.new
     @order.order_materials.build
     @order.order_products.build
-    @hash = Material.calculate_products_materials(params)
   end
 
   def create
@@ -93,7 +89,7 @@ class OrdersController < ApplicationController
 
   def order_create_update
     params.require(:order).permit(:delivery_date,
-      order_materials_attributes: [:id, :order_quantity, :order_id, :material_id, :_destroy],
+      order_materials_attributes: [:id, :order_quantity,:calculated_quantity, :order_id, :material_id, :_destroy],
       order_products_attributes: [:id, :serving_for, :order_id, :product_id, :_destroy])
   end
 

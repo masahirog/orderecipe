@@ -1,104 +1,154 @@
-<div>
-  <%= form_for @order, url: {action: 'confirm'} do |f| %>
-    <% if @order.errors.any? %>
-      <div id="error_explanation">
-        <b><%= pluralize(@order.errors.count, "箇所") %>入力に不備があります</b>
-        <ul style="list-style:none;">
-        <% @order.errors.full_messages.each do |message| %>
-          <li><%= message %></li>
-        <% end %>
-        </ul>
-      </div>
-    <% end %>
-
-    <div class="form-inline text-right">
-      <input type="button" onclick="submit();" value="発注量の編集・確定＞＞" class="btn btn-success">
-    </div>
-
-    <h4><strong>発注弁当</strong></h4>
-    <ul class="list-group col-md-12">
-      <%= f.fields_for :order_products do |m| %>
-        <% i =0 %>
-        <% for i in 0..3 do %>
-          <% id = params["id#{i}"] %>
-          <% num = params["num#{i}"] %>
-          <% if id.present? %>
-            <li class="list-group-item col-md-12" style="padding:5px;">
-              <%= m.text_field :product_id,value:id, class:'form-group col-md-2',style:"display:none;",
-              name:"order[order_products_attributes][#{i}][product_id]",id:"order_order_products_attributes_#{i}_product_id" %>
-              <div class="col-md-5">
-                <%= Product.find(id).name %>
-              </div>
-              <div class="col-md-3 form-inline">
-                <%= m.text_field :serving_for,value:num, class:'form-control form-group',style:"width:70%;",readonly:true,
-                name:"order[order_products_attributes][#{i}][serving_for]",id:"order_order_products_attributes_#{i}_serving_for" %>
-              <div class="form-group">
-                人分
-              </div>
-              </div>
-            </li>
-          <% end %>
-        <% end %>
+<%= form_for @order do |f| %>
+  <% if @order.errors.any? %>
+    <div id="error_explanation">
+      <b><%= pluralize(@order.errors.count, "箇所") %>入力に不備があります</b>
+      <ul style="list-style:none;">
+      <% @order.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
       <% end %>
-    </ul>
-
-    <h4><strong>食材別使用量の確認</strong></h4>
-    <div class="panel panel-primary">
-      <div class="panel-heading col-md-12" style="padding:5px;">
-        <div class="panel-title col-md-1", style="display:none;">
-          <strong>食材id</strong>
-        </div>
-        <div class="panel-title material_name col-md-3">
-          <strong>食材名</strong>
-        </div>
-        <div class="panel-title col-md-2 text-right">
-          <strong>使用量</strong>
-        </div>
-        <div class="panel-title col-md-2">
-        </div>
-        <div class="panel-title col-md-3">
-          <strong>仕入先</strong>
-        </div>
-      </div>
-      <ul class="list-group panel-body">
-        <% i = 0 %>
-        <%= f.fields_for :order_materials do |m| %>
-          <% @hash.each do |material|%>
-            <li class="list-group-item col-md-12" style="padding:5px;">
-              <div class="col-md-1", style="display:none;">
-                  <%= m.text_field :material_id,value: material["material_id"],
-                  class:'form-control',name:"order[order_materials_attributes][#{i}][material_id]", readonly: true %>
-              </div>
-              <div class="material_name col-md-3">
-                <%= Material.find(material["material_id"]).name %>
-              </div>
-              <div class="col-md-2">
-                <%= m.text_field :order_quantity,value: material["amount_used"].round(1),
-                 class:'text-right col-md-6 pull-right form-control',
-                   name:"order[order_materials_attributes][#{i}][order_quantity]", readonly: true %>
-              </div>
-              <div class="col-md-2">
-                <%= Material.find(material["material_id"]).calculated_unit %>
-              </div>
-              <div class="col-md-3">
-                <%= Vendor.find(material["vendor_id"]).company_name %>
-              </div>
-            </li>
-            <% i = i + 1 %>
-          <% end %>
-        <% end %>
       </ul>
     </div>
   <% end %>
-</div>
 
-<h4><strong>弁当毎の内訳</strong></h4>
-<div class="">
-  <% for i in 0..3 %>
-    <% if params["id#{i}"].present? %>
-    <div class="panel panel-default">
-      <%= render :partial => "products_materials", locals: {num: "num#{i}",id: "id#{i}"} %>
+  <h4><%= f.label :delivery_date ,'納品日' %></h4>
+  <div class="container form-group">
+    <div class="col-md-12">
+      <div class="col-md-4">
+        <%= f.date_select :delivery_date,{}, class: "form-control col-md-2",style: "width: 100px;" %>
+      </div>
+      <div class="col-md-2">
+        <input value="発注確定する" class="order_submit btn btn-success" type="submit">
+      </div>
     </div>
+  </div>
+
+  <h4><strong>発注弁当</strong></h4>
+  <ul class="list-group col-md-12">
+    <%= f.fields_for :order_products do |m| %>
+      <% i =0 %>
+      <% for i in 0..3 do %>
+        <% id = params["id#{i}"] %>
+        <% num = params["num#{i}"] %>
+        <% if id.present? %>
+          <li class="list-group-item col-md-12" style="padding:5px;">
+            <%= m.text_field :product_id,value:id, class:'form-group col-md-2',style:"display:none;",
+            name:"order[order_products_attributes][#{i}][product_id]",id:"order_order_products_attributes_#{i}_product_id" %>
+            <div class="col-md-5">
+              <%= Product.find(id).name %>
+            </div>
+            <div class="col-md-3 form-inline">
+              <%= m.text_field :serving_for,value:num, class:'form-control form-group',style:"width:70%;",readonly:true,
+              name:"order[order_products_attributes][#{i}][serving_for]",id:"order_order_products_attributes_#{i}_serving_for" %>
+            <div class="form-group">
+              人分
+            </div>
+            </div>
+          </li>
+        <% end %>
+      <% end %>
     <% end %>
-  <% end %>
-</div>
+  </ul>
+
+  <div class="col-md-12" style="padding-bottom:10px;">
+    <div class="col-md-3">
+      <strong>発注食材・資材一覧</strong>
+    </div>
+    <label class="col-md-2 text-right">企業絞込：</label>
+    <div class="col-md-2">
+      <select class="vendor_select form-control">
+        <option value=""></option>
+        <% arr = [] %>
+        <% @hash.each do |h| %>
+          <% arr << h["vendor_id"] %>
+        <% end %>
+          <% vendors = arr.uniq %>
+        <% vendors.each do |vendor_id| %>
+            <%= "<option value=#{vendor_id}>#{Vendor.find(vendor_id).company_name}</option>".html_safe %>
+        <% end %>
+      </select>
+    </div>
+
+    <div class="col-md-1 pull-right">
+      <input type="checkbox" class="all_delete" style="width: 24px; height: 24px;">
+    </div>
+  </div>
+  <div class="orders_all panel panel-primary col-md-12" style="padding:0;">
+    <div class="panel-heading col-md-12" style="padding:5px;">
+      <div class="panel-title material_name col-md-2">
+        食材名
+      </div>
+      <div class="panel-title col-md-2 text-center">
+        発注量
+      </div>
+      <div class="panel-title col-md-2">
+        計算値
+      </div>
+      <div class="panel-title col-md-2">
+        仕入先
+      </div>
+      <div class="panel-title col-md-2">
+        単位変換
+      </div>
+      <div class="panel-title col-md-1">
+        在庫予想
+      </div>
+
+      <div class="panel-title col-md-1">
+        無発注
+      </div>
+    </div>
+
+
+    <ul class="order_materials_ul list-group panel-body">
+      <% i = 0 %>
+      <%= f.fields_for :order_materials do |m| %>
+        <% @hash.each do |material|%>
+          <li class="order_materials_li list-group-item col-md-12" style="padding:5px;">
+            <div class="order_material_name col-md-2" style="padding:0">
+              <%= m.select :material_id, Material.where(end_of_sales:0).pluck(:name, :id),
+              {include_blank: true,selected: material["material_id"]}, class:'select_order_materials col-md-12',
+              name:"order[order_materials_attributes][#{i}][material_id]",
+              id:"order_order_materials_attributes_#{i}_material_id" %>
+            </div>
+            <div class="order_quantity col-md-1" style="padding-right:0;">
+              <%= m.text_field :order_quantity,value:(material["amount_used"]/Material.find(material["material_id"]).calculated_value).ceil,
+               class:'text-right form-control',style:"height:27.78px;",
+                 name:"order[order_materials_attributes][#{i}][order_quantity]",
+                 id:"order_order_materials_attributes_#{i}_order_quantity" %>
+            </div>
+            <div class="order_material_unit col-md-1">
+              <%= Material.find(material["material_id"]).order_unit %>
+            </div>
+            <div class="calculated_value col-md-1" style="padding:0;">
+              <%= m.text_field :calculated_quantity,value:material["amount_used"].round(1),
+              class:'text-right form-control',name:"order[order_materials_attributes][#{i}][calculated_quantity]",
+              id:"order_order_materials_attributes_#{i}_calculated_quantity",
+              style:"height:27.78px;",readonly:true%>
+            </div>
+            <div class="calculated_material_unit col-md-1">
+              <%= Material.find(material["material_id"]).calculated_unit %>
+            </div>
+            <div class="vendor_company_name col-md-2">
+              <%= Vendor.find(material["vendor_id"]).company_name %>
+            </div>
+            <div class="calculate_unit panel-title col-md-2">
+              1 <%= Material.find(material["material_id"]).order_unit %>
+              ：<%= Material.find(material["material_id"]).calculated_value.to_s(:delimited) %> <%= Material.find(material["material_id"]).calculated_unit %>
+            </div>
+
+            <div class="panel-title col-md-1">
+            </div>
+            <div class="col-md-1 destroy_order_material">
+              <%= m.check_box :_destroy,class:"destroy_order_materials check_box",style:"width: 24px; height: 24px;",
+              name:"order[order_materials_attributes][#{i}][_destroy]",id:"order_order_materials_attributes_#{i}__destroy" %>
+            </div>
+          </li>
+        <% i = i + 1 %>
+        <% end %>
+      <% end %>
+    </ul>
+  </div>
+  <div class="add">
+    <a class="add_order_materials btn btn-primary">発注食材追加</a>
+  </div>
+<% end %>

@@ -65,15 +65,13 @@
   </div>
   <div class="orders_all panel panel-primary col-md-12" style="padding:0;">
     <div class="panel-heading col-md-12" style="padding:5px;">
-      <div class="panel-title material_name col-md-3">
+      <div class="panel-title material_name col-md-2">
         食材名
       </div>
-      <div class="panel-title col-md-2 text-right">
+      <div class="panel-title col-md-2">
         発注量
       </div>
       <div class="panel-title col-md-1">
-      </div>
-      <div class="panel-title col-md-2">
         計算値
       </div>
       <div class="panel-title col-md-2">
@@ -89,11 +87,11 @@
       <% i = 0 %>
       <%= f.fields_for :order_materials do |m| %>
         <li class="order_materials_li list-group-item col-md-12" style="padding:5px;">
-          <div class="order_material_name col-md-3">
-            <%= m.select :material_id, Material.where(end_of_sales:0).pluck(:name, :id),{include_blank: true}, class:'select_order_materials'%>
+          <div class="order_material_name col-md-2" style="padding:0">
+            <%= m.select :material_id, Material.where(end_of_sales:0).pluck(:name, :id),{include_blank: true}, class:'select_order_materials col-md-12'%>
           </div>
-          <div class="order_quantity col-md-2">
-            <%= m.text_field :order_quantity, class:'text-right col-md-6 pull-right form-control',style:"height:27.78px;" %>
+          <div class="order_quantity col-md-1">
+            <%= m.text_field :order_quantity, class:'text-right form-control',style:"" %>
           </div>
           <!-- editとnewで分岐させる -->
           <% if local_assigns[:locals][:edit_flag] == true %>
@@ -101,7 +99,7 @@
             <div class="order_material_unit col-md-1">
               <%= @order.materials[i].calculated_unit %>
             </div>
-            <div class="calculated_value col-md-2 text-center">
+            <div class="calculated_value col-md-1 text-center">
               <%= @order.order_materials[i].order_quantity.to_s(:delimited) %> <%= @order.materials[i].calculated_unit %>
             </div>
             <div class="vendor_company_name col-md-2">
