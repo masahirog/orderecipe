@@ -16,27 +16,26 @@
     </div>
   </div>
   <div class="col-md-12 form-group">
-      <% if @product.bento_id.present? %>
-      <% else %>
-        <div class="col-md-4">
-          <div class="col-md-8">
-            <strong>
-            「本登録」にチェックするとIDを発行します。
-          </strong>
-          </div>
-          <div class="col-md-4 text-center">
-            <label class="col-md-12">本登録</label>
-            <input type="checkbox" class="registration" style="width: 24px; height: 24px;">
-          </div>
+    <% if @product.bento_id.present? %>
+    <% else %>
+      <div class="col-md-6">
+        <div class="col-md-4 text-center">
+          <input type="checkbox" class="registration" style="width: 24px; height: 24px;">
         </div>
-      <% end %>
+        <div class="col-md-8">
+          <strong>
+          ←チェックを付けて保存するとメニューのスプレッドシートと連携するIDを発行します。
+        </strong>
+        </div>
+      </div>
+    <% end %>
+  </div>
+  <div class="col-md-12 form-group">
     <div class="col-md-2">
       <%= f.label :bento_id, "SS連携ID" %>
       <%= number_field_tag("bento_id_hidden",@bento_id,style:"display:none;") %>
       <%= f.number_field :bento_id, class:"bento_id form-control",readonly:true %>
     </div>
-  </div>
-  <div class="col-md-12 form-group">
     <div class="col-md-2">
       <%= f.label :cook_category, "調理カテゴリー" %>
       <%= f.select :cook_category, {グリル: "グリル", コンロ: "コンロ", フライヤー: "フライヤー", 前日コンロ: "前日コンロ",
