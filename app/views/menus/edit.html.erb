@@ -4,4 +4,4 @@
   <li><%= link_to "#{@menu.name}","/menus/#{@menu.id}" %></li>
 	<li class="active">編集</li>
 </ol>
-<%= render 'form', path: edit_menu_path, method: :post %>
+<%= render 'form', path: edit_menu_path, method: :post, locals: {edit_flag:true} %>

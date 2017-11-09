@@ -63,10 +63,11 @@ $(function(){
     if (isNaN(amount_used) == true){
       var calculate_price = 0;
     }else {
-      var calculate_price = (cost_price * amount_used).toFixed(2)};
+      var calculate_price = Math.round( (cost_price * amount_used) * 100 ) / 100 ;
+      // var calculate_price = (cost_price * amount_used).toFixed(2)};
       $(this).parent(".add_li_material").children(".price_used").children(".price_used_value").text(calculate_price);
     calculate_menu_price();
-  });
+  }});
 
   $(".all_box").on("change",function(){
     var prop = $('.all_box').prop('checked');
@@ -118,7 +119,8 @@ $(function(){
         if (isNaN(price_used) == true ){}else{
         menu_price += price_used}
       }});
-    $(".menu_cost_price").val(menu_price.toFixed(1))
+      var roundprice = Math.round( menu_price * 100 ) / 100 ;
+    $(".menu_cost_price").val(roundprice)
   };
 
   function get_material_info(data,u,x){
@@ -143,9 +145,10 @@ $(function(){
     if (isNaN(amount_used) == true){
       var calculate_price = 0;
     }else {
-      var calculate_price = (cost * amount_used).toFixed(2)}
+      var calculate_price = Math.round( (cost * amount_used) * 100 ) / 100 ;
+      // var calculate_price = (cost * amount_used).toFixed(2)}
     $(".add_li_material").eq(u).children(".price_used").children(".price_used_value").text(calculate_price);
-  };
+  }};
 
   //addアクション、materialの追加
   function addInput(){

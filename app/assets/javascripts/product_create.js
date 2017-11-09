@@ -84,9 +84,12 @@ $(function(){
       if (isNaN(menu_price) == true ){}else{
       sum_menu_cost += menu_price;
     }}});
-    var sum_menu_cost_tax = (sum_menu_cost * 0.08).toFixed(2);
-    var product_cost_price = (sum_menu_cost * 1.08).toFixed(1);
-    $(".sum_menu_cost").val(sum_menu_cost.toFixed(2));
+    var sum_menu_cost_tax = Math.round( (sum_menu_cost * 0.08) * 100 ) / 100 ;
+    // var sum_menu_cost_tax = (sum_menu_cost * 0.08).toFixed(2);
+    var product_cost_price = Math.round( (sum_menu_cost * 1.08) * 10 ) / 10 ;
+    // var product_cost_price = (sum_menu_cost * 1.08).toFixed(1);
+    var sum_menu_cost = Math.round( sum_menu_cost * 100 ) / 100 ;
+    $(".sum_menu_cost").val(sum_menu_cost);
     $(".sum_menu_cost_tax").val(sum_menu_cost_tax);
     $(".product_cost_price").val(product_cost_price);
   };

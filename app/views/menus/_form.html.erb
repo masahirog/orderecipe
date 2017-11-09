@@ -24,7 +24,7 @@
   <div class="col-xs-12 col-md-3 form-inline">
     <div class="col-xs-1 form-group col-md-10">
       <%= f.label :cost_price, "メニュー原価" %></br>
-      <%= f.text_field :cost_price, readonly: 'readonly',class: "menu_cost_price form-control",style:"width:100%" %>
+      <%= f.number_field :cost_price, readonly: 'readonly',class: "menu_cost_price form-control",style:"width:100%" %>
     </div>
     <div class="col-xs-1 form-group col-md-1" style="margin-top:35px; padding:0;">
       円
@@ -111,8 +111,13 @@
 
   <%= f.hidden_field :back_to, :value => @back_to %>
 
-
-  <div class="action col-md-12" style="margin-bottom:20px;">
-    <input type="button" onclick="submit();" value="登録する" class="btn btn-success">
-  </div>
+  <% if local_assigns[:locals][:edit_flag] == true %>
+    <div class="action col-md-12" style="margin-bottom:20px;">
+      <%= submit_tag "更新する", class:"btn btn-success", data: { confirm: "更新すると「#{@menu.name}」を使用している、お弁当全てに反映されますが、よろしいですか？"} %>
+    </div>
+  <% else %>
+    <div class="action col-md-12" style="margin-bottom:20px;">
+      <input type="button" onclick="submit();" value="登録する" class="btn btn-success">
+    </div>
+  <% end %>
 <% end %>

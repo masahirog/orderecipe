@@ -27,4 +27,12 @@ class Product < ApplicationRecord
      data = Product.order(id: "DESC").all
    end
   end
+  def self.bentoid
+    max = Product.maximum(:bento_id)
+    if max.nil?
+      data = 1
+    else
+      data = max + 1
+    end
+  end
 end

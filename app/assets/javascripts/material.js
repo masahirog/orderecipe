@@ -55,7 +55,8 @@ $(function(){
   function cost_price_calculate(){
     var amount = parseInt(document.getElementById("material_calculated_value").value);
     var price = parseInt(document.getElementById("material_calculated_price").value);
-    var cost_price = (price / amount).toFixed(2);
+    var cost_price = Math.round( (price / amount) * 100 ) / 100 ;
+    // var cost_price = (price / amount).toFixed(2);
     if (isNaN(cost_price)){
       $("#material_cost_price").val(0);
     } else {

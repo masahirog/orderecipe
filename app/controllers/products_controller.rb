@@ -25,6 +25,7 @@ class ProductsController < ApplicationController
   end
 
   def new
+    @bento_id = Product.bentoid()
     @product = Product.new
     @product.product_menus.build
   end
