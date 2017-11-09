@@ -14,17 +14,29 @@
       <%= f.label :name, "弁当名" %>
       <%= f.text_field :name, id: "menu_search", autocomplete: "off", class:"name form-control" %>
     </div>
-
   </div>
   <div class="col-md-12 form-group">
+      <% if @product.bento_id.present? %>
+      <% else %>
+        <div class="col-md-4">
+          <div class="col-md-8">
+            <strong>
+            「本登録」にチェックするとIDを発行します。
+          </strong>
+          </div>
+          <div class="col-md-4 text-center">
+            <label class="col-md-12">本登録</label>
+            <input type="checkbox" class="registration" style="width: 24px; height: 24px;">
+          </div>
+        </div>
+      <% end %>
     <div class="col-md-2">
       <%= f.label :bento_id, "SS連携ID" %>
-      <% if local_assigns[:locals][:new_flag] == true %>
-        <%= f.number_field :bento_id,value:@bento_id, class:"name form-control",readonly:true %>
-      <% else %>
-        <%= f.number_field :bento_id, class:"name form-control",readonly:true %>
-      <% end %>
+      <%= number_field_tag("bento_id_hidden",@bento_id,style:"display:none;") %>
+      <%= f.number_field :bento_id, class:"bento_id form-control",readonly:true %>
     </div>
+  </div>
+  <div class="col-md-12 form-group">
     <div class="col-md-2">
       <%= f.label :cook_category, "調理カテゴリー" %>
       <%= f.select :cook_category, {グリル: "グリル", コンロ: "コンロ", フライヤー: "フライヤー", 前日コンロ: "前日コンロ",

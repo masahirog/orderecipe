@@ -50,6 +50,7 @@ class ProductsController < ApplicationController
   end
 
   def edit
+    @bento_id = Product.bentoid()
     @product = Product.find(params[:id])
     @product.product_menus.build  if @product.menus.length == 0
   end

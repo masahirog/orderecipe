@@ -1,6 +1,6 @@
 require 'csv'
 CSV.generate do |csv|
-  csv_column_names = %w(product_id product_name product_cost menu_id menu_name material_id material_name amount_used unit)
+  csv_column_names = %w(product_id product_name bento_id product_cost menu_id menu_name material_id material_name amount_used unit)
   csv << csv_column_names
     menus = @product.menus
     menus.each_with_index do |menu,i|
@@ -9,6 +9,7 @@ CSV.generate do |csv|
           csv_column_values = [
             @product.id,
             @product.name,
+            @product.bento_id,
             @product.cost_price,
             menu.id,
             menu.name,
@@ -23,6 +24,7 @@ CSV.generate do |csv|
             "",
             "",
             "",
+            "",
             menu.id,
             menu.name,
             mm.material_id,
@@ -33,6 +35,7 @@ CSV.generate do |csv|
           csv << csv_column_values
         else
           csv_column_values = [
+            "",
             "",
             "",
             "",

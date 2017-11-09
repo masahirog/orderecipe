@@ -21,6 +21,18 @@ $(function(){
     calculate_product_price();
   });
 
+  $(".registration").on("change",function(){
+    var prop = $('.registration').prop('checked');
+    var bento_id = $('#bento_id_hidden').val();
+    if (prop) {
+      $(".bento_id").val(bento_id);
+    }else {
+      $(".bento_id").val("");
+      };
+    });
+
+
+
   //カテゴリーを変更時に、メニューを絞る機能
   $(".menu-area").on('change','.input_category_select', function(){
     var u = $(".add_li_menu").index($(this).parent().parent(".add_li_menu"));
