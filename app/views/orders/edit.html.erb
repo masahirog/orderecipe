@@ -14,10 +14,10 @@
   <div class="container form-group">
     <div class="col-md-12">
       <div class="col-md-4">
-        <%= f.date_select :delivery_date,{}, class: "form-control col-md-2",style: "width: 100px;" %>
+        <%= f.date_select :delivery_date,{}, class: "form-control col-md-2",style: "width:33%" %>
       </div>
-      <div class="col-md-2">
-        <input value="発注確定する" class="order_submit btn btn-success" type="submit">
+      <div class="col-md-2 pull-right">
+        <input type="button" onclick="submit();" value="発注確定する" class="order_submit btn btn-success">
       </div>
     </div>
   </div>
@@ -129,6 +129,6 @@
     </ul>
   </div>
   <div class="add col-md-12 form-group">
-    <a class="add_order_materials btn btn-primary">発注食材追加</a>
+    <input type="button" value="発注食材追加" class="add_order_materials btn btn-primary">
   </div>
 <% end %>

@@ -55,7 +55,7 @@
 
   <%= form_tag({:controller => "orders", :action => "order_print", format: "pdf"},{:target => "_blank"}) do %>
     <div class="col-md-3">
-      <%= select :vendor,:id, @vendors.map{|t| [t["company_name"], t["vendor_id"]]},{},class:"order_print_select form-control" %>
+      <%= select :vendor,:id, @vendors.map{|t| [t["company_name"], t["vendor_id"]]},{include_blank: true},class:"index_vendor_select form-control" %>
     </div>
     <div class="col-md-1">
       <input type="button" onclick="submit();" value="発注書印刷" class="print_btn btn btn-primary">
@@ -78,7 +78,7 @@
 
 <div class="col-md-12">
   <label class="">発注食材・資材一覧</label>
-  <div class=" orders_all panel panel-primary">
+  <div class="orders_all panel panel-primary">
     <div class="panel-heading col-md-12" style="padding:5px;">
       <label class="panel-title material_name col-md-3">
         食材名
@@ -96,7 +96,7 @@
 
     <ul class="order_materials_ul list-group panel-body">
       <% @order_materials.each do |om| %>
-        <li  class="list-group-item col-md-12" style="padding:5px;">
+        <li  class="index_vendor_list list-group-item col-md-12" style="padding:5px;">
           <div class="material_name col-md-3">
              <%= Material.find(om.material_id).name %>
           </div>

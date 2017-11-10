@@ -40,12 +40,12 @@
     <div class="col-md-2">
       <%= f.label :cook_category, "調理カテゴリー" %>
       <%= f.select :cook_category, {グリル: "グリル", コンロ: "コンロ", フライヤー: "フライヤー", 前日コンロ: "前日コンロ",
-                                    フライヤー・グリル: "フライヤー・グリル", グリル・コンロ: "グリルコンロ", 前日グリル: "前日グリル",
-                                     その他: "その他"},{include_blank: true}, { class: "form-control"} %>
+                                    フライヤー・グリル: "フライヤー・グリル",フライヤー・コンロ: "フライヤー・コンロ", グリル・コンロ: "グリルコンロ", 前日グリル: "前日グリル",
+                                     その他: "その他"},{include_blank: true},{class: "cook_category_choice form-control"} %>
     </div>
     <div class="col-md-2">
       <%= f.label :product_type, "弁当種類" %>
-      <%= f.select :product_type, { 新ヘルシー: "新ヘルシー",デラックス: "デラックス", ヘルシー: "ヘルシー", ノーマル: "ノーマル", プレミアム: "プレミアム",
+      <%= f.select :product_type,{ 新ヘルシー: "新ヘルシー",デラックス: "デラックス", ヘルシー: "ヘルシー", ノーマル: "ノーマル", プレミアム: "プレミアム",
                                   ボウル: "ボウル", 麺: "麺", その他: "その他"}, {include_blank: true}, { class: "form-control"} %>
     </div>
   </div>

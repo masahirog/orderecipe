@@ -3,6 +3,9 @@ $(function(){
   width:"270px",
   placeholder: "メニューを選択してください",
   });
+  $('.cook_category_choice').select2({
+  placeholder: "カテゴリ"
+  });
   //materialの表示、原価計算
   var u = 0
   $(".add_li_menu").each(function() {

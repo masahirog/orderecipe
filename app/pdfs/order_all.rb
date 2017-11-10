@@ -84,6 +84,7 @@ class OrderAll < Prawn::Document
         row(0).height = 18
         row(l+1..l+u).height = 18
         cells.padding = 4
+        column(-1).align = :right
         columns(4).borders = [:left]
         columns(5).borders = [:bottom]
         cells.border_width = 0.2
