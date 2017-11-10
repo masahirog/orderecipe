@@ -99,7 +99,7 @@ class OrderAll < Prawn::Document
     materials_this_vendor.each do |mtv|
       s_data = []
       data << ["#{mtv.material.order_code}","#{mtv.material.order_name}","","","",
-        "#{mtv.order_quantity.to_s(:delimited)}" "#{mtv.material.order_unit}"]
+        "#{mtv.calculated_quantity.to_s(:delimited)}" "#{mtv.material.calculated_unit}"]
     end
      data += [["","","","","",""]] * u
   end
