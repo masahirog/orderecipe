@@ -46,7 +46,14 @@
       <div class="col-xs-12 col-md-12">
         <%= f.label :order_unit, "発注時の単位" %>
       </div>
-      <div class="col-xs-12 col-md-8">
+      <div class="col-xs-12 col-md-4">
+        <% if local_assigns[:locals][:edit_flag] == true %>
+          <%= f.number_field :order_unit_quantity,class:"input_order_unit_quantity form-control text-right",step:0.1 %>
+        <% else %>
+            <%= f.number_field :order_unit_quantity,class:"input_order_unit_quantity form-control text-right",step:0.1,value:1 %>
+        <% end %>
+      </div>
+      <div class="col-xs-12 col-md-6">
         <%= f.select :order_unit, [["kg", "kg"], ["p/c", "p/c"], ["c/s", "c/s"], ["缶", "缶"], ["束", "束"],
                               ["袋", "袋"],["箱", "箱"],["枚", "枚"],["個", "個"],["本", "本"],["匹", "匹"]],{include_blank: true}, { class: "form-control input_order_unit"} %>
       </div>
@@ -103,13 +110,13 @@
   </div>
   <div class="col-md-12 form-group">
     <div class="col-xs-12 col-md-6">
-      <%= f.label :memo, "メモ" %></br>
+      <%= f.label :memo, "メモ" %>
       <%= f.text_area :memo, class:'form-control', style:"height:10em;" %>
     </div>
   </div>
   <div class="col-xs-12 col-md-12 form-group">
     <div class="col-xs-12 col-md-2 check_box">
-      <%= f.label :end_of_sales, "終売" %></br>
+      <%= f.label :end_of_sales, "終売" %>
       <%= f.check_box :end_of_sales, class:"check_box form-control" %>
     </div>
   </div>
