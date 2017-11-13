@@ -55,7 +55,7 @@
 
   <%= form_tag({:controller => "orders", :action => "order_print", format: "pdf"},{:target => "_blank"}) do %>
     <div class="col-md-3">
-      <%= select :vendor,:id, @vendors.map{|t| [t["company_name"], t["vendor_id"]]},{include_blank: true},class:"index_vendor_select form-control" %>
+      <%= select :vendor,:id, @vendors.map{|t| [t["company_name"], t["vendor_id"]]},{},class:"index_vendor_select form-control" %>
     </div>
     <div class="col-md-1">
       <input type="button" onclick="submit();" value="発注書印刷" class="print_btn btn btn-primary">

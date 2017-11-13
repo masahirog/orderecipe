@@ -13,10 +13,16 @@ $(function(){
     check_recipe_unit(recipe_unit)
   };
 
+  $(".input_order_unit_quantity").on("change",function(){
+    var input_order_unit_quantity = $(".input_order_unit_quantity").val();
+    var order_unit = $(".input_order_unit").val();
+    check_order_unit(input_order_unit_quantity, order_unit)
+  })
 
   $(".input_order_unit").on("change",function(){
     var order_unit = $(".input_order_unit").val();
-    check_order_unit(order_unit)
+    var input_order_unit_quantity = $(".input_order_unit_quantity").val();
+    check_order_unit(input_order_unit_quantity, order_unit)
   });
   $(".input_calculated_unit").on("change",function(){
     var recipe_unit = $(".input_calculated_unit").val();
@@ -63,9 +69,9 @@ $(function(){
     $("#material_cost_price").val(cost_price)};
   };
 
-  function check_order_unit(order_unit){
-    $(".calculated_price_label").text("１"+order_unit+"あたりの仕入価格").css('background-color','#F6CECE');
-    $(".calculated_value_label").text("１"+order_unit+"あたりの分量").css('background-color','#F6CECE');
+  function check_order_unit(input_order_unit_quantity,order_unit){
+    $(".calculated_price_label").text(input_order_unit_quantity+order_unit+"あたりの仕入価格").css('background-color','#F6CECE');
+    $(".calculated_value_label").text(input_order_unit_quantity+order_unit+"あたりの分量").css('background-color','#F6CECE');
   };
   function check_recipe_unit(recipe_unit){
     $(".calculated_value_unit").text(recipe_unit);
