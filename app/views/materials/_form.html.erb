@@ -48,9 +48,9 @@
       </div>
       <div class="col-xs-12 col-md-4">
         <% if local_assigns[:locals][:edit_flag] == true %>
-          <%= f.number_field :order_unit_quantity,class:"input_order_unit_quantity form-control text-right",step:0.1 %>
+          <%= f.text_field :order_unit_quantity,class:"input_order_unit_quantity form-control text-right" %>
         <% else %>
-            <%= f.number_field :order_unit_quantity,class:"input_order_unit_quantity form-control text-right",step:0.1,value:1 %>
+            <%= f.text_field :order_unit_quantity,class:"input_order_unit_quantity form-control text-right",value:1 %>
         <% end %>
       </div>
       <div class="col-xs-12 col-md-6">
