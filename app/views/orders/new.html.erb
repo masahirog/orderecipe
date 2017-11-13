@@ -112,7 +112,7 @@
             </div>
             <div class="order_quantity col-md-1" style="padding-right:0;">
               <% if material["vendor_id"]==121 %>
-                <%= m.text_field :order_quantity,value:BigDecimal((material["amount_used"]/Material.find(material["material_id"]).calculated_value).to_s).ceil(1).to_f,
+                <%= m.text_field :order_quantity,value:BigDecimal((material["amount_used"]/Material.find(material["material_id"]).calculated_value*Material.find(material["material_id"]).order_unit_quantity).to_s).ceil(1).to_f,
                   class:'text-right form-control',style:"height:27.78px;",
                   name:"order[order_materials_attributes][#{i}][order_quantity]",
                   id:"order_order_materials_attributes_#{i}_order_quantity" %>
@@ -139,7 +139,7 @@
               <%= Vendor.find(material["vendor_id"]).company_name %>
             </div>
             <div class="calculate_unit panel-title col-md-2">
-              1 <%= Material.find(material["material_id"]).order_unit %>
+              <%= Material.find(material["material_id"]).order_unit_quantity %> <%= Material.find(material["material_id"]).order_unit %>
               ：<%= Material.find(material["material_id"]).calculated_value.to_s(:delimited) %> <%= Material.find(material["material_id"]).calculated_unit %>
             </div>
 
