@@ -3,11 +3,11 @@ $(function(){
   width:"270px",
   placeholder: "食材資材を選択してください"
   });
-
+  var input_order_unit_quantity = $(".input_order_unit_quantity").val();
   var order_unit = $(".input_order_unit").val();
   var recipe_unit = $(".input_calculated_unit").val();
   if (order_unit){
-    check_order_unit(order_unit)
+    check_order_unit(input_order_unit_quantity,order_unit)
   };
   if (recipe_unit){
     check_recipe_unit(recipe_unit)
