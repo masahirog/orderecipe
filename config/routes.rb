@@ -11,7 +11,6 @@ Rails.application.routes.draw do
   get 'products/serving_detail/:id' => 'products#serving_detail'
   post 'products/print' => 'products#print'
   post 'orders/new' => 'orders#new'
-  post 'orders/confirm' => 'orders#confirm'
   get 'orders/material_info/:id' => 'orders#material_info'
   post'orders/order_print/:id' => 'orders#order_print'
   get 'products/get_by_category' => 'products#get_by_category'

@@ -43,7 +43,7 @@ class ProductPdfAll < Prawn::Document
 
   def header_date(order)
     bounding_box([0, 525], :width => 200) do
-      text "#{order.delivery_date.strftime("%Y年%-m月%-d日(#{%w(日 月 火 水 木 金 土)[order.delivery_date.wday]})")}", size: 12,leading: 3
+      text "#{order.delivery_date.strftime("　　 　年　 　月　 　日 ( 　　)")}", size: 12,leading: 3
     end
   end
 

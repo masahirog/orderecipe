@@ -7,9 +7,7 @@ class OrdersController < ApplicationController
       end
     end
 
-  def confirm
-    @order = Order.new(order_create_update)
-  end
+
   def edit
     @order = Order.find(params[:id])
   end
