@@ -34,6 +34,7 @@
     <div class="col-md-3">レシピ</div>
     <div class="col-md-3">盛り付けメモ</div>
     <div class="col-md-1">原価</div>
+		<div class="col-md-1">終売</div>
     <div class="col-md-1 text-right">使用お弁当</div>
   </div>
   <ul class='list-group' style="list-style-type: none;">
@@ -44,6 +45,14 @@
         <div class="col-md-3"><%= menu.recipe %></div>
         <div class="col-md-3"><%= menu.serving_memo %></div>
         <div class="cost_price_td col-md-1"><%= menu.cost_price %>円</div>
+				<div class="col-md-1">
+					<% menu.materials.each do |m| %>
+						<% if m.end_of_sales==1 %>
+							✔
+							<% break %>
+						<% end %>
+					<% end %>
+				</div>
         <div class="col-md-1 text-right">
           <%=button_to "確認", "/menus/include_menu/#{menu.id}", method: :get,class:"btn btn-primary" %>
         </div>

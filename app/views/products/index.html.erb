@@ -38,7 +38,8 @@
     <div class="col-md-1">弁当種類</div>
     <div class="col-md-1">販売価格</div>
     <div class="col-md-1">原価(税込)</div>
-    <div class="col-md-4"></div>
+		<div class="col-md-1">終売食材✔</div>
+    <div class="col-md-2"></div>
     <div class="col-md-1">csv</div>
     <div class="col-md-1">画像</div>
   </div>
@@ -60,7 +61,19 @@
         <div class="col-md-1 price text-right">
           <%= product.cost_price %>円
         </div>
-        <div class="col-md-4">
+				<div class="col-md-1 text-center">
+					<% catch :exit do %>
+						<% product.menus.each do |menu| %>
+							<% menu.materials.each do |material| %>
+								<% if material.end_of_sales==1 %>
+									✔
+									<% throw :exit %>
+								<% end %>
+							<% end %>
+						<% end %>
+					<% end %>
+				</div>
+        <div class="col-md-2">
 
         </div>
         <div class="col-md-1">
