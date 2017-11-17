@@ -57,6 +57,8 @@ class ProductPdf < Prawn::Document
       if recipe_mozi<50
         recipe_size = 9
       elsif recipe_mozi<100
+        recipe_size = 8
+      elsif recipe_mozi<150
         recipe_size = 7
       else
         recipe_size = 6
