@@ -111,7 +111,7 @@
 
   <% if local_assigns[:locals][:edit_flag] == true %>
     <div class="action col-md-12" style="margin-bottom:20px;">
-      <%= submit_tag "更新する", class:"btn btn-success", data: { confirm: "更新すると「#{@menu.name}」を使用している、お弁当全てに反映されますが、よろしいですか？"} %>
+      <input type="button" value="更新する" class="btn btn-success" id="menu_submit_btn">
     </div>
   <% else %>
     <div class="action col-md-12" style="margin-bottom:20px;">
