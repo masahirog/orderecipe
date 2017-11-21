@@ -62,6 +62,20 @@ class MenusController < ApplicationController
     @menu_materials = @menu.menu_materials
   end
 
+  def print
+    @menu = Menu.find(params[:id])
+    respond_to do |format|
+     format.html
+     format.pdf do
+       pdf = MenuPdf.new(@menu)
+       send_data pdf.render,
+         filename:    "#{@menu.name}.pdf",
+         type:        "application/pdf",
+         disposition: "inline"
+     end
+   end
+  end
+
   def include_menu
     @product_menus = ProductMenu.where(menu_id: params[:id]).page(params[:page]).per(20)
     @menus = Menu.all

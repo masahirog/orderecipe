@@ -3,9 +3,11 @@
   <li><a href="/menus">メニュー一覧</a></li>
 	<li class="active"><%= @menu.name %></li>
 </ol>
-
-
-
+<div class="col-xs-11 col-md-12 form-inline">
+  <div class="col-xs-11 col-md-12 form-group">
+    <%= link_to "印刷", "/menus/print/#{@menu.id}.pdf",method:"get", class:"btn btn-success",:target=>"_blank", style:"margin:0 0 0 10px;"%>
+  </div>
+</div>
 <div>
   <div class="active col-md-12" style="padding:10px">
     <div class="col-md-3">メニュー名</div>
@@ -24,7 +26,6 @@
     </li>
   </ul>
 </div>
-
 
 <div>
     <div class="col-md-12" style="padding:10px">
@@ -48,10 +49,8 @@
       <div class="col-md-1"><%= mm.post %></div>
     </li>
     <% end %>
-
   </ul>
 </div>
-
 
 <div>
   <%= button_to 'メニュー編集', "/menus/#{@menu.id}/edit", method: :get,class: "btn btn-primary",style:"margin:10px;" %>

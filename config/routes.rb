@@ -21,6 +21,7 @@ Rails.application.routes.draw do
   post "versions/:id/revert" => "versions#revert", :as => "revert_version"
   get 'menus/include_menu/:id' => 'menus#include_menu'
   post'menus/include_update' => 'menus#include_update'
+  get 'menus/print/:id' => 'menus#print'
   post'orders/order_print_all/:id' => 'orders#order_print_all'
   resources :menus
   resources :products
