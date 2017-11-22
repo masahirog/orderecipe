@@ -8,15 +8,15 @@ CarrierWave.configure do |config|
     provider: 'AWS',
     aws_access_key_id: ENV['ACCESS_KEY_ID'],
     aws_secret_access_key: ENV['SECRET_ACCESS_KEY'],
-    region: 'us-east-2'
+    region: 'ap-northeast-1'
   }
 
     case Rails.env
     when 'development'
-        config.fog_directory  = 'orderecipe'
-        config.asset_host = 'https://s3-us-east-2.amazonaws.com/orderecipe'
+        config.fog_directory  = 'bento-orderecipe'
+        config.asset_host = 'https://s3-ap-northeast-1.amazonaws.com/bento-orderecipe'
     when 'production'
-        config.fog_directory  = 'orderecipe'
-        config.asset_host = 'https://s3-us-east-2.amazonaws.com/orderecipe'
+        config.fog_directory  = 'bento-orderecipe'
+        config.asset_host = 'https://s3-ap-northeast-1.amazonaws.com/bento-orderecipe'
     end
 end
