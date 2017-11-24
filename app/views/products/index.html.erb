@@ -12,17 +12,21 @@
 </div>
 <div class="form-inline col-md-12" style="padding:10px;">
   <%= form_tag Product, :method => 'get', class:"form-group" do %>
-  <div class="kensaku form-group">
+	<div class="kensaku form-group col-md-2">
+		<p>連携ID▼</p>
+		<%= text_field_tag :bento_id, params[:bento_id], class:"form-control",style:"width:100%" %>
+	</div>
+	<div class="kensaku form-group col-md-3">
     <p>お弁当名▼</p>
-    <%= text_field_tag :name, params[:name], class:"form-control" %>
+    <%= text_field_tag :name, params[:name], class:"form-control",style:"width:100%" %>
   </div>
-  <div class="kensaku form-group">
+  <div class="kensaku form-group col-md-2">
     <p>調理カテゴリー▼</p>
-    <%= select_tag :cook_category, options_from_collection_for_select(Product.select(:cook_category).uniq, :cook_category, :cook_category), include_blank: true, class: "form-control" %>
+    <%= select_tag :cook_category, options_from_collection_for_select(Product.select(:cook_category).uniq, :cook_category, :cook_category), include_blank: true, class: "form-control",style:"width:100%" %>
   </div>
-  <div class="kensaku form-group">
+  <div class="kensaku form-group col-md-2">
      <p>お弁当タイプ▼</p>
-    <%= select_tag :product_type, options_from_collection_for_select(Product.select(:product_type).uniq, :product_type, :product_type), include_blank: true, class: "form-control" %>
+    <%= select_tag :product_type, options_from_collection_for_select(Product.select(:product_type).uniq, :product_type, :product_type), include_blank: true, class: "form-control",style:"width:100%" %>
   </div>
   <div class="kensaku form-group">
     <p>　</p>
@@ -36,19 +40,23 @@
 
 <div class="">
   <div class="col-md-12" style="padding:10px;">
+		<div class="col-md-1">連携ID</div>
     <div class="col-md-2">弁当名</div>
     <div class="col-md-1">カテゴリ</div>
     <div class="col-md-1">弁当種類</div>
     <div class="col-md-1">販売価格</div>
     <div class="col-md-1">原価(税込)</div>
 		<div class="col-md-1">終売食材✔</div>
-    <div class="col-md-2"></div>
+    <div class="col-md-1"></div>
     <div class="col-md-1">csv</div>
     <div class="col-md-1">画像</div>
   </div>
   <ul class='list-group' style="list-style-type: none;">
     <% @search.each do |product| %>
       <li class="li-active products_li col-md-12 list-group-item"  style="cursor: pointer" id="aaa">
+				<div class="col-md-1">
+					<%= product.bento_id %>
+				</div>
         <div class="product_name col-md-2">
           <%= link_to "#{product.name}", "/products/#{product.id}/", method: :get %>
         </div>
@@ -76,7 +84,7 @@
 						<% end %>
 					<% end %>
 				</div>
-        <div class="col-md-2">
+        <div class="col-md-1">
 
         </div>
         <div class="col-md-1">
