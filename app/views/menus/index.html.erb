@@ -42,8 +42,8 @@
   </div>
   <ul class='list-group' style="list-style-type: none;">
     <% @search.each do |menu| %>
-      <li class="li-active menus_li col-md-12 list-group-item"  style="cursor: pointer">
-        <div class="menu_name col-md-2"><%= link_to "#{menu.name}", "/menus/#{menu.id}", method: :get %></div>
+      <li class="li-active menus_li col-md-12 list-group-item" >
+        <div class="menu_name col-md-2"><%= link_to "#{menu.name}", "/menus/#{menu.id}" %></div>
         <div class="col-md-1"><%= menu.category %></div>
         <div class="col-md-3"><%= menu.recipe %></div>
         <div class="col-md-3"><%= menu.serving_memo %></div>

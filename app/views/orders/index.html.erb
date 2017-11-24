@@ -41,7 +41,7 @@
       </div>
 
       <div class="col-md-1">
-        <%= link_to "詳細", "/orders/#{order.id}", method: :get,class:"order btn btn-primary" %>
+        <%= link_to "詳細", "/orders/#{order.id}",class:"order btn btn-primary" %>
       </div>
       <div class="col-md-8">
         <% vendors = Vendor.vendor_index(order) %>

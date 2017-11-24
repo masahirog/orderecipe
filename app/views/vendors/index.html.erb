@@ -20,9 +20,9 @@
   </div>
   <ul class='list-group' style="list-style-type: none;">
     <% @vendors.each do |vendor| %>
-    <li class="li-active vendors_li col-md-12 list-group-item"  style="cursor: pointer">
+    <li class="li-active vendors_li col-md-12 list-group-item">
         <div class="vendor_name col-md-2"><%= link_to "#{vendor.company_name}",
-         "/vendors/#{vendor.id}/edit", method: :get %></div>
+         "/vendors/#{vendor.id}/edit" %></div>
         <div class="col-md-1"><%= vendor.company_phone %></div>
         <div class="col-md-1"><%= vendor.company_fax %></div>
         <div class="col-md-1"><%= vendor.company_mail %></div>

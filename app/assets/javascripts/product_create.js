@@ -1,6 +1,6 @@
 $(function(){
   $('.input_select_menu').select2({
-  width:"270px",
+  width:"100%",
   placeholder: "メニューを選択してください",
   });
   $('.cook_category_choice').select2({
@@ -121,14 +121,26 @@ $(function(){
       var amount_used = mmi.amount_used;
       var name =  mmi.material_name;
       var unit = mmi.calculated_unit;
+      var material_cost_price = mmi.material_cost_price;
+      var cost = Math.round( ( amount_used * material_cost_price ) * 10 ) / 10
       var prepa = mmi.preparation;
-      $(".add_li_menu").eq(u).children(".material_name").children().append("<li>"+name+"</li>");
-      $(".add_li_menu").eq(u).children(".amount_used").children().append("<li class='text-right'>"+amount_used+" ("+unit+")"+"</li>");
-      if (prepa){
-        $(".add_li_menu").eq(u).children(".preparation").children().append("<li>"+prepa+"</li>");
-      }else{
-        $(".add_li_menu").eq(u).children(".preparation").children().append("<li>　</li>");
+      if (prepa) {
+        var li = '<li class="col-md-12">'+
+          '<div class="col-md-4">'+name+'</div>'+
+          '<div class="col-md-2 text-right">'+amount_used+" "+unit+'</div>'+
+          '<div class="col-md-2 text-right">'+cost+'</div>'+
+          '<div class="col-md-4">'+prepa+'</div>'+
+          '</li>';
+      }else {
+        var li = '<li class="col-md-12">'+
+          '<div class="col-md-4">'+name+'</div>'+
+          '<div class="col-md-2 text-right">'+amount_used+" "+unit+'</div>'+
+          '<div class="col-md-2 text-right">'+cost+'</div>'+
+          '<div class="col-md-4"></div>'+
+          '</li>';
       };
+      $(".add_li_menu").eq(u).children(".material_name").children().append(li);
+
     });
   };
  //メニューセレクトのoptionを変更する

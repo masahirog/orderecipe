@@ -9,96 +9,82 @@
       </ul>
     </div>
   <% end %>
-  <div class="col-md-12 form-group">
-    <div class="col-md-6">
-      <%= f.label :name, "弁当名" %>
-      <%= f.text_field :name, id: "menu_search", autocomplete: "off", class:"name form-control" %>
-    </div>
-  </div>
-  <div class="col-md-12 form-group">
-    <% if @product.bento_id.present? %>
-    <% else %>
-      <div class="col-md-6">
-        <div class="col-md-3 text-center">
-          <input type="checkbox" class="registration" style="width: 24px; height: 24px;">
-        </div>
-        <div class="col-md-9">
-          <strong>
-          ←販売が決定した弁当はチェックを付けて保存してください。
-          メニューSSと連携するIDを発行します。(試作時は空欄で保存)
-        </strong>
-        </div>
-      </div>
-    <% end %>
-  </div>
-  <div class="col-md-12 form-group">
-    <div class="col-md-2">
-      <%= f.label :bento_id, "SS連携ID" %>
-      <%= number_field_tag("bento_id_hidden",@bento_id,style:"display:none;") %>
-      <%= f.number_field :bento_id, class:"bento_id form-control",readonly:true %>
-    </div>
-    <div class="col-md-2">
-      <%= f.label :cook_category, "調理カテゴリー" %>
-      <%= f.select :cook_category, {グリル: "グリル", コンロ: "コンロ", フライヤー: "フライヤー", 前日コンロ: "前日コンロ",
-                                    フライヤー・グリル: "フライヤー・グリル",フライヤー・コンロ: "フライヤー・コンロ", グリル・コンロ: "グリルコンロ", 前日グリル: "前日グリル",
-                                     その他: "その他"},{include_blank: true},{class: "cook_category_choice form-control"} %>
-    </div>
-    <div class="col-md-2">
-      <%= f.label :product_type, "弁当種類" %>
-      <%= f.select :product_type,{ 新ヘルシー: "新ヘルシー",デラックス: "デラックス", ヘルシー: "ヘルシー", ノーマル: "ノーマル", プレミアム: "プレミアム",
-                                  ボウル: "ボウル", 麺: "麺", その他: "その他"}, {include_blank: true}, { class: "form-control"} %>
-    </div>
-  </div>
-  <div class="col-md-12">
-    <div class="col-md-3">
-      <%= f.label :sell_price, "販売価格" %>
-      <div class="form-inline ">
-        <div class="form-group">
-          <%= f.number_field :sell_price, class:"price form-control" %>
-          <div class="form-group">
-            円
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-3">
-      <%= f.label :product_image, "写真" %>
-      <%= f.file_field :product_image %>
-      <%= f.hidden_field :product_image_cache %>
-      <div class="form-group">
-        <% if @product.product_image? %>
-          <%= image_tag @product.product_image.to_s,class:"img-responsive" %>
-          <div class="">
-              <%= f.label :remove_product_image,"削除する" %>
-              <%= f.check_box :remove_product_image %>
-          </div>
-        <% end %>
-      </div>
-    </div>
-  </div>
-
+  <div class="col-md-7">
     <div class="col-md-12 form-group">
-      <div class="col-md-6">
+      <div class="col-md-12">
+        <%= f.label :name, "弁当名" %>
+        <%= f.text_field :name, id: "menu_search", autocomplete: "off", class:"name form-control" %>
+      </div>
+    </div>
+    <div class="col-md-12 form-group">
+      <% if @product.bento_id.present? %>
+      <% else %>
+        <div class="col-md-12">
+          <div class="col-md-3 text-center">
+            <input type="checkbox" class="registration" style="width: 24px; height: 24px;">
+          </div>
+          <div class="col-md-9">
+            <strong>
+            ←販売が決定した弁当はチェックを付けて保存してください。
+            メニューSSと連携するIDを発行します。(試作時は空欄で保存)
+          </strong>
+          </div>
+        </div>
+      <% end %>
+    </div>
+    <div class="col-md-12 form-group">
+      <div class="col-md-4">
+        <%= f.label :bento_id, "SS連携ID" %>
+        <%= number_field_tag("bento_id_hidden",@bento_id,style:"display:none;") %>
+        <%= f.number_field :bento_id, class:"bento_id form-control",readonly:true %>
+      </div>
+      <div class="col-md-4">
+        <%= f.label :cook_category, "調理カテゴリー" %>
+        <%= f.select :cook_category, {グリル: "グリル", コンロ: "コンロ", フライヤー: "フライヤー", 前日コンロ: "前日コンロ",
+                                      フライヤー・グリル: "フライヤー・グリル",フライヤー・コンロ: "フライヤー・コンロ", グリル・コンロ: "グリルコンロ", 前日グリル: "前日グリル",
+                                       その他: "その他"},{include_blank: true},{class: "cook_category_choice form-control"} %>
+      </div>
+      <div class="col-md-4">
+        <%= f.label :product_type, "弁当種類" %>
+        <%= f.select :product_type,{ 新ヘルシー: "新ヘルシー",デラックス: "デラックス", ヘルシー: "ヘルシー", ノーマル: "ノーマル", プレミアム: "プレミアム",
+                                    ボウル: "ボウル", 麺: "麺", その他: "その他"}, {include_blank: true}, { class: "form-control"} %>
+      </div>
+    </div>
+    <div class="col-md-12 form-group">
+      <div class="col-md-5">
+        <%= f.label :sell_price, "販売価格" %>
+        <div class="form-inline ">
+          <div class="form-group">
+            <%= f.number_field :sell_price, class:"price form-control" %>
+            <div class="form-group">
+              円
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-12 form-group">
+      <div class="col-md-12">
         <%= f.label :description, "説明文" %>
         <%= f.text_area :description, class:"form-control", style:"height:10em;" %>
       </div>
     </div>
     <div class="col-md-12 form-group">
-      <div class="col-md-6">
+      <div class="col-md-12">
         <%= f.label :contents, "内容物" %>
         <%= f.text_area :contents, class:"form-control", style:"height:10em;" %>
       </div>
     </div>
     <div class="col-md-12">
-      <div class="col-xs-3 col-md-2">
+      <div class="col-md-4">
         <label>原価小計</label>
         <input name="a" type="text" disabled="disabled" class="form-control sum_menu_cost">
       </div>
-      <div class="col-xs-3 col-md-2">
+      <div class="col-md-4">
         <label>税(8%)</label>
         <input name="a" type="text" disabled="disabled" class="form-control sum_menu_cost_tax">
       </div>
-      <div class="col-xs-3 col-md-2">
+      <div class="col-md-4">
         <%= f.label :cost_price, "弁当原価" %>
         <div class="form-inline ">
           <div class="form-group">
@@ -111,14 +97,33 @@
       </div>
     </div>
 
+  </div>
+  <div class="col-md-5">
+    <%= f.label :product_image, "写真" %>
+    <%= f.file_field :product_image %>
+    <%= f.hidden_field :product_image_cache %>
+    <div class="form-group">
+      <% if @product.product_image? %>
+        <%= image_tag @product.product_image.to_s,class:"img-responsive" %>
+        <div class="">
+            <%= f.label :remove_product_image,"削除する" %>
+            <%= f.check_box :remove_product_image %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
   <div class="menu-area table-striped">
-    <div class="col-md-12" style="margin:10px 10px;">
+    <div class="col-md-12" style="margin-top:10px;">
         <label class="col-md-1">カテゴリ</label>
         <label class="col-md-3">メニュー名</label>
-        <label class="col-md-1  text-right">原価</label>
-        <label class="col-md-2">材料名</label>
-        <label class="col-md-2 text-right">使用量</label>
-        <label class="col-md-2">仕込み</label>
+        <label class="col-md-1  text-right">メ原価</label>
+        <div class="col-md-6">
+          <label class="col-md-4">材料名</label>
+          <label class="col-md-2 text-right">使用量</label>
+          <label class="col-md-2 text-right">材原価</label>
+          <label class="col-md-4">仕込み</label>
+        </div>
         <label class="col-md-1 text-right"></label>
     </div>
 
@@ -131,18 +136,11 @@
         <div class="select_menu col-md-3">
             <%= pr.select :menu_id, Menu.pluck(:name, :id),{include_blank: true}, class:'input_select_menu'%>
         </div>
-
         <div class="cost_price col-md-1">
         </div>
-
-        <div class="material_name col-md-2">
-          <ul style="list-style:none;padding:0;"></ul>
-        </div>
-        <div class="amount_used col-md-2">
-          <ul style="list-style:none;"></ul>
-        </div>
-        <div class="preparation col-md-2">
-          <ul style="list-style:none;padding:0;"></ul>
+        <div class="material_name col-md-6">
+          <ul style="list-style:none;padding:0;">
+          </ul>
         </div>
 
         <div class="remove_menu col-md-1 text-right">

@@ -61,8 +61,8 @@
   </div>
   <ul class='list-group' style="list-style-type: none;">
     <% @search.each do |material| %>
-      <li class="li-active materials_li col-md-12 list-group-item"  style="cursor: pointer">
-        <div class="material_name col-md-2"><%=link_to "#{material.name}", "/materials/#{material.id}/edit", method: :get %></div>
+      <li class="li-active materials_li col-md-12 list-group-item">
+        <div class="material_name col-md-2"><%=link_to "#{material.name}", "/materials/#{material.id}/edit" %></div>
         <div class="col-md-2"><%= material.order_name %></div>
         <div class="col-md-1 text-right"><%= material.order_unit_quantity %><%= material.order_unit %></div>
         <div class="col-md-1 text-right"><%= number_with_delimiter(material.calculated_value) %><%= material.calculated_unit %></div>
