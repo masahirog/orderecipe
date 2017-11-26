@@ -1,0 +1,43 @@
+<% search.each do |product| %>
+  <li class="li-active products_li col-md-12 list-group-item" id="aaa">
+    <div class="col-md-1">
+      <%= product.bento_id %>
+    </div>
+    <div class="product_name col-md-2">
+      <%= link_to "#{product.name}", "/products/#{product.id}/" %>
+    </div>
+    <div class="col-md-1">
+      <%= product.cook_category %>
+    </div>
+    <div class="col-md-1">
+      <%= product.product_type %>
+    </div>
+    <div class="col-md-1 price text-right">
+      <%= product.sell_price %>円
+    </div>
+    <div class="col-md-1 price text-right">
+      <%= product.cost_price %>円
+    </div>
+    <div class="col-md-1 text-center">
+      <% catch :exit do %>
+        <% product.menus.each do |menu| %>
+          <% menu.materials.each do |material| %>
+            <% if material.end_of_sales==1 %>
+              ✔
+              <% throw :exit %>
+            <% end %>
+          <% end %>
+        <% end %>
+      <% end %>
+    </div>
+    <div class="col-md-1">
+
+    </div>
+    <div class="col-md-1">
+      <%= link_to "CSV", "/products/#{product.id}.csv", class: "btn btn-default" %>
+    </div>
+    <div class="col-md-1">
+      <%= image_tag product.product_image.thumb.url if product.product_image.present? %>
+    </div>
+  </li>
+  <% end %>

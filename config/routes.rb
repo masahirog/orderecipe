@@ -10,6 +10,8 @@ Rails.application.routes.draw do
   get 'products/get_menu_cost_price/:id' => 'products#get_menu_cost_price'
   get 'products/serving_detail/:id' => 'products#serving_detail'
   post 'products/print' => 'products#print'
+  get 'products/get_products' => 'products#get_products'
+  get 'products/input_name_get_products' => 'products#input_name_get_products'
   post 'orders/new' => 'orders#new'
   get 'orders/material_info/:id' => 'orders#material_info'
   post'orders/order_print/:id' => 'orders#order_print'

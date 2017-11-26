@@ -6,6 +6,11 @@ $(function(){
   $('.cook_category_choice').select2({
   placeholder: "カテゴリ"
   });
+  $('.name_search').select2({
+    height:"40px",
+    width:"100%",
+  });
+
   //materialの表示、原価計算
   var u = 0
   $(".add_li_menu").each(function() {
@@ -88,6 +93,88 @@ $(function(){
         calculate_product_price();
      });
   });
+
+
+  //indexでの検索機能
+  $(".id_search").on("input", function(){
+    $("#select2-name-container").text("")
+    var path = "get_products"
+    var class_name = ".id_search"
+    inputaaaaa(class_name,path);
+  });
+  $(".name_search").on("change", function(){
+    $(".id_search").val("")
+    var path = "input_name_get_products"
+    var class_name = ".name_search"
+      inputaaaaa(class_name,path);
+  });
+
+  function inputaaaaa(class_name,path){
+    var id = $(class_name).val();
+    if (id=="") {} else{
+    $.ajax({
+        url: "/products/"+path,
+        data: { id : id },
+        dataType: "json",
+        async: false
+    })
+    .done(function(data) {
+
+      $(".aaaad").children().remove()
+      $.each(data, function(i){
+        var li = '<li class="li-active products_li col-md-12 list-group-item" id="aaa">'+
+        '<div class="col-md-1">'+
+          data[i].bento_id+
+        '</div>'+
+        '<div class="product_name col-md-2">'+
+        '<a href=/products/'+data[i].id+'>'+data[i].name+'</a>'+
+        '</div>'+
+        '<div class="col-md-1">'+
+         data[i].cook_category+
+        '</div>'+
+        '<div class="col-md-1">'+
+         data[i].product_type+
+        '</div>'+
+        '<div class="col-md-1">'+
+         data[i].sell_price+'円'+
+        '</div>'+
+        '<div class="col-md-1">'+
+         data[i].cost_price+'円'+
+        '</div>'+
+        '<div class="col-md-2">'+
+        '</div>'+
+        '<div class="col-md-1">'+
+        '<a class="btn btn-default" href=/products/'+data[i].id+'.csv>CSV</a>'+
+        '</div>'+
+        '<div class="col-md-1">'+
+        '</div>'+
+        '</li>';
+
+        $(".aaaad").append(li)
+      });
+      });
+    }};
+
+
+  $(".add_li_menu").each(function() {
+      var id = $(this).children(".select_menu").children().val();
+      if (isNaN(id) == true) {} else{
+      $.ajax({
+          url: "/products/get_menu_cost_price/" + id,
+          data: { id : id },
+          dataType: "json",
+          async: false
+      })
+      .done(function(data) {
+        get_menu_price(data,u);
+    })};
+    u = u+1;
+    calculate_product_price();
+  });
+
+
+
+
   //原価計算
   function calculate_product_price(){
     var row_len =  $(".add_li_menu").length;

@@ -20,6 +20,21 @@ class ProductsController < ApplicationController
     end
   end
 
+  def get_products
+    @products = Product.where(['bento_id LIKE ?', "%#{params["id"]}%"]).limit(10)
+    respond_to do |format|
+      format.html
+      format.json { render 'index', json: @products }
+    end
+  end
+  def input_name_get_products
+    @products = Product.where(['name LIKE ?', "%#{params["id"]}%"]).limit(10)
+    respond_to do |format|
+      format.html
+      format.json { render 'index', json: @products }
+    end
+  end
+
   def index
     @search = Product.search(params).page(params[:page]).per(20)
   end
