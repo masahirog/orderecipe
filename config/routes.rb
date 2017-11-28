@@ -26,6 +26,9 @@ Rails.application.routes.draw do
   get 'menus/print/:id' => 'menus#print'
   post'orders/order_print_all/:id' => 'orders#order_print_all'
   resources :menus
+  resources :menus do
+    put :sort
+  end
   resources :products
   resources :tops
   resources :vendors

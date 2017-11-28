@@ -57,6 +57,8 @@ gem 'fog'
 gem 'prawn'
 gem 'prawn-table'
 gem 'paper_trail'
+gem 'ranked-model'
+gem 'jquery-ui-rails'
 
 group :production do
   gem 'rails_12factor'

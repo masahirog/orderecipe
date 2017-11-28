@@ -1,4 +1,11 @@
 class MenusController < ApplicationController
+  protect_from_forgery :except => [:sort]
+  def sort
+    binding.pry
+    menu_material = Menu_material.find(params[:menu_id])
+    menu_material.update(menu_position)
+    render nothing: true
+  end
 
   def get_cost_price
     @material = Material.includes(:vendor).find(params[:id])
@@ -8,14 +15,13 @@ class MenusController < ApplicationController
     end
   end
 
-
   def index
     @search = Menu.search(params).page(params[:page]).per(20)
   end
 
   def new
     @menu = Menu.new
-    @menu.menu_materials.build
+    @menu.menu_materials.build(row_order: 0)
   end
 
   def create
@@ -94,6 +100,6 @@ class MenusController < ApplicationController
     def menu_create_update
       params.require(:menu).permit(:name, :recipe, :category, :recipe, :serving_memo, :cost_price,
                                      menu_materials_attributes: [:id, :amount_used, :menu_id, :material_id, :_destroy,:preparation,:post,
-                                     material_attributes:[:name, ]])
+                                     :row_order,material_attributes:[:name, ]])
     end
 end

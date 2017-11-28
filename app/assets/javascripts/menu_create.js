@@ -24,14 +24,20 @@ $(function(){
       u = u+1;
     });
     calculate_menu_price();
+    reset_row_order();
 
-
+//並び替え時のrow_order更新
+  $(".ul-sortable").sortable({
+    update: function(){
+      reset_row_order();
+    }});
 
   //removeのチェックと、trをhide
   $(".material_ul").on('click','.remove_btn', function(){
     $(this).parent().children(".destroy_materials").prop('checked', true);
     $(this).parent().parent(".add_li_material").hide();
-    calculate_menu_price()
+    calculate_menu_price();
+    reset_row_order();
   });
 
 
@@ -180,6 +186,9 @@ $(function(){
     $(".input_select_material").select2('destroy');
     $(".add_li_material").first().clone().appendTo(".material_ul");
     var last_li =$(".add_li_material").last()
+
+    last_li.children(".row_order").children().attr('name', "menu[menu_materials_attributes]["+u+"][row_order]" );
+    last_li.children(".row_order").children().attr('id', "menu_menu_materials_attributes_"+u+"_row_order" );
     last_li.children(".select_material").children().attr('name', "menu[menu_materials_attributes]["+u+"][material_id]" );
     last_li.children(".select_material").children().attr('id', "menu_menu_materials_attributes_"+u+"_material_id" );
     last_li.children(".amount_used").children().attr('name', "menu[menu_materials_attributes]["+u+"][amount_used]" );
@@ -195,6 +204,7 @@ $(function(){
     last_li.children(".preparation").children().val("");
     last_li.children(".select_post").children().val("");
     $(".input_select_material").select2({width:"270px",placeholder: "食材資材を選択してください"});
+    last_li.children(".row_order").children().val(u);
     last_li.children(".cost_price").children(".cost_price_value").empty();
     last_li.children(".vendor").empty();
     last_li.children(".amount_used").children().val("");
@@ -203,5 +213,10 @@ $(function(){
     last_li.children(".remove_material").children(".destroy_materials").prop('checked',false);
     last_li.show();
   };
+
+  function reset_row_order(){
+    $(".add_li_material").each(function(i){
+      $(this).children(".row_order").children().val(i)
+    })};
 
 });

@@ -43,19 +43,22 @@
 
 
   <div class="material_area">
-        <div class="col-md-12" style="margin:5px;">
-          <label class="col-md-3">食材・資材名</label>
-          <label class="col-md-1">原価</label>
-          <label class="col-md-1">仕入先</label>
-          <label class="col-md-2">使用量</label>
-          <label class="col-md-1">使用価格</label>
-          <label class="col-md-2">仕込み内容</label>
-          <label class="col-md-1">持ち場</label>
-          <label class="col-md-1"></label>
+    <div class="col-md-12" style="margin:5px;">
+      <label class="col-md-3">食材・資材名</label>
+      <label class="col-md-1">原価</label>
+      <label class="col-md-1">仕入先</label>
+      <label class="col-md-2">使用量</label>
+      <label class="col-md-1">使用価格</label>
+      <label class="col-md-2">仕込み内容</label>
+      <label class="col-md-1">持ち場</label>
+      <label class="col-md-1"></label>
+    </div>
+    <ul class='material_ul list-group ul-sortable' style="list-style-type: none;">
+    <%= f.fields_for :menu_materials, @menu.menu_materials.sort_by(&:row_order) do |m| %>
+      <li class='add_li_material col-md-12 list-group-item item'>
+        <div class="row_order col-md-1" style="display:none;">
+          <%= m.number_field :row_order, class:"input_row_order form-control" %>
         </div>
-    <ul class='material_ul list-group' style="list-style-type: none;">
-    <%= f.fields_for :menu_materials do |m| %>
-      <li class="add_li_material col-md-12 list-group-item" >
         <div class="select_material col-md-3" style="padding:3px;">
          <%= m.select :material_id, Material.pluck(:name, :id),{include_blank: true},
           class:'input_select_material col-md-12'%>
@@ -85,10 +88,6 @@
             <option value="千切り">
             <option value="みじん切り">
             <option value="計量">
-            <option value="こ">
-            <option value="個">
-            <option value="束">
-            <option value="匹">
           </datalist>
         </div>
         <div class="select_post col-md-1">
