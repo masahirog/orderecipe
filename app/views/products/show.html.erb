@@ -84,7 +84,7 @@
     <% u = menu.materials.length %>
     <div class="first_tr_td col-md-6">
       <ul class='col-md-12' style="list-style-type: none;padding:0;">
-        <% menu.menu_materials.each do |mm|%>
+        <% menu.menu_materials.order(:row_order).each do |mm|%>
           <li class="menu_materials">
             <div class="col-md-3" style="padding:0;"><%= link_to mm.material.name, "/materials/#{mm.material_id}/edit" %></div>
             <div class="original_amount_used text-right col-md-2">

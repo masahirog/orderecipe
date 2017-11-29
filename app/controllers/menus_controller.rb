@@ -1,11 +1,5 @@
 class MenusController < ApplicationController
-  protect_from_forgery :except => [:sort]
-  def sort
-    binding.pry
-    menu_material = Menu_material.find(params[:menu_id])
-    menu_material.update(menu_position)
-    render nothing: true
-  end
+
 
   def get_cost_price
     @material = Material.includes(:vendor).find(params[:id])
@@ -65,15 +59,16 @@ class MenusController < ApplicationController
 
   def show
     @menu = Menu.find(params[:id])
-    @menu_materials = @menu.menu_materials
+    @menu_materials = @menu.menu_materials.order(:row_order)
   end
 
   def print
     @menu = Menu.find(params[:id])
+    @menu_materials = @menu.menu_materials.order(:row_order)
     respond_to do |format|
      format.html
      format.pdf do
-       pdf = MenuPdf.new(@menu)
+       pdf = MenuPdf.new(@menu,@menu_materials)
        send_data pdf.render,
          filename:    "#{@menu.name}.pdf",
          type:        "application/pdf",

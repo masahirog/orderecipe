@@ -12,7 +12,6 @@ class ProductPdf < Prawn::Document
     menus = menus
     header_table(product,num)
     table_content(menus,num)
-    # table_right(menus,num)
   end
 
 
@@ -63,7 +62,7 @@ class ProductPdf < Prawn::Document
       else
         recipe_size = 6
       end
-      menu.menu_materials.each_with_index do |mm,i|
+      menu.menu_materials.order(:row_order).each_with_index do |mm,i|
         if i == 0
           data << [{content: "#{menu.name}", rowspan: u,size: 9},
             {content: "#{menu.recipe}", rowspan: u, size: recipe_size},

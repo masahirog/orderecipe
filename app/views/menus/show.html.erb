@@ -38,7 +38,7 @@
       <div class="col-md-1">持ち場</div>
   </div>
   <ul class="list list-group">
-    <% @menu_materials.order(:row_order).each do |mm| %>
+    <% @menu_materials.each do |mm| %>
       <li class="list-group-item col-md-12">
       <div class="col-md-2"><%= link_to mm.material.name, "/materials/#{mm.material.id}/edit", method: :get %></div>
       <div class="col-md-1"><%= mm.material.cost_price %> 円</div>

@@ -33,7 +33,7 @@ class PreparationPdf < Prawn::Document
     end
   end
   def title(num,id,x,y)
-    bounding_box([x, y], :width => 190) do
+    bounding_box([x, y], :width => 300) do
       text "#{num}食　：#{Product.find(id).name}", size: 9
     end
   end
@@ -100,7 +100,7 @@ class PreparationPdf < Prawn::Document
       menus.each do |menu|
         u = menu.menu_materials.where(post: c).count
         ii = 0
-        menu.menu_materials.each_with_index do |mm,i|
+        menu.menu_materials.order(:row_order).each_with_index do |mm,i|
           if mm.post == c && ii == 0
             data << [{:content => "#{menu.name}", :rowspan => u},"#{mm.material.name}", "#{(mm.amount_used * num.to_i).round.to_s(:delimited)} #{mm.material.calculated_unit}",
             "#{mm.preparation}"]

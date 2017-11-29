@@ -1,5 +1,5 @@
 class MenuPdf < Prawn::Document
-  def initialize(menu)
+  def initialize(menu,menu_materials)
     # 初期設定。ここでは用紙のサイズを指定している。
     super(
       page_size: 'A4',
@@ -7,9 +7,10 @@ class MenuPdf < Prawn::Document
     #日本語のフォント
     font "vendor/assets/fonts/ipaexm.ttf"
     menu = menu
+    menu_materials = menu_materials
     header_table(menu)
     header_table2(menu)
-    table_content(menu)
+    table_content(menu_materials)
   end
 
   # recipe_mozi = menu.recipe.length
@@ -56,9 +57,9 @@ class MenuPdf < Prawn::Document
 
 
 
-  def table_content(menu)
+  def table_content(menu_materials)
     bounding_box([0, 500], :width => 520) do
-      table line_item_rows(menu) do
+      table line_item_rows(menu_materials) do
       cells.padding = 3
       cells.borders = [:bottom]
       cells.border_width = 0.2
@@ -70,9 +71,9 @@ class MenuPdf < Prawn::Document
       end
     end
   end
-  def line_item_rows(menu)
+  def line_item_rows(menu_materials)
     data= [["食材・資材",{:content => "仕込み内容", :colspan => 2},"1人分","使用原価"]]
-    menu.menu_materials.each_with_index do |mm|
+    menu_materials.each_with_index do |mm|
         data << [{content:"#{Material.find(mm.material_id).name}", size: 9},{content: "#{mm.post}", size: 9},{content:"#{mm.preparation}", size: 9},
           {content:"#{mm.amount_used} #{Material.find(mm.material_id).calculated_unit}", size: 9},{content:"#{(Material.find(mm.material_id).cost_price * mm.amount_used).round(1)}", size: 9}]
     end

@@ -98,12 +98,12 @@ $(function(){
     });
   });
 
-
+  //material追加
   $(".add_material").on('click', function (){
     addInput();
   });
 
-
+  //追加ボタン時のカーソル移動
   $(".add_material").keypress(function (e) {
     addInput();
     var code = e.which ? e.which : e.keyCode;
@@ -137,6 +137,9 @@ $(function(){
         };
     };
   });
+
+
+
 
 //メニュー価格の変更
   function calculate_menu_price(){
