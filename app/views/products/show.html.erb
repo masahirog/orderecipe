@@ -11,6 +11,7 @@
     <%= number_field(:volume,:num,class:"form-control text-right",id:"amount_number_input",placeholder:"食数を入力") %>
     <input type="button" onclick="submit();" value="印刷ページ" class="btn btn-primary" style="margin:0 0 0 10px;" >
     <%= link_to "盛付用VIEW", "/products/serving_detail/#{@product.id}",method:"get", class:"btn btn-success",:target=>"_blank", style:"margin:0 0 0 10px;"%>
+		<%= link_to "ラムさん", "/products/serving_detail_en/#{@product.id}",method:"get", class:"btn btn-success",:target=>"_blank", style:"margin:0 0 0 10px;"%>
     <% end %>
     </div>
 </div>

@@ -20,6 +20,7 @@ $(function(){
           cal_val = Number(cal_val)
             var calculate_amount_used = kanma(oau*num);
             $(this).children(".calculated_unit").children(".calculate_amount_used").text(calculate_amount_used);
+            console.log(cal_val);
           if (order_unit.length){
             var cal_amount_order_unit = ((oau*num)/cal_val).toFixed(1);
             $(this).children(".cal_val_order_unit").children(".calculate_amount_used").text(cal_amount_order_unit);
@@ -28,8 +29,8 @@ $(function(){
         $(".calculate_amount_used_th").text(kanma(num)+"人分");
         $(".calculate_amount_used_th").show();
         // $(".calculate_amount_used_th").show();
-        $(".calculated_unit").show()
-        $(".cal_val_order_unit").show()
+        $(".calculated_unit").children().show()
+        $(".cal_val_order_unit").children().show()
       };
     });
 });

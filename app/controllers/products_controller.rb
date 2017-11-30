@@ -86,6 +86,12 @@ class ProductsController < ApplicationController
     render :serving_detail, layout: false
   end
 
+  def serving_detail_en
+    @product = Product.find(params[:id])
+    @menus = @product.menus.includes(:materials, :menu_materials)
+    render :serving_detail_en, layout: false    
+  end
+
   def print
     @params = params
     @product = Product.find(params[:volume][:id])

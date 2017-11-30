@@ -60,13 +60,13 @@
                     <div class="calculated_value" style="display:none;"><%= mm.material.calculated_value %></div>
                     <div class="order_unit" style="display:none;"><%= mm.material.order_unit %></div>
                   </div>
-                  <div class="calculated_unit col-md-4 form-inline text-right" style="display:none;">
-                    <div class="calculate_amount_used form-group" style="font-weight:bold; font-size:20px;"></div>
-                    <div class="form-group" style="font-weight:bold;"><%= mm.material.calculated_unit %></div>
+                  <div class="calculated_unit col-md-4 form-inline text-right">
+                    <div class="calculate_amount_used form-group" style="display:none;font-weight:bold; font-size:20px;"></div>
+                    <div class="form-group" style="display:none;font-weight:bold;"><%= mm.material.calculated_unit %></div>
                   </div>
-                  <div class="cal_val_order_unit col-md-2 form-inline" style="display:none;padding:0;">
+                  <div class="cal_val_order_unit col-md-2 form-inline" style="padding:0;">
                     <div class="calculate_amount_used form-group"></div>
-                    <div class="form-group" style="padding:0;"><%= mm.material.order_unit %></div>
+                    <div class="form-group" style="display:none;padding:0;"><%= mm.material.order_unit %></div>
                   </div>
           <% if i == menu.materials.length  %>
         </li></ul>
