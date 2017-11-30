@@ -35,9 +35,16 @@
                 </ul>
                 <div class="collapse navbar-collapse navbar-right" id="navbarEexample">
             			<ul class="nav navbar-nav">
-                    <li class="user_nav grid-6">
-                      <%= link_to "ログアウト", destroy_user_session_path, method: :delete %>
+                    <li class="menu_li">
+                      <a id="google_translate_element"></a><script type="text/javascript">
+                    	function googleTranslateElementInit() {
+                    	  new google.translate.TranslateElement({pageLanguage: 'ja', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+                    	}
+                    	</script><script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
                     </li>
+                    <!-- <li class="user_nav grid-6">
+                      <%= link_to "ログアウト", destroy_user_session_path, method: :delete %>
+                    </li> -->
                   </ul>
                 </div>
               <% else %>
