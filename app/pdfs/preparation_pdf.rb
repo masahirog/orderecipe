@@ -14,9 +14,9 @@ class PreparationPdf < Prawn::Document
       move_down 3
       title_yoki(num,id,x)
       move_down 3
-      table_prepa(prepa_item_rows("切り出し", id, num),x)
+      table_prepa(prepa_item_rows("切出し", id, num),x)
       move_down 20
-      table_prepa(prepa_item_rows("切出/調理場", id, num),x)
+      table_prepa(prepa_item_rows("切出/調理", id, num),x)
       move_down 20
       table_prepa(prepa_item_rows("調理場", id, num),x)
       if i ==1
