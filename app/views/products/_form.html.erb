@@ -128,6 +128,7 @@
     </div>
 
     <ul class='used_menu_ul list-group' style="list-style:none;">
+      <% i=0 %>
       <%= f.fields_for :product_menus do |pr| %>
       <li class="add_li_menu col-md-12 list-group-item" style="padding:5px 5px;">
         <div class="category_select col-md-1">
@@ -137,9 +138,29 @@
             <%= pr.select :menu_id, Menu.pluck(:name, :id),{include_blank: true}, class:'input_select_menu'%>
         </div>
         <div class="cost_price col-md-1">
+          <%= @product.menus[i].cost_price if params["action"] == "edit" %>
         </div>
         <div class="material_name col-md-6">
           <ul style="list-style:none;padding:0;">
+            <% if params["action"] == "edit" %>
+            <% @product.menus[i].menu_materials.each do |pm| %>
+            <li class="col-md-12">
+              <div class="col-md-4">
+                <%= pm.material.name %>
+              </div>
+              <div class="col-md-2 text-right">
+                <%= pm.amount_used %> <%= pm.material.calculated_unit %>
+              </div>
+              <div class="col-md-2 text-right">
+                <%= (pm.amount_used * pm.material.cost_price).round(1) %>
+              </div>
+              <div class="col-md-4">
+                <%= pm.preparation %>
+              </div>
+              </li>
+              <% end %>
+              <% end %>
+
           </ul>
         </div>
 
@@ -148,6 +169,7 @@
           <%= pr.check_box :_destroy,class:"destroy_menu", style: "display:none;" %>
         </div>
       </li>
+          <% i += 1 %>
       <% end %>
     </ul>
   </div>

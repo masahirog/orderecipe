@@ -40,7 +40,7 @@ class ProductsController < ApplicationController
   end
 
   def index
-    @search = Product.search(params).page(params[:page]).per(20)
+    @search = Product.includes(:product_menus,{menus: [:menu_materials,:materials]}).search(params).page(params[:page]).per(20)
   end
 
   def new
@@ -48,9 +48,9 @@ class ProductsController < ApplicationController
     @product = Product.new
     @product.product_menus.build
   end
+
   def show
-  @product = Product.find(params[:id])
-  @menus = @product.menus.includes(:materials, :menu_materials)
+  @product = Product.includes(:product_menus,{menus: [:menu_materials,:materials]}).find(params[:id])
     respond_to do |format|
       format.html
       format.csv do
@@ -70,7 +70,7 @@ class ProductsController < ApplicationController
 
   def edit
     @bento_id = Product.bentoid()
-    @product = Product.find(params[:id])
+    @product = Product.includes(:product_menus,{menus: [:menu_materials,:materials]}).find(params[:id])
     @product.product_menus.build  if @product.menus.length == 0
   end
 

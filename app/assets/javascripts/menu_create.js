@@ -7,22 +7,22 @@ $(function(){
   $('.input_select_material').select2({
     placeholder: "食材資材を選択してください"
   });
-    var u = 0
-    var x = 0
-    $(".add_li_material").each(function() {
-        var id = $(this).children(".select_material").children(".input_select_material").val()
-        if (isNaN(id) == true) {} else{
-        $.ajax({
-            url: "/menus/get_cost_price/" + id,
-            data: { id : id },
-            dataType: "json",
-            async: false
-        })
-        .done(function(data) {
-          get_material_info(data,u,x)
-      })};
-      u = u+1;
-    });
+    // var u = 0
+    // var x = 0
+    // $(".add_li_material").each(function() {
+    //     var id = $(this).children(".select_material").children(".input_select_material").val()
+    //     if (isNaN(id) == true) {} else{
+    //     $.ajax({
+    //         url: "/menus/get_cost_price/" + id,
+    //         data: { id : id },
+    //         dataType: "json",
+    //         async: false
+    //     })
+    //     .done(function(data) {
+    //       get_material_info(data,u,x)
+    //   })};
+    //   u = u+1;
+    // });
     calculate_menu_price();
     reset_row_order();
 

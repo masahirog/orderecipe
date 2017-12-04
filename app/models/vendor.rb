@@ -12,11 +12,11 @@ class Vendor < ApplicationRecord
 
   def self.vendor_index(params)
     hoge = []
-    order = Order.find(params[:id])
+    order = Order.includes({materials:[:vendor]}).find(params[:id])
     order.materials.each do |om|
       hash={}
       hash.store("vendor_id", om.vendor_id)
-      hash.store("company_name", Vendor.find(om.vendor_id).company_name)
+      hash.store("company_name", om.vendor.company_name)
       hoge << hash
     end
     hoge.uniq!

@@ -9,7 +9,7 @@ class OrdersController < ApplicationController
 
 
   def edit
-    @order = Order.find(params[:id])
+    @order = Order.includes(:products,:order_products,:order_materials,{materials: [:vendor]}).find(params[:id])
   end
 
   def index

@@ -23,33 +23,22 @@
   <h4><strong>過去の発注一覧</strong></h4>
 </div>
 <div class="col-md-12">
-  <div class="col-md-1">
+  <div class="col-md-3">
     納品日
   </div>
-  <div class="col-md-1">
+  <div class="col-md-3">
     詳細
-  </div>
-  <div class="col-md-2">
-    発注先企業一覧
   </div>
 </div>
 <ul class="list-group" style="list-style-type: none;">
   <% @orders.each do |order| %>
     <li class="col-md-12 list-group-item">
-      <div class="col-md-1">
+      <div class="col-md-3">
         <%= order.delivery_date %>
       </div>
 
-      <div class="col-md-1">
+      <div class="col-md-3">
         <%= link_to "詳細", "/orders/#{order.id}",class:"order btn btn-primary" %>
-      </div>
-      <div class="col-md-8">
-        <% vendors = Vendor.vendor_index(order) %>
-        <% vendors.each do |vendor| %>
-          <div class="col-md-1">
-            <%= vendor["company_name"] %>
-          </div>
-        <% end %>
       </div>
     </li>
   <% end %>
