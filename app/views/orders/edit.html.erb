@@ -52,8 +52,7 @@
     <div class="col-md-3">
       <select class="vendor_select form-control">
         <option value=""></option>
-        <% omv = @order.materials.select(:vendor_id).uniq %>
-        <% omv.each do |v| %>
+        <% @order.materials.select(:vendor_id).uniq.each do |v| %>
         <%= "<option value=#{v.vendor_id}>#{Vendor.find(v.vendor_id).company_name}</option>".html_safe %>
         <% end %>
       </select>

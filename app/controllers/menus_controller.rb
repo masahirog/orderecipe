@@ -1,8 +1,6 @@
 class MenusController < ApplicationController
-
-
   def get_cost_price
-    @material = Material.includes(:vendor).find(params[:id])
+    @material = Material.find(params[:id])
     respond_to do |format|
       format.html
       format.json
@@ -10,7 +8,7 @@ class MenusController < ApplicationController
   end
 
   def index
-    @search = Menu.search(params).page(params[:page]).per(20)
+    @search = Menu.includes(:menu_materials,:materials).search(params).page(params[:page]).per(20)
   end
 
   def new
@@ -34,7 +32,7 @@ class MenusController < ApplicationController
     if request.referer.include?("products")
       @back_to = request.referer
     end
-    @menu = Menu.find(params[:id])
+    @menu = Menu.includes(:menu_materials,{materials:[:vendor]}).find(params[:id])
     @menu.menu_materials.build  if @menu.materials.length == 0
   end
 
@@ -58,8 +56,7 @@ class MenusController < ApplicationController
   end
 
   def show
-    @menu = Menu.find(params[:id])
-    @menu_materials = @menu.menu_materials.order(:row_order)
+    @menu = Menu.includes(:menu_materials,{materials: [:vendor]}).find(params[:id])
   end
 
   def print

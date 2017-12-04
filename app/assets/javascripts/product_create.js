@@ -11,33 +11,34 @@ $(function(){
     width:"100%",
   });
 
-  //materialの表示、原価計算
-  var u = 0
-  $(".add_li_menu").each(function() {
-      var id = $(this).children(".select_menu").children().val();
-      if (isNaN(id) == true) {} else{
-      $.ajax({
-          url: "/products/get_menu_cost_price/" + id,
-          data: { id : id },
-          dataType: "json",
-          async: false
-      })
-      .done(function(data) {
-        get_menu_price(data,u);
-    })};
-    u = u+1;
-    calculate_product_price();
-  });
 
-  $(".registration").on("change",function(){
-    var prop = $('.registration').prop('checked');
-    var bento_id = $('#bento_id_hidden').val();
-    if (prop) {
-      $(".bento_id").val(bento_id);
-    }else {
-      $(".bento_id").val("");
-      };
-    });
+  // //materialの表示、原価計算
+  // var u = 0
+  // $(".add_li_menu").each(function() {
+  //     var id = $(this).children(".select_menu").children().val();
+  //     if (isNaN(id) == true) {} else{
+  //     $.ajax({
+  //         url: "/products/get_menu_cost_price/" + id,
+  //         data: { id : id },
+  //         dataType: "json",
+  //         async: false
+  //     })
+  //     .done(function(data) {
+  //       get_menu_price(data,u);
+  //   })};
+  //   u = u+1;
+  //   calculate_product_price();
+  // });
+  //
+  // $(".registration").on("change",function(){
+  //   var prop = $('.registration').prop('checked');
+  //   var bento_id = $('#bento_id_hidden').val();
+  //   if (prop) {
+  //     $(".bento_id").val(bento_id);
+  //   }else {
+  //     $(".bento_id").val("");
+  //     };
+  //   });
 
 
 
@@ -154,26 +155,6 @@ $(function(){
       });
       });
     }};
-
-
-  $(".add_li_menu").each(function() {
-      var id = $(this).children(".select_menu").children().val();
-      if (isNaN(id) == true) {} else{
-      $.ajax({
-          url: "/products/get_menu_cost_price/" + id,
-          data: { id : id },
-          dataType: "json",
-          async: false
-      })
-      .done(function(data) {
-        get_menu_price(data,u);
-    })};
-    u = u+1;
-    calculate_product_price();
-  });
-
-
-
 
   //原価計算
   function calculate_product_price(){

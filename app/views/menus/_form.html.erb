@@ -54,6 +54,7 @@
       <label class="col-md-1"></label>
     </div>
     <ul class='material_ul list-group ul-sortable' style="list-style-type:none;cursor:move;">
+    <% i=0 %>
     <%= f.fields_for :menu_materials, @menu.menu_materials.sort_by(&:row_order) do |m| %>
       <li class='add_li_material col-md-12 list-group-item item'>
         <div class="row_order col-md-1" style="display:none;">
@@ -66,9 +67,14 @@
        <div class="sales_check" style="display:none;">
        </div>
         <div class="cost_price col-md-1 form-inline">
-          <div class="cost_price_value form-group"></div><div class="form-group">　円</div>
+          <div class="cost_price_value form-group">
+
+            <%= @menu.materials[i].cost_price if params["action"] == "edit" %>
+          </div>
+          <div class="form-group">　円</div>
         </div>
         <div class="vendor col-md-1">
+          <%= @menu.materials[i].vendor.company_name if params["action"] == "edit" %>
         </div>
         <div class="amount_used col-md-2 form-inline">
           <%= m.text_field :amount_used, class:'amount_used_input form-control form-group',style:"width:140px;", :autocomplete => :off  %>
@@ -76,7 +82,10 @@
           </div>
         </div>
         <div class="price_used form-inline col-md-1">
-          <div class="price_used_value form-group"></div><div class="form-group">　円</div>
+          <div class="price_used_value form-group">
+            <%= (@menu.materials[i].cost_price * @menu.menu_materials[i].amount_used).round(2) if params["action"] == "edit" %>
+          </div>
+          <div class="form-group">　円</div>
         </div>
         <div class="preparation col-md-2" style="padding:0;">
           <%= m.text_field :preparation, class:'preparation_input form-control',
@@ -99,6 +108,7 @@
           <%= m.check_box :_destroy,class:"destroy_materials check_box form-control", style: "display:none;" %>
         </div>
       </li>
+      <% i += 1 %>
       <% end %>
     </ul>
   </div>
@@ -108,7 +118,7 @@
 
   <%= f.hidden_field :back_to, :value => @back_to %>
 
-  <% if local_assigns[:locals][:edit_flag] == true %>
+  <% if params["action"] == "edit" %>
     <div class="action col-md-12" style="margin-bottom:20px;">
       <input type="button" value="更新する" class="btn btn-success" id="menu_submit_btn">
     </div>
