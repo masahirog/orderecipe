@@ -11,6 +11,7 @@ $(function(){
     width:"100%",
   });
 
+
   //materialの表示、原価計算
   var u = 0
   $(".add_li_menu").each(function() {

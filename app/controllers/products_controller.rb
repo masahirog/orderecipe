@@ -1,4 +1,8 @@
 class ProductsController < ApplicationController
+  protect_from_forgery :except => [:henkan]
+  require 'net/https'
+  require 'json'
+
   def get_by_category
     if params[:category].present?
       @menu = Menu.where(category:params["category"])
@@ -89,7 +93,7 @@ class ProductsController < ApplicationController
   def serving_detail_en
     @product = Product.find(params[:id])
     @menus = @product.menus.includes(:materials, :menu_materials)
-    render :serving_detail_en, layout: false    
+    render :serving_detail_en, layout: false
   end
 
   def print
@@ -133,6 +137,23 @@ class ProductsController < ApplicationController
          disposition: "inline"
      end
    end
+  end
+
+  def henkan
+    sentence = params["kanji"]
+    app_id = "6e84997fe5d4d3865152e765091fd0faab2f76bfe5dba29d638cc6683efa1184"
+    request_data = {'app_id'=>app_id, "sentence"=>sentence}.to_json
+    header = {'Content-type'=>'application/json'}
+    https = Net::HTTP.new('labs.goo.ne.jp', 443)
+    https.use_ssl=true
+    response = https.post('/api/morph', request_data, header)
+    if JSON.parse(response.body)["word_list"].present?
+      @result = JSON.parse(response.body)["word_list"]
+    end
+    respond_to do |format|
+      format.html
+      format.json
+    end
   end
 
   private
