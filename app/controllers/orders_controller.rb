@@ -14,7 +14,7 @@ class OrdersController < ApplicationController
 
   def index
     @products = Product.all
-    @orders = Order.page(params[:page]).order("id DESC")
+    @orders = Order.includes({order_products: [:product]} ).page(params[:page]).order("id DESC")
   end
   def update
     @order = Order.find(params[:id])
@@ -67,13 +67,12 @@ class OrdersController < ApplicationController
   end
 
   def order_print_all
-    @order = Order.find(params[:id])
-    @order_materials = @order.order_materials
+    @order = Order.includes(:order_products, :product,:order_materials,:material).find(params[:id])
     @vendors = params[:vendor]
     respond_to do |format|
      format.html
      format.pdf do
-       pdf = OrderAll.new(@order,@order_materials,@vendors)
+       pdf = OrderAll.new(@order,@vendors)
        send_data pdf.render,
          filename:    "#{@order.delivery_date}.pdf",
          type:        "application/pdf",

@@ -65,16 +65,18 @@ class ProductPdfAll < Prawn::Document
     data= [["メニュー名","調理メモ","盛付メモ","食材・資材",{:content => "仕込み内容", :colspan => 2},"1人分","使用原価","","#{op.serving_for}人分"]]
     menus.each do |menu|
       u = menu.materials.length
-      menu.menu_materials.order(:row_order).each_with_index do |mm,i|
+      i = 0
+      menu.menu_materials.each do |mm|
         if i == 0
           data << [{:content => "#{menu.name}", :rowspan => u},{:content => "#{menu.recipe}", :rowspan => u},
-            {:content => "#{menu.serving_memo}", :rowspan => u},"#{Material.find(mm.material_id).name}","#{mm.post}","#{mm.preparation}",
-            "#{mm.amount_used} #{Material.find(mm.material_id).calculated_unit}","#{(Material.find(mm.material_id).cost_price * mm.amount_used).round(1)}",
-          "","#{((mm.amount_used * op.serving_for.to_i).round).to_s(:delimited)} #{Material.find(mm.material_id).calculated_unit}"]
+            {:content => "#{menu.serving_memo}", :rowspan => u},"#{mm.material.name}","#{mm.post}","#{mm.preparation}",
+            "#{mm.amount_used} #{mm.material.calculated_unit}","#{(mm.material.cost_price * mm.amount_used).round(1)}",
+          "","#{((mm.amount_used * op.serving_for.to_i).round).to_s(:delimited)} #{mm.material.calculated_unit}"]
         else
-          data << ["#{Material.find(mm.material_id).name}","#{mm.post}","#{mm.preparation}","#{mm.amount_used} #{Material.find(mm.material_id).calculated_unit}",
-            "#{(Material.find(mm.material_id).cost_price * mm.amount_used).round(1)}","","#{((mm.amount_used * op.serving_for.to_i).round).to_s(:delimited)} #{Material.find(mm.material_id).calculated_unit}"]
+          data << ["#{mm.material.name}","#{mm.post}","#{mm.preparation}","#{mm.amount_used} #{mm.material.calculated_unit}",
+            "#{(mm.material.cost_price * mm.amount_used).round(1)}","","#{((mm.amount_used * op.serving_for.to_i).round).to_s(:delimited)} #{mm.material.calculated_unit}"]
         end
+        i += 1
       end
     end
     data

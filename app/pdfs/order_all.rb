@@ -1,18 +1,16 @@
 class OrderAll < Prawn::Document
-  def initialize(order,order_materials,vendors)
+  def initialize(order,vendors)
     super(page_size: 'A4')
     font "vendor/assets/fonts/ipaexm.ttf"
     order = order
-    order_materials = order_materials
+    order_materials = order.order_materials
     max = vendors.length - 1
     for i in 0..max
       sen2
       u= "id#{i}"
       id = vendors[u].to_i
-
-      ordermaterials = order_materials
       materials_this_vendor = []
-      ordermaterials.each do |om|
+      order_materials.each do |om|
         vendorid = om.material.vendor_id
         if id == vendorid
           materials_this_vendor << om

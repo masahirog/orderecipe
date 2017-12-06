@@ -10,12 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171128071107) do
+ActiveRecord::Schema.define(version: 20171206092352) do
 
   create_table "materials", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
     t.string   "order_name"
-    t.integer  "calculated_value"
+    t.text     "calculated_value",    limit: 65535
     t.string   "calculated_unit"
     t.integer  "calculated_price"
     t.float    "cost_price",          limit: 24
