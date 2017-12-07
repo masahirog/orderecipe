@@ -117,7 +117,7 @@ class ProductsController < ApplicationController
     respond_to do |format|
      format.html
      format.pdf do
-       pdf = PreparationPdf.new(@order,@order_products,@products)
+       pdf = PreparationPdf.new(@order,@order_products)
        send_data pdf.render,
        filename:    "preparation_all.pdf",
        type:        "application/pdf",

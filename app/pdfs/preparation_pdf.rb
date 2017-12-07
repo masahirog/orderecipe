@@ -1,5 +1,5 @@
 class PreparationPdf < Prawn::Document
-  def initialize(order,order_products,products)
+  def initialize(order,order_products)
     super(
       page_size: 'A4',
       page_layout: :landscape)
@@ -96,17 +96,22 @@ class PreparationPdf < Prawn::Document
     if product.present?
       data << ["",c,"",""]
       product.menus.each do |menu|
-        u = menu.menu_materials.where(post: c).count
+        u = 0
+        menu.menu_materials.each do |mema|
+          u += 1 if mema.post == c
+        end
         ii = 0
         menu.menu_materials.each_with_index do |mm,i|
           if mm.post == c && ii == 0
             data << [{:content => "#{menu.name}", :rowspan => u},"#{mm.material.name}", "#{(mm.amount_used * num.to_i).round.to_s(:delimited)} #{mm.material.calculated_unit}",
             "#{mm.preparation}"]
             ii = 1
+            u += 1
           elsif mm.post == c && ii == 1
             data << ["#{mm.material.name}", "#{(mm.amount_used * num.to_i).round.to_s(:delimited)} #{mm.material.calculated_unit}",
             "#{mm.preparation}"]
-          end
+            u += 1
+         end
         end
       end
       data += [["　","　","　","　"]]*(2)

@@ -98,22 +98,22 @@
       <% @order_materials.each do |om| %>
         <li  class="index_vendor_list list-group-item col-md-12" style="padding:5px;">
           <div class="material_name col-md-3">
-             <%= Material.find(om.material_id).name %>
+             <%= om.material.name %>
           </div>
           <div class="order_quantity col-md-1 text-right">
             <%= om.order_quantity %>
           </div>
           <div class="material_unit col-md-1">
-            <%= Material.find(om.material_id).order_unit %>
+            <%= om.material.order_unit %>
           </div>
           <div class="material_unit col-md-1 text-right">
             <%= om.calculated_quantity %>
           </div>
           <div class="material_unit col-md-1">
-            <%= Material.find(om.material_id).calculated_unit %>
+            <%= om.material.calculated_unit %>
           </div>
           <div class="vendor_company_name col-md-2">
-            <%= Vendor.find(Material.find(om.material_id).vendor_id).company_name %>
+            <%= Vendor.find(om.material.vendor_id).company_name %>
           </div>
         </li>
       <% end %>

@@ -62,17 +62,17 @@ class ProductPdf < Prawn::Document
       else
         recipe_size = 6
       end
-      menu.menu_materials.order(:row_order).each_with_index do |mm,i|
+      menu.menu_materials.each_with_index do |mm,i|
         if i == 0
           data << [{content: "#{menu.name}", rowspan: u,size: 9},
             {content: "#{menu.recipe}", rowspan: u, size: recipe_size},
-            {content: "#{menu.serving_memo}", rowspan: u, size: 9},{content:"#{Material.find(mm.material_id).name}", size: 9},{content: "#{mm.post}", size: 9},{content:"#{mm.preparation}", size: 9},
-            {content:"#{mm.amount_used} #{Material.find(mm.material_id).calculated_unit}", size: 9},{content:"#{(Material.find(mm.material_id).cost_price * mm.amount_used).round(1)}", size: 9},"",
-            {content:"#{((mm.amount_used * num.to_i).round).to_s(:delimited)} #{Material.find(mm.material_id).calculated_unit}",size:9}]
+            {content: "#{menu.serving_memo}", rowspan: u, size: 9},{content:"#{mm.material.name}", size: 9},{content: "#{mm.post}", size: 9},{content:"#{mm.preparation}", size: 9},
+            {content:"#{mm.amount_used} #{mm.material.calculated_unit}", size: 9},{content:"#{(mm.material.cost_price * mm.amount_used).round(1)}", size: 9},"",
+            {content:"#{((mm.amount_used * num.to_i).round).to_s(:delimited)} #{mm.material.calculated_unit}",size:9}]
         else
-          data << [{content:"#{Material.find(mm.material_id).name}", size: 9},{content:"#{mm.post}", size: 9},{content:"#{mm.preparation}", size: 9},
-            {content:"#{mm.amount_used} #{Material.find(mm.material_id).calculated_unit}", size: 9},{content:"#{(Material.find(mm.material_id).cost_price * mm.amount_used).round(1)}", size: 9},"",
-          {content:"#{((mm.amount_used * num.to_i).round).to_s(:delimited)} #{Material.find(mm.material_id).calculated_unit}",size:9}]
+          data << [{content:"#{mm.material.name}", size: 9},{content:"#{mm.post}", size: 9},{content:"#{mm.preparation}", size: 9},
+            {content:"#{mm.amount_used} #{mm.material.calculated_unit}", size: 9},{content:"#{(mm.material.cost_price * mm.amount_used).round(1)}", size: 9},"",
+          {content:"#{((mm.amount_used * num.to_i).round).to_s(:delimited)} #{mm.material.calculated_unit}",size:9}]
         end
       end
     end

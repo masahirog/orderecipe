@@ -118,7 +118,7 @@
                   name:"order[order_materials_attributes][#{i}][order_quantity]",
                   id:"order_order_materials_attributes_#{i}_order_quantity" %>
               <% else %>
-                <%= m.text_field :order_quantity,value:(material["amount_used"]/Material.find(material["material_id"]).calculated_value).ceil,
+                <%= m.text_field :order_quantity,value:(material["amount_used"].to_f / Material.find(material["material_id"]).calculated_value.to_f),
                   class:'text-right form-control',style:"height:27.78px;",
                   name:"order[order_materials_attributes][#{i}][order_quantity]",
                   id:"order_order_materials_attributes_#{i}_order_quantity" %>
@@ -141,7 +141,7 @@
             </div>
             <div class="calculate_unit panel-title col-md-2">
               <%= Material.find(material["material_id"]).order_unit_quantity %> <%= Material.find(material["material_id"]).order_unit %>
-              ：<%= Material.find(material["material_id"]).calculated_value.to_s(:delimited) %> <%= Material.find(material["material_id"]).calculated_unit %>
+              ：<%= Material.find(material["material_id"]).calculated_value %> <%= Material.find(material["material_id"]).calculated_unit %>
             </div>
 
             <div class="panel-title col-md-1">
