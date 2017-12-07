@@ -1,5 +1,5 @@
 class PreparationPdf < Prawn::Document
-  def initialize(order,order_products)
+  def initialize(order,order_products,products)
     super(
       page_size: 'A4',
       page_layout: :landscape)
@@ -7,18 +7,18 @@ class PreparationPdf < Prawn::Document
 
     x = 0
     order_products.each_with_index do |op,i|
-      id = op.product_id
+      product = op.product
       num = op.serving_for
       date(order)
-      title(num,id,x,510)
+      title(num,product,x,510)
       move_down 3
-      title_yoki(num,id,x)
+      title_yoki(num,product,x)
       move_down 3
-      table_prepa(prepa_item_rows("切出し", id, num),x)
+      table_prepa(prepa_item_rows("切出し", product, num),x)
       move_down 20
-      table_prepa(prepa_item_rows("切出/調理", id, num),x)
+      table_prepa(prepa_item_rows("切出/調理", product, num),x)
       move_down 20
-      table_prepa(prepa_item_rows("調理場", id, num),x)
+      table_prepa(prepa_item_rows("調理場", product, num),x)
       if i ==1
         start_new_page
         x = 0
@@ -32,15 +32,15 @@ class PreparationPdf < Prawn::Document
       text "#{order.delivery_date.strftime("%Y年")}　　　月　　　日（　　）"
     end
   end
-  def title(num,id,x,y)
+  def title(num,product,x,y)
     bounding_box([x, y], :width => 300) do
-      text "#{num}食　：#{Product.find(id).name}", size: 9
+      text "#{num}食　：#{product.name}", size: 9
     end
   end
 
-  def title_yoki(num,id,x)
+  def title_yoki(num,product,x)
     bounding_box([x, cursor], :width => 150) do
-      text "#{Product.find(id).menus[0].materials[0].name}　＜#{num}セット＞", size: 8
+      text "#{product.menus[0].materials[0].name}　＜#{num}セット＞", size: 8
     end
   end
   def preparation_title(a,x)
@@ -90,17 +90,15 @@ class PreparationPdf < Prawn::Document
     end
   end
 
-  def prepa_item_rows(c,id,num)
+  def prepa_item_rows(c,product,num)
     data = []
-    id = id
     num = num
-    if id.present?
-      menus = Product.find(id).menus
+    if product.present?
       data << ["",c,"",""]
-      menus.each do |menu|
+      product.menus.each do |menu|
         u = menu.menu_materials.where(post: c).count
         ii = 0
-        menu.menu_materials.order(:row_order).each_with_index do |mm,i|
+        menu.menu_materials.each_with_index do |mm,i|
           if mm.post == c && ii == 0
             data << [{:content => "#{menu.name}", :rowspan => u},"#{mm.material.name}", "#{(mm.amount_used * num.to_i).round.to_s(:delimited)} #{mm.material.calculated_unit}",
             "#{mm.preparation}"]
