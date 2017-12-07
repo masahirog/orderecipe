@@ -112,11 +112,12 @@ class ProductsController < ApplicationController
    end
   end
   def preparation_all
-    @order = Order.find(params[:id])
+    @order = Order.includes({products: {menus: :menu_materials, menus: :materials}}).find(params[:id])
+    @order_products = @order.order_products
     respond_to do |format|
      format.html
      format.pdf do
-       pdf = PreparationPdf.new(@order)
+       pdf = PreparationPdf.new(@order,@order_products)
        send_data pdf.render,
        filename:    "preparation_all.pdf",
        type:        "application/pdf",

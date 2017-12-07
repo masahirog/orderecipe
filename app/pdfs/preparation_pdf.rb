@@ -1,10 +1,10 @@
 class PreparationPdf < Prawn::Document
-  def initialize(order)
+  def initialize(order,order_products)
     super(
       page_size: 'A4',
       page_layout: :landscape)
     font "vendor/assets/fonts/ipaexm.ttf"
-    order_products = order.order_products
+
     x = 0
     order_products.each_with_index do |op,i|
       id = op.product_id
