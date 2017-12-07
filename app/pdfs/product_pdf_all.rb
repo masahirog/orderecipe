@@ -1,6 +1,6 @@
 
 class ProductPdfAll < Prawn::Document
-  def initialize(order,order_products)
+  def initialize(order)
     # 初期設定。ここでは用紙のサイズを指定している。
     super(
       page_size: 'A4',

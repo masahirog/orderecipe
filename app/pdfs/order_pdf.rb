@@ -1,13 +1,10 @@
 class OrderPdf < Prawn::Document
-  def initialize(materials_this_vendor,order,order_materials)
+  def initialize(materials_this_vendor,vendor,order,order_materials)
     super(page_size: 'A4')
     font "vendor/assets/fonts/ipaexm.ttf"
-    order = order
-    materials_this_vendor = materials_this_vendor
-    order_materials = order_materials
     sen2
     header
-    header_lead(materials_this_vendor)
+    header_lead(vendor)
     header_date(order)
     header_adress
     header_hello
@@ -20,10 +17,10 @@ class OrderPdf < Prawn::Document
     end
   end
 
-  def header_lead(materials_this_vendor)
+  def header_lead(vendor)
     bounding_box([0, 720], :width => 270, :height => 50) do
       font_size 10.5
-      text "#{Vendor.find(materials_this_vendor[0].material.vendor_id).company_name}　御中", size: 15
+      text "#{vendor.company_name}　御中", size: 15
     end
   end
   def header_date(order)

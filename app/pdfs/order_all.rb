@@ -10,14 +10,16 @@ class OrderAll < Prawn::Document
       u= "id#{i}"
       id = vendors[u].to_i
       materials_this_vendor = []
-      order_materials.each do |om|
+      for om in order_materials do
         vendorid = om.material.vendor_id
         if id == vendorid
+          company_name = om.material.vendor.company_name
           materials_this_vendor << om
         end
+        company_name
       end
       header
-      header_lead(id)
+      header_lead(company_name)
       header_date(order)
       header_adress
       header_hello
@@ -33,10 +35,10 @@ class OrderAll < Prawn::Document
     end
   end
 
-  def header_lead(id)
+  def header_lead(company_name)
     bounding_box([0, 720], :width => 270, :height => 50) do
       font_size 10.5
-      text "#{Vendor.find(id).company_name}　御中", size: 15
+      text "#{company_name}　御中", size: 15
     end
   end
   def header_date(order)

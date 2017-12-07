@@ -40,7 +40,7 @@ class Material < ApplicationRecord
     hoge = []
     for i in 0..3
       if params["id#{i}"].present?
-        Product.find(params["id#{i}"]).menus.each do |menu|
+        Product.includes(:product_menus,[menus: [menu_materials: :material]]).find(params["id#{i}"]).menus.each do |menu|
           menu.menu_materials.each do |menu_material|
               hash={}
               hash.store("material_id", menu_material.material_id)
@@ -65,7 +65,7 @@ class Material < ApplicationRecord
   end
 
   def self.get_material_this_vendor(params)
-    order = Order.find(params[:id])
+    order = Order.includes(order_materials: :material).find(params[:id])
     ordermaterials = order.order_materials
     materials_this_vendor = []
     pvi = params[:vendor][:id].to_i

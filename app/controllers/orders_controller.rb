@@ -14,7 +14,7 @@ class OrdersController < ApplicationController
 
   def index
     @products = Product.all
-    @orders = Order.includes({order_products: [:product]} ).page(params[:page]).order("id DESC")
+    @orders = Order.includes(:products,:order_products, {materials:[:vendor]}).page(params[:page]).order("id DESC")
   end
   def update
     @order = Order.find(params[:id])
@@ -43,9 +43,8 @@ class OrdersController < ApplicationController
   end
 
   def show
-    @order = Order.find(params[:id])
+    @order = Order.includes(:order_products, {materials:[:vendor]}).find(params[:id])
     @order_materials = @order.order_materials
-    @materials = @order.materials
     @vendors = Vendor.vendor_index(params)
   end
 
@@ -57,7 +56,7 @@ class OrdersController < ApplicationController
     respond_to do |format|
      format.html
      format.pdf do
-       pdf = OrderPdf.new(@materials_this_vendor,@order,@order_materials)
+       pdf = OrderPdf.new(@materials_this_vendor,@vendor,@order,@order_materials)
        send_data pdf.render,
          filename:    "#{@order.delivery_date}_#{@vendor.company_name}.pdf",
          type:        "application/pdf",
@@ -67,7 +66,7 @@ class OrdersController < ApplicationController
   end
 
   def order_print_all
-    @order = Order.includes(:order_products, :product,:order_materials,:material).find(params[:id])
+    @order = Order.includes(order_materials: [material: :vendor]).find(params[:id])
     @vendors = params[:vendor]
     respond_to do |format|
      format.html

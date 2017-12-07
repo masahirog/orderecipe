@@ -116,6 +116,7 @@ $(function(){
       var calculated_value = data.material.calculated_value;
       var order_unit = data.material.order_unit;
       var calculate_unit = "1 "+order_unit+"："+ calculated_value+" "+unit
+      console.log(unit);
       $(".order_materials_li").eq(u).children(".vendor_company_name").text(vendor);
       $(".order_materials_li").eq(u).children(".order_material_unit").text(order_unit);
       $(".order_materials_li").eq(u).children(".calculate_unit").text(calculate_unit);

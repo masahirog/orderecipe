@@ -37,4 +37,5 @@ class Product < ApplicationRecord
       data = max + 1
     end
   end
+
 end

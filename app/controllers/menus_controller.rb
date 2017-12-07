@@ -60,8 +60,8 @@ class MenusController < ApplicationController
   end
 
   def print
-    @menu = Menu.find(params[:id])
-    @menu_materials = @menu.menu_materials.order(:row_order)
+    @menu = Menu.includes(menu_materials: :material).find(params[:id])
+    @menu_materials = @menu.menu_materials
     respond_to do |format|
      format.html
      format.pdf do
@@ -75,7 +75,7 @@ class MenusController < ApplicationController
   end
 
   def include_menu
-    @product_menus = ProductMenu.where(menu_id: params[:id]).page(params[:page]).per(20)
+    @product_menus = ProductMenu.includes(:product).where(menu_id: params[:id]).page(params[:page]).per(20)
     @menus = Menu.all
   end
   def include_update
