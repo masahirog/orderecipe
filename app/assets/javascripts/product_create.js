@@ -30,15 +30,17 @@ $(function(){
   //   calculate_product_price();
   // });
   //
-  // $(".registration").on("change",function(){
-  //   var prop = $('.registration').prop('checked');
-  //   var bento_id = $('#bento_id_hidden').val();
-  //   if (prop) {
-  //     $(".bento_id").val(bento_id);
-  //   }else {
-  //     $(".bento_id").val("");
-  //     };
-  //   });
+
+  //ss連携IDの発行
+  $(".registration").on("change",function(){
+    var prop = $('.registration').prop('checked');
+    var bento_id = $('#bento_id_hidden').val();
+    if (prop) {
+      $(".bento_id").val(bento_id);
+    }else {
+      $(".bento_id").val("");
+      };
+    });
 
 
 
