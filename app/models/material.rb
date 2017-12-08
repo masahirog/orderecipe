@@ -1,5 +1,5 @@
 class Material < ApplicationRecord
-  has_paper_trail
+  # has_paper_trail
 
   has_many :menu_materials, dependent: :destroy
   has_many :menus, through: :menu_materials
