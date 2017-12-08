@@ -15,7 +15,7 @@ class Product < ApplicationRecord
   validates :product_type, presence: true
   validates :sell_price, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :cost_price, presence: true, numericality: true
-  validates :bento_id, uniqueness: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validates :bento_id, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, :uniqueness => true, :allow_nil => true
 
   def self.search(params)
    if params
