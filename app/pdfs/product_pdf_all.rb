@@ -66,7 +66,7 @@ class ProductPdfAll < Prawn::Document
     menus.each do |menu|
       u = menu.materials.length
       i = 0
-      menu.menu_materials.each do |mm|
+      menu.menu_materials.order(:row_order).each do |mm|
         if i == 0
           data << [{:content => "#{menu.name}", :rowspan => u},{:content => "#{menu.recipe}", :rowspan => u},
             {:content => "#{menu.serving_memo}", :rowspan => u},"#{mm.material.name}","#{mm.post}","#{mm.preparation}",
