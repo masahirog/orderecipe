@@ -6,7 +6,7 @@
 
 <div class="col-xs-11 col-md-12 form-inline">
   <div class="col-xs-11 col-md-12 form-group">
-    <%= form_tag({:controller => "products", :action => "print", format: "pdf"},{:target => "_blank"}) do %>
+    <%= form_ta({:controller => "products", :action => "print", format: "pdf"},{:target => "_blank"}) do %>
     <%= number_field(:volume,:id,value:params[:id],style:"display:none;") %>
     <%= number_field(:volume,:num,class:"form-control text-right",id:"amount_number_input",placeholder:"食数を入力") %>
     <input type="button" onclick="submit();" value="印刷ページ" class="btn btn-primary" style="margin:0 0 0 10px;" >

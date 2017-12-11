@@ -60,6 +60,8 @@ gem 'prawn-table'
 gem 'paper_trail'
 gem 'ranked-model'
 gem 'jquery-ui-rails'
+gem 'exception_notification', :github => 'smartinez87/exception_notification'
+gem 'slack-notifier'
 
 group :production do
   gem 'rails_12factor'

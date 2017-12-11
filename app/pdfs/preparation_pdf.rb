@@ -81,7 +81,6 @@ class PreparationPdf < Prawn::Document
         row(0).border_width = 1.5
         row(1..-2).border_lines =  [:dotted, :solid, :dotted, :solid]
         row(-1).border_lines =  [:dotted, :solid, :solid, :solid]
-
         column(2).align = :right
         column(2).padding = [1,5,1,1]
         cells.border_width = 0.2

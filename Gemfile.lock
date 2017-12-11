@@ -1,3 +1,11 @@
+GIT
+  remote: git://github.com/smartinez87/exception_notification.git
+  revision: 40d2a87e2b9d663f661f704a3e727f46f1fb189e
+  specs:
+    exception_notification (4.2.2)
+      actionmailer (>= 4.0, < 6)
+      activesupport (>= 4.0, < 6)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -350,6 +358,7 @@ GEM
     sdoc (0.4.2)
       json (~> 1.7, >= 1.7.7)
       rdoc (~> 4.0)
+    slack-notifier (2.3.1)
     spring (2.0.2)
       activesupport (>= 4.2)
     sprockets (3.7.1)
@@ -392,6 +401,7 @@ DEPENDENCIES
   coffee-rails (~> 4.1.0)
   devise
   devise-bootstrap-views
+  exception_notification!
   fog
   jbuilder (~> 2.0)
   jquery-rails
@@ -409,6 +419,7 @@ DEPENDENCIES
   rmagick
   sass-rails (~> 5.0)
   sdoc (~> 0.4.0)
+  slack-notifier
   spring
   uglifier (>= 1.3.0)
   web-console (~> 2.0)
