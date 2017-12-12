@@ -21,7 +21,7 @@ class MenusController < ApplicationController
      if @menu.save
        redirect_to @menu,
        notice: "
-       <div class='alert alert-success' role='alert' style='font-size:15px;'>「#{@menu.name}」を作成しました： #{revert_link_menu}
+       <div class='alert alert-success' role='alert' style='font-size:15px;'>「#{@menu.name}」を作成しました
        　　続けてメニューを作成する：<a href='/menus/new'>新規作成</a></div>".html_safe
      else
        render 'new'
@@ -43,12 +43,12 @@ class MenusController < ApplicationController
     if @menu.save
       if params["menu"]["back_to"].blank?
         redirect_to menu_path, notice: "
-        <div class='alert alert-success' role='alert' style='font-size:15px;'>「#{@menu.name}」を更新しました： #{revert_link_menu}
+        <div class='alert alert-success' role='alert' style='font-size:15px;'>「#{@menu.name}」を更新しました：
         　　続けてメニューを作成する：<a href='/menus/new'>新規作成</a></div>".html_safe
 
       else
         redirect_to params["menu"]["back_to"], notice: "
-        <div class='alert alert-success' role='alert' style='font-size:15px;'>「#{@menu.name}」を更新しました： #{revert_link_menu}".html_safe
+        <div class='alert alert-success' role='alert' style='font-size:15px;'>「#{@menu.name}」を更新しました：".html_safe
       end
     else
       render "edit"

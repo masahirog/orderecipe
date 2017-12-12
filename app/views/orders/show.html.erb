@@ -95,7 +95,7 @@
     </div>
 
     <ul class="order_materials_ul list-group panel-body">
-      <% @order_materials.each do |om| %>
+      <% @order.order_materials.each do |om| %>
         <li  class="index_vendor_list list-group-item col-md-12" style="padding:5px;">
           <div class="material_name col-md-3">
              <%= om.material.name %>
@@ -113,7 +113,7 @@
             <%= om.material.calculated_unit %>
           </div>
           <div class="vendor_company_name col-md-2">
-            <%= Vendor.find(om.material.vendor_id).company_name %>
+            <%= om.material.vendor.company_name %>
           </div>
         </li>
       <% end %>

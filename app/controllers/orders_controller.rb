@@ -1,20 +1,17 @@
 class OrdersController < ApplicationController
-    def material_info
-      @material = Material.find(params[:id])
-      respond_to do |format|
-        format.html
-        format.json
-      end
+  def material_info
+    @material = Material.find(params[:id])
+    respond_to do |format|
+      format.html
+      format.json
     end
-
-
+  end
   def edit
     @order = Order.includes(:products,:order_products,:order_materials,{materials: [:vendor]}).find(params[:id])
   end
-
   def index
     @products = Product.all
-    @orders = Order.includes(:products,:order_products, {materials:[:vendor]}).page(params[:page]).order("id DESC")
+    @orders = Order.includes(:order_products,:products).order("id DESC").page(params[:page])
   end
   def update
     @order = Order.find(params[:id])
@@ -43,8 +40,7 @@ class OrdersController < ApplicationController
   end
 
   def show
-    @order = Order.includes(:order_products, {materials:[:vendor]}).find(params[:id])
-    @order_materials = @order.order_materials
+    @order = Order.includes(:order_materials,[materials: :vendor]).find(params[:id])
     @vendors = Vendor.vendor_index(params)
   end
 

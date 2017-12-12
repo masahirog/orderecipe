@@ -8,11 +8,4 @@ class VersionsController < ApplicationController
     end
     redirect_to :back, notice: "#{@version.event} を取り消しました！"
   end
-
-
-
-  def show
-    @material = Material.find(params[:id])
-    @versions = @material.versions
-  end
 end

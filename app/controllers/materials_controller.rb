@@ -11,7 +11,7 @@ class MaterialsController < ApplicationController
     @material = Material.create(material_params)
        if @material.save
          redirect_to @material, notice: "
-         <div class='alert alert-success' role='alert' style='font-size:15px;'>「#{@material.name}」を作成しました： #{revert_link}
+         <div class='alert alert-success' role='alert' style='font-size:15px;'>「#{@material.name}」を作成しました：
          　　続けて食材を作成する：<a href='/materials/new'>新規作成</a></div>".html_safe
        else
          render 'new'
@@ -45,7 +45,7 @@ class MaterialsController < ApplicationController
   end
 
   def include_material
-    @menu_materials = MenuMaterial.where(material_id: params[:id]).page(params[:page]).per(20)
+    @menu_materials = MenuMaterial.includes(:material,:menu).where(material_id: params[:id]).page(params[:page]).per(20)
     @materials = Material.all
   end
   def include_update
