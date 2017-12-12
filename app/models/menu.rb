@@ -1,6 +1,6 @@
 class Menu < ApplicationRecord
   has_paper_trail
-  has_many :menu_materials, dependent: :destroy
+  has_many :menu_materials,->{order("menu_materials.row_order asc") }, dependent: :destroy
   has_many :materials, through: :menu_materials
   accepts_nested_attributes_for :menu_materials, allow_destroy: true, update_only: true
   has_many :product_menus, dependent: :destroy

@@ -100,7 +100,7 @@ class PreparationPdf < Prawn::Document
           u += 1 if mema.post == c
         end
         ii = 0
-        menu.menu_materials.order(:row_order).each_with_index do |mm,i|
+        menu.menu_materials.each_with_index do |mm,i|
           if mm.post == c && ii == 0
             data << [{:content => "#{menu.name}", :rowspan => u},"#{mm.material.name}", "#{(mm.amount_used * num.to_i).round.to_s(:delimited)} #{mm.material.calculated_unit}",
             "#{mm.preparation}"]

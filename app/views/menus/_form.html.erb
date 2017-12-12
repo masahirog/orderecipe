@@ -55,7 +55,7 @@
     </div>
     <ul class='material_ul list-group ul-sortable' style="list-style-type:none;cursor:move;">
     <% i=0 %>
-    <%= f.fields_for :menu_materials, @menu.menu_materials.sort_by(&:row_order) do |m| %>
+    <%= f.fields_for :menu_materials, @menu.menu_materials do |m| %>
       <li class='add_li_material col-md-12 list-group-item item'>
         <div class="row_order col-md-1" style="display:none;">
           <%= m.number_field :row_order, class:"input_row_order form-control" %>

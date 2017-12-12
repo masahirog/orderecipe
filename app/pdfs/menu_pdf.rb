@@ -6,7 +6,6 @@ class MenuPdf < Prawn::Document
       page_layout: :portrait)
     #日本語のフォント
     font "vendor/assets/fonts/ipaexm.ttf"
-    menu_materials = menu_materials.order(:row_order)
     header_table(menu)
     header_table2(menu)
     table_content(menu_materials)

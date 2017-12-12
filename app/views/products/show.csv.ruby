@@ -4,7 +4,7 @@ CSV.generate do |csv|
   csv << csv_column_names
     menus = @product.menus
     menus.each_with_index do |menu,i|
-      menu.menu_materials.order(:row_order).each_with_index do |mm,ii|
+      menu.menu_materials.each_with_index do |mm,ii|
         if i == 0 && ii == 0
           csv_column_values = [
             @product.id,
