@@ -12,24 +12,11 @@ $(function(){
   });
 
 
-  // //materialの表示、原価計算
-  // var u = 0
-  // $(".add_li_menu").each(function() {
-  //     var id = $(this).children(".select_menu").children().val();
-  //     if (isNaN(id) == true) {} else{
-  //     $.ajax({
-  //         url: "/products/get_menu_cost_price/" + id,
-  //         data: { id : id },
-  //         dataType: "json",
-  //         async: false
-  //     })
-  //     .done(function(data) {
-  //       get_menu_price(data,u);
-  //   })};
-  //   u = u+1;
-  //   calculate_product_price();
-  // });
-  //
+  //materialの表示、原価計算
+  $(".add_li_menu").each(function() {
+    calculate_product_price();
+  });
+
 
   //bentoIDの発行
   $(".registration").on("change",function(){
@@ -169,13 +156,7 @@ $(function(){
       if (isNaN(menu_price) == true ){}else{
       sum_menu_cost += menu_price;
     }}});
-    var sum_menu_cost_tax = Math.round( (sum_menu_cost * 0.08) * 100 ) / 100 ;
-    // var sum_menu_cost_tax = (sum_menu_cost * 0.08).toFixed(2);
-    var product_cost_price = Math.round( (sum_menu_cost * 1.08) * 10 ) / 10 ;
-    // var product_cost_price = (sum_menu_cost * 1.08).toFixed(1);
-    var sum_menu_cost = Math.round( sum_menu_cost * 100 ) / 100 ;
-    $(".sum_menu_cost").val(sum_menu_cost);
-    $(".sum_menu_cost_tax").val(sum_menu_cost_tax);
+    var product_cost_price = Math.round( sum_menu_cost * 10 ) / 10 ;
     $(".product_cost_price").val(product_cost_price);
   };
   //メニューの情報取得とmaterialの表示

@@ -26,7 +26,7 @@ class Menu < ApplicationRecord
 
 
   def self.menu_materials_info(params)
-    menu = Menu.find(params[:id])
+    menu = Menu.includes(:menu_materials,:materials).find(params[:id])
     hoge = []
     menu.menu_materials.each do |mm|
       hash = {}

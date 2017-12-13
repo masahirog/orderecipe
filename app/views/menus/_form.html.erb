@@ -22,13 +22,6 @@
     [ "副菜：副菜、漬物など", "副菜"],[ "容器：お弁当箱と箸等", "容器"]],{include_blank: true}, { class: "form-control",style:"width:100%;"} %>
   </div>
   <div class="col-xs-12 col-md-3 form-inline">
-    <div class="col-xs-1 form-group col-md-10">
-      <%= f.label :cost_price, "メニュー原価" %></br>
-      <%= f.number_field :cost_price, readonly: 'readonly',class: "menu_cost_price form-control",style:"width:100%" %>
-    </div>
-    <div class="col-xs-1 form-group col-md-1" style="margin-top:35px; padding:0;">
-      円
-    </div>
   </div>
 
 
@@ -39,6 +32,28 @@
   <div class="col-xs-12 col-md-6 form-group">
     <%= f.label :serving_memo ,'盛付メモ' %><br>
     <%= f.text_area :serving_memo,style:"height:10em;width:100%;", class: "form-control" %>
+  </div>
+
+  <div class="col-md-12 form-group">
+    <div class="col-md-3">
+      <label>原価小計</label>
+      <input name="a" type="text" disabled="disabled" class="form-control sum_material_cost" style="width:100%">
+    </div>
+    <div class="col-md-3">
+      <label>税(8%)</label>
+      <input name="a" type="text" disabled="disabled" class="form-control sum_material_cost_tax" style="width:100%">
+    </div>
+    <div class="col-md-4">
+      <%= f.label :cost_price, "メニュー原価" %>
+      <div class="form-inline">
+        <div class="form-group">
+          <%= f.number_field :cost_price, :readonly => 'readonly',class: "menu_cost_price form-control" %>
+          <div class="form-group">
+            円
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
 
@@ -71,7 +86,7 @@
 
             <%= @menu.materials[i].cost_price if params["action"] == "edit" %>
           </div>
-          <div class="form-group">　円</div>
+          <div class="form-group"> 円</div>
         </div>
         <div class="vendor col-md-1">
           <%= @menu.materials[i].vendor.company_name if params["action"] == "edit" %>

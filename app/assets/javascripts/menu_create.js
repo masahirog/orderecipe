@@ -152,8 +152,12 @@ $(function(){
         if (isNaN(price_used) == true ){}else{
         menu_price += price_used}
       }});
-      var roundprice = Math.round( menu_price * 100 ) / 100 ;
-    $(".menu_cost_price").val(roundprice)
+      var sum_material_cost = Math.round( menu_price * 100 ) / 100 ;
+      $(".sum_material_cost").val(sum_material_cost)
+      var sum_material_cost_tax = Math.round( (sum_material_cost * 0.08) * 100 ) / 100 ;
+      $(".sum_material_cost_tax").val(sum_material_cost_tax)
+      var menu_cost_price = Math.round( (sum_material_cost * 1.08) * 100 ) / 100 ;
+      $(".menu_cost_price").val(menu_cost_price)
   };
 
   function get_material_info(data,u,x){
