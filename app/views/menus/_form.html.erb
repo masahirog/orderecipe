@@ -36,7 +36,7 @@
 
   <div class="col-md-12 form-group">
     <div class="col-md-3">
-      <label>原価小計</label>
+      <label>食材原価小計</label>
       <input name="a" type="text" disabled="disabled" class="form-control sum_material_cost" style="width:100%">
     </div>
     <div class="col-md-3">
@@ -44,7 +44,7 @@
       <input name="a" type="text" disabled="disabled" class="form-control sum_material_cost_tax" style="width:100%">
     </div>
     <div class="col-md-4">
-      <%= f.label :cost_price, "メニュー原価" %>
+      <%= f.label :cost_price, "メニュー原価（税込み）" %>
       <div class="form-inline">
         <div class="form-group">
           <%= f.number_field :cost_price, :readonly => 'readonly',class: "menu_cost_price form-control" %>
@@ -94,6 +94,7 @@
         <div class="amount_used col-md-2 form-inline">
           <%= m.text_field :amount_used, class:'amount_used_input form-control form-group',style:"width:140px;", :autocomplete => :off  %>
           <div class="calculated_unit form-group">
+            <%= @menu.materials[i].calculated_unit if params["action"] == "edit" %>
           </div>
         </div>
         <div class="price_used form-inline col-md-1">
