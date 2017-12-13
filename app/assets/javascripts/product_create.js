@@ -31,7 +31,7 @@ $(function(){
   // });
   //
 
-  //ss連携IDの発行
+  //bentoIDの発行
   $(".registration").on("change",function(){
     var prop = $('.registration').prop('checked');
     var bento_id = $('#bento_id_hidden').val();
