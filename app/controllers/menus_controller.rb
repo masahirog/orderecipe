@@ -1,6 +1,6 @@
 class MenusController < ApplicationController
   def get_cost_price
-    @material = Material.find(params[:id])
+    @material = Material.includes(:vendor).find(params[:id])
     respond_to do |format|
       format.html
       format.json

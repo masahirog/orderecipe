@@ -7,25 +7,16 @@ $(function(){
   $('.input_select_material').select2({
     placeholder: "食材資材を選択してください"
   });
-    // var u = 0
-    // var x = 0
-    // $(".add_li_material").each(function() {
-    //     var id = $(this).children(".select_material").children(".input_select_material").val()
-    //     if (isNaN(id) == true) {} else{
-    //     $.ajax({
-    //         url: "/menus/get_cost_price/" + id,
-    //         data: { id : id },
-    //         dataType: "json",
-    //         async: false
-    //     })
-    //     .done(function(data) {
-    //       get_material_info(data,u,x)
-    //   })};
-    //   u = u+1;
-    // });
     calculate_menu_price();
     reset_row_order();
 
+    u = 0
+  $(".add_li_material").each(function(){
+    var eos = $(this).children(".sales_check").text()
+    console.log(eos);
+    eos_check(eos,u);
+    u += 1
+  });
 //並び替え時のrow_order更新
   $(".ul-sortable").sortable({
     update: function(){
@@ -171,6 +162,15 @@ $(function(){
     $(".add_li_material").eq(u).children(".cost_price").children(".cost_price_value").text(cost);
     $(".add_li_material").eq(u).children().children(".calculated_unit").text(unit);
     //終売のアラートon
+    eos_check(eos,u)
+    if (isNaN(amount_used) == true){
+      var calculate_price = 0;
+    }else {
+      var calculate_price = Math.round( (cost * amount_used) * 100 ) / 100 ;
+    $(".add_li_material").eq(u).children(".price_used").children(".price_used_value").text(calculate_price);
+  }};
+
+  function eos_check(eos,u){
     if (eos==1) {
       $(".add_li_material").eq(u).attr("style","background-color:gray;")
       var height = $('.eos-alert').innerHeight();
@@ -179,13 +179,7 @@ $(function(){
     }else {
       $(".add_li_material").eq(u).attr("style","background-color:white;")
     }
-    if (isNaN(amount_used) == true){
-      var calculate_price = 0;
-    }else {
-      var calculate_price = Math.round( (cost * amount_used) * 100 ) / 100 ;
-      // var calculate_price = (cost * amount_used).toFixed(2)}
-    $(".add_li_material").eq(u).children(".price_used").children(".price_used_value").text(calculate_price);
-  }};
+  };
 
   //addアクション、materialの追加
   function addInput(){
