@@ -79,7 +79,7 @@
          <%= m.select :material_id, Material.pluck(:name, :id),{include_blank: true},
           class:'input_select_material col-md-12'%>
        </div>
-       <div class="sales_check">
+       <div class="sales_check" style="display:none;">
          <%= @menu.materials[i].end_of_sales if params["action"] == "edit" %>
        </div>
         <div class="cost_price col-md-1 form-inline">

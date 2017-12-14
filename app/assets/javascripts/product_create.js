@@ -85,7 +85,7 @@ $(function(){
   });
 
 
-  //indexでの検索機能
+  //indexでの弁当名でのリアルタイム検索
   $(".id_search").on("input", function(){
     $("#select2-name-container").text("")
     var path = "get_products"
@@ -137,6 +137,7 @@ $(function(){
         '<a class="btn btn-default" href=/products/'+data[i].id+'.csv>CSV</a>'+
         '</div>'+
         '<div class="col-md-1">'+
+        '<img src= '+data[i].product_image.thumb.url+'>' +
         '</div>'+
         '</li>';
 
