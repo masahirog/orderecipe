@@ -5,7 +5,7 @@ class MenuMaterial < ApplicationRecord
   belongs_to :material
 
   validates :amount_used, presence: true, format: { :with=>/\A\d+(\.)?+(\d){0,3}\z/,
-    message: "：小数点3位までの値が入力できます" }
+    message: "：小数点3位までの値が入力できます" }, numericality: true
   validates :material_id, presence: true
 
   after_save :update_cache

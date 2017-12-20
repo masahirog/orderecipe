@@ -8,7 +8,6 @@ class Product < ApplicationRecord
 
   mount_uploader :product_image, ProductImageUploader
 
-  validates :name, presence: true, uniqueness: true
   validates :name, presence: true, uniqueness: true, format: { with: /\A[^０-９ａ-ｚＡ-Ｚ]+\z/,
     message: "：全角英数字は使用出来ません。"}
   validates :cook_category, presence: true
