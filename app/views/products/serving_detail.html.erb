@@ -48,7 +48,7 @@
         <% @menus.each do |menu| %>
         <li class="product_menus col-md-12 list-group-item" style="padding:3;">
           <div class="col-md-2"><%= menu.name %></div>
-          <div class="col-md-3"><%= menu.serving_memo %></div>
+          <div class="col-md-3"><%= simple_format(menu.serving_memo) %></div>
           <% i = 1 %>
           <% u = menu.materials.length %>
             <ul class="col-md-7 menu_materials" style="list-style:none;padding:0;">
