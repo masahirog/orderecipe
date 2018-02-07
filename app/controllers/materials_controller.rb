@@ -5,6 +5,7 @@ class MaterialsController < ApplicationController
 
   def new
     @material = Material.new
+    @material.material_food_additives.build
   end
 
   def create
@@ -28,6 +29,7 @@ class MaterialsController < ApplicationController
       @back_to = request.referer
     end
     @material = Material.find(params[:id])
+    @material.material_food_additives.build if @material.food_additives.length == 0
   end
 
   def update
@@ -60,7 +62,7 @@ class MaterialsController < ApplicationController
   private
   def material_params
     params.require(:material).permit(:name, :order_name, :calculated_value, :calculated_unit,
-     :calculated_price, :cost_price, :category, :order_code, :order_unit, :memo, :end_of_sales, :vendor_id,:order_unit_quantity)
+     :calculated_price, :cost_price, :category, :order_code, :order_unit, :memo, :end_of_sales, :vendor_id,:order_unit_quantity,
+     {allergy:[]},material_food_additives_attributes:[:id,:material_id,:food_additive_id,:_destroy])
   end
-
 end

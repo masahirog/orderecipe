@@ -90,7 +90,7 @@ class MenusController < ApplicationController
   private
 
     def menu_create_update
-      params.require(:menu).permit(:name, :recipe, :category, :recipe, :serving_memo, :cost_price,
+      params.require(:menu).permit(:name, :recipe, :category, :recipe, :serving_memo, :cost_price,:food_label_name,
                                      menu_materials_attributes: [:id, :amount_used, :menu_id, :material_id, :_destroy,:preparation,:post,
                                      :row_order,material_attributes:[:name, ]])
     end

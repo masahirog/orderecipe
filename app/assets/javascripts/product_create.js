@@ -99,6 +99,13 @@ $(function(){
       inputaaaaa(class_name,path);
   });
 
+
+  //indexで食品表示
+  $(".hyoji-btn").on("click",function(){
+    var id = parseInt($(this).parent().parent().children(".product_id").text());
+    $("#hyoji_product_id").val(id)
+  });
+
   function inputaaaaa(class_name,path){
     var id = $(class_name).val();
     if (id=="") {} else{
