@@ -19,6 +19,7 @@ Rails.application.routes.draw do
   get 'products/get_by_category' => 'products#get_by_category'
   get 'products/preparation_all/:id' => 'products#preparation_all'
   get 'products/product_pdf_all/:id' => 'products#product_pdf_all'
+  post 'products/hyoji' => 'products#hyoji'
   post "products/henkan" => "products#henkan"
   get 'materials/include_material/:id' => 'materials#include_material'
   post'materials/include_update' => 'materials#include_update'

@@ -1,0 +1,89 @@
+class HyojiPdf < Prawn::Document
+  def initialize(product,kigen)
+    shomi_kigen = kigen["(1i)"]+"年"+kigen["(2i)"]+"月"+kigen["(3i)"]+"日"+" "+kigen["(4i)"]+":"+kigen["(5i)"]
+    # 初期設定。ここでは用紙のサイズを指定している。
+    super(
+      page_size: 'A4',
+      page_layout: :landscape)
+    #日本語のフォント
+    font "vendor/assets/fonts/ipaexm.ttf"
+    table_content(product,shomi_kigen)
+
+  end
+
+  def table_content(product,shomi_kigen)
+    colls = [-20, 142, 304,466,628]
+    rows = [550,460,370,280,190,100]
+    for coll in colls
+      for row in rows
+        bounding_box([coll, row], :width => 160) do
+          table line_item_rows(product,shomi_kigen), cell_style: { size: 6 }  do
+          cells.padding = [0, 1, 3, 1]
+          cells.valign = :center
+          cells.align = :center
+          cells.border_width = 0.1
+          row(-1).borders = [:bottom,:right]
+          row(-2).columns(1).borders = [:right]
+          self.column_widths = [35,125]
+          end
+        end
+      end
+    end
+  end
+  def line_item_rows(product,shomi_kigen)
+    #アレルギーの取得
+    arry = product.menus.map{ |menu| menu.materials.map{ |mm| mm.allergy.split(',').map { |m| m.delete('[]" ')} }.flatten }.flatten.uniq
+    allergy = ""
+    al = arry.length
+    arry.each_with_index do |a,i|
+      a.gsub!("egg","卵")
+      a.gsub!("milk","乳")
+      a.gsub!("shrimp","えび")
+      a.gsub!("crab","かに")
+      a.gsub!("peanuts","落花生")
+      a.gsub!("soba","そば")
+      a.gsub!("wheat","小麦")
+
+      if i + 1 < al
+        allergy = allergy + "#{a}、"
+      else
+        allergy = allergy + "#{a}"
+      end
+    end
+
+    data_child = ""
+    #原材料名の表示(メニュー名)
+    l = product.menus.length
+    product.menus.each_with_index do |pm,i|
+      if i == 0
+
+      elsif i+1<l
+        data_child = data_child +"#{pm.food_label_name}、"
+      else
+        data_child = data_child +"#{pm.food_label_name}"
+      end
+    end
+    #食品添加物の取得
+    arry = product.menus.map{ |menu| menu.materials.map{ |mm| mm.food_additives.map{|mf| mf.name }.flatten }.flatten }.flatten.uniq
+    bl = arry.length
+    food_additives = ""
+    arry.each_with_index do |fa,i|
+      if i + 1 < bl
+        food_additives = food_additives + "#{fa}、"
+      else
+        food_additives = food_additives + "#{fa}"
+      end
+    end
+    data= [["名前",product.name]]
+    data <<["原材料名",data_child]
+    data <<["アレルギー",allergy]
+    data <<["食品添加物",food_additives]
+    data <<["消費期限",shomi_kigen]
+    data <<["保存方法","直射日光及び高温多湿をお避けください"]
+    data <<[{:content => "製造者", :rowspan => 2},"株式会社ベントー・ドット・ジェーピー"]
+    data <<["東京都中野区東中野1-35-1 はりまビル1階"]
+  end
+  def sen
+    stroke_axis
+  end
+end

@@ -12,18 +12,19 @@
   <nav class="alert alert-danger eos-alert navbar-fixed-top" style="display:none;">
       終売の食材を選択しています。食材を変更してください(((；ﾟДﾟ)))
   </nav>
-  <div class="form-group col-md-6">
+  <div class="form-group col-md-4">
     <%= f.label :name ,'メニュー名' %><br>
     <%= f.text_field :name, class: "form-control", id: "material_name",style:"width:100%;" %>
+  </div>
+  <div class="form-group col-md-4">
+    <%= f.label :food_label_name ,'食品表示名' %><br>
+    <%= f.text_field :food_label_name, class: "form-control", id: "food_label_name",style:"width:100%;" %>
   </div>
   <div class="form-group col-md-3">
     <%= f.label :category ,'カテゴリー' %><br>
     <%= f.select :category, [["主食：ご飯など", "主食"],[ "主菜：メインのおかず", "主菜"],
     [ "副菜：副菜、漬物など", "副菜"],[ "容器：お弁当箱と箸等", "容器"]],{include_blank: true}, { class: "form-control",style:"width:100%;"} %>
   </div>
-  <div class="col-xs-12 col-md-3 form-inline">
-  </div>
-
 
   <div class="col-xs-12 col-md-6 form-group">
     <%= f.label :recipe ,'調理メモ' %><br>

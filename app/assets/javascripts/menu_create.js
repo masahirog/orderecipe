@@ -13,7 +13,6 @@ $(function(){
     u = 0
   $(".add_li_material").each(function(){
     var eos = $(this).children(".sales_check").text()
-    console.log(eos);
     eos_check(eos,u);
     u += 1
   });

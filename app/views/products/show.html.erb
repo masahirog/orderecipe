@@ -4,7 +4,7 @@
 	<li class="active"><%= @product.name %></li>
 </ol>
 
-<div class="col-xs-11 col-md-12 form-inline">
+<div class="col-md-12 form-inline">
   <div class="col-xs-11 col-md-12 form-group">
 		<div class="col-md-10">
 	    <%= form_tag({:controller => "products", :action => "print", format: "pdf"},{:target => "_blank"}) do %>
@@ -110,3 +110,4 @@
         <% end %>
       <% end %>
     </ul>
+	</ul>

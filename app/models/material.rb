@@ -1,11 +1,13 @@
 class Material < ApplicationRecord
-  # has_paper_trail
-
   has_many :menu_materials, dependent: :destroy
   has_many :menus, through: :menu_materials
 
   has_many :order_materials, dependent: :destroy
   has_many :orders, through: :order_materials
+
+  has_many :food_additives, through: :material_food_additives
+  has_many :material_food_additives
+  accepts_nested_attributes_for :material_food_additives, allow_destroy: true
 
   belongs_to :vendor
 

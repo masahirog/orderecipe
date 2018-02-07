@@ -1,4 +1,19 @@
 $(function(){
+  $('.input_select_food_additive').select2({
+  width:"200px",
+  placeholder: "添加物を選択"
+  });
+
+  $(".add_food_additive").on('click', function (){
+    addInput();
+  });
+  //removeのチェックと、trをhide
+  $(".food_additive_ul").on('click','.remove_btn', function(){
+    $(this).parent().children(".destroy_food_additives").prop('checked', true);
+    $(this).parent().parent(".add_li_food_additive").hide();
+  });
+
+
   $('.all_select_material').select2({
   width:"270px",
   placeholder: "食材資材を選択してください"
@@ -75,5 +90,20 @@ $(function(){
   function check_recipe_unit(recipe_unit){
     $(".calculated_value_unit").text(recipe_unit);
     $(".cost_unit_label").text("単位単価(１"+recipe_unit+"あたりの価格)");
+  };
+
+  function addInput(){
+    var u = $(".add_li_food_additive").length
+    $(".input_select_food_additive").select2('destroy');
+    $(".add_li_food_additive").first().clone().appendTo(".food_additive_ul");
+    var last_li =$(".add_li_food_additive").last()
+    last_li.children(".select_food_additive").children().attr('name', "material[material_food_additives_attributes]["+u+"][food_additive_id]" );
+    last_li.children(".select_food_additive").children().attr('id', "material_material_food_additives_attributes_"+u+"_food_additive_id" );
+    last_li.children(".remove_food_additive").children(".destroy_food_additives").attr('id', "material_material_food_additives_attributes_"+u+"__destroy");
+    last_li.children(".remove_food_additive").children("").attr('name', "material[material_food_additives_attributes]["+u+"][_destroy]");
+    last_li.children(".select_food_additive").children().val("");
+    $(".input_select_food_additive").select2({width:"200px",placeholder: "添加物を選択"});
+    last_li.children(".remove_food_additive").children(".destroy_food_additives").prop('checked',false);
+    last_li.show();
   };
 });

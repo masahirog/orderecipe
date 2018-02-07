@@ -157,6 +157,19 @@ class ProductsController < ApplicationController
     end
   end
 
+  def hyoji
+    @product = Product.find(params[:id])
+    respond_to do |format|
+     format.html
+     format.pdf do
+       pdf = HyojiPdf.new(@product,params[:datetime_ida])
+       send_data pdf.render,
+         filename:    "#{@product.id}_shokuhinhyoji.pdf",
+         type:        "application/pdf",
+         disposition: "inline"
+     end
+   end
+  end
   private
     def product_create_update
       params.require(:product).permit(:name, :bento_id, :cook_category, :product_type, :sell_price, :description, :contents, :product_image,
