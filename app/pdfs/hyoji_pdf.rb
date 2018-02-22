@@ -4,7 +4,7 @@ class HyojiPdf < Prawn::Document
     # 初期設定。ここでは用紙のサイズを指定している。
     super(
       page_size: 'A4',
-      page_layout: :landscape)
+      page_layout: :portrait)
     #日本語のフォント
     font "vendor/assets/fonts/ipaexm.ttf"
     table_content(product,shomi_kigen)
@@ -12,19 +12,24 @@ class HyojiPdf < Prawn::Document
   end
 
   def table_content(product,shomi_kigen)
-    colls = [-20, 142, 304,466,628]
-    rows = [550,460,370,280,190,100]
+    colls = [-20,171.1764706,362.3529412]
+    rows = [775,675,575,475,375,275,175,75]
     for coll in colls
       for row in rows
-        bounding_box([coll, row], :width => 160) do
+        bounding_box([coll, row], :width => 180, :height => 96) do
           table line_item_rows(product,shomi_kigen), cell_style: { size: 6 }  do
           cells.padding = [0, 1, 3, 1]
           cells.valign = :center
           cells.align = :center
+          row(0).height = 8
+          row(1).height = 32
+          row(2).height = 8
+          row(4..7).height = 8
+          row(0).height = 8
           cells.border_width = 0.1
           row(-1).borders = [:bottom,:right]
           row(-2).columns(1).borders = [:right]
-          self.column_widths = [35,125]
+          self.column_widths = [35,140]
           end
         end
       end
