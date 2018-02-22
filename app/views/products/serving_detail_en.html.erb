@@ -25,16 +25,18 @@
   </div>
 
    <div class="col-md-12" style="margin-top:20px;">
+     <label class="col-md-2">bentoID</label>
      <label class="col-md-3">弁当名</label>
-     <label class="col-md-3">調理カテゴリー</label>
+     <label class="col-md-2">調理カテゴリー</label>
      <label class="col-md-3">弁当種類</label>
-     <label class="col-md-3">原価価格</label>
+     <label class="col-md-2">原価価格</label>
    </div>
    <li class="list-group-item col-md-12">
-       <div class="col-md-3"><%= @product.name %></div>
-       <div class="col-md-3"><%= @product.cook_category %></div>
-       <div class="col-md-3"><%= @product.product_type %></div>
-       <div class="text-right col-md-3"><%= @product.cost_price %>円</div>
+      <div class="col-md-2"><%= @product.bento_id %></div>
+      <div class="col-md-3"><%= @product.name %></div>
+      <div class="col-md-2"><%= @product.cook_category %></div>
+      <div class="col-md-3"><%= @product.product_type %></div>
+      <div class="text-right col-md-2"><%= @product.cost_price %>円</div>
    </li>
     <div class="col-md-12" style="margin-top:20px;">
       <label class="col-md-2">メニュー名</label>

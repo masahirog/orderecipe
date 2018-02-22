@@ -26,7 +26,7 @@
   <ul class="list-group col-md-12">
     <%= f.fields_for :order_products do |m| %>
       <% i =0 %>
-      <% for i in 0..3 do %>
+      <% for i in 0..5 do %>
         <% id = params["id#{i}"] %>
         <% num = params["num#{i}"] %>
         <% if id.present? %>
@@ -72,124 +72,121 @@
       <input type="checkbox" class="all_delete" style="width: 24px; height: 24px;">
     </div>
   </div>
-  <div class="orders_all panel panel-primary col-md-12" style="padding:0;">
-    <div class="panel-heading col-md-12" style="padding:5px;">
-      <div class="panel-title material_name col-md-2">
-        食材名
-      </div>
-      <div class="panel-title col-md-2 text-center">
-        発注量
-      </div>
-      <div class="panel-title col-md-2">
-        計算値
-      </div>
-      <div class="panel-title col-md-2">
-        仕入先
-      </div>
-      <div class="panel-title col-md-2">
-        単位変換
-      </div>
-      <div class="panel-title col-md-1">
-        在庫予想
-      </div>
-
-      <div class="panel-title col-md-1">
-        発注無
-      </div>
-    </div>
-
-
-    <ul class="order_materials_ul list-group panel-body">
-      <% i = 0 %>
-      <%= f.fields_for :order_materials do |m| %>
-      <% if @hash.present? %>
-        <% @hash.each do |material| %>
-          <li class="order_materials_li list-group-item col-md-12" style="padding:5px;">
-            <div class="order_material_name col-md-2" style="padding:0">
-              <%= m.select :material_id, Material.where(end_of_sales:0).pluck(:name, :id),
-              {include_blank: true,selected: material["material_id"]}, class:'select_order_materials col-md-12',
-              name:"order[order_materials_attributes][#{i}][material_id]",
-              id:"order_order_materials_attributes_#{i}_material_id" %>
-            </div>
-            <div class="order_quantity col-md-1" style="padding-right:0;">
-              <% if material["vendor_id"]==121 %>
-              <%= m.text_field :order_quantity,value:BigDecimal((material["amount_used"].to_f / Material.find(material["material_id"]).calculated_value.to_f * Material.find(material["material_id"]).order_unit_quantity.to_f).to_s).ceil(1).to_f,
-                class:'text-right form-control',style:"height:27.78px;",
+  <div class="orders_all table-responsive" style="height:100%;width:1140px;">
+    <table class="table" style="" >
+      <thead>
+        <tr style="padding:5px;">
+          <th style="width:200px;">食材名</th>
+          <th style="width:100px;">発注コード(検索時)</th>
+          <th style="width:100px;">発注量</th>
+          <th>単位</th>
+          <th style="width:100px;">計算値</th>
+          <th>単位</th>
+          <th style="width:150px;">仕入先</th>
+          <th style="width:150px;">単位変換</th>
+          <th style="width:150px;">発注無
+            <input type="checkbox" class="all_delete" style="width: 24px; height: 24px;">
+          </th>
+          <th style="width:200px;">備考欄</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% i = 0 %>
+        <%= f.fields_for :order_materials do |m| %>
+          <% if @hash.present? %>
+            <% @hash.each do |material| %>
+              <tr class="order_materials_tr" style="padding:5px;width:1100px;">
+                <td class="order_material_name" style="padding:10px;width:200px;">
+                  <%= m.select :material_id, Material.where(end_of_sales:0).pluck(:name, :id),
+                  {include_blank: true,selected: material["material_id"]}, class:'select_order_materials col-md-12',
+                  name:"order[order_materials_attributes][#{i}][material_id]",
+                  id:"order_order_materials_attributes_#{i}_material_id" %>
+                </td>
+                <td class="order_code_search" style="padding:10px;width:100px;">
+                  <%= select_tag 'page[name]', options_from_collection_for_select(Material.where(end_of_sales:0).where.not(order_code:""), :id, :order_code),include_blank: true,class:"input_order_code" %>
+                </td>
+                <td class="order_quantity" style="padding:10px;width:100px;">
+                  <% if material["vendor_id"]==121 %>
+                    <%= m.text_field :order_quantity,value:BigDecimal((material["amount_used"].to_f / Material.find(material["material_id"]).calculated_value.to_f * Material.find(material["material_id"]).order_unit_quantity.to_f).to_s).ceil(1).to_f,
+                      class:'text-right form-control',style:"height:27.78px;",
+                      name:"order[order_materials_attributes][#{i}][order_quantity]",
+                      id:"order_order_materials_attributes_#{i}_order_quantity" %>
+                  <% else %>
+                    <%= m.text_field :order_quantity,value:BigDecimal((material["amount_used"].to_f / Material.find(material["material_id"]).calculated_value.to_f * Material.find(material["material_id"]).order_unit_quantity.to_f).to_s).ceil,
+                      class:'text-right form-control',style:"height:27.78px;",
+                      name:"order[order_materials_attributes][#{i}][order_quantity]",
+                      id:"order_order_materials_attributes_#{i}_order_quantity" %>
+                  <% end %>
+                </td>
+                <td class="order_material_unit" style="padding:10px;">
+                  <%= Material.find(material["material_id"]).order_unit %>
+                </td>
+                <td class="calculated_value" style="padding:10px;width:100px;">
+                  <%= m.text_field :calculated_quantity,value:material["amount_used"].round(1),
+                  class:'text-right form-control',name:"order[order_materials_attributes][#{i}][calculated_quantity]",
+                  id:"order_order_materials_attributes_#{i}_calculated_quantity",
+                  style:"height:27.78px;",readonly:true%>
+                </td>
+                <td class="calculated_material_unit text-center" style="padding:10px;">
+                  <%= Material.find(material["material_id"]).calculated_unit %>
+                </td>
+                <td class="vendor_company_name" style="padding:10px;width:150px;">
+                  <%= Vendor.find(material["vendor_id"]).company_name %>
+                </td>
+                <td class="calculate_unit panel-title" style="padding:10px;width:150px;">
+                  <%= Material.find(material["material_id"]).order_unit_quantity %> <%= Material.find(material["material_id"]).order_unit %>
+                  ：<%= Material.find(material["material_id"]).calculated_value %> <%= Material.find(material["material_id"]).calculated_unit %>
+                </td>
+                <td class="destroy_order_material" style="padding:10px;width:100px;">
+                  <%= m.check_box :_destroy,class:"destroy_order_materials check_box",style:"width: 24px; height: 24px;",
+                  name:"order[order_materials_attributes][#{i}][_destroy]",id:"order_order_materials_attributes_#{i}__destroy" %>
+                </td>
+                <td class="order_material_memo" style="padding:10px;width:200px;">
+                  <%= m.text_field :order_material_memo,class:'form-control',style:"width:200px;" %>
+                </td>
+              </tr>
+              <% i = i + 1 %>
+            <% end %>
+          <% else %>
+            <tr class="order_materials_tr" style="padding:5px;width:1100px;">
+              <td class="order_material_name" tyle="width:200px;">
+                <%= m.select :material_id, Material.where(end_of_sales:0).pluck(:name, :id),
+                {include_blank: true}, class:'select_order_materials col-md-12',
+                name:"order[order_materials_attributes][#{i}][material_id]",
+                id:"order_order_materials_attributes_#{i}_material_id" %>
+              </td>
+              <td class="order_code_search" style="width:100px;">
+                <input type="text" class='text-right form-control' style="height:27.78px;" ></input>
+              </td>
+              <td class="order_quantity" style="width:100px;">
+                <%= m.text_field :order_quantity,class:'text-right form-control',style:"height:27.78px;",
                 name:"order[order_materials_attributes][#{i}][order_quantity]",
                 id:"order_order_materials_attributes_#{i}_order_quantity" %>
-
-              <% else %>
-                <%= m.text_field :order_quantity,value:BigDecimal((material["amount_used"].to_f / Material.find(material["material_id"]).calculated_value.to_f * Material.find(material["material_id"]).order_unit_quantity.to_f).to_s).ceil,
-                  class:'text-right form-control',style:"height:27.78px;",
-                  name:"order[order_materials_attributes][#{i}][order_quantity]",
-                  id:"order_order_materials_attributes_#{i}_order_quantity" %>
-              <% end %>
-            </div>
-            <div class="order_material_unit col-md-1">
-              <%= Material.find(material["material_id"]).order_unit %>
-            </div>
-            <div class="calculated_value col-md-1" style="padding:0;">
-              <%= m.text_field :calculated_quantity,value:material["amount_used"].round(1),
-              class:'text-right form-control',name:"order[order_materials_attributes][#{i}][calculated_quantity]",
-              id:"order_order_materials_attributes_#{i}_calculated_quantity",
-              style:"height:27.78px;",readonly:true%>
-            </div>
-            <div class="calculated_material_unit col-md-1">
-              <%= Material.find(material["material_id"]).calculated_unit %>
-            </div>
-            <div class="vendor_company_name col-md-2">
-              <%= Vendor.find(material["vendor_id"]).company_name %>
-            </div>
-            <div class="calculate_unit panel-title col-md-2">
-              <%= Material.find(material["material_id"]).order_unit_quantity %> <%= Material.find(material["material_id"]).order_unit %>
-              ：<%= Material.find(material["material_id"]).calculated_value %> <%= Material.find(material["material_id"]).calculated_unit %>
-            </div>
-
-            <div class="panel-title col-md-1">
-            </div>
-            <div class="col-md-1 destroy_order_material">
-              <%= m.check_box :_destroy,class:"destroy_order_materials check_box",style:"width: 24px; height: 24px;",
-              name:"order[order_materials_attributes][#{i}][_destroy]",id:"order_order_materials_attributes_#{i}__destroy" %>
-            </div>
-          </li>
-        <% i = i + 1 %>
+              </td>
+              <td class="order_material_unit" style="">
+              </td>
+              <td class="calculated_value" style="width:100px;">
+              </td>
+              <td class="calculated_material_unit text-center" style="">
+              </td>
+              <td class="vendor_company_name" style="width:150px;">
+              </td>
+              <td class="calculate_unit panel-title" style="width:150px;">
+              </td>
+              <td class="destroy_order_material" style="width:100px;">
+                <%= m.check_box :_destroy,class:"destroy_order_materials check_box",style:"width: 24px; height: 24px;",
+                name:"order[order_materials_attributes][#{i}][_destroy]",id:"order_order_materials_attributes_#{i}__destroy" %>
+              </td>
+              <td class="order_material_memo" style="width:200px;">
+                <%= m.text_field :order_material_memo,class:'form-control',style:"width:200px;" %>
+              </td>
+            </tr>
+          <% end %>
         <% end %>
-      <% else %>
-        <li class="order_materials_li list-group-item col-md-12" style="padding:5px;">
-          <div class="order_material_name col-md-2" style="padding:0">
-            <%= m.select :material_id, Material.where(end_of_sales:0).pluck(:name, :id),
-            {include_blank: true}, class:'select_order_materials col-md-12',
-            name:"order[order_materials_attributes][#{i}][material_id]",
-            id:"order_order_materials_attributes_#{i}_material_id" %>
-          </div>
-          <div class="order_quantity col-md-1" style="padding-right:0;">
-              <%= m.text_field :order_quantity,class:'text-right form-control',style:"height:27.78px;",
-                name:"order[order_materials_attributes][#{i}][order_quantity]",
-                id:"order_order_materials_attributes_#{i}_order_quantity" %>
-          </div>
-          <div class="order_material_unit col-md-1">
-          </div>
-          <div class="calculated_value col-md-1" style="padding:0;">
-          </div>
-          <div class="calculated_material_unit col-md-1">
-          </div>
-          <div class="vendor_company_name col-md-2">
-          </div>
-          <div class="calculate_unit panel-title col-md-2">
-          </div>
-
-          <div class="panel-title col-md-1">
-          </div>
-          <div class="col-md-1 destroy_order_material">
-            <%= m.check_box :_destroy,class:"destroy_order_materials check_box",style:"width: 24px; height: 24px;",
-            name:"order[order_materials_attributes][#{i}][_destroy]",id:"order_order_materials_attributes_#{i}__destroy" %>
-          </div>
-        </li>
-        <% end %>
-      <% end %>
-    </ul>
+      </tbody>
+    </table>
   </div>
-  <div class="add">
+  <div class="add form-group">
     <input type="button" value="発注食材追加" class="add_order_materials btn btn-primary">
   </div>
 <% end %>

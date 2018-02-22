@@ -76,7 +76,7 @@
           <%= m.number_field :row_order, class:"input_row_order form-control" %>
         </div>
         <div class="select_material col-md-3" style="padding:3px;">
-         <%= m.select :material_id, Material.pluck(:name, :id),{include_blank: true},
+         <%= m.select :material_id, Material.where(end_of_sales:0).pluck(:name, :id),{include_blank: true},
           class:'input_select_material col-md-12'%>
        </div>
        <div class="sales_check" style="display:none;">

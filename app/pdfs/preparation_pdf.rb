@@ -4,36 +4,35 @@ class PreparationPdf < Prawn::Document
       page_size: 'A4',
       page_layout: :landscape)
     font "vendor/assets/fonts/ipaexm.ttf"
-
-    x = 0
+    x = -10
     order_products.each_with_index do |op,i|
       product = op.product
       num = op.serving_for
       date(order)
-      title(num,product,x,510)
+      title(num,product,x,525)
       move_down 3
       title_yoki(num,product,x)
       move_down 3
       table_prepa(prepa_item_rows("切出し", product, num),x)
-      move_down 20
+      move_down 10
       table_prepa(prepa_item_rows("切出/調理", product, num),x)
-      move_down 20
+      move_down 10
       table_prepa(prepa_item_rows("調理場", product, num),x)
-      if i ==1
+      if i ==1||i==3
         start_new_page
         x = 0
       else
-        x += 380
+        x += 400
       end
     end
   end
   def date(order)
-    bounding_box([0, 525], :width => 300) do
+    bounding_box([-10, 540], :width => 320) do
       text "#{order.delivery_date.strftime("%Y年")}　　　月　　　日（　　）"
     end
   end
   def title(num,product,x,y)
-    bounding_box([x, y], :width => 300) do
+    bounding_box([x, y], :width => 320) do
       text "#{num}食　：#{product.name}", size: 9
     end
   end
@@ -49,7 +48,7 @@ class PreparationPdf < Prawn::Document
     end
   end
   def table_prepa(b,x)
-    bounding_box([x,cursor], :width => 370) do
+    bounding_box([x,cursor], :width => 380) do
       b.each_with_index do |bb,i|
         if bb[1].present?
           next
@@ -60,13 +59,13 @@ class PreparationPdf < Prawn::Document
       end
 
       if @i<4
-        size = 11
-      elsif @i<5
-        size = 10
-      elsif @i<7
         size = 9
-      else
+      elsif @i<5
+        size = 8
+      elsif @i<7
         size = 7
+      else
+        size = 6
       end
 
       table b, cell_style: { size: size,align: :left } do
@@ -84,7 +83,7 @@ class PreparationPdf < Prawn::Document
         column(2).align = :right
         column(2).padding = [1,5,1,1]
         cells.border_width = 0.2
-        self.column_widths = [80,90,60,130]
+        self.column_widths = [100,90,60,130]
       end
     end
   end
@@ -101,11 +100,16 @@ class PreparationPdf < Prawn::Document
         end
         ii = 0
         menu.menu_materials.each_with_index do |mm,i|
-          if mm.post == c && ii == 0
-            data << [{:content => "#{menu.name}", :rowspan => u},"#{mm.material.name}", "#{(mm.amount_used * num.to_i).round.to_s(:delimited)} #{mm.material.calculated_unit}",
+          if mm.post == c && ii == 0  && mm.post == "調理場"
+            data << [{:content => "#{menu.name} \n \n ----------メモ---------- \n #{menu.recipe}", :rowspan => u},"#{mm.material.name}", "#{(mm.amount_used * num.to_i).round.to_s(:delimited)} #{mm.material.calculated_unit}",
             "#{mm.preparation}"]
             ii = 1
             u += 1
+          elsif mm.post == c && ii == 0
+              data << [{:content => "#{menu.name}", :rowspan => u},"#{mm.material.name}", "#{(mm.amount_used * num.to_i).round.to_s(:delimited)} #{mm.material.calculated_unit}",
+              "#{mm.preparation}"]
+              ii = 1
+              u += 1
           elsif mm.post == c && ii == 1
             data << ["#{mm.material.name}", "#{(mm.amount_used * num.to_i).round.to_s(:delimited)} #{mm.material.calculated_unit}",
             "#{mm.preparation}"]
@@ -113,7 +117,7 @@ class PreparationPdf < Prawn::Document
          end
         end
       end
-      data += [["　","　","　","　"]]*(2)
+      data += [["","","",""]]
       data
     end
   end

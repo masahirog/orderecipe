@@ -38,15 +38,19 @@ class Material < ApplicationRecord
 
   def self.calculate_products_materials(params)
     hoge = []
-    for i in 0..3
+    for i in 0..5
       if params["id#{i}"].present?
         Product.includes(:product_menus,[menus: [menu_materials: :material]]).find(params["id#{i}"]).menus.each do |menu|
           menu.menu_materials.each do |menu_material|
+            #その他、ヒロセ米穀、折兼の3件は表示しない
+            if menu_material.material.vendor_id == 111 || menu_material.material.vendor_id == 171 || menu_material.material.vendor_id == 21
+            else
               hash={}
               hash.store("material_id", menu_material.material_id)
               hash.store("amount_used", menu_material.amount_used.to_f * params["num#{i}"].to_i)
               hash.store("vendor_id", menu_material.material.vendor_id)
               hoge << hash
+            end
           end
         end
       end

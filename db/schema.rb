@@ -10,7 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171206092352) do
+ActiveRecord::Schema.define(version: 20180222134459) do
+
+  create_table "food_additives", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "name"
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+  end
+
+  create_table "material_food_additives", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "material_id"
+    t.integer  "food_additive_id"
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
+  end
 
   create_table "materials", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
@@ -28,6 +41,7 @@ ActiveRecord::Schema.define(version: 20171206092352) do
     t.datetime "updated_at",                        default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.string   "order_unit"
     t.text     "order_unit_quantity", limit: 65535
+    t.text     "allergy",             limit: 65535
   end
 
   create_table "menu_materials", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -43,12 +57,13 @@ ActiveRecord::Schema.define(version: 20171206092352) do
 
   create_table "menus", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
-    t.text     "recipe",       limit: 65535
+    t.text     "recipe",          limit: 65535
     t.string   "category"
-    t.text     "serving_memo", limit: 65535
-    t.float    "cost_price",   limit: 24
-    t.datetime "created_at",                 default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.datetime "updated_at",                 default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.text     "serving_memo",    limit: 65535
+    t.float    "cost_price",      limit: 24
+    t.datetime "created_at",                    default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at",                    default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.string   "food_label_name"
   end
 
   create_table "order_materials", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -58,6 +73,7 @@ ActiveRecord::Schema.define(version: 20171206092352) do
     t.datetime "created_at",                        null: false
     t.datetime "updated_at",                        null: false
     t.float    "calculated_quantity", limit: 24
+    t.string   "order_material_memo"
   end
 
   create_table "order_products", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

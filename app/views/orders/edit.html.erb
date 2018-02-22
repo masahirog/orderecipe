@@ -58,76 +58,73 @@
       </select>
     </div>
     <div class="col-md-1 pull-right">
-      <input type="checkbox" class="all_delete" style="width: 24px; height: 24px;">
     </div>
   </div>
 
+  <div class="orders_all table-responsive" style="height:100%;width:1140px;">
+  	<table class="table" style="" >
+  		<thead>
+        <tr style="padding:5px;">
+          <th style="width:200px;">食材名</th>
+          <th style="width:100px;">発注コード(検索時)</th>
+          <th style="width:100px;">発注量</th>
+          <th>単位</th>
+          <th style="width:100px;">計算値</th>
+          <th>単位</th>
+          <th style="width:150px;">仕入先</th>
+          <th style="width:150px;">単位変換</th>
+          <th style="width:150px;">発注無
+            <input type="checkbox" class="all_delete" style="width: 24px; height: 24px;">
+          </th>
+          <th style="width:200px;">備考欄</th>
+        </tr>
 
-  <div class="orders_all panel panel-primary col-md-12" style="padding:0;">
-    <div class="panel-heading col-md-12" style="padding:5px;">
-      <div class="panel-title material_name col-md-2">
-        食材名
-      </div>
-      <div class="panel-title col-md-2 text-center">
-        発注量
-      </div>
-      <div class="panel-title col-md-2">
-        計算値
-      </div>
-      <div class="panel-title col-md-2">
-        仕入先
-      </div>
-      <div class="panel-title col-md-2">
-        単位変換
-      </div>
-      <div class="panel-title col-md-1">
-        在庫予想
-      </div>
-
-      <div class="panel-title col-md-1">
-        発注無
-      </div>
-    </div>
-
-    <ul class="order_materials_ul list-group panel-body">
-      <% i = 0 %>
-      <%= f.fields_for :order_materials do |m| %>
-        <li class="order_materials_li list-group-item col-md-12" style="padding:5px;">
-          <div class="order_material_name col-md-2" style="padding:0">
-            <%= m.select :material_id, Material.where(end_of_sales:0).pluck(:name, :id),{include_blank: true}, class:'select_order_materials col-md-12'%>
-          </div>
-          <div class="order_quantity col-md-1" style="padding-right:0;">
-            <%= m.text_field :order_quantity,class:'text-right form-control',style:"height:27.78px;" %>
-          </div>
-          <div class="order_material_unit col-md-1">
-            <%= @order.materials[i].order_unit %>
-          </div>
-          <div class="calculated_value col-md-1" style="padding:0">
-            <%= m.text_field :calculated_quantity,class:'text-right form-control',
-              style:"height:27.78px;",readonly:true %>
-          </div>
-          <div class="calculated_material_unit col-md-1 text-center">
-             <%= @order.materials[i].calculated_unit %>
-          </div>
-          <div class="vendor_company_name col-md-2">
-            <%= @order.materials[i].vendor.company_name %>
-          </div>
-          <div class="calculate_unit panel-title col-md-2">
-            1 <%= @order.materials[i].order_unit %>
-            ：<%= @order.materials[i].calculated_value %> <%= @order.materials[i].calculated_unit %>
-          </div>
-
-          <div class="panel-title col-md-1">
-          </div>
-          <div class="col-md-1 destroy_order_material">
-            <%= m.check_box :_destroy,class:"destroy_order_materials check_box",style:"width: 24px; height: 24px;" %>
-          </div>
-        </li>
-      <% i = i + 1 %>
-      <% end %>
-    </ul>
+  		</thead>
+  		<tbody>
+        <% i = 0 %>
+        <%= f.fields_for :order_materials do |m| %>
+          <tr class="order_materials_tr">
+            <td class="order_material_name" style="width:200px;">
+              <%= m.select :material_id, @materials.pluck(:name, :id),{include_blank: true}, class:'select_order_materials',style:"width:200px;"%>
+            </td>
+            <td class="order_code_search" style="width:100px;">
+              <%= select_tag 'page[name]', options_from_collection_for_select(@search_code_materials, :id, :order_code),include_blank: true,class:"input_order_code" %>
+            </td>
+            <td class="order_quantity" style="width:120px;">
+              <%= m.text_field :order_quantity,class:'text-right form-control',style:"height:27.78px;" %>
+            </td>
+            <td class="order_material_unit" style="">
+              <%= @order.materials[i].order_unit %>
+            </td>
+            <td class="calculated_value" style="width:100px;">
+              <%= m.text_field :calculated_quantity,class:'text-right form-control',
+                style:"height:27.78px;",readonly:true %>
+            </td>
+            <td class="calculated_material_unit text-center" style="">
+               <%= @order.materials[i].calculated_unit %>
+            </td>
+            <td class="vendor_company_name" style="width:150px;">
+              <%= @order.materials[i].vendor.company_name %>
+            </td>
+            <td class="calculate_unit panel-title" style="width:150px;">
+              1 <%= @order.materials[i].order_unit %>
+              ：<%= @order.materials[i].calculated_value %> <%= @order.materials[i].calculated_unit %>
+            </td>
+            <td class="destroy_order_material" style=";width:150px;">
+              <%= m.check_box :_destroy,class:"destroy_order_materials check_box",style:"width: 24px; height: 24px;margin:0;" %>
+            </td>
+            <td class="order_material_memo" style="width:200px;">
+              <%= m.text_field :order_material_memo,class:'form-control',style:"width:200px;" %>
+            </td>
+          </tr>
+        <% i = i + 1 %>
+        <% end %>
+  		</tbody>
+  	</table>
   </div>
-  <div class="add col-md-12 form-group">
+
+
+  <div class="add form-group">
     <input type="button" value="発注食材追加" class="add_order_materials btn btn-primary">
   </div>
 <% end %>
