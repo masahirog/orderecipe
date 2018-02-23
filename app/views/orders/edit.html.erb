@@ -61,22 +61,20 @@
     </div>
   </div>
 
-  <div class="orders_all table-responsive" style="height:100%;width:1140px;">
+  <div class="orders_all table-responsive" style="width:1240px;">
   	<table class="table" style="" >
   		<thead>
         <tr style="padding:5px;">
           <th style="width:200px;">食材名</th>
           <th style="width:100px;">発注コード(検索時)</th>
-          <th style="width:100px;">発注量</th>
-          <th>単位</th>
-          <th style="width:100px;">計算値</th>
-          <th>単位</th>
+          <th style="width:100px;" colspan="2">発注量</th>
+          <th style="width:100px;" colspan="2">計算値</th>
           <th style="width:150px;">仕入先</th>
-          <th style="width:150px;">単位変換</th>
-          <th style="width:150px;">発注無
-            <input type="checkbox" class="all_delete" style="width: 24px; height: 24px;">
+          <th style="width:200px;">単位変換</th>
+          <th style="width250px;">
+            <input type="checkbox" class="all_delete" style="width:24px;height:24px;margin:0;">発注無
           </th>
-          <th style="width:200px;">備考欄</th>
+          <th style="width:450px;">備考欄</th>
         </tr>
 
   		</thead>
@@ -93,20 +91,20 @@
             <td class="order_quantity" style="width:120px;">
               <%= m.text_field :order_quantity,class:'text-right form-control',style:"height:27.78px;" %>
             </td>
-            <td class="order_material_unit" style="">
+            <td class="order_material_unit" style="padding:15px 0 0 0;">
               <%= @order.materials[i].order_unit %>
             </td>
             <td class="calculated_value" style="width:100px;">
               <%= m.text_field :calculated_quantity,class:'text-right form-control',
                 style:"height:27.78px;",readonly:true %>
             </td>
-            <td class="calculated_material_unit text-center" style="">
+            <td class="calculated_material_unit text-center" style="padding:15px 0 0 0;">
                <%= @order.materials[i].calculated_unit %>
             </td>
-            <td class="vendor_company_name" style="width:150px;">
+            <td class="vendor_company_name" style="width:120px;">
               <%= @order.materials[i].vendor.company_name %>
             </td>
-            <td class="calculate_unit panel-title" style="width:150px;">
+            <td class="calculate_unit panel-title" style="width:200px;">
               1 <%= @order.materials[i].order_unit %>
               ：<%= @order.materials[i].calculated_value %> <%= @order.materials[i].calculated_unit %>
             </td>
@@ -114,7 +112,7 @@
               <%= m.check_box :_destroy,class:"destroy_order_materials check_box",style:"width: 24px; height: 24px;margin:0;" %>
             </td>
             <td class="order_material_memo" style="width:200px;">
-              <%= m.text_field :order_material_memo,class:'form-control',style:"width:200px;" %>
+              <%= m.text_field :order_material_memo,class:'form-control',style:"width:250px;" %>
             </td>
           </tr>
         <% i = i + 1 %>

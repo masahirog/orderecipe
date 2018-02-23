@@ -55,7 +55,7 @@ class OrdersController < ApplicationController
     respond_to do |format|
      format.html
      format.pdf do
-       pdf = OrderPdf.new(@materials_this_vendor,@vendor,@order,@order_materials)
+       pdf = OrderPdf.new(@materials_this_vendor,@vendor,@order)
        send_data pdf.render,
          filename:    "#{@order.delivery_date}_#{@vendor.company_name}.pdf",
          type:        "application/pdf",
