@@ -22,10 +22,7 @@
 <div class="col-md-12">
     <h4><strong>過去の発注一覧</strong></h4>
   </div>
-  <div class="col-md-12">
-  <div class="col-md-1">
-    納品日
-  </div>
+<div class="col-md-12">
   <div class="col-md-1">
     お弁当一覧
   </div>
@@ -33,9 +30,6 @@
 <ul class="list-group" style="list-style-type: none;">
   <% @orders.each do |order| %>
     <li class="col-md-12 list-group-item">
-      <div class="col-md-1">
-        <%= order.delivery_date %>
-      </div>
       <div class="col-md-8">
         <% order.order_products.each do |op| %>
         <div class="col-md-3">

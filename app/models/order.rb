@@ -9,23 +9,4 @@ class Order < ApplicationRecord
   has_many :products, through: :order_products
   accepts_nested_attributes_for :order_products, allow_destroy: true, update_only: true
 
-
-  # def self.search(params)
-  #   if params
-  #     from = params[:from]
-  #     to = params[:to]
-  #     data = Order.all
-  #
-  #     if from.present? && to.present?
-  #       data = data.where(delivery_date: from..to)
-  #     elsif from.present?
-  #       data = data.where('delivery_date >= ?', from)
-  #       elsif to.present?
-  #       data = data.where('delivery_date <= ?', to)
-  #     end
-  #
-  #   else
-  #     Order.all
-  #   end
-  # end
 end

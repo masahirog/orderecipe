@@ -57,7 +57,7 @@ class OrdersController < ApplicationController
      format.pdf do
        pdf = OrderPdf.new(@materials_this_vendor,@vendor,@order)
        send_data pdf.render,
-         filename:    "#{@order.delivery_date}_#{@vendor.company_name}.pdf",
+         filename:    "#{@order.id}_#{@vendor.company_name}.pdf",
          type:        "application/pdf",
          disposition: "inline"
      end
@@ -72,7 +72,7 @@ class OrdersController < ApplicationController
      format.pdf do
        pdf = OrderAll.new(@order,@vendors)
        send_data pdf.render,
-         filename:    "#{@order.delivery_date}.pdf",
+         filename:    "#{@order.id}.pdf",
          type:        "application/pdf",
          disposition: "inline"
      end
@@ -83,8 +83,7 @@ class OrdersController < ApplicationController
   private
 
   def order_create_update
-    params.require(:order).permit(:delivery_date,
-      order_materials_attributes: [:id, :order_quantity,:calculated_quantity, :order_id, :material_id,:order_material_memo, :_destroy],
+    params.require(:order).permit(order_materials_attributes: [:id, :order_quantity,:calculated_quantity, :order_id, :material_id,:order_material_memo,:delivery_date, :_destroy],
       order_products_attributes: [:id, :serving_for, :order_id, :product_id, :_destroy])
   end
 

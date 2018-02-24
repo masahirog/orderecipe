@@ -10,18 +10,6 @@
     </div>
   <% end %>
 
-  <h4><%= f.label :delivery_date ,'納品日' %></h4>
-  <div class="container form-group">
-    <div class="col-md-12">
-      <div class="col-md-4">
-        <%= f.date_select :delivery_date,{}, class: "form-control col-md-2",style: "width:33%" %>
-      </div>
-      <div class="col-md-2 pull-right">
-        <input type="button" onclick="submit();" value="発注確定する" class="order_submit btn btn-success">
-      </div>
-    </div>
-  </div>
-
   <h4><strong>発注弁当</strong></h4>
   <ul class="list-group col-md-12">
     <% i = 0 %>
@@ -43,13 +31,11 @@
   </ul>
 
   <div class="col-md-12" style="padding-bottom:10px;">
-    <div class="col-md-3">
+    <div class="col-md-3" style="font-size:20px;padding-top:30px;">
       <strong>発注食材・資材一覧</strong>
     </div>
-
-      <label class="col-md-2 text-right">企業絞込：</label>
-
     <div class="col-md-3">
+      <label class=" text-right">企業絞込：</label>
       <select class="vendor_select form-control">
         <option value=""></option>
         <% @order.materials.select(:vendor_id).uniq.each do |v| %>
@@ -57,62 +43,77 @@
         <% end %>
       </select>
     </div>
-    <div class="col-md-1 pull-right">
+    <div class="col-md-3">
+      <label class="text-right">納品日一括変更：</label>
+      <%= date_field("all", "date_change", value: Time.now.strftime("%Y-%m-%d"),class:"form-control") %>
+    </div>
+    <div class="col-md-3" style="padding-top:25px;">
+      <input type="button" value="発注確定する" class="order_submit btn btn-success pull-right">
     </div>
   </div>
 
-  <div class="orders_all table-responsive" style="width:1240px;">
-  	<table class="table" style="" >
+  <div class="orders_all" style="width:100%;">
+  	<table class="table" style="width:1140px;margin:auto;" >
   		<thead>
-        <tr style="padding:5px;">
+        <tr>
           <th style="width:200px;">食材名</th>
-          <th style="width:100px;">発注コード(検索時)</th>
-          <th style="width:100px;" colspan="2">発注量</th>
-          <th style="width:100px;" colspan="2">計算値</th>
-          <th style="width:150px;">仕入先</th>
-          <th style="width:200px;">単位変換</th>
-          <th style="width250px;">
-            <input type="checkbox" class="all_delete" style="width:24px;height:24px;margin:0;">発注無
+          <th style="width:130px;">発注コード検索</th>
+          <th style="width:280px;">
+            <div style="width:130px;float:left;">発注量</div>
+            <div style="width:130px;float:left;">計算値</div>
           </th>
-          <th style="width:450px;">備考欄</th>
+          <th style="width:250px;">備考欄</th>
+          <th style="width:160px;">納品日</th>
+          <th style="width:98px;">
+            削除　<input type="checkbox" class="all_delete" style="width:24px;height:24px;margin:0;">
+          </th>
         </tr>
-
   		</thead>
   		<tbody>
         <% i = 0 %>
         <%= f.fields_for :order_materials do |m| %>
           <tr class="order_materials_tr">
             <td class="order_material_name" style="width:200px;">
-              <%= m.select :material_id, @materials.pluck(:name, :id),{include_blank: true}, class:'select_order_materials',style:"width:200px;"%>
+              <% if @order.order_materials[i].calculated_quantity.present? %>
+                <%= m.select :material_id, @materials.pluck(:name, :id),{include_blank: true}, class:'select_order_materials',style:"width:100%;" %>
+              <% else %>
+                <%= m.select :material_id, @materials.pluck(:name, :id),{include_blank: true}, class:'select_order_materials',style:"width:100%;" %>
+              <% end %>
+              <div class="vendor_company_name" style="paddingtop:3px 0 0 8px;color:#A9A9A9;">
+                <%= @order.materials[i].vendor.company_name %>
+              </div>
             </td>
-            <td class="order_code_search" style="width:100px;">
-              <%= select_tag 'page[name]', options_from_collection_for_select(@search_code_materials, :id, :order_code),include_blank: true,class:"input_order_code" %>
+            <td class="order_code_search" style="width:130px;">
+              <% if @order.order_materials[i].calculated_quantity.present? %>
+              <%= select_tag 'page[name]', options_from_collection_for_select(@search_code_materials, :id, :order_code),include_blank: true,class:"input_order_code",style:"width:100%;",disabled:"disabled" %>
+              <% else %>
+                <%= select_tag 'page[name]', options_from_collection_for_select(@search_code_materials, :id, :order_code),include_blank: true,class:"input_order_code",style:"width:100%;" %>
+              <% end %>
             </td>
-            <td class="order_quantity" style="width:120px;">
-              <%= m.text_field :order_quantity,class:'text-right form-control',style:"height:27.78px;" %>
+            <td class="quantity" style="width:280px;">
+              <div class="clearfix">
+                <div class="" style="width:135px;float:left;">
+                  <%= m.text_field :order_quantity,class:'order_quantity text-right form-control',style:"width:80px;height:27.78px;float:left" %>
+                   <div class="order_material_unit" style="float:left;padding-left:3px;padding-top:5px;"><%= @order.materials[i].order_unit %></div>
+                </div>
+                <div style="width:135px;float:left;">
+                  <%= m.text_field :calculated_quantity,class:'calculated_value text-right form-control',
+                    style:"width:80px;height:27.78px;padding:2px;float:left",readonly:true %>
+                    <div class="calculated_material_unit" style="float:left;padding-left:3px;padding-top:5px;"><%= @order.materials[i].calculated_unit %></div>
+                </div>
+              </div>
+              <div class="change_unit" style="width:270px;color:#A9A9A9;padding:1px 0 0 10px;">
+                <%= @order.materials[i].order_unit_quantity %><%= @order.materials[i].order_unit %>：<%= @order.materials[i].calculated_value %> <%= @order.materials[i].calculated_unit %>
+              </div>
             </td>
-            <td class="order_material_unit" style="padding:15px 0 0 0;">
-              <%= @order.materials[i].order_unit %>
+            <td class="order_material_memo" style="width:250px;">
+              <%= m.text_field :order_material_memo,class:'form-control',style:"width:240px;" %>
             </td>
-            <td class="calculated_value" style="width:100px;">
-              <%= m.text_field :calculated_quantity,class:'text-right form-control',
-                style:"height:27.78px;",readonly:true %>
+            <td class="delivery_date" style="width:160px;">
+              <%= m.date_field(:delivery_date, value:(m.object.delivery_date || Time.now.strftime("%Y-%m-%d")),class:"form-control input_delivery_date",style:"width:150px;") %>
             </td>
-            <td class="calculated_material_unit text-center" style="padding:15px 0 0 0;">
-               <%= @order.materials[i].calculated_unit %>
-            </td>
-            <td class="vendor_company_name" style="width:120px;">
-              <%= @order.materials[i].vendor.company_name %>
-            </td>
-            <td class="calculate_unit panel-title" style="width:200px;">
-              1 <%= @order.materials[i].order_unit %>
-              ：<%= @order.materials[i].calculated_value %> <%= @order.materials[i].calculated_unit %>
-            </td>
-            <td class="destroy_order_material" style=";width:150px;">
+            <td class="destroy_order_material text-right" style="width:80px;padding:5px 30px 0 0;">
               <%= m.check_box :_destroy,class:"destroy_order_materials check_box",style:"width: 24px; height: 24px;margin:0;" %>
-            </td>
-            <td class="order_material_memo" style="width:200px;">
-              <%= m.text_field :order_material_memo,class:'form-control',style:"width:250px;" %>
             </td>
           </tr>
         <% i = i + 1 %>
@@ -120,9 +121,7 @@
   		</tbody>
   	</table>
   </div>
-
-
-  <div class="add form-group">
+  <div class="add form-group" style="margin:20px 0 10px 26px;">
     <input type="button" value="発注食材追加" class="add_order_materials btn btn-primary">
   </div>
 <% end %>

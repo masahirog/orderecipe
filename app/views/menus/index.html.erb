@@ -47,7 +47,7 @@
         <div class="col-md-1"><%= menu.category %></div>
         <div class="col-md-3"><%= menu.recipe %></div>
         <div class="col-md-3"><%= menu.serving_memo %></div>
-        <div class="cost_price_td col-md-1"><%= menu.cost_price %>円</div>
+        <div class="cost_price col-md-1"><%= menu.cost_price %>円</div>
 				<div class="col-md-1">
 					<% menu.materials.each do |m| %>
 						<% if m.end_of_sales==1 %>
