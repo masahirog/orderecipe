@@ -12,7 +12,6 @@ $(function(){
   });
 
 
-
   //indexで使用
   $(".index_vendor_select").on("change",function(){
     $(".index_vendor_list").show();
@@ -194,7 +193,7 @@ $(function(){
     });
 
 
-    $(".input_delivery_date").on("change",function(){
+    $(".orders_all").on("change",".input_delivery_date",function(){
       change_color();
     });
 
@@ -236,6 +235,7 @@ $(function(){
   };
   // ページ読み込んだ時の色付け
   function first_input_check(){
+    change_color()
     $('.order_materials_tr').each(function(){
       var material_id = $(this).find(".select_order_materials").val()
       var order_quantity = $(this).find(".order_quantity").val()
@@ -280,6 +280,7 @@ $(function(){
     last_tr.find(".input_order_code").removeAttr("disabled");
     last_tr.find(".order_quantity").removeAttr("disabled");
     last_tr.find(".order_material_memo").children().val("");
-    last_tr.find(".delivery_date").children().val("");
+    last_tr.find(".delivery_date").children().val($("#all_date_change").val());
+    change_color()
   };
 });

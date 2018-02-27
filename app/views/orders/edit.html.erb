@@ -74,11 +74,7 @@
         <%= f.fields_for :order_materials do |m| %>
           <tr class="order_materials_tr">
             <td class="order_material_name" style="width:200px;">
-              <% if @order.order_materials[i].calculated_quantity.present? %>
-                <%= m.select :material_id, @materials.pluck(:name, :id),{include_blank: true}, class:'select_order_materials',style:"width:100%;" %>
-              <% else %>
-                <%= m.select :material_id, @materials.pluck(:name, :id),{include_blank: true}, class:'select_order_materials',style:"width:100%;" %>
-              <% end %>
+              <%= m.select :material_id, @materials.pluck(:name, :id),{include_blank: true}, class:'select_order_materials',style:"width:100%;" %>
               <div class="vendor_company_name" style="paddingtop:3px 0 0 8px;color:#A9A9A9;">
                 <%= @order.materials[i].vendor.company_name %>
               </div>

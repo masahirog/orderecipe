@@ -80,14 +80,20 @@
       <label class="panel-title material_name col-md-3">
         食材名
       </label>
-      <label class="panel-title col-md-2 text-center">
+      <label class="panel-title col-md-1">
         発注量
       </label>
-      <label class="panel-title col-md-2 text-center">
+      <label class="panel-title col-md-1">
         計算量
       </label>
       <label class="panel-title col-md-2">
         仕入先
+      </label>
+      <label class="panel-title col-md-2">
+        備考
+      </label>
+      <label class="panel-title col-md-2">
+        納品日
       </label>
     </div>
 
@@ -98,19 +104,19 @@
              <%= om.material.name %>
           </div>
           <div class="order_quantity col-md-1 text-right">
-            <%= om.order_quantity %>
-          </div>
-          <div class="material_unit col-md-1">
-            <%= om.material.order_unit %>
+            <%= om.order_quantity %><%= om.material.order_unit %>
           </div>
           <div class="material_unit col-md-1 text-right">
-            <%= om.calculated_quantity %>
-          </div>
-          <div class="material_unit col-md-1">
-            <%= om.material.calculated_unit %>
+            <%= om.calculated_quantity %><%= om.material.calculated_unit %>
           </div>
           <div class="vendor_company_name col-md-2">
             <%= om.material.vendor.company_name %>
+          </div>
+          <div class="col-md-2">
+            <%= om.order_material_memo %>
+          </div>
+          <div class="col-md-2">
+            <%= om.delivery_date %>
           </div>
         </li>
       <% end %>
