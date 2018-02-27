@@ -49,23 +49,27 @@ class Material < ApplicationRecord
               hash.store("material_id", menu_material.material_id)
               hash.store("amount_used", menu_material.amount_used.to_f * params["num#{i}"].to_i)
               hash.store("vendor_id", menu_material.material.vendor_id)
+              hash.store("product_id", Product.find(params["id#{i}"]).id)
               hoge << hash
             end
           end
         end
       end
     end
-    fuga = []
-    hoge.each_with_object({}) do | h, obj |
-     obj[h["material_id"]] ||= { "amount_used" =>  0}
-     obj[h["material_id"]]["amount_used"] += h["amount_used"]
-     obj[h["material_id"]]["vendor_id"] = h["vendor_id"]
-     fuga = obj.map{|k, v| {"material_id"=> k}.merge(v)}
-    end
-    fuga.sort! do |a, b|
+    # fuga = []
+    # hoge.each_with_object({}) do | h, obj |
+    #  obj[h["material_id"]] ||= { "amount_used" =>  0}
+    #  obj[h["material_id"]]["amount_used"] += h["amount_used"]
+    #  obj[h["material_id"]]["vendor_id"] = h["vendor_id"]
+    #  fuga = obj.map{|k, v| {"material_id"=> k}.merge(v)}
+    # end
+    # fuga.sort! do |a, b|
+    hoge.sort! do |a, b|
       a["vendor_id"] <=> b["vendor_id"]
     end
-    return fuga
+    ar = hoge.group_by {|name|name.values[0] }
+    # return fuga
+    return ar
   end
 
   def self.get_material_this_vendor(params)
