@@ -126,8 +126,11 @@
                       </div>
                     </td>
                     <td class="order_material_memo" style="width:250px;">
-                      <%= m.text_field :order_material_memo,class:'form-control',style:"width:240px;",value:Product.find(recipebetsu_material["product_id"]).name,
+                      <%= m.text_field :order_material_memo,class:'form-control',style:"width:240px;",
                       name:"order[order_materials_attributes][#{i}][order_material_memo]",id:"order_order_materials_attributes_#{i}_order_material_memo" %>
+                      <div class="" style="padding:3px 0 0 8px;color:#A9A9A9;">
+                        <%= Product.find(recipebetsu_material["product_id"]).name %>
+                      </div>
                     </td>
                     <td class="delivery_date" style="width:160px;">
                       <%= m.date_field(:delivery_date, value: Time.now.strftime("%Y-%m-%d"),class:"form-control input_delivery_date",style:"width:150px;",
