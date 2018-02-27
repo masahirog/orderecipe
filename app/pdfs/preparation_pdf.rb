@@ -28,7 +28,6 @@ class PreparationPdf < Prawn::Document
   end
   def date(order)
     bounding_box([-10, 540], :width => 320) do
-      text "#{order.delivery_date.strftime("%Y年")}　　　月　　　日（　　）"
     end
   end
   def title(num,product,x,y)

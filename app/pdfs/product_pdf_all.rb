@@ -12,7 +12,7 @@ class ProductPdfAll < Prawn::Document
       product = op.product
       menus = op.product.menus
       num = op.serving_for
-      header_date(order)
+      header_date(op)
       header_table(product,num)
       table_content(menus,op)
       start_new_page if i<max_i-1
@@ -40,9 +40,9 @@ class ProductPdfAll < Prawn::Document
     end
   end
 
-  def header_date(order)
+  def header_date(op)
     bounding_box([0, 525], :width => 200) do
-      text "#{order.delivery_date.strftime("　　 　年　 　月　 　日 ( 　　)")}", size: 12,leading: 3
+      text "#{Date.parse(op.make_date).strftime("%Y年%-m月%-d日(#{%w(日 月 火 水 木 金 土)[Date.parse(op.make_date).wday]})")}", size: 12,leading: 3
     end
   end
 

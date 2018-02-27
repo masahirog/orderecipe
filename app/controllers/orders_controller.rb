@@ -85,7 +85,7 @@ class OrdersController < ApplicationController
 
   def order_create_update
     params.require(:order).permit(order_materials_attributes: [:id, :order_quantity,:calculated_quantity, :order_id, :material_id,:order_material_memo,:delivery_date, :_destroy],
-      order_products_attributes: [:id, :serving_for, :order_id, :product_id, :_destroy])
+      order_products_attributes: [:id,:make_date, :serving_for, :order_id, :product_id, :_destroy])
   end
 
 end

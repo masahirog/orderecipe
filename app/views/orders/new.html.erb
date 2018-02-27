@@ -10,7 +10,19 @@
     </div>
   <% end %>
 
-  <h4><strong>発注弁当</strong></h4>
+  <div class="col-md-12">
+    <div class="col-md-6">
+      <h4><strong>発注弁当</strong></h4>
+    </div>
+    <div class="col-md-6">
+      <div class="" style="float:left;padding-top:8px;font-weight:bold;">
+        製造日　　　　　製造日一括変更：
+      </div>
+      <div class="" style="float:left">
+        <%= date_field("all", "make_date_change", value: Time.now.strftime("%Y-%m-%d"),class:"form-control") %>
+      </div>
+    </div>
+  </div>
   <ul class="list-group col-md-12">
     <%= f.fields_for :order_products do |m| %>
       <% i =0 %>
@@ -21,15 +33,19 @@
           <li class="list-group-item col-md-12" style="padding:5px;">
             <%= m.text_field :product_id,value:id, class:'form-group col-md-2',style:"display:none;",
             name:"order[order_products_attributes][#{i}][product_id]",id:"order_order_products_attributes_#{i}_product_id" %>
-            <div class="col-md-5">
+            <div class="col-md-4">
               <%= Product.find(id).name %>
             </div>
-            <div class="col-md-3 form-inline">
+            <div class="col-md-2 form-inline">
               <%= m.text_field :serving_for,value:num, class:'form-control form-group',style:"width:70%;",readonly:true,
               name:"order[order_products_attributes][#{i}][serving_for]",id:"order_order_products_attributes_#{i}_serving_for" %>
-            <div class="form-group">
-              人分
+              <div class="form-group">
+                人分
+              </div>
             </div>
+            <div class="col-md-2">
+              <%= m.date_field(:make_date, value: Time.now.strftime("%Y-%m-%d"),class:"form-control input_make_date",
+              name:"order[order_products_attributes][#{i}][make_date]",id:"order_order_products_attributes_#{i}_make_date") %>
             </div>
           </li>
         <% end %>

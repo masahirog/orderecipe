@@ -192,6 +192,10 @@ $(function(){
       change_color();
     });
 
+    $("#all_make_date_change").on("change", function(){
+      var date = $(this).val()
+      $(".input_make_date").val(date)
+    });
 
     $(".orders_all").on("change",".input_delivery_date",function(){
       change_color();

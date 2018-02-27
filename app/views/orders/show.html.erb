@@ -13,8 +13,11 @@
       <div class="col-md-4 panel-title">
         弁当名
       </div>
-      <div class="col-md-3 panel-title">
+      <div class="col-md-2 panel-title">
         食数
+      </div>
+      <div class="col-md-2 panel-title">
+        製造日
       </div>
       <div class="col-md-2">
         <%=  link_to "レシピ一括印刷","/products/product_pdf_all/#{@order.id}.pdf",class:"btn btn-default",style:"font-size:8px;",:target=>"_blank" %>
@@ -29,8 +32,11 @@
         <div class="col-md-4">
           <%=  link_to "#{Product.find(op.product_id).name}","/products/#{op.product_id}" %>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
           <%= op.serving_for %>食
+        </div>
+        <div class="col-md-2">
+          <%= "#{Date.parse(op.make_date).strftime("%Y年%-m月%-d日(#{%w(日 月 火 水 木 金 土)[Date.parse(op.make_date).wday]})")}" %>
         </div>
         <div class="col-md-2">
           <%= form_tag({:controller => "products", :action => "print", format: "pdf"},{:target => "_blank"}) do %>
@@ -49,24 +55,24 @@
 </div>
 
 <div class="col-md-12">
-
   <%= form_tag({:controller => "orders", :action => "order_print", format: "pdf"},{:target => "_blank"}) do %>
-    <div class="col-md-3">
-      <%= select :vendor,:id, @vendors.map{|t| [t["company_name"], t["vendor_id"]]},{},class:"index_vendor_select form-control" %>
+    <div class="col-md-2 col-md-offset-5">
+      <label class=" text-right">企業絞込：</label>
+      <%= select :vendor,:id, @vendors.map{|t| [t["company_name"], t["vendor_id"]]},{include_blank: true},class:"index_vendor_select form-control" %>
     </div>
-    <div class="col-md-1">
+    <div class="col-md-2 text-right" style="padding-top:20px;">
       <input type="button" onclick="submit();" value="発注書印刷" class="print_btn btn btn-primary">
     </div>
   <% end %>
   <%= form_tag({:controller => "orders", :action => "order_print_all", format: "pdf"},{:target => "_blank"}) do %>
-    <div class="" style="display:none;">
+    <div style="display:none;">
       <% i=0 %>
       <% @vendors.each do |vendor| %>
       <%= text_field_tag :vendor, vendor["vendor_id"] ,name:"vendor[id#{i}]",id:"id#{i}"%>
       <% i += 1 %>
       <% end %>
     </div>
-    <div class="col-md-1">
+    <div class="col-md-2" style="padding-top:20px;">
       <input type="button" onclick="submit();" value="全企業印刷" class="print_btn btn btn-primary" >
     </div>
   <% end %>

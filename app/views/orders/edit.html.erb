@@ -10,20 +10,35 @@
     </div>
   <% end %>
 
-  <h4><strong>発注弁当</strong></h4>
+  <div class="col-md-12">
+    <div class="col-md-6">
+      <h4><strong>発注弁当</strong></h4>
+    </div>
+    <div class="col-md-6">
+      <div class="" style="float:left;padding-top:8px;font-weight:bold;">
+        製造日　　　　　製造日一括変更：
+      </div>
+      <div class="" style="float:left">
+        <%= date_field("all", "make_date_change", value: Time.now.strftime("%Y-%m-%d"),class:"form-control") %>
+      </div>
+    </div>
+  </div>
   <ul class="list-group col-md-12">
     <% i = 0 %>
     <%= f.fields_for :order_products do |m| %>
       <li class="list-group-item col-md-12" style="padding:5px;">
         <%= m.text_field :product_id, class:'form-group col-md-2',style:"display:none;" %>
-        <div class="col-md-5">
+        <div class="col-md-4">
           <%= @order.products[i].name %>
         </div>
-        <div class="col-md-3 form-inline">
+        <div class="col-md-2 form-inline">
           <%= m.text_field :serving_for, class:'form-control form-group',style:"width:70%;",readonly:true %>
-        <div class="form-group">
-          人分
+          <div class="form-group">
+            人分
+          </div>
         </div>
+        <div class="col-md-2">
+          <%= m.date_field(:make_date,value: (m.object.make_date || Time.now.strftime("%Y-%m-%d")),class:"form-control input_make_date") %>
         </div>
       </li>
       <% i += 1 %>

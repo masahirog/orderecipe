@@ -6,13 +6,13 @@ class ProductPdf < Prawn::Document
       page_layout: :landscape)
     #日本語のフォント
     font "vendor/assets/fonts/ipaexm.ttf"
-
     num = params[:volume][:num]
     product = product
     menus = menus
     header_table(product,num)
     table_content(menus,num)
   end
+
 
 
   def header_table(product,num)
