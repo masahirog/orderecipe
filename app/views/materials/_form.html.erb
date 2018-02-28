@@ -108,39 +108,74 @@
       </div>
     </div>
   </div>
-  <div class="col-md-12 form-group" style="padding:0;">
-    <%= f.label :allergy, "アレルギーチェック[必須]", class:"col-md-12",style:"padding:0;margin-left:20px;" %>
-    <div class="col-md-1 form-group" style="margin-left:20px;">
-      <%= label_tag :egg, '卵' %>
-      <%= f.check_box  :allergy, {multiple: true, checked: @material.allergy.include?("egg"),class:"form-control"}, 'egg', nil %>
+  <!-- newとeditを分岐 -->
+  <% if @material.allergy.nil? %>
+    <div class="col-md-12 form-group" style="padding:0;">
+      <%= f.label :allergy, "アレルギーチェック[必須]", class:"col-md-12",style:"padding:0;margin-left:20px;" %>
+      <div class="col-md-1 form-group" style="margin-left:20px;">
+        <%= label_tag :egg, '卵' %>
+        <%= f.check_box  :allergy, {multiple: true, class:"form-control"}, 'egg' %>
 
+      </div>
+      <div class="col-md-1 form-group" >
+        <%= label_tag :milk, '乳' %>
+        <%= f.check_box  :allergy, {multiple: true, class:"form-control"}, 'milk' %>
+      </div>
+      <div class="col-md-1 form-group" >
+        <%= label_tag :shrimp, 'えび' %>
+        <%= f.check_box  :allergy, {multiple: true, class:"form-control"}, 'shrimp' %>
+      </div>
+      <div class="col-md-1 form-group" >
+        <%= label_tag :crab, 'かに' %>
+        <%= f.check_box  :allergy, {multiple: true, class:"form-control"}, 'crab' %>
+      </div>
+      <div class="col-md-1 form-group" >
+        <%= label_tag :peanuts, '落花生' %>
+        <%= f.check_box  :allergy, {multiple: true, class:"form-control"}, 'peanuts' %>
+      </div>
+      <div class="col-md-1 form-group" >
+        <%= label_tag :soba, 'そば' %>
+        <%= f.check_box  :allergy, {multiple: true, class:"form-control"}, 'soba' %>
+      </div>
+      <div class="col-md-1 form-group" >
+        <%= label_tag :wheat, '小麦' %>
+        <%= f.check_box  :allergy, {multiple: true, class:"form-control"}, 'wheat' %>
+      </div>
     </div>
-    <div class="col-md-1 form-group" >
-      <%= label_tag :milk, '乳' %>
-      <%= f.check_box  :allergy, {multiple: true, checked: @material.allergy.include?("milk"),class:"form-control"}, 'milk', nil %>
-    </div>
-    <div class="col-md-1 form-group" >
-      <%= label_tag :shrimp, 'えび' %>
-      <%= f.check_box  :allergy, {multiple: true, checked: @material.allergy.include?("shrimp"),class:"form-control"}, 'shrimp', nil %>
-    </div>
-    <div class="col-md-1 form-group" >
-      <%= label_tag :crab, 'かに' %>
-      <%= f.check_box  :allergy, {multiple: true, checked: @material.allergy.include?("crab"),class:"form-control"}, 'crab', nil %>
-    </div>
-    <div class="col-md-1 form-group" >
-      <%= label_tag :peanuts, '落花生' %>
-      <%= f.check_box  :allergy, {multiple: true, checked: @material.allergy.include?("peanuts"),class:"form-control"}, 'peanuts', nil %>
-    </div>
-    <div class="col-md-1 form-group" >
-      <%= label_tag :soba, 'そば' %>
-      <%= f.check_box  :allergy, {multiple: true, checked: @material.allergy.include?("soba"),class:"form-control"}, 'soba', nil %>
-    </div>
-    <div class="col-md-1 form-group" >
-      <%= label_tag :wheat, '小麦' %>
-      <%= f.check_box  :allergy, {multiple: true, checked: @material.allergy.include?("wheat"),class:"form-control"}, 'wheat', nil %>
-    </div>
-  </div>
+  <% else %>
+    <div class="col-md-12 form-group" style="padding:0;">
+      <%= f.label :allergy, "アレルギーチェック[必須]", class:"col-md-12",style:"padding:0;margin-left:20px;" %>
+      <div class="col-md-1 form-group" style="margin-left:20px;">
+        <%= label_tag :egg, '卵' %>
+        <%= f.check_box  :allergy, {multiple: true, checked: @material.allergy.include?("egg"),class:"form-control"}, 'egg' %>
 
+      </div>
+      <div class="col-md-1 form-group" >
+        <%= label_tag :milk, '乳' %>
+        <%= f.check_box  :allergy, {multiple: true, checked: @material.allergy.include?("milk"),class:"form-control"}, 'milk' %>
+      </div>
+      <div class="col-md-1 form-group" >
+        <%= label_tag :shrimp, 'えび' %>
+        <%= f.check_box  :allergy, {multiple: true, checked: @material.allergy.include?("shrimp"),class:"form-control"}, 'shrimp' %>
+      </div>
+      <div class="col-md-1 form-group" >
+        <%= label_tag :crab, 'かに' %>
+        <%= f.check_box  :allergy, {multiple: true, checked: @material.allergy.include?("crab"),class:"form-control"}, 'crab' %>
+      </div>
+      <div class="col-md-1 form-group" >
+        <%= label_tag :peanuts, '落花生' %>
+        <%= f.check_box  :allergy, {multiple: true, checked: @material.allergy.include?("peanuts"),class:"form-control"}, 'peanuts' %>
+      </div>
+      <div class="col-md-1 form-group" >
+        <%= label_tag :soba, 'そば' %>
+        <%= f.check_box  :allergy, {multiple: true, checked: @material.allergy.include?("soba"),class:"form-control"}, 'soba' %>
+      </div>
+      <div class="col-md-1 form-group" >
+        <%= label_tag :wheat, '小麦' %>
+        <%= f.check_box  :allergy, {multiple: true, checked: @material.allergy.include?("wheat"),class:"form-control"}, 'wheat' %>
+      </div>
+    </div>
+  <% end %>
   <div class="col-md-12 form-group" style="padding:0;">
     <div class="col-md-12" style="margin-top:20px;">
     <%= f.label :food_additive, "食品添加物[必須]", class:"",style:"padding:0;margin-left:20px;" %>
