@@ -7,6 +7,10 @@ $(function(){
   $('.input_select_material').select2({
     placeholder: "食材資材を選択してください"
   });
+  $('.test').select2({
+
+  });
+
     calculate_menu_price();
     reset_row_order();
 

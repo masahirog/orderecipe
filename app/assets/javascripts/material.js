@@ -1,7 +1,6 @@
 $(function(){
   $('.input_select_food_additive').select2({
-  width:"200px",
-  placeholder: "添加物を選択"
+  width:"200px"
   });
 
   $(".add_food_additive").on('click', function (){
@@ -102,7 +101,7 @@ $(function(){
     last_li.children(".remove_food_additive").children(".destroy_food_additives").attr('id', "material_material_food_additives_attributes_"+u+"__destroy");
     last_li.children(".remove_food_additive").children("").attr('name', "material[material_food_additives_attributes]["+u+"][_destroy]");
     last_li.children(".select_food_additive").children().val("");
-    $(".input_select_food_additive").select2({width:"200px",placeholder: "添加物を選択"});
+    $(".input_select_food_additive").select2({width:"200px"});
     last_li.children(".remove_food_additive").children(".destroy_food_additives").prop('checked',false);
     last_li.show();
   };

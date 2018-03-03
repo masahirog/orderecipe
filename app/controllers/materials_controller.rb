@@ -6,6 +6,7 @@ class MaterialsController < ApplicationController
   def new
     @material = Material.new
     @material.material_food_additives.build
+    @food_additive = FoodAdditive.new
   end
 
   def create
@@ -23,13 +24,15 @@ class MaterialsController < ApplicationController
   end
 
   def edit
-    if request.referer.include?("products")
+    if request.referer.nil?
+    elsif request.referer.include?("products")
       @back_to = request.referer
     elsif request.referer.include?("menus")
       @back_to = request.referer
     end
     @material = Material.find(params[:id])
-    @material.material_food_additives.build if @material.food_additives.length == 0
+    @material.material_food_additives.build if @material.material_food_additives.length == 0
+    @food_additive = FoodAdditive.new
   end
 
   def update

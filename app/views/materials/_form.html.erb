@@ -112,10 +112,12 @@
   <% if @material.allergy.nil? %>
     <div class="col-md-12 form-group" style="padding:0;">
       <%= f.label :allergy, "アレルギーチェック[必須]", class:"col-md-12",style:"padding:0;margin-left:20px;" %>
+      <div class="col-md-12 form-group" style="padding-left:40px;">
+        ＊以下成分が含まれている場合は必ずチェックを付ける、食品表示の欄に記載あり。
+      </div>
       <div class="col-md-1 form-group" style="margin-left:20px;">
         <%= label_tag :egg, '卵' %>
         <%= f.check_box  :allergy, {multiple: true, class:"form-control"}, 'egg' %>
-
       </div>
       <div class="col-md-1 form-group" >
         <%= label_tag :milk, '乳' %>
@@ -145,6 +147,9 @@
   <% else %>
     <div class="col-md-12 form-group" style="padding:0;">
       <%= f.label :allergy, "アレルギーチェック[必須]", class:"col-md-12",style:"padding:0;margin-left:20px;" %>
+      <div class="col-md-12 form-group" style="padding-left:40px;">
+        ＊以下成分が含まれている場合は必ずチェックを付ける、食品表示の欄に記載あり。
+      </div>
       <div class="col-md-1 form-group" style="margin-left:20px;">
         <%= label_tag :egg, '卵' %>
         <%= f.check_box  :allergy, {multiple: true, checked: @material.allergy.include?("egg"),class:"form-control"}, 'egg' %>
@@ -176,27 +181,42 @@
       </div>
     </div>
   <% end %>
-  <div class="col-md-12 form-group" style="padding:0;">
+  <div class="modal-div col-md-12 form-group" style="padding:0;">
     <div class="col-md-12" style="margin-top:20px;">
-    <%= f.label :food_additive, "食品添加物[必須]", class:"",style:"padding:0;margin-left:20px;" %>
-      <span class="glyphicon glyphicon-plus-sign add_food_additive" style="color:#428bca;font-size:20px;"></span>
+      <%= f.label :food_additive, "食品添加物[必須]", class:"",style:"padding:0;margin-left:20px;" %>
+      <a href="http://www.caa.go.jp/foods/pdf/syokuhin496.pdf" target="_blank">
+        <span class="glyphicon glyphicon-question-sign" style="font-size:20px;" aria-hidden="true"></span>
+      </a>
     </div>
-    <ul class='food_additive_ul' style="list-style-type:none;">
-    <% i=0 %>
-    <%= f.fields_for :material_food_additives, @material.material_food_additives do |mm| %>
-      <li class='add_li_food_additive col-md-4' style="">
-        <div class="select_food_additive col-md-8" style="padding:3px;width:210px;">
-         <%= mm.select :food_additive_id, FoodAdditive.pluck(:name, :id),{include_blank: true},
-          class:'input_select_food_additive' %>
-       </div>
-        <div class="remove_food_additive col-md-3" style="padding-top:10px;">
-          <span class="glyphicon glyphicon-remove remove_btn" style="color:#d9534f;"></span>
-          <%= mm.check_box :_destroy,class:"destroy_food_additives check_box form-control", style: "display:none;" %>
+    <div class="col-md-12 form-group" style="padding-left:40px;">
+      ＊食品表示にあるものは全て書きだす
+    </div>
+    <div class="col-md-3">
+      <ul class='col-md-12 food_additive_ul list-group' style="list-style:none;margin-bottom:3px;">
+        <div class='col-md-12' style="">
+          <label class="col-md-12">
+            物質名<span class="glyphicon glyphicon-plus-sign" data-toggle="modal" data-target="#sampleModal" style="color:#428bca;font-size:20px;"></span>
+          </label>
         </div>
-      </li>
-      <% i += 1 %>
-      <% end %>
-    </ul>
+      <% i=0 %>
+      <%= f.fields_for :material_food_additives, @material.material_food_additives do |mm| %>
+        <li class='add_li_food_additive col-md-12 list-group-item' style="">
+          <div class="select_food_additive col-md-10" style="padding:3px;width:210px;float:left;">
+           <%= mm.select :food_additive_id, FoodAdditive.pluck(:name, :id),{include_blank: true},
+            class:'input_select_food_additive' %>
+          </div>
+          <div class="text-right remove_food_additive col-md-2" style="padding-top:10px;">
+            <span class="glyphicon glyphicon-remove remove_btn" style="color:#d9534f;"></span>
+            <%= mm.check_box :_destroy,class:"destroy_food_additives check_box form-control", style: "display:none;" %>
+          </div>
+        </li>
+        <% i += 1 %>
+        <% end %>
+      </ul>
+      <div class="col-md-12">
+        <button type="button" class="add_food_additive btn btn-default">追加</button>
+      </div>
+    </div>
   </div>
 
   <div class="col-md-12 form-group">
@@ -212,7 +232,6 @@
     </div>
   </div>
   <%= f.hidden_field :back_to, :value => @back_to %>
-
   <% if local_assigns[:locals][:edit_flag] == true %>
     <div class="action col-md-12" style="margin-bottom:20px;">
       <%= submit_tag "更新する", class:"btn btn-success", data: { confirm: "更新すると「#{@material.name}」を使用している、メニュー等全てに反映されますが、よろしいですか？"} %>
@@ -223,3 +242,28 @@
     </div>
   <% end %>
 <% end %>
+
+
+<!-- モーダル・ダイアログ -->
+
+<div class="modal fade" id="sampleModal" tabindex="-1">
+  <%= form_for(@food_additive,remote:true) do |f| %>
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span>×</span></button>
+				<h4 class="modal-title">食品添加物新規作成</h4>
+			</div>
+
+			<div class="modal-body">
+        <label>添加物名（物質名）</label>
+        <%= f.text_field :name, class:'form-control' %>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="modal-close btn btn-default" data-dismiss="modal">閉じる</button>
+				<%= f.submit '作成する', data: { confirm: "新規作成してよろしいですか？"} , class:"btn btn-primary" %>
+			</div>
+		</div>
+	</div>
+  <% end %>
+</div>

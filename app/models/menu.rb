@@ -1,4 +1,5 @@
 class Menu < ApplicationRecord
+  serialize :name
   has_paper_trail
   has_many :menu_materials,->{order("menu_materials.row_order asc") }, dependent: :destroy
   has_many :materials, through: :menu_materials

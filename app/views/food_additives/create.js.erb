@@ -1,0 +1,12 @@
+
+<% if @status[0] == 'success' %>
+  $(".modal-close").click();
+  <% id = @food_additive.id %>
+  <% name = @food_additive.name %>
+  $(".input_select_food_additive").append($('<option value="<%= id %>" ><%= name %></option>'));
+  $(".add_li_food_additive").last().find(".select_food_additive .select2-selection__rendered").text("<%= name %>");
+  $(".add_li_food_additive").last().find(".input_select_food_additive").val("<%= id %>");
+  $(".modal-body").children("input").val("");
+<%  elsif @status == 'fail' %>
+  alert('error!');
+<% end %>

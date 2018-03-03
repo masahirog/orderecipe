@@ -38,4 +38,5 @@ Rails.application.routes.draw do
   resources :materials
   resources :orders
   resources :versions
+  resources :food_additives
 end

@@ -29,14 +29,23 @@ class MenusController < ApplicationController
   end
 
   def edit
-    if request.referer.include?("products")
+    if request.referer.nil?
+    elsif request.referer.include?("products")
       @back_to = request.referer
     end
     @menu = Menu.includes(:menu_materials,{materials:[:vendor]}).find(params[:id])
     @menu.menu_materials.build  if @menu.materials.length == 0
+    arr =[]
+    @menu.materials.each do |material|
+      material.material_food_additives .each do |material_food_additive|
+        arr << [material.id,material_food_additive.food_additive_id]
+      end
+    end
+    @ar = arr.group_by {|material|material[0]}
   end
 
   def update
+    binding.pry
     @menu = Menu.find(params[:id])
     @menu.update(menu_create_update)
 
@@ -90,7 +99,7 @@ class MenusController < ApplicationController
   private
 
     def menu_create_update
-      params.require(:menu).permit(:name, :recipe, :category, :recipe, :serving_memo, :cost_price,:food_label_name,
+      params.require(:menu).permit({name:[]}, :recipe, :category, :recipe, :serving_memo, :cost_price,:food_label_name,
                                      menu_materials_attributes: [:id, :amount_used, :menu_id, :material_id, :_destroy,:preparation,:post,
                                      :row_order,material_attributes:[:name, ]])
     end
