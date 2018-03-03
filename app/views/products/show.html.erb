@@ -48,18 +48,34 @@
       <th class="active col-md-4">販売価格</th>
       <td><%= @product.sell_price %>円</td>
     </tr>
-    <tr class="">
+		<tr class="">
      <th class="active col-md-4">原価価格（税込み）</th>
      <td><%= @product.cost_price %>円</td>
    </tr>
    <tr class="">
-    <th class="active col-md-4">説明文</th>
-    <td><%= simple_format(@product.description) %></td>
-  </tr>
-    <tr class="">
-     <th class="active col-md-4">内容物</th>
-     <td><%=simple_format( @product.contents) %></td>
-   </tr>
+		 <th class="active col-md-4">説明文</th>
+		 <td><%= simple_format(@product.description) %></td>
+		</tr>
+		<tr class="">
+			<th class="active col-md-4">内容物</th>
+			<td><%=simple_format( @product.contents) %></td>
+		</tr>
+		<tr class="">
+			<th class="active col-md-4">アレルギー</th>
+			<td>
+				<% @allergies.each do |al| %>
+					<%= al %>、
+				<% end %>
+			</td>
+		</tr>
+		<tr class="">
+			<th class="active col-md-4">食品添加物</th>
+			<td>
+				<% @additives.each do |ad| %>
+					<%= ad %>、
+				<% end %>
+			</td>
+		</tr>
  </table>
  </div>
  <div class="col-md-1">

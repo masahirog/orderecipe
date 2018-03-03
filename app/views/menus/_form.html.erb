@@ -13,6 +13,10 @@
       終売の食材を選択しています。食材を変更してください(((；ﾟДﾟ)))
   </nav>
   <div class="form-group col-md-4">
+    <%= f.label :name ,'メニュー名' %><br>
+    <%= f.text_field :name, class: "form-control", id: "material_name",style:"width:100%;" %>
+  </div>
+  <div class="form-group col-md-4">
     <%= f.label :food_label_name ,'食品表示名' %><br>
     <%= f.text_field :food_label_name, class: "form-control", id: "food_label_name",style:"width:100%;" %>
   </div>
@@ -30,11 +34,13 @@
     <%= f.label :serving_memo ,'盛付メモ' %><br>
     <%= f.text_area :serving_memo,style:"height:10em;width:100%;", class: "form-control" %>
   </div>
-
-
-  <div class="shokuhin col-md-12" style="margin:20px 0;">
-    <%= binding.pry %>
-    <%= f.select :name, grouped_options_for_select(@ar),{},{value: (f.object.name), class:"test col-md-12",multiple:true} %>
+  <div class="used_additives col-md-12" style="margin:20px 0;">
+    <%= f.label :used_additives ,"使用食品添加物" %><br>
+    <% if f.object.used_additives.nil? %>
+      <%= f.select :used_additives, grouped_options_for_select(@ar),{include_hidden: false},{class:"select_used_additives col-md-12",multiple:true} %>
+    <% else %>
+      <%= f.select :used_additives, grouped_options_for_select(@ar,f.object.used_additives),{ include_hidden: false},{class:"select_used_additives col-md-12",multiple:true} %>
+    <% end %>
   </div>
 
   <div class="col-md-12 form-group">

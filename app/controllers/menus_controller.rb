@@ -14,6 +14,7 @@ class MenusController < ApplicationController
   def new
     @menu = Menu.new
     @menu.menu_materials.build(row_order: 0)
+    @ar = Menu.used_additives(@menu.materials)
   end
 
   def create
@@ -35,20 +36,12 @@ class MenusController < ApplicationController
     end
     @menu = Menu.includes(:menu_materials,{materials:[:vendor]}).find(params[:id])
     @menu.menu_materials.build  if @menu.materials.length == 0
-    arr =[]
-    @menu.materials.each do |material|
-      material.material_food_additives .each do |material_food_additive|
-        arr << [material.id,material_food_additive.food_additive_id]
-      end
-    end
-    @ar = arr.group_by {|material|material[0]}
+    @ar = Menu.used_additives(@menu.materials)
   end
 
   def update
-    binding.pry
     @menu = Menu.find(params[:id])
     @menu.update(menu_create_update)
-
     if @menu.save
       if params["menu"]["back_to"].blank?
         redirect_to menu_path, notice: "
@@ -66,6 +59,7 @@ class MenusController < ApplicationController
 
   def show
     @menu = Menu.includes(:menu_materials,{materials: [:vendor]}).find(params[:id])
+    @arr = Menu.allergy_seiri(@menu)
   end
 
   def print
@@ -99,7 +93,7 @@ class MenusController < ApplicationController
   private
 
     def menu_create_update
-      params.require(:menu).permit({name:[]}, :recipe, :category, :recipe, :serving_memo, :cost_price,:food_label_name,
+      params.require(:menu).permit({used_additives:[]},:name, :recipe, :category, :recipe, :serving_memo, :cost_price,:food_label_name,
                                      menu_materials_attributes: [:id, :amount_used, :menu_id, :material_id, :_destroy,:preparation,:post,
                                      :row_order,material_attributes:[:name, ]])
     end

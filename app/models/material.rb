@@ -1,4 +1,5 @@
 class Material < ApplicationRecord
+  serialize :allergy
   has_many :menu_materials, dependent: :destroy
   has_many :menus, through: :menu_materials
 
@@ -57,19 +58,10 @@ class Material < ApplicationRecord
         end
       end
     end
-    # fuga = []
-    # hoge.each_with_object({}) do | h, obj |
-    #  obj[h["material_id"]] ||= { "amount_used" =>  0}
-    #  obj[h["material_id"]]["amount_used"] += h["amount_used"]
-    #  obj[h["material_id"]]["vendor_id"] = h["vendor_id"]
-    #  fuga = obj.map{|k, v| {"material_id"=> k}.merge(v)}
-    # end
-    # fuga.sort! do |a, b|
     hoge.sort! do |a, b|
       a["vendor_id"] <=> b["vendor_id"]
     end
     ar = hoge.group_by {|name|name.values[0] }
-    # return fuga
     return ar
   end
 
@@ -88,7 +80,22 @@ class Material < ApplicationRecord
     # order = Order.find(params[:id])
     # materials_this_vendor = order.materials.where(vendor_id:params[:vendor][:id])
     # return materials_this_vendor
+  end
 
+  def self.change_additives(material_ids)
+    ar =[]
+    material_ids.each do |id|
+      arr=[]
+      if Material.find(id).material_food_additives.present?
+        Material.find(id).material_food_additives .each do |material_food_additive|
+          arr << {"text" => material_food_additive.food_additive.name, "id" => material_food_additive.food_additive_id}
+        end
+        hash = { "text" => Material.find(id).name,"children" =>arr}
+        ar << hash
+      else
+      end
+    end
+    @ar = ar
   end
 
   private

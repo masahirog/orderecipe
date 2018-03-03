@@ -7,34 +7,56 @@
 	  <%= link_to 'メニュー編集', "/menus/#{@menu.id}/edit", method: :get,class: "btn btn-primary pull-right" %>
     <%= link_to "印刷する", "/menus/print/#{@menu.id}.pdf",method:"get", class:"btn btn-success pull-right",:target=>"_blank", style:"margin:0 20px 0 10px;"%>
 </div>
-<div>
-  <div class="active col-md-12" style="padding:10px">
-    <div class="col-md-2">メニュー名</div>
-    <div class="col-md-2">メニュー原価(税込)</div>
-    <div class="col-md-2">カテゴリー</div>
-    <div class="col-md-3">調理メモ</div>
-    <div class="col-md-3">盛り付けメモ</div>
-  </div>
-  <ul class="list list-group">
-    <li class="list-group-item col-md-12">
-      <div class="col-md-2"><%= @menu.name %></div>
-      <div class="col-md-2"><%= @menu.cost_price %> 円</div>
-      <div class="col-md-2"><%= @menu.category %></div>
-      <div class="col-md-3"><%= simple_format(@menu.recipe) %></div>
-      <div class="col-md-3"><%= simple_format(@menu.serving_memo) %></div>
-    </li>
-  </ul>
-</div>
 
+<div class="col-md-6">
+ <table class="table">
+     <tr class="">
+       <th class="active col-md-4">メニュー名</th>
+       <td class=""><%= @menu.name %></td>
+      </tr>
+			<tr class="">
+			 <th class="active col-md-4">メニュー原価(税込)</th>
+			 <td><%= @menu.cost_price %></td>
+			 </tr>
+      <tr class="">
+       <th class="active col-md-4">カテゴリー</th>
+       <td><%= @menu.category %></td>
+       </tr>
+			 <tr class="">
+				<th class="active col-md-4">アレルギー</th>
+				<td>
+					<% @arr.each do |a| %>
+						<%= a %>、
+					<% end %>
+				</td>
+				</tr>
+			 <tr class="">
+				<th class="active col-md-4">使用食品添加物</th>
+				<td>
+					<% @menu.used_additives.each do |ua| %>
+					<%= FoodAdditive.find(ua.to_i).name %>、
+					<% end %>
+				</td>
+			</tr>
+      <tr class="">
+       <th class="active col-md-4">調理メモ</th>
+       <td><%= simple_format(@menu.recipe) %></td>
+     </tr>
+     <tr class="">
+      <th class="active col-md-4">盛り付けメモ</th>
+      <td><%= simple_format(@menu.serving_memo) %></td>
+    </tr>
+ </table>
+</div>
 <div>
     <div class="col-md-12" style="padding:10px">
-      <div class="col-md-2">食材</div>
-      <div class="col-md-1">原価</div>
-      <div class="col-md-2">仕入先</div>
-      <div class="col-md-1">分量</div>
-      <div class="col-md-1">使用価格</div>
-      <div class="col-md-2">仕込み内容</div>
-      <div class="col-md-1">持ち場</div>
+      <label class="col-md-2">食材</label>
+      <label class="col-md-1">原価</label>
+      <label class="col-md-2">仕入先</label>
+      <label class="col-md-1">分量</label>
+      <label class="col-md-1">使用価格</label>
+      <label class="col-md-2">仕込み内容</label>
+      <label class="col-md-1">持ち場</label>
   </div>
   <ul class="list list-group">
     <% @menu.menu_materials.each do |mm| %>

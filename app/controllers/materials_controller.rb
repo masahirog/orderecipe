@@ -1,4 +1,5 @@
 class MaterialsController < ApplicationController
+  protect_from_forgery :except => [:change_additives]
   def index
     @search = Material.search(params).includes(:vendor).page(params[:page]).per(20)
   end
@@ -60,6 +61,14 @@ class MaterialsController < ApplicationController
       @mm.update_attribute(:material_id, mm[:material_id])
     end
     redirect_to :back
+  end
+
+  def change_additives
+    @ar = Material.change_additives(params[:data])
+    respond_to do |format|
+      format.html
+      format.json{render :json => @ar}
+    end
   end
 
   private

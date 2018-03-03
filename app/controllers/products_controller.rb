@@ -51,6 +51,8 @@ class ProductsController < ApplicationController
 
   def show
   @product = Product.includes(:product_menus,{menus: [:menu_materials, :materials]}).find(params[:id])
+  @allergies = Product.allergy_seiri(@product)
+  @additives = Product.additive_seiri(@product)
     respond_to do |format|
       format.html
       format.csv do
@@ -72,6 +74,7 @@ class ProductsController < ApplicationController
     @bento_id = Product.bentoid()
     @product = Product.includes(:product_menus,{menus: [:menu_materials,:materials]}).find(params[:id])
     @product.product_menus.build  if @product.menus.length == 0
+    @allergies = Product.allergy_seiri(@product)
   end
 
   def update

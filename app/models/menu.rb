@@ -1,5 +1,5 @@
 class Menu < ApplicationRecord
-  serialize :name
+  serialize :used_additives
   has_paper_trail
   has_many :menu_materials,->{order("menu_materials.row_order asc") }, dependent: :destroy
   has_many :materials, through: :menu_materials
@@ -39,6 +39,33 @@ class Menu < ApplicationRecord
       hoge << hash
     end
     return hoge
+  end
+
+  def self.used_additives(materials)
+    ar =[]
+    materials.each do |material|
+      arr=[]
+      if material.material_food_additives.present?
+        material.material_food_additives .each do |material_food_additive|
+          arr << [material_food_additive.food_additive.name,material_food_additive.food_additive_id]
+        end
+        ar << [material.name,arr]
+      else
+      end
+    end
+    @ar = ar
+  end
+
+  def self.allergy_seiri(menu)
+    arr=[]
+    menu.materials.each do |mate|
+      arr << mate.allergy
+    end
+    @arr = arr.flatten.uniq
+    @arr.delete("")
+    @arr.delete("0")
+    allergy = {"egg"=>"卵","milk"=>"乳","shrimp"=>"えび","crab"=>"かに","peanuts"=>"落花生","soba"=>"そば","wheat"=>"小麦"}
+    @arr = @arr.map{|ar| allergy[ar]}
   end
 
   private

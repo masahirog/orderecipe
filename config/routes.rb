@@ -28,6 +28,8 @@ Rails.application.routes.draw do
   post'menus/include_update' => 'menus#include_update'
   get 'menus/print/:id' => 'menus#print'
   post'orders/order_print_all/:id' => 'orders#order_print_all'
+  post 'materials/change_additives' => 'materials#change_additives'
+
   resources :menus
   resources :menus do
     put :sort

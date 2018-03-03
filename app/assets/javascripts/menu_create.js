@@ -7,7 +7,7 @@ $(function(){
   $('.input_select_material').select2({
     placeholder: "食材資材を選択してください"
   });
-  $('.test').select2({
+  $('.select_used_additives').select2({
 
   });
 
@@ -37,6 +37,7 @@ $(function(){
 
 // input内のチェックと各カラムへの代入、materialデータベースに無ければ空欄にする
   $(".material_ul").on('change','.input_select_material', function(){
+    additives_select_change()
     $('.eos-alert').hide();
     $('body').css('padding-top',0);
 
@@ -221,6 +222,29 @@ $(function(){
   function reset_row_order(){
     $(".add_li_material").each(function(i){
       $(this).children(".row_order").children().val(i)
-    })};
+    });
+  };
 
+  function additives_select_change() {
+    var array = [];
+    $(".add_li_material").each(function(){
+      var id = $(this).find(".input_select_material").val();
+      array.push(id);
+    });
+    var data = array
+    $.ajax({
+      type: 'POST',
+      url: "/materials/change_additives",
+      data: { data : data },
+      dataType: "json",
+      async: false
+    })
+    .done(function(data){
+      $(".select_used_additives").select2('destroy');
+      $(".select_used_additives optgroup").remove();
+      $(".select_used_additives").select2({
+        data: data
+      });
+    });
+  }
 });

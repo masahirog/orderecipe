@@ -36,5 +36,27 @@ class Product < ApplicationRecord
       data = max + 1
     end
   end
-
+  def self.allergy_seiri(product)
+    arr=[]
+    product.menus.each do |prme|
+      prme.materials.each do |mate|
+        arr << mate.allergy
+      end
+    end
+    @arr = arr.flatten.uniq
+    @arr.delete("")
+    @arr.delete("0")
+    allergy = {"egg"=>"卵","milk"=>"乳","shrimp"=>"えび","crab"=>"かに","peanuts"=>"落花生","soba"=>"そば","wheat"=>"小麦"}
+    @arr = @arr.map{|ar| allergy[ar]}
+  end
+  def self.additive_seiri(product)
+    arr=[]
+    product.menus.each do |prme|
+      arr << prme.used_additives
+    end
+    @brr = arr.flatten.uniq
+    @brr.delete("")
+    @brr.delete("0")
+    @brr = @brr.map{|br| FoodAdditive.find(br).name}
+  end
 end
