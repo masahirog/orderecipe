@@ -245,7 +245,7 @@
 
 
 <!-- モーダル・ダイアログ -->
-
+<%= @food_additive = FoodAdditive.new unless @food_additive %>
 <div class="modal fade" id="sampleModal" tabindex="-1">
   <%= form_for(@food_additive,remote:true) do |f| %>
 	<div class="modal-dialog">

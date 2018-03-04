@@ -8,7 +8,7 @@ class Material < ApplicationRecord
 
   has_many :food_additives, through: :material_food_additives
   has_many :material_food_additives
-  accepts_nested_attributes_for :material_food_additives, allow_destroy: true
+  accepts_nested_attributes_for :material_food_additives, allow_destroy: true, :reject_if => :reject_additives
 
   belongs_to :vendor
 
@@ -98,6 +98,9 @@ class Material < ApplicationRecord
     @ar = ar
   end
 
+  def reject_additives(attributed)
+     attributed['food_additive_id'].blank?
+  end
   private
   # def update_cache
   #   menu_materials = MenuMaterial.where( material_id: self.id )

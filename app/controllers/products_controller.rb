@@ -162,10 +162,12 @@ class ProductsController < ApplicationController
 
   def hyoji
     @product = Product.find(params[:id])
+    @allergies = Product.allergy_seiri(@product)
+    @additives = Product.additive_seiri(@product)
     respond_to do |format|
      format.html
      format.pdf do
-       pdf = HyojiPdf.new(@product,params[:datetime_ida])
+       pdf = HyojiPdf.new(@product,params[:datetime_ida],@allergies,@additives)
        send_data pdf.render,
          filename:    "#{@product.id}_shokuhinhyoji.pdf",
          type:        "application/pdf",
