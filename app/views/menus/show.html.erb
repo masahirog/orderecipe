@@ -26,15 +26,17 @@
 				<th class="active col-md-4">アレルギー</th>
 				<td>
 					<% @arr.each do |a| %>
-						<%= a %>、
+						<%= a + "、" unless a.nil?%>
 					<% end %>
 				</td>
 				</tr>
 			 <tr class="">
 				<th class="active col-md-4">使用食品添加物</th>
 				<td>
-					<% @menu.used_additives.each do |ua| %>
-					<%= FoodAdditive.find(ua.to_i).name %>、
+					<% if @menu.used_additives.present? %>
+						<% @menu.used_additives.each do |ua| %>
+							<%= FoodAdditive.find(ua.to_i).name + "、"%>
+						<% end %>
 					<% end %>
 				</td>
 			</tr>

@@ -46,6 +46,7 @@ class Product < ApplicationRecord
     @arr = arr.flatten.uniq
     @arr.delete("")
     @arr.delete("0")
+    @arr.delete(0)
     allergy = {"egg"=>"卵","milk"=>"乳","shrimp"=>"えび","crab"=>"かに","peanuts"=>"落花生","soba"=>"そば","wheat"=>"小麦"}
     @arr = @arr.map{|ar| allergy[ar]}
   end
@@ -57,6 +58,7 @@ class Product < ApplicationRecord
     @brr = arr.flatten.uniq
     @brr.delete("")
     @brr.delete("0")
+    @brr.delete(0)
     @brr = @brr.map{|br| FoodAdditive.find(br).name}
   end
 end

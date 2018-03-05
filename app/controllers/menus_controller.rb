@@ -34,11 +34,10 @@ class MenusController < ApplicationController
     elsif request.referer.include?("products")
       @back_to = request.referer
     end
-    @menu = Menu.includes(:menu_materials,{materials:[:vendor]}).find(params[:id])
+    @menu = Menu.includes(:menu_materials,{materials:[:vendor,:material_food_additives]}).find(params[:id])
     @menu.menu_materials.build  if @menu.materials.length == 0
     @ar = Menu.used_additives(@menu.materials)
   end
-
   def update
     @menu = Menu.find(params[:id])
     @menu.update(menu_create_update)

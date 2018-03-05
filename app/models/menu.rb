@@ -46,7 +46,7 @@ class Menu < ApplicationRecord
     materials.each do |material|
       arr=[]
       if material.material_food_additives.present?
-        material.material_food_additives .each do |material_food_additive|
+        material.material_food_additives.each do |material_food_additive|
           arr << [material_food_additive.food_additive.name,material_food_additive.food_additive_id]
         end
         ar << [material.name,arr]
