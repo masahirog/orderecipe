@@ -23,7 +23,7 @@ class HyojiPdf < Prawn::Document
           cells.align = :center
           cells.height = 8
           row(1).height = 40
-
+          row(0..1).overflow = :shrink_to_fit
           cells.border_width = 0.1
           row(-1).borders = [:bottom,:right]
           row(-2).columns(1).borders = [:right]
@@ -42,8 +42,8 @@ class HyojiPdf < Prawn::Document
     data_child = ""
     #原材料名の表示(メニュー名)
     l = product.menus.length
-    product.menus.each do |pm|
-      data_child = data_child +"#{pm.food_label_name}、"
+    product.menus do |pm|
+      data_child = data_child +"#{pm.food_label_name}、"  unless pm.category=="容器"
     end
     #食品添加物の取得
 

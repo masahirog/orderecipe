@@ -64,6 +64,7 @@ class Menu < ApplicationRecord
     @arr = arr.flatten.uniq
     @arr.delete("")
     @arr.delete("0")
+    @arr.delete(0)
     allergy = {"egg"=>"卵","milk"=>"乳","shrimp"=>"えび","crab"=>"かに","peanuts"=>"落花生","soba"=>"そば","wheat"=>"小麦"}
     @arr = @arr.map{|ar| allergy[ar]}
   end
