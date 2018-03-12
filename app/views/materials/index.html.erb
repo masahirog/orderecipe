@@ -37,8 +37,8 @@
       <label>終売：</label>
       <%= select :end_of_sales, :value, [["販売のみ", 0], ["終売のみ", 1]], {include_blank: true},class:"form-control" %>
     </div>
-    <div class="kensaku form-group col-md-2">
-      <label>　</label>
+    <div class="kensaku form-group col-md-1">
+			<label>　　　　</label>
       　<%= submit_tag "検索" ,class:"btn btn-primary" %>
     </div>
   <% end %>
@@ -46,38 +46,32 @@
 <div class="col-md-12">
   <%= paginate(@search) %>
 </div>
-<div>
-  <div class="col-md-12" style="padding:10px;">
-    <div class="col-md-2">食材・資材名</div>
-    <div class="col-md-2">発注名</div>
-    <div class="col-md-1">発注単位</div>
-    <div class="col-md-1"></div>
-    <div class="col-md-1">価格(円)</div>
-    <div class="col-md-1">原価(円)</div>
-    <div class="col-md-1">カテゴリ</div>
-    <div class="col-md-1">仕入先</div>
-    <div class="col-md-1">終売</div>
-    <div class="col-md-1">使用</div>
-  </div>
-  <ul class='list-group' style="list-style-type: none;">
-    <% @search.each do |material| %>
-      <li class="li-active materials_li col-md-12 list-group-item">
-        <div class="material_name col-md-2"><%=link_to "#{material.name}", "/materials/#{material.id}/edit" %></div>
-        <div class="col-md-2"><%= material.order_name %></div>
-        <div class="col-md-1 text-right"><%= material.order_unit_quantity %><%= material.order_unit %></div>
-        <div class="col-md-1 text-right"><%= number_with_delimiter(material.calculated_value) %><%= material.calculated_unit %></div>
-        <div class="col-md-1 text-right"><%= number_with_delimiter(material.calculated_price) %></div>
-        <div class="col-md-1 text-right"><%= material.cost_price.round(2) %></div>
-        <div class="col-md-1"><%= material.category %></div>
-        <div class="col-md-1"><%= material.vendor.company_name%></div>
-        <div class="col-md-1 end_of_sales"><%= p "✔" if material.end_of_sales == 1 %></div>
-        <div class="col-md-1">
-          <%=button_to "確認", "/materials/include_material/#{material.id}", method: :get,class:"btn btn-primary" %>
-        </div>
-      </li>
-    <% end %>
-  </ul>
-</div>
+<table class="materials-table" style="width:1240px">
+  <tr class="" style="padding:10px;">
+    <th class="">食材・資材名</th>
+    <th class="">発注名</th>
+    <th>発注単位</th>
+    <th class="">価格(円)</th>
+    <th class="">原価(円)</th>
+    <th class="">カテゴリ</th>
+    <th class="">仕入先</th>
+    <th class="">終売</th>
+    <th style="text-align:center;">使用</th>
+  </tr>
+	<% @search.each do |material| %>
+    <tr class="materials_li ">
+      <td class="material_name "><%=link_to "#{material.name}", "/materials/#{material.id}/edit" %></td>
+      <td class=""><%= material.order_name %></td>
+      <td class=""><%= material.order_unit_quantity %><%= material.order_unit %> ： <%= number_with_delimiter(material.calculated_value) %><%= material.calculated_unit %></td>
+      <td class=" text-right"><%= number_with_delimiter(material.calculated_price) %></td>
+      <td class=" text-right"><%= material.cost_price.round(2) %></td>
+      <td class=""><%= material.category %></td>
+      <td class=""><%= material.vendor.company_name%></td>
+      <td class=" end_of_sales"><%= p "✔" if material.end_of_sales == 1 %></td>
+      <td style="text-align:center;"><%=button_to "確認", "/materials/include_material/#{material.id}", method: :get,class:"btn btn-default btn-sm", style:"padding:3px 4px;" %></td>
+  	</tr>
+	<% end %>
+</table>
 
 <% if @search.size == 0 then %>
 <p>該当する食材・資材が存在しません</p>

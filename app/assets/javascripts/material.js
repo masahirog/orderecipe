@@ -12,6 +12,17 @@ $(function(){
     $(this).parent().parent(".add_li_food_additive").hide();
   });
 
+  //追加ボタン時のカーソル移動
+  $(".add_food_additive").keypress(function (e) {
+    addInput();
+    var code = e.which ? e.which : e.keyCode;
+    if (code == 13) {
+    var last_li =$(".add_li_food_additive").last()
+    last_li.find(".input_select_food_additive").select2('open');
+    e.preventDefault();
+    }
+  });
+
 
   $('.all_select_material').select2({
   width:"270px",
