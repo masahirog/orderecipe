@@ -25,6 +25,7 @@ class MenusController < ApplicationController
        <div class='alert alert-success' role='alert' style='font-size:15px;'>「#{@menu.name}」を作成しました
        　　続けてメニューを作成する：<a href='/menus/new'>新規作成</a></div>".html_safe
      else
+       @ar = Menu.used_additives(@menu.materials)
        render 'new'
      end
   end
@@ -52,6 +53,7 @@ class MenusController < ApplicationController
         <div class='alert alert-success' role='alert' style='font-size:15px;'>「#{@menu.name}」を更新しました：".html_safe
       end
     else
+      @ar = Menu.used_additives(@menu.materials)
       render "edit"
     end
   end

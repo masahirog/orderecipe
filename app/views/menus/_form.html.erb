@@ -36,10 +36,10 @@
   </div>
   <div class="used_additives col-md-12" style="margin:20px 0;">
     <%= f.label :used_additives ,"使用食品添加物" %><br>
-    <% if f.object.used_additives.nil? %>
-      <%= f.select :used_additives, grouped_options_for_select(@ar),{include_hidden: false},{class:"select_used_additives col-md-12",multiple:true} %>
-    <% else %>
+    <% if f.object.used_additives.present? %>
       <%= f.select :used_additives, grouped_options_for_select(@ar,f.object.used_additives),{ include_hidden: false},{class:"select_used_additives col-md-12",multiple:true} %>
+    <% else %>
+      <%= f.select :used_additives, grouped_options_for_select(@ar),{include_hidden: false},{class:"select_used_additives col-md-12",multiple:true} %>
     <% end %>
   </div>
 
