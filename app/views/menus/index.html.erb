@@ -33,20 +33,20 @@
 <div>
   <div class="col-md-12" style="padding:10px;">
     <div class="col-md-2">メニュー名</div>
+		<div class="col-md-2">食品表示名</div>
     <div class="col-md-1">カテゴリ</div>
-    <div class="col-md-3">レシピ</div>
-    <div class="col-md-3">盛り付けメモ</div>
+		<div class="col-md-3">使用添加物</div>
     <div class="col-md-1">原価(税込)</div>
-		<div class="col-md-1">終売</div>
+		<div class="col-md-1">終売食品</div>
     <div class="col-md-1 text-right">使用お弁当</div>
   </div>
   <ul class='list-group' style="list-style-type: none;">
     <% @search.each do |menu| %>
       <li class="li-active menus_li col-md-12 list-group-item" >
         <div class="menu_name col-md-2"><%= link_to "#{menu.name}", "/menus/#{menu.id}" %></div>
+				<div class="col-md-2"><%= menu.food_label_name %></div>
         <div class="col-md-1"><%= menu.category %></div>
-        <div class="col-md-3"><%= menu.recipe %></div>
-        <div class="col-md-3"><%= menu.serving_memo %></div>
+				<div class="col-md-3"><%= menu.used_additives %></div>
         <div class="cost_price col-md-1"><%= menu.cost_price %>円</div>
 				<div class="col-md-1">
 					<% menu.materials.each do |m| %>
@@ -57,7 +57,7 @@
 					<% end %>
 				</div>
         <div class="col-md-1 text-right">
-          <%=button_to "確認", "/menus/include_menu/#{menu.id}", method: :get,class:"btn btn-primary" %>
+          <%=button_to "確認", "/menus/include_menu/#{menu.id}", method: :get,class:"btn btn-default btn-sm" %>
         </div>
       </li>
     <% end %>

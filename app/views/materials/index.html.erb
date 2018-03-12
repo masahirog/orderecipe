@@ -68,7 +68,7 @@
       <td class=""><%= material.category %></td>
       <td class=""><%= material.vendor.company_name%></td>
       <td class=" end_of_sales"><%= p "✔" if material.end_of_sales == 1 %></td>
-      <td style="text-align:center;"><%=button_to "確認", "/materials/include_material/#{material.id}", method: :get,class:"btn btn-default btn-sm", style:"padding:3px 4px;" %></td>
+      <td style="text-align:center;"><%=button_to "確認", "/materials/include_material/#{material.id}", method: :get,class:"btn btn-default btn-sm" %></td>
   	</tr>
 	<% end %>
 </table>
