@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180303094841) do
+ActiveRecord::Schema.define(version: 20180314100628) do
 
   create_table "food_additives", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
@@ -21,8 +21,8 @@ ActiveRecord::Schema.define(version: 20180303094841) do
   create_table "material_food_additives", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "material_id"
     t.integer  "food_additive_id"
-    t.datetime "created_at",       null: false
-    t.datetime "updated_at",       null: false
+    t.datetime "created_at",       default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at",       default: -> { "CURRENT_TIMESTAMP" }, null: false
   end
 
   create_table "materials", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -30,7 +30,7 @@ ActiveRecord::Schema.define(version: 20180303094841) do
     t.string   "order_name"
     t.text     "calculated_value",    limit: 65535
     t.string   "calculated_unit"
-    t.integer  "calculated_price"
+    t.float    "calculated_price",    limit: 24
     t.float    "cost_price",          limit: 24
     t.string   "category"
     t.string   "order_code"
