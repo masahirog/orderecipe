@@ -64,6 +64,7 @@ gem 'exception_notification', :github => 'smartinez87/exception_notification'
 gem 'slack-notifier'
 gem 'active_hash'
 
+
 group :production do
   gem 'rails_12factor'
 end
