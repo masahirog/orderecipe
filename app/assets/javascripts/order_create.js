@@ -11,6 +11,11 @@ $(function(){
     width:"120px",
   });
 
+  $(".order_bento_id_search").on("change",function(){
+    var id =  parseInt($(this).val());
+    $(this).parent().parent().find(".input_select_product").val(id).change();
+  });
+
 
   //indexで使用
   $(".index_vendor_select").on("change",function(){
