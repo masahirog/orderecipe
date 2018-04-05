@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <html>
   <head>
     <title>Order</title>
@@ -7,6 +7,7 @@
     <%= csrf_meta_tags %>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-rc.2/css/select2.min.css" rel="stylesheet" />
     <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-rc.2/js/select2.min.js"></script>
   </head>
@@ -32,7 +33,6 @@
                   <li class="menu_li"><a href="/menus">メニュー</a></li>
                   <li class="menu_li"><a href="/materials">食材・資材</a></li>
                   <li class="menu_li"><a href="/vendors">仕入先</a></li>
-                  <li class="menu_li"><a href="/stocks">棚卸し</a></li>
                 </ul>
                 <div class="collapse navbar-collapse navbar-right" id="navbarEexample">
             			<ul class="nav navbar-nav">
@@ -61,14 +61,11 @@
       	</div>
       </nav>
     </header>
-    <% flash.each do |name, msg| %>
-      <%= content_tag :div, raw(msg), :id => name, :class => "alert" %>
-    <% end %>
-    <div class="all_body">
-      <%= yield %>
-    </div>
-    <div class="col-md-12 footer" style="height:20px;">
-
-    </div>
-  </body>
+		<ol class="breadcrumb">
+			<li><a href="/">ホーム</a></li>
+		  <li><a href="/stocks">棚卸しトップ</a></li>
+			<li class="active">新規</li>
+		</ol>
+		<%= render 'form', path: stocks_path, method: :post, locals: {new_flag:true} %>
+	</body>
 </html>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180314100628) do
+ActiveRecord::Schema.define(version: 20180405143026) do
 
   create_table "food_additives", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
@@ -42,6 +42,7 @@ ActiveRecord::Schema.define(version: 20180314100628) do
     t.string   "order_unit"
     t.text     "order_unit_quantity", limit: 65535
     t.text     "allergy",             limit: 65535
+    t.integer  "stock_management"
   end
 
   create_table "menu_materials", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -111,6 +112,21 @@ ActiveRecord::Schema.define(version: 20180314100628) do
     t.datetime "updated_at",                  default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.string   "product_image"
     t.integer  "bento_id"
+  end
+
+  create_table "stock_materials", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "stock_id"
+    t.integer  "material_id"
+    t.float    "amount",      limit: 24
+    t.text     "memo",        limit: 65535
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+  end
+
+  create_table "stocks", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
