@@ -3,7 +3,8 @@ class StocksController < ApplicationController
     @stocks = Stock.all
   end
   def new
-    @materials = Material.where(end_of_sales: 0)
+    @vendors = Vendor.all
+    @materials = Material.includes(:vendor).where(end_of_sales: 0).where(stock_management: 1)
     @stock = Stock.new
     @stock.stock_materials.build
     render :new, layout: false

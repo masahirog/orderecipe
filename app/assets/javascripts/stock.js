@@ -4,6 +4,18 @@ $(function(){
   placeholder: "選択してください",
   });
 
+  $("input"). keydown(function(e) {
+    if ((e.which && e.which === 13) || (e.keyCode && e.keyCode === 13)) {
+        return false;
+    } else {
+        return true;
+    }
+  });
+
+  $(".zero").on("click",function(){
+    $(this).parent().find(".input-amount").val(0);
+  });
+
   $(".stocks-all").on('change','.input-stock-materials-name', function(){
     var index = $(this).parent().parent().parent("li")
     var id = $(this).val();
@@ -23,6 +35,22 @@ $(function(){
       });
     };
   });
+
+  $(".vendor-select").on("change",function(){
+    $(".add_li_stock_material").show();
+    var id = parseInt($(this).val());
+    if (isNaN(id)) {
+    }else{
+    $(".add_li_stock_material").each(function(){
+      var vendor_id = parseInt( $(this).find(".vendor_id").text());
+      if (vendor_id == id) {
+      }else{
+      $(this).hide();
+      }
+    });
+    }
+  });
+
 
   //material追加
   $(".add_stock_material").on('click', function (){

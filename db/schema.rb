@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180314135454) do
+ActiveRecord::Schema.define(version: 20180405143026) do
 
   create_table "food_additives", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
@@ -42,6 +42,7 @@ ActiveRecord::Schema.define(version: 20180314135454) do
     t.string   "order_unit"
     t.text     "order_unit_quantity", limit: 65535
     t.text     "allergy",             limit: 65535
+    t.integer  "stock_management"
   end
 
   create_table "menu_materials", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

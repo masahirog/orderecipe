@@ -67,7 +67,6 @@ GEM
       activemodel (>= 4.0.0)
       activesupport (>= 4.0.0)
       mime-types (>= 1.16)
-    chunky_png (1.3.10)
     coderay (1.1.2)
     coffee-rails (4.1.1)
       coffee-script (>= 2.2.0)
@@ -347,8 +346,6 @@ GEM
       actionpack (>= 4.2.0, < 5.3)
       railties (>= 4.2.0, < 5.3)
     rmagick (2.16.0)
-    rqrcode (0.10.1)
-      chunky_png (~> 1.0)
     sass (3.5.1)
       sass-listen (~> 4.0.0)
     sass-listen (4.0.0)
@@ -423,7 +420,6 @@ DEPENDENCIES
   rails_12factor
   ranked-model
   rmagick
-  rqrcode
   sass-rails (~> 5.0)
   sdoc (~> 0.4.0)
   slack-notifier

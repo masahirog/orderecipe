@@ -226,9 +226,13 @@
     </div>
   </div>
   <div class="col-xs-12 col-md-12 form-group">
-    <div class="col-xs-12 col-md-2 check_box">
+    <div class="col-xs-6 col-md-2 check_box">
       <%= f.label :end_of_sales, "終売" %>
       <%= f.check_box :end_of_sales, class:"check_box form-control" %>
+    </div>
+    <div class="col-xs-6 col-md-2 check_box">
+      <%= f.label :stock_management, "在庫管理" %>
+      <%= f.check_box :stock_management, class:"check_box form-control" %>
     </div>
   </div>
   <%= f.hidden_field :back_to, :value => @back_to %>
