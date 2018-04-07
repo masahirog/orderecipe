@@ -15,6 +15,8 @@ Rails.application.routes.draw do
   get 'products/input_name_get_products' => 'products#input_name_get_products'
   post 'orders/new' => 'orders#new'
   get 'orders/material_info/:id' => 'orders#material_info'
+  get 'orders/get_bento_id' => 'orders#get_bento_id'
+  get 'orders/check_bento_id' => 'orders#check_bento_id'
   post'orders/order_print/:id' => 'orders#order_print'
   get 'products/get_by_category' => 'products#get_by_category'
   get 'products/preparation_all/:id' => 'products#preparation_all'
@@ -30,6 +32,7 @@ Rails.application.routes.draw do
   post'orders/order_print_all/:id' => 'orders#order_print_all'
   post 'materials/change_additives' => 'materials#change_additives'
   get 'stocks/material_info/:id' => 'stocks#material_info'
+
 
   resources :menus
   resources :menus do

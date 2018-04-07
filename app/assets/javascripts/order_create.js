@@ -11,9 +11,42 @@ $(function(){
     width:"120px",
   });
 
-  $(".order_bento_id_search").on("change",function(){
-    var id =  parseInt($(this).val());
-    $(this).parent().parent().find(".input_select_product").val(id).change();
+  $(".order_bento_id_search").on("blur",function(){
+    var bento_id =  parseInt($(this).val());
+    var inp = $(this).parent().parent().find(".input_select_product")
+    $.ajax({
+      url: "/orders/get_bento_id",
+      data: { bento_id : bento_id },
+      dataType: "json",
+      async: false
+    })
+    .done(function(data){
+      if (data) {
+        var id = parseInt(data.id)
+        inp.val(id).change();
+      }else{
+        inp.val("").change();
+      }
+    });
+  });
+
+  $(".input_select_product").on("change",function(){
+    var id = $(this).val();
+    var inp_bentoid = $(this).parent().parent().find(".order_bento_id_search")
+    $.ajax({
+      url: "/orders/check_bento_id",
+      data: { id : id },
+      dataType: "json",
+      async: false
+    })
+    .done(function(data){
+      if (data) {
+        var bento_id = parseInt(data.bento_id)
+        inp_bentoid.val(bento_id);
+      }else{
+        inp_bentoid.val("");
+      }
+    });
   });
 
 

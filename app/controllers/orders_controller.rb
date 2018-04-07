@@ -80,6 +80,22 @@ class OrdersController < ApplicationController
    end
   end
 
+def get_bento_id
+  @product = Product.find_by(bento_id: params[:bento_id])
+  respond_to do |format|
+    format.html
+    format.json{render :json => @product}
+  end
+end
+
+def check_bento_id
+  @product = Product.find(params[:id])
+  respond_to do |format|
+    format.html
+    format.json{render :json => @product}
+  end
+end
+
 
   private
 
