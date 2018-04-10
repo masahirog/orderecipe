@@ -6,7 +6,7 @@
     <p>bentoID▼</p>
     <%= text_field_tag :bento_id, params[:bento_id], class:"order_bento_id_search form-control",style:"width:100%" %>
   </div>
-  <div class="select col-md-3">
+  <div class="select col-md-4">
     <p>お弁当名▼</p>
     <%= select_tag(:id, options_from_collection_for_select(@products,:id,:name),include_blank: true,class:"input_select_product col-md-8",name:"id#{i}") %>
   </div>

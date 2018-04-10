@@ -36,19 +36,29 @@ class HyojiPdf < Prawn::Document
   def line_item_rows(product,shomi_kigen,allergies,additives)
     #アレルギーの取得
     allergy =""
+    u = 1
     allergies.each do |all|
-      allergy = allergy +"#{all}、"
+      if u == allergies.length
+        allergy = allergy +"#{all}"
+      else
+        allergy = allergy +"#{all}、"
+      end
     end
     data_child = ""
     #原材料名の表示(メニュー名)
-    l = product.menus.length
-    product.menus do |pm|
+    product.menus.each do |pm|
       data_child = data_child +"#{pm.food_label_name}、"  unless pm.category=="容器"
     end
     #食品添加物の取得
-
+    l = additives.length
+    i = 1
     additives.each do |add|
-      data_child = data_child + "#{add}、"
+      if i == l
+        data_child = data_child + "#{add}"
+      else
+        data_child = data_child + "#{add}、"
+      end
+      i += 1
     end
 
     data= [["名前",product.name]]

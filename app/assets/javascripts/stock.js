@@ -4,7 +4,7 @@ $(function(){
   placeholder: "選択してください",
   });
 
-  $("input"). keydown(function(e) {
+  $(".input-amount").keydown(function(e) {
     if ((e.which && e.which === 13) || (e.keyCode && e.keyCode === 13)) {
         return false;
     } else {
