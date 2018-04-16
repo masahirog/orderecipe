@@ -60,6 +60,15 @@ class ProductsController < ApplicationController
       end
     end
   end
+  def show_all
+  @products = Product.all.includes(:product_menus,{menus: [:menu_materials, :materials]})
+    respond_to do |format|
+      format.html
+      format.csv do
+        send_data render_to_string, filename: "all_products.csv", type: :csv
+      end
+    end
+  end
 
   def create
     @product = Product.create(product_create_update)
