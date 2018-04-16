@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   get 'products/get_menu_cost_price/:id' => 'products#get_menu_cost_price'
   get 'products/serving_detail/:id' => 'products#serving_detail'
   get 'products/serving_detail_en/:id' => 'products#serving_detail_en'
+  post 'products/serving_detail_en' => 'products#serving_detail_en'
   post 'products/print' => 'products#print'
   get 'products/get_products' => 'products#get_products'
   get 'products/input_name_get_products' => 'products#input_name_get_products'
@@ -32,7 +33,7 @@ Rails.application.routes.draw do
   post'orders/order_print_all/:id' => 'orders#order_print_all'
   post 'materials/change_additives' => 'materials#change_additives'
   get 'stocks/material_info/:id' => 'stocks#material_info'
-  get 'products/show_all' => 'products#show_all'
+  # get 'products/show_all' => 'products#show_all'
 
 
   resources :menus

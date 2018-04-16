@@ -1,3 +1,5 @@
+#全部のお弁当の仕込みを調べたくてこのcsv作りました、ボタンはproductのindex上部でコメントアウトしています。idsに入れた弁当の詳細がダウンロード出来ます
+
 require 'csv'
 CSV.generate do |csv|
   csv_column_names = %w(product_id bento_id product_name product_cost menu_id menu_name material_id material_name amount_used unit used_cost preparaiton post)

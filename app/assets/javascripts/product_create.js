@@ -11,6 +11,51 @@ $(function(){
     width:"100%",
   });
 
+  $('.input_select_product_en').select2({
+    width:"300px",
+    placeholder: "お弁当を選択してください"
+  });
+
+  //englishページ検索ajax
+  $(".bento_id_search_en").val("");
+  $(".bento_id_search_en").on("blur",function(){
+    var bento_id =  parseInt($(this).val());
+    var inp = $(this).parent().parent().find(".input_select_product_en")
+    $.ajax({
+      url: "/orders/get_bento_id",
+      data: { bento_id : bento_id },
+      dataType: "json",
+      async: false
+    })
+    .done(function(data){
+      if (data) {
+        var id = parseInt(data.id)
+        inp.val(id).change();
+      }else{
+        inp.val("").change();
+      }
+    });
+  });
+
+  $(".input_select_product_en").on("change",function(){
+    var id = $(this).val();
+    var inp_bentoid = $(this).parent().parent().find(".bento_id_search_en")
+    $.ajax({
+      url: "/orders/check_bento_id",
+      data: { id : id },
+      dataType: "json",
+      async: false
+    })
+    .done(function(data){
+      if (data) {
+        var bento_id = parseInt(data.bento_id)
+        inp_bentoid.val(bento_id);
+      }else{
+        inp_bentoid.val("");
+      }
+    });
+  });
+
 
   //materialの表示、原価計算
   $(".add_li_menu").each(function() {
