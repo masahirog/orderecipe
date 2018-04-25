@@ -21,7 +21,7 @@ $(function(){
     u += 1
   });
 //並び替え時のrow_order更新
-  $(".material_ul .ul-sortable").sortable({
+  $(".material_ul.ul-sortable").sortable({
     update: function(){
       reset_row_order();
     }});
