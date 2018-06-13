@@ -1,4 +1,8 @@
 $(function(){
+  reset_row_order();
+
+  reset_row_order();
+
   $('.input_select_menu').select2({
   width:"100%",
   placeholder: "メニューを選択してください",
@@ -15,6 +19,12 @@ $(function(){
     width:"300px",
     placeholder: "お弁当を選択してください"
   });
+
+  //並び替え時のrow_order更新
+  $(".used_menu_ul.ul-sortable").sortable({
+    update: function(){
+      reset_row_order();
+  }});
 
   //englishページ検索ajax
   $(".bento_id_search_en").val("");
@@ -57,6 +67,8 @@ $(function(){
   });
 
 
+
+
   //materialの表示、原価計算
   $(".add_li_menu").each(function() {
     calculate_product_price();
@@ -91,6 +103,8 @@ $(function(){
     var last_li =$(".add_li_menu").last();
     var c = last_li.children(".category_select").children().val()
     last_li.children(".select_menu").children().children("option")
+    last_li.children(".row_order").children().attr('name', "product[product_menus_attributes]["+u+"][row_order]" );
+    last_li.children(".row_order").children().attr('id', "product_product_menus_attributes_"+u+"_row_order" );
     last_li.children(".select_menu").children().attr('name', "product[product_menus_attributes]["+u+"][menu_id]" );
     last_li.children(".select_menu").children().attr('id', "product_product_menus_attributes_"+u+"_menu_id" );
     last_li.children(".remove_menu").children(".destroy_menu").attr('id', "product_product_menus_attributes_"+u+"__destroy");
@@ -98,6 +112,7 @@ $(function(){
     last_li.children(".select_menu").children().val("");
     $(".input_select_menu").select2({ width:"270px",placeholder: "メニューを選択してください" });
     last_li.children(".cost_price").empty();
+    last_li.children(".row_order").children().val(u);
     last_li.children(".material_name").children().children().remove();
     last_li.children(".amount_used").children().children().remove();
     last_li.children(".material_unit").children().children().remove();
@@ -112,6 +127,7 @@ $(function(){
     $(this).parent().children(".destroy_menu").prop('checked', true);
     $(this).parent().parent(".add_li_menu").hide();
       calculate_product_price();
+      reset_row_order();
     });
 
   //メニュー変更時
@@ -263,6 +279,12 @@ $(function(){
         option = $('<option>').text(this.name).attr('value',this.id)
         $(".add_li_menu").eq(u).children(".select_menu").children(".input_select_menu").append(option);
       });
+    });
+  };
+//並び替え
+  function reset_row_order(){
+    $(".add_li_menu").each(function(i){
+      $(this).children(".row_order").children().val(i)
     });
   };
 });

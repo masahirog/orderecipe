@@ -119,10 +119,13 @@
         <label class="col-md-1 text-right"></label>
     </div>
 
-    <ul class='used_menu_ul list-group' style="list-style:none;">
+    <ul class='used_menu_ul list-group ul-sortable' style="list-style:none;cursor:move;">
       <% i=0 %>
       <%= f.fields_for :product_menus do |pr| %>
       <li class="add_li_menu col-md-12 list-group-item" style="padding:5px 5px;">
+        <div class="row_order" style="">
+          <%= pr.number_field :row_order, class:"input_row_order form-control" %>
+        </div>
         <div class="category_select col-md-1">
           <%= select :category,:category, [["主食"],[ "主菜"],[ "副菜"],["容器"]],{include_blank: true}, { class: "input_category_select form-control"} %>
         </div>

@@ -46,7 +46,7 @@ class ProductsController < ApplicationController
   def new
     @bento_id = Product.bentoid()
     @product = Product.new
-    @product.product_menus.build
+    @product.product_menus.build(row_order: 0)
   end
 
   def show
@@ -188,7 +188,7 @@ class ProductsController < ApplicationController
   private
     def product_create_update
       params.require(:product).permit(:name, :bento_id, :cook_category, :product_type, :sell_price, :description, :contents, :product_image,
-                      :remove_product_image, :image_cache, :cost_price, product_menus_attributes: [:id, :product_id, :menu_id, :_destroy,
+                      :remove_product_image, :image_cache, :cost_price, product_menus_attributes: [:id, :product_id, :menu_id,:row_order, :_destroy,
                       menu_attributes:[:name, ]])
     end
 end
