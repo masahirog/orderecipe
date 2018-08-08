@@ -63,6 +63,7 @@ gem 'jquery-ui-rails'
 gem 'exception_notification', :github => 'smartinez87/exception_notification'
 gem 'slack-notifier'
 gem 'active_hash'
+gem 'dotenv-rails'
 
 
 group :production do

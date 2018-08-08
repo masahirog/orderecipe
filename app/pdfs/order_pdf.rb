@@ -34,7 +34,7 @@ class OrderPdf < Prawn::Document
   def header_adress
     bounding_box([330, 700], :width => 200, :height =>60) do
         font_size 10
-        text "株式会社ベントー・ドット・ジェーピー", :leading => 3
+        text "タベル株式会社", :leading => 3
         text "(弁当将軍キッチン)", :leading => 3
         text "〒164-0003 東京都中野区東中野1-35-1", :leading => 3
         text "TEL：03-5937-5431", :leading => 3
@@ -52,7 +52,6 @@ class OrderPdf < Prawn::Document
   def table_content(arr,date)
     bounding_box([0,cursor], :width => 530) do
       table line_item_rows(arr,date), cell_style: { size: 9 ,height: 20,:overflow => :shrink_to_fit } do
-        row(0).background_color="E6E6E6"
         row(0).size = 12
         cells.padding = 4
         column(-1).align = :right

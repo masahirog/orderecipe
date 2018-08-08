@@ -66,7 +66,7 @@ class HyojiPdf < Prawn::Document
     data <<["アレルギー",allergy]
     data <<["消費期限",shomi_kigen]
     data <<["保存方法","直射日光及び高温多湿をお避けください"]
-    data <<[{:content => "製造者", :rowspan => 2},"株式会社ベントー・ドット・ジェーピー"]
+    data <<[{:content => "製造者", :rowspan => 2},"タベル株式会社"]
     data <<["東京都中野区東中野1-35-1 はりまビル1階"]
   end
   def sen
