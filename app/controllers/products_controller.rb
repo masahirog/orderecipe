@@ -50,9 +50,9 @@ class ProductsController < ApplicationController
   end
 
   def show
-  @product = Product.includes(:product_menus,{menus: [:menu_materials, :materials]}).find(params[:id])
-  @allergies = Product.allergy_seiri(@product)
-  @additives = Product.additive_seiri(@product)
+    @product = Product.includes(:product_menus,{menus: [:menu_materials, :materials]}).find(params[:id])
+    @allergies = Product.allergy_seiri(@product)
+    @additives = Product.additive_seiri(@product)
     respond_to do |format|
       format.html
       format.csv do

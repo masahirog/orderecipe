@@ -61,6 +61,12 @@ class MenusController < ApplicationController
   def show
     @menu = Menu.includes(:menu_materials,{materials: [:vendor]}).find(params[:id])
     @arr = Menu.allergy_seiri(@menu)
+    respond_to do |format|
+      format.html
+      format.csv do
+        send_data render_to_string, filename: "#{@menu.id}_#{Time.now.strftime('%Y%m%d')}.csv", type: :csv
+      end
+    end
   end
 
   def print
