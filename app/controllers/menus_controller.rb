@@ -64,7 +64,7 @@ class MenusController < ApplicationController
     respond_to do |format|
       format.html
       format.csv do
-        send_data render_to_string, filename: "#{@menu.id}_#{Time.now.strftime('%Y%m%d')}.csv", type: :csv
+        send_data render_to_string, filename: "#{Time.now.strftime('%Y%m%d')}_menu_#{@menu.id}.csv", type: :csv
       end
     end
   end
