@@ -185,6 +185,30 @@ class ProductsController < ApplicationController
      end
    end
   end
+
+  def make_band
+
+  end
+  def new_band
+    product1 = Product.find(params['product']['id_1'])
+    product2 = Product.find(params['product']['id_2'])
+    @bento_1 = [product1.name]
+    @bento_2 = [product2.name]
+    @bento_1 << product1.menus.ids - [3091]
+    product2 = product2.menus.ids.slice!(1..2)
+    product2 << product1.menus.ids.slice!(3..4)
+    @bento_2 << product2.flatten!
+    respond_to do |format|
+      format.html
+      format.pdf do
+        pdf = BandPdf.new(@bento_1,@bento_2)
+        send_data pdf.render,
+          filename:    "#{Date.today}_obi.pdf",
+          type:        "application/pdf",
+          disposition: "inline"
+       end
+    end
+  end
   private
     def product_create_update
       params.require(:product).permit(:name, :bento_id, :cook_category, :product_type, :sell_price, :description, :contents, :product_image,

@@ -64,6 +64,7 @@ gem 'exception_notification', :github => 'smartinez87/exception_notification'
 gem 'slack-notifier'
 gem 'active_hash'
 gem 'dotenv-rails'
+gem 'cocoon'
 
 
 group :production do

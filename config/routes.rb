@@ -27,10 +27,13 @@ Rails.application.routes.draw do
   get 'menus/include_menu/:id' => 'menus#include_menu'
   post'menus/include_update' => 'menus#include_update'
   get 'menus/print/:id' => 'menus#print'
+  get 'menus/get_food_ingredient' => 'menus#get_food_ingredient'
+  get 'menus/nutrition_calculation/:id' => 'menus#nutrition_calculation'
   post'orders/order_print_all/:id' => 'orders#order_print_all'
   post 'materials/change_additives' => 'materials#change_additives'
   get 'stocks/material_info/:id' => 'stocks#material_info'
-  # get 'products/show_all' => 'products#show_all'
+  get 'products/make_band' => 'products#make_band'
+  get 'products/new_band' => 'products#new_band'
 
 
   resources :menus

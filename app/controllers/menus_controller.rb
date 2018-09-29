@@ -12,6 +12,7 @@ class MenusController < ApplicationController
   end
 
   def new
+    @materials = Material.where(end_of_sales:0)
     @menu = Menu.new
     @menu.menu_materials.build(row_order: 0)
     @ar = Menu.used_additives(@menu.materials)
@@ -35,12 +36,14 @@ class MenusController < ApplicationController
     elsif request.referer.include?("products")
       @back_to = request.referer
     end
-    @menu = Menu.includes(:menu_materials,{materials:[:vendor,:material_food_additives]}).find(params[:id])
+    @food_ingredients = FoodIngredient.all
+    @materials = Material.where(end_of_sales:0)
+    @menu = Menu.includes(:menu_materials,{materials:[:vendor,material_food_additives:[:food_additive]]}).find(params[:id])
     @menu.menu_materials.build  if @menu.materials.length == 0
     @ar = Menu.used_additives(@menu.materials)
   end
   def update
-    @menu = Menu.find(params[:id])
+    @menu = Menu.includes(:menu_materials,{materials:[:vendor,:material_food_additives]}).find(params[:id])
     @menu.update(menu_create_update)
     if @menu.save
       if params["menu"]["back_to"].blank?
@@ -97,11 +100,26 @@ class MenusController < ApplicationController
     redirect_to :back
   end
 
+  def nutrition_calculation
+    @menu = Menu.includes(menu_materials:[:material]).find(params[:id])
+
+  end
+  def get_food_ingredient
+    gram_amount = params[:gram_amount].to_f
+    id = params[:id]
+    @index = params[:index]
+    @calculated_nutrition = FoodIngredient.calculate_nutrition(gram_amount,id)
+    respond_to do |format|
+      format.json{render :json =>[@index,@calculated_nutrition[0],@calculated_nutrition[1]] }
+    end
+  end
+
   private
 
     def menu_create_update
       params.require(:menu).permit({used_additives:[]},:name, :recipe, :category, :recipe, :serving_memo, :cost_price,:food_label_name,
                                      menu_materials_attributes: [:id, :amount_used, :menu_id, :material_id, :_destroy,:preparation,:post,
-                                     :row_order,material_attributes:[:name, ]])
+                                     :row_order,:gram_quantity,:food_ingredient_id,:calorie,:protein,:lipid,:carbohydrate,:dietary_fiber,
+                                     :potassium,:calcium,:vitamin_b1,:vitamin_b2,:vitamin_c,:salt])
     end
 end

@@ -1,0 +1,39 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  food_group: 1
+  food_number: 1
+  index_number: 1
+  name: MyString
+  complement: MyString
+  calorie: 1.5
+  protein: 1.5
+  lipid: 1.5
+  carbohydrate: 1.5
+  dietary_fiber: 1.5
+  potassium: 1.5
+  calcium: 1.5
+  vitamin_b1: 1.5
+  vitamin_b2: 1.5
+  vitamin_c: 1.5
+  salt: 1.5
+  memo: MyText
+
+two:
+  food_group: 1
+  food_number: 1
+  index_number: 1
+  name: MyString
+  complement: MyString
+  calorie: 1.5
+  protein: 1.5
+  lipid: 1.5
+  carbohydrate: 1.5
+  dietary_fiber: 1.5
+  potassium: 1.5
+  calcium: 1.5
+  vitamin_b1: 1.5
+  vitamin_b2: 1.5
+  vitamin_c: 1.5
+  salt: 1.5
+  memo: MyText

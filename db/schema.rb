@@ -10,19 +10,41 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180613110903) do
+ActiveRecord::Schema.define(version: 20180928135804) do
 
   create_table "food_additives", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+  end
+
+  create_table "food_ingredients", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "food_group"
+    t.integer  "food_number"
+    t.integer  "index_number"
+    t.string   "name"
+    t.string   "complement"
+    t.float    "calorie",       limit: 24
+    t.float    "protein",       limit: 24
+    t.float    "lipid",         limit: 24
+    t.float    "carbohydrate",  limit: 24
+    t.float    "dietary_fiber", limit: 24
+    t.float    "potassium",     limit: 24
+    t.float    "calcium",       limit: 24
+    t.float    "vitamin_b1",    limit: 24
+    t.float    "vitamin_b2",    limit: 24
+    t.float    "vitamin_c",     limit: 24
+    t.float    "salt",          limit: 24
+    t.text     "memo",          limit: 65535
+    t.datetime "created_at",                  default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at",                  default: -> { "CURRENT_TIMESTAMP" }, null: false
   end
 
   create_table "material_food_additives", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "material_id"
     t.integer  "food_additive_id"
-    t.datetime "created_at",       null: false
-    t.datetime "updated_at",       null: false
+    t.datetime "created_at",       default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at",       default: -> { "CURRENT_TIMESTAMP" }, null: false
   end
 
   create_table "materials", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -37,8 +59,8 @@ ActiveRecord::Schema.define(version: 20180613110903) do
     t.text     "memo",                limit: 65535
     t.integer  "end_of_sales"
     t.integer  "vendor_id"
-    t.datetime "created_at",                        null: false
-    t.datetime "updated_at",                        null: false
+    t.datetime "created_at",                        default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at",                        default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.string   "order_unit"
     t.text     "order_unit_quantity", limit: 65535
     t.text     "allergy",             limit: 65535
@@ -48,12 +70,25 @@ ActiveRecord::Schema.define(version: 20180613110903) do
   create_table "menu_materials", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "menu_id"
     t.integer  "material_id"
-    t.float    "amount_used", limit: 24
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.float    "amount_used",        limit: 24
+    t.datetime "created_at",                    default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at",                    default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.string   "preparation"
     t.string   "post"
     t.integer  "row_order"
+    t.float    "gram_quantity",      limit: 24
+    t.integer  "food_ingredient_id"
+    t.float    "calorie",            limit: 24
+    t.float    "protein",            limit: 24
+    t.float    "lipid",              limit: 24
+    t.float    "carbohydrate",       limit: 24
+    t.float    "dietary_fiber",      limit: 24
+    t.float    "potassium",          limit: 24
+    t.float    "calcium",            limit: 24
+    t.float    "vitamin_b1",         limit: 24
+    t.float    "vitamin_b2",         limit: 24
+    t.float    "vitamin_c",          limit: 24
+    t.float    "salt",               limit: 24
   end
 
   create_table "menus", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -62,10 +97,10 @@ ActiveRecord::Schema.define(version: 20180613110903) do
     t.string   "category"
     t.text     "serving_memo",    limit: 65535
     t.float    "cost_price",      limit: 24
-    t.datetime "created_at",                    null: false
-    t.datetime "updated_at",                    null: false
+    t.datetime "created_at",                    default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at",                    default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.string   "food_label_name"
-    t.string   "used_additives"
+    t.string   "used_additives",                default: ""
   end
 
   create_table "order_materials", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -96,8 +131,8 @@ ActiveRecord::Schema.define(version: 20180613110903) do
   create_table "product_menus", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "product_id"
     t.integer  "menu_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.integer  "row_order"
   end
 
@@ -109,8 +144,8 @@ ActiveRecord::Schema.define(version: 20180613110903) do
     t.text     "description",   limit: 65535
     t.text     "contents",      limit: 65535
     t.float    "cost_price",    limit: 24
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
+    t.datetime "created_at",                  default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at",                  default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.string   "product_image"
     t.integer  "bento_id"
   end

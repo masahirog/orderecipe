@@ -76,6 +76,18 @@
 				<% end %>
 			</td>
 		</tr>
+		<tr class="">
+			<th class="active col-md-4">カロリー</th>
+			<td>
+				<%= "#{MenuMaterial.where(menu_id:@product.menus.ids).sum(:calorie).round(2)} kcal" %>
+			</td>
+		</tr>
+		<tr class="">
+			<th class="active col-md-4">帯表示</th>
+			<td>
+				<%= FoodIngredient.cehck_nutrition(@product) %>
+			</td>
+		</tr>
  </table>
  </div>
  <div class="col-md-1">

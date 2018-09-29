@@ -37,9 +37,9 @@
   <div class="used_additives col-md-12" style="margin:20px 0;">
     <%= f.label :used_additives ,"使用食品添加物" %><br>
     <% if f.object.used_additives.present? %>
-      <%= f.select :used_additives, grouped_options_for_select(@ar,f.object.used_additives),{ include_hidden: false},{class:"select_used_additives col-md-12",multiple:true} %>
+      <%= f.select :used_additives, grouped_options_for_select(@ar,f.object.used_additives),{ include_hidden: false},{class:"select_used_additives select2 col-md-12",multiple:true} %>
     <% else %>
-      <%= f.select :used_additives, grouped_options_for_select(@ar),{include_hidden: false},{class:"select_used_additives col-md-12",multiple:true} %>
+      <%= f.select :used_additives, grouped_options_for_select(@ar),{include_hidden: false},{class:"select_used_additives col-md-12 select2",multiple:true} %>
     <% end %>
   </div>
 
@@ -64,83 +64,58 @@
       </div>
     </div>
   </div>
-
+  <table class="col-md-12 table">
+    <thead>
+      <th>カロリー(kcal)</th>
+      <th>タンパク質(g)</th>
+      <th>脂質(g)</th>
+      <th>炭水化物(g)</th>
+      <th>食物繊維(g)</th>
+      <th>カリウム(mg)</th>
+      <th>カルシウム(mg)</th>
+      <th>ビタミンB1(mg)</th>
+      <th>ビタミンC(mg)</th>
+      <th>食塩(g)</th>
+    </thead>
+    <tbody>
+      <td class="menu_calorie"></td>
+      <td class="menu_protein"></td>
+      <td class="menu_lipid"></td>
+      <td class="menu_carbohydrate"></td>
+      <td class="menu_dietary_fiber"></td>
+      <td class="menu_potassium"></td>
+      <td class="menu_calcium"></td>
+      <td class="menu_vitamin_b1"></td>
+      <td class="menu_vitamin_c"></td>
+      <td class="menu_salt"></td>
+    </tbody>
+  </table>
 
   <div class="material_area">
     <div class="col-md-12" style="margin:5px;">
       <label class="col-md-3">食材・資材名</label>
+      <label class="col-md-2">使用量</label>
       <label class="col-md-1">原価</label>
       <label class="col-md-1">仕入先</label>
-      <label class="col-md-2">使用量</label>
       <label class="col-md-1">使用価格</label>
       <label class="col-md-2">仕込み内容</label>
       <label class="col-md-1">持ち場</label>
       <label class="col-md-1"></label>
     </div>
-    <ul class='material_ul list-group ul-sortable' style="list-style-type:none;cursor:move;">
-    <% i=0 %>
-    <%= f.fields_for :menu_materials, @menu.menu_materials do |m| %>
-      <li class='add_li_material col-md-12 list-group-item item'>
-        <div class="row_order" style="display:none;">
-          <%= m.number_field :row_order, class:"input_row_order form-control" %>
-        </div>
-        <div class="select_material col-md-3" style="padding:3px;">
-         <%= m.select :material_id, Material.where(end_of_sales:0).pluck(:name, :id),{include_blank: true},
-          class:'input_select_material col-md-12'%>
-       </div>
-       <div class="sales_check" style="display:none;">
-         <%= @menu.materials[i].end_of_sales if params["action"] == "edit" %>
-       </div>
-        <div class="cost_price col-md-1 form-inline">
-          <div class="cost_price_value form-group">
-
-            <%= @menu.materials[i].cost_price if params["action"] == "edit" %>
-          </div>
-          <div class="form-group"> 円</div>
-        </div>
-        <div class="vendor col-md-1">
-          <%= @menu.materials[i].vendor.company_name if params["action"] == "edit" %>
-        </div>
-        <div class="amount_used col-md-2 form-inline">
-          <%= m.text_field :amount_used, class:'amount_used_input form-control form-group',style:"width:140px;", :autocomplete => :off  %>
-          <div class="calculated_unit form-group">
-            <%= @menu.materials[i].calculated_unit if params["action"] == "edit" %>
-          </div>
-        </div>
-        <div class="price_used form-inline col-md-1">
-          <div class="price_used_value form-group">
-            <%= (@menu.materials[i].cost_price * @menu.menu_materials[i].amount_used).round(2) if params["action"] == "edit" %>
-          </div>
-          <div class="form-group">　円</div>
-        </div>
-        <div class="preparation col-md-2" style="padding:0;">
-          <%= m.text_field :preparation, class:'preparation_input form-control',
-            autocomplete:"on", list:"unit_list" %>
-          <datalist id="unit_list">
-            <option value="ボイル">
-            <option value="カット">
-            <option value="タレ">
-            <option value="千切り">
-            <option value="みじん切り">
-            <option value="計量">
-          </datalist>
-        </div>
-        <div class="select_post col-md-1">
-          <%= m.select :post, [["調理場", "調理場"],[ "切出し", "切出し"],[ "切出/調理", "切出/調理"]],
-          {include_blank: true}, { class: "form-control"} %>
-        </div>
-        <div class="remove_material col-md-1">
-          <a class ="remove_btn btn btn-danger" >削除</a>
-          <%= m.check_box :_destroy,class:"destroy_materials check_box form-control", style: "display:none;" %>
-        </div>
-      </li>
+    <ul class='material_ul list-group ul-sortable' style="list-style-type:none;cursor:move;" id='detail-association-insertion-point'>
+      <% i=0 %>
+      <%= f.fields_for :menu_materials do |m| %>
+        <%= render 'menu_material_fields',{f: m} %>
       <% i += 1 %>
       <% end %>
     </ul>
   </div>
   <div class="col-md-12" style="margin-top:20px;">
-    <input type="button" value="材料追加" class="add_material btn btn-primary">
+    <%= link_to_add_association '材料追加', f, :menu_materials,class: 'btn btn-primary add_fields',
+    data: {association_insertion_node: '#detail-association-insertion-point',association_insertion_method: 'append' } %>
   </div>
+
+
 
   <%= f.hidden_field :back_to, :value => @back_to %>
 
@@ -153,4 +128,7 @@
       <input type="button" value="登録する" class="btn btn-success" id="menu_submit_btn">
     </div>
   <% end %>
+
+
+
 <% end %>
