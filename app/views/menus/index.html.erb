@@ -38,7 +38,6 @@
     <div class="col-md-1">原価(税込)</div>
 		<div class="col-md-1">終売食品</div>
 		<div class="col-md-1">カロリー</div>
-		<div class="col-md-1">栄養計算</div>
 		<div class="col-md-1">csv</div>
     <div class="col-md-1 text-right">使用お弁当</div>
   </div>
@@ -58,9 +57,6 @@
 					<% end %>
 				</div>
 				<div class="col-md-1 text-right"><%= "#{menu.menu_materials.sum(:calorie).round(2)}kcal" %></div>
-				<div class="col-md-1">
-					<%=button_to "栄養", "/menus/nutrition_calculation/#{menu.id}", method: :get,class:"btn btn-default btn-sm" %>
-				</div>
 				<div class="col-md-1">
 					<%= link_to "CSV", "/menus/#{menu.id}.csv", class: "btn btn-default" %>
 				</div>
