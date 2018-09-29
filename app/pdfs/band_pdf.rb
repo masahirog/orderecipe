@@ -24,9 +24,9 @@ class BandPdf < Prawn::Document
     move_down 20
     text "#{bento[0]}", size: 20, :align => :center,styles: :bold
     move_down 20
-    text "#{Menu.find(bento[1][2]).name}", size: 9, :align => :center
+    text "#{Menu.find(bento[1][2]).food_label_name}", size: 9, :align => :center
     move_down 9
-    text "#{Menu.find(bento[1][3]).name}", size: 9, :align => :center
+    text "#{Menu.find(bento[1][3]).food_label_name}", size: 9, :align => :center
     move_down 20
     font "vendor/assets/fonts/mplus-1p-regular.ttf"
     text "#{FoodIngredient.make_obi_nutrition(bento[1])}", size: 6, :align => :center
