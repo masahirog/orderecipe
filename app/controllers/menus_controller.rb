@@ -12,6 +12,7 @@ class MenusController < ApplicationController
   end
 
   def new
+    @food_ingredients = FoodIngredient.all
     @materials = Material.where(end_of_sales:0)
     @menu = Menu.new
     @menu.menu_materials.build(row_order: 0)

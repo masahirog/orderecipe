@@ -10,7 +10,10 @@ class BandPdf < Prawn::Document
     [bento_1,bento_2].each_with_index do |bento,i|
       if i==0
         header(bento,17)
+        header(bento,22)
       else
+        start_new_page
+        header(bento,17)
         header(bento,22)
       end
     end

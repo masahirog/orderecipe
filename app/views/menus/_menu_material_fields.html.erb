@@ -46,7 +46,8 @@
   <div class='col-md-12 menu_materials_li' style="padding:0;">
     <div class="col-md-12" style="padding:0;">
       <div class="col-md-3" style="padding:3px;">
-        <%= f.collection_select :food_ingredient_id, @food_ingredients, :id, :name, {include_blank: true}, { class: "form-control select2 input_food_ingredient"} %>
+        <%= f.collection_select :food_ingredient_id, @food_ingredients, :id, :name, {include_blank: true},
+         { class: "form-control select2 input_food_ingredient"} %>
       </div>
       <div class="name col-md-2" style="display:inline-flex">
         <div class="" style='padding-right:10px;'>
@@ -76,12 +77,12 @@
       <%= f.hidden_field :vitamin_b2, class:'input_vitamin_b2' %>
       <%= f.hidden_field :vitamin_c, class:'input_vitamin_c' %>
       <%= f.hidden_field :salt, class:'input_salt' %>
-      <%= f.number_field :magnesium, class:'input_magnesium' %>
-      <%= f.number_field :iron, class:'input_iron' %>
-      <%= f.number_field :zinc, class:'input_zinc' %>
-      <%= f.number_field :copper, class:'input_copper' %>
-      <%= f.number_field :folic_acid, class:'input_folic_acid' %>
-      <%= f.number_field :vitamin_d, class:'input_vitamin_d' %>
+      <%= f.hidden_field :magnesium, class:'input_magnesium' %>
+      <%= f.hidden_field :iron, class:'input_iron' %>
+      <%= f.hidden_field :zinc, class:'input_zinc' %>
+      <%= f.hidden_field :copper, class:'input_copper' %>
+      <%= f.hidden_field :folic_acid, class:'input_folic_acid' %>
+      <%= f.hidden_field :vitamin_d, class:'input_vitamin_d' %>
     </div>
   </div>
 </li>
