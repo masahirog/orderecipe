@@ -105,7 +105,7 @@
                   <tr class="order_materials_tr">
                     <td class="order_material_name" style="width:200px;">
                       <%= m.select :material_id, Material.where(end_of_sales:0).pluck(:name, :id),
-                        {include_blank: true,selected: material[0]}, class:'select_order_materials',
+                        {include_blank: true,selected: material[0]}, class:'select2 select_order_materials',
                         name:"order[order_materials_attributes][#{i}][material_id]",style:"width:200px;",
                         id:"order_order_materials_attributes_#{i}_material_id" %>
                       <div class="vendor_company_name" style="padding:3px 0 0 8px;color:#A9A9A9;">
@@ -163,7 +163,7 @@
                 <tr class="order_materials_tr">
                   <td class="order_material_name" style="width:200px;">
                     <%= m.select :material_id, Material.where(end_of_sales:0).pluck(:name, :id),
-                    {include_blank: true,selected: material[0]}, class:'select_order_materials',
+                    {include_blank: true,selected: material[0]}, class:'select2 select_order_materials',
                     name:"order[order_materials_attributes][#{i}][material_id]",style:"width:200px;",
                     id:"order_order_materials_attributes_#{i}_material_id" %>
                     <div class="vendor_company_name" style="padding:3px 0 0 8px;color:#A9A9A9;">

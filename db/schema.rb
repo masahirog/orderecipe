@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180928135804) do
+ActiveRecord::Schema.define(version: 20180930002738) do
 
   create_table "food_additives", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
@@ -38,6 +38,12 @@ ActiveRecord::Schema.define(version: 20180928135804) do
     t.text     "memo",          limit: 65535
     t.datetime "created_at",                  default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.datetime "updated_at",                  default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.float    "magnesium",     limit: 24
+    t.float    "iron",          limit: 24
+    t.float    "zinc",          limit: 24
+    t.float    "copper",        limit: 24
+    t.float    "folic_acid",    limit: 24
+    t.float    "vitamin_d",     limit: 24
   end
 
   create_table "material_food_additives", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -65,6 +71,7 @@ ActiveRecord::Schema.define(version: 20180928135804) do
     t.text     "order_unit_quantity", limit: 65535
     t.text     "allergy",             limit: 65535
     t.integer  "stock_management"
+    t.integer  "vegetable_flag",                    default: 0,                          null: false
   end
 
   create_table "menu_materials", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -89,6 +96,12 @@ ActiveRecord::Schema.define(version: 20180928135804) do
     t.float    "vitamin_b2",         limit: 24
     t.float    "vitamin_c",          limit: 24
     t.float    "salt",               limit: 24
+    t.float    "magnesium",          limit: 24
+    t.float    "iron",               limit: 24
+    t.float    "zinc",               limit: 24
+    t.float    "copper",             limit: 24
+    t.float    "folic_acid",         limit: 24
+    t.float    "vitamin_d",          limit: 24
   end
 
   create_table "menus", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -101,6 +114,7 @@ ActiveRecord::Schema.define(version: 20180928135804) do
     t.datetime "updated_at",                    default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.string   "food_label_name"
     t.string   "used_additives",                default: ""
+    t.integer  "confirm_flag",                  default: 0,                          null: false
   end
 
   create_table "order_materials", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

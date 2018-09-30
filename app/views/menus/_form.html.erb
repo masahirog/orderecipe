@@ -110,12 +110,17 @@
       <% end %>
     </ul>
   </div>
-  <div class="col-md-12" style="margin-top:20px;">
+  <div class="col-md-12 form-group" style="margin-top:20px;">
     <%= link_to_add_association '材料追加', f, :menu_materials,class: 'btn btn-primary add_fields',
     data: {association_insertion_node: '#detail-association-insertion-point',association_insertion_method: 'append' } %>
   </div>
 
-
+  <div class="col-md-12 form-group">
+    <div class="col-md-4">
+      <%= f.label :confirm_flag, "メニュー確定" %></br>
+      <%= f.check_box :confirm_flag, class: "form-control" %>
+    </div>
+  </div>
 
   <%= f.hidden_field :back_to, :value => @back_to %>
 
@@ -128,7 +133,5 @@
       <input type="button" value="登録する" class="btn btn-success" id="menu_submit_btn">
     </div>
   <% end %>
-
-
 
 <% end %>

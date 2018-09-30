@@ -184,6 +184,12 @@ $(function(){
       $(".menu_materials_li").eq(data[0]).find(".input_vitamin_b2").val(data[1]['vitamin_b2'])
       $(".menu_materials_li").eq(data[0]).find(".input_vitamin_c").val(data[1]['vitamin_c'])
       $(".menu_materials_li").eq(data[0]).find(".input_salt").val(data[1]['salt'])
+      $(".menu_materials_li").eq(data[0]).find(".input_magnesium").val(data[1]['magnesium'])
+      $(".menu_materials_li").eq(data[0]).find(".input_iron").val(data[1]['iron'])
+      $(".menu_materials_li").eq(data[0]).find(".input_zinc").val(data[1]['zinc'])
+      $(".menu_materials_li").eq(data[0]).find(".input_copper").val(data[1]['copper'])
+      $(".menu_materials_li").eq(data[0]).find(".input_folic_acid").val(data[1]['folic_acid'])
+      $(".menu_materials_li").eq(data[0]).find(".input_vitamin_d").val(data[1]['vitamin_d'])
       $(".menu_materials_li").eq(data[0]).find('.view_food_ingredient').text(data[2])
       calculate_menu_nutrition()
     });
@@ -192,7 +198,8 @@ $(function(){
   function calculate_menu_nutrition(){
     var arr_menu_nutrition =[]
     var obj = {calorie:0,protein:0,lipid:0,carbohydrate:0,dietary_fiber:0,potassium:0,
-      calcium:0,vitamin_b1:0,vitamin_b2:0,vitamin_c:0,salt:0};
+      calcium:0,vitamin_b1:0,vitamin_b2:0,vitamin_c:0,salt:0,magnesium:0,iron:0,zinc:0,
+      copper:0,folic_acid:0,vitamin_d:0};
     $(".menu_materials_li").each(function(i) {
       console.log();
       calorie = Number(obj['calorie']) + Number($(this).find(".input_calorie").val());
@@ -206,9 +213,17 @@ $(function(){
       vitamin_b2 = Number(obj['vitamin_b2']) + Number($(this).find(".input_vitamin_b2").val());
       vitamin_c = Number(obj['vitamin_c']) + Number($(this).find(".input_vitamin_c").val());
       salt = Number(obj['salt']) + Number($(this).find(".input_salt").val());
+      magnesium = Number(obj['magnesium']) + Number($(this).find(".input_magnesium").val());
+      iron = Number(obj['iron']) + Number($(this).find(".input_iron").val());
+      zinc = Number(obj['zinc']) + Number($(this).find(".input_zinc").val());
+      copper = Number(obj['copper']) + Number($(this).find(".input_copper").val());
+      folic_acid = Number(obj['folic_acid']) + Number($(this).find(".input_folic_acid").val());
+      vitamin_d = Number(obj['vitamin_d']) + Number($(this).find(".input_vitamin_d").val());
+
       obj = {calorie:calorie,protein:protein,lipid:lipid,carbohydrate:carbohydrate,dietary_fiber:dietary_fiber,
         potassium:potassium,calcium:calcium,vitamin_b1:vitamin_b1,vitamin_b2:vitamin_b2,
-        vitamin_c:vitamin_c,salt:salt};
+        vitamin_c:vitamin_c,salt:salt,magnesium:magnesium,iron:iron,zinc:zinc,copper:copper,
+        folic_acid:folic_acid,vitamin_d:vitamin_d};
     });
     console.log(obj['calorie']);
     $(".menu_calorie").text(Math.round(obj['calorie']*100)/100);
@@ -221,6 +236,13 @@ $(function(){
     $(".menu_vitamin_b1").text(Math.round(obj['vitamin_b1']*100)/100);
     $(".menu_vitamin_c").text(Math.round(obj['vitamin_c']*100)/100);
     $(".menu_salt").text(Math.round(obj['salt']*100)/100);
+    $(".menu_magnesium").text(Math.round(obj['magnesium']*100)/100);
+    $(".menu_iron").text(Math.round(obj['iron']*100)/100);
+    $(".menu_zinc").text(Math.round(obj['zinc']*100)/100);
+    $(".menu_copper").text(Math.round(obj['copper']*100)/100);
+    $(".menu_folic_acid").text(Math.round(obj['folic_acid']*100)/100);
+    $(".menu_vitamin_d").text(Math.round(obj['vitamin_d']*100)/100);
+
   };
 
 

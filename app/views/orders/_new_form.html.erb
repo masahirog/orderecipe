@@ -8,7 +8,7 @@
   </div>
   <div class="select col-md-4">
     <p>お弁当名▼</p>
-    <%= select_tag(:id, options_from_collection_for_select(@products,:id,:name),include_blank: true,class:"input_select_product col-md-8",name:"id#{i}") %>
+    <%= select_tag(:id, options_from_collection_for_select(@products,:id,:name),include_blank: true,class:"input_select_product col-md-8 select2",name:"id#{i}") %>
   </div>
 
   <div class="cook_num col-md-2">

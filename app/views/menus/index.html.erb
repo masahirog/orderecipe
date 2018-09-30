@@ -32,6 +32,7 @@
 </div>
 <div>
   <div class="col-md-12" style="padding:10px;">
+		<div class="col-md-1">確定</div>
     <div class="col-md-2">メニュー名</div>
     <div class="col-md-1">カテゴリ</div>
 		<div class="col-md-2">使用添加物</div>
@@ -44,6 +45,7 @@
   <ul class='list-group' style="list-style-type: none;">
     <% @search.each do |menu| %>
       <li class="li-active menus_li col-md-12 list-group-item" >
+				<div class="col-md-1"><%= "OK" if menu.confirm_flag == 1 %></div>
         <div class="menu_name col-md-2"><%= link_to "#{menu.name}", "/menus/#{menu.id}" %></div>
         <div class="col-md-1"><%= menu.category %></div>
 				<div class="col-md-2"><%= menu.used_additives %></div>
