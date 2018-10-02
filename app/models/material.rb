@@ -11,6 +11,8 @@ class Material < ApplicationRecord
   accepts_nested_attributes_for :material_food_additives, allow_destroy: true, :reject_if => :reject_additives
 
   belongs_to :vendor
+  scope :mate_search, lambda { |query|  where(end_of_sales:0).where('name LIKE ?', "%#{query}%").limit(100)}
+
 
   # after_save :update_cache
   validates :name, presence: true, uniqueness: true, format: { with:/\A[^０-９ａ-ｚＡ-Ｚ]+\z/,

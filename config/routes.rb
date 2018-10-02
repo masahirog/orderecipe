@@ -34,7 +34,8 @@ Rails.application.routes.draw do
   get 'stocks/material_info/:id' => 'stocks#material_info'
   get 'products/make_band' => 'products#make_band'
   get 'products/new_band' => 'products#new_band'
-
+  get 'materials/search' => 'materials#search'
+  get 'menus/food_ingredient_search' => 'menus/food_ingredient_search'
 
   resources :menus
   resources :menus do

@@ -37,9 +37,13 @@ class MenusController < ApplicationController
     elsif request.referer.include?("products")
       @back_to = request.referer
     end
-    @food_ingredients = FoodIngredient.all
-    @materials = Material.where(end_of_sales:0)
     @menu = Menu.includes(:menu_materials,{materials:[:vendor,material_food_additives:[:food_additive]]}).find(params[:id])
+    @materials = Material.where(id:@menu.menu_materials.pluck(:material_id))
+    if @menu.menu_materials.pluck(:food_ingredient_id).uniq[0].nil?
+      @food_ingredients=[]
+    else
+      @food_ingredients = FoodIngredient.where(id:@menu.menu_materials.pluck(:food_ingredient_id).uniq)
+    end
     @menu.menu_materials.build  if @menu.materials.length == 0
     @ar = Menu.used_additives(@menu.materials)
   end
@@ -112,6 +116,11 @@ class MenusController < ApplicationController
     @calculated_nutrition = FoodIngredient.calculate_nutrition(gram_amount,id)
     respond_to do |format|
       format.json{render :json =>[@index,@calculated_nutrition[0],@calculated_nutrition[1]] }
+    end
+  end
+  def food_ingredient_search
+    respond_to do |format|
+      format.json { render json: @materials = FoodIngredient.food_ingredient_search(params[:q]) }
     end
   end
 

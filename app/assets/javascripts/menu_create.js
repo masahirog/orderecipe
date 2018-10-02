@@ -4,15 +4,81 @@ $(function(){
   reset_row_order();
   calculate_menu_nutrition();
 
-  $('.select2').select2({
+  $(".select2").select2()
+
+  $(".input_select_material").select2({
+    ajax: {
+      url:'/materials/search.json',
+      dataType: 'json',
+      delay: 50,
+      data: function(params) {
+        return {　q: params.term　};
+      },
+      processResults: function (data, params) {
+        return { results: $.map(data, function(obj) {
+            return { id: obj.id, text: obj.name };
+          })
+        };
+      }
+    }
+  });
+  $(".input_food_ingredient").select2({
+    ajax: {
+      url:'/menus/food_ingredient_search.json',
+      dataType: 'json',
+      delay: 50,
+      data: function(params) {
+        return {　q: params.term　};
+      },
+      processResults: function (data, params) {
+        return { results: $.map(data, function(obj) {
+            return { id: obj.id, text: obj.name };
+          })
+        };
+      }
+    }
   });
 
   $('.add_fields').on('click',function(){
     setTimeout(function(){
       $(".select2").select2('destroy');
+      $(".input_select_material").select2('destroy');
+      $(".input_food_ingredient").select2('destroy');
       $(".select2").select2();
       reset_row_order();
-    },10);
+      $(".input_select_material").select2({
+        ajax: {
+          url:'/materials/search.json',
+          dataType: 'json',
+          delay: 50,
+          data: function(params) {
+            return {　q: params.term　};
+          },
+          processResults: function (data, params) {
+            return { results: $.map(data, function(obj) {
+                return { id: obj.id, text: obj.name };
+              })
+            };
+          }
+        }
+      });
+      $(".input_food_ingredient").select2({
+        ajax: {
+          url:'/menus/food_ingredient_search.json',
+          dataType: 'json',
+          delay: 50,
+          data: function(params) {
+            return {　q: params.term　};
+          },
+          processResults: function (data, params) {
+            return { results: $.map(data, function(obj) {
+                return { id: obj.id, text: obj.name };
+              })
+            };
+          }
+        }
+      });
+    },5);
   });
 
   u = 0
@@ -45,7 +111,22 @@ $(function(){
     $('body').css('padding-top',0);
     var u = $(".add_li_material").index($(this).parents('.add_li_material'));
      $(".add_li_material").eq(u).find(".input_food_ingredient").val("").select2('destroy');
-     $(".add_li_material").eq(u).find(".input_food_ingredient").select2();
+     $(".add_li_material").eq(u).find(".input_food_ingredient").select2({
+       ajax: {
+         url:'/menus/food_ingredient_search.json',
+         dataType: 'json',
+         delay: 50,
+         data: function(params) {
+           return {　q: params.term　};
+         },
+         processResults: function (data, params) {
+           return { results: $.map(data, function(obj) {
+               return { id: obj.id, text: obj.name };
+             })
+           };
+         }
+       }
+     });
      $(".add_li_material").eq(u).find(".input_nutritions input").val(0);
      $(".menu_materials_li").eq(u).find('.view_food_ingredient').text("");
     var id = $(this).val();
@@ -83,8 +164,6 @@ $(function(){
       }else{
         $(this).parent(".add_li_material").find(".input_gram_quantity").val("");
       }
-
-
   }});
 
   $(".all_box").on("change",function(){
@@ -201,7 +280,6 @@ $(function(){
       calcium:0,vitamin_b1:0,vitamin_b2:0,vitamin_c:0,salt:0,magnesium:0,iron:0,zinc:0,
       copper:0,folic_acid:0,vitamin_d:0};
     $(".menu_materials_li").each(function(i) {
-      console.log();
       calorie = Number(obj['calorie']) + Number($(this).find(".input_calorie").val());
       protein = Number(obj['protein']) + Number($(this).find(".input_protein").val());
       lipid = Number(obj['lipid']) + Number($(this).find(".input_lipid").val());
@@ -223,7 +301,6 @@ $(function(){
       obj = {calorie:calorie,protein:protein,lipid:lipid,carbohydrate:carbohydrate,dietary_fiber:dietary_fiber,
         potassium:potassium,calcium:calcium,vitamin_c:vitamin_c,salt:salt};
     });
-    console.log(obj['calorie']);
     $(".menu_calorie").text(Math.round(obj['calorie']*100)/100);
     $(".menu_protein").text(Math.round(obj['protein']*100)/100);
     $(".menu_lipid").text(Math.round(obj['lipid']*100)/100);

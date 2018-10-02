@@ -71,6 +71,12 @@ class MaterialsController < ApplicationController
     end
   end
 
+  def search
+    respond_to do |format|
+      format.json { render json: @materials = Material.mate_search(params[:q]) }
+    end
+  end
+
   private
   def material_params
     params.require(:material).permit(:name, :order_name, :calculated_value, :calculated_unit,:stock_management,:vegetable_flag,
