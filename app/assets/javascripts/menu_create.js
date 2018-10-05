@@ -4,8 +4,6 @@ $(function(){
   reset_row_order();
   calculate_menu_nutrition();
 
-  $(".select2").select2()
-
   $(".input_select_material").select2({
     ajax: {
       url:'/materials/search.json',
@@ -41,10 +39,8 @@ $(function(){
 
   $('.add_fields').on('click',function(){
     setTimeout(function(){
-      $(".select2").select2('destroy');
       $(".input_select_material").select2('destroy');
       $(".input_food_ingredient").select2('destroy');
-      $(".select2").select2();
       reset_row_order();
       $(".input_select_material").select2({
         ajax: {

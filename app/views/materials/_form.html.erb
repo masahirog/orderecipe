@@ -208,8 +208,9 @@
       <%= f.fields_for :material_food_additives, @material.material_food_additives do |mm| %>
         <li class='add_li_food_additive col-md-12 list-group-item' style="">
           <div class="select_food_additive col-md-10" style="padding:3px;width:210px;float:left;">
-           <%= mm.select :food_additive_id, FoodAdditive.pluck(:name, :id),{include_blank: true},
-            class:'input_select_food_additive' %>
+            <%= mm.collection_select :food_additive_id, FoodAdditive.all, :id, :name,{include_blank: true},
+              class:'input_select_food_additive' %>
+
           </div>
           <div class="text-right remove_food_additive col-md-2" style="padding-top:10px;">
             <span class="glyphicon glyphicon-remove remove_btn" style="color:#d9534f;"></span>
