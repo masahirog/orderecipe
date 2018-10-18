@@ -4,6 +4,9 @@ $(function(){
   reset_row_order();
   calculate_menu_nutrition();
 
+  $(".select_used_additives").select2();
+
+
   $(".input_select_material").select2({
     ajax: {
       url:'/materials/search.json',
@@ -106,23 +109,8 @@ $(function(){
     $('.eos-alert').hide();
     $('body').css('padding-top',0);
     var u = $(".add_li_material").index($(this).parents('.add_li_material'));
-     $(".add_li_material").eq(u).find(".input_food_ingredient").val("").select2('destroy');
-     $(".add_li_material").eq(u).find(".input_food_ingredient").select2({
-       ajax: {
-         url:'/menus/food_ingredient_search.json',
-         dataType: 'json',
-         delay: 50,
-         data: function(params) {
-           return {　q: params.term　};
-         },
-         processResults: function (data, params) {
-           return { results: $.map(data, function(obj) {
-               return { id: obj.id, text: obj.name };
-             })
-           };
-         }
-       }
-     });
+    console.log(u);
+
      $(".add_li_material").eq(u).find(".input_nutritions input").val(0);
      $(".menu_materials_li").eq(u).find('.view_food_ingredient').text("");
     var id = $(this).val();
@@ -405,6 +393,7 @@ $(function(){
       async: false
     })
     .done(function(data){
+      console.log(data);
       $(".select_used_additives").select2('destroy');
       $(".select_used_additives optgroup").remove();
       $(".select_used_additives").select2({
