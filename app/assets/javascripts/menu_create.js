@@ -109,10 +109,10 @@ $(function(){
     $('.eos-alert').hide();
     $('body').css('padding-top',0);
     var u = $(".add_li_material").index($(this).parents('.add_li_material'));
-    console.log(u);
-
-     $(".add_li_material").eq(u).find(".input_nutritions input").val(0);
-     $(".menu_materials_li").eq(u).find('.view_food_ingredient').text("");
+    $(".add_li_material").eq(u).find(".amount_used_input").val("");
+    $(".menu_materials_li").eq(u).find('.input_gram_quantity').val("");
+    $(".add_li_material").eq(u).find(".input_nutritions input").val(0);
+    $(".menu_materials_li").eq(u).find('.view_food_ingredient').text("");
     var id = $(this).val();
     if (isNaN(id) == true) {} else{
       $.ajax({
@@ -144,7 +144,9 @@ $(function(){
       var id = $(".add_li_material").eq(u).find(".input_food_ingredient").val();
       if (unit=='g'||unit=='ml') {
         $(this).parent(".add_li_material").find(".input_gram_quantity").val(amount_used);
-        input_menu_materials_nutrition(id,amount_used,u)
+        if (id) {
+          input_menu_materials_nutrition(id,amount_used,u)
+        }
       }else{
         $(this).parent(".add_li_material").find(".input_gram_quantity").val("");
       }
@@ -209,7 +211,7 @@ $(function(){
     };
   });
 
-  $('.input_food_ingredient').on('change',function(){
+  $('.material_ul').on('change','.input_food_ingredient',function(){
     var id = $(this).val();
     var gram_amount = $(this).parents('li').find('.input_gram_quantity').val();
     var index = $('.menu_materials_li').index($(this).parents('.menu_materials_li'));
@@ -271,16 +273,8 @@ $(function(){
       dietary_fiber = Number(obj['dietary_fiber']) + Number($(this).find(".input_dietary_fiber").val());
       potassium = Number(obj['potassium']) + Number($(this).find(".input_potassium").val());
       calcium = Number(obj['calcium']) + Number($(this).find(".input_calcium").val());
-      // vitamin_b1 = Number(obj['vitamin_b1']) + Number($(this).find(".input_vitamin_b1").val());
-      // vitamin_b2 = Number(obj['vitamin_b2']) + Number($(this).find(".input_vitamin_b2").val());
       vitamin_c = Number(obj['vitamin_c']) + Number($(this).find(".input_vitamin_c").val());
       salt = Number(obj['salt']) + Number($(this).find(".input_salt").val());
-      // magnesium = Number(obj['magnesium']) + Number($(this).find(".input_magnesium").val());
-      // iron = Number(obj['iron']) + Number($(this).find(".input_iron").val());
-      // zinc = Number(obj['zinc']) + Number($(this).find(".input_zinc").val());
-      // copper = Number(obj['copper']) + Number($(this).find(".input_copper").val());
-      // folic_acid = Number(obj['folic_acid']) + Number($(this).find(".input_folic_acid").val());
-      // vitamin_d = Number(obj['vitamin_d']) + Number($(this).find(".input_vitamin_d").val());
 
       obj = {calorie:calorie,protein:protein,lipid:lipid,carbohydrate:carbohydrate,dietary_fiber:dietary_fiber,
         potassium:potassium,calcium:calcium,vitamin_c:vitamin_c,salt:salt};
@@ -292,16 +286,8 @@ $(function(){
     $(".menu_dietary_fiber").text(Math.round(obj['dietary_fiber']*100)/100);
     $(".menu_potassium").text(Math.round(obj['potassium']*100)/100);
     $(".menu_calcium").text(Math.round(obj['calcium']*100)/100);
-    // $(".menu_vitamin_b1").text(Math.round(obj['vitamin_b1']*100)/100);
     $(".menu_vitamin_c").text(Math.round(obj['vitamin_c']*100)/100);
     $(".menu_salt").text(Math.round(obj['salt']*100)/100);
-    // $(".menu_magnesium").text(Math.round(obj['magnesium']*100)/100);
-    // $(".menu_iron").text(Math.round(obj['iron']*100)/100);
-    // $(".menu_zinc").text(Math.round(obj['zinc']*100)/100);
-    // $(".menu_copper").text(Math.round(obj['copper']*100)/100);
-    // $(".menu_folic_acid").text(Math.round(obj['folic_acid']*100)/100);
-    // $(".menu_vitamin_d").text(Math.round(obj['vitamin_d']*100)/100);
-
   };
 
 
@@ -393,7 +379,6 @@ $(function(){
       async: false
     })
     .done(function(data){
-      console.log(data);
       $(".select_used_additives").select2('destroy');
       $(".select_used_additives optgroup").remove();
       $(".select_used_additives").select2({

@@ -63,26 +63,28 @@
         </div>
         <span style="padding-top:10px;">g/ml</span>
       </div>
-    </div>
-    <div class="col-md-12 input_nutritions" style="padding:0;">
-      <span class='view_food_ingredient'></span>
-      <%= f.hidden_field :calorie, class:'input_calorie' %>
-      <%= f.hidden_field :protein, class:'input_protein' %>
-      <%= f.hidden_field :lipid, class:'input_lipid' %>
-      <%= f.hidden_field :carbohydrate, class:'input_carbohydrate' %>
-      <%= f.hidden_field :dietary_fiber, class:'input_dietary_fiber' %>
-      <%= f.hidden_field :potassium, class:'input_potassium' %>
-      <%= f.hidden_field :calcium, class:'input_calcium' %>
-      <%= f.hidden_field :vitamin_b1, class:'input_vitamin_b1' %>
-      <%= f.hidden_field :vitamin_b2, class:'input_vitamin_b2' %>
-      <%= f.hidden_field :vitamin_c, class:'input_vitamin_c' %>
-      <%= f.hidden_field :salt, class:'input_salt' %>
-      <%= f.hidden_field :magnesium, class:'input_magnesium' %>
-      <%= f.hidden_field :iron, class:'input_iron' %>
-      <%= f.hidden_field :zinc, class:'input_zinc' %>
-      <%= f.hidden_field :copper, class:'input_copper' %>
-      <%= f.hidden_field :folic_acid, class:'input_folic_acid' %>
-      <%= f.hidden_field :vitamin_d, class:'input_vitamin_d' %>
+      <div class="col-md-4 input_nutritions" style="padding:0;">
+        <span class='view_food_ingredient'>
+          <%= "カロリー:#{f.object.calorie}kcal" if f.object.calorie %>
+        </span>
+        <%= f.hidden_field :calorie, class:'input_calorie' %>
+        <%= f.hidden_field :protein, class:'input_protein' %>
+        <%= f.hidden_field :lipid, class:'input_lipid' %>
+        <%= f.hidden_field :carbohydrate, class:'input_carbohydrate' %>
+        <%= f.hidden_field :dietary_fiber, class:'input_dietary_fiber' %>
+        <%= f.hidden_field :potassium, class:'input_potassium' %>
+        <%= f.hidden_field :calcium, class:'input_calcium' %>
+        <%= f.hidden_field :vitamin_b1, class:'input_vitamin_b1' %>
+        <%= f.hidden_field :vitamin_b2, class:'input_vitamin_b2' %>
+        <%= f.hidden_field :vitamin_c, class:'input_vitamin_c' %>
+        <%= f.hidden_field :salt, class:'input_salt' %>
+        <%= f.hidden_field :magnesium, class:'input_magnesium' %>
+        <%= f.hidden_field :iron, class:'input_iron' %>
+        <%= f.hidden_field :zinc, class:'input_zinc' %>
+        <%= f.hidden_field :copper, class:'input_copper' %>
+        <%= f.hidden_field :folic_acid, class:'input_folic_acid' %>
+        <%= f.hidden_field :vitamin_d, class:'input_vitamin_d' %>
+      </div>
     </div>
   </div>
 </li>

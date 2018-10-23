@@ -65,7 +65,7 @@
     </div>
 
     <div class="col-md-12 form-group">
-      <div class="col-md-6">
+      <div class="col-md-5">
         <%= f.label :sell_price, "販売価格" %>
         <div class="form-inline ">
           <div class="form-group">
@@ -76,7 +76,7 @@
           </div>
         </div>
       </div>
-      <div class="col-md-6">
+      <div class="col-md-5">
         <%= f.label :cost_price, "弁当原価（税込み）" %>
         <div class="form-inline ">
           <div class="form-group">
@@ -85,6 +85,12 @@
           <div class="form-group">
             円
           </div>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <label>カロリ</label>
+        <div class="">
+          <%= "#{MenuMaterial.where(menu_id:@product.menus.ids).sum(:calorie).round(2)} kcal" %>
         </div>
       </div>
     </div>
@@ -131,6 +137,7 @@
         </div>
         <div class="select_menu col-md-3">
             <%= pr.select :menu_id, Menu.pluck(:name, :id),{include_blank: true}, class:'input_select_menu'%>
+            <%= "カロリー：#{pr.object.menu.menu_materials.sum(:calorie).round(2)}kcal" %>
         </div>
         <div class="cost_price col-md-1">
           <%= @product.menus[i].cost_price if params["action"] == "edit" %>
