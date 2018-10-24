@@ -110,6 +110,7 @@ $(function(){
     last_li.children(".remove_menu").children(".destroy_menu").attr('id', "product_product_menus_attributes_"+u+"__destroy");
     last_li.children(".remove_menu").children(".destroy_menu").attr('name', "product[product_menus_attributes]["+u+"][_destroy]");
     last_li.children(".select_menu").children().val("");
+    last_li.find(".product_make_menu_calorie").text("");
     $(".input_select_menu").select2({ width:"270px",placeholder: "メニューを選択してください" });
     last_li.children(".cost_price").empty();
     last_li.children(".row_order").children().val(u);
@@ -128,6 +129,7 @@ $(function(){
     $(this).parent().parent(".add_li_menu").hide();
       calculate_product_price();
       reset_row_order();
+      calculate_total_calorie();
     });
 
   //メニュー変更時
@@ -142,6 +144,7 @@ $(function(){
       .done(function(data) {
         get_menu_price(data,u);
         calculate_product_price();
+        show_calorie(data,u)
      });
   });
 
@@ -287,4 +290,23 @@ $(function(){
       $(this).children(".row_order").children().val(i)
     });
   };
+
+  //カロリー表示
+  function show_calorie(data,u){
+    var calorie = Math.round(data.menu.calorie*100) / 100;
+    $(".add_li_menu").eq(u).find('.product_make_menu_calorie').text(calorie);
+    calculate_total_calorie();
+  };
+
+  function calculate_total_calorie(){
+    var each_calorie = 0
+    var total_calorie = 0
+    $('.product_make_menu_calorie').each(function(){
+      if ($(this).is(':visible')) {
+        each_calorie =  parseFloat($(this).text());
+        total_calorie += each_calorie;
+      }
+    });
+    $(".total_calorie").text((Math.round(total_calorie * 100) / 100) + "kcal");
+  }
 });

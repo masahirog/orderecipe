@@ -112,7 +112,10 @@
 <ul class='list-group' style="list-style-type:none;">
 <% @product.menus.each do |menu| %>
   <li class="first_tr table_tr col-md-12 list-group-item" style="padding:5px;">
-    <div class="first_tr_td col-md-2"><%= link_to "#{menu.name}", "/menus/#{menu.id}/edit" %></div>
+		<div class="first_tr_td col-md-2">
+			<div><%= link_to "#{menu.name}", "/menus/#{menu.id}/edit" %></div>
+			<div><%= "#{menu.menu_materials.sum(:calorie).round(2)}kcal" %></div>
+		</div>
 		<div class="col-md-1"><%= menu.cost_price %></div>
     <div class="first_tr_td col-md-2"><%= simple_format(menu.recipe) %></div>
     <div class="first_tr_td col-md-2"><%= simple_format(menu.serving_memo) %></div>

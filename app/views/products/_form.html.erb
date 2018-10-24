@@ -89,7 +89,7 @@
       </div>
       <div class="col-md-2">
         <label>カロリ</label>
-        <div class="">
+        <div class="total_calorie">
           <%= "#{MenuMaterial.where(menu_id:@product.menus.ids).sum(:calorie).round(2)} kcal" %>
         </div>
       </div>
@@ -137,7 +137,13 @@
         </div>
         <div class="select_menu col-md-3">
             <%= pr.select :menu_id, Menu.pluck(:name, :id),{include_blank: true}, class:'input_select_menu'%>
-            <%= "カロリー：#{pr.object.menu.menu_materials.sum(:calorie).round(2)}kcal" %>
+            <div class=''>
+              カロリー：
+              <span class='product_make_menu_calorie'>
+                <%= pr.object.menu.menu_materials.sum(:calorie).round(2) if pr.object.menu.present? %>
+              </span>
+              kcal
+            </div>
         </div>
         <div class="cost_price col-md-1">
           <%= @product.menus[i].cost_price if params["action"] == "edit" %>
