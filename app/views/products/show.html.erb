@@ -117,7 +117,7 @@
 			<div><%= "#{menu.menu_materials.sum(:calorie).round(2)}kcal" %></div>
 		</div>
 		<div class="col-md-1"><%= menu.cost_price %></div>
-    <div class="first_tr_td col-md-2"><%= simple_format(menu.recipe) %></div>
+    <div class="first_tr_td col-md-2"><%= text_url_to_link(simple_format(h(menu.recipe))).html_safe %></div>
     <div class="first_tr_td col-md-2"><%= simple_format(menu.serving_memo) %></div>
     <% i = 1 %>
     <% u = menu.materials.length %>
