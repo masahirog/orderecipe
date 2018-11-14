@@ -18,6 +18,9 @@ class PreparationPdf < Prawn::Document
       table_prepa(prepa_item_rows("切出/調理", product, num),x)
       move_down 10
       table_prepa(prepa_item_rows("調理場", product, num),x)
+      move_down 10
+      table_prepa(prepa_item_rows("切出/スチコン", product, num),x)
+
       if i ==1||i==3
         start_new_page
         x = 0
