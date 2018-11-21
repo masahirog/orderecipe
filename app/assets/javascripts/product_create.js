@@ -136,9 +136,7 @@ $(function(){
     var id = $(this).parents('.add_li_menu').find('.input_select_menu').val();
     var u = $(".add_li_menu").index($(this).parents(".add_li_menu"));
     var used_ratio = $(".add_li_menu").eq(u).find('.used_ratio').val();
-    console.log(id);
-    console.log(u);
-    console.log(used_ratio);
+
     $.ajax({
         url: "/products/get_menu_cost_price/" + id,
         data: { id : id },
