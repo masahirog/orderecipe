@@ -1,5 +1,8 @@
 $(function(){
-  reset_row_order();
+  //materialの表示、原価計算
+  $(".add_li_menu").each(function() {
+    calculate_product_price();
+  });
 
   reset_row_order();
 
@@ -69,10 +72,7 @@ $(function(){
 
 
 
-  //materialの表示、原価計算
-  $(".add_li_menu").each(function() {
-    calculate_product_price();
-  });
+
 
 
   //bentoIDの発行
@@ -96,56 +96,59 @@ $(function(){
   });
 
   //addアクション、menuの追加
-  $(".add_menu").on('click', function addInput(){
-    var u =  $(".add_li_menu").length;
-    $(".input_select_menu").select2('destroy');
-    $(".add_li_menu").first().clone().appendTo(".used_menu_ul");
-    var last_li =$(".add_li_menu").last();
-    var c = last_li.children(".category_select").children().val()
-    last_li.children(".select_menu").children().children("option")
-    last_li.children(".row_order").children().attr('name', "product[product_menus_attributes]["+u+"][row_order]" );
-    last_li.children(".row_order").children().attr('id', "product_product_menus_attributes_"+u+"_row_order" );
-    last_li.children(".select_menu").children().attr('name', "product[product_menus_attributes]["+u+"][menu_id]" );
-    last_li.children(".select_menu").children().attr('id', "product_product_menus_attributes_"+u+"_menu_id" );
-    last_li.children(".remove_menu").children(".destroy_menu").attr('id', "product_product_menus_attributes_"+u+"__destroy");
-    last_li.children(".remove_menu").children(".destroy_menu").attr('name', "product[product_menus_attributes]["+u+"][_destroy]");
-    last_li.children(".select_menu").children().val("");
-    last_li.find(".product_make_menu_calorie").text("");
-    $(".input_select_menu").select2({ width:"270px",placeholder: "メニューを選択してください" });
-    last_li.children(".cost_price").empty();
-    last_li.children(".row_order").children().val(u);
-    last_li.children(".material_name").children().children().remove();
-    last_li.children(".amount_used").children().children().remove();
-    last_li.children(".material_unit").children().children().remove();
-    last_li.children(".preparation").children().children().remove();
-    last_li.children(".remove_material").children(".destroy_materials").prop('checked',false);
-    select_option_change(u,c)
-    last_li.show();
+  $('.add_menu_fields').on('click',function(){
+    setTimeout(function(){
+      var u =  $(".add_li_menu").length - 1;
+      $(".add_li_menu").eq(u).children(".row_order").children().val(u);
+      $(".input_select_menu").select2('destroy');
+      $(".input_select_menu").select2({ width:"200px",placeholder: "メニューを選択してください" });
+    },5);
   });
 
   //menuのdestroyのチェックtrueとtrのhide、原価再計算
   $(".menu-area").on('click','.remove_menu_btn', function(){
-    $(this).parent().children(".destroy_menu").prop('checked', true);
-    $(this).parent().parent(".add_li_menu").hide();
+    setTimeout(function(){
       calculate_product_price();
       reset_row_order();
       calculate_total_calorie();
-    });
+    },5);
+  });
 
   //メニュー変更時
   $(".used_menu_ul").on('change','.input_select_menu', function(){
     var id = $(this).val();
     var u = $(".add_li_menu").index($(this).parent().parent(".add_li_menu"));
-      $.ajax({
-          url: "/products/get_menu_cost_price/" + id,
-          data: { id : id },
-          dataType: "json",
-      })
-      .done(function(data) {
-        get_menu_price(data,u);
-        calculate_product_price();
-        show_calorie(data,u)
-     });
+    var used_ratio = $(".add_li_menu").eq(u).find('.used_ratio').val();
+    console.log(used_ratio);
+    $.ajax({
+        url: "/products/get_menu_cost_price/" + id,
+        data: { id : id },
+        dataType: "json",
+    })
+    .done(function(data) {
+      get_menu_price(data,u,used_ratio);
+      calculate_product_price();
+      show_calorie(data,u)
+   });
+  });
+  $(".used_menu_ul").on('change','.used_ratio', function(){
+    console.log($(this).val());
+    var id = $(this).parents('.add_li_menu').find('.input_select_menu').val();
+    var u = $(".add_li_menu").index($(this).parents(".add_li_menu"));
+    var used_ratio = $(".add_li_menu").eq(u).find('.used_ratio').val();
+    console.log(id);
+    console.log(u);
+    console.log(used_ratio);
+    $.ajax({
+        url: "/products/get_menu_cost_price/" + id,
+        data: { id : id },
+        dataType: "json",
+    })
+    .done(function(data) {
+      get_menu_price(data,u,used_ratio);
+      calculate_product_price();
+      show_calorie(data,u)
+    });
   });
 
 
@@ -219,21 +222,20 @@ $(function(){
 
   //原価計算
   function calculate_product_price(){
-    var row_len =  $(".add_li_menu").length;
-    var sum_menu_cost = 0;
-    $(".add_li_menu").each(function(){
-      if ($(this).children(".remove_menu").children(".destroy_menu").is(':checked')){
-      }else{
-      var menu_price = parseFloat($(this).children(".cost_price").html());
-      if (isNaN(menu_price) == true ){}else{
-      sum_menu_cost += menu_price;
-    }}});
-    var product_cost_price = Math.round( sum_menu_cost * 10 ) / 10 ;
-    $(".product_cost_price").val(product_cost_price);
+    setTimeout(function(){
+      var sum_menu_cost = 0;
+      $(".add_li_menu").each(function(){
+        var menu_price = parseFloat($(this).children(".cost_price").html());
+        if (isNaN(menu_price) == true ){}else{
+          sum_menu_cost += menu_price;
+      }});
+      var product_cost_price = Math.round( sum_menu_cost * 10 ) / 10 ;
+      $(".product_cost_price").val(product_cost_price);
+    },5);
   };
   //メニューの情報取得とmaterialの表示
-  function get_menu_price(data,u){
-    var cost = data.menu.cost_price;
+  function get_menu_price(data,u,used_ratio){
+    var cost = data.menu.cost_price * used_ratio;
     $(".add_li_menu").eq(u).children(".cost_price").text(cost);
     $(".add_li_menu").eq(u).children(".material_name").children().children().remove();
     $(".add_li_menu").eq(u).children(".amount_used").children().children().remove();
@@ -241,10 +243,10 @@ $(function(){
     $(".add_li_menu").eq(u).children(".preparation").children().children().remove();
     var menu_materials_info = data.menu.menu_materials_info;
     $.each(menu_materials_info,function(index,mmi){
-      var amount_used = mmi.amount_used;
+      var amount_used = mmi.amount_used * used_ratio;
       var name =  mmi.material_name;
       var unit = mmi.calculated_unit;
-      var material_cost_price = mmi.material_cost_price;
+      var material_cost_price = mmi.material_cost_price * used_ratio;
       var cost = Math.round( ( amount_used * material_cost_price ) * 10 ) / 10
       var prepa = mmi.preparation;
       if (prepa) {
@@ -275,7 +277,7 @@ $(function(){
       async: false
     })
     .done(function(data) {
-      $("#product_product_menus_attributes_"+u+"_menu_id option").remove();
+      $(".add_li_menu").eq(u).find(".input_select_menu option").remove();
       first = $('<option>').text("").attr('value',"");
       $(".add_li_menu").eq(u).children(".select_menu").children(".input_select_menu").append(first);
       $.each(data.product, function(index,value){
@@ -302,10 +304,8 @@ $(function(){
     var each_calorie = 0
     var total_calorie = 0
     $('.product_make_menu_calorie').each(function(){
-      if ($(this).is(':visible')) {
-        each_calorie =  parseFloat($(this).text());
-        total_calorie += each_calorie;
-      }
+      each_calorie =  parseFloat($(this).text());
+      total_calorie += each_calorie;
     });
     $(".total_calorie").text((Math.round(total_calorie * 100) / 100) + "kcal");
   }

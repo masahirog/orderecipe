@@ -40,7 +40,7 @@ $(function(){
     }
   });
 
-  $('.add_fields').on('click',function(){
+  $('.add_material_fields').on('click',function(){
     setTimeout(function(){
       $(".input_select_material").select2('destroy');
       $(".input_food_ingredient").select2('destroy');
