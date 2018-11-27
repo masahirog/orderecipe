@@ -20,6 +20,8 @@ class MenusController < ApplicationController
   end
 
   def create
+    @food_ingredients = FoodIngredient.all
+    @materials = Material.where(end_of_sales:0)
     @menu = Menu.create(menu_create_update)
      if @menu.save
        redirect_to @menu,
