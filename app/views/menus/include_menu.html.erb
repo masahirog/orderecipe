@@ -9,7 +9,7 @@
     ▼チェックの付いたメニューの食材を一括変更する
   </div>
   <div class="col-md-4" style="padding:0px;">
-  <%= select :menu_id,:menu_id, Menu.pluck(:name, :id),{include_blank: true}, class:'all_select_menu select2'%>
+  <%= select :menu_id,:menu_id, Menu.pluck(:name, :id),{include_blank: true}, class:'all_select_menu'%>
   </div>
 </div>
 

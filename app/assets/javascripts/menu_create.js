@@ -5,7 +5,7 @@ $(function(){
   calculate_menu_nutrition();
 
   $(".select_used_additives").select2();
-
+  $(".all_select_menu").select2();
 
   $(".input_select_material").select2({
     ajax: {
