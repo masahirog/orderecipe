@@ -14,8 +14,13 @@ class MenusController < ApplicationController
   def new
     @food_ingredients = FoodIngredient.all
     @materials = Material.where(end_of_sales:0)
-    @menu = Menu.new
-    @menu.menu_materials.build(row_order: 0)
+    if params[:copy_flag]=='true'
+      original_menu = Menu.find(params[:menu_id])
+      @menu = original_menu.deep_clone(include: [:menu_materials])
+    else
+      @menu = Menu.new
+      @menu.menu_materials.build(row_order: 0)
+    end
     @ar = Menu.used_additives(@menu.materials)
   end
 
@@ -50,6 +55,8 @@ class MenusController < ApplicationController
     @ar = Menu.used_additives(@menu.materials)
   end
   def update
+    @food_ingredients = FoodIngredient.all
+    @materials = Material.where(end_of_sales:0)
     @menu = Menu.includes(:menu_materials,{materials:[:vendor,:material_food_additives]}).find(params[:id])
     @menu.update(menu_create_update)
     if @menu.save

@@ -1,5 +1,5 @@
 class BandPdf < Prawn::Document
-  def initialize(bento_1,bento_2)
+  def initialize(product)
     # 初期設定。ここでは用紙のサイズを指定している。
     super(
       page_size: 'A4',
@@ -7,34 +7,26 @@ class BandPdf < Prawn::Document
       :top_margin    => 0 )
     #日本語のフォント
     font "vendor/assets/fonts/ipaexm.ttf"
-    [bento_1,bento_2].each_with_index do |bento,i|
-      if i==0
-        header(bento,17)
-        header(bento,22)
-      else
-        start_new_page
-        header(bento,17)
-        header(bento,22)
-      end
-    end
+    header(product,17)
+    header(product,22)
 
   end
 
-  def header(bento,y)
+  def header(product,y)
     move_down y
     font "vendor/assets/fonts/AozoraMinchoMedium.ttf"
     image "#{Rails.root}/app/assets/images/logo_daily.png", :width => 64, :position => :center
     move_down 20
-    text "#{bento[0]}", size: 20, :align => :center,styles: :bold
+    text "#{product.name}", size: 20, :align => :center,styles: :bold
     move_down 20
-    text "#{Menu.find(bento[1][2]).food_label_name}", size: 9, :align => :center
+    text "#{product.menus[3].food_label_name}", size: 9, :align => :center
     move_down 9
-    text "#{Menu.find(bento[1][3]).food_label_name}", size: 9, :align => :center
+    text "#{product.menus[4].food_label_name}", size: 9, :align => :center
     move_down 20
     font "vendor/assets/fonts/mplus-1p-regular.ttf"
-    text "#{FoodIngredient.make_obi_nutrition(bento[1])}", size: 6, :align => :center
+    text "#{FoodIngredient.make_obi_nutrition(product.menus.ids)}", size: 6, :align => :center
     move_down 12
-    text "カロリー #{MenuMaterial.where(menu_id:bento[1]).sum(:calorie).round()} kcal", size: 6, :align => :center
+    text "カロリー #{MenuMaterial.where(menu_id:product.menus.ids).sum(:calorie).round()} kcal", size: 6, :align => :center
     move_down 24
     text "650円", size: 6, :align => :center
     move_down 30

@@ -32,8 +32,7 @@ Rails.application.routes.draw do
   post'orders/order_print_all/:id' => 'orders#order_print_all'
   post 'materials/change_additives' => 'materials#change_additives'
   get 'stocks/material_info/:id' => 'stocks#material_info'
-  get 'products/make_band' => 'products#make_band'
-  get 'products/new_band' => 'products#new_band'
+  get 'products/new_band/:id' => 'products#new_band'
   get 'materials/search' => 'materials#search'
   get 'menus/food_ingredient_search' => 'menus/food_ingredient_search'
   resources :menus

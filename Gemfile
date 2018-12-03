@@ -65,7 +65,8 @@ gem 'slack-notifier'
 gem 'active_hash'
 gem 'dotenv-rails'
 gem 'cocoon'
-
+gem 'deep_cloneable'
+gem 'activerecord-import'
 
 group :production do
   gem 'rails_12factor'

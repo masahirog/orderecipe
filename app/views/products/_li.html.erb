@@ -36,8 +36,11 @@
     <div class="col-md-1">
       <%= link_to "ラム", "/products/serving_detail_en/#{product.id}",method:"get", class:"btn btn-default",:target=>"_blank", style:"margin:0 0 0 10px;"%>
     </div>
-    <div class="col-md-1">
+    <!-- <div class="col-md-1">
       <button type="button" class="btn btn-default hyoji-btn" data-toggle="modal" data-target="#sampleModal">シール</button>
+    </div> -->
+    <div class="col-md-1">
+      <%= link_to "帯作成", "/products/new_band/#{product.id}.pdf",method:"get", class:"btn btn-default",:target=>"_blank"%>
     </div>
     <div class="col-md-1">
       <%= link_to "CSV", "/products/#{product.id}.csv", class: "btn btn-default" %>

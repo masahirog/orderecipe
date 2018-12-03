@@ -44,6 +44,8 @@ GEM
       activemodel (= 5.0.2)
       activesupport (= 5.0.2)
       arel (~> 7.0)
+    activerecord-import (0.27.0)
+      activerecord (>= 3.2)
     activesupport (5.0.2)
       concurrent-ruby (~> 1.0, >= 1.0.2)
       i18n (~> 0.7)
@@ -79,6 +81,8 @@ GEM
     concurrent-ruby (1.0.5)
     crass (1.0.2)
     debug_inspector (0.0.3)
+    deep_cloneable (2.3.2)
+      activerecord (>= 3.1.0, < 6)
     devise (4.3.0)
       bcrypt (~> 3.0)
       orm_adapter (~> 0.1)
@@ -402,12 +406,14 @@ PLATFORMS
 
 DEPENDENCIES
   active_hash
+  activerecord-import
   bootstrap-sass (~> 3.3.6)
   bullet
   byebug
   carrierwave
   cocoon
   coffee-rails (~> 4.1.0)
+  deep_cloneable
   devise
   devise-bootstrap-views
   dotenv-rails
@@ -435,4 +441,4 @@ DEPENDENCIES
   web-console (~> 2.0)
 
 BUNDLED WITH
-   1.16.3
+   2.0.0.pre.1

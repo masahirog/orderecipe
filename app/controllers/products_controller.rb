@@ -190,20 +190,13 @@ class ProductsController < ApplicationController
 
   end
   def new_band
-    product1 = Product.find(params['product']['id_1'])
-    product2 = Product.find(params['product']['id_2'])
-    @bento_1 = [product1.name]
-    @bento_2 = [product2.name]
-    @bento_1 << product1.menus.ids - [3091]
-    product2 = product2.menus.ids.slice!(1..2)
-    product2 << product1.menus.ids.slice!(3..4)
-    @bento_2 << product2.flatten!
+    product = Product.find(params[:id])
     respond_to do |format|
       format.html
       format.pdf do
-        pdf = BandPdf.new(@bento_1,@bento_2)
+        pdf = BandPdf.new(product)
         send_data pdf.render,
-          filename:    "#{Date.today}_obi.pdf",
+          filename:    "#{product.name}_obi.pdf",
           type:        "application/pdf",
           disposition: "inline"
        end
