@@ -11,7 +11,7 @@ end
 task :update_product_cost_price => :environment do
   products = Product.all
   products.each do |product|
-    product.cost_price = (product.menus.map{|menu| menu.cost_price }.sum).round(1)
+    product.cost_price = (product.product_menus.map{|pm| pm.menu.cost_price * pm.used_ratio }.sum).round(1)
   end
   Product.import products.to_a, :on_duplicate_key_update => [:cost_price]
 end
