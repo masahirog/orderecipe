@@ -43,6 +43,12 @@
   </div>
   <div class="col-xs-12 col-md-12 form-group">
     <div class="col-xs-12 col-md-4">
+      <%= f.label :vendorstock_flag, "卸業者在庫品" %></br>
+      <%= f.check_box :vendorstock_flag, class: "form-control" %>
+    </div>
+  </div>
+  <div class="col-xs-12 col-md-12 form-group">
+    <div class="col-xs-12 col-md-4">
       <%= f.label :order_code, "管理コード" %></br>
       <%= f.text_field :order_code, class:'form-control' %>
     </div>

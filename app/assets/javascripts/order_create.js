@@ -175,13 +175,19 @@ $(function(){
     .done(function(data){
       var unit = data.material.calculated_unit;
       var vendor = data.material.vendor_company_name;
+      var color = data.material.color;
       var calculated_value = data.material.calculated_value;
       var order_unit = data.material.order_unit;
       var order_unit_quantity = data.material.order_unit_quantity;
       var change_unit = order_unit_quantity+order_unit+"："+ calculated_value+" "+unit
-      $(".order_materials_tr").eq(u).find(".vendor_company_name").text(vendor);
+      if (color=='') {
+        $(".order_materials_tr").eq(u).find(".vendor_company_name").text(vendor).css("color",'color:#A9A9A9;');
+      }else{
+        $(".order_materials_tr").eq(u).find(".vendor_company_name").text(vendor).css("color",'red');  
+      }
       $(".order_materials_tr").eq(u).find(".order_material_unit").text(order_unit);
       $(".order_materials_tr").eq(u).find(".change_unit").text(change_unit);
+
     });
   }});
   //送信前のバリデーション

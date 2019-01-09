@@ -110,26 +110,31 @@
 	</div>
 </div>
 <ul class='list-group' style="list-style-type:none;">
-<% @product.menus.each do |menu| %>
+<% @product.product_menus.each do |pm| %>
   <li class="first_tr table_tr col-md-12 list-group-item" style="padding:5px;">
 		<div class="first_tr_td col-md-2">
-			<div><%= link_to "#{menu.name}", "/menus/#{menu.id}/edit" %></div>
-			<div><%= "#{menu.menu_materials.sum(:calorie).round(2)}kcal" %></div>
+			<div><%= link_to "#{pm.menu.name}", "/menus/#{pm.menu.id}/edit" %></div>
+			<% if pm.used_ratio == 1 %>
+				<div class='text-center' style='font-weight:bold;'>メニュー使用率：<%= number_to_percentage(pm.used_ratio*100,precision:0) %></div>
+			<% else %>
+				<div class='text-center' style='font-weight:bold;background-color:red;color:white;'>メニュー使用率：<%= number_to_percentage(pm.used_ratio*100,precision:0) %></div>
+			<% end %>
+			<div><%= "#{pm.menu.menu_materials.sum(:calorie).round(2)}kcal" %></div>
 		</div>
-		<div class="col-md-1"><%= menu.cost_price %></div>
-    <div class="first_tr_td col-md-2"><%= text_url_to_link(simple_format(h(menu.recipe))).html_safe %></div>
-    <div class="first_tr_td col-md-2"><%= simple_format(menu.serving_memo) %></div>
+		<div class="col-md-1"><%= pm.menu.cost_price * pm.used_ratio %></div>
+    <div class="first_tr_td col-md-2"><%= text_url_to_link(simple_format(h(pm.menu.recipe))).html_safe %></div>
+    <div class="first_tr_td col-md-2"><%= simple_format(pm.menu.serving_memo) %></div>
     <% i = 1 %>
-    <% u = menu.materials.length %>
+    <% u = pm.menu.materials.length %>
     <div class="first_tr_td col-md-5">
       <ul class='col-md-12' style="list-style-type: none;padding:0;">
-        <% menu.menu_materials.each do |mm|%>
+        <% pm.menu.menu_materials.each do |mm|%>
           <li class="menu_materials">
             <div class="col-md-4" style="padding:0;"><%= link_to mm.material.name, "/materials/#{mm.material_id}/edit" %></div>
             <div class="original_amount_used text-right col-md-2">
-                <%= mm.amount_used %> <%= mm.material.calculated_unit %></div>
+                <%= mm.amount_used * pm.used_ratio %> <%= mm.material.calculated_unit %></div>
 						<div class="original_cost_price text-right col-md-1" style="padding-left:0">
-                <%= (mm.amount_used * mm.material.cost_price).round(1) %></div>
+                <%= (mm.amount_used * mm.material.cost_price).round(1)*pm.used_ratio %></div>
             <div class="col-md-3" style="padding:0;"><%= mm.preparation %></div>
             <div class="col-md-2"><%= mm.post %></div>
           <% if i == u  %>

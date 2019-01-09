@@ -90,9 +90,19 @@
           <tr class="order_materials_tr">
             <td class="order_material_name" style="width:200px;">
               <%= m.select :material_id, @materials.pluck(:name, :id),{include_blank: true}, class:'select_order_materials',style:"width:100%;" %>
-              <div class="vendor_company_name" style="paddingtop:3px 0 0 8px;color:#A9A9A9;">
-                <%= @order.materials[i].vendor.company_name %>
-              </div>
+                <% if @order.materials[i].vendorstock_flag == true %>
+                  <span class="vendor_company_name" style="paddingtop:3px 0 0 8px;color:#A9A9A9;">
+                    <%= @order.materials[i].vendor.company_name %> ：卸業者在庫品
+                  </span>
+                <% elsif @order.materials[i].vendorstock_flag == false %>
+                  <span class="vendor_company_name" style="paddingtop:3px 0 0 8px;color:red;">
+                    <%= @order.materials[i].vendor.company_name %> ：メーカー発注品
+                  </span>
+                <% else %>
+                  <span class="vendor_company_name" style="paddingtop:3px 0 0 8px;color:#A9A9A9;">
+                    <%= @order.materials[i].vendor.company_name %>
+                  </span>
+                <% end %>
             </td>
             <td class="order_code_search" style="width:130px;">
               <% if @order.order_materials[i].calculated_quantity.present? %>

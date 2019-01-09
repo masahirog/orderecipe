@@ -26,13 +26,17 @@
     [ "副菜：副菜、漬物など", "副菜"],[ "容器：お弁当箱と箸等", "容器"]],{include_blank: true}, { class: "form-control",style:"width:100%;"} %>
   </div>
 
-  <div class="col-xs-12 col-md-6 form-group">
+  <div class="col-xs-12 col-md-4 form-group">
     <%= f.label :recipe ,'調理メモ' %><br>
     <%= f.text_area :recipe, style:"height:10em;width:100%;", class:"form-control" %>
   </div>
-  <div class="col-xs-12 col-md-6 form-group">
+  <div class="col-xs-12 col-md-4 form-group">
     <%= f.label :serving_memo ,'盛付メモ' %><br>
     <%= f.text_area :serving_memo,style:"height:10em;width:100%;", class: "form-control" %>
+  </div>
+  <div class="col-xs-12 col-md-4 form-group">
+    <%= f.label :taste_description ,'味や特徴の説明' %><br>
+    <%= f.text_area :taste_description,style:"height:10em;width:100%;", class: "form-control" %>
   </div>
   <div class="used_additives col-md-12" style="margin:20px 0;">
     <%= f.label :used_additives ,"使用食品添加物" %><br>
