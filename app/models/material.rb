@@ -104,21 +104,5 @@ class Material < ApplicationRecord
      attributed['food_additive_id'].blank?
   end
   private
-  # def update_cache
-  #   menu_materials = MenuMaterial.where( material_id: self.id )
-  #   menu_materials.each do |menu_material|
-  #     id = menu_material.menu_id
-  #     menu_materials = MenuMaterial.where(menu_id: id)
-  #     kingaku = 0
-  #     menu_materials.each do |mm|
-  #       used = mm.amount_used
-  #       cost = mm.material.cost_price
-  #       price = used * cost
-  #       kingaku = kingaku + price
-  #     end
-  #     cost_price = kingaku.round(2)
-  #     menu = Menu.find(id)
-  #     menu.update(cost_price: kingaku)
-  #   end
-  # end
+
 end

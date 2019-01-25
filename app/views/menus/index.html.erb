@@ -22,6 +22,14 @@
       <%= select_tag :category, options_from_collection_for_select(Menu.select(:category).uniq,
        :category, :category), include_blank: true, class:"form-control",style:"width:150px;" %>
     </div>
+		<div class="kensaku form-group">
+			確定状況:
+			<%= select_tag :confirm_flag,options_for_select([['未確定',0],['確定',1]],params[:confirm_flag]), include_blank: true, class:"form-control",style:"width:150px;" %>
+		</div>
+		<div class="kensaku form-group">
+			並び替え:
+			<%= select_tag :order,options_for_select([['原価高い順','cost_price DESC'],['原価低い順','cost_price ASC']],params[:order]), include_blank: true, class:"form-control",style:"width:150px;" %>
+		</div>
     <div class="kensaku form-group">
       　<%= submit_tag "検索" ,class:"btn btn-primary" %>
     </div>
@@ -33,21 +41,20 @@
 <div>
   <div class="col-md-12" style="padding:10px;">
 		<div class="col-md-1">確定</div>
-    <div class="col-md-2">メニュー名</div>
+    <div class="col-md-3">メニュー名</div>
     <div class="col-md-1">カテゴリ</div>
 		<div class="col-md-2">使用添加物</div>
     <div class="col-md-1">原価(税込)</div>
 		<div class="col-md-1">終売食品</div>
 		<div class="col-md-1">カロリー</div>
 		<div class="col-md-1">csv</div>
-		<div class="col-md-1"></div>
     <div class="col-md-1 text-right">使用お弁当</div>
   </div>
   <ul class='list-group' style="list-style-type: none;">
     <% @search.each do |menu| %>
       <li class="li-active menus_li col-md-12 list-group-item" >
 				<div class="col-md-1"><%= "OK" if menu.confirm_flag == 1 %></div>
-        <div class="menu_name col-md-2"><%= link_to "#{menu.name}", "/menus/#{menu.id}" %></div>
+        <div class="menu_name col-md-3"><%= link_to "#{menu.name}", "/menus/#{menu.id}" %></div>
         <div class="col-md-1"><%= menu.category %></div>
 				<div class="col-md-2"><%= menu.used_additives %></div>
         <div class="cost_price col-md-1"><%= menu.cost_price %>円</div>
@@ -63,9 +70,6 @@
 				<div class="col-md-1">
 					<%= link_to "CSV", "/menus/#{menu.id}.csv", class: "btn btn-default" %>
 				</div>
-				<div class="col-md-1">
-					<%= link_to "コピー",new_menu_path(copy_flag:true,menu_id:menu.id), class: "btn btn-default" %>
-				</div>
         <div class="col-md-1 text-right">
           <%=button_to "確認", "/menus/include_menu/#{menu.id}", method: :get,class:"btn btn-default btn-sm" %>
         </div>
@@ -78,6 +82,4 @@
 <% end %>
 
 </br>
-
-  <%= paginate(@search) %>
-  <!-- ページネーション -->
+<%= paginate(@search) %>

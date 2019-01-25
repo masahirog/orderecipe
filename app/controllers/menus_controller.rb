@@ -15,13 +15,17 @@ class MenusController < ApplicationController
     @food_ingredients = FoodIngredient.all
     @materials = Material.where(end_of_sales:0)
     if params[:copy_flag]=='true'
-      original_menu = Menu.find(params[:menu_id])
+      original_menu = Menu.includes(:menu_materials,{materials:[material_food_additives:[:food_additive]]}).find(params[:menu_id])
+      original_menu.menu_materials = original_menu.menu_materials.each{|menu_material|menu_material.amount_used = (menu_material.amount_used * params[:used_rate].to_f).round(2)}
+      original_menu.name = "#{original_menu.name}のコピー"
       @menu = original_menu.deep_clone(include: [:menu_materials])
+      @ar = Menu.used_additives(original_menu.materials)
+      flash.now[:notice] = "#{original_menu.name}を#{(params[:used_rate].to_f * 100).round}%でコピーして、新規作成しています。"
     else
       @menu = Menu.new
       @menu.menu_materials.build(row_order: 0)
+      @ar = Menu.used_additives(@menu.materials)
     end
-    @ar = Menu.used_additives(@menu.materials)
   end
 
   def create

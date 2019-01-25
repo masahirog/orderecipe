@@ -15,11 +15,8 @@
         kcal
       </div>
   </div>
-  <div class="col-md-1">
-      <%= f.select :used_ratio,[0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0] ,{}, class: "form-control used_ratio" %>
-  </div>
   <div class="cost_price col-md-1">
-    <%= @product.menus[f.object.row_order.to_i].cost_price * f.object.used_ratio.to_f if params["action"] == "edit" %>
+    <%= @product.menus[f.object.row_order.to_i].cost_price if params["action"] == "edit" %>
   </div>
   <div class="material_name col-md-6">
     <ul style="list-style:none;padding:0;">
@@ -30,10 +27,10 @@
               <%= pm.material.name %>
             </div>
             <div class="col-md-2 text-right">
-              <%= pm.amount_used * f.object.used_ratio.to_f %> <%= pm.material.calculated_unit %>
+              <%= pm.amount_used %> <%= pm.material.calculated_unit %>
             </div>
             <div class="col-md-2 text-right">
-              <%= (pm.amount_used * pm.material.cost_price * f.object.used_ratio.to_f).round(1) %>
+              <%= (pm.amount_used * pm.material.cost_price).round(1) %>
             </div>
             <div class="col-md-4">
               <%= pm.preparation %>

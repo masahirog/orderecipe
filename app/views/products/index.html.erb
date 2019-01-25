@@ -14,11 +14,11 @@
 </div>
 <div class="" style="">
   <%= form_tag Product, :method => 'get', class:"form-group col-md-12" do %>
-	<div class="kensaku col-md-2">
+	<div class="kensaku col-md-1">
 		<p>bentoID▼</p>
 		<%= text_field_tag :bento_id, params[:bento_id], class:"id_search form-control",style:"width:100%" %>
 	</div>
-	<div class="kensaku col-md-4">
+	<div class="kensaku col-md-3">
     <p>お弁当名▼</p>
 		<%= select_tag :name, options_from_collection_for_select(Product.select(:name),:name,:name),include_blank: true, class:"name_search form-control" %>
   </div>
@@ -30,6 +30,10 @@
      <p>お弁当タイプ▼</p>
     <%= select_tag :product_type, options_from_collection_for_select(Product.select(:product_type).uniq, :product_type, :product_type), include_blank: true, class: "form-control",style:"width:100%" %>
   </div>
+	<div class="kensaku col-md-2">
+		<p>並び替え▼</p>
+		<%= select_tag :order,options_for_select([['原価高い順','cost_price DESC'],['原価低い順','cost_price ASC']],params[:order]), include_blank: true, class:"form-control",style:"width:150px;" %>
+	</div>
   <div class="kensaku col-md-2">
     <p>　</p>
   　<%= submit_tag "検索" ,class:"btn btn-primary" %>

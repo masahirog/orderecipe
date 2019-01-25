@@ -23,6 +23,7 @@ class Product < ApplicationRecord
      data = data.where(cook_category: params["cook_category"]) if params["cook_category"].present?
      data = data.where(product_type: params["product_type"]) if params["product_type"].present?
      data = data.where(['name LIKE ?', "%#{params["name"]}%"]) if params["name"].present?
+     data = data.reorder(params['order']) if params["order"].present?
      data
    else
      data = Product.order(id: "DESC").all

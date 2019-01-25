@@ -230,6 +230,8 @@ $(function(){
   });
 
 
+
+
   function input_menu_materials_nutrition(id,gram_amount,index){
     $.ajax({
       url: "/menus/get_food_ingredient",

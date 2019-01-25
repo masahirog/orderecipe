@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190109141718) do
+ActiveRecord::Schema.define(version: 20190125122101) do
 
   create_table "food_additives", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
@@ -147,10 +147,9 @@ ActiveRecord::Schema.define(version: 20190109141718) do
   create_table "product_menus", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.integer  "product_id"
     t.integer  "menu_id"
-    t.datetime "created_at",            default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.datetime "updated_at",            default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.integer  "row_order"
-    t.float    "used_ratio", limit: 24, default: 1.0,                        null: false
   end
 
   create_table "products", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

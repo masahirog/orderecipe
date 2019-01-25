@@ -114,35 +114,17 @@ $(function(){
   $(".used_menu_ul").on('change','.input_select_menu', function(){
     var id = $(this).val();
     var u = $(".add_li_menu").index($(this).parent().parent(".add_li_menu"));
-    var used_ratio = $(".add_li_menu").eq(u).find('.used_ratio').val();
     $.ajax({
         url: "/products/get_menu_cost_price/" + id,
         data: { id : id },
         dataType: "json",
     })
     .done(function(data) {
-      get_menu_price(data,u,used_ratio);
+      get_menu_price(data,u);
       calculate_product_price();
       show_calorie(data,u)
    });
   });
-  $(".used_menu_ul").on('change','.used_ratio', function(){
-    var id = $(this).parents('.add_li_menu').find('.input_select_menu').val();
-    var u = $(".add_li_menu").index($(this).parents(".add_li_menu"));
-    var used_ratio = $(".add_li_menu").eq(u).find('.used_ratio').val();
-
-    $.ajax({
-        url: "/products/get_menu_cost_price/" + id,
-        data: { id : id },
-        dataType: "json",
-    })
-    .done(function(data) {
-      get_menu_price(data,u,used_ratio);
-      calculate_product_price();
-      show_calorie(data,u)
-    });
-  });
-
 
   //indexでの弁当名でのリアルタイム検索
   $(".id_search").on("input", function(){
@@ -226,8 +208,8 @@ $(function(){
     $(".product_cost_price").val(product_cost_price);
   };
   //メニューの情報取得とmaterialの表示
-  function get_menu_price(data,u,used_ratio){
-    var cost = data.menu.cost_price * used_ratio;
+  function get_menu_price(data,u){
+    var cost = data.menu.cost_price;
     $(".add_li_menu").eq(u).children(".cost_price").text(cost);
     $(".add_li_menu").eq(u).children(".material_name").children().children().remove();
     $(".add_li_menu").eq(u).children(".amount_used").children().children().remove();
@@ -235,10 +217,10 @@ $(function(){
     $(".add_li_menu").eq(u).children(".preparation").children().children().remove();
     var menu_materials_info = data.menu.menu_materials_info;
     $.each(menu_materials_info,function(index,mmi){
-      var amount_used = mmi.amount_used * used_ratio;
+      var amount_used = mmi.amount_used;
       var name =  mmi.material_name;
       var unit = mmi.calculated_unit;
-      var material_cost_price = mmi.material_cost_price * used_ratio;
+      var material_cost_price = mmi.material_cost_price;
       var cost = Math.round( ( amount_used * material_cost_price ) * 10 ) / 10
       var prepa = mmi.preparation;
       if (prepa) {

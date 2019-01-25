@@ -21,6 +21,8 @@ class Menu < ApplicationRecord
      data = Menu.order(id: "DESC").all
      data = data.where(['name LIKE ?', "%#{params["name"]}%"]) if params["name"].present?
      data = data.where(category: params["category"]) if params["category"].present?
+     data = data.where(confirm_flag: params["confirm_flag"]) if params["confirm_flag"].present?
+     data = data.reorder(params['order']) if params["order"].present?
      data
    else
      Menu.order(id: "DESC").all

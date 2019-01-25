@@ -6,6 +6,29 @@
 <div class="col-md-12 form-inline">
 	  <%= link_to 'メニュー編集', "/menus/#{@menu.id}/edit", method: :get,class: "btn btn-primary pull-right" %>
     <%= link_to "印刷する", "/menus/print/#{@menu.id}.pdf",method:"get", class:"btn btn-success pull-right",:target=>"_blank", style:"margin:0 20px 0 10px;"%>
+		<button type="button" class="btn btn-default pull-right" data-toggle="modal" data-target="#sampleModal" style="margin:0 10px 0 0px;">
+			コピーする
+		</button>
+		<div class="modal fade" id="sampleModal" tabindex="-1">
+			<div class="modal-dialog">
+				<div class="modal-content col-md-12">
+					<div class="modal-header col-md-12">
+						<h4 class="modal-title">オリジナルメニューの何％（各食材の使用量）でコピーしますか？</h4>
+					</div>
+					<div class="modal-body col-md-12">
+						<%= form_tag(new_menu_path,method: :get) do %>
+							<%= hidden_field_tag "copy_flag",true %>
+							<%= hidden_field_tag 'menu_id',@menu.id %>
+							<%= select_tag :used_rate,options_for_select([["100%",1],["90%",0.9],["80%",0.8],["70%",0.7],["60%",0.6],["50%",0.5],["40%",0.4],["30%",0.3],["20%",0.2],["10%",0.1]]), class:"form-control" %>
+							<%= submit_tag "コピーを作成する" ,class:"btn btn-primary pull-right" %>
+						<% end %>
+					</div>
+					<div class="modal-footer col-md-12">
+						<button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
+					</div>
+				</div>
+			</div>
+		</div>
 </div>
 
 <div class="col-md-6">
