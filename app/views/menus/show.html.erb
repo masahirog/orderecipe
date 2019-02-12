@@ -3,7 +3,7 @@
   <li><a href="/menus">メニュー一覧</a></li>
 	<li class="active"><%= @menu.name %></li>
 </ol>
-<div class="col-md-12 form-inline">
+<div class="col-md-12 form-inline" style='margin-bottom:20px;'>
 	  <%= link_to 'メニュー編集', "/menus/#{@menu.id}/edit", method: :get,class: "btn btn-primary pull-right" %>
     <%= link_to "印刷する", "/menus/print/#{@menu.id}.pdf",method:"get", class:"btn btn-success pull-right",:target=>"_blank", style:"margin:0 20px 0 10px;"%>
 		<button type="button" class="btn btn-default pull-right" data-toggle="modal" data-target="#sampleModal" style="margin:0 10px 0 0px;">
@@ -76,6 +76,9 @@
 		 <td><%= simple_format(@menu.taste_description) %></td>
 	 </tr>
  </table>
+</div>
+<div class="col-md-6">
+	<%= image_tag @menu.image.to_s ,class:"text-center img-responsive center-block",style:'max-height:450px;' %>
 </div>
 <div>
     <div class="col-md-12" style="padding:10px">

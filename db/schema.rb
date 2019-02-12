@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190125122101) do
+ActiveRecord::Schema.define(version: 20190212111629) do
 
   create_table "food_additives", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "name"
@@ -117,6 +117,7 @@ ActiveRecord::Schema.define(version: 20190125122101) do
     t.string   "used_additives",                  default: ""
     t.integer  "confirm_flag",                    default: 0,                          null: false
     t.text     "taste_description", limit: 65535
+    t.string   "image"
   end
 
   create_table "order_materials", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|

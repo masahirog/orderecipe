@@ -41,9 +41,9 @@
 <div>
   <div class="col-md-12" style="padding:10px;">
 		<div class="col-md-1">確定</div>
-    <div class="col-md-3">メニュー名</div>
+    <div class="col-md-4">メニュー名</div>
     <div class="col-md-1">カテゴリ</div>
-		<div class="col-md-2">使用添加物</div>
+		<div class="col-md-1">画像</div>
     <div class="col-md-1">原価(税込)</div>
 		<div class="col-md-1">終売食品</div>
 		<div class="col-md-1">カロリー</div>
@@ -54,9 +54,9 @@
     <% @search.each do |menu| %>
       <li class="li-active menus_li col-md-12 list-group-item" >
 				<div class="col-md-1"><%= "OK" if menu.confirm_flag == 1 %></div>
-        <div class="menu_name col-md-3"><%= link_to "#{menu.name}", "/menus/#{menu.id}" %></div>
+        <div class="menu_name col-md-4"><%= link_to "#{menu.name}", "/menus/#{menu.id}" %></div>
         <div class="col-md-1"><%= menu.category %></div>
-				<div class="col-md-2"><%= menu.used_additives %></div>
+				<div class="col-md-1"><%= image_tag menu.image.thumb.url if menu.image.present? %></div>
         <div class="cost_price col-md-1"><%= menu.cost_price %>円</div>
 				<div class="col-md-1">
 					<% menu.materials.each do |m| %>

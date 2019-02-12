@@ -1,4 +1,5 @@
 class Menu < ApplicationRecord
+  mount_uploader :image, ImageUploader
   serialize :used_additives
   has_paper_trail
   has_many :menu_materials,->{order("menu_materials.row_order asc") }, dependent: :destroy
