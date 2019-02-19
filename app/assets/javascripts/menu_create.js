@@ -192,22 +192,24 @@ $(function(){
   $('#menu_submit_btn').click(function(){
     var i = 0
     if(!confirm('更新するとお弁当全てに反映されますが、よろしいですか？')){
-        /* キャンセルの時の処理 */
-        return false;
+      /* キャンセルの時の処理 */
+      return false;
     }else{
-        /*　OKの時の処理 */
-        $(".add_li_material").each(function(){
+      /*　OKの時の処理 */
+      $(".add_li_material").each(function(){
+        if ($(this).find('.remove_material').children().val()=='false') {
           if ($(this).children(".preparation").children().val()=="" && $(this).children(".select_post").children().val()==""){
           }else if($(this).children(".preparation").children().val().length > 0  && $(this).children(".select_post").children().val().length > 0){
           }else{
             i += 1
           };
-        });
-        if (i==0) {
-          $('form').submit();
-        }else{
-          alert("仕込みが埋まっていないものがあります。")
-        };
+        }else{};
+      });
+      if (i==0) {
+        $('form').submit();
+      }else{
+        alert("仕込みが埋まっていないものがあります。")
+      };
     };
   });
 

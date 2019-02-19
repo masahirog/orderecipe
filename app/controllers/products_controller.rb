@@ -44,9 +44,16 @@ class ProductsController < ApplicationController
   end
 
   def new
-    @bento_id = Product.bentoid()
-    @product = Product.new
-    @product.product_menus.build(row_order: 0)
+    if params[:copy_flag]=='true'
+      original_product = Product.includes(product_menus:[menu:[menu_materials:[:material]]]).find(params[:product_id])
+      original_product.name = "#{original_product.name}のコピー"
+      @product = original_product.deep_clone(include: [:product_menus])
+      flash.now[:notice] = "#{original_product.name}を複製しました。この商品を登録する前に、コピーした元の商品のbento_idを消してください。名前も変更してください。"
+    else
+      @bento_id = Product.bentoid()
+      @product = Product.new
+      @product.product_menus.build(row_order: 0)
+    end
   end
 
   def show

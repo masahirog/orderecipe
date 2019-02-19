@@ -16,24 +16,24 @@
       </div>
   </div>
   <div class="cost_price col-md-1">
-    <%= @product.menus[f.object.row_order.to_i].cost_price if params["action"] == "edit" %>
+    <%= f.object.menu.cost_price if f.object.menu.present? %>
   </div>
   <div class="material_name col-md-6">
     <ul style="list-style:none;padding:0;">
-      <% if params["action"] == "edit" %>
-        <% @product.menus[f.object.row_order.to_i].menu_materials.each do |pm| %>
+      <% if f.object.menu.present? %>
+        <% f.object.menu.menu_materials.each do |mm| %>
           <li class="col-md-12">
             <div class="col-md-4">
-              <%= pm.material.name %>
+              <%= mm.material.name %>
             </div>
             <div class="col-md-2 text-right">
-              <%= pm.amount_used %> <%= pm.material.calculated_unit %>
+              <%= mm.amount_used %> <%= mm.material.calculated_unit %>
             </div>
             <div class="col-md-2 text-right">
-              <%= (pm.amount_used * pm.material.cost_price).round(1) %>
+              <%= (mm.amount_used * mm.material.cost_price).round(1) %>
             </div>
             <div class="col-md-4">
-              <%= pm.preparation %>
+              <%= mm.preparation %>
             </div>
           </li>
         <% end %>

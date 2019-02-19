@@ -6,14 +6,17 @@
 
 <div class="col-md-12 form-inline">
   <div class="col-xs-11 col-md-12 form-group">
-		<div class="col-md-10">
+		<div class="col-md-5">
 	    <%= form_tag({:controller => "products", :action => "print", format: "pdf"},{:target => "_blank"}) do %>
-	    <%= number_field(:volume,:id,value:params[:id],style:"display:none;") %>
-	    <%= number_field(:volume,:num,class:"form-control text-right",id:"amount_number_input",placeholder:"食数を入力") %>
-	    <input type="button" onclick="submit();" value="印刷ページ" class="btn btn-primary" style="margin:0 0 0 10px;" >
+	    	<%= number_field(:volume,:id,value:params[:id],style:"display:none;") %>
+	    	<%= number_field(:volume,:num,class:"form-control text-right",id:"amount_number_input",placeholder:"食数を入力") %>
+	    	<input type="button" onclick="submit();" value="印刷ページ" class="btn btn-primary" style="margin:0 0 0 10px;" >
+			<% end %>
+		</div>
+		<div class="col-md-5">
 	    <%= link_to "盛付用VIEW", "/products/serving_detail/#{@product.id}",method:"get", class:"btn btn-primary",:target=>"_blank", style:"margin:0 0 0 10px;"%>
 			<%= link_to "ラムさん", "/products/serving_detail_en/#{@product.id}",method:"get", class:"btn btn-primary",:target=>"_blank", style:"margin:0 0 0 10px;"%>
-	    <% end %>
+			<%= link_to 'コピー', new_product_path(product_id:@product.id,copy_flag:true) , class:"btn btn-primary",:target=>"_blank", style:"margin:0 0 0 10px;"%>
 		</div>
 		<div class="col-md-2">
 			<%= button_to 'お弁当を編集', "/products/#{@product.id}/edit", method: :get,class: "pull-right btn btn-default" %>
