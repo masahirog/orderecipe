@@ -1,0 +1,102 @@
+= form_for @product do |f|
+  - if @product.errors.any?
+    #error_explanation
+      h2
+        = pluralize(@product.errors.count, "error")
+        |  prohibited this recipe from being saved:
+      ul
+        - @product.errors.full_messages.each do |message|
+          li
+            = message
+  .col-md-7
+    .col-md-12.form-group
+      .col-md-12
+        = f.label :name, "弁当名"
+        = f.text_field :name, id: "menu_search", autocomplete: "off", class:"name form-control"
+    .col-md-12.form-group
+      - if @product.bento_id.present?
+
+      - else
+        .col-md-12
+          .col-md-3.text-center
+            input.registration[type="checkbox" style="width: 24px; height: 24px;"]
+          .col-md-9
+            strong
+              |  ←販売が決定した弁当はチェックを付けて保存してください。 bentoID(メニューSSと連携ID)を発行します。(試作時は空欄) 
+    .col-md-12.form-group
+      .col-md-4
+        = f.label :bento_id, "SS連携ID"
+        = number_field_tag("bento_id_hidden",@bento_id,style:"display:none;")
+        = f.number_field :bento_id, class:"bento_id form-control"
+      .col-md-4
+        = f.label :cook_category, "調理カテゴリー"
+        = f.select :cook_category, {'グリル': "グリル", 'コンロ': "コンロ", 'フライヤー': "フライヤー", '前日コンロ': "前日コンロ",
+        -                                       'フライヤー・グリル': "フライヤー・グリル",'フライヤー・コンロ': "フライヤー・コンロ", 'グリル・コンロ': "グリルコンロ", '前日グリル': "前日グリル",
+        -                                        'その他': "その他",'スチコン': "スチコン"},{include_blank: true},{class: "cook_category_choice form-control"}
+      .col-md-4
+        = f.label :product_type, "弁当種類"
+        = f.select :product_type,{ W弁: "W弁",新ヘルシー: "新ヘルシー",デラックス: "デラックス", ヘルシー: "ヘルシー", ノーマル: "ノーマル", プレミアム: "プレミアム",
+        -                                     ボウル: "ボウル", 麺: "麺", その他: "その他"}, {include_blank: true}, { class: "form-control"}
+    .col-md-12.form-group
+      .col-md-12
+        = f.label :description, "説明文"
+        = f.text_area :description, class:"form-control", style:"height:10em;"
+    .col-md-12.form-group
+      .col-md-12
+        = f.label :contents, "内容物"
+        = f.text_area :contents, class:"form-control", style:"height:10em;"
+    .col-md-12.form-group
+      .col-md-5
+        = f.label :sell_price, "販売価格"
+        .form-inline
+          .form-group
+            = f.number_field :sell_price, class:"price form-control"
+            .form-group
+              |  円 
+      .col-md-5
+        = f.label :cost_price, "弁当原価（税込み）"
+        .form-inline
+          .form-group
+            = f.number_field :cost_price, :readonly => 'readonly', class:"product_cost_price form-control text-right"
+          .form-group
+            |  円 
+      .col-md-2
+        label
+          | カロリ
+        .total_calorie
+          = "#{MenuMaterial.where(menu_id:@product.menus.ids).sum(:calorie).round(2)} kcal"
+  .col-md-5
+    = f.label :product_image, "写真"
+    = f.file_field :product_image
+    = f.hidden_field :product_image_cache
+    .form-group
+      - if @product.product_image?
+        = image_tag @product.product_image.to_s,class:"img-responsive",style:'max-height:450px;'
+        div
+          = f.label :remove_product_image,"削除する"
+          = f.check_box :remove_product_image
+  .menu-area.table-striped
+    .col-md-12[style="margin-top:10px;"]
+      label.col-md-1
+        | カテゴリ
+      label.col-md-2
+        | メニュー名
+      label.col-md-1.text-right
+        | メ原価
+      .col-md-6
+        label.col-md-4
+          | 材料名
+        label.col-md-2.text-right
+          | 使用量
+        label.col-md-2.text-right
+          | 材原価
+        label.col-md-4
+          | 仕込み
+      label.col-md-1.text-right
+    ul.used_menu_ul.list-group.ul-sortable[style="list-style:none;cursor:move;"]
+      = f.fields_for :product_menus do |pr|
+        = render 'product_menu_fields', f: pr
+    .col-md-12[style="margin:10px 10px 30px 0;"]
+      = link_to_add_association '品目追加', f, :product_menus,class:'btn btn-primary add_menu_fields'
+  .action.col-md-12
+    input.btn.btn-success[type="button" onclick="submit();" value="登録する"]

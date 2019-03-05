@@ -1,0 +1,71 @@
+.col-md-12
+  .col-md-3
+    label 発注に使用した弁当
+.col-md-12
+  .panel.panel-primary
+    .panel-heading.col-md-12[style="padding:5px;"]
+      span.panel-title.col-md-4 弁当名
+      span.col-md-2.panel-title 食数
+      span.col-md-2.panel-title 製造日
+      .col-md-2
+        = link_to "レシピ一括印刷","/products/product_pdf_all/#{@order.id}.pdf",class:"btn btn-default",style:"font-size:8px;",:target=>"_blank"
+      .col-md-2
+        = link_to "仕込み表印刷","/products/preparation_all/#{@order.id}.pdf",class:"btn btn-default",style:"font-size:8px;",:target=>"_blank"
+    ul.list-group.panel-body style="list-style:none;"
+      - @order.order_products.each do |op|
+        li.col-md-12.list-group-item
+          .col-md-4
+            =  link_to "#{Product.find(op.product_id).name}","/products/#{op.product_id}"
+          .col-md-2
+            = "#{op.serving_for}食"
+          .col-md-2
+            = "#{Date.parse(op.make_date).strftime("%Y年%-m月%-d日(#{%w(日 月 火 水 木 金 土)[Date.parse(op.make_date).wday]})")}"
+          .col-md-2
+            = form_tag({:controller => "products", :action => "print", format: "pdf"},{:target => "_blank"}) do
+              = number_field(:volume,:id,value:op.product_id,style:"display:none;")
+              = number_field(:volume,:num,value:op.serving_for,id:"amount_number_input",style:"display:none;")
+              input.btn.btn-primary type="button" onclick="submit();" value="印刷ページ"
+          .col-md-2
+            = link_to "盛付用VIEW", "/products/serving_detail/#{op.product_id}",method:"get", class:"btn btn-success",:target=>"_blank"
+.col-md-12
+  = form_tag({:controller => "orders", :action => "order_print", format: "pdf"},{:target => "_blank"}) do
+    .col-md-2.col-md-offset-5
+      label.text-right 企業絞込：
+      = select :vendor,:id, @vendors.map{|t| [t["company_name"], t["vendor_id"]]},{include_blank: true},class:"index_vendor_select form-control"
+    .col-md-2.text-right style="padding-top:20px;"
+      input.print_btn.btn.btn-primary type="button" onclick="submit();" value="発注書印刷"
+  = form_tag({:controller => "orders", :action => "order_print_all", format: "pdf"},{:target => "_blank"}) do
+    div style="display:none;"
+      - @vendors.each_with_index do |vendor,i|
+        = text_field_tag :vendor, vendor["vendor_id"] ,name:"vendor[id#{i}]",id:"id#{i}"
+    .col-md-2 style="padding-top:20px;"
+      input.print_btn.btn.btn-primary type="button" onclick="submit();" value="全企業印刷"
+.col-md-12
+  label 発注食材・資材一覧
+  .orders_all.panel.panel-primary
+    .panel-heading.col-md-12 style="padding:5px;"
+      label.panel-title.material_name.col-md-3 食材名
+      label.panel-title.col-md-1 発注量
+      label.panel-title.col-md-1 計算量
+      label.panel-title.col-md-2 仕入先
+      label.panel-title.col-md-2 備考
+      label.panel-title.col-md-2 納品日
+    ul.order_materials_ul.list-group.panel-body
+      - @order.order_materials.each do |om|
+        li.index_vendor_list.list-group-item.col-md-12 style="padding:5px;"
+          .material_name.col-md-3
+            = om.material.name
+          .order_quantity.col-md-1.text-right
+            = om.order_quantity
+            = om.material.order_unit
+          .material_unit.col-md-1.text-right
+            = om.calculated_quantity
+            = om.material.calculated_unit
+          .vendor_company_name.col-md-2
+            = om.material.vendor.company_name
+          .col-md-2
+            = om.order_material_memo
+          .col-md-2
+            = om.delivery_date
+.col-md-12 style="margin-bottom:30px;"
+  = button_to '発注内容の編集', "/orders/#{@order.id}/edit", method: :get,class: "btn btn-default"

@@ -1,0 +1,70 @@
+ol.breadcrumb
+  li
+    a[href="/"]
+      | ホーム
+  li.active
+    | お弁当一覧
+.form-inline.col-md-12[style=""]
+  h3
+    | お弁当の新規登録 
+    a[href="/products/new"]
+      span.glyphicon.glyphicon-plus-sign[aria-hidden="true"]
+div[style=""]
+  = form_tag Product, :method => 'get', class:"form-group col-md-12" do
+    .kensaku.col-md-1
+      p
+        | bentoID▼
+      = text_field_tag :bento_id, params[:bento_id], class:"id_search form-control",style:"width:100%"
+    .kensaku.col-md-3
+      p
+        | お弁当名▼
+      = select_tag :name, options_from_collection_for_select(Product.select(:name),:name,:name),include_blank: true, class:"name_search form-control"
+    .kensaku.col-md-2
+      p
+        | 調理カテゴリー▼
+      = select_tag :cook_category, options_from_collection_for_select(Product.select(:cook_category).uniq, :cook_category, :cook_category), include_blank: true, class: "form-control",style:"width:100%"
+    .kensaku.col-md-2
+      p
+        | お弁当タイプ▼
+      = select_tag :product_type, options_from_collection_for_select(Product.select(:product_type).uniq, :product_type, :product_type), include_blank: true, class: "form-control",style:"width:100%"
+    .kensaku.col-md-2
+      p
+        | 並び替え▼
+      = select_tag :order,options_for_select([['原価高い順','cost_price DESC'],['原価低い順','cost_price ASC']],params[:order]), include_blank: true, class:"form-control",style:"width:150px;"
+    .kensaku.col-md-2
+      p
+        | 　
+      |  　
+      = submit_tag "検索" ,class:"btn btn-primary"
+.col-md-12
+  = paginate @search
+div
+  .col-md-12[style="padding:10px;"]
+    .col-md-1
+      | bentoID
+    .col-md-2
+      | 弁当名
+    .col-md-1
+      | カテゴリ
+    .col-md-1
+      | 弁当種類
+    .col-md-1
+      | 販売価格
+    .col-md-1
+      | 原価(税込)
+    .col-md-1
+      | 終売食材✔
+    .col-md-1
+      | ラムちゃん
+    .col-md-1
+      | Daily帯
+    .col-md-1
+      | csv
+    .col-md-1
+      | 画像
+  ul.aaaad.list-group[style="list-style-type: none;"]
+    = render partial: 'li', locals: { search: @search }
+- if @search.size == 0 then
+  p
+    | 該当するお弁当が存在しません
+= paginate @search

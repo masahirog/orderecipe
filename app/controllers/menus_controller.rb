@@ -81,6 +81,7 @@ class MenusController < ApplicationController
 
   def show
     @menu = Menu.includes(:menu_materials,{materials: [:vendor]}).find(params[:id])
+    @food_additives = FoodAdditive.where(id:@menu.used_additives)
     @arr = Menu.allergy_seiri(@menu)
     respond_to do |format|
       format.html

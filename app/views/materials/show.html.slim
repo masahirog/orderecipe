@@ -1,0 +1,34 @@
+ol.breadcrumb
+  li
+    a href="/"
+      | ホーム
+  li
+    a href="/materials"
+      | 食材資材一覧
+  li.active
+    = @material.name
+div
+  .active.col-md-12 style="padding:10px"
+    .col-md-3
+      | 食材資材名
+    .col-md-3
+      | 発注名
+    .col-md-2
+      | 発注量
+    .col-md-1
+      | 発注単位
+    .col-md-3
+      | 値段
+  ul.list.list-group
+    li.list-group-item.col-md-12
+      .col-md-3
+        = @material.name
+      .col-md-3
+        = @material.order_name
+        |  円
+      .col-md-2
+        = @material.calculated_value
+      .col-md-1
+        = @material.calculated_unit
+      .col-md-3
+        = @material.calculated_price

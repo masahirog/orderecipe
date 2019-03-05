@@ -1,0 +1,36 @@
+.order_new.panel.panel-primary
+  .panel-heading.col-md-12
+    h4
+      strong.col-md-3 食材・資材の発注
+    div
+      |  お弁当から食材を計算する場合は必要な数値を入れ、発注開始を押して下さい。
+  .panel-body
+    = form_tag(:controller => "orders", :action => "new") do
+      ul.orderform style="list-style:none;"
+        - for i in 0..5
+          = render :partial => "new_form",locals: {i:i}
+      .text-center.form-group.col-md-12[style="margin-top:30px;"]
+        input.col-md-4.col-xs-offset-4.btn.btn-success.text-right.form-inline[type="button" onclick="submit();" value="発注開始"]
+.col-md-12
+  h4
+    strong
+      | 過去の発注一覧
+.col-md-12
+  .col-md-1
+    |  お弁当一覧
+ul.list-group[style="list-style-type: none;"]
+  - @orders.each do |order|
+    li.col-md-12.list-group-item
+      .col-md-8
+        - order.order_products.each do |op|
+          .col-md-3
+            .col-md-12.bold[style="font-size:10px;"]
+              strong
+                = "#{op.serving_for}人分"
+            .col-md-12[style="font-size:10px;"]
+              = op.product.name
+      .col-md-3
+        = link_to "レシピ印刷","/products/product_pdf_all/#{order.id}.pdf",class:"btn btn-success",:target=>"_blank",style:"margin:3px;"
+        = link_to "仕込印刷","/products/preparation_all/#{order.id}.pdf",class:"btn btn-warning",:target=>"_blank",style:"margin:3px;"
+        = link_to "発注詳細", "/orders/#{order.id}",class:"order btn btn-primary",style:"margin:3px;"
+= paginate @orders

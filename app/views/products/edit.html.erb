@@ -1,7 +1,0 @@
-<ol class="breadcrumb">
-	<li><a href="/">ホーム</a></li>
-  <li><a href="/products">お弁当一覧</a></li>
-  <li><%= link_to "#{@product.name}","/products/#{@product.id}" %></li>
-	<li class="active">編集</li>
-</ol>
-<%= render 'form', path: edit_product_path, method: :post, locals: {new_flag:false} %>

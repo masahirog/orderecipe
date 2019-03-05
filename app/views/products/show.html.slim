@@ -1,0 +1,154 @@
+ol.breadcrumb
+  li
+    a[href="/"]
+      | ホーム
+  li
+    a[href="/products"]
+      | お弁当一覧
+  li.active
+    = @product.name
+.col-md-12.form-inline
+  .col-xs-11.col-md-12.form-group
+    .col-md-5
+      = form_tag({:controller => "products", :action => "print", format: "pdf"},{:target => "_blank"}) do
+        = number_field(:volume,:id,value:params[:id],style:"display:none;")
+        = number_field(:volume,:num,class:"form-control text-right",id:"amount_number_input",placeholder:"食数を入力")
+        input.btn.btn-primary[type="button" onclick="submit();" value="印刷ページ" style="margin:0 0 0 10px;"]
+    .col-md-5
+      = link_to "盛付用VIEW", "/products/serving_detail/#{@product.id}",method:"get", class:"btn btn-primary",:target=>"_blank", style:"margin:0 0 0 10px;"
+      = link_to "ラムさん", "/products/serving_detail_en/#{@product.id}",method:"get", class:"btn btn-primary",:target=>"_blank", style:"margin:0 0 0 10px;"
+      = link_to 'コピー', new_product_path(product_id:@product.id,copy_flag:true) , class:"btn btn-primary",:target=>"_blank", style:"margin:0 0 0 10px;"
+    .col-md-2
+      = button_to 'お弁当を編集', "/products/#{@product.id}/edit", method: :get,class: "pull-right btn btn-default"
+.amount_number.col-xs-12.col-md-12
+
+br
+br
+.col-md-6
+  table.table
+    tr
+      th.active.col-md-4
+        | 弁当名
+      td
+        = @product.name
+    tr
+      th.active.col-md-4
+        | bentoID
+      td
+        = @product.bento_id
+    tr
+      th.active.col-md-4
+        | 調理カテゴリー
+      td
+        = @product.cook_category
+    tr
+      th.active.col-md-4
+        | 弁当種類
+      td
+        = @product.product_type
+    tr
+      th.active.col-md-4
+        | 販売価格
+      td
+        = @product.sell_price
+        | 円
+    tr
+      th.active.col-md-4
+        | 原価価格（税込み）
+      td
+        = @product.cost_price
+        | 円
+    tr
+      th.active.col-md-4
+        | 説明文
+      td
+        = simple_format(@product.description)
+    tr
+      th.active.col-md-4
+        | 内容物
+      td
+        =simple_format( @product.contents)
+    tr
+      th.active.col-md-4
+        | アレルギー
+      td
+        - @allergies.each do |al|
+          = al
+          | 、 
+    tr
+      th.active.col-md-4
+        | 食品添加物
+      td
+        - @additives.each do |ad|
+          = ad
+          | 、 
+    tr
+      th.active.col-md-4
+        | カロリー
+      td
+        = "#{MenuMaterial.where(menu_id:@product.menus.ids).sum(:calorie).round(2)} kcal"
+    tr
+      th.active.col-md-4
+        | 帯表示
+      td
+        = FoodIngredient.cehck_nutrition(@product)
+.col-md-1
+
+.col-md-3.text-center
+  = image_tag @product.product_image.to_s ,class:"text-center img-responsive center-block",style:'max-height:450px;'
+.col-md-12.active[style="padding:10px;"]
+  .col-md-2
+    | メニュー名
+  .col-md-1
+    | 税込原価
+  .col-md-2
+    | レシピ
+  .col-md-2
+    | 盛り付けメモ
+  .col-md-5
+    .col-md-4
+      | 食材資材名
+    .col-md-2
+      | 使用量
+    .col-md-1[style="padding-left:0"]
+      | 原価
+    .col-md-3[style="padding-left:0px;"]
+      | 仕込み
+    .col-md-2
+      | 仕込場
+ul.list-group[style="list-style-type:none;"]
+  - @product.product_menus.each do |pm|
+    li.first_tr.table_tr.col-md-12.list-group-item[style="padding:5px;"]
+      .first_tr_td.col-md-2
+        div
+          = link_to "#{pm.menu.name}", "/menus/#{pm.menu.id}/edit"
+        div
+          = "#{pm.menu.menu_materials.sum(:calorie).round(2)}kcal"
+      .col-md-1
+        = pm.menu.cost_price
+      .first_tr_td.col-md-2
+        = text_url_to_link(simple_format(h(pm.menu.recipe))).html_safe
+      .first_tr_td.col-md-2
+        = simple_format(pm.menu.serving_memo)
+      - i = 1
+      - u = pm.menu.materials.length
+      .first_tr_td.col-md-5
+        ul.col-md-12[style="list-style-type: none;padding:0;"]
+          - pm.menu.menu_materials.each do |mm|
+            li.menu_materials
+              .col-md-4[style="padding:0;"]
+                = link_to mm.material.name, "/materials/#{mm.material_id}/edit"
+              .original_amount_used.text-right.col-md-2
+                = mm.amount_used
+                = mm.material.calculated_unit
+              .original_cost_price.text-right.col-md-1[style="padding-left:0"]
+                = (mm.amount_used * mm.material.cost_price).round(1)
+              .col-md-3[style="padding:0;"]
+                = mm.preparation
+              .col-md-2
+                = mm.post
+              - if i == u
+
+  - else
+    li.col-md-12
+      - i += 1

@@ -1,0 +1,10 @@
+ol.breadcrumb
+  li
+    a href="/" ホーム
+  li
+    a href="/materials" 食材資材一覧
+  li
+    = link_to "#{@material.name}","/materials/#{@material.id}"
+  li.active
+    編集
+= render 'form', path: edit_material_path, method: :post , locals: {edit_flag:true}

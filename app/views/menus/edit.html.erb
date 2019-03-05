@@ -1,7 +1,0 @@
-<ol class="breadcrumb">
-	<li><a href="/">ホーム</a></li>
-  <li><a href="/menus">メニュー一覧</a></li>
-  <li><%= link_to "#{@menu.name}","/menus/#{@menu.id}" %></li>
-	<li class="active">編集</li>
-</ol>
-<%= render 'form', path: edit_menu_path, method: :post %>

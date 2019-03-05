@@ -1,0 +1,186 @@
+= form_for @material do |f|
+  - if @material.errors.any?
+    #error_explanation
+      h2
+        = pluralize(@material.errors.count, "error")
+        |  prohibited this recipe from being saved:
+      ul
+        - @material.errors.full_messages.each do |message|
+          li
+            = message
+  .col-xs-12.col-md-12.form-group
+    .col-xs-12.col-md-5
+      = f.label :name, "食材・資材名"
+      = f.text_field :name, class:'form-control'
+  .col-xs-12.col-md-12.form-group
+    .col-xs-12.col-md-5
+      = f.label :order_name, "発注書記載名"
+      = f.text_field :order_name, class:'form-control'
+  .col-xs-12.col-md-12.form-group
+    .col-xs-12.col-md-5
+      = f.label :category, "カテゴリー"
+      = f.select :category, [["食材", "食材"], ["弁当備品", "弁当備品"], ["厨房備品", "厨房備品"],["弁当容器", "弁当容器"]],{include_blank: true}, { class: "form-control"}
+  .col-xs-12.col-md-12.form-group
+    .col-xs-12.col-md-5
+      = f.label :vegetable_flag, "野菜フラグ"
+      = f.check_box :vegetable_flag, class: "form-control"
+  .col-xs-12.col-md-12.form-group
+    .col-xs-12.col-md-5
+      = f.label :vendor_id, "仕入先企業名"
+      = f.collection_select :vendor_id, Vendor.all, :id, :company_name, {include_blank: true}, { class: "form-control"}
+  .col-xs-12.col-md-12.form-group
+    .col-xs-12.col-md-5
+      = f.label :vendorstock_flag, "卸業者在庫品(業者が在庫している商品で翌日届く商品)"
+      = f.check_box :vendorstock_flag, class: "form-control"
+  .col-xs-12.col-md-12.form-group
+    .col-xs-12.col-md-5
+      = f.label :order_code, "管理コード"
+      = f.text_field :order_code, class:'form-control'
+  .col-md-12.form-group style="padding:0;"
+    .col-md-5
+      .col-xs-12.col-md-12
+        = f.label :order_unit, "発注時の単位"
+      .col-xs-12.col-md-5
+        - if local_assigns[:locals][:edit_flag] == true
+          = f.text_field :order_unit_quantity,class:"input_order_unit_quantity form-control text-right"
+        - else
+          = f.text_field :order_unit_quantity,class:"input_order_unit_quantity form-control text-right",value:1
+      .col-xs-12.col-md-6
+        = f.select :order_unit, [["kg", "kg"], ["p/c", "p/c"], ["c/s", "c/s"], ["缶", "缶"], ["束", "束"],["袋", "袋"],["箱", "箱"],["枚", "枚"],["個", "個"],["本", "本"],["匹", "匹"]],{include_blank: true}, { class: "form-control input_order_unit"}
+  .col-md-12.form-group style="padding:0;"
+    .col-xs-12.col-md-5
+      .col-xs-12.col-md-12
+        = f.label :calculated_price, "-",class:"calculated_price_label col-md-12"
+      .col-xs-9.col-md-8
+        = f.text_field :calculated_price, class:'form-control'
+      .col-xs-2.col-md-4 style="margin-top:10px;padding:0;"
+        |  円
+  .col-md-12.form-group style="padding:0;"
+    .col-xs-12.col-md-5
+      .col-xs-12.col-md-12
+        = f.label :calculated_unit, "レシピ中使用単位"
+      .col-xs-9.col-md-8
+        = f.select :calculated_unit, {ml: "ml", g: "g", 袋: "袋",尾: "尾", 本: "本", 枚: "枚",切: "切", 個: "個"},{include_blank: true}, { class: "input_calculated_unit form-control"}
+  .col-md-12.form-group style="padding:0;"
+    .col-xs-12.col-md-5
+      .col-xs-12.col-md-12
+        = f.label :calculated_value, "-",class:"calculated_value_label col-md-12"
+      .col-xs-9.col-md-8.form-group.form-group
+        = f.text_field :calculated_value, class:'form-control'
+      .calculated_value_unit.col-xs-2.col-md-4 style="font-size:18px;margin-top:10px;padding:0;"
+
+  .col-md-12.form-group style="padding:0;"
+    .col-md-5
+      = f.label :cost_price, "単位単価", class:"cost_unit_label col-xs-12 col-md-12",style:"padding:0;margin-left:20px;"
+      .col-md-8.form-group
+        = f.text_field :cost_price, class:'form-control', readonly: 'readonly'
+      .col-xs-2.col-md-4.form-group style="margin-top:10px;padding:0;"
+        |  円
+  - if @material.allergy.nil?
+    .col-md-12.form-group style="padding:0;"
+      = f.label :allergy, "アレルギーチェック[必須]", class:"col-md-12",style:"padding:0;margin-left:20px;"
+      .col-md-12.form-group style="padding-left:40px;"
+        |  ＊以下成分が含まれている場合は必ずチェックを付ける、食品表示の欄に記載あり。
+      .col-md-1.form-group style="margin-left:20px;"
+        = label_tag :egg, '卵'
+        = f.check_box  :allergy, {multiple: true, class:"form-control"}, 'egg'
+      .col-md-1.form-group
+        = label_tag :milk, '乳'
+        = f.check_box  :allergy, {multiple: true, class:"form-control"}, 'milk'
+      .col-md-1.form-group
+        = label_tag :shrimp, 'えび'
+        = f.check_box  :allergy, {multiple: true, class:"form-control"}, 'shrimp'
+      .col-md-1.form-group
+        = label_tag :crab, 'かに'
+        = f.check_box  :allergy, {multiple: true, class:"form-control"}, 'crab'
+      .col-md-1.form-group
+        = label_tag :peanuts, '落花生'
+        = f.check_box  :allergy, {multiple: true, class:"form-control"}, 'peanuts'
+      .col-md-1.form-group
+        = label_tag :soba, 'そば'
+        = f.check_box  :allergy, {multiple: true, class:"form-control"}, 'soba'
+      .col-md-1.form-group
+        = label_tag :wheat, '小麦'
+        = f.check_box  :allergy, {multiple: true, class:"form-control"}, 'wheat'
+  - else
+    .col-md-12.form-group style="padding:0;"
+      = f.label :allergy, "アレルギーチェック[必須]", class:"col-md-12",style:"padding:0;margin-left:20px;"
+      .col-md-12.form-group style="padding-left:40px;"
+        |  ＊以下成分が含まれている場合は必ずチェックを付ける、食品表示の欄に記載あり。
+      .col-md-1.form-group style="margin-left:20px;"
+        = label_tag :egg, '卵'
+        = f.check_box  :allergy, {multiple: true, checked: @material.allergy.include?("egg"),class:"form-control"}, 'egg'
+      .col-md-1.form-group
+        = label_tag :milk, '乳'
+        = f.check_box  :allergy, {multiple: true, checked: @material.allergy.include?("milk"),class:"form-control"}, 'milk'
+      .col-md-1.form-group
+        = label_tag :shrimp, 'えび'
+        = f.check_box  :allergy, {multiple: true, checked: @material.allergy.include?("shrimp"),class:"form-control"}, 'shrimp'
+      .col-md-1.form-group
+        = label_tag :crab, 'かに'
+        = f.check_box  :allergy, {multiple: true, checked: @material.allergy.include?("crab"),class:"form-control"}, 'crab'
+      .col-md-1.form-group
+        = label_tag :peanuts, '落花生'
+        = f.check_box  :allergy, {multiple: true, checked: @material.allergy.include?("peanuts"),class:"form-control"}, 'peanuts'
+      .col-md-1.form-group
+        = label_tag :soba, 'そば'
+        = f.check_box  :allergy, {multiple: true, checked: @material.allergy.include?("soba"),class:"form-control"}, 'soba'
+      .col-md-1.form-group
+        = label_tag :wheat, '小麦'
+        = f.check_box  :allergy, {multiple: true, checked: @material.allergy.include?("wheat"),class:"form-control"}, 'wheat'
+  .modal-div.col-md-12.form-group style="padding:0;"
+    .col-md-12 style="margin-top:20px;"
+      = f.label :food_additive, "食品添加物[必須]", class:"",style:"padding:0;margin-left:20px;"
+      a href="http://www.caa.go.jp/foods/pdf/syokuhin496.pdf" target="_blank"
+        span.glyphicon.glyphicon-question-sign style="font-size:20px;" aria-hidden="true"
+    .col-md-12.form-group style="padding-left:40px;"
+      |  ＊食品表示にあるものは全て書きだす
+    ul.col-md-12.food_additive_ul.list-group style="list-style:none;margin-bottom:3px;"
+      .col-md-12
+        label style='width:100px;' 物質名
+        span.glyphicon.glyphicon-plus-sign data-toggle="modal" data-target="#sampleModal" style="color:#428bca;font-size:20px;"
+      - i=0
+      = f.fields_for :material_food_additives, @material.material_food_additives do |mm|
+        li.add_li_food_additive.col-md-4.list-group-item style=""
+          .select_food_additive.col-md-10 style="padding:3px;width:210px;float:left;"
+            = mm.collection_select :food_additive_id, FoodAdditive.all, :id, :name,{include_blank: true},class:'input_select_food_additive'
+          .text-right.remove_food_additive.col-md-2 style="padding-top:10px;"
+            span.glyphicon.glyphicon-remove.remove_btn style="color:#d9534f;"
+            = mm.check_box :_destroy,class:"destroy_food_additives check_box form-control", style: "display:none;"
+        - i += 1
+    .col-md-12
+      button.add_food_additive.btn.btn-default type="button"
+        | 追加
+  .col-md-12.form-group
+    .col-xs-12.col-md-6
+      = f.label :memo, "メモ"
+      = f.text_area :memo, class:'form-control', style:"height:10em;"
+  .col-xs-12.col-md-12.form-group
+    .col-xs-6.col-md-2.check_box
+      = f.label :end_of_sales, "終売"
+      = f.check_box :end_of_sales, class:"check_box form-control"
+    .col-xs-6.col-md-2.check_box
+      = f.label :stock_management, "在庫管理"
+      = f.check_box :stock_management, class:"check_box form-control"
+  = f.hidden_field :back_to, :value => @back_to
+  - if local_assigns[:locals][:edit_flag] == true
+    .action.col-md-12 style="margin-bottom:20px;"
+      = submit_tag "更新する", class:"btn btn-success", data: { confirm: "更新すると「#{@material.name}」を使用している、メニュー等全てに反映されますが、よろしいですか？"}
+  - else
+    .action.col-md-3.form-group
+      input.btn.btn-success type="button" onclick="submit();" value="登録する"
+= @food_additive = FoodAdditive.new unless @food_additive
+#sampleModal.modal.fade tabindex="-1"
+  = form_for(@food_additive,remote:true) do |f|
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button.close type="button" data-dismiss="modal"
+            span ×
+          h4.modal-title 食品添加物新規作成
+        .modal-body
+          label 添加物名（物質名）
+          = f.text_field :name, class:'form-control'
+        .modal-footer
+          button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
+          = f.submit '作成する', data: { confirm: "新規作成してよろしいですか？"} , class:"btn btn-primary"

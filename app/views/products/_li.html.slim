@@ -1,0 +1,54 @@
+- search.each do |product|
+  li#aaa.li-active.products_li.col-md-12.list-group-item
+    .product_id[style="display:none;"]
+      = product.id
+    .col-md-1
+      = product.bento_id
+    .product_name.col-md-2
+      = link_to "#{product.name}", "/products/#{product.id}/"
+    .col-md-1
+      = product.cook_category
+    .col-md-1
+      = product.product_type
+    .col-md-1.price.text-right
+      = product.sell_price
+      | 円 
+    .col-md-1.price.text-right
+      = product.cost_price
+      | 円 
+    .col-md-1.text-center
+      - catch :exit do
+        - product.menus.each do |menu|
+          - menu.materials.each do |material|
+            - if material.end_of_sales==1
+              |  ✔ 
+              - throw :exit
+    .col-md-1
+      = link_to "ラム", "/products/serving_detail_en/#{product.id}",method:"get", class:"btn btn-default",:target=>"_blank", style:"margin:0 0 0 10px;"
+    .col-md-1
+      = link_to "帯作成", "/products/new_band/#{product.id}.pdf",method:"get", class:"btn btn-default",:target=>"_blank"
+    .col-md-1
+      = link_to "CSV", "/products/#{product.id}.csv", class: "btn btn-default"
+    .col-md-1
+      = image_tag product.product_image.thumb.url if product.product_image.present?
+#sampleModal.modal.fade[tabindex="-1"]
+  .modal-dialog
+    .modal-content
+      .modal-header
+        button.close[type="button" data-dismiss="modal"]
+          span
+            | ×
+        h4.modal-title
+          | 食品表示を印刷する
+      .modal-body
+        = form_tag products_hyoji_path(format: :pdf) do
+          .modal_product_id[style="display:none;"]
+            = number_field :num,{}, name:"id",id:"hyoji_product_id",class:'form-control'
+          p
+            | 賞味期限
+          div
+            = datetime_select :datetime_ida,"",{:default => DateTime.now.beginning_of_day + 1.day + 17.hour}, {class:"form-control",style:"display: inline-block;width: auto;" }
+      .modal-footer
+        button.btn.btn-default[type="button" data-dismiss="modal"]
+          | 閉じる
+        = submit_tag '食品表示', class:"btn btn-success"

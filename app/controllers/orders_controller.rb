@@ -27,10 +27,55 @@ class OrdersController < ApplicationController
   end
 
   def new
-    @hash = Material.calculate_products_materials(params)
+    @arr = []
     @order = Order.new
-    @order.order_materials.build
-    @order.order_products.build
+    params[:order].each do |po|
+      if po[:product_id].present?
+        product = Product.includes(:product_menus,[menus: [menu_materials: :material]]).find(po[:product_id])
+        @order.order_products.build(product_id:po[:product_id],serving_for:po[:num])
+        product.menus.each do |menu|
+          menu.menu_materials.each do |menu_material|
+            unless menu_material.material.vendor_id == 111 || menu_material.material.vendor_id == 171 || menu_material.material.vendor_id == 21
+              hash = {}
+              hash['material_id'] = menu_material.material_id
+              hash['calculated_order_amount'] = (po[:num].to_f * menu_material.amount_used)
+              hash['calculated_unit'] = menu_material.material.calculated_unit
+              hash["order_unit"] = menu_material.material.order_unit
+              hash["product_name"] = product.name
+              hash["calculated_value"] = menu_material.material.calculated_value
+              hash["order_unit_quantity"] = menu_material.material.order_unit_quantity
+              hash["vendor_id"] = menu_material.material.vendor_id
+              @arr << hash
+            end
+          end
+        end
+      end
+    end
+    @b_hash = Hash.new { |h,k| h[k] = {} }
+    @arr.sort_by! { |a| a['vendor_id'] }.each do |info|
+      if info['vendor_id'] == 121 || info['vendor_id'] == 151
+        @b_hash[info['material_id']] = info
+      else
+        if @b_hash[info['material_id']].present?
+          @b_hash[info['material_id']]['calculated_order_amount'] += info['calculated_order_amount']
+          @b_hash[info['material_id']]['product_name'] += "、" + info['product_name']
+        else
+          @b_hash[info['material_id']] = info
+        end
+      end
+    end
+    @b_hash.each do |key,value|
+      calculated_quantity = value['calculated_order_amount'].to_f
+      if value['order_unit_quantity'].to_f < 1
+        order_quantity = BigDecimal((calculated_quantity / value['calculated_value'].to_f * value['order_unit_quantity'].to_f).to_s).ceil(1).to_f
+      else
+        order_quantity = BigDecimal((calculated_quantity / value['calculated_value'].to_f * value['order_unit_quantity'].to_f).to_s).ceil
+      end
+      @order.order_materials.build(material_id:key,order_quantity:order_quantity,calculated_quantity:calculated_quantity)
+    end
+    @code_materials = Material.where(end_of_sales:0).where.not(order_code:"")
+    @materials = Material.where(end_of_sales:0)
+    @vendors = @order.order_materials.map{|om|[om.material.vendor.company_name,om.material.vendor.id]}.uniq
   end
 
   def create

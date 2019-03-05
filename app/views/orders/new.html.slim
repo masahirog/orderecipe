@@ -1,0 +1,94 @@
+= form_for @order do |f|
+  - if @order.errors.any?
+    #error_explanation
+      b
+        = pluralize(@order.errors.count, "箇所")
+        | 入力に不備があります
+      ul style="list-style:none;"
+        - @order.errors.full_messages.each do |message|
+          li = message
+  .col-md-12
+    .col-md-6
+      h4 発注弁当
+    .col-md-6
+      div style="float:left;padding-top:8px;font-weight:bold;"
+        |  製造日　　　　　製造日一括変更：
+      div style="float:left"
+        = date_field("all", "make_date_change", value: Time.now.strftime("%Y-%m-%d"),class:"form-control")
+  ul.list-group.col-md-12
+    = f.fields_for :order_products do |op|
+      li.list-group-item.col-md-12 style="padding:5px;"
+        = op.hidden_field :product_id,value:op.object.product_id
+        .col-md-4
+          = Product.find(op.object.product_id).name
+        .col-md-2.form-inline
+          = op.text_field :serving_for,value:op.object.serving_for, class:'form-control form-group',style:"width:70%;",readonly:true
+          .form-group
+            |  人分
+        .col-md-2
+          = op.date_field(:make_date, value: Time.now.strftime("%Y-%m-%d"),class:"form-control input_make_date")
+  .col-md-12[style="padding-bottom:10px;"]
+    .col-md-3[style="font-size:20px;padding-top:30px;"]
+      strong 発注食材・資材一覧
+    .col-md-3
+      label.text-right 企業絞込：
+      = select_tag "vendor_id",options_for_select(@vendors),include_blank:true,class:'vendor_select form-control'
+    .col-md-3
+      label.text-right
+        | 納品日一括変更：
+      = date_field("all", "date_change", value: Time.now.strftime("%Y-%m-%d"),class:"form-control")
+    .col-md-3 style="padding-top:25px;"
+      input.order_submit.btn.btn-success.pull-right type="button" value="発注確定する"
+  .orders_all style="width:100%;"
+    table.table style="width:1140px;margin:auto;"
+      thead
+        tr
+          th style="width:200px;" 食材名
+          th style="width:130px;" 発注コード検索
+          th style="width:280px;"
+            div style="width:130px;float:left;"
+              | 発注量
+            div[style="width:130px;float:left;"]
+              | 計算値
+          th style="width:250px;" 備考欄
+          th style="width:160px;" 納品日
+          th style="width:98px;"
+            span 削除
+            input.all_delete type="checkbox" style="width:24px;height:24px;margin:0;"
+      tbody
+        = f.fields_for :order_materials do |m|
+          tr.order_materials_tr
+            td.order_material_name[style="width:200px;"]
+              = m.collection_select(:material_id, @materials, :id, :name,{include_blank: true}, class:'select_order_materials',style:"width:200px;")
+              .vendor_company_name[style="padding-top:3px;color:#A9A9A9;"]
+                = m.object.material.vendor.company_name
+            td.order_code_search[style="width:130px;"]
+              = select_tag 'page[name]', options_from_collection_for_select(@code_materials, :id, :order_code),include_blank: true,class:"input_order_code",readonly:true
+            td.quantity[style="width:280px;"]
+              .clearfix
+                div[style="width:135px;float:left;"]
+                  = m.text_field :order_quantity,class:'order_quantity text-right form-control',style:"width:80px;height:27.78px;float:left"
+                  .order_material_unit[style="float:left;padding-left:3px;padding-top:5px;"]
+                    = @b_hash[m.object.material_id]['order_unit']
+
+                div[style="width:135px;float:left;"]
+                  = m.text_field :calculated_quantity,class:'calculated_value text-right form-control',style:"width:80px;height:27.78px;padding:2px;float:left",readonly:true
+                  .calculated_material_unit[style="float:left;padding-left:3px;padding-top:5px;"]
+                    = @b_hash[m.object.material_id]['calculated_unit']
+              .change_unit[style="width:270px;color:#A9A9A9;padding:1px 0 0 10px;"]
+                = @b_hash[m.object.material_id]['order_unit_quantity']
+                = @b_hash[m.object.material_id]['order_unit']
+                |  ：
+                = @b_hash[m.object.material_id]['calculated_value']
+                = @b_hash[m.object.material_id]['calculated_unit']
+
+            td.order_material_memo[style="width:250px;"]
+              = m.text_field :order_material_memo,class:'form-control',style:"width:240px;"
+              div style="padding:3px 0 0 8px;color:#A9A9A9;font-size:10px;"
+                = @b_hash[m.object.material_id]['product_name']
+            td.delivery_date[style="width:160px;"]
+              = m.date_field(:delivery_date, value: Time.now.strftime("%Y-%m-%d"),class:"form-control input_delivery_date",style:"width:150px;")
+            td.destroy_order_material.text-center style="width:80px;"
+              = m.check_box :_destroy,class:"form-control destroy_order_materials check_box",style:"width:50px; height:50px;margin:0;"
+  .add.form-group[style="margin:20px 0 10px 26px;"]
+    input.add_order_materials.btn.btn-primary[type="button" value="発注食材追加"]

@@ -1,0 +1,71 @@
+ol.breadcrumb
+  li
+    a href="/" ホーム
+  li.active
+    食材資材一覧
+.form-inline.col-md-12 style="padding:10px;"
+  h3 食材資材の新規登録
+  a.btn.btn-primary.pull-right href="/materials/new" 新規作成
+
+.col-xs-12.col-md-12
+  = form_tag Material, :method => 'get' do
+    .col-xs-3.col-md-2
+      label 食材・資材名：
+      = text_field_tag :name, params[:name], class:"form-control"
+    .col-xs-3.col-md-2
+      label 発注名：
+      = text_field_tag :order_name, params[:order_name], class:"form-control"
+    .col-xs-3.col-md-2
+      label 仕入先：
+      = select_tag :vendor_id, options_from_collection_for_select(Vendor.all, :id, :company_name),include_blank: true, class: "form-control"
+    .col-xs-3.col-md-2
+      label 管理コード：
+      = text_field_tag :order_code, params[:order_code], class:"form-control"
+    .col-xs-3.col-md-1
+      label 終売：
+      = select :end_of_sales, :value, [["販売のみ", 0], ["終売のみ", 1]], {include_blank: true},class:"form-control"
+    .kensaku.form-group.col-md-1
+      label 　
+      = submit_tag "検索" ,class:"btn btn-primary"
+.col-md-12
+  = paginate @search
+table.materials-table style="width:1240px"
+  tr style="padding:10px;"
+    th 食材・資材名
+    th 発注名
+    th 発注単位
+    th 価格(円)
+    th 原価(円)
+    th カテゴリ
+    th 仕入先
+    th 終売
+    th style="text-align:center;" 使用
+  - @search.each do |material|
+    tr.materials_li
+      td.material_name
+        =link_to "#{material.name}", "/materials/#{material.id}/edit"
+      td
+        = material.order_name
+      td
+        = material.order_unit_quantity
+        = material.order_unit
+        |  ：
+        = number_with_delimiter(material.calculated_value)
+        = material.calculated_unit
+      td.text-right
+        = number_with_delimiter(material.calculated_price)
+      td.text-right
+        = material.cost_price.round(2)
+      td
+        = material.category
+      td
+        = material.vendor.company_name
+      td.end_of_sales
+        = p "✔" if material.end_of_sales == 1
+      td style="text-align:center;"
+        = button_to "確認", "/materials/include_material/#{material.id}", method: :get,class:"btn btn-default btn-sm"
+- if @search.size == 0 then
+  p
+    | 該当する食材・資材が存在しません
+br
+= paginate @search

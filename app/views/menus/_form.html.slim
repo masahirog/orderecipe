@@ -1,0 +1,111 @@
+= form_for @menu do |f|
+  - if @menu.errors.any?
+    #error_explanation
+      b
+        = pluralize(@menu.errors.count, "箇所")
+        | 入力に不備があります
+      ul style="list-style:none;"
+        - @menu.errors.full_messages.each do |message|
+          li
+            = message
+  nav.alert.alert-danger.eos-alert.navbar-fixed-top style="display:none;"
+    |  終売の食材を選択しています。食材を変更してください(((；ﾟДﾟ)))
+  .form-group.col-md-4
+    = f.label :name ,'メニュー名'
+    = f.text_field :name, class: "form-control", id: "material_name",style:"width:100%;"
+  .form-group.col-md-4
+    = f.label :food_label_name ,'食品表示名'
+    = f.text_field :food_label_name, class: "form-control", id: "food_label_name",style:"width:100%;"
+  .form-group.col-md-3
+    = f.label :category ,'カテゴリー'
+    = f.select :category, [["主食：ご飯など", "主食"],[ "主菜：メインのおかず", "主菜"],[ "副菜：副菜、漬物など", "副菜"],[ "容器：お弁当箱と箸等", "容器"]],{include_blank: true}, { class: "form-control",style:"width:100%;"}
+  .col-xs-12.col-md-4.form-group
+    = f.label :recipe ,'調理メモ'
+    = f.text_area :recipe, style:"height:10em;width:100%;", class:"form-control"
+  .col-xs-12.col-md-4.form-group
+    = f.label :serving_memo ,'盛付メモ'
+    = f.text_area :serving_memo,style:"height:10em;width:100%;", class: "form-control"
+  .col-xs-12.col-md-4.form-group
+    = f.label :taste_description ,'味や特徴の説明'
+    = f.text_area :taste_description,style:"height:10em;width:100%;", class: "form-control"
+  .col-xs-12.col-md-12
+    = f.label :image, "写真"
+    = f.file_field :image
+    = f.hidden_field :image_cache
+    .form-group
+      - if @menu.image?
+        = image_tag @menu.image.to_s,class:"img-responsive",style:'max-height:450px;'
+        div
+          = f.label :remove_image,"削除する"
+          = f.check_box :remove_image
+  .used_additives.col-md-12 style="margin:20px 0;"
+    = f.label :used_additives ,"使用食品添加物"
+    - if f.object.used_additives.present?
+      = f.select :used_additives, grouped_options_for_select(@ar,f.object.used_additives),{ include_hidden: false},{class:"select_used_additives select2 col-md-12",multiple:true}
+    - else
+      = f.select :used_additives, grouped_options_for_select(@ar),{include_hidden: false},{class:"select_used_additives col-md-12 select2",multiple:true}
+  .col-md-12.form-group
+    .col-md-3
+      label
+        | 食材原価小計
+      input.form-control.sum_material_cost[name="a" type="text" disabled="disabled" style="width:100%"]
+    .col-md-3
+      label
+        | 税(8%)
+      input.form-control.sum_material_cost_tax[name="a" type="text" disabled="disabled" style="width:100%"]
+    .col-md-4
+      = f.label :cost_price, "メニュー原価（税込み）"
+      .form-inline
+        .form-group
+          = f.number_field :cost_price, :readonly => 'readonly',class: "menu_cost_price form-control"
+          .form-group
+            |  円
+  table.col-md-12.table
+    thead
+      th カロリー(kcal)
+      th タンパク質(g)
+      th 脂質(g)
+      th 炭水化物(g)
+      th 食物繊維(g)
+      th カリウム(mg)
+      th カルシウム(mg)
+      th ビタミンC(mg)
+      th 食塩(g)
+    tbody
+      td.menu_calorie
+      td.menu_protein
+      td.menu_lipid
+      td.menu_carbohydrate
+      td.menu_dietary_fiber
+      td.menu_potassium
+      td.menu_calcium
+      td.menu_vitamin_c
+      td.menu_salt
+  .material_area
+    .col-md-12 style="margin:5px;"
+      label.col-md-3 食材・資材名
+      label.col-md-2 使用量
+      label.col-md-1 原価
+      label.col-md-1 仕入先
+      label.col-md-1 使用価格
+      label.col-md-2 仕込み内容
+      label.col-md-1 持ち場
+      label.col-md-1
+    ul#detail-association-insertion-point.material_ul.list-group.ul-sortable style="list-style-type:none;cursor:move;"
+      - i=0
+      = f.fields_for :menu_materials do |m|
+        = render 'menu_material_fields',{f: m}
+        - i += 1
+  .col-md-12.form-group style="margin-top:20px;"
+    = link_to_add_association '材料追加', f, :menu_materials,class: 'btn btn-primary add_material_fields',data: {association_insertion_node: '#detail-association-insertion-point',association_insertion_method: 'append' }
+  .col-md-12.form-group
+    .col-md-4
+      = f.label :confirm_flag, "メニュー確定"
+      = f.check_box :confirm_flag, class: "form-control"
+  = f.hidden_field :back_to, :value => @back_to
+  - if params["action"] == "edit"
+    .action.col-md-12 style="margin-bottom:20px;"
+      input#menu_submit_btn.btn.btn-success type="button" value="更新する"
+  - else
+    .action.col-md-12 style="margin-bottom:20px;"
+      input#menu_submit_btn.btn.btn-success type="button" value="登録する"

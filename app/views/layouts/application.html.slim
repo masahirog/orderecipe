@@ -1,0 +1,59 @@
+doctype html
+html
+  head
+    title
+      | Order
+    = stylesheet_link_tag    'application', media: 'all'
+    = javascript_include_tag 'application'
+    = csrf_meta_tags
+    script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"
+    script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"
+    link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-rc.2/css/select2.min.css" rel="stylesheet"
+    script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-rc.2/js/select2.min.js"
+  body
+    header
+      nav.navbar.navbar-default
+        .container-fluid
+          .navbar-header
+            button.navbar-toggle.collapsed[type="button" data-toggle="collapse" data-target="#navbarEexample"]
+              span.sr-only
+                | Toggle navigation
+              span.icon-bar
+              span.icon-bar
+              span.icon-bar
+            a.navbar-brand style="padding:12px 10px 8px 20px;" href="/"
+              img src="/assets/orderecipe.png" height="85%;"
+          #navbarEexample.collapse.navbar-collapse
+            - if user_signed_in?
+              ul.nav.navbar-nav
+                li.menu_li
+                  a href="/orders" 発注
+                li.menu_li
+                  a href="/products" お弁当
+                li.menu_li
+                  a href="/menus" メニュー
+                li.menu_li
+                  a href="/materials" 食材・資材
+                li.menu_li
+                  a href="/vendors" 仕入先
+                li.menu_li
+                  a href="/stocks" 棚卸し
+              #navbarEexample.collapse.navbar-collapse.navbar-right
+                ul.nav.navbar-nav
+                  li.menu_li
+                    a#google_translate_element
+                    script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
+            - else
+              #navbarEexample.collapse.navbar-collapse.navbar-right
+                ul.nav.navbar-nav
+                  li.user_nav.grid-6
+                    = link_to "ログイン", new_user_session_path, class: 'post'
+    - flash.each do |name, msg|
+      = content_tag :div, raw(msg), :id => name, :class => "alert"
+    .all_body
+      = yield
+    .col-md-12.footer style="height:20px;"
+
+
+javascript:
+  function googleTranslateElementInit() { new google.translate.TranslateElement({pageLanguage: 'ja', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element'); }

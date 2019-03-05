@@ -1,0 +1,7 @@
+ul.list-group
+  - @versions.each do |version|
+    li.col-md-12.list-group-item
+      .col-md-1
+        = version.id
+      .col-md-10
+        = version.object
