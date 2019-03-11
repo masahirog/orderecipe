@@ -15,14 +15,13 @@
         = f.text_field :name, id: "menu_search", autocomplete: "off", class:"name form-control"
     .col-md-12.form-group
       - if @product.bento_id.present?
-
       - else
         .col-md-12
           .col-md-3.text-center
             input.registration[type="checkbox" style="width: 24px; height: 24px;"]
           .col-md-9
             strong
-              |  ←販売が決定した弁当はチェックを付けて保存してください。 bentoID(メニューSSと連携ID)を発行します。(試作時は空欄) 
+              |  ←販売が決定した弁当はチェックを付けて保存してください。 bentoID(メニューSSと連携ID)を発行します。(試作時は空欄)
     .col-md-12.form-group
       .col-md-4
         = f.label :bento_id, "SS連携ID"
@@ -30,13 +29,10 @@
         = f.number_field :bento_id, class:"bento_id form-control"
       .col-md-4
         = f.label :cook_category, "調理カテゴリー"
-        = f.select :cook_category, {'グリル': "グリル", 'コンロ': "コンロ", 'フライヤー': "フライヤー", '前日コンロ': "前日コンロ",
-        -                                       'フライヤー・グリル': "フライヤー・グリル",'フライヤー・コンロ': "フライヤー・コンロ", 'グリル・コンロ': "グリルコンロ", '前日グリル': "前日グリル",
-        -                                        'その他': "その他",'スチコン': "スチコン"},{include_blank: true},{class: "cook_category_choice form-control"}
+        = f.select :cook_category, {'グリル': "グリル", 'コンロ': "コンロ", 'フライヤー': "フライヤー", '前日コンロ': "前日コンロ",'フライヤー・グリル': "フライヤー・グリル",'フライヤー・コンロ': "フライヤー・コンロ", 'グリル・コンロ': "グリルコンロ", '前日グリル': "前日グリル",'その他': "その他",'スチコン': "スチコン"},{include_blank: true},{class: "cook_category_choice form-control"}
       .col-md-4
         = f.label :product_type, "弁当種類"
-        = f.select :product_type,{ W弁: "W弁",新ヘルシー: "新ヘルシー",デラックス: "デラックス", ヘルシー: "ヘルシー", ノーマル: "ノーマル", プレミアム: "プレミアム",
-        -                                     ボウル: "ボウル", 麺: "麺", その他: "その他"}, {include_blank: true}, { class: "form-control"}
+        = f.select :product_type,{ W弁: "W弁",新ヘルシー: "新ヘルシー",デラックス: "デラックス", ヘルシー: "ヘルシー", ノーマル: "ノーマル", プレミアム: "プレミアム",ボウル: "ボウル", 麺: "麺", その他: "その他"}, {include_blank: true}, { class: "form-control"}
     .col-md-12.form-group
       .col-md-12
         = f.label :description, "説明文"
@@ -52,14 +48,14 @@
           .form-group
             = f.number_field :sell_price, class:"price form-control"
             .form-group
-              |  円 
+              |  円
       .col-md-5
         = f.label :cost_price, "弁当原価（税込み）"
         .form-inline
           .form-group
             = f.number_field :cost_price, :readonly => 'readonly', class:"product_cost_price form-control text-right"
           .form-group
-            |  円 
+            |  円
       .col-md-2
         label
           | カロリ

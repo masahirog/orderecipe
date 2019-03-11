@@ -1,4 +1,4 @@
-$(function(){
+$(document).on('turbolinks:load', function() {
   $('.input_select_food_additive').select2({
   width:"200px"
   });

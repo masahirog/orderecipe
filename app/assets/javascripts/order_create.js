@@ -1,4 +1,4 @@
-$(function(){
+$(document).on('turbolinks:load', function() {
   first_input_check()
   $('.input_select_product').select2({
     width:"300px",
@@ -10,6 +10,7 @@ $(function(){
   $('.input_order_code').select2({
     width:"120px",
   });
+
 
   $(".order_bento_id_search").on("blur",function(){
     var bento_id =  parseInt($(this).val());
@@ -148,13 +149,6 @@ $(function(){
   	}
   });
 
-
-  //addアクション、materialの追加
-  $(".add_order_materials").on('click', function(){
-    add_tr();
-    input_check();
-  });
-
   $(".orders_all").on('change','.order_quantity', function(){
     input_check()
   });
@@ -183,7 +177,7 @@ $(function(){
       if (color=='') {
         $(".order_materials_tr").eq(u).find(".vendor_company_name").text(vendor).css("color",'color:#A9A9A9;');
       }else{
-        $(".order_materials_tr").eq(u).find(".vendor_company_name").text(vendor).css("color",'red');  
+        $(".order_materials_tr").eq(u).find(".vendor_company_name").text(vendor).css("color",'red');
       }
       $(".order_materials_tr").eq(u).find(".order_material_unit").text(order_unit);
       $(".order_materials_tr").eq(u).find(".change_unit").text(change_unit);
@@ -213,15 +207,27 @@ $(function(){
       }
     });
 
-    $(".add_order_materials").keypress(function (e) {
-      add_tr();
-      var code = e.which ? e.which : e.keyCode;
-      if (code == 13) {
-      var last_tr =$(".order_materials_tr").last()
-      last_tr.find(".select_order_materials").select2('open');
-      e.preventDefault();
-      }
+    // $(".add_fields").keypress(function (e) {
+    //   var code = e.which ? e.which : e.keyCode;
+    //   if (code == 13) {
+    //   var last_tr =$(".order_materials_tr").last()
+    //   last_tr.find(".select_order_materials").select2('open');
+    //   e.preventDefault();
+    //   }
+    // });
+
+    $('.add_order_material').on('click',function(){
+      setTimeout(function(){
+        $('.input_order_code').select2('destroy');
+        $('.select_order_materials').select2('destroy');
+        $('.input_order_code').select2();
+        $('.select_order_materials').select2({
+          placeholder: "発注する食材を選択"
+        });
+      },5);
+      change_color();
     });
+
     //オーダーコードでの検索
     $(".orders_all").on('change','.input_order_code', function(){
       var id =  parseInt($(this).val());
@@ -234,11 +240,6 @@ $(function(){
         if ($(this).is(':visible')){$(this).find(".input_delivery_date").val(date)}
       });
       change_color();
-    });
-
-    $("#all_make_date_change").on("change", function(){
-      var date = $(this).val()
-      $(".input_make_date").val(date)
     });
 
     $(".orders_all").on("change",".input_delivery_date",function(){
@@ -293,42 +294,5 @@ $(function(){
       }else {
         $(this).css('background-color', '#FFFFFF');
     }});
-  };
-
-  function add_tr(){
-    $(".vendor_select").val("").change();
-    var u = $(".order_materials_tr").length;
-    $(".select_order_materials").select2('destroy');
-    $(".input_order_code").select2('destroy');
-    $("tr.order_materials_tr").first().clone().appendTo("tbody");
-    var last_tr =$(".order_materials_tr").last()
-    last_tr.find(".select_order_materials").val("");
-    last_tr.children(".order_material_name").children("select").attr('name', "order[order_materials_attributes]["+ u +"][material_id]" );
-    last_tr.children(".order_material_name").children("select").attr('id', "order_order_materials_attributes_"+ u +"_material_id" );
-    last_tr.find(".order_quantity").attr('name', "order[order_materials_attributes]["+ u +"][order_quantity]" );
-    last_tr.find(".order_quantity").attr('id', "order_order_materials_attributes_"+ u +"_order_quantity" );
-    last_tr.find(".calculated_value").attr('name', "order[order_materials_attributes]["+ u +"][calculated_quantity]" );
-    last_tr.find(".calculated_value").attr('id', "order_order_materials_attributes_"+ u +"_calculated_quantity" );
-    last_tr.children(".destroy_order_material").children().attr("name","order[order_materials_attributes]["+u+"][_destroy]");//hiddenの変換、順番も変えない
-    last_tr.find(".destroy_order_materials").attr('id', "order_order_materials_attributes_"+ u +"__destroy" );
-    last_tr.children(".order_material_memo").children().attr('id', "order_order_materials_attributes_"+ u +"_order_material_memo" );
-    last_tr.children(".order_material_memo").children().attr('name', "order[order_materials_attributes]["+u+"][order_material_memo]" );
-    last_tr.children(".delivery_date").children().attr('id', "order_order_materials_attributes_"+ u +"_delivery_date" );
-    last_tr.children(".delivery_date").children().attr('name', "order[order_materials_attributes]["+u+"][delivery_date]" );
-    $(".select_order_materials").select2({width:"100%",placeholder: "発注する食材を選択"});
-    $(".input_order_code").select2({width:"120px"});
-    last_tr.find(".order_quantity").val("");
-    last_tr.find(".order_material_unit").empty();
-    last_tr.find(".calculated_material_unit").empty();
-    last_tr.find(".vendor_company_name").empty();
-    last_tr.find(".change_unit").empty();
-    last_tr.find(".calculated_value").val(0);
-    last_tr.children(".destroy_order_material").children().prop('checked',false);
-    last_tr.find(".select_order_materials").removeAttr("disabled");
-    last_tr.find(".input_order_code").removeAttr("disabled");
-    last_tr.find(".order_quantity").removeAttr("disabled");
-    last_tr.find(".order_material_memo").children().val("");
-    last_tr.find(".delivery_date").children().val($("#all_date_change").val());
-    change_color()
   };
 });

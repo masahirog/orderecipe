@@ -1,4 +1,4 @@
-$(function(){
+$(document).on('turbolinks:load', function() {
   //materialの表示、原価計算
   $(".add_li_menu").each(function() {
     calculate_product_price();

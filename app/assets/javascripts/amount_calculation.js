@@ -1,4 +1,4 @@
-$(function(){
+$(document).on('turbolinks:load', function() {
     $("#amount_calculation").on('click', function (){
       var num = $("#amount_number_input").val();
       var ninmae = kanma(num)

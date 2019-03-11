@@ -3,8 +3,8 @@ html
   head
     title
       | Order
-    = stylesheet_link_tag    'application', media: 'all'
-    = javascript_include_tag 'application'
+    = stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true
+    = javascript_include_tag "application", "data-turbolinks-track" => true
     = csrf_meta_tags
     script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"
     script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"

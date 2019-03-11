@@ -15,9 +15,20 @@
 //= require jquery_ujs
 //= require jquery-ui/widgets/sortable
 //= require cocoon
+//= require turbolinks
 //= require_tree .
 
-
+$(document).on("turbolinks:before-cache", function() {
+  if ($(".input_select_product").length) {
+    $('.input_select_product').select2('destroy');
+  }
+  if ($(".select_order_materials").length) {
+    $('.select_order_materials').select2('destroy');
+  }
+  if ($(".input_order_code").length) {
+    $('.input_order_code').select2('destroy');
+  }
+});
 
 
 function kanma (number) {

@@ -119,10 +119,6 @@ class MenusController < ApplicationController
     redirect_to :back
   end
 
-  def nutrition_calculation
-    @menu = Menu.includes(menu_materials:[:material]).find(params[:id])
-
-  end
   def get_food_ingredient
     gram_amount = params[:gram_amount].to_f
     id = params[:id]

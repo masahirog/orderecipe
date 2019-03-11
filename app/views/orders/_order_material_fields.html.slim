@@ -1,0 +1,50 @@
+tr.order_materials_tr.nested-fields
+  td.order_material_name style="width:200px;"
+    - if f.object.material_id.present?
+      = f.collection_select :material_id, @materials, :id, :name,{include_blank: true}, class:'select_order_materials',style:"width:200px;"
+    - else
+      = f.collection_select :material_id, @materials, :id, :name,{include_blank: true}, class:'select_order_materials',style:"width:200px;"
+    .vendor_company_name style="padding-top:3px;"
+      - if f.object.material.present?
+        span = f.object.material.vendor.company_name
+        - if f.object.material.vendorstock_flag == true
+          span = "（卸業者在庫品）"
+        - elsif f.object.material.vendorstock_flag == false
+          span style='color:red;' = "（メーカー発注品）"
+  td.order_code_search style="width:130px;"
+    - if f.object.material_id.present?
+      = select_tag 'page[name]', options_from_collection_for_select(@code_materials, :id, :order_code),include_blank: true,class:"input_order_code"
+    - else
+      = select_tag 'page[name]', options_from_collection_for_select(@code_materials, :id, :order_code),include_blank: true,class:"input_order_code"
+  td.quantity[style="width:280px;"]
+    .clearfix
+      div style="width:135px;float:left;"
+        = f.text_field :order_quantity,class:'order_quantity text-right form-control',style:"width:80px;height:27.78px;float:left"
+        .order_material_unit style="float:left;padding-left:3px;padding-top:5px;"
+          = f.object.material.order_unit if f.object.material_id.present?
+
+      div style="width:135px;float:left;"
+        = f.text_field :calculated_quantity,class:'calculated_value text-right form-control',style:"width:80px;height:27.78px;padding:2px;float:left",readonly:true
+        .calculated_material_unit style="float:left;padding-left:3px;padding-top:5px;"
+          = f.object.material.calculated_unit if f.object.material_id.present?
+    .change_unit style="width:270px;color:#A9A9A9;padding:1px 0 0 10px;"
+      - if f.object.material_id.present?
+        = f.object.material.order_unit_quantity
+        = f.object.material.order_unit
+        |  ：
+        = f.object.material.calculated_value
+        = f.object.material.calculated_unit
+  td.order_material_memo style="width:250px;"
+    = f.text_field :order_material_memo,class:'form-control'
+    div style="padding:3px 0 0 8px;color:#A9A9A9;font-size:10px;"
+      - if controller.action_name == "new"
+        = @b_hash[f.object.material_id]['product_name']
+      - else
+        = @hash[f.object.material_id]
+  td.delivery_date
+    - if f.object.delivery_date
+      = f.date_field(:delivery_date, value: f.object.delivery_date,class:"form-control input_delivery_date")
+    - else
+      = f.date_field(:delivery_date, value: Time.now.strftime("%Y-%m-%d"),class:"form-control input_delivery_date")
+  td.destroy_order_material.text-center style="width:80px;"
+    = f.check_box :_destroy,class:"form-control destroy_order_materials check_box",style:"width:50px; height:50px;margin:0;"

@@ -6,17 +6,36 @@ class OrdersController < ApplicationController
       format.json
     end
   end
+
   def edit
     @materials = Material.where(end_of_sales:0)
     @search_code_materials = Material.where(end_of_sales:0).where.not(order_code:"")
     @order = Order.includes(:products,:order_products,:order_materials,{materials: [:vendor]}).find(params[:id])
-
+    @code_materials = Material.where(end_of_sales:0).where.not(order_code:"")
+    @vendors = @order.order_materials.map{|om|[om.material.vendor.company_name,om.material.vendor.id]}.uniq
+    product_ids = @order.products.ids
+    materials = Product.includes(:product_menus,[menus: [menu_materials: :material]]).where(id:product_ids).map{|product| product.menus.map{|pm| pm.menu_materials.map{|mm|[mm.material.id, product.name]}}}.flatten(2)
+    @hash = {}
+    materials.each do |material|
+      if @hash[material[0]].present?
+        @hash.store(material[0],@hash[material[0]] + "、" + material[1])
+      else
+        @hash.store(material[0],material[1])
+      end
+    end
   end
+
   def index
     @products = Product.all
     @orders = Order.includes(:order_products,:products).order("id DESC").page(params[:page])
   end
   def update
+    @materials = Material.where(end_of_sales:0)
+    @search_code_materials = Material.where(end_of_sales:0).where.not(order_code:"")
+    @order = Order.includes(:products,:order_products,:order_materials,{materials: [:vendor]}).find(params[:id])
+    @code_materials = Material.where(end_of_sales:0).where.not(order_code:"")
+    @vendors = @order.order_materials.map{|om|[om.material.vendor.company_name,om.material.vendor.id]}.uniq
+
     @order = Order.find(params[:id])
     @order.update(order_create_update)
     if @order.save
@@ -39,8 +58,6 @@ class OrdersController < ApplicationController
               hash = {}
               hash['material_id'] = menu_material.material_id
               hash['calculated_order_amount'] = (po[:num].to_f * menu_material.amount_used)
-              hash['calculated_unit'] = menu_material.material.calculated_unit
-              hash["order_unit"] = menu_material.material.order_unit
               hash["product_name"] = product.name
               hash["calculated_value"] = menu_material.material.calculated_value
               hash["order_unit_quantity"] = menu_material.material.order_unit_quantity
@@ -80,11 +97,14 @@ class OrdersController < ApplicationController
 
   def create
     @order = Order.create(order_create_update)
-     if @order.save
-       redirect_to "/orders/#{@order.id}"
-     else
-       render 'new'
-     end
+    @code_materials = Material.where(end_of_sales:0).where.not(order_code:"")
+    @materials = Material.where(end_of_sales:0)
+    @vendors = @order.order_materials.map{|om|[om.material.vendor.company_name,om.material.vendor.id]}.uniq
+    if @order.save
+      redirect_to "/orders/#{@order.id}"
+    else
+      render 'new'
+    end
   end
 
   def show
@@ -125,28 +145,25 @@ class OrdersController < ApplicationController
    end
   end
 
-def get_bento_id
-  @product = Product.find_by(bento_id: params[:bento_id])
-  respond_to do |format|
-    format.html
-    format.json{render :json => @product}
+  def get_bento_id
+    @product = Product.find_by(bento_id: params[:bento_id])
+    respond_to do |format|
+      format.html
+      format.json{render :json => @product}
+    end
   end
-end
 
-def check_bento_id
-  @product = Product.find(params[:id])
-  respond_to do |format|
-    format.html
-    format.json{render :json => @product}
+  def check_bento_id
+    @product = Product.find(params[:id])
+    respond_to do |format|
+      format.html
+      format.json{render :json => @product}
+    end
   end
-end
-
 
   private
-
   def order_create_update
     params.require(:order).permit(order_materials_attributes: [:id, :order_quantity,:calculated_quantity, :order_id, :material_id,:order_material_memo,:delivery_date, :_destroy],
       order_products_attributes: [:id,:make_date, :serving_for, :order_id, :product_id, :_destroy])
   end
-
 end

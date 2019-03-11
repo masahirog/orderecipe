@@ -1,4 +1,4 @@
-$(function(){
+$(document).on('turbolinks:load', function() {
   $('.input-stock-materials-name').select2({
   width:"100%",
   placeholder: "選択してください",
