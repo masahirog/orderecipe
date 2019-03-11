@@ -462,6 +462,7 @@ DEPENDENCIES
   rails-i18n
   rails_12factor
   ranked-model
+  rjb (= 1.5.9)
   rmagick
   romaji
   sass-rails (~> 5.0)
