@@ -1,7 +1,6 @@
 Rails.application.routes.draw do
   devise_for :users
 
-  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   root 'top#index'
   get 'menus/get_cost_price/:id' => 'menus#get_cost_price'
   get 'products/get_menu_cost_price/:id' => 'products#get_menu_cost_price'
