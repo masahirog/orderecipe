@@ -1,5 +1,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
+heroku_java_home = '/usr/lib/jvm/java-6-openjdk'
+ENV['JAVA_HOME'] = heroku_java_home if Dir.exist?(heroku_java_home)
 
 ruby '2.4.1'
 
@@ -40,10 +42,10 @@ gem 'paper_trail-association_tracking'
 gem 'ranked-model'
 gem 'active_hash'
 gem 'deep_cloneable'
-# gem 'rjb','1.5.9'
-# gem 'kuromoji'
-# gem 'romaji'
-# gem 'zipang'
+gem 'rjb','1.5.9'
+gem 'kuromoji'
+gem 'romaji'
+gem 'zipang'
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
