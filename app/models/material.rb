@@ -42,7 +42,6 @@ class Material < ApplicationRecord
 
   def self.calculate_products_materials(order_info)
     hoge = []
-    binding.pry
     for i in 0..5
       if params["id#{i}"].present?
         Product.includes(:product_menus,[menus: [menu_materials: :material]]).find(params["id#{i}"]).menus.each do |menu|

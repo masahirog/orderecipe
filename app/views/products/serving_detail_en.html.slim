@@ -44,11 +44,11 @@ body
       .col-md-2
         = @product.bento_id
       .col-md-3
-        = Zipang.to_slug @product.name.tr('０-９ａ-ｚＡ-Ｚ　', '0-9a-zA-Z ')
+        = @product.name
       .col-md-2
-        = Zipang.to_slug @product.cook_category.tr('０-９ａ-ｚＡ-Ｚ　', '0-9a-zA-Z ')
+        = @product.cook_category
       .col-md-3
-        = Zipang.to_slug @product.product_type.tr('０-９ａ-ｚＡ-Ｚ　', '0-9a-zA-Z ')
+        = @product.product_type
       .text-right.col-md-2
         = @product.cost_price
         | 円
@@ -69,21 +69,21 @@ body
       - @menus.each do |menu|
         li.product_menus.col-md-12.list-group-item[style="padding:2px;"]
           .col-md-2
-            = Zipang.to_slug menu.name.tr('０-９ａ-ｚＡ-Ｚ　', '0-9a-zA-Z ')
+            = menu.name
           .col-md-2[style="word-break: break-all"]
-            = Zipang.to_slug menu.recipe.tr('０-９ａ-ｚＡ-Ｚ　', '0-9a-zA-Z ')
+            = menu.recipe
           - i = 1
           - u = menu.materials.length
           ul.col-md-8.menu_materials[style="list-style:none;padding:0;"]
             - menu.menu_materials.each do |mm|
               li.menu_materials.col-md-12[style="padding:0;"]
                 .col-md-2[style="padding:2px 2px;"]
-                  = Zipang.to_slug mm.material.name.tr('０-９ａ-ｚＡ-Ｚ　', '0-9a-zA-Z ')
+                  = mm.material.name
                 .col-md-1.original_amount_used.form-inline.text-right[style="padding:0;"]
                   .original_amount_used_value.text-right.form-group
                     = mm.amount_used
                   .form-group
-                    = Zipang.to_slug mm.material.calculated_unit.tr('０-９ａ-ｚＡ-Ｚ　', '0-9a-zA-Z ')
+                    = mm.material.calculated_unit
                   .calculated_value[style="display:none;"]
                     = mm.material.calculated_value
                   .order_unit[style="display:none;"]
@@ -97,6 +97,6 @@ body
                   .form-group[style="display:none;padding:0;"]
                     = mm.material.order_unit
                 .col-md-2[style="padding:0;"]
-                  = Zipang.to_slug mm.post.tr('０-９ａ-ｚＡ-Ｚ　', '0-9a-zA-Z ')
+                  = mm.post
                 .col-md-3[style="padding:0;"]
-                  = Zipang.to_slug mm.preparation.tr('０-９ａ-ｚＡ-Ｚ　', '0-9a-zA-Z ')
+                  = mm.preparation

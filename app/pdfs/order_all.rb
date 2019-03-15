@@ -1,10 +1,11 @@
 class OrderAll < Prawn::Document
   def initialize(order,vendors)
+
     super(page_size: 'A4')
     font "vendor/assets/fonts/ipaexm.ttf"
     order = order
     order_materials = order.order_materials
-    max = vendors.length - 1
+    max = vendors.values.length - 1
     for i in 0..max
       u= "id#{i}"
       id = vendors[u].to_i
