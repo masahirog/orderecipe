@@ -78,7 +78,7 @@ class ProductsController < ApplicationController
   # end
 
   def create
-    @product = Product.create(product_create_update)
+    @product = Product.new(product_create_update)
     if @product.save
       redirect_to products_path
     else
@@ -95,8 +95,7 @@ class ProductsController < ApplicationController
 
   def update
     @product = Product.find(params[:id])
-    @product.update(product_create_update)
-    if @product.save
+    if @product.update(product_create_update)
       redirect_to product_path
     else
       render 'edit'
