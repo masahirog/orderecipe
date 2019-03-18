@@ -328,6 +328,7 @@ GEM
       railties (>= 3.2.16)
     json (2.2.0)
     jwt (2.1.0)
+    kakasi (1.0.2)
     kaminari (1.1.1)
       activesupport (>= 4.1.0)
       kaminari-actionview (= 1.1.1)
@@ -585,6 +586,7 @@ DEPENDENCIES
   jquery-rails
   jquery-turbolinks
   jquery-ui-rails
+  kakasi
   kaminari
   letter_opener
   listen (>= 3.0.5, < 3.2)

@@ -22,7 +22,7 @@ html
               span.icon-bar
               span.icon-bar
             a.navbar-brand style="padding:12px 10px 8px 20px;" href="/"
-              img src="/assets/orderecipe.png" height="85%;"
+              = image_tag 'orderecipe.png',height:'85%'
           #navbarEexample.collapse.navbar-collapse
             - if user_signed_in?
               ul.nav.navbar-nav
