@@ -40,7 +40,6 @@ gem 'paper_trail-association_tracking'
 gem 'ranked-model'
 gem 'active_hash'
 gem 'deep_cloneable'
-gem 'kakasi'
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]

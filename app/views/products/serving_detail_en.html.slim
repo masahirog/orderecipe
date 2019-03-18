@@ -44,11 +44,11 @@ body
       .col-md-2
         = @product.bento_id
       .col-md-3
-        = Kakasi.kakasi('-Ja -Ha -Ka', @product.name).gsub(/\^/, '-')
+        = @product.name
       .col-md-2
-        = Kakasi.kakasi('-Ja -Ha -Ka', @product.cook_category).gsub(/\^/, '-')
+        = @product.cook_category
       .col-md-3
-        = Kakasi.kakasi('-Ja -Ha -Ka', @product.product_type).gsub(/\^/, '-')
+        = @product.product_type
       .text-right.col-md-2
         = @product.cost_price
         | 円
@@ -69,16 +69,16 @@ body
       - @menus.each do |menu|
         li.product_menus.col-md-12.list-group-item[style="padding:2px;"]
           .col-md-2
-            = Kakasi.kakasi('-Ja -Ha -Ka', menu.name).gsub(/\^/, '-')
+            = menu.name
           .col-md-2[style="word-break: break-all"]
-            = Kakasi.kakasi('-Ja -Ha -Ka', menu.recipe).gsub(/\^/, '-')
+            = menu.recipe
           - i = 1
           - u = menu.materials.length
           ul.col-md-8.menu_materials[style="list-style:none;padding:0;"]
             - menu.menu_materials.each do |mm|
               li.menu_materials.col-md-12[style="padding:0;"]
                 .col-md-2[style="padding:2px 2px;"]
-                  = Kakasi.kakasi('-Ja -Ha -Ka', mm.material.name).gsub(/\^/, '-')
+                  = mm.material.name
                 .col-md-1.original_amount_used.form-inline.text-right[style="padding:0;"]
                   .original_amount_used_value.text-right.form-group
                     = mm.amount_used
@@ -97,6 +97,6 @@ body
                   .form-group[style="display:none;padding:0;"]
                     = mm.material.order_unit
                 .col-md-2[style="padding:0;"]
-                  = Kakasi.kakasi('-Ja -Ha -Ka', mm.post).gsub(/\^/, '-')
+                  = mm.post
                 .col-md-3[style="padding:0;"]
-                  = Kakasi.kakasi('-Ja -Ha -Ka', mm.preparation).gsub(/\^/, '-')
+                  = mm.preparation
