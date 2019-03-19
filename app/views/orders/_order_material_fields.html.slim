@@ -38,9 +38,10 @@ tr.order_materials_tr.nested-fields
     = f.text_field :order_material_memo,class:'form-control'
     div style="padding:3px 0 0 8px;color:#A9A9A9;font-size:10px;"
       - if controller.action_name == "new"
-        = @b_hash[f.object.material_id]['product_name']
+        = f.object.menu_name
+        = f.hidden_field :menu_name
       - else
-        = @hash[f.object.material_id]
+        = f.object.menu_name
   td.delivery_date
     - if f.object.delivery_date
       = f.date_field(:delivery_date, value: f.object.delivery_date,class:"form-control input_delivery_date")

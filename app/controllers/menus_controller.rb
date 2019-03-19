@@ -115,7 +115,8 @@ class MenusController < ApplicationController
       @pm = ProductMenu.find(pm[:pm_id])
       @pm.update_attribute(:menu_id, pm[:menu_id])
     end
-    redirect_to :back
+    menu_id = params[:menu_id]
+    redirect_to "/menus/include_menu/#{menu_id}", notice: "メニューを変更しました。"
   end
 
   def get_food_ingredient

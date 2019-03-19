@@ -60,7 +60,8 @@ class MaterialsController < ApplicationController
       @mm = MenuMaterial.find(mm[:mm_id])
       @mm.update_attribute(:material_id, mm[:material_id])
     end
-    redirect_to :back
+     material_id = params[:material_id]
+     redirect_to "/materials/include_material/#{material_id}", notice: "食材を変更しました。"
   end
 
   def change_additives

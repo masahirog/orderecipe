@@ -122,7 +122,7 @@ class ProductsController < ApplicationController
     respond_to do |format|
      format.html
      format.pdf do
-       pdf = ProductPdf.new(@params,@product,@menus)
+       pdf = ProductPdfTest.new(@params,@product,@menus)
        send_data pdf.render,
          filename:    "#{@product.name}_#{params[:volume][:num]}shoku.pdf",
          type:        "application/pdf",

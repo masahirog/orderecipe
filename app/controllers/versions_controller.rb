@@ -6,6 +6,6 @@ class VersionsController < ApplicationController
     else
       @version.item.destroy!
     end
-    redirect_to :back, notice: "#{@version.event} を取り消しました！"
+    redirect_to root_path, notice: "#{@version.event} を取り消しました！"
   end
 end

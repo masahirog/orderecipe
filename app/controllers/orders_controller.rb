@@ -58,7 +58,7 @@ class OrdersController < ApplicationController
               hash = {}
               hash['material_id'] = menu_material.material_id
               hash['calculated_order_amount'] = (po[:num].to_f * menu_material.amount_used)
-              hash["product_name"] = product.name
+              hash["menu_name"] = menu.name
               hash["calculated_value"] = menu_material.material.calculated_value
               hash["order_unit_quantity"] = menu_material.material.order_unit_quantity
               hash["vendor_id"] = menu_material.material.vendor_id
@@ -71,24 +71,33 @@ class OrdersController < ApplicationController
     @b_hash = Hash.new { |h,k| h[k] = {} }
     @arr.sort_by! { |a| a['vendor_id'] }.each do |info|
       if info['vendor_id'] == 121 || info['vendor_id'] == 151
-        @b_hash[info['material_id']] = info
+        if @b_hash[info['material_id']].present?
+          @b_hash[info['material_id']] << info
+        else
+          @b_hash[info['material_id']] = [info]
+        end
       else
         if @b_hash[info['material_id']].present?
-          @b_hash[info['material_id']]['calculated_order_amount'] += info['calculated_order_amount']
-          @b_hash[info['material_id']]['product_name'] += "、" + info['product_name']
+          @b_hash[info['material_id']][0]['calculated_order_amount'] += info['calculated_order_amount']
+
+          @b_hash[info['material_id']][0]['menu_name'] += "、" + info['menu_name']
         else
-          @b_hash[info['material_id']] = info
+          @b_hash[info['material_id']] = [info]
         end
       end
     end
+
     @b_hash.each do |key,value|
-      calculated_quantity = value['calculated_order_amount'].to_f
-      if value['order_unit_quantity'].to_f < 1
-        order_quantity = BigDecimal((calculated_quantity / value['calculated_value'].to_f * value['order_unit_quantity'].to_f).to_s).ceil(1).to_f
-      else
-        order_quantity = BigDecimal((calculated_quantity / value['calculated_value'].to_f * value['order_unit_quantity'].to_f).to_s).ceil
+      value.each do |hash|
+        calculated_quantity = hash['calculated_order_amount'].to_f
+        if hash['order_unit_quantity'].to_f < 1
+          order_quantity = BigDecimal((calculated_quantity / hash['calculated_value'].to_f * hash['order_unit_quantity'].to_f).to_s).ceil(1).to_f
+        else
+          order_quantity = BigDecimal((calculated_quantity / hash['calculated_value'].to_f * hash['order_unit_quantity'].to_f).to_s).ceil
+        end
+        menu_name = hash['menu_name']
+        @order.order_materials.build(material_id:key,order_quantity:order_quantity,calculated_quantity:calculated_quantity,menu_name:menu_name)
       end
-      @order.order_materials.build(material_id:key,order_quantity:order_quantity,calculated_quantity:calculated_quantity)
     end
     @code_materials = Material.where(end_of_sales:0).where.not(order_code:"")
     @materials = Material.where(end_of_sales:0)
@@ -167,7 +176,7 @@ class OrdersController < ApplicationController
 
   private
   def order_create_update
-    params.require(:order).permit(order_materials_attributes: [:id, :order_quantity,:calculated_quantity, :order_id, :material_id,:order_material_memo,:delivery_date, :_destroy],
+    params.require(:order).permit(order_materials_attributes: [:id, :order_quantity,:calculated_quantity,:menu_name, :order_id, :material_id,:order_material_memo,:delivery_date, :_destroy],
       order_products_attributes: [:id,:make_date, :serving_for, :order_id, :product_id, :_destroy])
   end
 end

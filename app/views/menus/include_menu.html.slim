@@ -8,6 +8,7 @@
 .col-md-4[style="padding:0px;"]
   = select :menu_id,:menu_id, Menu.pluck(:name, :id),{include_blank: true}, class:'all_select_menu'
 = form_tag(:controller => "menus", :action => "include_update") do
+  = hidden_field_tag "menu_id",params[:id]
   .col-md-12
     = submit_tag "メニューの変更", class:"btn btn-success pull-right", data: { confirm: "変更してよろしいですか？"}
   .col-md-12

@@ -9,17 +9,14 @@ ol.breadcrumb
     = @product.name
 .col-md-12.form-inline
   .col-xs-11.col-md-12.form-group
-    .col-md-5
-      = form_tag({:controller => "products", :action => "print", format: "pdf"},{:target => "_blank"}) do
+      = form_tag({:controller => "products", :action => "print", format: "pdf"},{:target => "_blank",style:'float:left;'}) do
         = number_field(:volume,:id,value:params[:id],style:"display:none;")
         = number_field(:volume,:num,class:"form-control text-right",id:"amount_number_input",placeholder:"食数を入力")
         input.btn.btn-primary[type="button" onclick="submit();" value="印刷ページ" style="margin:0 0 0 10px;"]
-    .col-md-5
-      = link_to "盛付用VIEW", "/products/serving_detail/#{@product.id}",method:"get", class:"btn btn-primary",:target=>"_blank", style:"margin:0 0 0 10px;"
-      = link_to "ラムさん", "/products/serving_detail_en/#{@product.id}",method:"get", class:"btn btn-primary",:target=>"_blank", style:"margin:0 0 0 10px;"
-      = link_to 'コピー', new_product_path(product_id:@product.id,copy_flag:true) , class:"btn btn-primary",:target=>"_blank", style:"margin:0 0 0 10px;"
-    .col-md-2
-      = button_to 'お弁当を編集', "/products/#{@product.id}/edit", method: :get,class: "pull-right btn btn-default"
+      = button_to 'お弁当を編集', "/products/#{@product.id}/edit", method: :get,class: "btn btn-success",style:'margin:0 0 0 10px;float:left;'
+      = link_to "盛付用VIEW", "/products/serving_detail/#{@product.id}",method:"get", class:"btn btn-default",:target=>"_blank", style:"margin:0 0 0 10px;float:left;"
+      = link_to "ラムさん", "/products/serving_detail_en/#{@product.id}",method:"get", class:"btn btn-default",:target=>"_blank", style:"margin:0 0 0 10px;float:left;"
+      = link_to 'コピー', new_product_path(product_id:@product.id,copy_flag:true) , class:"btn btn-default",:target=>"_blank", style:"margin:0 0 0 10px;float:left;"
 .amount_number.col-xs-12.col-md-12
 .col-md-6
   table.table
