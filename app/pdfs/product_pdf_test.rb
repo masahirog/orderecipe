@@ -64,7 +64,11 @@ class ProductPdfTest < Prawn::Document
       menuline = []
       values = cells.columns(6).rows(1..-1)
       values.each do |cell|
-        grayout << cell.row unless cell.content == mochiba || cell.content == "切出/調理"
+        if mochiba == "調理場"
+          grayout << cell.row unless cell.content == mochiba || cell.content == "切出/調理"
+        else
+          grayout << cell.row unless cell.content == mochiba || cell.content == "切出/調理" || cell.content == "切出/スチコン"
+        end
       end
       grayout.map{|num|row(num).column(3..-1).background_color = "dcdcdc"}
       menu_values = cells.columns(0).rows(1..-1)

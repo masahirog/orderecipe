@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   get 'products/serving_detail_en/:id' => 'products#serving_detail_en'
   post 'products/serving_detail_en' => 'products#serving_detail_en'
   post 'products/print' => 'products#print'
+  post 'products/print_test' => 'products#print_test'
   get 'products/get_products' => 'products#get_products'
   get 'products/input_name_get_products' => 'products#input_name_get_products'
   post 'orders/new' => 'orders#new'
