@@ -76,10 +76,6 @@
   list-style: none;
 }
 
-// .search_material{
-//   position: relative;
-// }
-
 
 .amount_used_select{
   text-align: right;
@@ -105,52 +101,22 @@
   padding-top: 50px;
 }
 
-
-// .large_input{
-//   width: 400px;
-//   height: 200px;
-//   border: 1px solid #CACACA;
-//   -webkit-border-radius: 3px;    /* Safari,Google Chrome用 */
-//   -moz-border-radius: 3px;
-//   border-radius: 3px;        /* CSS3草案 */
-//   border: 1px solid #ccc
-// }
-
-
-// .result{
-//   width: 280px;
-//   max-height: 300px;
-//   overflow: scroll;
-//   z-index: 1;
-//   position: absolute;
-//   background-color: #FAFAFA;
-//   margin: 3px 0 0 10px;
-//   padding: 0 0 0 5px;
-//   text-align: left;
-//   list-style: none;
-// }
-
-// .search_menu{
-//   text-align: center;
-//   position: relative;
-// }
-
 .materials-table{
   th,td{
     border-bottom: solid 1px #C5C5C5;
     padding: 6px 8px;
   }
 }
-
-
-//order/edit
-.table{
-  table-layout: fixed;
-  .order_materials_tr{
-    padding:3px;
-    td{
-      padding: 4px;
-      height: 100%;
-    }
-  }
-}
+//
+//
+// // order/edit
+// .table{
+//   table-layout: fixed;
+//   .order_materials_tr{
+//     padding:3px;
+//     td{
+//       padding: 4px;
+//       height: 100%;
+//     }
+//   }
+// }

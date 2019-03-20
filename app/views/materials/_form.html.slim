@@ -30,11 +30,21 @@
       = f.collection_select :vendor_id, Vendor.all, :id, :company_name, {include_blank: true}, { class: "form-control"}
   .col-xs-12.col-md-12.form-group
     .col-xs-12.col-md-5
-      = f.label :vendorstock_flag, "卸業者在庫品(業者が在庫している商品で翌日届く商品)"
-      = f.check_box :vendorstock_flag, class: "form-control"
+      = f.label :vendor_stock_flag, "発注期限について"
+      = f.select :vendor_stock_flag, [["在庫品", true], ["受注品", false]],{}, class: "form-control"
+
+  .col-md-12.form-group style="padding:0;"
+    .col-xs-12.col-md-5
+      .col-xs-12.col-md-12
+        = f.label :delivery_deadline, "デフォルト納品日"
+      .col-xs-9.col-md-8
+        = f.select :delivery_deadline,options_for_select(0..20,f.object.delivery_deadline),{}, class: "form-control"
+      .col-xs-2.col-md-4 style="margin-top:10px;padding:0;"
+        | 営業日前
+
   .col-xs-12.col-md-12.form-group
     .col-xs-12.col-md-5
-      = f.label :order_code, "管理コード"
+      = f.label :order_code, "業者管理コード"
       = f.text_field :order_code, class:'form-control'
   .col-md-12.form-group style="padding:0;"
     .col-md-5

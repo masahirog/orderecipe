@@ -72,7 +72,8 @@ ActiveRecord::Schema.define(version: 2019_03_19_101207) do
     t.text "allergy"
     t.integer "stock_management"
     t.integer "vegetable_flag", default: 0, null: false
-    t.boolean "vendorstock_flag"
+    t.boolean "vendor_stock_flag", default: true, null: false
+    t.integer "delivery_deadline", default: 1, null: false
   end
 
   create_table "menu_materials", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -130,6 +131,8 @@ ActiveRecord::Schema.define(version: 2019_03_19_101207) do
     t.string "order_material_memo"
     t.string "delivery_date"
     t.text "menu_name"
+    t.string "calculated_unit"
+    t.string "order_unit"
   end
 
   create_table "order_products", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

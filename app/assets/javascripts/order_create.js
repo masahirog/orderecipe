@@ -1,3 +1,13 @@
+$(document).on("turbolinks:before-cache", function() {
+  if ($(".select_order_materials").length) {
+    $('.select_order_materials').select2('destroy');
+  }
+  if ($(".input_order_code").length) {
+    $('.input_order_code').select2('destroy');
+  }
+});
+
+
 $(document).on('turbolinks:load', function() {
   first_input_check()
   $('.input_select_product').select2({
@@ -8,7 +18,12 @@ $(document).on('turbolinks:load', function() {
     placeholder: "発注する食材を選択"
   });
   $('.input_order_code').select2({
-    width:"120px",
+  });
+
+
+  $("#all_make_date_change").on("change", function(){
+    var date = $(this).val()
+    $(".input_make_date").val(date)
   });
 
 
@@ -173,13 +188,16 @@ $(document).on('turbolinks:load', function() {
       var calculated_value = data.material.calculated_value;
       var order_unit = data.material.order_unit;
       var order_unit_quantity = data.material.order_unit_quantity;
+      var delivery_deadline = data.material.delivery_deadline
       var change_unit = order_unit_quantity+order_unit+"："+ calculated_value+" "+unit
       if (color=='') {
-        $(".order_materials_tr").eq(u).find(".vendor_company_name").text(vendor).css("color",'color:#A9A9A9;');
+        $(".order_materials_tr").eq(u).find(".vendor_company_name").text(vendor).css("color",'color:#A9A9A9;').css("font-weight",'normal');
       }else{
-        $(".order_materials_tr").eq(u).find(".vendor_company_name").text(vendor).css("color",'red');
+        $(".order_materials_tr").eq(u).find(".vendor_company_name").text(vendor).css("color",'red').css("font-weight",'bold');
       }
-      $(".order_materials_tr").eq(u).find(".order_material_unit").text(order_unit);
+      console.log(delivery_deadline);
+      $(".order_materials_tr").eq(u).find(".delivery_deadline_span").val(delivery_deadline);
+      $(".order_materials_tr").eq(u).find(".order_material_unit").val(order_unit);
       $(".order_materials_tr").eq(u).find(".change_unit").text(change_unit);
 
     });
@@ -218,10 +236,8 @@ $(document).on('turbolinks:load', function() {
 
     $('.add_order_material').on('click',function(){
       setTimeout(function(){
-        $('.input_order_code').select2('destroy');
-        $('.select_order_materials').select2('destroy');
-        $('.input_order_code').select2();
-        $('.select_order_materials').select2({
+        $('.input_order_code:last').select2();
+        $('.select_order_materials:last').select2({
           placeholder: "発注する食材を選択"
         });
       },5);

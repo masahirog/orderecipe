@@ -40,19 +40,17 @@
     table.table
       thead
         tr
-          th style="width:200px;" 食材名
-          th style="width:130px;" 発注コード検索
-          th style="width:280px;"
-            div style="width:130px;float:left;"
+          th style="width:280px;" 食材名
+          th style="width:150px;" 発注コード検索
+          th style="width:400px;"
+            div style="float:left;width:50%;"
               | 発注量
-            div style="width:130px;float:left;"
+            div style="float:left;width:50%;"
               | 計算値
-          th style="width:250px;"
-            | 備考欄
-          th style="width:160px;"
-            | 納品日
-          th style="width:98px;"
-            |  削除　
+          th 備考欄
+          th 納品日
+          th
+            span 削除
             input.all_delete type="checkbox" style="width:24px;height:24px;margin:0;"
       tbody#order_materials_table
         = f.fields_for :order_materials do |m|

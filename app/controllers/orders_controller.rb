@@ -62,6 +62,8 @@ class OrdersController < ApplicationController
               hash["calculated_value"] = menu_material.material.calculated_value
               hash["order_unit_quantity"] = menu_material.material.order_unit_quantity
               hash["vendor_id"] = menu_material.material.vendor_id
+              hash['calculated_unit'] = menu_material.material.calculated_unit
+              hash['order_unit'] = menu_material.material.order_unit
               @arr << hash
             end
           end
@@ -89,14 +91,16 @@ class OrdersController < ApplicationController
 
     @b_hash.each do |key,value|
       value.each do |hash|
-        calculated_quantity = hash['calculated_order_amount'].to_f
+        calculated_quantity = hash['calculated_order_amount'].round(1)
         if hash['order_unit_quantity'].to_f < 1
-          order_quantity = BigDecimal((calculated_quantity / hash['calculated_value'].to_f * hash['order_unit_quantity'].to_f).to_s).ceil(1).to_f
+          order_quantity = BigDecimal((calculated_quantity / hash['calculated_value'].to_f * hash['order_unit_quantity'].to_f).to_s).ceil(1)
         else
           order_quantity = BigDecimal((calculated_quantity / hash['calculated_value'].to_f * hash['order_unit_quantity'].to_f).to_s).ceil
         end
+        calculated_unit = hash['calculated_unit']
+        order_unit = hash['order_unit']
         menu_name = hash['menu_name']
-        @order.order_materials.build(material_id:key,order_quantity:order_quantity,calculated_quantity:calculated_quantity,menu_name:menu_name)
+        @order.order_materials.build(material_id:key,order_quantity:order_quantity,calculated_quantity:calculated_quantity,menu_name:menu_name,calculated_unit:calculated_unit,order_unit:order_unit)
       end
     end
     @code_materials = Material.where(end_of_sales:0).where.not(order_code:"")
@@ -176,7 +180,8 @@ class OrdersController < ApplicationController
 
   private
   def order_create_update
-    params.require(:order).permit(order_materials_attributes: [:id, :order_quantity,:calculated_quantity,:menu_name, :order_id, :material_id,:order_material_memo,:delivery_date, :_destroy],
+    params.require(:order).permit(order_materials_attributes: [:id, :order_quantity,:calculated_quantity,
+      :menu_name, :order_id, :material_id,:order_material_memo,:delivery_date,:calculated_unit,:order_unit, :_destroy],
       order_products_attributes: [:id,:make_date, :serving_for, :order_id, :product_id, :_destroy])
   end
 end
