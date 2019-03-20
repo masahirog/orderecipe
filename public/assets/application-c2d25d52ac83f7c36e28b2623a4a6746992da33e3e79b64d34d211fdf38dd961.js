@@ -11008,10 +11008,10 @@ if ( !noGlobal ) {
 return jQuery;
 }));
 /* ========================================================================
- * Bootstrap: transition.js v3.3.7
- * http://getbootstrap.com/javascript/#transitions
+ * Bootstrap: affix.js v3.4.1
+ * https://getbootstrap.com/docs/3.4/javascript/#affix
  * ========================================================================
- * Copyright 2011-2016 Twitter, Inc.
+ * Copyright 2011-2019 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * ======================================================================== */
 
@@ -11020,58 +11020,163 @@ return jQuery;
 +function ($) {
   'use strict';
 
-  // CSS TRANSITION SUPPORT (Shoutout: http://www.modernizr.com/)
-  // ============================================================
+  // AFFIX CLASS DEFINITION
+  // ======================
 
-  function transitionEnd() {
-    var el = document.createElement('bootstrap')
+  var Affix = function (element, options) {
+    this.options = $.extend({}, Affix.DEFAULTS, options)
 
-    var transEndEventNames = {
-      WebkitTransition : 'webkitTransitionEnd',
-      MozTransition    : 'transitionend',
-      OTransition      : 'oTransitionEnd otransitionend',
-      transition       : 'transitionend'
-    }
+    var target = this.options.target === Affix.DEFAULTS.target ? $(this.options.target) : $(document).find(this.options.target)
 
-    for (var name in transEndEventNames) {
-      if (el.style[name] !== undefined) {
-        return { end: transEndEventNames[name] }
-      }
-    }
+    this.$target = target
+      .on('scroll.bs.affix.data-api', $.proxy(this.checkPosition, this))
+      .on('click.bs.affix.data-api',  $.proxy(this.checkPositionWithEventLoop, this))
 
-    return false // explicit for ie8 (  ._.)
+    this.$element     = $(element)
+    this.affixed      = null
+    this.unpin        = null
+    this.pinnedOffset = null
+
+    this.checkPosition()
   }
 
-  // http://blog.alexmaccaw.com/css-transitions
-  $.fn.emulateTransitionEnd = function (duration) {
-    var called = false
-    var $el = this
-    $(this).one('bsTransitionEnd', function () { called = true })
-    var callback = function () { if (!called) $($el).trigger($.support.transition.end) }
-    setTimeout(callback, duration)
+  Affix.VERSION  = '3.4.1'
+
+  Affix.RESET    = 'affix affix-top affix-bottom'
+
+  Affix.DEFAULTS = {
+    offset: 0,
+    target: window
+  }
+
+  Affix.prototype.getState = function (scrollHeight, height, offsetTop, offsetBottom) {
+    var scrollTop    = this.$target.scrollTop()
+    var position     = this.$element.offset()
+    var targetHeight = this.$target.height()
+
+    if (offsetTop != null && this.affixed == 'top') return scrollTop < offsetTop ? 'top' : false
+
+    if (this.affixed == 'bottom') {
+      if (offsetTop != null) return (scrollTop + this.unpin <= position.top) ? false : 'bottom'
+      return (scrollTop + targetHeight <= scrollHeight - offsetBottom) ? false : 'bottom'
+    }
+
+    var initializing   = this.affixed == null
+    var colliderTop    = initializing ? scrollTop : position.top
+    var colliderHeight = initializing ? targetHeight : height
+
+    if (offsetTop != null && scrollTop <= offsetTop) return 'top'
+    if (offsetBottom != null && (colliderTop + colliderHeight >= scrollHeight - offsetBottom)) return 'bottom'
+
+    return false
+  }
+
+  Affix.prototype.getPinnedOffset = function () {
+    if (this.pinnedOffset) return this.pinnedOffset
+    this.$element.removeClass(Affix.RESET).addClass('affix')
+    var scrollTop = this.$target.scrollTop()
+    var position  = this.$element.offset()
+    return (this.pinnedOffset = position.top - scrollTop)
+  }
+
+  Affix.prototype.checkPositionWithEventLoop = function () {
+    setTimeout($.proxy(this.checkPosition, this), 1)
+  }
+
+  Affix.prototype.checkPosition = function () {
+    if (!this.$element.is(':visible')) return
+
+    var height       = this.$element.height()
+    var offset       = this.options.offset
+    var offsetTop    = offset.top
+    var offsetBottom = offset.bottom
+    var scrollHeight = Math.max($(document).height(), $(document.body).height())
+
+    if (typeof offset != 'object')         offsetBottom = offsetTop = offset
+    if (typeof offsetTop == 'function')    offsetTop    = offset.top(this.$element)
+    if (typeof offsetBottom == 'function') offsetBottom = offset.bottom(this.$element)
+
+    var affix = this.getState(scrollHeight, height, offsetTop, offsetBottom)
+
+    if (this.affixed != affix) {
+      if (this.unpin != null) this.$element.css('top', '')
+
+      var affixType = 'affix' + (affix ? '-' + affix : '')
+      var e         = $.Event(affixType + '.bs.affix')
+
+      this.$element.trigger(e)
+
+      if (e.isDefaultPrevented()) return
+
+      this.affixed = affix
+      this.unpin = affix == 'bottom' ? this.getPinnedOffset() : null
+
+      this.$element
+        .removeClass(Affix.RESET)
+        .addClass(affixType)
+        .trigger(affixType.replace('affix', 'affixed') + '.bs.affix')
+    }
+
+    if (affix == 'bottom') {
+      this.$element.offset({
+        top: scrollHeight - height - offsetBottom
+      })
+    }
+  }
+
+
+  // AFFIX PLUGIN DEFINITION
+  // =======================
+
+  function Plugin(option) {
+    return this.each(function () {
+      var $this   = $(this)
+      var data    = $this.data('bs.affix')
+      var options = typeof option == 'object' && option
+
+      if (!data) $this.data('bs.affix', (data = new Affix(this, options)))
+      if (typeof option == 'string') data[option]()
+    })
+  }
+
+  var old = $.fn.affix
+
+  $.fn.affix             = Plugin
+  $.fn.affix.Constructor = Affix
+
+
+  // AFFIX NO CONFLICT
+  // =================
+
+  $.fn.affix.noConflict = function () {
+    $.fn.affix = old
     return this
   }
 
-  $(function () {
-    $.support.transition = transitionEnd()
 
-    if (!$.support.transition) return
+  // AFFIX DATA-API
+  // ==============
 
-    $.event.special.bsTransitionEnd = {
-      bindType: $.support.transition.end,
-      delegateType: $.support.transition.end,
-      handle: function (e) {
-        if ($(e.target).is(this)) return e.handleObj.handler.apply(this, arguments)
-      }
-    }
+  $(window).on('load', function () {
+    $('[data-spy="affix"]').each(function () {
+      var $spy = $(this)
+      var data = $spy.data()
+
+      data.offset = data.offset || {}
+
+      if (data.offsetBottom != null) data.offset.bottom = data.offsetBottom
+      if (data.offsetTop    != null) data.offset.top    = data.offsetTop
+
+      Plugin.call($spy, data)
+    })
   })
 
 }(jQuery);
 /* ========================================================================
- * Bootstrap: alert.js v3.3.7
- * http://getbootstrap.com/javascript/#alerts
+ * Bootstrap: alert.js v3.4.1
+ * https://getbootstrap.com/docs/3.4/javascript/#alerts
  * ========================================================================
- * Copyright 2011-2016 Twitter, Inc.
+ * Copyright 2011-2019 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * ======================================================================== */
 
@@ -11088,7 +11193,7 @@ return jQuery;
     $(el).on('click', dismiss, this.close)
   }
 
-  Alert.VERSION = '3.3.7'
+  Alert.VERSION = '3.4.1'
 
   Alert.TRANSITION_DURATION = 150
 
@@ -11101,7 +11206,8 @@ return jQuery;
       selector = selector && selector.replace(/.*(?=#[^\s]*$)/, '') // strip for ie7
     }
 
-    var $parent = $(selector === '#' ? [] : selector)
+    selector    = selector === '#' ? [] : selector
+    var $parent = $(document).find(selector)
 
     if (e) e.preventDefault()
 
@@ -11163,10 +11269,10 @@ return jQuery;
 
 }(jQuery);
 /* ========================================================================
- * Bootstrap: button.js v3.3.7
- * http://getbootstrap.com/javascript/#buttons
+ * Bootstrap: button.js v3.4.1
+ * https://getbootstrap.com/docs/3.4/javascript/#buttons
  * ========================================================================
- * Copyright 2011-2016 Twitter, Inc.
+ * Copyright 2011-2019 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * ======================================================================== */
 
@@ -11184,7 +11290,7 @@ return jQuery;
     this.isLoading = false
   }
 
-  Button.VERSION  = '3.3.7'
+  Button.VERSION  = '3.4.1'
 
   Button.DEFAULTS = {
     loadingText: 'loading...'
@@ -11289,10 +11395,10 @@ return jQuery;
 
 }(jQuery);
 /* ========================================================================
- * Bootstrap: carousel.js v3.3.7
- * http://getbootstrap.com/javascript/#carousel
+ * Bootstrap: carousel.js v3.4.1
+ * https://getbootstrap.com/docs/3.4/javascript/#carousel
  * ========================================================================
- * Copyright 2011-2016 Twitter, Inc.
+ * Copyright 2011-2019 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * ======================================================================== */
 
@@ -11321,7 +11427,7 @@ return jQuery;
       .on('mouseleave.bs.carousel', $.proxy(this.cycle, this))
   }
 
-  Carousel.VERSION  = '3.3.7'
+  Carousel.VERSION  = '3.4.1'
 
   Carousel.TRANSITION_DURATION = 600
 
@@ -11435,7 +11541,9 @@ return jQuery;
     var slidEvent = $.Event('slid.bs.carousel', { relatedTarget: relatedTarget, direction: direction }) // yes, "slid"
     if ($.support.transition && this.$element.hasClass('slide')) {
       $next.addClass(type)
-      $next[0].offsetWidth // force reflow
+      if (typeof $next === 'object' && $next.length) {
+        $next[0].offsetWidth // force reflow
+      }
       $active.addClass(direction)
       $next.addClass(direction)
       $active
@@ -11497,10 +11605,17 @@ return jQuery;
   // =================
 
   var clickHandler = function (e) {
-    var href
     var $this   = $(this)
-    var $target = $($this.attr('data-target') || (href = $this.attr('href')) && href.replace(/.*(?=#[^\s]+$)/, '')) // strip for ie7
+    var href    = $this.attr('href')
+    if (href) {
+      href = href.replace(/.*(?=#[^\s]+$)/, '') // strip for ie7
+    }
+
+    var target  = $this.attr('data-target') || href
+    var $target = $(document).find(target)
+
     if (!$target.hasClass('carousel')) return
+
     var options = $.extend({}, $target.data(), $this.data())
     var slideIndex = $this.attr('data-slide-to')
     if (slideIndex) options.interval = false
@@ -11527,10 +11642,10 @@ return jQuery;
 
 }(jQuery);
 /* ========================================================================
- * Bootstrap: collapse.js v3.3.7
- * http://getbootstrap.com/javascript/#collapse
+ * Bootstrap: collapse.js v3.4.1
+ * https://getbootstrap.com/docs/3.4/javascript/#collapse
  * ========================================================================
- * Copyright 2011-2016 Twitter, Inc.
+ * Copyright 2011-2019 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * ======================================================================== */
 
@@ -11559,7 +11674,7 @@ return jQuery;
     if (this.options.toggle) this.toggle()
   }
 
-  Collapse.VERSION  = '3.3.7'
+  Collapse.VERSION  = '3.4.1'
 
   Collapse.TRANSITION_DURATION = 350
 
@@ -11666,7 +11781,7 @@ return jQuery;
   }
 
   Collapse.prototype.getParent = function () {
-    return $(this.options.parent)
+    return $(document).find(this.options.parent)
       .find('[data-toggle="collapse"][data-parent="' + this.options.parent + '"]')
       .each($.proxy(function (i, element) {
         var $element = $(element)
@@ -11689,7 +11804,7 @@ return jQuery;
     var target = $trigger.attr('data-target')
       || (href = $trigger.attr('href')) && href.replace(/.*(?=#[^\s]+$)/, '') // strip for ie7
 
-    return $(target)
+    return $(document).find(target)
   }
 
 
@@ -11740,10 +11855,10 @@ return jQuery;
 
 }(jQuery);
 /* ========================================================================
- * Bootstrap: dropdown.js v3.3.7
- * http://getbootstrap.com/javascript/#dropdowns
+ * Bootstrap: dropdown.js v3.4.1
+ * https://getbootstrap.com/docs/3.4/javascript/#dropdowns
  * ========================================================================
- * Copyright 2011-2016 Twitter, Inc.
+ * Copyright 2011-2019 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * ======================================================================== */
 
@@ -11761,7 +11876,7 @@ return jQuery;
     $(element).on('click.bs.dropdown', this.toggle)
   }
 
-  Dropdown.VERSION = '3.3.7'
+  Dropdown.VERSION = '3.4.1'
 
   function getParent($this) {
     var selector = $this.attr('data-target')
@@ -11771,7 +11886,7 @@ return jQuery;
       selector = selector && /#[A-Za-z]/.test(selector) && selector.replace(/.*(?=#[^\s]*$)/, '') // strip for ie7
     }
 
-    var $parent = selector && $(selector)
+    var $parent = selector !== '#' ? $(document).find(selector) : null
 
     return $parent && $parent.length ? $parent : $this.parent()
   }
@@ -11906,10 +12021,10 @@ return jQuery;
 
 }(jQuery);
 /* ========================================================================
- * Bootstrap: modal.js v3.3.7
- * http://getbootstrap.com/javascript/#modals
+ * Bootstrap: modal.js v3.4.1
+ * https://getbootstrap.com/docs/3.4/javascript/#modals
  * ========================================================================
- * Copyright 2011-2016 Twitter, Inc.
+ * Copyright 2011-2019 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * ======================================================================== */
 
@@ -11922,15 +12037,16 @@ return jQuery;
   // ======================
 
   var Modal = function (element, options) {
-    this.options             = options
-    this.$body               = $(document.body)
-    this.$element            = $(element)
-    this.$dialog             = this.$element.find('.modal-dialog')
-    this.$backdrop           = null
-    this.isShown             = null
-    this.originalBodyPad     = null
-    this.scrollbarWidth      = 0
+    this.options = options
+    this.$body = $(document.body)
+    this.$element = $(element)
+    this.$dialog = this.$element.find('.modal-dialog')
+    this.$backdrop = null
+    this.isShown = null
+    this.originalBodyPad = null
+    this.scrollbarWidth = 0
     this.ignoreBackdropClick = false
+    this.fixedContent = '.navbar-fixed-top, .navbar-fixed-bottom'
 
     if (this.options.remote) {
       this.$element
@@ -11941,7 +12057,7 @@ return jQuery;
     }
   }
 
-  Modal.VERSION  = '3.3.7'
+  Modal.VERSION = '3.4.1'
 
   Modal.TRANSITION_DURATION = 300
   Modal.BACKDROP_TRANSITION_DURATION = 150
@@ -11958,7 +12074,7 @@ return jQuery;
 
   Modal.prototype.show = function (_relatedTarget) {
     var that = this
-    var e    = $.Event('show.bs.modal', { relatedTarget: _relatedTarget })
+    var e = $.Event('show.bs.modal', { relatedTarget: _relatedTarget })
 
     this.$element.trigger(e)
 
@@ -12049,8 +12165,8 @@ return jQuery;
       .off('focusin.bs.modal') // guard against infinite focus loop
       .on('focusin.bs.modal', $.proxy(function (e) {
         if (document !== e.target &&
-            this.$element[0] !== e.target &&
-            !this.$element.has(e.target).length) {
+          this.$element[0] !== e.target &&
+          !this.$element.has(e.target).length) {
           this.$element.trigger('focus')
         }
       }, this))
@@ -12152,7 +12268,7 @@ return jQuery;
     var modalIsOverflowing = this.$element[0].scrollHeight > document.documentElement.clientHeight
 
     this.$element.css({
-      paddingLeft:  !this.bodyIsOverflowing && modalIsOverflowing ? this.scrollbarWidth : '',
+      paddingLeft: !this.bodyIsOverflowing && modalIsOverflowing ? this.scrollbarWidth : '',
       paddingRight: this.bodyIsOverflowing && !modalIsOverflowing ? this.scrollbarWidth : ''
     })
   }
@@ -12177,11 +12293,26 @@ return jQuery;
   Modal.prototype.setScrollbar = function () {
     var bodyPad = parseInt((this.$body.css('padding-right') || 0), 10)
     this.originalBodyPad = document.body.style.paddingRight || ''
-    if (this.bodyIsOverflowing) this.$body.css('padding-right', bodyPad + this.scrollbarWidth)
+    var scrollbarWidth = this.scrollbarWidth
+    if (this.bodyIsOverflowing) {
+      this.$body.css('padding-right', bodyPad + scrollbarWidth)
+      $(this.fixedContent).each(function (index, element) {
+        var actualPadding = element.style.paddingRight
+        var calculatedPadding = $(element).css('padding-right')
+        $(element)
+          .data('padding-right', actualPadding)
+          .css('padding-right', parseFloat(calculatedPadding) + scrollbarWidth + 'px')
+      })
+    }
   }
 
   Modal.prototype.resetScrollbar = function () {
     this.$body.css('padding-right', this.originalBodyPad)
+    $(this.fixedContent).each(function (index, element) {
+      var padding = $(element).data('padding-right')
+      $(element).removeData('padding-right')
+      element.style.paddingRight = padding ? padding : ''
+    })
   }
 
   Modal.prototype.measureScrollbar = function () { // thx walsh
@@ -12199,8 +12330,8 @@ return jQuery;
 
   function Plugin(option, _relatedTarget) {
     return this.each(function () {
-      var $this   = $(this)
-      var data    = $this.data('bs.modal')
+      var $this = $(this)
+      var data = $this.data('bs.modal')
       var options = $.extend({}, Modal.DEFAULTS, $this.data(), typeof option == 'object' && option)
 
       if (!data) $this.data('bs.modal', (data = new Modal(this, options)))
@@ -12211,7 +12342,7 @@ return jQuery;
 
   var old = $.fn.modal
 
-  $.fn.modal             = Plugin
+  $.fn.modal = Plugin
   $.fn.modal.Constructor = Modal
 
 
@@ -12228,10 +12359,13 @@ return jQuery;
   // ==============
 
   $(document).on('click.bs.modal.data-api', '[data-toggle="modal"]', function (e) {
-    var $this   = $(this)
-    var href    = $this.attr('href')
-    var $target = $($this.attr('data-target') || (href && href.replace(/.*(?=#[^\s]+$)/, ''))) // strip for ie7
-    var option  = $target.data('bs.modal') ? 'toggle' : $.extend({ remote: !/#/.test(href) && href }, $target.data(), $this.data())
+    var $this = $(this)
+    var href = $this.attr('href')
+    var target = $this.attr('data-target') ||
+      (href && href.replace(/.*(?=#[^\s]+$)/, '')) // strip for ie7
+
+    var $target = $(document).find(target)
+    var option = $target.data('bs.modal') ? 'toggle' : $.extend({ remote: !/#/.test(href) && href }, $target.data(), $this.data())
 
     if ($this.is('a')) e.preventDefault()
 
@@ -12246,329 +12380,10 @@ return jQuery;
 
 }(jQuery);
 /* ========================================================================
- * Bootstrap: tab.js v3.3.7
- * http://getbootstrap.com/javascript/#tabs
+ * Bootstrap: scrollspy.js v3.4.1
+ * https://getbootstrap.com/docs/3.4/javascript/#scrollspy
  * ========================================================================
- * Copyright 2011-2016 Twitter, Inc.
- * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
- * ======================================================================== */
-
-
-
-+function ($) {
-  'use strict';
-
-  // TAB CLASS DEFINITION
-  // ====================
-
-  var Tab = function (element) {
-    // jscs:disable requireDollarBeforejQueryAssignment
-    this.element = $(element)
-    // jscs:enable requireDollarBeforejQueryAssignment
-  }
-
-  Tab.VERSION = '3.3.7'
-
-  Tab.TRANSITION_DURATION = 150
-
-  Tab.prototype.show = function () {
-    var $this    = this.element
-    var $ul      = $this.closest('ul:not(.dropdown-menu)')
-    var selector = $this.data('target')
-
-    if (!selector) {
-      selector = $this.attr('href')
-      selector = selector && selector.replace(/.*(?=#[^\s]*$)/, '') // strip for ie7
-    }
-
-    if ($this.parent('li').hasClass('active')) return
-
-    var $previous = $ul.find('.active:last a')
-    var hideEvent = $.Event('hide.bs.tab', {
-      relatedTarget: $this[0]
-    })
-    var showEvent = $.Event('show.bs.tab', {
-      relatedTarget: $previous[0]
-    })
-
-    $previous.trigger(hideEvent)
-    $this.trigger(showEvent)
-
-    if (showEvent.isDefaultPrevented() || hideEvent.isDefaultPrevented()) return
-
-    var $target = $(selector)
-
-    this.activate($this.closest('li'), $ul)
-    this.activate($target, $target.parent(), function () {
-      $previous.trigger({
-        type: 'hidden.bs.tab',
-        relatedTarget: $this[0]
-      })
-      $this.trigger({
-        type: 'shown.bs.tab',
-        relatedTarget: $previous[0]
-      })
-    })
-  }
-
-  Tab.prototype.activate = function (element, container, callback) {
-    var $active    = container.find('> .active')
-    var transition = callback
-      && $.support.transition
-      && ($active.length && $active.hasClass('fade') || !!container.find('> .fade').length)
-
-    function next() {
-      $active
-        .removeClass('active')
-        .find('> .dropdown-menu > .active')
-          .removeClass('active')
-        .end()
-        .find('[data-toggle="tab"]')
-          .attr('aria-expanded', false)
-
-      element
-        .addClass('active')
-        .find('[data-toggle="tab"]')
-          .attr('aria-expanded', true)
-
-      if (transition) {
-        element[0].offsetWidth // reflow for transition
-        element.addClass('in')
-      } else {
-        element.removeClass('fade')
-      }
-
-      if (element.parent('.dropdown-menu').length) {
-        element
-          .closest('li.dropdown')
-            .addClass('active')
-          .end()
-          .find('[data-toggle="tab"]')
-            .attr('aria-expanded', true)
-      }
-
-      callback && callback()
-    }
-
-    $active.length && transition ?
-      $active
-        .one('bsTransitionEnd', next)
-        .emulateTransitionEnd(Tab.TRANSITION_DURATION) :
-      next()
-
-    $active.removeClass('in')
-  }
-
-
-  // TAB PLUGIN DEFINITION
-  // =====================
-
-  function Plugin(option) {
-    return this.each(function () {
-      var $this = $(this)
-      var data  = $this.data('bs.tab')
-
-      if (!data) $this.data('bs.tab', (data = new Tab(this)))
-      if (typeof option == 'string') data[option]()
-    })
-  }
-
-  var old = $.fn.tab
-
-  $.fn.tab             = Plugin
-  $.fn.tab.Constructor = Tab
-
-
-  // TAB NO CONFLICT
-  // ===============
-
-  $.fn.tab.noConflict = function () {
-    $.fn.tab = old
-    return this
-  }
-
-
-  // TAB DATA-API
-  // ============
-
-  var clickHandler = function (e) {
-    e.preventDefault()
-    Plugin.call($(this), 'show')
-  }
-
-  $(document)
-    .on('click.bs.tab.data-api', '[data-toggle="tab"]', clickHandler)
-    .on('click.bs.tab.data-api', '[data-toggle="pill"]', clickHandler)
-
-}(jQuery);
-/* ========================================================================
- * Bootstrap: affix.js v3.3.7
- * http://getbootstrap.com/javascript/#affix
- * ========================================================================
- * Copyright 2011-2016 Twitter, Inc.
- * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
- * ======================================================================== */
-
-
-
-+function ($) {
-  'use strict';
-
-  // AFFIX CLASS DEFINITION
-  // ======================
-
-  var Affix = function (element, options) {
-    this.options = $.extend({}, Affix.DEFAULTS, options)
-
-    this.$target = $(this.options.target)
-      .on('scroll.bs.affix.data-api', $.proxy(this.checkPosition, this))
-      .on('click.bs.affix.data-api',  $.proxy(this.checkPositionWithEventLoop, this))
-
-    this.$element     = $(element)
-    this.affixed      = null
-    this.unpin        = null
-    this.pinnedOffset = null
-
-    this.checkPosition()
-  }
-
-  Affix.VERSION  = '3.3.7'
-
-  Affix.RESET    = 'affix affix-top affix-bottom'
-
-  Affix.DEFAULTS = {
-    offset: 0,
-    target: window
-  }
-
-  Affix.prototype.getState = function (scrollHeight, height, offsetTop, offsetBottom) {
-    var scrollTop    = this.$target.scrollTop()
-    var position     = this.$element.offset()
-    var targetHeight = this.$target.height()
-
-    if (offsetTop != null && this.affixed == 'top') return scrollTop < offsetTop ? 'top' : false
-
-    if (this.affixed == 'bottom') {
-      if (offsetTop != null) return (scrollTop + this.unpin <= position.top) ? false : 'bottom'
-      return (scrollTop + targetHeight <= scrollHeight - offsetBottom) ? false : 'bottom'
-    }
-
-    var initializing   = this.affixed == null
-    var colliderTop    = initializing ? scrollTop : position.top
-    var colliderHeight = initializing ? targetHeight : height
-
-    if (offsetTop != null && scrollTop <= offsetTop) return 'top'
-    if (offsetBottom != null && (colliderTop + colliderHeight >= scrollHeight - offsetBottom)) return 'bottom'
-
-    return false
-  }
-
-  Affix.prototype.getPinnedOffset = function () {
-    if (this.pinnedOffset) return this.pinnedOffset
-    this.$element.removeClass(Affix.RESET).addClass('affix')
-    var scrollTop = this.$target.scrollTop()
-    var position  = this.$element.offset()
-    return (this.pinnedOffset = position.top - scrollTop)
-  }
-
-  Affix.prototype.checkPositionWithEventLoop = function () {
-    setTimeout($.proxy(this.checkPosition, this), 1)
-  }
-
-  Affix.prototype.checkPosition = function () {
-    if (!this.$element.is(':visible')) return
-
-    var height       = this.$element.height()
-    var offset       = this.options.offset
-    var offsetTop    = offset.top
-    var offsetBottom = offset.bottom
-    var scrollHeight = Math.max($(document).height(), $(document.body).height())
-
-    if (typeof offset != 'object')         offsetBottom = offsetTop = offset
-    if (typeof offsetTop == 'function')    offsetTop    = offset.top(this.$element)
-    if (typeof offsetBottom == 'function') offsetBottom = offset.bottom(this.$element)
-
-    var affix = this.getState(scrollHeight, height, offsetTop, offsetBottom)
-
-    if (this.affixed != affix) {
-      if (this.unpin != null) this.$element.css('top', '')
-
-      var affixType = 'affix' + (affix ? '-' + affix : '')
-      var e         = $.Event(affixType + '.bs.affix')
-
-      this.$element.trigger(e)
-
-      if (e.isDefaultPrevented()) return
-
-      this.affixed = affix
-      this.unpin = affix == 'bottom' ? this.getPinnedOffset() : null
-
-      this.$element
-        .removeClass(Affix.RESET)
-        .addClass(affixType)
-        .trigger(affixType.replace('affix', 'affixed') + '.bs.affix')
-    }
-
-    if (affix == 'bottom') {
-      this.$element.offset({
-        top: scrollHeight - height - offsetBottom
-      })
-    }
-  }
-
-
-  // AFFIX PLUGIN DEFINITION
-  // =======================
-
-  function Plugin(option) {
-    return this.each(function () {
-      var $this   = $(this)
-      var data    = $this.data('bs.affix')
-      var options = typeof option == 'object' && option
-
-      if (!data) $this.data('bs.affix', (data = new Affix(this, options)))
-      if (typeof option == 'string') data[option]()
-    })
-  }
-
-  var old = $.fn.affix
-
-  $.fn.affix             = Plugin
-  $.fn.affix.Constructor = Affix
-
-
-  // AFFIX NO CONFLICT
-  // =================
-
-  $.fn.affix.noConflict = function () {
-    $.fn.affix = old
-    return this
-  }
-
-
-  // AFFIX DATA-API
-  // ==============
-
-  $(window).on('load', function () {
-    $('[data-spy="affix"]').each(function () {
-      var $spy = $(this)
-      var data = $spy.data()
-
-      data.offset = data.offset || {}
-
-      if (data.offsetBottom != null) data.offset.bottom = data.offsetBottom
-      if (data.offsetTop    != null) data.offset.top    = data.offsetTop
-
-      Plugin.call($spy, data)
-    })
-  })
-
-}(jQuery);
-/* ========================================================================
- * Bootstrap: scrollspy.js v3.3.7
- * http://getbootstrap.com/javascript/#scrollspy
- * ========================================================================
- * Copyright 2011-2016 Twitter, Inc.
+ * Copyright 2011-2019 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * ======================================================================== */
 
@@ -12595,7 +12410,7 @@ return jQuery;
     this.process()
   }
 
-  ScrollSpy.VERSION  = '3.3.7'
+  ScrollSpy.VERSION  = '3.4.1'
 
   ScrollSpy.DEFAULTS = {
     offset: 10
@@ -12738,11 +12553,10 @@ return jQuery;
 
 }(jQuery);
 /* ========================================================================
- * Bootstrap: tooltip.js v3.3.7
- * http://getbootstrap.com/javascript/#tooltip
- * Inspired by the original jQuery.tipsy by Jason Frame
+ * Bootstrap: tab.js v3.4.1
+ * https://getbootstrap.com/docs/3.4/javascript/#tabs
  * ========================================================================
- * Copyright 2011-2016 Twitter, Inc.
+ * Copyright 2011-2019 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * ======================================================================== */
 
@@ -12750,6 +12564,353 @@ return jQuery;
 
 +function ($) {
   'use strict';
+
+  // TAB CLASS DEFINITION
+  // ====================
+
+  var Tab = function (element) {
+    // jscs:disable requireDollarBeforejQueryAssignment
+    this.element = $(element)
+    // jscs:enable requireDollarBeforejQueryAssignment
+  }
+
+  Tab.VERSION = '3.4.1'
+
+  Tab.TRANSITION_DURATION = 150
+
+  Tab.prototype.show = function () {
+    var $this    = this.element
+    var $ul      = $this.closest('ul:not(.dropdown-menu)')
+    var selector = $this.data('target')
+
+    if (!selector) {
+      selector = $this.attr('href')
+      selector = selector && selector.replace(/.*(?=#[^\s]*$)/, '') // strip for ie7
+    }
+
+    if ($this.parent('li').hasClass('active')) return
+
+    var $previous = $ul.find('.active:last a')
+    var hideEvent = $.Event('hide.bs.tab', {
+      relatedTarget: $this[0]
+    })
+    var showEvent = $.Event('show.bs.tab', {
+      relatedTarget: $previous[0]
+    })
+
+    $previous.trigger(hideEvent)
+    $this.trigger(showEvent)
+
+    if (showEvent.isDefaultPrevented() || hideEvent.isDefaultPrevented()) return
+
+    var $target = $(document).find(selector)
+
+    this.activate($this.closest('li'), $ul)
+    this.activate($target, $target.parent(), function () {
+      $previous.trigger({
+        type: 'hidden.bs.tab',
+        relatedTarget: $this[0]
+      })
+      $this.trigger({
+        type: 'shown.bs.tab',
+        relatedTarget: $previous[0]
+      })
+    })
+  }
+
+  Tab.prototype.activate = function (element, container, callback) {
+    var $active    = container.find('> .active')
+    var transition = callback
+      && $.support.transition
+      && ($active.length && $active.hasClass('fade') || !!container.find('> .fade').length)
+
+    function next() {
+      $active
+        .removeClass('active')
+        .find('> .dropdown-menu > .active')
+        .removeClass('active')
+        .end()
+        .find('[data-toggle="tab"]')
+        .attr('aria-expanded', false)
+
+      element
+        .addClass('active')
+        .find('[data-toggle="tab"]')
+        .attr('aria-expanded', true)
+
+      if (transition) {
+        element[0].offsetWidth // reflow for transition
+        element.addClass('in')
+      } else {
+        element.removeClass('fade')
+      }
+
+      if (element.parent('.dropdown-menu').length) {
+        element
+          .closest('li.dropdown')
+          .addClass('active')
+          .end()
+          .find('[data-toggle="tab"]')
+          .attr('aria-expanded', true)
+      }
+
+      callback && callback()
+    }
+
+    $active.length && transition ?
+      $active
+        .one('bsTransitionEnd', next)
+        .emulateTransitionEnd(Tab.TRANSITION_DURATION) :
+      next()
+
+    $active.removeClass('in')
+  }
+
+
+  // TAB PLUGIN DEFINITION
+  // =====================
+
+  function Plugin(option) {
+    return this.each(function () {
+      var $this = $(this)
+      var data  = $this.data('bs.tab')
+
+      if (!data) $this.data('bs.tab', (data = new Tab(this)))
+      if (typeof option == 'string') data[option]()
+    })
+  }
+
+  var old = $.fn.tab
+
+  $.fn.tab             = Plugin
+  $.fn.tab.Constructor = Tab
+
+
+  // TAB NO CONFLICT
+  // ===============
+
+  $.fn.tab.noConflict = function () {
+    $.fn.tab = old
+    return this
+  }
+
+
+  // TAB DATA-API
+  // ============
+
+  var clickHandler = function (e) {
+    e.preventDefault()
+    Plugin.call($(this), 'show')
+  }
+
+  $(document)
+    .on('click.bs.tab.data-api', '[data-toggle="tab"]', clickHandler)
+    .on('click.bs.tab.data-api', '[data-toggle="pill"]', clickHandler)
+
+}(jQuery);
+/* ========================================================================
+ * Bootstrap: transition.js v3.4.1
+ * https://getbootstrap.com/docs/3.4/javascript/#transitions
+ * ========================================================================
+ * Copyright 2011-2019 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
+
++function ($) {
+  'use strict';
+
+  // CSS TRANSITION SUPPORT (Shoutout: https://modernizr.com/)
+  // ============================================================
+
+  function transitionEnd() {
+    var el = document.createElement('bootstrap')
+
+    var transEndEventNames = {
+      WebkitTransition : 'webkitTransitionEnd',
+      MozTransition    : 'transitionend',
+      OTransition      : 'oTransitionEnd otransitionend',
+      transition       : 'transitionend'
+    }
+
+    for (var name in transEndEventNames) {
+      if (el.style[name] !== undefined) {
+        return { end: transEndEventNames[name] }
+      }
+    }
+
+    return false // explicit for ie8 (  ._.)
+  }
+
+  // https://blog.alexmaccaw.com/css-transitions
+  $.fn.emulateTransitionEnd = function (duration) {
+    var called = false
+    var $el = this
+    $(this).one('bsTransitionEnd', function () { called = true })
+    var callback = function () { if (!called) $($el).trigger($.support.transition.end) }
+    setTimeout(callback, duration)
+    return this
+  }
+
+  $(function () {
+    $.support.transition = transitionEnd()
+
+    if (!$.support.transition) return
+
+    $.event.special.bsTransitionEnd = {
+      bindType: $.support.transition.end,
+      delegateType: $.support.transition.end,
+      handle: function (e) {
+        if ($(e.target).is(this)) return e.handleObj.handler.apply(this, arguments)
+      }
+    }
+  })
+
+}(jQuery);
+/* ========================================================================
+ * Bootstrap: tooltip.js v3.4.1
+ * https://getbootstrap.com/docs/3.4/javascript/#tooltip
+ * Inspired by the original jQuery.tipsy by Jason Frame
+ * ========================================================================
+ * Copyright 2011-2019 Twitter, Inc.
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * ======================================================================== */
+
+
++function ($) {
+  'use strict';
+
+  var DISALLOWED_ATTRIBUTES = ['sanitize', 'whiteList', 'sanitizeFn']
+
+  var uriAttrs = [
+    'background',
+    'cite',
+    'href',
+    'itemtype',
+    'longdesc',
+    'poster',
+    'src',
+    'xlink:href'
+  ]
+
+  var ARIA_ATTRIBUTE_PATTERN = /^aria-[\w-]*$/i
+
+  var DefaultWhitelist = {
+    // Global attributes allowed on any supplied element below.
+    '*': ['class', 'dir', 'id', 'lang', 'role', ARIA_ATTRIBUTE_PATTERN],
+    a: ['target', 'href', 'title', 'rel'],
+    area: [],
+    b: [],
+    br: [],
+    col: [],
+    code: [],
+    div: [],
+    em: [],
+    hr: [],
+    h1: [],
+    h2: [],
+    h3: [],
+    h4: [],
+    h5: [],
+    h6: [],
+    i: [],
+    img: ['src', 'alt', 'title', 'width', 'height'],
+    li: [],
+    ol: [],
+    p: [],
+    pre: [],
+    s: [],
+    small: [],
+    span: [],
+    sub: [],
+    sup: [],
+    strong: [],
+    u: [],
+    ul: []
+  }
+
+  /**
+   * A pattern that recognizes a commonly useful subset of URLs that are safe.
+   *
+   * Shoutout to Angular 7 https://github.com/angular/angular/blob/7.2.4/packages/core/src/sanitization/url_sanitizer.ts
+   */
+  var SAFE_URL_PATTERN = /^(?:(?:https?|mailto|ftp|tel|file):|[^&:/?#]*(?:[/?#]|$))/gi
+
+  /**
+   * A pattern that matches safe data URLs. Only matches image, video and audio types.
+   *
+   * Shoutout to Angular 7 https://github.com/angular/angular/blob/7.2.4/packages/core/src/sanitization/url_sanitizer.ts
+   */
+  var DATA_URL_PATTERN = /^data:(?:image\/(?:bmp|gif|jpeg|jpg|png|tiff|webp)|video\/(?:mpeg|mp4|ogg|webm)|audio\/(?:mp3|oga|ogg|opus));base64,[a-z0-9+/]+=*$/i
+
+  function allowedAttribute(attr, allowedAttributeList) {
+    var attrName = attr.nodeName.toLowerCase()
+
+    if ($.inArray(attrName, allowedAttributeList) !== -1) {
+      if ($.inArray(attrName, uriAttrs) !== -1) {
+        return Boolean(attr.nodeValue.match(SAFE_URL_PATTERN) || attr.nodeValue.match(DATA_URL_PATTERN))
+      }
+
+      return true
+    }
+
+    var regExp = $(allowedAttributeList).filter(function (index, value) {
+      return value instanceof RegExp
+    })
+
+    // Check if a regular expression validates the attribute.
+    for (var i = 0, l = regExp.length; i < l; i++) {
+      if (attrName.match(regExp[i])) {
+        return true
+      }
+    }
+
+    return false
+  }
+
+  function sanitizeHtml(unsafeHtml, whiteList, sanitizeFn) {
+    if (unsafeHtml.length === 0) {
+      return unsafeHtml
+    }
+
+    if (sanitizeFn && typeof sanitizeFn === 'function') {
+      return sanitizeFn(unsafeHtml)
+    }
+
+    // IE 8 and below don't support createHTMLDocument
+    if (!document.implementation || !document.implementation.createHTMLDocument) {
+      return unsafeHtml
+    }
+
+    var createdDocument = document.implementation.createHTMLDocument('sanitization')
+    createdDocument.body.innerHTML = unsafeHtml
+
+    var whitelistKeys = $.map(whiteList, function (el, i) { return i })
+    var elements = $(createdDocument.body).find('*')
+
+    for (var i = 0, len = elements.length; i < len; i++) {
+      var el = elements[i]
+      var elName = el.nodeName.toLowerCase()
+
+      if ($.inArray(elName, whitelistKeys) === -1) {
+        el.parentNode.removeChild(el)
+
+        continue
+      }
+
+      var attributeList = $.map(el.attributes, function (el) { return el })
+      var whitelistedAttributes = [].concat(whiteList['*'] || [], whiteList[elName] || [])
+
+      for (var j = 0, len2 = attributeList.length; j < len2; j++) {
+        if (!allowedAttribute(attributeList[j], whitelistedAttributes)) {
+          el.removeAttribute(attributeList[j].nodeName)
+        }
+      }
+    }
+
+    return createdDocument.body.innerHTML
+  }
 
   // TOOLTIP PUBLIC CLASS DEFINITION
   // ===============================
@@ -12766,7 +12927,7 @@ return jQuery;
     this.init('tooltip', element, options)
   }
 
-  Tooltip.VERSION  = '3.3.7'
+  Tooltip.VERSION  = '3.4.1'
 
   Tooltip.TRANSITION_DURATION = 150
 
@@ -12783,7 +12944,10 @@ return jQuery;
     viewport: {
       selector: 'body',
       padding: 0
-    }
+    },
+    sanitize : true,
+    sanitizeFn : null,
+    whiteList : DefaultWhitelist
   }
 
   Tooltip.prototype.init = function (type, element, options) {
@@ -12791,7 +12955,7 @@ return jQuery;
     this.type      = type
     this.$element  = $(element)
     this.options   = this.getOptions(options)
-    this.$viewport = this.options.viewport && $($.isFunction(this.options.viewport) ? this.options.viewport.call(this, this.$element) : (this.options.viewport.selector || this.options.viewport))
+    this.$viewport = this.options.viewport && $(document).find($.isFunction(this.options.viewport) ? this.options.viewport.call(this, this.$element) : (this.options.viewport.selector || this.options.viewport))
     this.inState   = { click: false, hover: false, focus: false }
 
     if (this.$element[0] instanceof document.constructor && !this.options.selector) {
@@ -12824,13 +12988,25 @@ return jQuery;
   }
 
   Tooltip.prototype.getOptions = function (options) {
-    options = $.extend({}, this.getDefaults(), this.$element.data(), options)
+    var dataAttributes = this.$element.data()
+
+    for (var dataAttr in dataAttributes) {
+      if (dataAttributes.hasOwnProperty(dataAttr) && $.inArray(dataAttr, DISALLOWED_ATTRIBUTES) !== -1) {
+        delete dataAttributes[dataAttr]
+      }
+    }
+
+    options = $.extend({}, this.getDefaults(), dataAttributes, options)
 
     if (options.delay && typeof options.delay == 'number') {
       options.delay = {
         show: options.delay,
         hide: options.delay
       }
+    }
+
+    if (options.sanitize) {
+      options.template = sanitizeHtml(options.template, options.whiteList, options.sanitizeFn)
     }
 
     return options
@@ -12944,7 +13120,7 @@ return jQuery;
         .addClass(placement)
         .data('bs.' + this.type, this)
 
-      this.options.container ? $tip.appendTo(this.options.container) : $tip.insertAfter(this.$element)
+      this.options.container ? $tip.appendTo($(document).find(this.options.container)) : $tip.insertAfter(this.$element)
       this.$element.trigger('inserted.bs.' + this.type)
 
       var pos          = this.getPosition()
@@ -13046,7 +13222,16 @@ return jQuery;
     var $tip  = this.tip()
     var title = this.getTitle()
 
-    $tip.find('.tooltip-inner')[this.options.html ? 'html' : 'text'](title)
+    if (this.options.html) {
+      if (this.options.sanitize) {
+        title = sanitizeHtml(title, this.options.whiteList, this.options.sanitizeFn)
+      }
+
+      $tip.find('.tooltip-inner').html(title)
+    } else {
+      $tip.find('.tooltip-inner').text(title)
+    }
+
     $tip.removeClass('fade in top bottom left right')
   }
 
@@ -13227,6 +13412,9 @@ return jQuery;
     })
   }
 
+  Tooltip.prototype.sanitizeHtml = function (unsafeHtml) {
+    return sanitizeHtml(unsafeHtml, this.options.whiteList, this.options.sanitizeFn)
+  }
 
   // TOOLTIP PLUGIN DEFINITION
   // =========================
@@ -13259,10 +13447,10 @@ return jQuery;
 
 }(jQuery);
 /* ========================================================================
- * Bootstrap: popover.js v3.3.7
- * http://getbootstrap.com/javascript/#popovers
+ * Bootstrap: popover.js v3.4.1
+ * https://getbootstrap.com/docs/3.4/javascript/#popovers
  * ========================================================================
- * Copyright 2011-2016 Twitter, Inc.
+ * Copyright 2011-2019 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  * ======================================================================== */
 
@@ -13280,7 +13468,7 @@ return jQuery;
 
   if (!$.fn.tooltip) throw new Error('Popover requires tooltip.js')
 
-  Popover.VERSION  = '3.3.7'
+  Popover.VERSION  = '3.4.1'
 
   Popover.DEFAULTS = $.extend({}, $.fn.tooltip.Constructor.DEFAULTS, {
     placement: 'right',
@@ -13306,10 +13494,25 @@ return jQuery;
     var title   = this.getTitle()
     var content = this.getContent()
 
-    $tip.find('.popover-title')[this.options.html ? 'html' : 'text'](title)
-    $tip.find('.popover-content').children().detach().end()[ // we use append for html objects to maintain js events
-      this.options.html ? (typeof content == 'string' ? 'html' : 'append') : 'text'
-    ](content)
+    if (this.options.html) {
+      var typeContent = typeof content
+
+      if (this.options.sanitize) {
+        title = this.sanitizeHtml(title)
+
+        if (typeContent === 'string') {
+          content = this.sanitizeHtml(content)
+        }
+      }
+
+      $tip.find('.popover-title').html(title)
+      $tip.find('.popover-content').children().detach().end()[
+        typeContent === 'string' ? 'html' : 'append'
+      ](content)
+    } else {
+      $tip.find('.popover-title').text(title)
+      $tip.find('.popover-content').children().detach().end().text(content)
+    }
 
     $tip.removeClass('fade top bottom left right in')
 
@@ -13328,8 +13531,8 @@ return jQuery;
 
     return $e.attr('data-content')
       || (typeof o.content == 'function' ?
-            o.content.call($e[0]) :
-            o.content)
+        o.content.call($e[0]) :
+        o.content)
   }
 
   Popover.prototype.arrow = function () {
@@ -16697,7 +16900,7 @@ return $.widget( "ui.sortable", $.ui.mouse, {
 
       setTimeout(function() {
         if ($this.hasClass('dynamic')) {
-            node_to_delete.remove();
+            node_to_delete.detach();
         } else {
             $this.prev("input[type=hidden]").val("1");
             node_to_delete.hide();
@@ -16720,7 +16923,14 @@ return $.widget( "ui.sortable", $.ui.mouse, {
 })(jQuery);
 
 
-$(function(){
+/*
+Turbolinks 5.2.0
+Copyright © 2018 Basecamp, LLC
+ */
+
+(function(){var t=this;(function(){(function(){this.Turbolinks={supported:function(){return null!=window.history.pushState&&null!=window.requestAnimationFrame&&null!=window.addEventListener}(),visit:function(t,r){return e.controller.visit(t,r)},clearCache:function(){return e.controller.clearCache()},setProgressBarDelay:function(t){return e.controller.setProgressBarDelay(t)}}}).call(this)}).call(t);var e=t.Turbolinks;(function(){(function(){var t,r,n,o=[].slice;e.copyObject=function(t){var e,r,n;r={};for(e in t)n=t[e],r[e]=n;return r},e.closest=function(e,r){return t.call(e,r)},t=function(){var t,e;return t=document.documentElement,null!=(e=t.closest)?e:function(t){var e;for(e=this;e;){if(e.nodeType===Node.ELEMENT_NODE&&r.call(e,t))return e;e=e.parentNode}}}(),e.defer=function(t){return setTimeout(t,1)},e.throttle=function(t){var e;return e=null,function(){var r;return r=1<=arguments.length?o.call(arguments,0):[],null!=e?e:e=requestAnimationFrame(function(n){return function(){return e=null,t.apply(n,r)}}(this))}},e.dispatch=function(t,e){var r,o,i,s,a,u;return a=null!=e?e:{},u=a.target,r=a.cancelable,o=a.data,i=document.createEvent("Events"),i.initEvent(t,!0,r===!0),i.data=null!=o?o:{},i.cancelable&&!n&&(s=i.preventDefault,i.preventDefault=function(){return this.defaultPrevented||Object.defineProperty(this,"defaultPrevented",{get:function(){return!0}}),s.call(this)}),(null!=u?u:document).dispatchEvent(i),i},n=function(){var t;return t=document.createEvent("Events"),t.initEvent("test",!0,!0),t.preventDefault(),t.defaultPrevented}(),e.match=function(t,e){return r.call(t,e)},r=function(){var t,e,r,n;return t=document.documentElement,null!=(e=null!=(r=null!=(n=t.matchesSelector)?n:t.webkitMatchesSelector)?r:t.msMatchesSelector)?e:t.mozMatchesSelector}(),e.uuid=function(){var t,e,r;for(r="",t=e=1;36>=e;t=++e)r+=9===t||14===t||19===t||24===t?"-":15===t?"4":20===t?(Math.floor(4*Math.random())+8).toString(16):Math.floor(15*Math.random()).toString(16);return r}}).call(this),function(){e.Location=function(){function t(t){var e,r;null==t&&(t=""),r=document.createElement("a"),r.href=t.toString(),this.absoluteURL=r.href,e=r.hash.length,2>e?this.requestURL=this.absoluteURL:(this.requestURL=this.absoluteURL.slice(0,-e),this.anchor=r.hash.slice(1))}var e,r,n,o;return t.wrap=function(t){return t instanceof this?t:new this(t)},t.prototype.getOrigin=function(){return this.absoluteURL.split("/",3).join("/")},t.prototype.getPath=function(){var t,e;return null!=(t=null!=(e=this.requestURL.match(/\/\/[^\/]*(\/[^?;]*)/))?e[1]:void 0)?t:"/"},t.prototype.getPathComponents=function(){return this.getPath().split("/").slice(1)},t.prototype.getLastPathComponent=function(){return this.getPathComponents().slice(-1)[0]},t.prototype.getExtension=function(){var t,e;return null!=(t=null!=(e=this.getLastPathComponent().match(/\.[^.]*$/))?e[0]:void 0)?t:""},t.prototype.isHTML=function(){return this.getExtension().match(/^(?:|\.(?:htm|html|xhtml))$/)},t.prototype.isPrefixedBy=function(t){var e;return e=r(t),this.isEqualTo(t)||o(this.absoluteURL,e)},t.prototype.isEqualTo=function(t){return this.absoluteURL===(null!=t?t.absoluteURL:void 0)},t.prototype.toCacheKey=function(){return this.requestURL},t.prototype.toJSON=function(){return this.absoluteURL},t.prototype.toString=function(){return this.absoluteURL},t.prototype.valueOf=function(){return this.absoluteURL},r=function(t){return e(t.getOrigin()+t.getPath())},e=function(t){return n(t,"/")?t:t+"/"},o=function(t,e){return t.slice(0,e.length)===e},n=function(t,e){return t.slice(-e.length)===e},t}()}.call(this),function(){var t=function(t,e){return function(){return t.apply(e,arguments)}};e.HttpRequest=function(){function r(r,n,o){this.delegate=r,this.requestCanceled=t(this.requestCanceled,this),this.requestTimedOut=t(this.requestTimedOut,this),this.requestFailed=t(this.requestFailed,this),this.requestLoaded=t(this.requestLoaded,this),this.requestProgressed=t(this.requestProgressed,this),this.url=e.Location.wrap(n).requestURL,this.referrer=e.Location.wrap(o).absoluteURL,this.createXHR()}return r.NETWORK_FAILURE=0,r.TIMEOUT_FAILURE=-1,r.timeout=60,r.prototype.send=function(){var t;return this.xhr&&!this.sent?(this.notifyApplicationBeforeRequestStart(),this.setProgress(0),this.xhr.send(),this.sent=!0,"function"==typeof(t=this.delegate).requestStarted?t.requestStarted():void 0):void 0},r.prototype.cancel=function(){return this.xhr&&this.sent?this.xhr.abort():void 0},r.prototype.requestProgressed=function(t){return t.lengthComputable?this.setProgress(t.loaded/t.total):void 0},r.prototype.requestLoaded=function(){return this.endRequest(function(t){return function(){var e;return 200<=(e=t.xhr.status)&&300>e?t.delegate.requestCompletedWithResponse(t.xhr.responseText,t.xhr.getResponseHeader("Turbolinks-Location")):(t.failed=!0,t.delegate.requestFailedWithStatusCode(t.xhr.status,t.xhr.responseText))}}(this))},r.prototype.requestFailed=function(){return this.endRequest(function(t){return function(){return t.failed=!0,t.delegate.requestFailedWithStatusCode(t.constructor.NETWORK_FAILURE)}}(this))},r.prototype.requestTimedOut=function(){return this.endRequest(function(t){return function(){return t.failed=!0,t.delegate.requestFailedWithStatusCode(t.constructor.TIMEOUT_FAILURE)}}(this))},r.prototype.requestCanceled=function(){return this.endRequest()},r.prototype.notifyApplicationBeforeRequestStart=function(){return e.dispatch("turbolinks:request-start",{data:{url:this.url,xhr:this.xhr}})},r.prototype.notifyApplicationAfterRequestEnd=function(){return e.dispatch("turbolinks:request-end",{data:{url:this.url,xhr:this.xhr}})},r.prototype.createXHR=function(){return this.xhr=new XMLHttpRequest,this.xhr.open("GET",this.url,!0),this.xhr.timeout=1e3*this.constructor.timeout,this.xhr.setRequestHeader("Accept","text/html, application/xhtml+xml"),this.xhr.setRequestHeader("Turbolinks-Referrer",this.referrer),this.xhr.onprogress=this.requestProgressed,this.xhr.onload=this.requestLoaded,this.xhr.onerror=this.requestFailed,this.xhr.ontimeout=this.requestTimedOut,this.xhr.onabort=this.requestCanceled},r.prototype.endRequest=function(t){return this.xhr?(this.notifyApplicationAfterRequestEnd(),null!=t&&t.call(this),this.destroy()):void 0},r.prototype.setProgress=function(t){var e;return this.progress=t,"function"==typeof(e=this.delegate).requestProgressed?e.requestProgressed(this.progress):void 0},r.prototype.destroy=function(){var t;return this.setProgress(1),"function"==typeof(t=this.delegate).requestFinished&&t.requestFinished(),this.delegate=null,this.xhr=null},r}()}.call(this),function(){var t=function(t,e){return function(){return t.apply(e,arguments)}};e.ProgressBar=function(){function e(){this.trickle=t(this.trickle,this),this.stylesheetElement=this.createStylesheetElement(),this.progressElement=this.createProgressElement()}var r;return r=300,e.defaultCSS=".turbolinks-progress-bar {\n  position: fixed;\n  display: block;\n  top: 0;\n  left: 0;\n  height: 3px;\n  background: #0076ff;\n  z-index: 9999;\n  transition: width "+r+"ms ease-out, opacity "+r/2+"ms "+r/2+"ms ease-in;\n  transform: translate3d(0, 0, 0);\n}",e.prototype.show=function(){return this.visible?void 0:(this.visible=!0,this.installStylesheetElement(),this.installProgressElement(),this.startTrickling())},e.prototype.hide=function(){return this.visible&&!this.hiding?(this.hiding=!0,this.fadeProgressElement(function(t){return function(){return t.uninstallProgressElement(),t.stopTrickling(),t.visible=!1,t.hiding=!1}}(this))):void 0},e.prototype.setValue=function(t){return this.value=t,this.refresh()},e.prototype.installStylesheetElement=function(){return document.head.insertBefore(this.stylesheetElement,document.head.firstChild)},e.prototype.installProgressElement=function(){return this.progressElement.style.width=0,this.progressElement.style.opacity=1,document.documentElement.insertBefore(this.progressElement,document.body),this.refresh()},e.prototype.fadeProgressElement=function(t){return this.progressElement.style.opacity=0,setTimeout(t,1.5*r)},e.prototype.uninstallProgressElement=function(){return this.progressElement.parentNode?document.documentElement.removeChild(this.progressElement):void 0},e.prototype.startTrickling=function(){return null!=this.trickleInterval?this.trickleInterval:this.trickleInterval=setInterval(this.trickle,r)},e.prototype.stopTrickling=function(){return clearInterval(this.trickleInterval),this.trickleInterval=null},e.prototype.trickle=function(){return this.setValue(this.value+Math.random()/100)},e.prototype.refresh=function(){return requestAnimationFrame(function(t){return function(){return t.progressElement.style.width=10+90*t.value+"%"}}(this))},e.prototype.createStylesheetElement=function(){var t;return t=document.createElement("style"),t.type="text/css",t.textContent=this.constructor.defaultCSS,t},e.prototype.createProgressElement=function(){var t;return t=document.createElement("div"),t.className="turbolinks-progress-bar",t},e}()}.call(this),function(){var t=function(t,e){return function(){return t.apply(e,arguments)}};e.BrowserAdapter=function(){function r(r){this.controller=r,this.showProgressBar=t(this.showProgressBar,this),this.progressBar=new e.ProgressBar}var n,o,i;return i=e.HttpRequest,n=i.NETWORK_FAILURE,o=i.TIMEOUT_FAILURE,r.prototype.visitProposedToLocationWithAction=function(t,e){return this.controller.startVisitToLocationWithAction(t,e)},r.prototype.visitStarted=function(t){return t.issueRequest(),t.changeHistory(),t.loadCachedSnapshot()},r.prototype.visitRequestStarted=function(t){return this.progressBar.setValue(0),t.hasCachedSnapshot()||"restore"!==t.action?this.showProgressBarAfterDelay():this.showProgressBar()},r.prototype.visitRequestProgressed=function(t){return this.progressBar.setValue(t.progress)},r.prototype.visitRequestCompleted=function(t){return t.loadResponse()},r.prototype.visitRequestFailedWithStatusCode=function(t,e){switch(e){case n:case o:return this.reload();default:return t.loadResponse()}},r.prototype.visitRequestFinished=function(t){return this.hideProgressBar()},r.prototype.visitCompleted=function(t){return t.followRedirect()},r.prototype.pageInvalidated=function(){return this.reload()},r.prototype.showProgressBarAfterDelay=function(){return this.progressBarTimeout=setTimeout(this.showProgressBar,this.controller.progressBarDelay)},r.prototype.showProgressBar=function(){return this.progressBar.show()},r.prototype.hideProgressBar=function(){return this.progressBar.hide(),clearTimeout(this.progressBarTimeout)},r.prototype.reload=function(){return window.location.reload()},r}()}.call(this),function(){var t=function(t,e){return function(){return t.apply(e,arguments)}};e.History=function(){function r(e){this.delegate=e,this.onPageLoad=t(this.onPageLoad,this),this.onPopState=t(this.onPopState,this)}return r.prototype.start=function(){return this.started?void 0:(addEventListener("popstate",this.onPopState,!1),addEventListener("load",this.onPageLoad,!1),this.started=!0)},r.prototype.stop=function(){return this.started?(removeEventListener("popstate",this.onPopState,!1),removeEventListener("load",this.onPageLoad,!1),this.started=!1):void 0},r.prototype.push=function(t,r){return t=e.Location.wrap(t),this.update("push",t,r)},r.prototype.replace=function(t,r){return t=e.Location.wrap(t),this.update("replace",t,r)},r.prototype.onPopState=function(t){var r,n,o,i;return this.shouldHandlePopState()&&(i=null!=(n=t.state)?n.turbolinks:void 0)?(r=e.Location.wrap(window.location),o=i.restorationIdentifier,this.delegate.historyPoppedToLocationWithRestorationIdentifier(r,o)):void 0},r.prototype.onPageLoad=function(t){return e.defer(function(t){return function(){return t.pageLoaded=!0}}(this))},r.prototype.shouldHandlePopState=function(){return this.pageIsLoaded()},r.prototype.pageIsLoaded=function(){return this.pageLoaded||"complete"===document.readyState},r.prototype.update=function(t,e,r){var n;return n={turbolinks:{restorationIdentifier:r}},history[t+"State"](n,null,e)},r}()}.call(this),function(){e.HeadDetails=function(){function t(t){var e,r,n,s,a,u;for(this.elements={},n=0,a=t.length;a>n;n++)u=t[n],u.nodeType===Node.ELEMENT_NODE&&(s=u.outerHTML,r=null!=(e=this.elements)[s]?e[s]:e[s]={type:i(u),tracked:o(u),elements:[]},r.elements.push(u))}var e,r,n,o,i;return t.fromHeadElement=function(t){var e;return new this(null!=(e=null!=t?t.childNodes:void 0)?e:[])},t.prototype.hasElementWithKey=function(t){return t in this.elements},t.prototype.getTrackedElementSignature=function(){var t,e;return function(){var r,n;r=this.elements,n=[];for(t in r)e=r[t].tracked,e&&n.push(t);return n}.call(this).join("")},t.prototype.getScriptElementsNotInDetails=function(t){return this.getElementsMatchingTypeNotInDetails("script",t)},t.prototype.getStylesheetElementsNotInDetails=function(t){return this.getElementsMatchingTypeNotInDetails("stylesheet",t)},t.prototype.getElementsMatchingTypeNotInDetails=function(t,e){var r,n,o,i,s,a;o=this.elements,s=[];for(n in o)i=o[n],a=i.type,r=i.elements,a!==t||e.hasElementWithKey(n)||s.push(r[0]);return s},t.prototype.getProvisionalElements=function(){var t,e,r,n,o,i,s;r=[],n=this.elements;for(e in n)o=n[e],s=o.type,i=o.tracked,t=o.elements,null!=s||i?t.length>1&&r.push.apply(r,t.slice(1)):r.push.apply(r,t);return r},t.prototype.getMetaValue=function(t){var e;return null!=(e=this.findMetaElementByName(t))?e.getAttribute("content"):void 0},t.prototype.findMetaElementByName=function(t){var r,n,o,i;r=void 0,i=this.elements;for(o in i)n=i[o].elements,e(n[0],t)&&(r=n[0]);return r},i=function(t){return r(t)?"script":n(t)?"stylesheet":void 0},o=function(t){return"reload"===t.getAttribute("data-turbolinks-track")},r=function(t){var e;return e=t.tagName.toLowerCase(),"script"===e},n=function(t){var e;return e=t.tagName.toLowerCase(),"style"===e||"link"===e&&"stylesheet"===t.getAttribute("rel")},e=function(t,e){var r;return r=t.tagName.toLowerCase(),"meta"===r&&t.getAttribute("name")===e},t}()}.call(this),function(){e.Snapshot=function(){function t(t,e){this.headDetails=t,this.bodyElement=e}return t.wrap=function(t){return t instanceof this?t:"string"==typeof t?this.fromHTMLString(t):this.fromHTMLElement(t)},t.fromHTMLString=function(t){var e;return e=document.createElement("html"),e.innerHTML=t,this.fromHTMLElement(e)},t.fromHTMLElement=function(t){var r,n,o,i;return o=t.querySelector("head"),r=null!=(i=t.querySelector("body"))?i:document.createElement("body"),n=e.HeadDetails.fromHeadElement(o),new this(n,r)},t.prototype.clone=function(){return new this.constructor(this.headDetails,this.bodyElement.cloneNode(!0))},t.prototype.getRootLocation=function(){var t,r;return r=null!=(t=this.getSetting("root"))?t:"/",new e.Location(r)},t.prototype.getCacheControlValue=function(){return this.getSetting("cache-control")},t.prototype.getElementForAnchor=function(t){try{return this.bodyElement.querySelector("[id='"+t+"'], a[name='"+t+"']")}catch(e){}},t.prototype.getPermanentElements=function(){return this.bodyElement.querySelectorAll("[id][data-turbolinks-permanent]")},t.prototype.getPermanentElementById=function(t){return this.bodyElement.querySelector("#"+t+"[data-turbolinks-permanent]")},t.prototype.getPermanentElementsPresentInSnapshot=function(t){var e,r,n,o,i;for(o=this.getPermanentElements(),i=[],r=0,n=o.length;n>r;r++)e=o[r],t.getPermanentElementById(e.id)&&i.push(e);return i},t.prototype.findFirstAutofocusableElement=function(){return this.bodyElement.querySelector("[autofocus]")},t.prototype.hasAnchor=function(t){return null!=this.getElementForAnchor(t)},t.prototype.isPreviewable=function(){return"no-preview"!==this.getCacheControlValue()},t.prototype.isCacheable=function(){return"no-cache"!==this.getCacheControlValue()},t.prototype.isVisitable=function(){return"reload"!==this.getSetting("visit-control")},t.prototype.getSetting=function(t){return this.headDetails.getMetaValue("turbolinks-"+t)},t}()}.call(this),function(){var t=[].slice;e.Renderer=function(){function e(){}var r;return e.render=function(){var e,r,n,o;return n=arguments[0],r=arguments[1],e=3<=arguments.length?t.call(arguments,2):[],o=function(t,e,r){r.prototype=t.prototype;var n=new r,o=t.apply(n,e);return Object(o)===o?o:n}(this,e,function(){}),o.delegate=n,o.render(r),o},e.prototype.renderView=function(t){return this.delegate.viewWillRender(this.newBody),t(),this.delegate.viewRendered(this.newBody)},e.prototype.invalidateView=function(){return this.delegate.viewInvalidated()},e.prototype.createScriptElement=function(t){var e;return"false"===t.getAttribute("data-turbolinks-eval")?t:(e=document.createElement("script"),e.textContent=t.textContent,e.async=!1,r(e,t),e)},r=function(t,e){var r,n,o,i,s,a,u;for(i=e.attributes,a=[],r=0,n=i.length;n>r;r++)s=i[r],o=s.name,u=s.value,a.push(t.setAttribute(o,u));return a},e}()}.call(this),function(){var t,r,n=function(t,e){function r(){this.constructor=t}for(var n in e)o.call(e,n)&&(t[n]=e[n]);return r.prototype=e.prototype,t.prototype=new r,t.__super__=e.prototype,t},o={}.hasOwnProperty;e.SnapshotRenderer=function(e){function o(t,e,r){this.currentSnapshot=t,this.newSnapshot=e,this.isPreview=r,this.currentHeadDetails=this.currentSnapshot.headDetails,this.newHeadDetails=this.newSnapshot.headDetails,this.currentBody=this.currentSnapshot.bodyElement,this.newBody=this.newSnapshot.bodyElement}return n(o,e),o.prototype.render=function(t){return this.shouldRender()?(this.mergeHead(),this.renderView(function(e){return function(){return e.replaceBody(),e.isPreview||e.focusFirstAutofocusableElement(),t()}}(this))):this.invalidateView()},o.prototype.mergeHead=function(){return this.copyNewHeadStylesheetElements(),this.copyNewHeadScriptElements(),this.removeCurrentHeadProvisionalElements(),this.copyNewHeadProvisionalElements()},o.prototype.replaceBody=function(){var t;return t=this.relocateCurrentBodyPermanentElements(),this.activateNewBodyScriptElements(),this.assignNewBody(),this.replacePlaceholderElementsWithClonedPermanentElements(t)},o.prototype.shouldRender=function(){return this.newSnapshot.isVisitable()&&this.trackedElementsAreIdentical()},o.prototype.trackedElementsAreIdentical=function(){return this.currentHeadDetails.getTrackedElementSignature()===this.newHeadDetails.getTrackedElementSignature()},o.prototype.copyNewHeadStylesheetElements=function(){var t,e,r,n,o;for(n=this.getNewHeadStylesheetElements(),o=[],e=0,r=n.length;r>e;e++)t=n[e],o.push(document.head.appendChild(t));return o},o.prototype.copyNewHeadScriptElements=function(){var t,e,r,n,o;for(n=this.getNewHeadScriptElements(),o=[],e=0,r=n.length;r>e;e++)t=n[e],o.push(document.head.appendChild(this.createScriptElement(t)));return o},o.prototype.removeCurrentHeadProvisionalElements=function(){var t,e,r,n,o;for(n=this.getCurrentHeadProvisionalElements(),o=[],e=0,r=n.length;r>e;e++)t=n[e],o.push(document.head.removeChild(t));return o},o.prototype.copyNewHeadProvisionalElements=function(){var t,e,r,n,o;for(n=this.getNewHeadProvisionalElements(),o=[],e=0,r=n.length;r>e;e++)t=n[e],o.push(document.head.appendChild(t));return o},o.prototype.relocateCurrentBodyPermanentElements=function(){var e,n,o,i,s,a,u;for(a=this.getCurrentBodyPermanentElements(),u=[],e=0,n=a.length;n>e;e++)i=a[e],s=t(i),o=this.newSnapshot.getPermanentElementById(i.id),r(i,s.element),r(o,i),u.push(s);return u},o.prototype.replacePlaceholderElementsWithClonedPermanentElements=function(t){var e,n,o,i,s,a,u;for(u=[],o=0,i=t.length;i>o;o++)a=t[o],n=a.element,s=a.permanentElement,e=s.cloneNode(!0),u.push(r(n,e));return u},o.prototype.activateNewBodyScriptElements=function(){var t,e,n,o,i,s;for(i=this.getNewBodyScriptElements(),s=[],e=0,o=i.length;o>e;e++)n=i[e],t=this.createScriptElement(n),s.push(r(n,t));return s},o.prototype.assignNewBody=function(){return document.body=this.newBody},o.prototype.focusFirstAutofocusableElement=function(){var t;return null!=(t=this.newSnapshot.findFirstAutofocusableElement())?t.focus():void 0},o.prototype.getNewHeadStylesheetElements=function(){return this.newHeadDetails.getStylesheetElementsNotInDetails(this.currentHeadDetails)},o.prototype.getNewHeadScriptElements=function(){return this.newHeadDetails.getScriptElementsNotInDetails(this.currentHeadDetails)},o.prototype.getCurrentHeadProvisionalElements=function(){return this.currentHeadDetails.getProvisionalElements()},o.prototype.getNewHeadProvisionalElements=function(){return this.newHeadDetails.getProvisionalElements()},o.prototype.getCurrentBodyPermanentElements=function(){return this.currentSnapshot.getPermanentElementsPresentInSnapshot(this.newSnapshot)},o.prototype.getNewBodyScriptElements=function(){return this.newBody.querySelectorAll("script")},o}(e.Renderer),t=function(t){var e;return e=document.createElement("meta"),e.setAttribute("name","turbolinks-permanent-placeholder"),e.setAttribute("content",t.id),{element:e,permanentElement:t}},r=function(t,e){var r;return(r=t.parentNode)?r.replaceChild(e,t):void 0}}.call(this),function(){var t=function(t,e){function n(){this.constructor=t}for(var o in e)r.call(e,o)&&(t[o]=e[o]);return n.prototype=e.prototype,t.prototype=new n,t.__super__=e.prototype,t},r={}.hasOwnProperty;e.ErrorRenderer=function(e){function r(t){var e;e=document.createElement("html"),e.innerHTML=t,this.newHead=e.querySelector("head"),this.newBody=e.querySelector("body")}return t(r,e),r.prototype.render=function(t){return this.renderView(function(e){return function(){return e.replaceHeadAndBody(),e.activateBodyScriptElements(),t()}}(this))},r.prototype.replaceHeadAndBody=function(){var t,e;return e=document.head,t=document.body,e.parentNode.replaceChild(this.newHead,e),t.parentNode.replaceChild(this.newBody,t)},r.prototype.activateBodyScriptElements=function(){var t,e,r,n,o,i;for(n=this.getScriptElements(),i=[],e=0,r=n.length;r>e;e++)o=n[e],t=this.createScriptElement(o),i.push(o.parentNode.replaceChild(t,o));return i},r.prototype.getScriptElements=function(){return document.documentElement.querySelectorAll("script")},r}(e.Renderer)}.call(this),function(){e.View=function(){function t(t){this.delegate=t,this.htmlElement=document.documentElement}return t.prototype.getRootLocation=function(){return this.getSnapshot().getRootLocation()},t.prototype.getElementForAnchor=function(t){return this.getSnapshot().getElementForAnchor(t)},t.prototype.getSnapshot=function(){return e.Snapshot.fromHTMLElement(this.htmlElement)},t.prototype.render=function(t,e){var r,n,o;return o=t.snapshot,r=t.error,n=t.isPreview,this.markAsPreview(n),null!=o?this.renderSnapshot(o,n,e):this.renderError(r,e)},t.prototype.markAsPreview=function(t){return t?this.htmlElement.setAttribute("data-turbolinks-preview",""):this.htmlElement.removeAttribute("data-turbolinks-preview")},t.prototype.renderSnapshot=function(t,r,n){return e.SnapshotRenderer.render(this.delegate,n,this.getSnapshot(),e.Snapshot.wrap(t),r)},t.prototype.renderError=function(t,r){return e.ErrorRenderer.render(this.delegate,r,t)},t}()}.call(this),function(){var t=function(t,e){return function(){return t.apply(e,arguments)}};e.ScrollManager=function(){function r(r){this.delegate=r,this.onScroll=t(this.onScroll,this),this.onScroll=e.throttle(this.onScroll)}return r.prototype.start=function(){return this.started?void 0:(addEventListener("scroll",this.onScroll,!1),this.onScroll(),this.started=!0)},r.prototype.stop=function(){return this.started?(removeEventListener("scroll",this.onScroll,!1),this.started=!1):void 0},r.prototype.scrollToElement=function(t){return t.scrollIntoView()},r.prototype.scrollToPosition=function(t){var e,r;return e=t.x,r=t.y,window.scrollTo(e,r)},r.prototype.onScroll=function(t){return this.updatePosition({x:window.pageXOffset,y:window.pageYOffset})},r.prototype.updatePosition=function(t){var e;return this.position=t,null!=(e=this.delegate)?e.scrollPositionChanged(this.position):void 0},r}()}.call(this),function(){e.SnapshotCache=function(){function t(t){this.size=t,this.keys=[],this.snapshots={}}var r;return t.prototype.has=function(t){var e;return e=r(t),e in this.snapshots},t.prototype.get=function(t){var e;if(this.has(t))return e=this.read(t),this.touch(t),e},t.prototype.put=function(t,e){return this.write(t,e),this.touch(t),e},t.prototype.read=function(t){var e;return e=r(t),this.snapshots[e]},t.prototype.write=function(t,e){var n;return n=r(t),this.snapshots[n]=e},t.prototype.touch=function(t){var e,n;return n=r(t),e=this.keys.indexOf(n),e>-1&&this.keys.splice(e,1),this.keys.unshift(n),this.trim()},t.prototype.trim=function(){var t,e,r,n,o;for(n=this.keys.splice(this.size),o=[],t=0,r=n.length;r>t;t++)e=n[t],o.push(delete this.snapshots[e]);return o},r=function(t){return e.Location.wrap(t).toCacheKey()},t}()}.call(this),function(){var t=function(t,e){return function(){return t.apply(e,arguments)}};e.Visit=function(){function r(r,n,o){this.controller=r,this.action=o,this.performScroll=t(this.performScroll,this),this.identifier=e.uuid(),this.location=e.Location.wrap(n),this.adapter=this.controller.adapter,this.state="initialized",this.timingMetrics={}}var n;return r.prototype.start=function(){return"initialized"===this.state?(this.recordTimingMetric("visitStart"),this.state="started",this.adapter.visitStarted(this)):void 0},r.prototype.cancel=function(){var t;return"started"===this.state?(null!=(t=this.request)&&t.cancel(),this.cancelRender(),this.state="canceled"):void 0},r.prototype.complete=function(){var t;return"started"===this.state?(this.recordTimingMetric("visitEnd"),this.state="completed","function"==typeof(t=this.adapter).visitCompleted&&t.visitCompleted(this),this.controller.visitCompleted(this)):void 0},r.prototype.fail=function(){var t;return"started"===this.state?(this.state="failed","function"==typeof(t=this.adapter).visitFailed?t.visitFailed(this):void 0):void 0},r.prototype.changeHistory=function(){var t,e;return this.historyChanged?void 0:(t=this.location.isEqualTo(this.referrer)?"replace":this.action,e=n(t),this.controller[e](this.location,this.restorationIdentifier),this.historyChanged=!0)},r.prototype.issueRequest=function(){return this.shouldIssueRequest()&&null==this.request?(this.progress=0,this.request=new e.HttpRequest(this,this.location,this.referrer),this.request.send()):void 0},r.prototype.getCachedSnapshot=function(){var t;return!(t=this.controller.getCachedSnapshotForLocation(this.location))||null!=this.location.anchor&&!t.hasAnchor(this.location.anchor)||"restore"!==this.action&&!t.isPreviewable()?void 0:t},r.prototype.hasCachedSnapshot=function(){return null!=this.getCachedSnapshot()},r.prototype.loadCachedSnapshot=function(){var t,e;return(e=this.getCachedSnapshot())?(t=this.shouldIssueRequest(),this.render(function(){var r;return this.cacheSnapshot(),this.controller.render({snapshot:e,isPreview:t},this.performScroll),"function"==typeof(r=this.adapter).visitRendered&&r.visitRendered(this),t?void 0:this.complete()})):void 0},r.prototype.loadResponse=function(){return null!=this.response?this.render(function(){var t,e;return this.cacheSnapshot(),this.request.failed?(this.controller.render({error:this.response},this.performScroll),"function"==typeof(t=this.adapter).visitRendered&&t.visitRendered(this),this.fail()):(this.controller.render({snapshot:this.response},this.performScroll),"function"==typeof(e=this.adapter).visitRendered&&e.visitRendered(this),this.complete())}):void 0},r.prototype.followRedirect=function(){return this.redirectedToLocation&&!this.followedRedirect?(this.location=this.redirectedToLocation,this.controller.replaceHistoryWithLocationAndRestorationIdentifier(this.redirectedToLocation,this.restorationIdentifier),this.followedRedirect=!0):void 0},r.prototype.requestStarted=function(){var t;return this.recordTimingMetric("requestStart"),"function"==typeof(t=this.adapter).visitRequestStarted?t.visitRequestStarted(this):void 0},r.prototype.requestProgressed=function(t){var e;return this.progress=t,"function"==typeof(e=this.adapter).visitRequestProgressed?e.visitRequestProgressed(this):void 0},r.prototype.requestCompletedWithResponse=function(t,r){return this.response=t,null!=r&&(this.redirectedToLocation=e.Location.wrap(r)),this.adapter.visitRequestCompleted(this)},r.prototype.requestFailedWithStatusCode=function(t,e){return this.response=e,this.adapter.visitRequestFailedWithStatusCode(this,t)},r.prototype.requestFinished=function(){var t;return this.recordTimingMetric("requestEnd"),"function"==typeof(t=this.adapter).visitRequestFinished?t.visitRequestFinished(this):void 0},r.prototype.performScroll=function(){return this.scrolled?void 0:("restore"===this.action?this.scrollToRestoredPosition()||this.scrollToTop():this.scrollToAnchor()||this.scrollToTop(),this.scrolled=!0)},r.prototype.scrollToRestoredPosition=function(){var t,e;return t=null!=(e=this.restorationData)?e.scrollPosition:void 0,null!=t?(this.controller.scrollToPosition(t),!0):void 0},r.prototype.scrollToAnchor=function(){return null!=this.location.anchor?(this.controller.scrollToAnchor(this.location.anchor),!0):void 0},r.prototype.scrollToTop=function(){return this.controller.scrollToPosition({x:0,y:0})},r.prototype.recordTimingMetric=function(t){var e;return null!=(e=this.timingMetrics)[t]?e[t]:e[t]=(new Date).getTime()},r.prototype.getTimingMetrics=function(){return e.copyObject(this.timingMetrics)},n=function(t){switch(t){case"replace":return"replaceHistoryWithLocationAndRestorationIdentifier";case"advance":case"restore":return"pushHistoryWithLocationAndRestorationIdentifier"}},r.prototype.shouldIssueRequest=function(){return"restore"===this.action?!this.hasCachedSnapshot():!0},r.prototype.cacheSnapshot=function(){return this.snapshotCached?void 0:(this.controller.cacheSnapshot(),this.snapshotCached=!0)},r.prototype.render=function(t){return this.cancelRender(),this.frame=requestAnimationFrame(function(e){return function(){return e.frame=null,t.call(e)}}(this))},r.prototype.cancelRender=function(){return this.frame?cancelAnimationFrame(this.frame):void 0},r}()}.call(this),function(){var t=function(t,e){return function(){return t.apply(e,arguments)}};e.Controller=function(){function r(){this.clickBubbled=t(this.clickBubbled,this),this.clickCaptured=t(this.clickCaptured,this),this.pageLoaded=t(this.pageLoaded,this),this.history=new e.History(this),this.view=new e.View(this),this.scrollManager=new e.ScrollManager(this),this.restorationData={},this.clearCache(),this.setProgressBarDelay(500)}return r.prototype.start=function(){return e.supported&&!this.started?(addEventListener("click",this.clickCaptured,!0),addEventListener("DOMContentLoaded",this.pageLoaded,!1),this.scrollManager.start(),this.startHistory(),this.started=!0,this.enabled=!0):void 0},r.prototype.disable=function(){return this.enabled=!1},r.prototype.stop=function(){return this.started?(removeEventListener("click",this.clickCaptured,!0),removeEventListener("DOMContentLoaded",this.pageLoaded,!1),this.scrollManager.stop(),this.stopHistory(),this.started=!1):void 0},r.prototype.clearCache=function(){return this.cache=new e.SnapshotCache(10)},r.prototype.visit=function(t,r){var n,o;return null==r&&(r={}),t=e.Location.wrap(t),this.applicationAllowsVisitingLocation(t)?this.locationIsVisitable(t)?(n=null!=(o=r.action)?o:"advance",this.adapter.visitProposedToLocationWithAction(t,n)):window.location=t:void 0},r.prototype.startVisitToLocationWithAction=function(t,r,n){var o;return e.supported?(o=this.getRestorationDataForIdentifier(n),this.startVisit(t,r,{restorationData:o})):window.location=t},r.prototype.setProgressBarDelay=function(t){return this.progressBarDelay=t},r.prototype.startHistory=function(){return this.location=e.Location.wrap(window.location),this.restorationIdentifier=e.uuid(),this.history.start(),this.history.replace(this.location,this.restorationIdentifier)},r.prototype.stopHistory=function(){return this.history.stop()},r.prototype.pushHistoryWithLocationAndRestorationIdentifier=function(t,r){return this.restorationIdentifier=r,this.location=e.Location.wrap(t),this.history.push(this.location,this.restorationIdentifier)},r.prototype.replaceHistoryWithLocationAndRestorationIdentifier=function(t,r){return this.restorationIdentifier=r,this.location=e.Location.wrap(t),this.history.replace(this.location,this.restorationIdentifier)},r.prototype.historyPoppedToLocationWithRestorationIdentifier=function(t,r){var n;return this.restorationIdentifier=r,this.enabled?(n=this.getRestorationDataForIdentifier(this.restorationIdentifier),this.startVisit(t,"restore",{restorationIdentifier:this.restorationIdentifier,restorationData:n,historyChanged:!0}),this.location=e.Location.wrap(t)):this.adapter.pageInvalidated()},r.prototype.getCachedSnapshotForLocation=function(t){var e;return null!=(e=this.cache.get(t))?e.clone():void 0},r.prototype.shouldCacheSnapshot=function(){return this.view.getSnapshot().isCacheable();
+},r.prototype.cacheSnapshot=function(){var t,r;return this.shouldCacheSnapshot()?(this.notifyApplicationBeforeCachingSnapshot(),r=this.view.getSnapshot(),t=this.lastRenderedLocation,e.defer(function(e){return function(){return e.cache.put(t,r.clone())}}(this))):void 0},r.prototype.scrollToAnchor=function(t){var e;return(e=this.view.getElementForAnchor(t))?this.scrollToElement(e):this.scrollToPosition({x:0,y:0})},r.prototype.scrollToElement=function(t){return this.scrollManager.scrollToElement(t)},r.prototype.scrollToPosition=function(t){return this.scrollManager.scrollToPosition(t)},r.prototype.scrollPositionChanged=function(t){var e;return e=this.getCurrentRestorationData(),e.scrollPosition=t},r.prototype.render=function(t,e){return this.view.render(t,e)},r.prototype.viewInvalidated=function(){return this.adapter.pageInvalidated()},r.prototype.viewWillRender=function(t){return this.notifyApplicationBeforeRender(t)},r.prototype.viewRendered=function(){return this.lastRenderedLocation=this.currentVisit.location,this.notifyApplicationAfterRender()},r.prototype.pageLoaded=function(){return this.lastRenderedLocation=this.location,this.notifyApplicationAfterPageLoad()},r.prototype.clickCaptured=function(){return removeEventListener("click",this.clickBubbled,!1),addEventListener("click",this.clickBubbled,!1)},r.prototype.clickBubbled=function(t){var e,r,n;return this.enabled&&this.clickEventIsSignificant(t)&&(r=this.getVisitableLinkForNode(t.target))&&(n=this.getVisitableLocationForLink(r))&&this.applicationAllowsFollowingLinkToLocation(r,n)?(t.preventDefault(),e=this.getActionForLink(r),this.visit(n,{action:e})):void 0},r.prototype.applicationAllowsFollowingLinkToLocation=function(t,e){var r;return r=this.notifyApplicationAfterClickingLinkToLocation(t,e),!r.defaultPrevented},r.prototype.applicationAllowsVisitingLocation=function(t){var e;return e=this.notifyApplicationBeforeVisitingLocation(t),!e.defaultPrevented},r.prototype.notifyApplicationAfterClickingLinkToLocation=function(t,r){return e.dispatch("turbolinks:click",{target:t,data:{url:r.absoluteURL},cancelable:!0})},r.prototype.notifyApplicationBeforeVisitingLocation=function(t){return e.dispatch("turbolinks:before-visit",{data:{url:t.absoluteURL},cancelable:!0})},r.prototype.notifyApplicationAfterVisitingLocation=function(t){return e.dispatch("turbolinks:visit",{data:{url:t.absoluteURL}})},r.prototype.notifyApplicationBeforeCachingSnapshot=function(){return e.dispatch("turbolinks:before-cache")},r.prototype.notifyApplicationBeforeRender=function(t){return e.dispatch("turbolinks:before-render",{data:{newBody:t}})},r.prototype.notifyApplicationAfterRender=function(){return e.dispatch("turbolinks:render")},r.prototype.notifyApplicationAfterPageLoad=function(t){return null==t&&(t={}),e.dispatch("turbolinks:load",{data:{url:this.location.absoluteURL,timing:t}})},r.prototype.startVisit=function(t,e,r){var n;return null!=(n=this.currentVisit)&&n.cancel(),this.currentVisit=this.createVisit(t,e,r),this.currentVisit.start(),this.notifyApplicationAfterVisitingLocation(t)},r.prototype.createVisit=function(t,r,n){var o,i,s,a,u;return i=null!=n?n:{},a=i.restorationIdentifier,s=i.restorationData,o=i.historyChanged,u=new e.Visit(this,t,r),u.restorationIdentifier=null!=a?a:e.uuid(),u.restorationData=e.copyObject(s),u.historyChanged=o,u.referrer=this.location,u},r.prototype.visitCompleted=function(t){return this.notifyApplicationAfterPageLoad(t.getTimingMetrics())},r.prototype.clickEventIsSignificant=function(t){return!(t.defaultPrevented||t.target.isContentEditable||t.which>1||t.altKey||t.ctrlKey||t.metaKey||t.shiftKey)},r.prototype.getVisitableLinkForNode=function(t){return this.nodeIsVisitable(t)?e.closest(t,"a[href]:not([target]):not([download])"):void 0},r.prototype.getVisitableLocationForLink=function(t){var r;return r=new e.Location(t.getAttribute("href")),this.locationIsVisitable(r)?r:void 0},r.prototype.getActionForLink=function(t){var e;return null!=(e=t.getAttribute("data-turbolinks-action"))?e:"advance"},r.prototype.nodeIsVisitable=function(t){var r;return(r=e.closest(t,"[data-turbolinks]"))?"false"!==r.getAttribute("data-turbolinks"):!0},r.prototype.locationIsVisitable=function(t){return t.isPrefixedBy(this.view.getRootLocation())&&t.isHTML()},r.prototype.getCurrentRestorationData=function(){return this.getRestorationDataForIdentifier(this.restorationIdentifier)},r.prototype.getRestorationDataForIdentifier=function(t){var e;return null!=(e=this.restorationData)[t]?e[t]:e[t]={}},r}()}.call(this),function(){!function(){var t,e;if((t=e=document.currentScript)&&!e.hasAttribute("data-turbolinks-suppress-warning"))for(;t=t.parentNode;)if(t===document.body)return console.warn("You are loading Turbolinks from a <script> element inside the <body> element. This is probably not what you meant to do!\n\nLoad your application\u2019s JavaScript bundle inside the <head> element instead. <script> elements in <body> are evaluated with each page change.\n\nFor more information, see: https://github.com/turbolinks/turbolinks#working-with-script-elements\n\n\u2014\u2014\nSuppress this warning by adding a `data-turbolinks-suppress-warning` attribute to: %s",e.outerHTML)}()}.call(this),function(){var t,r,n;e.start=function(){return r()?(null==e.controller&&(e.controller=t()),e.controller.start()):void 0},r=function(){return null==window.Turbolinks&&(window.Turbolinks=e),n()},t=function(){var t;return t=new e.Controller,t.adapter=new e.BrowserAdapter(t),t},n=function(){return window.Turbolinks===e},n()&&e.start()}.call(this)}).call(this),"object"==typeof module&&module.exports?module.exports=e:"function"==typeof define&&define.amd&&define(e)}).call(this);
+$(document).on('turbolinks:load', function() {
     $("#amount_calculation").on('click', function (){
       var num = $("#amount_number_input").val();
       var ninmae = kanma(num)
@@ -16793,7 +17003,7 @@ $(function(){
         });
       });
 });
-$(function(){
+$(document).on('turbolinks:load', function() {
   $('.input_select_food_additive').select2({
   width:"200px"
   });
@@ -16913,12 +17123,13 @@ $(function(){
   };
 });
 
-$(function(){
+$(document).on('turbolinks:load', function() {
   calculate_menu_price();
   reset_row_order();
   calculate_menu_nutrition();
 
-  $(".select2").select2()
+  $(".select_used_additives").select2();
+  $(".all_select_menu").select2();
 
   $(".input_select_material").select2({
     ajax: {
@@ -16953,12 +17164,10 @@ $(function(){
     }
   });
 
-  $('.add_fields').on('click',function(){
+  $('.add_material_fields').on('click',function(){
     setTimeout(function(){
-      $(".select2").select2('destroy');
       $(".input_select_material").select2('destroy');
       $(".input_food_ingredient").select2('destroy');
-      $(".select2").select2();
       reset_row_order();
       $(".input_select_material").select2({
         ajax: {
@@ -17024,25 +17233,10 @@ $(function(){
     $('.eos-alert').hide();
     $('body').css('padding-top',0);
     var u = $(".add_li_material").index($(this).parents('.add_li_material'));
-     $(".add_li_material").eq(u).find(".input_food_ingredient").val("").select2('destroy');
-     $(".add_li_material").eq(u).find(".input_food_ingredient").select2({
-       ajax: {
-         url:'/menus/food_ingredient_search.json',
-         dataType: 'json',
-         delay: 50,
-         data: function(params) {
-           return {　q: params.term　};
-         },
-         processResults: function (data, params) {
-           return { results: $.map(data, function(obj) {
-               return { id: obj.id, text: obj.name };
-             })
-           };
-         }
-       }
-     });
-     $(".add_li_material").eq(u).find(".input_nutritions input").val(0);
-     $(".menu_materials_li").eq(u).find('.view_food_ingredient').text("");
+    $(".add_li_material").eq(u).find(".amount_used_input").val("");
+    $(".menu_materials_li").eq(u).find('.input_gram_quantity').val("");
+    $(".add_li_material").eq(u).find(".input_nutritions input").val(0);
+    $(".menu_materials_li").eq(u).find('.view_food_ingredient').text("");
     var id = $(this).val();
     if (isNaN(id) == true) {} else{
       $.ajax({
@@ -17074,7 +17268,9 @@ $(function(){
       var id = $(".add_li_material").eq(u).find(".input_food_ingredient").val();
       if (unit=='g'||unit=='ml') {
         $(this).parent(".add_li_material").find(".input_gram_quantity").val(amount_used);
-        input_menu_materials_nutrition(id,amount_used,u)
+        if (id) {
+          input_menu_materials_nutrition(id,amount_used,u)
+        }
       }else{
         $(this).parent(".add_li_material").find(".input_gram_quantity").val("");
       }
@@ -17120,26 +17316,28 @@ $(function(){
   $('#menu_submit_btn').click(function(){
     var i = 0
     if(!confirm('更新するとお弁当全てに反映されますが、よろしいですか？')){
-        /* キャンセルの時の処理 */
-        return false;
+      /* キャンセルの時の処理 */
+      return false;
     }else{
-        /*　OKの時の処理 */
-        $(".add_li_material").each(function(){
+      /*　OKの時の処理 */
+      $(".add_li_material").each(function(){
+        if ($(this).find('.remove_material').children().val()=='false') {
           if ($(this).children(".preparation").children().val()=="" && $(this).children(".select_post").children().val()==""){
           }else if($(this).children(".preparation").children().val().length > 0  && $(this).children(".select_post").children().val().length > 0){
           }else{
             i += 1
           };
-        });
-        if (i==0) {
-          $('form').submit();
-        }else{
-          alert("仕込みが埋まっていないものがあります。")
-        };
+        }else{};
+      });
+      if (i==0) {
+        $('form').submit();
+      }else{
+        alert("仕込みが埋まっていないものがあります。")
+      };
     };
   });
 
-  $('.input_food_ingredient').on('change',function(){
+  $('.material_ul').on('change','.input_food_ingredient',function(){
     var id = $(this).val();
     var gram_amount = $(this).parents('li').find('.input_gram_quantity').val();
     var index = $('.menu_materials_li').index($(this).parents('.menu_materials_li'));
@@ -17156,6 +17354,8 @@ $(function(){
       input_menu_materials_nutrition(id,gram_amount,index)
     }
   });
+
+
 
 
   function input_menu_materials_nutrition(id,gram_amount,index){
@@ -17201,16 +17401,8 @@ $(function(){
       dietary_fiber = Number(obj['dietary_fiber']) + Number($(this).find(".input_dietary_fiber").val());
       potassium = Number(obj['potassium']) + Number($(this).find(".input_potassium").val());
       calcium = Number(obj['calcium']) + Number($(this).find(".input_calcium").val());
-      // vitamin_b1 = Number(obj['vitamin_b1']) + Number($(this).find(".input_vitamin_b1").val());
-      // vitamin_b2 = Number(obj['vitamin_b2']) + Number($(this).find(".input_vitamin_b2").val());
       vitamin_c = Number(obj['vitamin_c']) + Number($(this).find(".input_vitamin_c").val());
       salt = Number(obj['salt']) + Number($(this).find(".input_salt").val());
-      // magnesium = Number(obj['magnesium']) + Number($(this).find(".input_magnesium").val());
-      // iron = Number(obj['iron']) + Number($(this).find(".input_iron").val());
-      // zinc = Number(obj['zinc']) + Number($(this).find(".input_zinc").val());
-      // copper = Number(obj['copper']) + Number($(this).find(".input_copper").val());
-      // folic_acid = Number(obj['folic_acid']) + Number($(this).find(".input_folic_acid").val());
-      // vitamin_d = Number(obj['vitamin_d']) + Number($(this).find(".input_vitamin_d").val());
 
       obj = {calorie:calorie,protein:protein,lipid:lipid,carbohydrate:carbohydrate,dietary_fiber:dietary_fiber,
         potassium:potassium,calcium:calcium,vitamin_c:vitamin_c,salt:salt};
@@ -17222,16 +17414,8 @@ $(function(){
     $(".menu_dietary_fiber").text(Math.round(obj['dietary_fiber']*100)/100);
     $(".menu_potassium").text(Math.round(obj['potassium']*100)/100);
     $(".menu_calcium").text(Math.round(obj['calcium']*100)/100);
-    // $(".menu_vitamin_b1").text(Math.round(obj['vitamin_b1']*100)/100);
     $(".menu_vitamin_c").text(Math.round(obj['vitamin_c']*100)/100);
     $(".menu_salt").text(Math.round(obj['salt']*100)/100);
-    // $(".menu_magnesium").text(Math.round(obj['magnesium']*100)/100);
-    // $(".menu_iron").text(Math.round(obj['iron']*100)/100);
-    // $(".menu_zinc").text(Math.round(obj['zinc']*100)/100);
-    // $(".menu_copper").text(Math.round(obj['copper']*100)/100);
-    // $(".menu_folic_acid").text(Math.round(obj['folic_acid']*100)/100);
-    // $(".menu_vitamin_d").text(Math.round(obj['vitamin_d']*100)/100);
-
   };
 
 
@@ -17331,7 +17515,17 @@ $(function(){
     });
   }
 });
-$(function(){
+$(document).on("turbolinks:before-cache", function() {
+  if ($(".select_order_materials").length) {
+    $('.select_order_materials').select2('destroy');
+  }
+  if ($(".input_order_code").length) {
+    $('.input_order_code').select2('destroy');
+  }
+});
+
+
+$(document).on('turbolinks:load', function() {
   first_input_check()
   $('.input_select_product').select2({
     width:"300px",
@@ -17341,8 +17535,14 @@ $(function(){
     placeholder: "発注する食材を選択"
   });
   $('.input_order_code').select2({
-    width:"120px",
   });
+
+
+  $("#all_make_date_change").on("change", function(){
+    var date = $(this).val()
+    $(".input_make_date").val(date)
+  });
+
 
   $(".order_bento_id_search").on("blur",function(){
     var bento_id =  parseInt($(this).val());
@@ -17481,13 +17681,6 @@ $(function(){
   	}
   });
 
-
-  //addアクション、materialの追加
-  $(".add_order_materials").on('click', function(){
-    add_tr();
-    input_check();
-  });
-
   $(".orders_all").on('change','.order_quantity', function(){
     input_check()
   });
@@ -17508,13 +17701,22 @@ $(function(){
     .done(function(data){
       var unit = data.material.calculated_unit;
       var vendor = data.material.vendor_company_name;
+      var color = data.material.color;
       var calculated_value = data.material.calculated_value;
       var order_unit = data.material.order_unit;
       var order_unit_quantity = data.material.order_unit_quantity;
+      var delivery_deadline = data.material.delivery_deadline
       var change_unit = order_unit_quantity+order_unit+"："+ calculated_value+" "+unit
-      $(".order_materials_tr").eq(u).find(".vendor_company_name").text(vendor);
-      $(".order_materials_tr").eq(u).find(".order_material_unit").text(order_unit);
+      if (color=='') {
+        $(".order_materials_tr").eq(u).find(".vendor_company_name").text(vendor).css("color",'color:#A9A9A9;').css("font-weight",'normal');
+      }else{
+        $(".order_materials_tr").eq(u).find(".vendor_company_name").text(vendor).css("color",'red').css("font-weight",'bold');
+      }
+      console.log(delivery_deadline);
+      $(".order_materials_tr").eq(u).find(".delivery_deadline_span").val(delivery_deadline);
+      $(".order_materials_tr").eq(u).find(".order_material_unit").val(order_unit);
       $(".order_materials_tr").eq(u).find(".change_unit").text(change_unit);
+
     });
   }});
   //送信前のバリデーション
@@ -17540,15 +17742,25 @@ $(function(){
       }
     });
 
-    $(".add_order_materials").keypress(function (e) {
-      add_tr();
-      var code = e.which ? e.which : e.keyCode;
-      if (code == 13) {
-      var last_tr =$(".order_materials_tr").last()
-      last_tr.find(".select_order_materials").select2('open');
-      e.preventDefault();
-      }
+    // $(".add_fields").keypress(function (e) {
+    //   var code = e.which ? e.which : e.keyCode;
+    //   if (code == 13) {
+    //   var last_tr =$(".order_materials_tr").last()
+    //   last_tr.find(".select_order_materials").select2('open');
+    //   e.preventDefault();
+    //   }
+    // });
+
+    $('.add_order_material').on('click',function(){
+      setTimeout(function(){
+        $('.input_order_code:last').select2();
+        $('.select_order_materials:last').select2({
+          placeholder: "発注する食材を選択"
+        });
+      },5);
+      change_color();
     });
+
     //オーダーコードでの検索
     $(".orders_all").on('change','.input_order_code', function(){
       var id =  parseInt($(this).val());
@@ -17561,11 +17773,6 @@ $(function(){
         if ($(this).is(':visible')){$(this).find(".input_delivery_date").val(date)}
       });
       change_color();
-    });
-
-    $("#all_make_date_change").on("change", function(){
-      var date = $(this).val()
-      $(".input_make_date").val(date)
     });
 
     $(".orders_all").on("change",".input_delivery_date",function(){
@@ -17621,47 +17828,12 @@ $(function(){
         $(this).css('background-color', '#FFFFFF');
     }});
   };
-
-  function add_tr(){
-    $(".vendor_select").val("").change();
-    var u = $(".order_materials_tr").length;
-    $(".select_order_materials").select2('destroy');
-    $(".input_order_code").select2('destroy');
-    $("tr.order_materials_tr").first().clone().appendTo("tbody");
-    var last_tr =$(".order_materials_tr").last()
-    last_tr.find(".select_order_materials").val("");
-    last_tr.children(".order_material_name").children("select").attr('name', "order[order_materials_attributes]["+ u +"][material_id]" );
-    last_tr.children(".order_material_name").children("select").attr('id', "order_order_materials_attributes_"+ u +"_material_id" );
-    last_tr.find(".order_quantity").attr('name', "order[order_materials_attributes]["+ u +"][order_quantity]" );
-    last_tr.find(".order_quantity").attr('id', "order_order_materials_attributes_"+ u +"_order_quantity" );
-    last_tr.find(".calculated_value").attr('name', "order[order_materials_attributes]["+ u +"][calculated_quantity]" );
-    last_tr.find(".calculated_value").attr('id', "order_order_materials_attributes_"+ u +"_calculated_quantity" );
-    last_tr.children(".destroy_order_material").children().attr("name","order[order_materials_attributes]["+u+"][_destroy]");//hiddenの変換、順番も変えない
-    last_tr.find(".destroy_order_materials").attr('id', "order_order_materials_attributes_"+ u +"__destroy" );
-    last_tr.children(".order_material_memo").children().attr('id', "order_order_materials_attributes_"+ u +"_order_material_memo" );
-    last_tr.children(".order_material_memo").children().attr('name', "order[order_materials_attributes]["+u+"][order_material_memo]" );
-    last_tr.children(".delivery_date").children().attr('id', "order_order_materials_attributes_"+ u +"_delivery_date" );
-    last_tr.children(".delivery_date").children().attr('name', "order[order_materials_attributes]["+u+"][delivery_date]" );
-    $(".select_order_materials").select2({width:"100%",placeholder: "発注する食材を選択"});
-    $(".input_order_code").select2({width:"120px"});
-    last_tr.find(".order_quantity").val("");
-    last_tr.find(".order_material_unit").empty();
-    last_tr.find(".calculated_material_unit").empty();
-    last_tr.find(".vendor_company_name").empty();
-    last_tr.find(".change_unit").empty();
-    last_tr.find(".calculated_value").val(0);
-    last_tr.children(".destroy_order_material").children().prop('checked',false);
-    last_tr.find(".select_order_materials").removeAttr("disabled");
-    last_tr.find(".input_order_code").removeAttr("disabled");
-    last_tr.find(".order_quantity").removeAttr("disabled");
-    last_tr.find(".order_material_memo").children().val("");
-    last_tr.find(".delivery_date").children().val($("#all_date_change").val());
-    change_color()
-  };
 });
-$(function(){
-  reset_row_order();
-
+$(document).on('turbolinks:load', function() {
+  //materialの表示、原価計算
+  $(".add_li_menu").each(function() {
+    calculate_product_price();
+  });
   reset_row_order();
 
   $('.input_select_menu').select2({
@@ -17729,13 +17901,6 @@ $(function(){
 
 
 
-
-  //materialの表示、原価計算
-  $(".add_li_menu").each(function() {
-    calculate_product_price();
-  });
-
-
   //bentoIDの発行
   $(".registration").on("change",function(){
     var prop = $('.registration').prop('checked');
@@ -17757,55 +17922,40 @@ $(function(){
   });
 
   //addアクション、menuの追加
-  $(".add_menu").on('click', function addInput(){
-    var u =  $(".add_li_menu").length;
-    $(".input_select_menu").select2('destroy');
-    $(".add_li_menu").first().clone().appendTo(".used_menu_ul");
-    var last_li =$(".add_li_menu").last();
-    var c = last_li.children(".category_select").children().val()
-    last_li.children(".select_menu").children().children("option")
-    last_li.children(".row_order").children().attr('name', "product[product_menus_attributes]["+u+"][row_order]" );
-    last_li.children(".row_order").children().attr('id', "product_product_menus_attributes_"+u+"_row_order" );
-    last_li.children(".select_menu").children().attr('name', "product[product_menus_attributes]["+u+"][menu_id]" );
-    last_li.children(".select_menu").children().attr('id', "product_product_menus_attributes_"+u+"_menu_id" );
-    last_li.children(".remove_menu").children(".destroy_menu").attr('id', "product_product_menus_attributes_"+u+"__destroy");
-    last_li.children(".remove_menu").children(".destroy_menu").attr('name', "product[product_menus_attributes]["+u+"][_destroy]");
-    last_li.children(".select_menu").children().val("");
-    $(".input_select_menu").select2({ width:"270px",placeholder: "メニューを選択してください" });
-    last_li.children(".cost_price").empty();
-    last_li.children(".row_order").children().val(u);
-    last_li.children(".material_name").children().children().remove();
-    last_li.children(".amount_used").children().children().remove();
-    last_li.children(".material_unit").children().children().remove();
-    last_li.children(".preparation").children().children().remove();
-    last_li.children(".remove_material").children(".destroy_materials").prop('checked',false);
-    select_option_change(u,c)
-    last_li.show();
+  $('.add_menu_fields').on('click',function(){
+    setTimeout(function(){
+      $('.add_li_menu').last().find('.cost_price').text("")
+      $('.add_li_menu').last().find('.material_name').children().text("")
+      $(".input_select_menu").select2('destroy');
+      $(".input_select_menu").select2({ width:"100%",placeholder: "メニューを選択してください" });
+      reset_row_order();
+    },1);
   });
 
   //menuのdestroyのチェックtrueとtrのhide、原価再計算
   $(".menu-area").on('click','.remove_menu_btn', function(){
-    $(this).parent().children(".destroy_menu").prop('checked', true);
-    $(this).parent().parent(".add_li_menu").hide();
+    setTimeout(function(){
       calculate_product_price();
       reset_row_order();
-    });
+      calculate_total_calorie();
+    },10);
+  });
 
   //メニュー変更時
   $(".used_menu_ul").on('change','.input_select_menu', function(){
     var id = $(this).val();
     var u = $(".add_li_menu").index($(this).parent().parent(".add_li_menu"));
-      $.ajax({
-          url: "/products/get_menu_cost_price/" + id,
-          data: { id : id },
-          dataType: "json",
-      })
-      .done(function(data) {
-        get_menu_price(data,u);
-        calculate_product_price();
-     });
+    $.ajax({
+        url: "/products/get_menu_cost_price/" + id,
+        data: { id : id },
+        dataType: "json",
+    })
+    .done(function(data) {
+      get_menu_price(data,u);
+      calculate_product_price();
+      show_calorie(data,u)
+   });
   });
-
 
   //indexでの弁当名でのリアルタイム検索
   $(".id_search").on("input", function(){
@@ -17877,15 +18027,14 @@ $(function(){
 
   //原価計算
   function calculate_product_price(){
-    var row_len =  $(".add_li_menu").length;
     var sum_menu_cost = 0;
     $(".add_li_menu").each(function(){
-      if ($(this).children(".remove_menu").children(".destroy_menu").is(':checked')){
-      }else{
-      var menu_price = parseFloat($(this).children(".cost_price").html());
-      if (isNaN(menu_price) == true ){}else{
-      sum_menu_cost += menu_price;
-    }}});
+      if ($(this).find('.remove_menu').children().val()=='false') {
+        var menu_price = parseFloat($(this).children(".cost_price").html());
+        if (isNaN(menu_price) == true ){}else{
+          sum_menu_cost += menu_price;
+      }
+    }});
     var product_cost_price = Math.round( sum_menu_cost * 10 ) / 10 ;
     $(".product_cost_price").val(product_cost_price);
   };
@@ -17933,7 +18082,7 @@ $(function(){
       async: false
     })
     .done(function(data) {
-      $("#product_product_menus_attributes_"+u+"_menu_id option").remove();
+      $(".add_li_menu").eq(u).find(".input_select_menu option").remove();
       first = $('<option>').text("").attr('value',"");
       $(".add_li_menu").eq(u).children(".select_menu").children(".input_select_menu").append(first);
       $.each(data.product, function(index,value){
@@ -17944,12 +18093,33 @@ $(function(){
   };
 //並び替え
   function reset_row_order(){
-    $(".add_li_menu").each(function(i){
-      $(this).children(".row_order").children().val(i)
+    var u = 0
+    $(".add_li_menu").each(function(){
+      if ($(this).find('.remove_menu').children().val()=='false') {
+        $(this).children(".row_order").children().val(u)
+        u += 1
+      }
     });
   };
+
+  //カロリー表示
+  function show_calorie(data,u){
+    var calorie = Math.round(data.menu.calorie*100) / 100;
+    $(".add_li_menu").eq(u).find('.product_make_menu_calorie').text(calorie);
+    calculate_total_calorie();
+  };
+
+  function calculate_total_calorie(){
+    var each_calorie = 0
+    var total_calorie = 0
+    $('.product_make_menu_calorie').each(function(){
+      each_calorie =  parseFloat($(this).text());
+      total_calorie += each_calorie;
+    });
+    $(".total_calorie").text((Math.round(total_calorie * 100) / 100) + "kcal");
+  }
 });
-$(function(){
+$(document).on('turbolinks:load', function() {
   $('.input-stock-materials-name').select2({
   width:"100%",
   placeholder: "選択してください",
@@ -18095,6 +18265,11 @@ $(function(){
 
 
 
+$(document).on("turbolinks:before-cache", function() {
+  if ($(".input_select_product").length) {
+    $('.input_select_product').select2('destroy');
+  }
+});
 
 
 function kanma (number) {
