@@ -48,10 +48,27 @@ class OrdersController < ApplicationController
   def new
     @arr = []
     @order = Order.new
-    params[:order].each do |po|
+    if params[:daily_menu_id]
+      order_products = []
+      daily_menu = DailyMenu.find(params[:daily_menu_id])
+      daily_menu.daily_menu_details.each do |dmd|
+        hash = {}
+        hash[:product_id] = dmd.product_id
+        hash[:num] = dmd.manufacturing_number
+        hash[:make_date] = daily_menu.start_time
+        order_products << hash
+      end
+    else
+      order_products = params[:order]
+    end
+    order_products.each do |po|
       if po[:product_id].present?
         product = Product.includes(:product_menus,[menus: [menu_materials: :material]]).find(po[:product_id])
-        @order.order_products.build(product_id:po[:product_id],serving_for:po[:num])
+        if po[:make_date].present?
+          @order.order_products.build(product_id:po[:product_id],serving_for:po[:num],make_date:po[:make_date])
+        else
+          @order.order_products.build(product_id:po[:product_id],serving_for:po[:num])
+        end
         product.menus.each do |menu|
           menu.menu_materials.each do |menu_material|
             unless menu_material.material.vendor_id == 111 || menu_material.material.vendor_id == 171 || menu_material.material.vendor_id == 21

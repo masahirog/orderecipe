@@ -41,6 +41,7 @@ gem 'ranked-model'
 gem 'active_hash'
 gem 'deep_cloneable'
 gem 'simple_calendar', '~> 2.0'
+gem 'business_time'
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]

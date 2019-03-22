@@ -41,7 +41,7 @@ tr.order_materials_tr.nested-fields
     - if f.object.delivery_date
       = f.date_field(:delivery_date, value: f.object.delivery_date,class:"form-control input_delivery_date")
     - else
-      = f.date_field(:delivery_date, value: Time.now.strftime("%Y-%m-%d"),class:"form-control input_delivery_date")
+      = f.date_field(:delivery_date, value: date,class:"form-control input_delivery_date")
     - if f.object.material_id.present?
       span.delivery_deadline_span style='color:red;font-weight:bold;' = "#{f.object.material.delivery_deadline} 営業日前に必要！" if f.object.material.delivery_deadline > 1
     - else
