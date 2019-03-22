@@ -8,83 +8,83 @@
         - @material.errors.full_messages.each do |message|
           li
             = message
-  .col-xs-12.col-md-12.form-group
-    .col-xs-12.col-md-5
+  .col-md-12.form-group
+    .col-md-5
       = f.label :name, "食材・資材名"
       = f.text_field :name, class:'form-control'
-  .col-xs-12.col-md-12.form-group
-    .col-xs-12.col-md-5
+  .col-md-12.form-group
+    .col-md-5
       = f.label :order_name, "発注書記載名"
       = f.text_field :order_name, class:'form-control'
-  .col-xs-12.col-md-12.form-group
-    .col-xs-12.col-md-5
+  .col-md-12.form-group
+    .col-md-5
       = f.label :category, "カテゴリー"
       = f.select :category, [["食材", "食材"], ["弁当備品", "弁当備品"], ["厨房備品", "厨房備品"],["弁当容器", "弁当容器"]],{include_blank: true}, { class: "form-control"}
-  .col-xs-12.col-md-12.form-group
-    .col-xs-12.col-md-5
+  .col-md-12.form-group
+    .col-md-5
       = f.label :vegetable_flag, "野菜フラグ"
       = f.check_box :vegetable_flag, class: "form-control"
-  .col-xs-12.col-md-12.form-group
-    .col-xs-12.col-md-5
+  .col-md-12.form-group
+    .col-md-5
       = f.label :vendor_id, "仕入先企業名"
       = f.collection_select :vendor_id, Vendor.all, :id, :company_name, {include_blank: true}, { class: "form-control"}
-  .col-xs-12.col-md-12.form-group
-    .col-xs-12.col-md-5
+  .col-md-12.form-group
+    .col-md-5
       = f.label :vendor_stock_flag, "発注期限について"
       = f.select :vendor_stock_flag, [["在庫品", true], ["受注品", false]],{}, class: "form-control"
 
   .col-md-12.form-group style="padding:0;"
-    .col-xs-12.col-md-5
-      .col-xs-12.col-md-12
+    .col-md-5
+      .col-md-12
         = f.label :delivery_deadline, "デフォルト納品日"
-      .col-xs-9.col-md-8
-        = f.select :delivery_deadline,options_for_select(0..20,f.object.delivery_deadline),{}, class: "form-control"
-      .col-xs-2.col-md-4 style="margin-top:10px;padding:0;"
+      .col-md-8
+        = f.select :delivery_deadline,options_for_select(1..5,f.object.delivery_deadline),{}, class: "form-control"
+      .col-md-4 style="margin-top:10px;padding:0;"
         | 営業日前
 
-  .col-xs-12.col-md-12.form-group
-    .col-xs-12.col-md-5
+  .col-md-12.form-group
+    .col-md-5
       = f.label :order_code, "業者管理コード"
       = f.text_field :order_code, class:'form-control'
   .col-md-12.form-group style="padding:0;"
     .col-md-5
-      .col-xs-12.col-md-12
-        = f.label :order_unit, "発注時の単位"
-      .col-xs-12.col-md-5
+      .col-md-12
+        = f.label :order_unit, "発注時の単位（小数にすると、発注時にその小数での発注が可能です）"
+      .col-md-5
         - if local_assigns[:locals][:edit_flag] == true
           = f.text_field :order_unit_quantity,class:"input_order_unit_quantity form-control text-right"
         - else
           = f.text_field :order_unit_quantity,class:"input_order_unit_quantity form-control text-right",value:1
-      .col-xs-12.col-md-6
+      .col-md-6
         = f.select :order_unit, [["kg", "kg"], ["p/c", "p/c"], ["c/s", "c/s"], ["缶", "缶"], ["束", "束"],["袋", "袋"],["箱", "箱"],["枚", "枚"],["個", "個"],["本", "本"],["匹", "匹"]],{include_blank: true}, { class: "form-control input_order_unit"}
   .col-md-12.form-group style="padding:0;"
-    .col-xs-12.col-md-5
-      .col-xs-12.col-md-12
+    .col-md-5
+      .col-md-12
         = f.label :calculated_price, "-",class:"calculated_price_label col-md-12"
-      .col-xs-9.col-md-8
+      .col-md-8
         = f.text_field :calculated_price, class:'form-control'
-      .col-xs-2.col-md-4 style="margin-top:10px;padding:0;"
+      .col-md-4 style="margin-top:10px;padding:0;"
         |  円
   .col-md-12.form-group style="padding:0;"
-    .col-xs-12.col-md-5
-      .col-xs-12.col-md-12
+    .col-md-5
+      .col-md-12
         = f.label :calculated_unit, "レシピ中使用単位"
-      .col-xs-9.col-md-8
+      .col-md-8
         = f.select :calculated_unit, {ml: "ml", g: "g", 袋: "袋",尾: "尾", 本: "本", 枚: "枚",切: "切", 個: "個"},{include_blank: true}, { class: "input_calculated_unit form-control"}
   .col-md-12.form-group style="padding:0;"
-    .col-xs-12.col-md-5
-      .col-xs-12.col-md-12
+    .col-md-5
+      .col-md-12
         = f.label :calculated_value, "-",class:"calculated_value_label col-md-12"
-      .col-xs-9.col-md-8.form-group.form-group
+      .col-md-8.form-group.form-group
         = f.text_field :calculated_value, class:'form-control'
-      .calculated_value_unit.col-xs-2.col-md-4 style="font-size:18px;margin-top:10px;padding:0;"
+      .calculated_value_unit.col-md-4 style="font-size:18px;margin-top:10px;padding:0;"
 
   .col-md-12.form-group style="padding:0;"
     .col-md-5
-      = f.label :cost_price, "単位単価", class:"cost_unit_label col-xs-12 col-md-12",style:"padding:0;margin-left:20px;"
+      = f.label :cost_price, "単位単価", class:"cost_unit_label col-md-12",style:"padding:0;margin-left:20px;"
       .col-md-8.form-group
         = f.text_field :cost_price, class:'form-control', readonly: 'readonly'
-      .col-xs-2.col-md-4.form-group style="margin-top:10px;padding:0;"
+      .col-md-4.form-group style="margin-top:10px;padding:0;"
         |  円
   - if @material.allergy.nil?
     .col-md-12.form-group style="padding:0;"
@@ -162,14 +162,14 @@
       button.add_food_additive.btn.btn-default type="button"
         | 追加
   .col-md-12.form-group
-    .col-xs-12.col-md-6
+    .col-md-6
       = f.label :memo, "メモ"
       = f.text_area :memo, class:'form-control', style:"height:10em;"
-  .col-xs-12.col-md-12.form-group
-    .col-xs-6.col-md-2.check_box
+  .col-md-12.form-group
+    .col-md-2.check_box
       = f.label :end_of_sales, "終売"
       = f.check_box :end_of_sales, class:"check_box form-control"
-    .col-xs-6.col-md-2.check_box
+    .col-md-2.check_box
       = f.label :stock_management, "在庫管理"
       = f.check_box :stock_management, class:"check_box form-control"
   = f.hidden_field :back_to, :value => @back_to

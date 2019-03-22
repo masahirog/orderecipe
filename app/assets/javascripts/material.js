@@ -25,8 +25,7 @@ $(document).on('turbolinks:load', function() {
 
 
   $('.all_select_material').select2({
-  width:"270px",
-  placeholder: "食材資材を選択してください"
+    placeholder: "食材資材を選択してください"
   });
   var input_order_unit_quantity = $(".input_order_unit_quantity").val();
   var order_unit = $(".input_order_unit").val();
@@ -50,8 +49,21 @@ $(document).on('turbolinks:load', function() {
     check_order_unit(input_order_unit_quantity, order_unit)
   });
   $(".input_calculated_unit").on("change",function(){
-    var recipe_unit = $(".input_calculated_unit").val();
-    check_recipe_unit(recipe_unit)
+    console.log($(this).val());
+  });
+
+  var previous;
+
+  $(".input_calculated_unit").on('focus', function () {
+    previous = this.value;
+  }).change(function() {
+    if(!confirm('変更すると、レシピに大きく影響します。本当に変更しますか？（変更した場合はレシピを確認してください。）')){
+      $(this).val(previous);
+      return false;
+    }else{
+      var recipe_unit = $(".input_calculated_unit").val();
+      check_recipe_unit(recipe_unit)
+    }
   });
 
   $(".all_box").on("change",function(){
@@ -82,6 +94,8 @@ $(document).on('turbolinks:load', function() {
   $("#material_calculated_price").on('blur', function(){
     cost_price_calculate()
   });
+
+
 
   function cost_price_calculate(){
     var amount = $("#material_calculated_value").val();

@@ -3,25 +3,23 @@ ol.breadcrumb
     a href="/" ホーム
   li.active
     食材資材一覧
-.form-inline.col-md-12 style="padding:10px;"
-  h3 食材資材の新規登録
-  a.btn.btn-primary.pull-right href="/materials/new" 新規作成
-
-.col-xs-12.col-md-12
+h3 食材資材の新規登録
+a.btn.btn-primary href="/materials/new" 新規作成
+.col-md-12
   = form_tag Material, :method => 'get' do
-    .col-xs-3.col-md-2
+    .col-md-2
       label 食材・資材名：
       = text_field_tag :name, params[:name], class:"form-control"
-    .col-xs-3.col-md-2
+    .col-md-2
       label 発注名：
       = text_field_tag :order_name, params[:order_name], class:"form-control"
-    .col-xs-3.col-md-2
+    .col-md-2
       label 仕入先：
       = select_tag :vendor_id, options_from_collection_for_select(Vendor.all, :id, :company_name),include_blank: true, class: "form-control"
-    .col-xs-3.col-md-2
+    .col-md-2
       label 管理コード：
       = text_field_tag :order_code, params[:order_code], class:"form-control"
-    .col-xs-3.col-md-1
+    .col-md-1
       label 終売：
       = select :end_of_sales, :value, [["販売のみ", 0], ["終売のみ", 1]], {include_blank: true},class:"form-control"
     .kensaku.form-group.col-md-1
@@ -29,7 +27,7 @@ ol.breadcrumb
       = submit_tag "検索" ,class:"btn btn-primary"
 .col-md-12
   = paginate @search
-table.materials-table style="width:1240px"
+table.table
   tr style="padding:10px;"
     th 食材・資材名
     th 発注名

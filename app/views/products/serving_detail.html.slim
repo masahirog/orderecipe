@@ -9,7 +9,7 @@ head
   script[src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-rc.2/js/select2.min.js"]
 body
   .all_body
-    .col-xs-11.col-md-12.form-inline
+    .col-md-12.form-inline
       input#amount_number_input.form-control.text-right[type="number" placeholder="食数を入力"]
       input#amount_calculation.btn.btn-primary[type="button" onclick="" value="計算"]
       input.pull-right.henkanbtn[type="button" value="カナ変換" style="margin-left:10px;"]
@@ -18,7 +18,7 @@ body
         |  function googleTranslateElementInit() { new google.translate.TranslateElement({pageLanguage: 'ja', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element'); }
       script[type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"]
     p
-    .amount_number.col-xs-12.col-md-12
+    .amount_number.col-md-12
 
     .col-md-12[style="margin-top:20px;"]
       label.col-md-3
@@ -81,5 +81,5 @@ body
                   .form-group[style="display:none;padding:0;"]
                     = mm.material.order_unit
 
-    .product_image_l.col-xs-12.col-md-4
+    .product_image_l.col-md-4
       = image_tag @product.product_image.to_s, class:"img-responsive"

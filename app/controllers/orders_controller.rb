@@ -64,6 +64,7 @@ class OrdersController < ApplicationController
               hash["vendor_id"] = menu_material.material.vendor_id
               hash['calculated_unit'] = menu_material.material.calculated_unit
               hash['order_unit'] = menu_material.material.order_unit
+              hash['unit_amount'] = "#{menu_material.material.order_unit_quantity} #{menu_material.material.order_unit}：#{menu_material.material.calculated_value} #{menu_material.material.calculated_unit}"
               @arr << hash
             end
           end
@@ -100,7 +101,12 @@ class OrdersController < ApplicationController
         calculated_unit = hash['calculated_unit']
         order_unit = hash['order_unit']
         menu_name = hash['menu_name']
-        @order.order_materials.build(material_id:key,order_quantity:order_quantity,calculated_quantity:calculated_quantity,menu_name:menu_name,calculated_unit:calculated_unit,order_unit:order_unit)
+        unit_amount = hash['unit_amount']
+        if hash['vendor_id'] == 141 || hash['vendor_id'] == 11 || hash['vendor_id'] == 161
+          @order.order_materials.build(material_id:key,order_quantity:order_quantity,calculated_quantity:calculated_quantity,menu_name:menu_name,calculated_unit:calculated_unit,order_unit:order_unit,order_material_memo:unit_amount)
+        else
+          @order.order_materials.build(material_id:key,order_quantity:order_quantity,calculated_quantity:calculated_quantity,menu_name:menu_name,calculated_unit:calculated_unit,order_unit:order_unit)
+        end
       end
     end
     @code_materials = Material.where(end_of_sales:0).where.not(order_code:"")

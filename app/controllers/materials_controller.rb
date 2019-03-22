@@ -1,7 +1,7 @@
 class MaterialsController < ApplicationController
   protect_from_forgery :except => [:change_additives]
   def index
-    @search = Material.search(params).includes(:vendor).page(params[:page]).per(20)
+    @search = Material.search(params).includes(:vendor).page(params[:page]).per(30)
   end
 
   def new

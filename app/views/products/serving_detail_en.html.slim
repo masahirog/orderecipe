@@ -10,7 +10,7 @@ head
   script[src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-rc.2/js/select2.min.js"]
 body
   .all_body
-    .col-xs-12.col-md-7.form-group[style="float:left;"]
+    .col-md-7.form-group[style="float:left;"]
       = form_tag "/products/serving_detail_en", class:"form-inline" do
         .bento_id_kensaku_en.col-md-2
           = text_field_tag :bento_id, params[:bento_id], class:"bento_id_search_en form-control",style:"width:100%", placeholder:"bentoID"
@@ -19,7 +19,7 @@ body
         .kensaku.col-md-4
           |  　
           = submit_tag "検索" ,class:"btn btn-primary"
-    .col-xs-12.col-md-5.form-inline[style="float:left;"]
+    .col-md-5.form-inline[style="float:left;"]
       input#amount_number_input.form-control.text-right[type="number" placeholder="食数を入力"]
       input#amount_calculation.btn.btn-primary[type="button" onclick="" value="計算"]
       a#google_translate_element.pull-right
@@ -27,7 +27,7 @@ body
         |  function googleTranslateElementInit() { new google.translate.TranslateElement({pageLanguage: 'ja', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element'); }
       script[type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"]
     p
-    .amount_number.col-xs-12.col-md-12
+    .amount_number.col-md-12
 
     .col-md-12[style="margin-top:20px;"]
       label.col-md-2

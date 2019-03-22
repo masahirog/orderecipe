@@ -1,9 +1,9 @@
 tr.order_materials_tr.nested-fields
-  td.order_material_name
+  td.order_material_name style="width:250px;"
     - if f.object.material_id.present?
-      = f.collection_select :material_id, @materials, :id, :name,{include_blank: true}, class:'select_order_materials',style:"width:100%;"
+      = f.collection_select :material_id, @materials, :id, :name,{include_blank: true}, class:'select_order_materials',style:"width:250px;"
     - else
-      = f.collection_select :material_id, @materials, :id, :name,{include_blank: true}, class:'select_order_materials',style:"width:100%;"
+      = f.collection_select :material_id, @materials, :id, :name,{include_blank: true}, class:'select_order_materials',style:"width:250px;"
     .vendor_company_name style="padding-top:3px;color:#A9A9A9;"
       - if f.object.material.present?
         span = f.object.material.vendor.company_name
@@ -13,7 +13,7 @@ tr.order_materials_tr.nested-fields
       = select_tag 'page[name]', options_from_collection_for_select(@code_materials, :id, :order_code),include_blank: true,class:"input_order_code"
     - else
       = select_tag 'page[name]', options_from_collection_for_select(@code_materials, :id, :order_code),include_blank: true,class:"input_order_code"
-  td.quantity
+  td.quantity style='width:400px;'
     .clearfix
       div style="float:left;width:50%;"
         = f.text_field :order_quantity,class:'order_quantity text-right form-control',style:"float:left;width:100px;"
@@ -29,7 +29,7 @@ tr.order_materials_tr.nested-fields
         |  ：
         = f.object.material.calculated_value
         = f.object.material.calculated_unit
-  td.order_material_memo
+  td.order_material_memo style='min-width:250px;'
     = f.text_field :order_material_memo,class:'form-control'
     div style="padding:3px 0 0 8px;color:#A9A9A9;font-size:10px;"
       - if controller.action_name == "new"

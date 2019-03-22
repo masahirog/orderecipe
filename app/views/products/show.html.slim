@@ -8,7 +8,7 @@ ol.breadcrumb
   li.active
     = @product.name
 .col-md-12.form-inline
-  .col-xs-11.col-md-12.form-group
+  .col-md-12.form-group
       = form_tag({:controller => "products", :action => "print", format: "pdf"},{:target => "_blank",style:'float:left;'}) do
         = number_field(:volume,:id,value:params[:id],style:"display:none;")
         = number_field(:volume,:num,class:"form-control text-right",id:"amount_number_input",placeholder:"食数を入力")
@@ -22,7 +22,7 @@ ol.breadcrumb
         = number_field(:volume,:num,class:"form-control text-right",id:"amount_number_input",placeholder:"食数を入力")
         input.btn.btn-primary[type="button" onclick="submit();" value="テスト" style="margin:0 0 0 10px;"]
 
-.amount_number.col-xs-12.col-md-12
+.amount_number.col-md-12
 .col-md-6
   table.table
     tr
