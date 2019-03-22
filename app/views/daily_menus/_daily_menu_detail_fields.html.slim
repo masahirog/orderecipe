@@ -1,0 +1,16 @@
+- if f.object.id.present?
+  tr.nested-fields.item
+    td.col-md-4
+      = Product.find(f.object.product_id).name
+    td.col-md-3
+      = f.number_field :manufacturing_number, class: 'form-control'
+    td.col-md-5
+      = link_to_remove_association '削除', f, class: 'btn btn-default'
+- else
+  tr.nested-fields.item
+    td.col-md-4
+      = f.collection_select :product_id, @products, :id, :name, {include_blank:true},class:'form-control product_select'
+    td.col-md-3
+      = f.number_field :manufacturing_number, class: 'form-control'
+    td.col-md-5
+      = link_to_remove_association '削除', f, class: 'btn btn-default'

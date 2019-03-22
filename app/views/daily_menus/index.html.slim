@@ -1,0 +1,15 @@
+h1 献立
+
+= month_calendar events: @daily_menus do |start_time, daily_menu|
+  div.clearfix
+    div style='float:left;'
+      = start_time.strftime("%d日")
+    div style='float:right;'
+      - if daily_menu[0]
+        = link_to "編集", daily_menu_path(daily_menu[0]),class:'btn btn-success btn-sm'
+      - else
+        = link_to "登録", new_daily_menu_path(start_time:start_time),class:'btn btn-primary btn-sm'
+  - if daily_menu[0]
+    - daily_menu[0].daily_menu_details.each do |dmd|
+      div style='color:gray;padding:3px;font-size:11px;'
+        = dmd.product.name

@@ -34,6 +34,8 @@ Rails.application.routes.draw do
   get 'products/new_band/:id' => 'products#new_band'
   get 'materials/search' => 'materials#search'
   get 'menus/food_ingredient_search' => 'menus/food_ingredient_search'
+  get 'orders/monthly' => 'orders#monthly'
+
   resources :menus
   resources :menus do
     put :sort
@@ -43,6 +45,7 @@ Rails.application.routes.draw do
   resources :vendors
   resources :materials
   resources :orders
+  resources :daily_menus
   resources :versions
   resources :food_additives
   resources :stocks

@@ -184,6 +184,39 @@ class OrdersController < ApplicationController
     end
   end
 
+  def monthly
+    @arr = []
+    date = Date.new(params[:year].to_i,params[:month].to_i,1)
+    @daily_menus = DailyMenu.includes(daily_menu_details:[product:[product_menus:[menu:[menu_materials:[:material]]]]]).where(start_time: date.in_time_zone.all_month)
+    @daily_menus.each do |dm|
+      dm.daily_menu_details.each do |dmd|
+        dmd.product.product_menus.each do |pm|
+          pm.menu.menu_materials.each do |mm|
+            hash = {}
+            num = dmd.manufacturing_number
+            amount_used = mm.amount_used.to_f * num
+            hash['material_id'] = mm.material_id
+            hash['amount_used'] = amount_used.to_f
+            hash["unit_cost"] = mm.material.cost_price.to_f
+            hash["cost_price"] = mm.material.cost_price * amount_used
+            hash["vendor_id"] = mm.material.vendor_id
+            @arr << hash
+          end
+        end
+      end
+    end
+    @ar = @arr.group_by{ |i| i['material_id']}
+      .map{ |k, v|
+         v[1..-1].each {|x| v[0]['amount_used'] += x['amount_used']; v[0]['cost_price'] += x['cost_price']}
+         v[0]
+      }.group_by{ |i| i['vendor_id']}
+    @vendor_sum = @ar.map{ |k, v|
+        v[1..-1].each {|x| v[0]['cost_price'] += x['cost_price']}
+        v[0]
+     }
+     @total_cost = 0
+     @vendor_sum.map{|hash| @total_cost += hash["cost_price"]}
+  end
   private
   def order_create_update
     params.require(:order).permit(order_materials_attributes: [:id, :order_quantity,:calculated_quantity,

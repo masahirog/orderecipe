@@ -1,0 +1,37 @@
+= form_with(model: daily_menu, local: true) do |f|
+  - if daily_menu.errors.any?
+    #error_explanation
+      h2 = "#{pluralize(daily_menu.errors.count, "error")} prohibited this daily_menu from being saved:"
+      ul
+        - daily_menu.errors.full_messages.each do |message|
+          li = message
+  .form-group.required.col-md-12
+    = f.label :start_time,"日付", class: 'col-md-2 control-label text-right'
+    .col-md-10
+      = f.date_field :start_time, value:params['start_time'], class: 'col-md-10 form-control',readonly: true
+  .form-group.required.col-md-12
+    = f.label :total_manufacturing_number,"総製造数", class: 'col-md-2 control-label text-right'
+    .col-md-10
+      = f.number_field :total_manufacturing_number, class: 'col-md-10 form-control'
+
+  .form-group.col-md-12
+    h3 販売商品
+    .text-right
+      = link_to_add_association '商品追加', f, :daily_menu_details,
+            class: 'btn btn-default add_products',
+             data: {association_insertion_node: '#detail-association-insertion-point',
+                    association_insertion_method: 'append' }
+    table.table.table-list
+      thead
+        tr
+          th.col-md-4 メニュー名
+          th.col-md-3 製造数
+          th.col-md-5
+      tbody#detail-association-insertion-point
+        .form-group
+          = f.fields_for :daily_menu_details do |dmd|
+            = render 'daily_menu_detail_fields', f: dmd
+
+  .actions.col-md-12
+    button type="button" onclick="submit();" class="col-md-2 col-md-offset-1 btn btn-primary"
+      |登録

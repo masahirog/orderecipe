@@ -3,6 +3,9 @@ class Product < ApplicationRecord
   has_many :menus, through: :product_menus
   accepts_nested_attributes_for :product_menus, allow_destroy: true
 
+  has_many :daily_menus, through: :daily_menu_details
+  has_many :daily_menu_details
+
   has_many :order_products, dependent: :destroy
   has_many :orders, through: :order_products
 

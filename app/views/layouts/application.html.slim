@@ -29,6 +29,10 @@ html
                 li.menu_li
                   a href="/orders" 発注
                 li.menu_li
+                  = link_to '月次計算',orders_monthly_path(year:Date.today.year,month:Date.today.month)
+                li.menu_li
+                  a href="/daily_menus" 献立
+                li.menu_li
                   a href="/products" お弁当
                 li.menu_li
                   a href="/menus" メニュー

@@ -1,0 +1,28 @@
+.form-group.required.col-md-12
+  label.col-md-2 日付
+  .col-md-10
+    = @daily_menu.start_time.strftime("%d日")
+.form-group.required.col-md-12
+  label.col-md-2 総製造数
+  .col-md-10
+    = @daily_menu.total_manufacturing_number
+.col-md-12.text-right
+  = link_to "編集する", edit_daily_menu_path(@daily_menu),class:'btn btn-primary'
+
+.form-group.col-md-12
+  h3 販売商品
+  table.table.table-list
+    thead
+      tr
+        th メニュー名
+        th 原価
+        th 製造数
+    tbody
+      -@daily_menu_details.each do |dmd|
+        tr
+          td
+            = link_to dmd.product.name,edit_product_path(dmd.product)
+          td
+            = dmd.product.cost_price
+          td
+            = dmd.manufacturing_number
