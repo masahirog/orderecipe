@@ -3,11 +3,16 @@ class StocksController < ApplicationController
     @stocks = Stock.all
   end
   def new
-    @vendors = Vendor.all
-    @materials = Material.includes(:vendor).where(end_of_sales: 0).where(stock_management: 1)
     @stock = Stock.new
-    @stock.stock_materials.build
-    render :new, layout: false
+    @vendors = Vendor.all
+    materials = Material.includes(:vendor).where(end_of_sales: 0).where(stock_management: 1)
+    materials.each do |material|
+      @stock.stock_materials.build(material_id:material.id,amount:0)
+    end
+  end
+  def edit
+    @stock = Stock.includes(stock_materials:[material:[:vendor]]).find(params[:id])
+    @vendors = Vendor.all
   end
   def show
     @stock = Stock.find(params[:id])
@@ -26,6 +31,20 @@ class StocksController < ApplicationController
      else
        render 'new'
      end
+  end
+
+
+  def update
+    @stock = Stock.find(params[:id])
+    respond_to do |format|
+      if @stock.update(stock_create_update)
+        format.html { redirect_to @stock, notice: '更新OK' }
+        format.json { render :show, status: :ok, location: @stock }
+      else
+        format.html { render :edit }
+        format.json { render json: @stock.errors, status: :unprocessable_entity }
+      end
+    end
   end
 
   private

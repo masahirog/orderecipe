@@ -170,7 +170,7 @@
       = f.label :end_of_sales, "終売"
       = f.check_box :end_of_sales, class:"check_box form-control"
     .col-md-2.check_box
-      = f.label :stock_management, "在庫管理"
+      = f.label :stock_management, "棚卸し在庫管理"
       = f.check_box :stock_management, class:"check_box form-control"
   = f.hidden_field :back_to, :value => @back_to
   - if local_assigns[:locals][:edit_flag] == true

@@ -9,42 +9,38 @@
           li
             = message
   .col-md-12.form-group
-    .col-md-6
-      = f.label :date, "日付"
-      = f.date_field(:date,value: (f.object.date || Time.now.strftime("%Y-%m-%d")),class:"form-control input_make_date")
-    .col-md-6
-      = f.submit '登録する', data: { confirm: "在庫確定？"} , class:"btn btn-success"
+    = f.label :date, "日付"
+    = f.date_field(:date,value: (f.object.date || Time.now.strftime("%Y-%m-%d")),class:"form-control input_make_date")
   .col-md-12
     label
       | 仕入先
     = select :vendor, :name, @vendors.map{|t| [t.company_name, t.id]},{include_blank:true},class:"vendor-select form-control"
-  .stock-area.table-striped[style="padding:0;"]
-    .col-md-12[style="margin-top:10px;"]
-      label.col-md-4
-        | 食材・資材名
-      label.col-md-3
-        | 在庫量
-    ul.stocks-all.list-group[style="list-style:none;padding:0;"]
-      - i=0
-      - @materials.each do |material|
-        = f.fields_for :stock_materials do |sm|
-          li.add_li_stock_material.col-md-12[style="padding:5px 0px;border-style:solid;border-width:1px;border-color:#F5F5F5"]
-            div style="padding:0px;"
-              .vendor_id[style="display:none;"]
-                = material.vendor.id
-              .col-md-4
-                = material.name
-                = sm.number_field :material_id,value:material.id,id:"stock_stock_materials_attributes_#{i}_material_id",name:"stock[stock_materials_attributes][#{i}][material_id]" , class:'form-control input-stock-materials',style:"display:none;"
-              .col-md-3.clearfix
-                div[style="width:70%;float:left;"]
-                  = sm.number_field :amount,id:"stock_stock_materials_attributes_#{i}_amount",name:"stock[stock_materials_attributes][#{i}][amount]", class:"input-amount form-control", :step => 0.1
-                .order-unit[style="float:left;width:30%;padding:10px 0 0 7px;"]
-                  = material.order_unit
-              .zero[style="padding-top:10px;"]
-                span.glyphicon.glyphicon-minus-sign
-            .clearfix
-              .vendor_company_name[style="float:left;color:999999;"]
+  table.table.stock-area.table-striped style="padding:0;"
+    thead
+      tr
+        th 仕入先
+        th 食材・資材名
+        th 管理コード
+        th 在庫量
+        th
+    tbody.stocks-all style="list-style:none;padding:0;"
+      = f.fields_for :stock_materials do |sm|
+        tr.add_stock_material style="padding:5px 0px;border-style:solid;border-width:1px;border-color:#F5F5F5"
+          td
+            span.vendor_name
+              = sm.object.material.vendor.company_name
+            span.vendor_id style='display:none;'
+              = sm.object.material.vendor_id
+          td
+            = sm.object.material.name
+            = sm.number_field :material_id, class:'form-control input-stock-materials',style:"display:none;"
+          td
+            = sm.object.material.order_code
+          td.clearfix
+            div style="width:70%;float:left;"
+              = sm.number_field :amount, class:"input-amount form-control", :step => 0.1
+            .order-unit style="float:left;width:30%;padding:10px 0 0 7px;"
+              = sm.object.material.order_unit
 
-              .remove_stock_material.col-md-2[style="float:left;"]
-                = sm.check_box :_destroy,class:"destroy", style: "display:none;"
-        - i += 1
+  .actions
+    = f.submit '登録する',class:'btn btn-success'

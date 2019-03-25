@@ -1,1 +1,16 @@
-
+ol.breadcrumb
+  li
+    a href="/" ホーム
+  li.active 在庫管理トップ
+h3 食材資材の新規登録
+= link_to "新規作成",new_stock_path,class:'btn btn-primary'
+table.table
+  thead
+    tr
+      th
+      th 日付
+  tbody
+  - @stocks.each do |stock|
+    tr
+      td = link_to '編集',edit_stock_path(stock),class:'btn btn-default'
+      td = Date.parse(stock.date).strftime("%Y年%-m月%-d日")
