@@ -5,7 +5,7 @@ class StocksController < ApplicationController
   def new
     @stock = Stock.new
     @vendors = Vendor.all
-    materials = Material.includes(:vendor).where(end_of_sales: 0).where(stock_management: 1)
+    materials = Material.includes(:vendor).where(end_of_sales: 0)
     materials.each do |material|
       @stock.stock_materials.build(material_id:material.id,amount:0)
     end

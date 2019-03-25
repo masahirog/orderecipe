@@ -1,15 +1,12 @@
 h1 献立
-
 = month_calendar events: @daily_menus do |start_time, daily_menu|
-  div.clearfix
+  div
     - if daily_menu[0]
-      div style='float:left;font-size:16px;margin-right:10px;'
-        = link_to start_time.strftime("%d日"), daily_menu_path(daily_menu[0])
-      div style='float:left;'
-        = link_to "発注開始", new_order_path(daily_menu_id:daily_menu[0].id),class:'btn btn-success btn-sm'
+      div style='font-size:16px;margin-right:10px;'
+        = link_to start_time.strftime("%-m月%-d日"), daily_menu_path(daily_menu[0])
     - else
       div style='float:left;font-size:16px;'
-        = link_to start_time.strftime("%d日"), new_daily_menu_path(start_time:start_time)
+        = link_to start_time.strftime("%-m月%-d日"), new_daily_menu_path(start_time:start_time)
   - if daily_menu[0]
     - daily_menu[0].daily_menu_details.each do |dmd|
       div style='color:gray;padding:3px;font-size:11px;'

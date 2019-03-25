@@ -29,6 +29,9 @@ tr.order_materials_tr.nested-fields
         |  ：
         = f.object.material.calculated_value
         = f.object.material.calculated_unit
+      - if f.object.material.present?
+        - if f.object.material.memo.present?
+          span style='color:red;margin-left:10px;' class="glyphicon glyphicon-tags" aria-hidden="true"  data-toggle="tooltip" data-placement="top" title="#{f.object.material.memo}"
   td.order_material_memo style='min-width:250px;'
     = f.text_field :order_material_memo,class:'form-control'
     div style="padding:3px 0 0 8px;color:#A9A9A9;font-size:10px;"
@@ -39,9 +42,9 @@ tr.order_materials_tr.nested-fields
         = f.object.menu_name
   td.delivery_date
     - if f.object.delivery_date
-      = f.date_field(:delivery_date, value: f.object.delivery_date,class:"form-control input_delivery_date")
+      = f.date_field(:delivery_date,value:date,class:"form-control input_delivery_date")
     - else
-      = f.date_field(:delivery_date, value: date,class:"form-control input_delivery_date")
+      = f.date_field(:delivery_date,value:date,class:"form-control input_delivery_date")
     - if f.object.material_id.present?
       span.delivery_deadline_span style='color:red;font-weight:bold;' = "#{f.object.material.delivery_deadline} 営業日前に必要！" if f.object.material.delivery_deadline > 1
     - else

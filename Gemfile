@@ -18,7 +18,6 @@ gem 'jquery-form-rails'
 gem 'bootsnap', '>= 1.1.0', require: false
 gem 'slim-rails', '3.1.3'
 gem 'devise'
-gem 'bootstrap-sass'
 gem 'kaminari'
 gem "select2-rails"
 gem 'miyabi'

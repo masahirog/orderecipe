@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_22_104915) do
+ActiveRecord::Schema.define(version: 2019_03_25_082833) do
 
   create_table "daily_menu_details", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "daily_menu_id", null: false
@@ -85,7 +85,6 @@ ActiveRecord::Schema.define(version: 2019_03_22_104915) do
     t.string "order_unit"
     t.text "order_unit_quantity"
     t.text "allergy"
-    t.integer "stock_management"
     t.integer "vegetable_flag", default: 0, null: false
     t.boolean "vendor_stock_flag", default: true, null: false
     t.integer "delivery_deadline", default: 1, null: false

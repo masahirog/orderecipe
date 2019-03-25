@@ -9,7 +9,10 @@ $(document).on("turbolinks:before-cache", function() {
 
 
 $(document).on('turbolinks:load', function() {
-  first_input_check()
+  $('[data-toggle="tooltip"]').tooltip();
+  $('[data-toggle="popover"]').popover();
+
+  first_input_check();
   $('.input_select_product').select2({
     width:"300px",
     placeholder: "お弁当を選択してください"

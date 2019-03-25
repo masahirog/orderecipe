@@ -30,11 +30,8 @@ a.btn.btn-primary href="/materials/new" 新規作成
 table.table
   tr style="padding:10px;"
     th 食材・資材名
-    th 発注名
+    th メモ
     th 発注単位
-    th 価格(円)
-    th 原価(円)
-    th カテゴリ
     th 仕入先
     th 終売
     th style="text-align:center;" 使用
@@ -43,23 +40,17 @@ table.table
       td.material_name
         =link_to "#{material.name}", "/materials/#{material.id}/edit"
       td
-        = material.order_name
+        = material.memo
       td
         = material.order_unit_quantity
         = material.order_unit
         |  ：
         = number_with_delimiter(material.calculated_value)
         = material.calculated_unit
-      td.text-right
-        = number_with_delimiter(material.calculated_price)
-      td.text-right
-        = material.cost_price.round(2)
-      td
-        = material.category
       td
         = material.vendor.company_name
       td.end_of_sales
-        = p "✔" if material.end_of_sales == 1
+        = "終売" if material.end_of_sales == 1
       td style="text-align:center;"
         = button_to "確認", "/materials/include_material/#{material.id}", method: :get,class:"btn btn-default btn-sm"
 - if @search.size == 0 then

@@ -1,16 +1,16 @@
 .form-group.required.col-md-12
   label.col-md-2 日付
   .col-md-10
-    = @daily_menu.start_time.strftime("%d日")
+    = @daily_menu.start_time.strftime("%Y年%-m月%-d日(#{%w(日 月 火 水 木 金 土)[@daily_menu.start_time.wday]})")
 .form-group.required.col-md-12
   label.col-md-2 総製造数
   .col-md-10
     = @daily_menu.total_manufacturing_number
-.col-md-12.text-right
-  = link_to "編集する", edit_daily_menu_path(@daily_menu),class:'btn btn-primary'
 
-.form-group.col-md-12
-  h3 販売商品
+.form-group.col-md-12.clearfix
+  h3 style='float:left;' 献立
+  = link_to "編集する", edit_daily_menu_path(@daily_menu),class:'btn btn-primary',style:'float:left;margin-left:20px;margin-top:10px;'
+  = link_to "発注開始", new_order_path(daily_menu_id:@daily_menu.id),class:'btn btn-success',style:'float:left;margin-left:20px;margin-top:10px;'
   table.table.table-list
     thead
       tr

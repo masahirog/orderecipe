@@ -58,8 +58,10 @@ class OrdersController < ApplicationController
         hash[:make_date] = daily_menu.start_time
         order_products << hash
       end
+      delivery_date = DailyMenu.find(params[:daily_menu_id]).start_time
     else
       order_products = params[:order]
+      delivery_date = Date.today
     end
     order_products.each do |po|
       if po[:product_id].present?
@@ -81,6 +83,7 @@ class OrdersController < ApplicationController
               hash["vendor_id"] = menu_material.material.vendor_id
               hash['calculated_unit'] = menu_material.material.calculated_unit
               hash['order_unit'] = menu_material.material.order_unit
+              hash['delivery_deadline'] = menu_material.material.delivery_deadline
               hash['unit_amount'] = "#{menu_material.material.order_unit_quantity} #{menu_material.material.order_unit}：#{menu_material.material.calculated_value} #{menu_material.material.calculated_unit}"
               @arr << hash
             end
@@ -119,10 +122,12 @@ class OrdersController < ApplicationController
         order_unit = hash['order_unit']
         menu_name = hash['menu_name']
         unit_amount = hash['unit_amount']
+        dead_line = hash['delivery_deadline']
+        date = dead_line.business_days.before(delivery_date)
         if hash['vendor_id'] == 141 || hash['vendor_id'] == 11 || hash['vendor_id'] == 161
-          @order.order_materials.build(material_id:key,order_quantity:order_quantity,calculated_quantity:calculated_quantity,menu_name:menu_name,calculated_unit:calculated_unit,order_unit:order_unit,order_material_memo:unit_amount)
+          @order.order_materials.build(material_id:key,order_quantity:order_quantity,calculated_quantity:calculated_quantity,menu_name:menu_name,calculated_unit:calculated_unit,order_unit:order_unit,order_material_memo:unit_amount,delivery_date:date)
         else
-          @order.order_materials.build(material_id:key,order_quantity:order_quantity,calculated_quantity:calculated_quantity,menu_name:menu_name,calculated_unit:calculated_unit,order_unit:order_unit)
+          @order.order_materials.build(material_id:key,order_quantity:order_quantity,calculated_quantity:calculated_quantity,menu_name:menu_name,calculated_unit:calculated_unit,order_unit:order_unit,delivery_date:date)
         end
       end
     end

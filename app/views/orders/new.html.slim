@@ -56,11 +56,7 @@
             span 削除
             input.all_delete type="checkbox" style="width:24px;height:24px;margin:0;"
       tbody#order_materials_table
-        - if params[:daily_menu_id].present?
-          - date = 1.business_days.before(DailyMenu.find(params[:daily_menu_id]).start_time) if params[:daily_menu_id].present?
-        - else
-          - date = Date.today
         = f.fields_for :order_materials do |m|
-          = render 'order_material_fields', f: m,date:date
+          = render 'order_material_fields', f: m,date:m.object.delivery_date
   = link_to_add_association '発注食材追加',f, :order_materials,class:'btn btn-primary add_order_material',
-  data: {association_insertion_node: '#order_materials_table',association_insertion_method: 'append'}, render_options: {locals: { date: date }}
+  data: {association_insertion_node: '#order_materials_table',association_insertion_method: 'append'}, render_options: {locals: { date: Date.today }}
