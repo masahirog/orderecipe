@@ -18,6 +18,11 @@
       = f.text_field :order_name, class:'form-control'
   .col-md-12.form-group
     .col-md-5
+      = f.label :storage_location_id, "ストック場所"
+      = f.collection_select :storage_location_id, @storage_locations, :id, :name, {}, { class: "form-control"}
+
+  .col-md-12.form-group
+    .col-md-5
       = f.label :end_of_sales, "販売ステータス"
       = f.select :end_of_sales,[['販売中',0],['終売',1]],{}, class:"form-control"
 
@@ -27,7 +32,7 @@
       = f.select :category, [["食材", "食材"], ["弁当備品", "弁当備品"], ["厨房備品", "厨房備品"],["弁当容器", "弁当容器"]],{}, { class: "form-control"}
   .col-md-12.form-group
     .col-md-5
-      = f.label :vegetable_flag, "野菜フラグ"
+      = f.label :vegetable_flag, "野菜フラグ(Dailyの'野菜多め'の計算に使用する)"
       = f.check_box :vegetable_flag, class: "form-control"
   .col-md-12.form-group
     .col-md-5

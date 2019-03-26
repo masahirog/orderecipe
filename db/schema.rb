@@ -10,12 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_25_082833) do
+ActiveRecord::Schema.define(version: 2019_03_26_005815) do
 
   create_table "daily_menu_details", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "daily_menu_id", null: false
     t.integer "product_id", null: false
     t.integer "manufacturing_number", default: 0, null: false
+    t.float "cost_price_per_product", default: 0.0, null: false
+    t.integer "total_cost_price", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -88,6 +90,7 @@ ActiveRecord::Schema.define(version: 2019_03_25_082833) do
     t.integer "vegetable_flag", default: 0, null: false
     t.boolean "vendor_stock_flag", default: true, null: false
     t.integer "delivery_deadline", default: 1, null: false
+    t.integer "storage_location_id", null: false
   end
 
   create_table "menu_materials", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -196,6 +199,12 @@ ActiveRecord::Schema.define(version: 2019_03_25_082833) do
 
   create_table "stocks", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "storage_locations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

@@ -49,4 +49,5 @@ Rails.application.routes.draw do
   resources :versions
   resources :food_additives
   resources :stocks
+  resources :storage_locations
 end

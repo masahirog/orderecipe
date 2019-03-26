@@ -8,6 +8,7 @@ class MaterialsController < ApplicationController
     @material = Material.new
     @material.material_food_additives.build
     @food_additive = FoodAdditive.new
+    @storage_locations = StorageLocation.all
   end
 
   def create
@@ -34,6 +35,7 @@ class MaterialsController < ApplicationController
     @material = Material.find(params[:id])
     @material.material_food_additives.build if @material.material_food_additives.length == 0
     @food_additive = FoodAdditive.new
+    @storage_locations = StorageLocation.all
   end
 
   def update
@@ -80,7 +82,7 @@ class MaterialsController < ApplicationController
 
   private
   def material_params
-    params.require(:material).permit(:name, :order_name, :calculated_value, :calculated_unit,:vegetable_flag,:vendor_stock_flag,
+    params.require(:material).permit(:name, :order_name, :calculated_value, :calculated_unit,:vegetable_flag,:vendor_stock_flag,:storage_location_id,
      :calculated_price, :cost_price, :category, :order_code, :order_unit, :memo, :end_of_sales, :vendor_id,:order_unit_quantity,:delivery_deadline,
      {allergy:[]},material_food_additives_attributes:[:id,:material_id,:food_additive_id,:_destroy])
   end

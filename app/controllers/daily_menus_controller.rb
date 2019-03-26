@@ -14,7 +14,7 @@ class DailyMenusController < ApplicationController
     date = params['start_time']
     if DailyMenu.where(start_time:date).present?
       id = DailyMenu.find_by(start_time:date).id
-      redirect_to "/admin/daily_menus/#{id}/edit"
+      redirect_to "/daily_menus/#{id}/edit"
     else
       @daily_menu = DailyMenu.new
     end
@@ -29,7 +29,7 @@ class DailyMenusController < ApplicationController
     @daily_menu = DailyMenu.new(daily_menu_params)
     respond_to do |format|
       if @daily_menu.save
-        format.html { redirect_to admin_daily_menus_path, notice: "#{params['daily_menu']['start_time']}の献立を作成しました。" }
+        format.html { redirect_to daily_menus_path, notice: "#{params['daily_menu']['start_time']}の献立を作成しました。" }
         format.json { render :show, status: :created, location: @daily_menu }
       else
         format.html { render :new }
@@ -54,7 +54,7 @@ class DailyMenusController < ApplicationController
   def destroy
     @daily_menu.destroy
     respond_to do |format|
-      format.html { redirect_to _daily_menus_url, notice: 'Daily menu was successfully destroyed.' }
+      format.html { redirect_to daily_menus_url, notice: 'Daily menu was successfully destroyed.' }
       format.json { head :no_content }
     end
   end

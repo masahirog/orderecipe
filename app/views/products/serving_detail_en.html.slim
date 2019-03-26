@@ -4,10 +4,13 @@ head
   = stylesheet_link_tag    'application', media: 'all'
   = javascript_include_tag 'application'
   = csrf_meta_tags
-  script[src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"]
-  script[src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"]
-  link[href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-rc.2/css/select2.min.css" rel="stylesheet"]
-  script[src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-rc.2/js/select2.min.js"]
+  link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet"
+  script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"
+  script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"
+  script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"
+  link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-rc.2/css/select2.min.css" rel="stylesheet"
+  script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-rc.2/js/select2.min.js"
+
 body
   .all_body
     .col-md-7.form-group[style="float:left;"]
@@ -100,3 +103,5 @@ body
                   = mm.post
                 .col-md-3[style="padding:0;"]
                   = mm.preparation
+javascript:
+  function googleTranslateElementInit() { new google.translate.TranslateElement({pageLanguage: 'ja', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element'); }
