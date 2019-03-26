@@ -6,11 +6,11 @@ $(document).on('turbolinks:load', function() {
   reset_row_order();
 
   $('.input_select_menu').select2({
-  width:"100%",
-  placeholder: "メニューを選択してください",
+    width:"100%",
+    placeholder: "メニューを選択してください",
   });
   $('.cook_category_choice').select2({
-  placeholder: "カテゴリ"
+    placeholder: "カテゴリ"
   });
   $('.name_search').select2({
     height:"40px",
@@ -28,6 +28,11 @@ $(document).on('turbolinks:load', function() {
       reset_row_order();
   }});
 
+  $('.add_menu_details').on('click',function(){
+    setTimeout(function(){
+      $(".input_select_product").select2();
+    },1);
+  });
   //englishページ検索ajax
   $(".bento_id_search_en").val("");
   $(".bento_id_search_en").on("blur",function(){
@@ -111,8 +116,9 @@ $(document).on('turbolinks:load', function() {
   });
 
   //メニュー変更時
-  $(".used_menu_ul").on('change','.input_select_menu', function(){
+  $(".menu-area").on('change','.input_select_menu', function(){
     var id = $(this).val();
+    console.log(id);
     var u = $(".add_li_menu").index($(this).parent().parent(".add_li_menu"));
     $.ajax({
         url: "/products/get_menu_cost_price/" + id,

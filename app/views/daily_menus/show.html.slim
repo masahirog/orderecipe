@@ -17,12 +17,15 @@
         th メニュー名
         th 原価
         th 製造数
+        th 総原価
     tbody
       -@daily_menu_details.each do |dmd|
         tr
           td
             = link_to dmd.product.name,edit_product_path(dmd.product)
           td
-            = dmd.product.cost_price
+            = dmd.cost_price_per_product
           td
             = dmd.manufacturing_number
+          td
+            = dmd.total_cost_price

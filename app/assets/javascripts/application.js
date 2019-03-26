@@ -10,9 +10,16 @@
 // Read Sprockets README (https://github.com/rails/sprockets#sprockets-directives) for details
 // about supported directives.
 //
-//= require jquery
-//= require jquery_ujs
-//= require jquery-ui/widgets/sortable
+// require jquery
+// require jquery_ujs
+// require jquery-ui/widgets/sortable
+// require cocoon
+// require turbolinks
+// require_tree .
+
+//= require rails-ujs
+//= require jquery3
+//= require activestorage
 //= require cocoon
 //= require turbolinks
 //= require_tree .
@@ -22,7 +29,6 @@ $(document).on("turbolinks:before-cache", function() {
     $('.input_select_product').select2('destroy');
   }
 });
-
 
 function kanma (number) {
   var number = parseFloat(number);

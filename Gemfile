@@ -1,3 +1,7 @@
+
+
+
+
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
@@ -12,15 +16,15 @@ gem 'coffee-rails', '~> 4.2'
 gem 'turbolinks', '~> 5'
 gem 'jbuilder', '~> 2.5'
 gem "jquery-rails"
-gem 'jquery-ui-rails'
-gem 'jquery-turbolinks'
-gem 'jquery-form-rails'
+
+
+
 gem 'bootsnap', '>= 1.1.0', require: false
 gem 'slim-rails', '3.1.3'
 gem 'devise'
 gem 'kaminari'
 gem "select2-rails"
-gem 'miyabi'
+
 gem 'html2slim'
 gem 'cocoon'
 gem 'carrierwave'

@@ -14,8 +14,6 @@ $(document).on('turbolinks:load', function() {
 
   first_input_check();
   $('.input_select_product').select2({
-    width:"300px",
-    placeholder: "お弁当を選択してください"
   });
   $('.select_order_materials').select2({
     placeholder: "発注する食材を選択"

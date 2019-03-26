@@ -3,8 +3,9 @@ html
   head
     title
       | Order
-    = stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true
-    = javascript_include_tag "application", "data-turbolinks-track" => true
+    = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload'
+    = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
+
     = csrf_meta_tags
     link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet"
     script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"
@@ -49,8 +50,6 @@ html
                   ul.dropdown-menu role="menu"
                     li = link_to "棚卸し",stocks_path
                     li = link_to "保管場所",storage_locations_path
-
-
               #navbarEexample.collapse.navbar-collapse.navbar-right
                 ul.nav.navbar-nav
                   li.menu_li

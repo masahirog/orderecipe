@@ -9,7 +9,7 @@
 - else
   tr.nested-fields.item
     td.col-md-4
-      = f.collection_select :product_id, @products, :id, :name, {include_blank:true},class:'form-control product_select'
+      = f.collection_select :product_id, @products, :id, :name, {include_blank:true},class:'form-control product_select input_select_product'
     td.col-md-3
       = f.number_field :manufacturing_number, class: 'form-control'
     td.col-md-5

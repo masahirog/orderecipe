@@ -1,4 +1,3 @@
-
 $(document).on('turbolinks:load', function() {
   calculate_menu_price();
   reset_row_order();

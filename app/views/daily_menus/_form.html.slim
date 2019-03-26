@@ -14,24 +14,21 @@
     .col-md-10
       = f.number_field :total_manufacturing_number, class: 'col-md-10 form-control'
 
-  .form-group.col-md-12
-    h3 販売商品
-    .text-right
-      = link_to_add_association '商品追加', f, :daily_menu_details,
-            class: 'btn btn-default add_products',
-             data: {association_insertion_node: '#detail-association-insertion-point',
-                    association_insertion_method: 'append' }
-    table.table.table-list
-      thead
-        tr
-          th.col-md-4 メニュー名
-          th.col-md-3 製造数
-          th.col-md-5
-      tbody#detail-association-insertion-point
-        .form-group
-          = f.fields_for :daily_menu_details do |dmd|
-            = render 'daily_menu_detail_fields', f: dmd
-
+  h3 販売商品
+  .text-right
+    = link_to_add_association '商品追加', f, :daily_menu_details,
+          class: 'btn btn-default add_menu_details',
+           data: {association_insertion_node: '#daily_menu_details_area',
+                  association_insertion_method: 'append' }
+  table.table.table-list.cocoon_are
+    thead
+      tr
+        th.col-md-4 メニュー名
+        th.col-md-3 製造数
+        th.col-md-5
+    tbody#daily_menu_details_area
+      = f.fields_for :daily_menu_details do |dmd|
+        = render 'daily_menu_detail_fields', f: dmd
   .actions.col-md-12
     button type="button" onclick="submit();" class="col-md-2 col-md-offset-1 btn btn-primary"
       |登録
