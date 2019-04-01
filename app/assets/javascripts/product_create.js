@@ -28,11 +28,7 @@ $(document).on('turbolinks:load', function() {
       reset_row_order();
   }});
 
-  $('.add_menu_details').on('click',function(){
-    setTimeout(function(){
-      $(".input_select_product").select2();
-    },1);
-  });
+
   //englishページ検索ajax
   $(".bento_id_search_en").val("");
   $(".bento_id_search_en").on("blur",function(){

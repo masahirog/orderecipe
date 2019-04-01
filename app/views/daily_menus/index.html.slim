@@ -4,6 +4,8 @@ h1 献立
     - if daily_menu[0]
       div style='font-size:16px;margin-right:10px;'
         = link_to start_time.strftime("%-m月%-d日"), daily_menu_path(daily_menu[0])
+        - if daily_menu[0].fixed_flag == true
+          label style='background-color:#52AF52;color:white;padding:2px 6px;font-weight:normal;border-radius: 5px;font-size:13px;' 確定済
     - else
       div style='float:left;font-size:16px;'
         = link_to start_time.strftime("%-m月%-d日"), new_daily_menu_path(start_time:start_time)

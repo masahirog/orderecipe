@@ -6,6 +6,7 @@ class CreateDailyMenuDetails < ActiveRecord::Migration[5.2]
       t.integer :manufacturing_number, default: 0, null: false
       t.float :cost_price_per_product, default: 0, null: false
       t.integer :total_cost_price, default: 0, null: false
+      t.integer :row_order, default: 0, null: false
       t.timestamps
     end
   end

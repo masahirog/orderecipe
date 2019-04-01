@@ -18,6 +18,7 @@ ActiveRecord::Schema.define(version: 2019_03_26_005815) do
     t.integer "manufacturing_number", default: 0, null: false
     t.float "cost_price_per_product", default: 0.0, null: false
     t.integer "total_cost_price", default: 0, null: false
+    t.integer "row_order", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -25,6 +26,7 @@ ActiveRecord::Schema.define(version: 2019_03_26_005815) do
   create_table "daily_menus", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.date "start_time", null: false
     t.integer "total_manufacturing_number", default: 0, null: false
+    t.boolean "fixed_flag", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

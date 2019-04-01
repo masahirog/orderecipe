@@ -13,6 +13,10 @@
     = f.label :total_manufacturing_number,"総製造数", class: 'col-md-2 control-label text-right'
     .col-md-10
       = f.number_field :total_manufacturing_number, class: 'col-md-10 form-control'
+  .form-group.required.col-md-12
+    = f.label :fixed_flag,"確定ステータス", class: 'col-md-2 control-label text-right'
+    .col-md-10
+      = f.select :fixed_flag,[["編集中",false],["確定",true]],{}, class: 'col-md-10 form-control'
 
   h3 販売商品
   .text-right
@@ -23,9 +27,10 @@
   table.table.table-list.cocoon_are
     thead
       tr
+        th.col-md-1 No.
         th.col-md-4 メニュー名
         th.col-md-3 製造数
-        th.col-md-5
+        th.col-md-4
     tbody#daily_menu_details_area
       = f.fields_for :daily_menu_details do |dmd|
         = render 'daily_menu_detail_fields', f: dmd

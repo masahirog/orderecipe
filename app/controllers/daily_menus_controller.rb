@@ -65,6 +65,7 @@ class DailyMenusController < ApplicationController
     end
 
     def daily_menu_params
-      params.require(:daily_menu).permit(:start_time,:total_manufacturing_number,daily_menu_details_attributes: [:id,:daily_menu_id,:product_id,:manufacturing_number,:_destroy])
+      params.require(:daily_menu).permit(:start_time,:total_manufacturing_number,:fixed_flag,
+        daily_menu_details_attributes: [:id,:daily_menu_id,:product_id,:manufacturing_number,:row_order,:_destroy])
     end
 end
