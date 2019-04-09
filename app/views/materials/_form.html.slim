@@ -48,7 +48,7 @@
       .col-md-12
         = f.label :delivery_deadline, "納品"
       .col-md-8
-        = f.select :delivery_deadline,options_for_select(1..5,f.object.delivery_deadline),{}, class: "form-control"
+        = f.select :delivery_deadline,options_for_select(0..5,f.object.delivery_deadline),{}, class: "form-control"
       .col-md-4 style="margin-top:10px;padding:0;"
         | 営業日前
 
