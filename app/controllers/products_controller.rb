@@ -135,15 +135,28 @@ class ProductsController < ApplicationController
     @product = Product.find(params[:volume][:id])
     @menus = @product.menus.includes(:materials, :menu_materials)
     respond_to do |format|
-     format.html
-     format.pdf do
-       pdf = ProductPdfTest.new(@params,@product,@menus)
-       send_data pdf.render,
-         filename:    "#{@product.name}_#{params[:volume][:num]}shoku.pdf",
-         type:        "application/pdf",
-         disposition: "inline"
-     end
-   end
+      format.html
+      format.pdf do
+        pdf = ProductPdfTest.new(@params,@product,@menus)
+        send_data pdf.render,
+        filename:    "#{@product.name}_#{params[:volume][:num]}shoku.pdf",
+        type:        "application/pdf",
+        disposition: "inline"
+      end
+    end
+  end
+  def print_test_all
+    @order = Order.includes({products: {menus: :menu_materials, menus: :materials}}).find(params[:id])
+    respond_to do |format|
+      format.html
+      format.pdf do
+        pdf = ProductPdfTestAll.new(@order)
+        send_data pdf.render,
+        filename:    "#{@order.id}.pdf",
+        type:        "application/pdf",
+        disposition: "inline"
+      end
+    end
   end
   def preparation_all
     @order = Order.includes({products: {menus: :menu_materials, menus: :materials}}).find(params[:id])
@@ -163,15 +176,15 @@ class ProductsController < ApplicationController
   def product_pdf_all
     @order = Order.includes({products: {menus: :menu_materials, menus: :materials}}).find(params[:id])
     respond_to do |format|
-     format.html
-     format.pdf do
-       pdf = ProductPdfAll.new(@order)
-       send_data pdf.render,
-         filename:    "#{@order.id}.pdf",
-         type:        "application/pdf",
-         disposition: "inline"
-     end
-   end
+      format.html
+      format.pdf do
+        pdf = ProductPdfAll.new(@order)
+        send_data pdf.render,
+        filename:    "#{@order.id}.pdf",
+        type:        "application/pdf",
+        disposition: "inline"
+      end
+    end
   end
 
   def henkan
@@ -225,7 +238,7 @@ class ProductsController < ApplicationController
   end
   private
     def product_create_update
-      params.require(:product).permit(:name, :bento_id, :cook_category, :product_type, :sell_price, :description, :contents, :product_image,
+      params.require(:product).permit(:name,:memo, :bento_id, :cook_category, :product_type, :sell_price, :description, :contents, :product_image,
                       :remove_product_image, :image_cache, :cost_price, product_menus_attributes: [:id, :product_id, :menu_id,:row_order, :_destroy,
                       menu_attributes:[:name, ]])
     end

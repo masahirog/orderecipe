@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_26_005815) do
+ActiveRecord::Schema.define(version: 2019_04_10_135653) do
 
   create_table "daily_menu_details", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "daily_menu_id", null: false
@@ -188,6 +188,7 @@ ActiveRecord::Schema.define(version: 2019_03_26_005815) do
     t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.string "product_image"
     t.integer "bento_id"
+    t.text "memo"
   end
 
   create_table "stock_materials", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

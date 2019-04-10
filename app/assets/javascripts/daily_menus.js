@@ -16,6 +16,27 @@ $(document).on('turbolinks:load', function() {
       reset_row_order();
     },10);
   });
+
+  $("#daily_menu_details_area").on("blur",'.make_dailymenu_bento_id_search',function(){
+    var bento_id =  parseInt($(this).val());
+    var inp = $(this).parent().parent().find(".input_select_product")
+    $.ajax({
+      url: "/orders/get_bento_id",
+      data: { bento_id : bento_id },
+      dataType: "json",
+      async: false
+    })
+    .done(function(data){
+      if (data) {
+        var id = parseInt(data.id)
+        inp.val(id).change();
+      }else{
+        inp.val("").change();
+      }
+    });
+  });
+
+
   //並び替え
   function reset_row_order(){
     var u = 0

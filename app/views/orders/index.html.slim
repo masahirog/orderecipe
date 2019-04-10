@@ -29,4 +29,6 @@ ul.list-group style="list-style-type: none;"
         = link_to "レシピ印刷","/products/product_pdf_all/#{order.id}.pdf",class:"btn btn-success",:target=>"_blank",style:"margin:3px;"
         = link_to "仕込印刷","/products/preparation_all/#{order.id}.pdf",class:"btn btn-warning",:target=>"_blank",style:"margin:3px;"
         = link_to "発注詳細", "/orders/#{order.id}",class:"order btn btn-primary",style:"margin:3px;"
+        = link_to "仕込み表テスト","/products/print_test_all/#{order.id}.pdf",class:"btn btn-danger",:target=>"_blank",style:"margin:3px;"
+
 = paginate @orders

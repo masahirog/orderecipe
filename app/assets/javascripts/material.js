@@ -108,12 +108,12 @@ $(document).on('turbolinks:load', function() {
   };
 
   function check_order_unit(input_order_unit_quantity,order_unit){
-    $(".calculated_price_label").text(input_order_unit_quantity+order_unit+"あたりの仕入価格").css('background-color','#F6CECE');
+    $(".calculated_price_label").text(input_order_unit_quantity+order_unit+"あたりの仕入価格(税抜き)").css('background-color','#F6CECE');
     $(".calculated_value_label").text(input_order_unit_quantity+order_unit+"あたりの分量").css('background-color','#F6CECE');
   };
   function check_recipe_unit(recipe_unit){
     $(".calculated_value_unit").text(recipe_unit);
-    $(".cost_unit_label").text("単位単価(１"+recipe_unit+"あたりの価格)");
+    $(".cost_unit_label").text("単位単価(１"+recipe_unit+"あたりの価格 税抜き)");
   };
 
   function addInput(){

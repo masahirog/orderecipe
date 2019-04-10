@@ -36,11 +36,15 @@
     .col-md-12.form-group
       .col-md-12
         = f.label :description, "説明文"
-        = f.text_area :description, class:"form-control", style:"height:10em;"
+        = f.text_area :description, class:"form-control", style:"height:7em;"
     .col-md-12.form-group
       .col-md-12
         = f.label :contents, "内容物"
-        = f.text_area :contents, class:"form-control", style:"height:10em;"
+        = f.text_area :contents, class:"form-control", style:"height:7em;"
+    .col-md-12.form-group
+      .col-md-12
+        = f.label :memo, "メモ（変更履歴等）"
+        = f.text_area :memo, class:"form-control", style:"height:7em;"
     .col-md-12.form-group
       .col-md-5
         = f.label :sell_price, "販売価格"
