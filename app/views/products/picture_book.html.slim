@@ -22,8 +22,8 @@ ol.breadcrumb
     p 　
     |  　
     = submit_tag "検索" ,class:"btn btn-primary"
-/ .col-md-12
-/   = paginate @search
+.col-md-12
+  = paginate @products
 .clearfix
   - @products.each do |product|
     = link_to product_path(product) do
@@ -35,3 +35,5 @@ ol.breadcrumb
             = image_tag 'noimage.png',style:'max-height:160px;max-width: 100%;'
         .text-center style='width:100%;height:20px;white-space:nowrap;overflow: hidden;text-overflow:ellipsis;'
           = product.name
+.col-md-12
+  = paginate @products

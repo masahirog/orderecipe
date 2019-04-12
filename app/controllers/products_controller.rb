@@ -221,7 +221,7 @@ class ProductsController < ApplicationController
   end
 
   def picture_book
-    @products = Product.search(params).page(params[:page]).per(50)
+    @products = Product.search(params).page(params[:page]).per(100)
   end
 
   def make_band
