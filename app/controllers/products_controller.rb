@@ -220,6 +220,10 @@ class ProductsController < ApplicationController
    end
   end
 
+  def picture_book
+    @products = Product.search(params).page(params[:page]).per(50)
+  end
+
   def make_band
 
   end

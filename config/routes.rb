@@ -41,7 +41,11 @@ Rails.application.routes.draw do
   resources :menus do
     put :sort
   end
-  resources :products
+  resources :products do
+    collection do
+      get :picture_book
+    end
+  end
   resources :tops
   resources :vendors
   resources :materials
