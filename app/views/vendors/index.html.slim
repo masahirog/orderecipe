@@ -1,48 +1,27 @@
 .form-inline.col-md-12[style="padding:10px;"]
-  h3
-    | 仕入先企業の新規登録 
-    a[href="/vendors/new"]
-      span.glyphicon.glyphicon-plus-sign[aria-hidden="true"]
+  = link_to '新規登録',new_vendor_path,class:'btn btn-primary'
 
-div
-  .col-md-12[style="padding:10px;"]
-    .col-md-2
-      | 企業名
-    .col-md-1
-      | TEL
-    .col-md-1
-      | FAX
-    .col-md-1
-      | mail
-    .col-md-1
-      | 郵便番号
-    .col-md-1
-      | 住所
-    .col-md-1
-      | 担当者
-    .col-md-1
-      | 担当TEL
-    .col-md-1
-      | 担当mail
-  ul.list-group[style="list-style-type: none;"]
+table.table
+  thead
+    tr
+      th 企業名
+      th TEL
+      th FAX
+      th mail
+      th 郵便番号
+      th 住所
+      th 担当者
+      th 担当TEL
+      th 担当mail
+  tbody
     - @vendors.each do |vendor|
-      li.li-active.vendors_li.col-md-12.list-group-item
-        .vendor_name.col-md-2
-          = link_to "#{vendor.company_name}",
-          -          "/vendors/#{vendor.id}/edit"
-        .col-md-1
-          = vendor.company_phone
-        .col-md-1
-          = vendor.company_fax
-        .col-md-1
-          = vendor.company_mail
-        .col-md-1
-          = vendor.zip
-        .col-md-1
-          = vendor.address
-        .col-md-1
-          = vendor.staff_name
-        .col-md-1
-          = vendor.staff_phone
-        .col-md-1
-          = vendor.staff_mail
+      tr
+        td = link_to vendor.company_name,edit_vendor_path(vendor)
+        td = vendor.company_phone
+        td = vendor.company_fax
+        td = vendor.company_mail
+        td = vendor.zip
+        td = vendor.address
+        td = vendor.staff_name
+        td = vendor.staff_phone
+        td = vendor.staff_mail

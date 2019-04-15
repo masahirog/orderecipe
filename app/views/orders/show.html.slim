@@ -10,12 +10,12 @@
       .col-md-2
         = link_to "レシピ印刷",products_pdfs_orders_path(order_id:@order.id, :format => :pdf),class:"btn btn-default",:target=>"_blank",style:"font-size:8px;"
       .col-md-2
-        = link_to "仕込み表印刷","/products/preparation_all/#{@order.id}.pdf",class:"btn btn-default",style:"font-size:8px;",:target=>"_blank"
+        = link_to "仕込み表印刷",preparation_all_products_path(id:@order.id,format:'pdf'),class:"btn btn-default",style:"font-size:8px;",:target=>"_blank"
     ul.list-group.panel-body style="list-style:none;"
       - @order.order_products.each do |op|
         li.col-md-12.list-group-item
           .col-md-4
-            =  link_to "#{Product.find(op.product_id).name}","/products/#{op.product_id}"
+            =  link_to Product.find(op.product_id).name,product_path(op.product)
           .col-md-2
             = "#{op.serving_for}食"
           .col-md-2
@@ -26,7 +26,7 @@
               = number_field(:volume,:num,value:op.serving_for,id:"amount_number_input",style:"display:none;")
               input.btn.btn-primary type="button" onclick="submit();" value="印刷ページ"
           .col-md-2
-            = link_to "盛付用VIEW", "/products/serving_detail/#{op.product_id}",method:"get", class:"btn btn-success",:target=>"_blank"
+            = link_to "盛付用VIEW", serving_detail_products_path(id:op.product_id), class:"btn btn-success",:target=>"_blank"
 .col-md-12
   = form_tag({:controller => "orders", :action => "order_print", format: "pdf"},{:target => "_blank"}) do
     .col-md-2.col-md-offset-5
@@ -68,4 +68,4 @@
           .col-md-2
             = om.delivery_date
 .col-md-12 style="margin-bottom:30px;"
-  = button_to '発注内容の編集', "/orders/#{@order.id}/edit", method: :get,class: "btn btn-default"
+  = link_to '発注内容の編集',edit_order_path(@order),class: "btn btn-default"

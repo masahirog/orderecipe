@@ -1,7 +1,6 @@
 ol.breadcrumb
-  li
-    a href="/" ホーム
-  li.active お弁当一覧
+  li = link_to 'ホーム',root_path
+  li お弁当一覧
 = form_tag picture_book_products_path, :method => 'get', class:"form-group col-md-12" do
   .kensaku.col-md-1
     p bentoID▼

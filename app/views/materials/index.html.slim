@@ -35,7 +35,7 @@ table.table
   - @search.each do |material|
     tr.materials_li
       td.material_name
-        =link_to "#{material.name}", "/materials/#{material.id}/edit"
+        = link_to material.name, edit_material_path(material)
       td
         = "#{material.cost_price} 円/#{material.calculated_unit}"
       td
@@ -51,7 +51,7 @@ table.table
       td.end_of_sales
         = "終売" if material.end_of_sales == 1
       td style="text-align:center;"
-        = button_to "確認", "/materials/include_material/#{material.id}", method: :get,class:"btn btn-default btn-sm"
+        = link_to '確認',include_material_materials_path(id:material.id),class:"btn btn-default btn-sm"
 - if @search.size == 0 then
   p
     | 該当する食材・資材が存在しません

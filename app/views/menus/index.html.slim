@@ -1,7 +1,6 @@
 ol.breadcrumb
-  li
-    a href="/" ホーム
-  li.active メニュー一覧
+  li = link_to 'ホーム',root_path
+  li メニュー一覧
 .col-md-12 style="padding:10px;"
   .col-md-2
     = link_to '新規作成',new_menu_path,class:'btn btn-primary'
@@ -44,10 +43,8 @@ table.table
           = "#{menu.cost_price}円"
         td.text-right
           = "#{menu.menu_materials.sum(:calorie).round(2)}kcal"
-        td
-          = link_to "CSV", "/menus/#{menu.id}.csv", class: "btn btn-default"
-        td.text-right
-          =button_to "確認", "/menus/include_menu/#{menu.id}", method: :get,class:"btn btn-default btn-sm"
+        td = link_to "CSV", menu_path(id:menu.id,format: 'csv'), class: "btn btn-default"
+        td.text-right = link_to '確認',include_menu_menus_path(id:menu.id),class:"btn btn-default btn-sm"
 - if @search.size == 0 then
   p 該当するメニューは存在しません
 = paginate @search

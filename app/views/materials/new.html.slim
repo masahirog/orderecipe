@@ -1,10 +1,5 @@
 ol.breadcrumb
-  li
-    a[href="/"]
-      | ホーム
-  li
-    a[href="/materials"]
-      | 食材資材一覧
-  li.active
-    | 新規作成
+  li = link_to 'ホーム',root_path
+  li = link_to "食材資材一覧",materials_path
+  li 新規作成
 = render 'form', path: materials_path, method: :post, locals: {edit_flag:false}

@@ -13,10 +13,11 @@ ol.breadcrumb
         = number_field(:volume,:id,value:params[:id],style:"display:none;")
         = number_field(:volume,:num,class:"form-control text-right",id:"amount_number_input",placeholder:"食数を入力")
         input.btn.btn-primary[type="button" onclick="submit();" value="印刷ページ" style="margin:0 0 0 10px;"]
-      = button_to 'お弁当を編集', "/products/#{@product.id}/edit", method: :get,class: "btn btn-success",style:'margin:0 0 0 10px;float:left;'
-      = link_to "盛付用VIEW", "/products/serving_detail/#{@product.id}",method:"get", class:"btn btn-default",:target=>"_blank", style:"margin:0 0 0 10px;float:left;"
-      = link_to "ラムさん", "/products/serving_detail_en/#{@product.id}",method:"get", class:"btn btn-default",:target=>"_blank", style:"margin:0 0 0 10px;float:left;"
+      = link_to 'お弁当を編集',edit_product_path(@product),class: "btn btn-success",style:'margin:0 0 0 10px;float:left;'
+      = link_to "盛付用VIEW", serving_detail_products_path(id:@product.id), class:"btn btn-default",:target=>"_blank", style:"margin:0 0 0 10px;float:left;"
+      = link_to "ラムさん", serving_detail_en_products_path(id:@product.id), class:"btn btn-default",:target=>"_blank", style:"margin:0 0 0 10px;float:left;"
       = link_to 'コピー', new_product_path(product_id:@product.id,copy_flag:true) , class:"btn btn-default",:target=>"_blank", style:"margin:0 0 0 10px;float:left;"
+
       = form_tag({:controller => "products", :action => "print_test", format: "pdf"},{:target => "_blank",style:'float:left;margin:0 0 0 10px;'}) do
         = number_field(:volume,:id,value:params[:id],style:"display:none;")
         = number_field(:volume,:num,class:"form-control text-right",id:"amount_number_input",placeholder:"食数を入力")
@@ -82,7 +83,7 @@ ul.list-group[style="list-style-type:none;"]
   - @product.product_menus.each do |pm|
     li.first_tr.table_tr.col-md-12.list-group-item[style="padding:5px;"]
       .first_tr_td.col-md-2
-        div = link_to "#{pm.menu.name}", "/menus/#{pm.menu.id}/edit"
+        div = link_to pm.menu.name, edit_menu_path(pm.menu)
         div = "#{pm.menu.menu_materials.sum(:calorie).round(2)}kcal"
       .col-md-1
         = pm.menu.cost_price
@@ -97,7 +98,7 @@ ul.list-group[style="list-style-type:none;"]
           - pm.menu.menu_materials.each do |mm|
             li.menu_materials.col-md-12
               .col-md-4[style="padding:0;"]
-                = link_to mm.material.name, "/materials/#{mm.material_id}/edit"
+                = link_to mm.material.name, edit_material_path(mm.material)
               .original_amount_used.text-right.col-md-2
                 = mm.amount_used
                 = mm.material.calculated_unit

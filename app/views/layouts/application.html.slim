@@ -30,9 +30,9 @@ html
             - if user_signed_in?
               ul.nav.navbar-nav
                 li.menu_li
-                  a href="/daily_menus" 献立
+                  = link_to "献立",daily_menus_path
                 li.menu_li
-                  a href="/orders" 発注
+                  = link_to "発注",orders_path
                 li.dropdown
                   a.dropdown-toggle href="#" data-toggle="dropdown" role="button"
                     |お弁当
@@ -42,11 +42,11 @@ html
                     li = link_to "お弁当図鑑",picture_book_products_path
 
                 li.menu_li
-                  a href="/menus" メニュー
+                  = link_to "メニュー",menus_path
                 li.menu_li
-                  a href="/materials" 食材・資材
+                  = link_to "食材・資材",materials_path
                 li.menu_li
-                  a href="/vendors" 仕入先
+                  = link_to "仕入先",vendors_path
                 li.dropdown
                   a.dropdown-toggle href="#" data-toggle="dropdown" role="button"
                     |棚卸し
@@ -55,7 +55,7 @@ html
                     li = link_to "棚卸し",stocks_path
                     li = link_to "保管場所",storage_locations_path
                 li.menu_li
-                  = link_to '月次計算',orders_monthly_path(year:Date.today.year,month:Date.today.month)
+                  = link_to '月次計算',monthly_orders_path(year:Date.today.year,month:Date.today.month)
 
               #navbarEexample.collapse.navbar-collapse.navbar-right
                 ul.nav.navbar-nav

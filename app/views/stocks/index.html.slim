@@ -1,8 +1,7 @@
 ol.breadcrumb
-  li
-    a href="/" ホーム
-  li.active 在庫管理トップ
-h3 食材資材の新規登録
+  li = link_to 'ホーム',root_path
+  li 在庫管理トップ
+
 = link_to "新規作成",new_stock_path,class:'btn btn-primary'
 table.table
   thead

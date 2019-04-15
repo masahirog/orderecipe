@@ -1,3 +1,4 @@
+
 .col-md-6
   h4
     |材料名「
@@ -29,7 +30,7 @@
         .col-md-1.menu_check
           input.form-control type="checkbox"
         .col-md-3
-          =link_to "#{mm.menu.name}", "/menus/#{mm.menu.id}", method: :get
+          = link_to mm.menu.name,edit_menu_path(mm.menu)
         .col-md-2
           = mm.amount_used
           = mm.material.calculated_unit

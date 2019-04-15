@@ -1,12 +1,5 @@
 ol.breadcrumb
-  li
-    a[href="/"]
-      | ホーム
-  li
-    a[href="/menus"]
-      | メニュー一覧
-  li
-    = link_to "#{@menu.name}","/menus/#{@menu.id}"
-  li.active
-    | 編集
-= render 'form', path: edit_menu_path, method: :post
+  li = link_to 'ホーム',root_path
+  li = link_to "メニュー一覧",menus_path
+  li 編集
+= render 'form', path: edit_menu_path

@@ -1,10 +1,5 @@
 ol.breadcrumb
-  li
-    a[href="/"]
-      | ホーム
-  li
-    a[href="/stocks"]
-      | 棚卸しトップ
-  li.active
-    | 新規
+  li = link_to 'ホーム',root_path
+  li = link_to '在庫管理トップ',stocks_path
+  li 新規
 == render 'form'

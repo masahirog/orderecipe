@@ -1,10 +1,5 @@
 ol.breadcrumb
-  li
-    a[href="/"]
-      | ホーム
-  li
-    a[href="/menus"]
-      | メニュー一覧
-  li.active
-    | 新規作成
-= render 'form', path: menus_path, method: :post, locals: {edit_flag:false}
+  li = link_to 'ホーム',root_path
+  li = link_to "メニュー一覧",menus_path
+  li 新規作成
+= render 'form', path: menus_path, locals: {edit_flag:false}

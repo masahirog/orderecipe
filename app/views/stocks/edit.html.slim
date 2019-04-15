@@ -1,8 +1,5 @@
 ol.breadcrumb
-  li
-    a href="/" ホーム
-  li
-    a href="/stocks" 在庫管理トップ
-  li.active
-    編集
+  li = link_to 'ホーム',root_path
+  li = link_to '在庫管理トップ',stocks_path
+  li 編集
 == render 'form'

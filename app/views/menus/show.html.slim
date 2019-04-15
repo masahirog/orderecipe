@@ -1,15 +1,10 @@
 ol.breadcrumb
-  li
-    a href="/"
-      | ホーム
-  li
-    a href="/menus"
-      | メニュー一覧
-  li.active
-    = @menu.name
+  li = link_to 'ホーム',root_path
+  li = link_to "メニュー一覧",menus_path
+  li = @menu.name
 .col-md-12.form-inline style="margin-bottom:20px;"
-  = link_to 'メニュー編集', "/menus/#{@menu.id}/edit", method: :get,class: "btn btn-primary pull-right"
-  = link_to "印刷する", "/menus/print/#{@menu.id}.pdf",method:"get", class:"btn btn-success pull-right",:target=>"_blank", style:"margin:0 20px 0 10px;"
+  = link_to 'メニュー編集', edit_menu_path(@menu), method: :get,class: "btn btn-primary pull-right"
+  = link_to "印刷する",print_menus_path(id:@menu.id,:format => :pdf),method:"get", class:"btn btn-success pull-right",:target=>"_blank", style:"margin:0 20px 0 10px;"
   button.btn.btn-default.pull-right type="button" data-toggle="modal" data-target="#sampleModal" style="margin:0 10px 0 0px;" コピーする
   #sampleModal.modal.fade[tabindex="-1"]
     .modal-dialog
@@ -70,11 +65,11 @@ div
     - @menu.menu_materials.each do |mm|
       li.list-group-item.col-md-12
         .col-md-2
-          = link_to mm.material.name, "/materials/#{mm.material.id}/edit", method: :get
+          = link_to mm.material.name, edit_material_path(mm.material)
         .col-md-1
           = "#{mm.material.cost_price}円"
         .col-md-2
-          = link_to mm.material.vendor.company_name, "/vendors/#{mm.material.vendor.id}", method: :get
+          = mm.material.vendor.company_name
         .col-md-1
           = mm.amount_used
           = mm.material.calculated_unit

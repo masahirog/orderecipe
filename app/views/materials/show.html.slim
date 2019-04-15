@@ -1,12 +1,7 @@
 ol.breadcrumb
-  li
-    a href="/"
-      | ホーム
-  li
-    a href="/materials"
-      | 食材資材一覧
-  li.active
-    = @material.name
+  li = link_to 'ホーム',root_path
+  li = link_to "食材資材一覧",materials_path
+  li = @material.name
 div
   .active.col-md-12 style="padding:10px"
     .col-md-3

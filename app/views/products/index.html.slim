@@ -1,9 +1,7 @@
 ol.breadcrumb
-  li
-    a[href="/"]
-      | ホーム
-  li.active
-    | お弁当一覧
+  li = link_to 'ホーム',root_path
+  li = link_to 'お弁当一覧',products_path
+
 .col-md-12
   .col-md-1
     = link_to '新規作成',new_product_path,class:'btn btn-primary'
@@ -47,9 +45,9 @@ table.table
         td = product.product_type
         td.text-right = "#{product.sell_price}円"
         td.price.text-right = "#{product.cost_price}円"
-        td = link_to "ラム", "/products/serving_detail_en/#{product.id}",method:"get", class:"btn btn-default",:target=>"_blank", style:"margin:0 0 0 10px;"
-        td = link_to "帯作成", "/products/new_band/#{product.id}.pdf",method:"get", class:"btn btn-default",:target=>"_blank"
-        td = link_to "CSV", "/products/#{product.id}.csv", class: "btn btn-default"
+        td = link_to "ラム", serving_detail_en_products_path(id:product.id), class:"btn btn-default",:target=>"_blank", style:"margin:0 0 0 10px;"
+        td = link_to "帯作成", new_band_products_path(id:product.id,format:'pdf'), class:"btn btn-default",:target=>"_blank"
+        td = link_to "CSV", product_path(product,format:'csv'), class: "btn btn-default"
         td = image_tag product.product_image.thumb.url if product.product_image.present?
 
 - if @search.size == 0 then
