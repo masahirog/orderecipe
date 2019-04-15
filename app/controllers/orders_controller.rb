@@ -190,6 +190,21 @@ class OrdersController < ApplicationController
    end
   end
 
+  def products_pdfs
+    order = Order.includes({products: {menus: :menu_materials, menus: :materials}}).find(params[:order_id])
+    respond_to do |format|
+      format.html
+      format.pdf do
+        pdf = ProductPdfAll.new(order.id,'orders')
+        send_data pdf.render,
+        filename:    "#{order.id}.pdf",
+        type:        "application/pdf",
+        disposition: "inline"
+      end
+    end
+  end
+
+
   def get_bento_id
     @product = Product.find_by(bento_id: params[:bento_id])
     respond_to do |format|

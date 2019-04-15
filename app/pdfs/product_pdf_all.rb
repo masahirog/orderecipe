@@ -1,21 +1,38 @@
 
 class ProductPdfAll < Prawn::Document
-  def initialize(order)
+  def initialize(id,controller)
+
     # 初期設定。ここでは用紙のサイズを指定している。
     super(
       page_size: 'A4',
       page_layout: :landscape)
     #日本語のフォント
     font "vendor/assets/fonts/ipaexm.ttf"
-    max_i = order.order_products.length
-    order.order_products.each_with_index do |op,i|
-      product = op.product
-      menus = op.product.menus
-      num = op.serving_for
-      header_date(op)
-      header_table(product,num)
-      table_content(menus,op)
-      start_new_page if i<max_i-1
+    if controller == 'daily_menus'
+      daily_menu = DailyMenu.find(id)
+
+      max_i = daily_menu.daily_menu_details.length
+      daily_menu.daily_menu_details.each_with_index do |dmd,i|
+        product = dmd.product
+        menus = product.menus
+        num = dmd.manufacturing_number
+        header_date(daily_menu.start_time)
+        header_table(product,num)
+        table_content(menus,num)
+        start_new_page if i<max_i-1
+      end
+    else
+      order = Order.find(id)
+      max_i = order.order_products.length
+      order.order_products.each_with_index do |op,i|
+        product = op.product
+        menus = product.menus
+        num = op.serving_for
+        header_date(op.make_date)
+        header_table(product,num)
+        table_content(menus,num)
+        start_new_page if i<max_i-1
+      end
     end
   end
 
@@ -40,16 +57,16 @@ class ProductPdfAll < Prawn::Document
     end
   end
 
-  def header_date(op)
+  def header_date(date)
     bounding_box([0, 525], :width => 200) do
-      text "#{Date.parse(op.make_date).strftime("%Y年%-m月%-d日(#{%w(日 月 火 水 木 金 土)[Date.parse(op.make_date).wday]})")}", size: 12,leading: 3
+      text "#{Date.parse(date.to_s).strftime("%Y年%-m月%-d日(#{%w(日 月 火 水 木 金 土)[Date.parse(date.to_s).wday]})")}", size: 12,leading: 3
     end
   end
 
 
-  def table_content(menus,op)
+  def table_content(menus,num)
     bounding_box([0, 485], :width => 765) do
-      table line_item_rows(menus,op) do
+      table line_item_rows(menus,num) do
       cells.padding = 2
       cells.borders = [:bottom]
       cells.border_width = 0.2
@@ -61,8 +78,8 @@ class ProductPdfAll < Prawn::Document
       end
     end
   end
-  def line_item_rows(menus,op)
-    data= [["メニュー名","調理メモ","盛付メモ","食材・資材",{:content => "仕込み内容", :colspan => 2},"1人分","使用原価","","#{op.serving_for}人分"]]
+  def line_item_rows(menus,num)
+    data= [["メニュー名","調理メモ","盛付メモ","食材・資材",{:content => "仕込み内容", :colspan => 2},"1人分","使用原価","","#{num}人分"]]
     menus.each do |menu|
       u = menu.materials.length
       recipe_mozi = menu.recipe.length
@@ -80,10 +97,10 @@ class ProductPdfAll < Prawn::Document
           data << [{:content => "#{menu.name}", :rowspan => u, size: recipe_size},{:content => "#{menu.recipe}", :rowspan => u, size: recipe_size},
             {:content => "#{menu.serving_memo}", :rowspan => u, size: recipe_size },{:content => "#{mm.material.name}", size: recipe_size },{:content => "#{mm.post}", size: recipe_size },{:content => "#{mm.preparation}", size: recipe_size },
             {:content => "#{mm.amount_used} #{mm.material.calculated_unit}", size: recipe_size },{:content => "#{(mm.material.cost_price * mm.amount_used).round(1)}", size: recipe_size },
-          "",{:content => "#{((mm.amount_used * op.serving_for.to_i).round).to_s(:delimited)} #{mm.material.calculated_unit}", size: recipe_size }]
+          "",{:content => "#{((mm.amount_used * num.to_i).round).to_s(:delimited)} #{mm.material.calculated_unit}", size: recipe_size }]
         else
           data << [{:content => "#{mm.material.name}", size: recipe_size },{:content => "#{mm.post}", size: recipe_size },{:content => "#{mm.preparation}", size: recipe_size },{:content => "#{mm.amount_used} #{mm.material.calculated_unit}", size: recipe_size },
-            {:content => "#{(mm.material.cost_price * mm.amount_used).round(1)}", size: recipe_size },"",{:content => "#{((mm.amount_used * op.serving_for.to_i).round).to_s(:delimited)} #{mm.material.calculated_unit}", size: recipe_size }]
+            {:content => "#{(mm.material.cost_price * mm.amount_used).round(1)}", size: recipe_size },"",{:content => "#{((mm.amount_used * num.to_i).round).to_s(:delimited)} #{mm.material.calculated_unit}", size: recipe_size }]
         end
       end
     end

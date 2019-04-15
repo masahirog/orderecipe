@@ -1,28 +1,24 @@
 ol.breadcrumb
   li
     a href="/" ホーム
-  li.active
-    食材資材一覧
-h3 食材資材の新規登録
-a.btn.btn-primary href="/materials/new" 新規作成
-.col-md-12
-  = form_tag Material, :method => 'get' do
+  li.active 食材資材一覧
+
+.col-md-12.form-group
+  .col-md-2
+    = link_to '新規作成', new_material_path,class:'btn btn-primary float-left'
+  = form_tag materials_path, :method => 'get' do
     .col-md-2
-      label 食材・資材名：
-      = text_field_tag :name, params[:name], class:"form-control"
+      = text_field_tag :name, params[:name], class:"form-control",placeholder:'食材・資材名'
     .col-md-2
-      label 発注名：
-      = text_field_tag :order_name, params[:order_name], class:"form-control"
+      = text_field_tag :order_name, params[:order_name], class:"form-control",placeholder:'発注名'
     .col-md-2
-      label 仕入先：
-      = select_tag :vendor_id, options_from_collection_for_select(Vendor.all, :id, :company_name),include_blank: true, class: "form-control"
+      = select_tag :vendor_id, options_from_collection_for_select(Vendor.all, :id, :company_name,params[:vendor_id]),include_blank: true, class: "form-control"
     .col-md-2
-      label 管理コード：
-      = text_field_tag :order_code, params[:order_code], class:"form-control"
+      = text_field_tag :order_code, params[:order_code], class:"form-control",placeholder:'管理コード'
     .col-md-1
-      label 終売：
-      = select :end_of_sales, :value, [["販売のみ", 0], ["終売のみ", 1]], {include_blank: true},class:"form-control"
-    .kensaku.form-group.col-md-1
+      = select_tag :end_of_sales, options_for_select([["販売のみ", 0], ["終売のみ", 1]],params[:end_of_sales]), include_blank: true, class:"form-control"
+
+    .kensaku.col-md-1
       label 　
       = submit_tag "検索" ,class:"btn btn-primary"
 .col-md-12
@@ -30,6 +26,7 @@ a.btn.btn-primary href="/materials/new" 新規作成
 table.table
   tr style="padding:10px;"
     th 食材・資材名
+    th 単価
     th メモ
     th 発注単位
     th 仕入先
@@ -39,6 +36,8 @@ table.table
     tr.materials_li
       td.material_name
         =link_to "#{material.name}", "/materials/#{material.id}/edit"
+      td
+        = "#{material.cost_price} 円/#{material.calculated_unit}"
       td
         = material.memo
       td

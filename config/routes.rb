@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   devise_for :users
 
-  root 'top#index'
+  root 'daily_menus#index'
   get 'menus/get_cost_price/:id' => 'menus#get_cost_price'
   get 'products/get_menu_cost_price/:id' => 'products#get_menu_cost_price'
   get 'products/serving_detail/:id' => 'products#serving_detail'
@@ -18,7 +18,7 @@ Rails.application.routes.draw do
   post'orders/order_print/:id' => 'orders#order_print'
   get 'products/get_by_category' => 'products#get_by_category'
   get 'products/preparation_all/:id' => 'products#preparation_all'
-  get 'products/product_pdf_all/:id' => 'products#product_pdf_all'
+  # get 'products/product_pdf_all/:id' => 'products#product_pdf_all'
   get 'products/print_test_all/:id' => 'products#print_test_all'
   post 'products/hyoji' => 'products#hyoji'
   post "products/henkan" => "products#henkan"
@@ -49,8 +49,17 @@ Rails.application.routes.draw do
   resources :tops
   resources :vendors
   resources :materials
-  resources :orders
-  resources :daily_menus
+  resources :orders do
+    collection do
+      get :products_pdfs
+    end
+  end
+  resources :daily_menus do
+    collection do
+      get :products_pdfs
+    end
+  end
+
   resources :versions
   resources :food_additives
   resources :stocks

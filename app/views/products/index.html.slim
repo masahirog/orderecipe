@@ -4,67 +4,54 @@ ol.breadcrumb
       | ホーム
   li.active
     | お弁当一覧
-.form-inline.col-md-12[style=""]
-  h3
-    | お弁当の新規登録
-    a[href="/products/new"]
-      span.glyphicon.glyphicon-plus-sign[aria-hidden="true"]
-div[style=""]
-  = form_tag Product, :method => 'get', class:"form-group col-md-12" do
-    .kensaku.col-md-1
-      p
-        | bentoID▼
-      = text_field_tag :bento_id, params[:bento_id], class:"id_search form-control",style:"width:100%"
-    .kensaku.col-md-3
-      p
-        | お弁当名▼
-      = select_tag :name, options_from_collection_for_select(Product.select(:name),:name,:name),include_blank: true, class:"name_search form-control"
-    .kensaku.col-md-2
-      p
-        | 調理カテゴリー▼
-      = select_tag :cook_category, options_from_collection_for_select(Product.select(:cook_category).uniq, :cook_category, :cook_category), include_blank: true, class: "form-control",style:"width:100%"
-    .kensaku.col-md-2
-      p
-        | お弁当タイプ▼
-      = select_tag :product_type, options_from_collection_for_select(Product.select(:product_type).uniq, :product_type, :product_type), include_blank: true, class: "form-control",style:"width:100%"
-    .kensaku.col-md-2
-      p
-        | 並び替え▼
+.col-md-12
+  .col-md-1
+    = link_to '新規作成',new_product_path,class:'btn btn-primary'
+  = form_tag Product, :method => 'get' do
+    .col-md-1
+      = text_field_tag :bento_id, params[:bento_id], class:"id_search form-control",style:"width:100%",placeholder:'bentoID'
+    .col-md-3
+      = select_tag :name,options_for_select(Product.pluck(:name)),include_blank: true, class:"name_search form-control"
+    .col-md-2
+      = select_tag :cook_category, options_for_select(Product.pluck(:cook_category).uniq.reject(&:blank?),params[:cook_category]), include_blank: true, class: "form-control",style:"width:100%"
+    .col-md-2
+      = select_tag :product_type, options_for_select(Product.pluck(:product_type).uniq.reject(&:blank?),params[:product_type]), include_blank: true, class: "form-control",style:"width:100%"
+    .col-md-2
       = select_tag :order,options_for_select([['原価高い順','cost_price DESC'],['原価低い順','cost_price ASC']],params[:order]), include_blank: true, class:"form-control",style:"width:150px;"
-    .kensaku.col-md-2
-      p
-        | 　
-      |  　
+    .col-md-1
       = submit_tag "検索" ,class:"btn btn-primary"
 .col-md-12
   = paginate @search
-div
-  .col-md-12[style="padding:10px;"]
-    .col-md-1
-      | bentoID
-    .col-md-2
-      | 弁当名
-    .col-md-1
-      | カテゴリ
-    .col-md-1
-      | 弁当種類
-    .col-md-1
-      | 販売価格
-    .col-md-1
-      | 原価(税込)
-    .col-md-1
-      | 終売食材✔
-    .col-md-1
-      | ラムちゃん
-    .col-md-1
-      | Daily帯
-    .col-md-1
-      | csv
-    .col-md-1
-      | 画像
-  ul.aaaad.list-group[style="list-style-type: none;"]
-    = render partial: 'li', locals: { search: @search }
+table.table
+  thead
+    tr
+      td bentoID
+      td 弁当名
+      td カテゴリ
+      td 弁当種類
+      td 販売価格
+      td 原価(税込)
+      td ラムちゃん
+      td Daily帯
+      td csv
+      td 画像
+
+  tbody.aaaad
+    - @search.each do |product|
+      tr.products_li
+        td.product_id[style="display:none;"]
+          = product.id
+        td = product.bento_id
+        td.product_name = link_to "#{product.name}", "/products/#{product.id}/"
+        td = product.cook_category
+        td = product.product_type
+        td.text-right = "#{product.sell_price}円"
+        td.price.text-right = "#{product.cost_price}円"
+        td = link_to "ラム", "/products/serving_detail_en/#{product.id}",method:"get", class:"btn btn-default",:target=>"_blank", style:"margin:0 0 0 10px;"
+        td = link_to "帯作成", "/products/new_band/#{product.id}.pdf",method:"get", class:"btn btn-default",:target=>"_blank"
+        td = link_to "CSV", "/products/#{product.id}.csv", class: "btn btn-default"
+        td = image_tag product.product_image.thumb.url if product.product_image.present?
+
 - if @search.size == 0 then
-  p
-    | 該当するお弁当が存在しません
+  | 該当するお弁当が存在しません
 = paginate @search

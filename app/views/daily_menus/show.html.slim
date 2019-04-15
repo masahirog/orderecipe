@@ -10,22 +10,23 @@
 .form-group.col-md-12.clearfix
   h3 style='float:left;' 献立
   = link_to "編集する", edit_daily_menu_path(@daily_menu),class:'btn btn-primary',style:'float:left;margin-left:20px;margin-top:10px;'
+  = link_to "レシピ印刷",products_pdfs_daily_menus_path(daily_menu_id:@daily_menu.id, :format => :pdf),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
   = link_to "発注開始", new_order_path(daily_menu_id:@daily_menu.id),class:'btn btn-success',style:'float:left;margin-left:20px;margin-top:10px;'
-  table.table.table-list
-    thead
+table.table.table-list
+  thead
+    tr
+      th メニュー名
+      th 原価
+      th 製造数
+      th 総原価
+  tbody
+    -@daily_menu_details.each do |dmd|
       tr
-        th メニュー名
-        th 原価
-        th 製造数
-        th 総原価
-    tbody
-      -@daily_menu_details.each do |dmd|
-        tr
-          td
-            = link_to dmd.product.name,edit_product_path(dmd.product)
-          td
-            = dmd.cost_price_per_product
-          td
-            = dmd.manufacturing_number
-          td
-            = dmd.total_cost_price
+        td
+          = link_to dmd.product.name,edit_product_path(dmd.product)
+        td
+          = dmd.cost_price_per_product
+        td
+          = dmd.manufacturing_number
+        td
+          = dmd.total_cost_price

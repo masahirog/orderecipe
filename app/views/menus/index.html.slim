@@ -2,71 +2,51 @@ ol.breadcrumb
   li
     a href="/" ホーム
   li.active メニュー一覧
-.form-inline.col-md-12 style="padding:10px;"
-  h3 メニューの新規登録
-  a.btn.btn-primary.pull-right href="/menus/new" 新規登録
-.form-inline.col-md-12 style="padding:10px;"
-  = form_tag Menu, :method => 'get', class:"form-group" do
-    .kensaku.form-group
-      |  メニュー名：
-      = text_field_tag :name, params[:name], class:"name form-control"
-    .kensaku.form-group
-      |  調理カテゴリー:
-      = select_tag :category, options_from_collection_for_select(Menu.select(:category).uniq,:category, :category), include_blank: true, class:"form-control",style:"width:150px;"
-    .kensaku.form-group
-      |  確定状況:
-      = select_tag :confirm_flag,options_for_select([['未確定',0],['確定',1]],params[:confirm_flag]), include_blank: true, class:"form-control",style:"width:150px;"
-    .kensaku.form-group
-      |  並び替え:
+.col-md-12 style="padding:10px;"
+  .col-md-2
+    = link_to '新規作成',new_menu_path,class:'btn btn-primary'
+  = form_tag menus_path, :method => 'get', class:"form-group" do
+    .col-md-2
+      = text_field_tag :name, params[:name], class:"name form-control",placeholder:'メニュー名'
+    .col-md-2
+      = select_tag :category, options_for_select(Menu.pluck(:category).uniq,params[:category]), include_blank: true, class:"form-control"
+    .col-md-2
+      = select_tag :confirm_flag,options_for_select([['未確定',0],['確定',1]],params[:confirm_flag]), include_blank: true, class:"form-control"
+    .col-md-2
       = select_tag :order,options_for_select([['原価高い順','cost_price DESC'],['原価低い順','cost_price ASC']],params[:order]), include_blank: true, class:"form-control",style:"width:150px;"
-    .kensaku.form-group
-      |  　
+    .col-md-2
       = submit_tag "検索" ,class:"btn btn-primary"
 .col-md-12
   = paginate @search
-div
-  .col-md-12 style="padding:10px;"
-    .col-md-1
-      | 確定
-    .col-md-4
-      | メニュー名
-    .col-md-1
-      | カテゴリ
-    .col-md-1
-      | 画像
-    .col-md-1
-      | 原価(税込)
-    .col-md-1
-      | 終売食品
-    .col-md-1
-      | カロリー
-    .col-md-1
-      | csv
-    .col-md-1.text-right
-      | 使用お弁当
-  ul.list-group style="list-style-type: none;"
+table.table
+  thead
+    tr
+      th 確定
+      th メニュー名
+      th カテゴリ
+      th 画像
+      th.text-right 原価(税込)
+      th.text-right カロリー
+      th csv
+      th.text-right 使用お弁当
+  tbody
     - @search.each do |menu|
-      li.li-active.menus_li.col-md-12.list-group-item
-        .col-md-1
+      tr.menus_li
+        td
           = "OK" if menu.confirm_flag == 1
-        .menu_name.col-md-4
+        td
           = link_to "#{menu.name}", "/menus/#{menu.id}"
-        .col-md-1
+        td
           = menu.category
-        .col-md-1
+        td
           = image_tag menu.image.thumb.url if menu.image.present?
-        .cost_price.col-md-1
+        td.cost_price
           = "#{menu.cost_price}円"
-        .col-md-1
-          - menu.materials.each do |m|
-            - if m.end_of_sales==1
-              |  ✔
-              - break
-        .col-md-1.text-right
+        td.text-right
           = "#{menu.menu_materials.sum(:calorie).round(2)}kcal"
-        .col-md-1
+        td
           = link_to "CSV", "/menus/#{menu.id}.csv", class: "btn btn-default"
-        .col-md-1.text-right
+        td.text-right
           =button_to "確認", "/menus/include_menu/#{menu.id}", method: :get,class:"btn btn-default btn-sm"
 - if @search.size == 0 then
   p 該当するメニューは存在しません

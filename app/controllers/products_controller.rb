@@ -40,7 +40,7 @@ class ProductsController < ApplicationController
   end
 
   def index
-    @search = Product.includes(:product_menus,{menus: [:menu_materials,:materials]}).search(params).page(params[:page]).per(20)
+    @search = Product.search(params).page(params[:page]).per(30)
   end
 
   def new
@@ -67,15 +67,7 @@ class ProductsController < ApplicationController
       end
     end
   end
-  # def show_all
-  # @products = Product.all.includes(:product_menus,{menus: [:menu_materials, :materials]})
-  #   respond_to do |format|
-  #     format.html
-  #     format.csv do
-  #       send_data render_to_string, filename: "all_products.csv", type: :csv
-  #     end
-  #   end
-  # end
+
 
   def create
     @product = Product.new(product_create_update)
@@ -173,19 +165,6 @@ class ProductsController < ApplicationController
    end
   end
 
-  def product_pdf_all
-    @order = Order.includes({products: {menus: :menu_materials, menus: :materials}}).find(params[:id])
-    respond_to do |format|
-      format.html
-      format.pdf do
-        pdf = ProductPdfAll.new(@order)
-        send_data pdf.render,
-        filename:    "#{@order.id}.pdf",
-        type:        "application/pdf",
-        disposition: "inline"
-      end
-    end
-  end
 
   def henkan
     sentence = params["kanji"]

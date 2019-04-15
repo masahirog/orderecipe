@@ -1,6 +1,6 @@
 h1 献立
 = month_calendar events: @daily_menus do |start_time, daily_menu|
-  div
+  div style='height:29px;'
     - if daily_menu[0]
       div style='font-size:16px;margin-right:10px;'
         = link_to start_time.strftime("%-m月%-d日"), daily_menu_path(daily_menu[0])
@@ -10,6 +10,12 @@ h1 献立
       div style='float:left;font-size:16px;'
         = link_to start_time.strftime("%-m月%-d日"), new_daily_menu_path(start_time:start_time)
   - if daily_menu[0]
-    - daily_menu[0].daily_menu_details.each do |dmd|
-      div style='color:gray;padding:3px;font-size:11px;'
-        = dmd.product.name
+    table.table
+      - daily_menu[0].daily_menu_details.each do |dmd|
+        tr
+          td style='font-size:11px;'
+            = dmd.product.bento_id
+          td style='font-size:11px;'
+            = link_to dmd.product.name,product_path(dmd.product),:target=>"_blank"
+          td.text-right style='font-size:11px;'
+            = dmd.manufacturing_number
