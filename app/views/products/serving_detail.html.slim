@@ -67,7 +67,7 @@ body
           - u = menu.materials.length
           ul.col-md-7.menu_materials[style="list-style:none;padding:0;"]
             - menu.menu_materials.each do |mm|
-              li.menu_materials.col-md-12[style="padding:0;"]
+              li.menu_materials_li.col-md-12[style="padding:0;"]
                 .col-md-4.menu_materials_name[style="padding:2px 2px;"]
                   = mm.material.name
                 .col-md-2.original_amount_used.form-inline.text-right[style="padding:0;"]

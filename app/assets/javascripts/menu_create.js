@@ -115,7 +115,7 @@ $(document).on('turbolinks:load', function() {
     var id = $(this).val();
     if (isNaN(id) == true) {} else{
       $.ajax({
-        url: "/menus/get_cost_price/" + id,
+        url: "/menus/get_cost_price/",
         data: { id : id },
         dataType: "json",
         async: false

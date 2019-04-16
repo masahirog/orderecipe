@@ -63,7 +63,7 @@ class MaterialsController < ApplicationController
       @mm.update_attribute(:material_id, mm[:material_id])
     end
      material_id = params[:material_id]
-     redirect_to "/materials/include_material/#{material_id}", notice: "食材を変更しました。"
+     redirect_to include_material_materials_path(id:material_id), notice: "食材を変更しました。"
   end
 
   def change_additives

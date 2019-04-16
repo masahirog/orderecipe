@@ -455,6 +455,8 @@ GEM
       netrc (~> 0.8)
     retriable (3.1.2)
     rmagick (3.0.0)
+    romaji (0.2.4)
+      rake (>= 0.8.0)
     ruby-graphviz (1.2.4)
     ruby_dep (1.5.0)
     rubyzip (1.2.2)
@@ -573,6 +575,7 @@ DEPENDENCIES
   rails_12factor
   ranked-model
   rmagick
+  romaji
   sass-rails (~> 5.0)
   select2-rails
   selenium-webdriver

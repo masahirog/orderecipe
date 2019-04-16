@@ -1,3 +1,3 @@
 json.top do |json|
-  json.result @result
+  json.data @data
 end

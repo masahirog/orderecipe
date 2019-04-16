@@ -20,7 +20,7 @@ $(document).on('turbolinks:load', function() {
     var u = $('.add_stock_material').index(index);
     if (isNaN(id) == true) {} else{
       $.ajax({
-          url: "/stocks/material_info/" + id,
+          url: "/stocks/material_info/",
           data: { id : id },
           dataType: "json",
           async: false

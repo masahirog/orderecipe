@@ -117,7 +117,7 @@ $(document).on('turbolinks:load', function() {
     console.log(id);
     var u = $(".add_li_menu").index($(this).parent().parent(".add_li_menu"));
     $.ajax({
-        url: "/products/get_menu_cost_price/" + id,
+        url: "/products/get_menu_cost_price",
         data: { id : id },
         dataType: "json",
     })

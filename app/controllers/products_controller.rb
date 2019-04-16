@@ -175,8 +175,32 @@ class ProductsController < ApplicationController
     https.use_ssl=true
     response = https.post('/api/morph', request_data, header)
     if JSON.parse(response.body)["word_list"].present?
-      @result = JSON.parse(response.body)["word_list"]
+      result = JSON.parse(response.body)["word_list"]
     end
+    katakana = ''
+    result.flatten.in_groups_of(3).each do |ar|
+      if ar[0]=='^^ '
+        katakana += '^^'
+      else
+        if ar[2] == "＄"
+          if ar[1]=='句点'
+            katakana += "。"
+          elsif ar[1]=='読点'
+            katakana += "、"
+          elsif ar[1]=='Number' || ar[0]=='-' || ar[1]=='括弧'
+            katakana += ar[0]
+          elsif ar[1]=='空白'
+            katakana += ""
+          end
+        elsif ar[1]=="Alphabet"||ar[1]=="Number"
+          katakana += ar[0]
+        else
+          katakana += ar[2]
+        end
+      end
+    end
+    romaji = Romaji.kana2romaji katakana
+    @data = romaji.split("^^")
     respond_to do |format|
       format.html
       format.json
