@@ -43,6 +43,7 @@ gem 'deep_cloneable'
 gem 'simple_calendar', '~> 2.0'
 gem 'business_time'
 gem 'romaji'
+gem 'zipang'
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]

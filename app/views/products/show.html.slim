@@ -14,7 +14,6 @@ ol.breadcrumb
         = number_field(:volume,:num,class:"form-control text-right",id:"amount_number_input",placeholder:"食数を入力")
         input.btn.btn-primary[type="button" onclick="submit();" value="印刷ページ" style="margin:0 0 0 10px;"]
       = link_to 'お弁当を編集',edit_product_path(@product),class: "btn btn-success",style:'margin:0 0 0 10px;float:left;'
-      = link_to "盛付用VIEW", serving_detail_products_path(id:@product.id), class:"btn btn-default",:target=>"_blank", style:"margin:0 0 0 10px;float:left;"
       = link_to "ラムさん", serving_detail_en_products_path(id:@product.id), class:"btn btn-default",:target=>"_blank", style:"margin:0 0 0 10px;float:left;"
       = link_to 'コピー', new_product_path(product_id:@product.id,copy_flag:true) , class:"btn btn-default",:target=>"_blank", style:"margin:0 0 0 10px;float:left;"
 

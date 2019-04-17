@@ -1,8 +1,8 @@
 head
   title
     | Order
-  = stylesheet_link_tag    'application', media: 'all'
-  = javascript_include_tag 'application'
+  = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true
+  = javascript_include_tag 'application', 'data-turbolinks-track' => true
   = csrf_meta_tags
   link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet"
   script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"
@@ -10,98 +10,89 @@ head
   script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"
   link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-rc.2/css/select2.min.css" rel="stylesheet"
   script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-rc.2/js/select2.min.js"
-
-body
   .all_body
-    .col-md-7.form-group[style="float:left;"]
-      = form_tag "/products/serving_detail_en", class:"form-inline" do
-        .bento_id_kensaku_en.col-md-2
-          = text_field_tag :bento_id, params[:bento_id], class:"bento_id_search_en form-control",style:"width:100%", placeholder:"bentoID"
-        .select.col-md-6
-          = select_tag(:id, options_from_collection_for_select(@products,:id,:name),include_blank: true,class:"input_select_product_en col-md-8")
-        .kensaku.col-md-4
-          |  　
-          = submit_tag "検索" ,class:"btn btn-primary"
-    .col-md-5.form-inline[style="float:left;"]
+    .col-md-12.form-inline
       input#amount_number_input.form-control.text-right[type="number" placeholder="食数を入力"]
       input#amount_calculation.btn.btn-primary[type="button" onclick="" value="計算"]
+      input.pull-right.henkanbtn[type="button" value="カナ変換" style="margin-left:10px;"]
       a#google_translate_element.pull-right
       script[type="text/javascript"]
         |  function googleTranslateElementInit() { new google.translate.TranslateElement({pageLanguage: 'ja', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element'); }
       script[type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"]
-    p
-    .amount_number.col-md-12
 
-    .col-md-12[style="margin-top:20px;"]
-      label.col-md-2
-        | bentoID
-      label.col-md-3
-        | bento-mei
-      label.col-md-2
-        | ryori-kategori
-      label.col-md-3
-        | bentosyurui
-      label.col-md-2
-        | genka
-    li.list-group-item.col-md-12
-      .col-md-2
-        = @product.bento_id
-      .col-md-3
-        = @product.name
-      .col-md-2
-        = @product.cook_category
-      .col-md-3
-        = @product.product_type
-      .text-right.col-md-2
-        = @product.cost_price
-        | 円
-    .col-md-12[style="margin-top:20px;"]
-      label.col-md-2
-        | menyu-mei
-      label.col-md-2
-        | ryori-memo
-      .col-md-8
+      p
+      .amount_number.col-md-12
+
+      .col-md-12[style="margin-top:20px;"]
         label.col-md-2
-          | zairyo-mei
-        label.col-md-1
-          | 1nin-mae
-        label.calculate_amount_used_th.col-md-3.text-center[style="font-size:20px;font-weight:bold; "]
-        label.col-md-5
-          | shikomi
-    ul.list-group.col-md-12[style="list-style:none;"]
-      - @menus.each do |menu|
-        li.product_menus.col-md-12.list-group-item[style="padding:2px;"]
-          .col-md-2
-            = menu.name
-          .col-md-2[style="word-break: break-all"]
-            = menu.recipe
-          - i = 1
-          - u = menu.materials.length
-          ul.col-md-8.menu_materials[style="list-style:none;padding:0;"]
-            - menu.menu_materials.each do |mm|
-              li.menu_materials.col-md-12[style="padding:0;"]
-                .col-md-2[style="padding:2px 2px;"]
-                  = mm.material.name
-                .col-md-1.original_amount_used.form-inline.text-right[style="padding:0;"]
-                  .original_amount_used_value.text-right.form-group
-                    = mm.amount_used
-                  .form-group
-                    = mm.material.calculated_unit
-                  .calculated_value[style="display:none;"]
-                    = mm.material.calculated_value
-                  .order_unit[style="display:none;"]
-                    = mm.material.order_unit
-                .calculated_unit.col-md-2.form-inline.text-right
-                  .calculate_amount_used.form-group[style="display:none;font-weight:bold; font-size:20px;"]
-                  .form-group[style="display:none;font-weight:bold;"]
-                    = mm.material.calculated_unit
-                .cal_val_order_unit.col-md-1.form-inline[style="padding:0;"]
-                  .calculate_amount_used.form-group
-                  .form-group[style="display:none;padding:0;"]
-                    = mm.material.order_unit
-                .col-md-2[style="padding:0;"]
-                  = mm.post
-                .col-md-3[style="padding:0;"]
-                  = mm.preparation
-javascript:
-  function googleTranslateElementInit() { new google.translate.TranslateElement({pageLanguage: 'ja', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element'); }
+          | bentoID
+        label.col-md-3
+          | bento-mei
+        label.col-md-2
+          | ryori-kategori
+        label.col-md-3
+          | bentosyurui
+        label.col-md-2
+          | genka
+      li.list-group-item.col-md-12
+        .col-md-2
+          = @product.bento_id
+        .col-md-3
+          = @product.name
+        .col-md-2
+          = @product.cook_category
+        .col-md-3
+          = @product.product_type
+        .text-right.col-md-2
+          = @product.cost_price
+          | 円
+      .col-md-12[style="margin-top:20px;"]
+        label.col-md-2
+          | menyu-mei
+        label.col-md-2
+          | ryori-memo
+        .col-md-8
+          label.col-md-2
+            | zairyo-mei
+          label.col-md-1
+            | 1nin-mae
+          label.calculate_amount_used_th.col-md-3.text-center[style="font-size:20px;font-weight:bold; "]
+          label.col-md-5
+            | shikomi
+      ul.list-group.col-md-12[style="list-style:none;"]
+        - @menus.each do |menu|
+          li.product_menus.col-md-12.list-group-item[style="padding:2px;"]
+            .col-md-2.menu_name style='word-wrap: break-word;'
+              = menu.name
+            .col-md-2.recipe style="word-break:break-all"
+              = menu.recipe
+            - i = 1
+            - u = menu.materials.length
+            ul.col-md-8.menu_materials[style="list-style:none;padding:0;"]
+              - menu.menu_materials.each do |mm|
+                li.menu_materials_li.col-md-12[style="padding:0;"]
+                  .col-md-2.menu_materials_name style="padding:2px 2px;word-wrap: break-word;"
+                    = mm.material.name
+                  .col-md-1.original_amount_used.form-inline.text-right[style="padding:0;"]
+                    .original_amount_used_value.text-right.form-group
+                      = mm.amount_used
+                    .form-group
+                      = mm.material.calculated_unit
+                    .calculated_value[style="display:none;"]
+                      = mm.material.calculated_value
+                    .order_unit[style="display:none;"]
+                      = mm.material.order_unit
+                  .calculated_unit.col-md-2.form-inline.text-right
+                    .calculate_amount_used.form-group[style="display:none;font-weight:bold; font-size:20px;"]
+                    .form-group[style="display:none;font-weight:bold;"]
+                      = mm.material.calculated_unit
+                  .cal_val_order_unit.col-md-1.form-inline[style="padding:0;"]
+                    .calculate_amount_used.form-group
+                    .form-group[style="display:none;padding:0;"]
+                      = mm.material.order_unit
+                  .col-md-2[style="padding:0;"]
+                    = mm.post
+                  .col-md-3 style="padding:0;word-break:break-all"
+                    = mm.preparation
+  javascript:
+    function googleTranslateElementInit() { new google.translate.TranslateElement({pageLanguage: 'ja', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element'); }

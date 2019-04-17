@@ -28,7 +28,6 @@ Rails.application.routes.draw do
     collection do
       get :picture_book
       get :get_menu_cost_price
-      get :serving_detail
       get :serving_detail_en
       get :get_products
       get :input_name_get_products

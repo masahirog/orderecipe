@@ -94,18 +94,40 @@ class ProductsController < ApplicationController
     end
   end
 
-  def serving_detail
-    @product = Product.find(params[:id])
-    @menus = @product.menus.includes(:materials, :menu_materials)
-    render :serving_detail, layout: false
-  end
 
   def serving_detail_en
-    @products = Product.all
     @product = Product.find(params[:id])
     @menus = @product.menus.includes(:materials, :menu_materials)
+    app_id = "6e84997fe5d4d3865152e765091fd0faab2f76bfe5dba29d638cc6683efa1184"
+    header = {'Content-type'=>'application/json'}
+    https = Net::HTTP.new('labs.goo.ne.jp', 443)
+    https.use_ssl = true
+
+    request_data = {'app_id'=>app_id, "sentence"=>@product.name}.to_json
+    make_katakana(request_data,header,https)
+    @product.name = Romaji.kana2romaji @katakana
+    @menus.each do |menu|
+      request_data = {'app_id'=>app_id, "sentence"=>menu.name}.to_json
+      make_katakana(request_data,header,https)
+      menu.name = Romaji.kana2romaji @katakana
+      request_data = {'app_id'=>app_id, "sentence"=>menu.recipe}.to_json
+      make_katakana(request_data,header,https)
+      menu.recipe = Romaji.kana2romaji @katakana
+      menu.menu_materials.each do |mm|
+        request_data = {'app_id'=>app_id, "sentence"=>mm.material.name}.to_json
+        make_katakana(request_data,header,https)
+        mm.material.name = Romaji.kana2romaji @katakana
+        request_data = {'app_id'=>app_id, "sentence"=>mm.post}.to_json
+        make_katakana(request_data,header,https)
+        mm.post = Romaji.kana2romaji @katakana
+        request_data = {'app_id'=>app_id, "sentence"=>mm.preparation}.to_json
+        make_katakana(request_data,header,https)
+        mm.preparation = Romaji.kana2romaji @katakana
+      end
+    end
     render :serving_detail_en, layout: false
   end
+
 
   def print
     @params = params
@@ -166,46 +188,54 @@ class ProductsController < ApplicationController
   end
 
 
-  def henkan
-    sentence = params["kanji"]
-    app_id = "6e84997fe5d4d3865152e765091fd0faab2f76bfe5dba29d638cc6683efa1184"
-    request_data = {'app_id'=>app_id, "sentence"=>sentence}.to_json
-    header = {'Content-type'=>'application/json'}
-    https = Net::HTTP.new('labs.goo.ne.jp', 443)
-    https.use_ssl=true
-    response = https.post('/api/morph', request_data, header)
-    if JSON.parse(response.body)["word_list"].present?
-      result = JSON.parse(response.body)["word_list"]
-    end
-    katakana = ''
-    result.flatten.in_groups_of(3).each do |ar|
-      if ar[0]=='^^ '
-        katakana += '^^'
-      else
-        if ar[2] == "＄"
-          if ar[1]=='句点'
-            katakana += "。"
-          elsif ar[1]=='読点'
-            katakana += "、"
-          elsif ar[1]=='Number' || ar[0]=='-' || ar[1]=='括弧'
-            katakana += ar[0]
-          elsif ar[1]=='空白'
-            katakana += ""
-          end
-        elsif ar[1]=="Alphabet"||ar[1]=="Number"
-          katakana += ar[0]
-        else
-          katakana += ar[2]
-        end
-      end
-    end
-    romaji = Romaji.kana2romaji katakana
-    @data = romaji.split("^^")
-    respond_to do |format|
-      format.html
-      format.json
-    end
-  end
+  #
+  # def henkan
+  #   arr = [params["kanji"],params["kanji0"],params[:kanji1].gsub(/\^\^  \^\^/, '^^a^^')]
+  #   # sentence = params["kanji"]
+  #   # sentence0 = params["kanji0"]
+  #   # sentence1 = params["kanji1"]
+  #   @data =[]
+  #
+  #   app_id = "6e84997fe5d4d3865152e765091fd0faab2f76bfe5dba29d638cc6683efa1184"
+  #   header = {'Content-type'=>'application/json'}
+  #   https = Net::HTTP.new('labs.goo.ne.jp', 443)
+  #   https.use_ssl=true
+  #   arr.each do |sentence|
+  #     request_data = {'app_id'=>app_id, "sentence"=>sentence}.to_json
+  #     response = https.post('/api/morph', request_data, header)
+  #     if JSON.parse(response.body)["word_list"].present?
+  #       result = JSON.parse(response.body)["word_list"]
+  #     end
+  #     katakana = ''
+  #     result.flatten.in_groups_of(3).each do |ar|
+  #       if ar[0]=='^^ '
+  #         katakana += '^^'
+  #       else
+  #         if ar[2] == "＄"
+  #           if ar[1]=='句点'
+  #             katakana += "。"
+  #           elsif ar[1]=='読点'
+  #             katakana += "、"
+  #           elsif ar[1]=='Number' || ar[0]=='-' || ar[1]=='括弧'
+  #             katakana += ar[0]
+  #           elsif ar[1]=='空白'
+  #             katakana += ""
+  #           end
+  #         elsif ar[1]=="Alphabet"||ar[1]=="Number"
+  #           katakana += ar[0]
+  #         else
+  #           katakana += ar[2]
+  #         end
+  #       end
+  #     end
+  #     romaji = Romaji.kana2romaji katakana
+  #     @data << romaji.split("^^")
+  #   end
+  #   respond_to do |format|
+  #     format.html
+  #     format.json
+  #   end
+  # end
 
   def hyoji
     @product = Product.find(params[:id])
@@ -249,4 +279,32 @@ class ProductsController < ApplicationController
                       :remove_product_image, :image_cache, :cost_price, product_menus_attributes: [:id, :product_id, :menu_id,:row_order, :_destroy,
                       menu_attributes:[:name, ]])
     end
+    def make_katakana(request_data,header,https)
+      response = https.post('/api/morph', request_data, header)
+      if JSON.parse(response.body)["word_list"].present?
+        result = JSON.parse(response.body)["word_list"]
+      end
+      @katakana = ''
+      if result.present?
+        result.flatten.in_groups_of(3).each do |ar|
+          if ar[2] == "＄"
+            if ar[1] == '句点'
+              @katakana += "。"
+            elsif ar[1] == '読点'
+              @katakana += "、"
+            elsif ar[1] == 'Number' || ar[0] == '-' || ar[1] == '括弧'
+              @katakana += ar[0]
+            elsif ar[1] == '空白'
+              @katakana += "　"
+            end
+          elsif ar[1] == "Alphabet" ||ar[1] == "Number"
+            @katakana += ar[0]
+          else
+            @katakana += ar[2]
+          end
+        end
+        return @katakana
+      end
+    end
+
 end
