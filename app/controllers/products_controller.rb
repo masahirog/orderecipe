@@ -140,12 +140,12 @@ class ProductsController < ApplicationController
 
     ii=0
     @menus.each_with_index do |menu,i|
-      menu.name = @menu_names[i]
-      menu.recipe = @menu_recipes[i]
+      menu.name = Romaji.kana2romaji @menu_names[i]
+      menu.recipe = Romaji.kana2romaji @menu_recipes[i] if @menu_recipes[i]
       menu.menu_materials.each do |mmm|
-        mmm.material.name = @material_names[ii]
-        mmm.post = @posts[ii]
-        mmm.preparation = @preparations[ii]
+        mmm.material.name = Romaji.kana2romaji @material_names[ii]
+        mmm.post = Romaji.kana2romaji @posts[ii] if @posts[ii]
+        mmm.preparation = Romaji.kana2romaji @preparations[ii] if @preparations[ii]
         ii += 1
       end
     end
