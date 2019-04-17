@@ -103,28 +103,53 @@ class ProductsController < ApplicationController
     https = Net::HTTP.new('labs.goo.ne.jp', 443)
     https.use_ssl = true
 
-    request_data = {'app_id'=>app_id, "sentence"=>@product.name}.to_json
-    make_katakana(request_data,header,https)
-    @product.name = Romaji.kana2romaji @katakana
+    menu_names = ""
+    recipes = ""
+    material_names = ""
+    posts = ""
+    preparations = ""
     @menus.each do |menu|
-      request_data = {'app_id'=>app_id, "sentence"=>menu.name}.to_json
-      make_katakana(request_data,header,https)
-      menu.name = Romaji.kana2romaji @katakana
-      request_data = {'app_id'=>app_id, "sentence"=>menu.recipe}.to_json
-      make_katakana(request_data,header,https)
-      menu.recipe = Romaji.kana2romaji @katakana
-      menu.menu_materials.each do |mm|
-        request_data = {'app_id'=>app_id, "sentence"=>mm.material.name}.to_json
-        make_katakana(request_data,header,https)
-        mm.material.name = Romaji.kana2romaji @katakana
-        request_data = {'app_id'=>app_id, "sentence"=>mm.post}.to_json
-        make_katakana(request_data,header,https)
-        mm.post = Romaji.kana2romaji @katakana
-        request_data = {'app_id'=>app_id, "sentence"=>mm.preparation}.to_json
-        make_katakana(request_data,header,https)
-        mm.preparation = Romaji.kana2romaji @katakana
+      menu_names += menu.name + "^^"
+      recipes += menu.recipe + "^^"
+      menu.menu_materials.each do |mmm|
+        material_names += mmm.material.name + "^^"
+        posts += mmm.post + "^^"
+        preparations += mmm.preparation + "^^"
       end
     end
+
+    request_data = {'app_id'=>app_id, "sentence"=>@product.name}.to_json
+    make_katakana(request_data,header,https)
+    @product.name = Romaji.kana2romaji @katakana[0]
+
+    request_data = {'app_id'=>app_id, "sentence"=>menu_names}.to_json
+    make_katakana(request_data,header,https)
+    @menu_names = @katakana
+    request_data = {'app_id'=>app_id, "sentence"=>recipes}.to_json
+    make_katakana(request_data,header,https)
+    @menu_recipes = @katakana
+    request_data = {'app_id'=>app_id, "sentence"=>material_names}.to_json
+    make_katakana(request_data,header,https)
+    @material_names = @katakana
+    request_data = {'app_id'=>app_id, "sentence"=>posts}.to_json
+    make_katakana(request_data,header,https)
+    @posts = @katakana
+    request_data = {'app_id'=>app_id, "sentence"=>preparations}.to_json
+    make_katakana(request_data,header,https)
+    @preparations = @katakana
+
+    ii=0
+    @menus.each_with_index do |menu,i|
+      menu.name = @menu_names[i]
+      menu.recipe = @menu_recipes[i]
+      menu.menu_materials.each do |mmm|
+        mmm.material.name = @material_names[ii]
+        mmm.post = @posts[ii]
+        mmm.preparation = @preparations[ii]
+        ii += 1
+      end
+    end
+
     render :serving_detail_en, layout: false
   end
 
@@ -296,13 +321,16 @@ class ProductsController < ApplicationController
               @katakana += ar[0]
             elsif ar[1] == '空白'
               @katakana += "　"
+            elsif ar[1] == "Symbol"
+              @katakana += ar[0]
             end
-          elsif ar[1] == "Alphabet" ||ar[1] == "Number"
+          elsif ar[1] == "Alphabet" || ar[1] == "Number"
             @katakana += ar[0]
           else
             @katakana += ar[2]
           end
         end
+        @katakana = @katakana.split("^^")
         return @katakana
       end
     end
