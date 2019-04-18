@@ -1,5 +1,4 @@
 class ProductsController < ApplicationController
-  protect_from_forgery :except => [:henkan]
   require 'net/https'
   require 'json'
 
@@ -221,29 +220,28 @@ class ProductsController < ApplicationController
    end
   end
 
-  def hyoji
-    @product = Product.find(params[:id])
-    @allergies = Product.allergy_seiri(@product)
-    @additives = Product.additive_seiri(@product)
-    respond_to do |format|
-     format.html
-     format.pdf do
-       pdf = HyojiPdf.new(@product,params[:datetime_ida],@allergies,@additives)
-       send_data pdf.render,
-         filename:    "#{@product.id}_shokuhinhyoji.pdf",
-         type:        "application/pdf",
-         disposition: "inline"
-     end
-   end
-  end
+  # 食品表示
+  # def hyoji
+  #   @product = Product.find(params[:id])
+  #   @allergies = Product.allergy_seiri(@product)
+  #   @additives = Product.additive_seiri(@product)
+  #   respond_to do |format|
+  #    format.html
+  #    format.pdf do
+  #      pdf = HyojiPdf.new(@product,params[:datetime_ida],@allergies,@additives)
+  #      send_data pdf.render,
+  #        filename:    "#{@product.id}_shokuhinhyoji.pdf",
+  #        type:        "application/pdf",
+  #        disposition: "inline"
+  #    end
+  #  end
+  # end
 
   def picture_book
     @products = Product.search(params).page(params[:page]).per(100)
   end
 
-  def make_band
 
-  end
   def new_band
     product = Product.find(params[:id])
     respond_to do |format|

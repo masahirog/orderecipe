@@ -1,3 +1,5 @@
+div class="alert alert-danger" role="alert"
+  |戻るボタンこのページでは効きません。
 .col-md-12
   .col-md-3
     label 発注に使用した弁当
@@ -24,21 +26,23 @@
             = form_tag({:controller => "products", :action => "print", format: "pdf"},{:target => "_blank"}) do
               = number_field(:volume,:id,value:op.product_id,style:"display:none;")
               = number_field(:volume,:num,value:op.serving_for,id:"amount_number_input",style:"display:none;")
-              input.btn.btn-primary type="button" onclick="submit();" value="印刷ページ"
+              input.btn.btn-default type="button" onclick="submit();" value="印刷ページ"
           .col-md-2
-            = link_to "盛付用VIEW", serving_kana_products_path(id:op.product_id), class:"btn btn-success",:target=>"_blank"
-.col-md-12
+            = link_to "盛付用VIEW", serving_kana_products_path(id:op.product_id), class:"btn btn-default",:target=>"_blank"
+.col-md-12 style='padding-bottom:15px;'
+  .col-md-2 style='padding:0;'
+    = link_to '発注内容の編集',edit_order_path(@order),class: "btn btn-success form-control"
+
   = form_tag({:controller => "orders", :action => "order_print", format: "pdf"},{:target => "_blank"}) do
-    .col-md-2.col-md-offset-5
-      label.text-right 企業絞込：
-      = select :vendor,:id, @vendors.map{|t| [t["company_name"], t["vendor_id"]]},{include_blank: true},class:"index_vendor_select form-control"
-    .col-md-2.text-right style="padding-top:20px;"
-      input.print_btn.btn.btn-primary type="button" onclick="submit();" value="発注書印刷"
+    .col-md-2.col-md-offset-1
+      = select :vendor,:id, @vendors.map{|t| [t["company_name"], t["vendor_id"]]},{},class:"index_vendor_select form-control"
+    .col-md-2.text-left
+      input.print_btn.btn.btn-primary type="button" onclick="submit();" value="◀1企業印刷"
   = form_tag({:controller => "orders", :action => "order_print_all", format: "pdf"},{:target => "_blank"}) do
     div style="display:none;"
       - @vendors.each_with_index do |vendor,i|
         = text_field_tag :vendor, vendor["vendor_id"] ,name:"vendor[id#{i}]",id:"id#{i}"
-    .col-md-2 style="padding-top:20px;"
+    .col-md-2
       input.print_btn.btn.btn-primary type="button" onclick="submit();" value="全企業印刷"
 .col-md-12
   label 発注食材・資材一覧
@@ -67,5 +71,13 @@
             = om.order_material_memo
           .col-md-2
             = om.delivery_date
-.col-md-12 style="margin-bottom:30px;"
-  = link_to '発注内容の編集',edit_order_path(@order),class: "btn btn-default"
+
+javascript:
+  $(function(){
+      // 自身のページを履歴に追加
+      history.pushState(null, null, null);
+      // ページ戻り時にも自身のページを履歴に追加
+      $(window).on("popstate", function(){
+          history.pushState(null, null, null);
+      });
+  });

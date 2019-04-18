@@ -204,7 +204,7 @@ class OrdersController < ApplicationController
     end
   end
   def products_pdfs_roma
-    order = Order.includes({products: {menus: :menu_materials, menus: :materials}}).find(params[:order_id])    
+    order = Order.includes({products: {menus: :menu_materials, menus: :materials}}).find(params[:order_id])
     respond_to do |format|
       format.html
       format.pdf do

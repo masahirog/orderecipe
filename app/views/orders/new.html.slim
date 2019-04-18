@@ -38,7 +38,7 @@
         | 納品日一括変更：
       = date_field("all", "date_change", value: Time.now.strftime("%Y-%m-%d"),class:"form-control")
     .col-md-3 style="padding-top:25px;"
-      input.order_submit.btn.btn-success.pull-right type="button" value="発注確定する"
+      = f.submit '保存する',class:'btn btn-success pull-right', data: {disable_with: '保存中'}
   .orders_all style="width:100%;"
     table.table style="margin:auto;"
       thead
@@ -60,3 +60,10 @@
           = render 'order_material_fields', f: m,date:m.object.delivery_date
   = link_to_add_association '発注食材追加',f, :order_materials,class:'btn btn-primary add_order_material',
   data: {association_insertion_node: '#order_materials_table',association_insertion_method: 'append'}, render_options: {locals: { date: Date.today }}
+
+javascript:
+  $(function() {
+    $(document).on("keypress", "input:not(.allow_submit)", function(event) {
+      return event.which !== 13;
+    });
+  });

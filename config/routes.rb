@@ -59,6 +59,7 @@ Rails.application.routes.draw do
   resources :daily_menus do
     collection do
       get :products_pdfs
+      get :recipes_roma
     end
   end
 

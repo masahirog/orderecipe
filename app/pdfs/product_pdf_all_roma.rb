@@ -9,13 +9,13 @@ class ProductPdfAllRoma < Prawn::Document
     if controller == 'daily_menus'
       daily_menu = DailyMenu.find(id)
       max_i = daily_menu.daily_menu_details.length
+      date = daily_menu.start_time
       daily_menu.daily_menu_details.each_with_index do |dmd,i|
         product = dmd.product
         menus = product.menus
         num = dmd.manufacturing_number
         kanji(product,menus,num)
-        header_date(daily_menu.start_time)
-        header_table(product,num)
+        header_table(product,num,date)
         table_content(menus,num)
         start_new_page if i<max_i-1
       end
@@ -83,7 +83,7 @@ class ProductPdfAllRoma < Prawn::Document
   def line_item_rows(menus,num)
     data= [["Menu Mei","Chori Memo","Shokuzai","#{num}nin-bun",'✓',{:content => "Shikomi", :colspan => 2}]]
     menus.each do |menu|
-      unless menu.category == '主食' || menu.category == '容器'
+      unless menu.category == '容器'
         u = menu.materials.length
         recipe_mozi = menu.recipe.length
         if recipe_mozi<50
