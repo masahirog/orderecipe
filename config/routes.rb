@@ -28,7 +28,8 @@ Rails.application.routes.draw do
     collection do
       get :picture_book
       get :get_menu_cost_price
-      get :serving_detail_en
+      get :serving_kana
+      get :recipe_romaji
       get :get_products
       get :input_name_get_products
       get :get_by_category
@@ -49,6 +50,7 @@ Rails.application.routes.draw do
     collection do
       get :monthly
       get :products_pdfs
+      get :products_pdfs_roma
       get :material_info
       get :get_bento_id
       get :check_bento_id

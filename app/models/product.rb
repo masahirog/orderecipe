@@ -65,4 +65,40 @@ class Product < ApplicationRecord
     @brr.delete(0)
     @brr = @brr.map{|br| FoodAdditive.find(br).name}
   end
+
+  def self.make_katakana(kanji)
+    app_id = "6e84997fe5d4d3865152e765091fd0faab2f76bfe5dba29d638cc6683efa1184"
+    header = {'Content-type'=>'application/json'}
+    https = Net::HTTP.new('labs.goo.ne.jp', 443)
+    https.use_ssl = true
+    request_data = {'app_id'=>app_id, "sentence"=>kanji}.to_json
+
+    response = https.post('/api/morph', request_data, header)
+    if JSON.parse(response.body)["word_list"].present?
+      result = JSON.parse(response.body)["word_list"]
+    end
+    @katakana = ''
+    if result.present?
+      result.flatten.in_groups_of(3).each do |ar|
+        if ar[2] == "＄"
+          if ar[1] == '句点'
+            @katakana += "。"
+          elsif ar[1] == '読点'
+            @katakana += "、"
+          elsif ar[1] == 'Number' || ar[0] == '-' || ar[1] == '括弧'
+            @katakana += ar[0]
+          elsif ar[1] == '空白'
+            @katakana += "　"
+          elsif ar[1] == "Symbol"
+            @katakana += ar[0]
+          end
+        elsif ar[1] == "Alphabet" || ar[1] == "Number"
+          @katakana += ar[0]
+        else
+          @katakana += ar[2]
+        end
+      end
+      @katakana = @katakana.split("^^")
+    end
+  end
 end

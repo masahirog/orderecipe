@@ -27,6 +27,7 @@ ul.list-group style="list-style-type: none;"
               = op.product.name
       .col-md-3
         = link_to "レシピ印刷",products_pdfs_orders_path(order_id:order.id, :format => :pdf),class:"btn btn-success",:target=>"_blank",style:"margin:3px;"
+        = link_to "ラムレシピ",products_pdfs_roma_orders_path(order_id:order.id, :format => :pdf),class:"btn btn-success",:target=>"_blank",style:"margin:3px;"
         = link_to "仕込印刷",preparation_all_products_path(id:order.id,format:'pdf'),class:"btn btn-warning",:target=>"_blank",style:"margin:3px;"
         = link_to "発注詳細", order_path(order),class:"order btn btn-primary",style:"margin:3px;"
         = link_to "仕込み表テスト",print_test_all_products_path(id:order.id,format:'pdf'),class:"btn btn-danger",:target=>"_blank",style:"margin:3px;"

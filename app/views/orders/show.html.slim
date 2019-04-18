@@ -26,7 +26,7 @@
               = number_field(:volume,:num,value:op.serving_for,id:"amount_number_input",style:"display:none;")
               input.btn.btn-primary type="button" onclick="submit();" value="印刷ページ"
           .col-md-2
-            = link_to "盛付用VIEW", serving_detail_products_path(id:op.product_id), class:"btn btn-success",:target=>"_blank"
+            = link_to "盛付用VIEW", serving_kana_products_path(id:op.product_id), class:"btn btn-success",:target=>"_blank"
 .col-md-12
   = form_tag({:controller => "orders", :action => "order_print", format: "pdf"},{:target => "_blank"}) do
     .col-md-2.col-md-offset-5

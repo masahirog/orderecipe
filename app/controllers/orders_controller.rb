@@ -203,6 +203,19 @@ class OrdersController < ApplicationController
       end
     end
   end
+  def products_pdfs_roma
+    order = Order.includes({products: {menus: :menu_materials, menus: :materials}}).find(params[:order_id])    
+    respond_to do |format|
+      format.html
+      format.pdf do
+        pdf = ProductPdfAllRoma.new(order.id,'orders')
+        send_data pdf.render,
+        filename:    "#{order.id}.pdf",
+        type:        "application/pdf",
+        disposition: "inline"
+      end
+    end
+  end
 
 
   def get_bento_id
