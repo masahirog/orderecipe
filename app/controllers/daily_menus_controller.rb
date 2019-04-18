@@ -60,7 +60,7 @@ class DailyMenusController < ApplicationController
   end
 
   def products_pdfs
-    daily_menu = DailyMenu.find(params[:daily_menu_id])
+    daily_menu = DailyMenu.includes(daily_menu_details:[product:[menus:[:materials]]]).find(params[:daily_menu_id])
     respond_to do |format|
       format.html
       format.pdf do
@@ -73,7 +73,7 @@ class DailyMenusController < ApplicationController
     end
   end
   def recipes_roma
-    daily_menu = DailyMenu.find(params[:daily_menu_id])
+    daily_menu = DailyMenu.includes(daily_menu_details:[product:[menus:[:materials]]]).find(params[:daily_menu_id])
     respond_to do |format|
       format.html
       format.pdf do
@@ -86,7 +86,7 @@ class DailyMenusController < ApplicationController
     end
   end
   def print_test_all
-    daily_menu = DailyMenu.find(params[:daily_menu_id])
+    daily_menu = DailyMenu.includes(daily_menu_details:[product:[menus:[:materials]]]).find(params[:daily_menu_id])
     respond_to do |format|
       format.html
       format.pdf do
@@ -99,11 +99,11 @@ class DailyMenusController < ApplicationController
     end
   end
   def preparation_all
-    @daily_menu = DailyMenu.find(params[:daily_menu_id])
+    @daily_menu = DailyMenu.includes(daily_menu_details:[product:[menus:[:materials]]]).find(params[:daily_menu_id])
     respond_to do |format|
      format.html
      format.pdf do
-       pdf = PreparationPdf.new(@daily_menu)
+       pdf = PreparationPdf.new(@daily_menu,'daily_menus')
        send_data pdf.render,
        filename:    "preparation_all.pdf",
        type:        "application/pdf",

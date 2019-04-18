@@ -27,7 +27,7 @@ class OrdersController < ApplicationController
 
   def index
     @products = Product.all
-    @orders = Order.includes(:order_products,:products).order("id DESC").page(params[:page])
+    @orders = Order.includes(order_products:[:product]).order("id DESC").page(params[:page])
   end
   def update
     @materials = Material.where(end_of_sales:0)
@@ -149,7 +149,7 @@ class OrdersController < ApplicationController
   end
 
   def show
-    @order = Order.includes(:order_materials,[materials: :vendor]).find(params[:id])
+    @order = Order.includes(:order_materials,[materials: :vendor],order_products:[:product]).find(params[:id])
     @vendors = Vendor.vendor_index(params)
   end
 
@@ -233,6 +233,21 @@ class OrdersController < ApplicationController
       format.json{render :json => @product}
     end
   end
+
+  def preparation_all
+    @order = Order.includes({products: {menus: :menu_materials, menus: :materials}}).find(params[:order_id])
+    respond_to do |format|
+      format.html
+      format.pdf do
+        pdf = PreparationPdf.new(@order,'orders')
+        send_data pdf.render,
+        filename:    "preparation_all.pdf",
+        type:        "application/pdf",
+        disposition: "inline"
+      end
+    end
+  end
+
 
   def monthly
     @arr = []

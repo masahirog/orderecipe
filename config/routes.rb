@@ -47,6 +47,7 @@ Rails.application.routes.draw do
   end
   resources :orders do
     collection do
+      get :preparation_all
       get :monthly
       get :products_pdfs
       get :products_pdfs_roma

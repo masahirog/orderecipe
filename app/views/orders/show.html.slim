@@ -12,12 +12,12 @@ div class="alert alert-danger" role="alert"
       .col-md-2
         = link_to "レシピ印刷",products_pdfs_orders_path(order_id:@order.id, :format => :pdf),class:"btn btn-default",:target=>"_blank",style:"font-size:8px;"
       .col-md-2
-        = link_to "仕込み表印刷",preparation_all_products_path(id:@order.id,format:'pdf'),class:"btn btn-default",style:"font-size:8px;",:target=>"_blank"
+        = link_to "仕込み表印刷",preparation_all_orders_path(order_id:@order.id,format:'pdf'),class:"btn btn-default",style:"font-size:8px;",:target=>"_blank"
     ul.list-group.panel-body style="list-style:none;"
       - @order.order_products.each do |op|
         li.col-md-12.list-group-item
           .col-md-4
-            =  link_to Product.find(op.product_id).name,product_path(op.product)
+            =  link_to op.product.name,product_path(op.product)
           .col-md-2
             = "#{op.serving_for}食"
           .col-md-2

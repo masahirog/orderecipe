@@ -85,7 +85,7 @@ class ProductPdfTestAll < Prawn::Document
   def line_item_rows(menus,num)
     data= [["メニュー名","調理メモ","盛付メモ","食材・資材","#{num}人分",'✓',{:content => "仕込み内容", :colspan => 2}]]
     menus.each do |menu|
-      unless menu.category == '主食' || menu.category == '容器'
+      unless menu.category == '容器'
         u = menu.materials.length
         recipe_mozi = menu.recipe.length
         if recipe_mozi<50

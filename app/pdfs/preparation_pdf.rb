@@ -1,15 +1,34 @@
 class PreparationPdf < Prawn::Document
-  def initialize(daily_menu)
+  def initialize(data,controller_name)
     super(
       page_size: 'A4',
       page_layout: :landscape)
     font "vendor/assets/fonts/ipaexm.ttf"
     x = -10
-    date = daily_menu.start_time
-    daily_menu.daily_menu_details.each_with_index do |dmd,i|
-      product = dmd.product
-      num = dmd.manufacturing_number
-      date(date)
+    if controller_name == 'daily_menus'
+      daily_menu = data
+      pro_num = []
+      daily_menu.daily_menu_details.each do |dmd|
+        pro_num << [dmd.product,dmd.manufacturing_number]
+      end
+    else
+      order = data
+      pro_num = []
+      order.order_products.each do |op|
+        pro_num << [op.product,op.serving_for]
+      end
+    end
+    pro_num.each_with_index do |pn,i|
+      if i == 2
+        start_new_page
+        x = 0
+      elsif i == 0
+      else
+        x += 400
+      end
+      product = pn[0]
+      num = pn[1]
+      # date(date)
       title(num,product,x,525)
       move_down 3
       title_yoki(num,product,x)
@@ -21,19 +40,12 @@ class PreparationPdf < Prawn::Document
       table_prepa(prepa_item_rows("調理場", product, num),x)
       move_down 10
       table_prepa(prepa_item_rows("切出/スチコン", product, num),x)
-
-      if i ==1||i==3
-        start_new_page
-        x = 0
-      else
-        x += 400
-      end
     end
   end
-  def date(order)
-    bounding_box([-10, 540], :width => 320) do
-    end
-  end
+  # def date(order)
+  #   bounding_box([-10, 540], :width => 320) do
+  #   end
+  # end
   def title(num,product,x,y)
     bounding_box([x, y], :width => 320) do
       text "#{num}食　：#{product.name}", size: 9
