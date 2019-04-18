@@ -1,14 +1,15 @@
 class PreparationPdf < Prawn::Document
-  def initialize(order,order_products)
+  def initialize(daily_menu)
     super(
       page_size: 'A4',
       page_layout: :landscape)
     font "vendor/assets/fonts/ipaexm.ttf"
     x = -10
-    order_products.each_with_index do |op,i|
-      product = op.product
-      num = op.serving_for
-      date(order)
+    date = daily_menu.start_time
+    daily_menu.daily_menu_details.each_with_index do |dmd,i|
+      product = dmd.product
+      num = dmd.manufacturing_number
+      date(date)
       title(num,product,x,525)
       move_down 3
       title_yoki(num,product,x)

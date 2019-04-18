@@ -205,20 +205,7 @@ class ProductsController < ApplicationController
       end
     end
   end
-  def preparation_all
-    @order = Order.includes({products: {menus: :menu_materials, menus: :materials}}).find(params[:id])
-    @order_products = @order.order_products
-    respond_to do |format|
-     format.html
-     format.pdf do
-       pdf = PreparationPdf.new(@order,@order_products)
-       send_data pdf.render,
-       filename:    "preparation_all.pdf",
-       type:        "application/pdf",
-       disposition: "inline"
-     end
-   end
-  end
+
 
   # 食品表示
   # def hyoji

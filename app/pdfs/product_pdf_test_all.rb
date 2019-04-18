@@ -1,16 +1,17 @@
 class ProductPdfTestAll < Prawn::Document
-  def initialize(order)
+  def initialize(daily_menu)
     super(
       page_size: 'A4',
       page_layout: :landscape,
       margin:10
     )
     font "vendor/assets/fonts/ipaexm.ttf"
-    max_i = order.order_products.length
-    order.order_products.each_with_index do |op,i|
-      product = op.product
-      menus = op.product.menus
-      num = op.serving_for
+    max_i = daily_menu.daily_menu_details.length
+    date = daily_menu.start_time
+    daily_menu.daily_menu_details.each_with_index do |dmd,i|
+      product = dmd.product
+      menus = product.menus
+      num = dmd.manufacturing_number
       header_table(product,num,'調理場')
       table_content(menus,num,'調理場')
       start_new_page
