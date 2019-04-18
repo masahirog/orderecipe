@@ -156,13 +156,12 @@ class OrdersController < ApplicationController
   def order_print
     @order = Order.find(params[:id])
     if params[:vendor][:id].present?
-      @order_materials = @order.order_materials
       @vendor = Vendor.find(params[:vendor][:id])
       @materials_this_vendor = Material.get_material_this_vendor(params)
       respond_to do |format|
        format.html
        format.pdf do
-         pdf = OrderPdf.new(@materials_this_vendor,@vendor,@order)
+         pdf = OrderPdf.new(@materials_this_vendor,@vendor)
          pdf.font "vendor/assets/fonts/ipaexm.ttf"
          send_data pdf.render,
            filename:    "#{@order.id}_#{@vendor.company_name}.pdf",
@@ -285,7 +284,7 @@ class OrdersController < ApplicationController
   private
   def order_create_update
     params.require(:order).permit(order_materials_attributes: [:id, :order_quantity,:calculated_quantity,
-      :menu_name, :order_id, :material_id,:order_material_memo,:delivery_date,:calculated_unit,:order_unit, :_destroy],
+      :menu_name, :order_id, :material_id,:order_material_memo,:delivery_date,:calculated_unit,:order_unit, :un_order_flag],
       order_products_attributes: [:id,:make_date, :serving_for, :order_id, :product_id, :_destroy])
   end
 end

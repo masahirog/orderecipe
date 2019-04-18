@@ -1,5 +1,5 @@
 class OrderPdf < Prawn::Document
-  def initialize(materials_this_vendor,vendor,order)
+  def initialize(materials_this_vendor,vendor)
     super(page_size: 'A4')
     uniq_date = materials_this_vendor.pluck(:delivery_date).uniq
     font "vendor/assets/fonts/ipaexm.ttf"

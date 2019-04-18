@@ -11,7 +11,6 @@ $(document).on("turbolinks:before-cache", function() {
 $(document).on('turbolinks:load', function() {
   $('[data-toggle="tooltip"]').tooltip();
   $('[data-toggle="popover"]').popover();
-
   first_input_check();
   $('.input_select_product').select2({
   });
@@ -121,24 +120,15 @@ $(document).on('turbolinks:load', function() {
       $(".order_materials_tr").each (function(){//表示されている企業だけ変更
         if ($(this).is(':visible')) {
           $(this).find(".destroy_order_materials").prop('checked', true);
-          $(this).css('background-color', 'gray');
-          $(this).find(".select_order_materials").attr("disabled", "disabled");
-          $(this).find(".order_quantity").attr("disabled", "disabled");
-          $(this).find(".input_order_code").attr("disabled", "disabled");
-          $(this).find(".order_material_memo").children().attr("disabled", "disabled");
-          $(this).find(".order_material_date").children().attr("disabled", "disabled");
+          destroy_color(this);
         }
       });
     }else {
         $(".order_materials_tr").each (function(){
           if ($(this).is(':visible')) {
             $(this).find(".destroy_order_materials").prop('checked', false);
-            $(this).find(".select_order_materials").removeAttr("disabled");
-            $(this).find(".order_quantity").removeAttr("disabled");
-            $(this).find(".input_order_code").removeAttr("disabled");
-            $(this).find(".order_material_memo").children().removeAttr("disabled");
-            $(this).find(".order_material_date").children().removeAttr("disabled");
-            input_check()
+            undestroy_color(this);
+            input_check();
           }
         });
       };
@@ -148,22 +138,29 @@ $(document).on('turbolinks:load', function() {
   $('.orders_all').on('change','.check_box', function(){
   	if ($(this).is(':checked')) {
       var tr = $(this).parent().parent("tr")
-      tr.css('background-color', 'gray');
-      tr.find(".select_order_materials").attr("disabled", "disabled");
-      tr.find(".order_quantity").attr("disabled", "disabled");
-      tr.find(".input_order_code").attr("disabled", "disabled");
-      tr.find(".order_material_memo").children().attr("disabled", "disabled");
-      tr.find(".order_material_date").children().attr("disabled", "disabled");
+      destroy_color(tr);
   	} else {
       var tr = $(this).parent().parent("tr")
-      tr.find(".select_order_materials").removeAttr("disabled");
-      tr.find(".order_quantity").removeAttr("disabled");
-      tr.find(".input_order_code").removeAttr("disabled");
-      tr.find(".order_material_memo").children().removeAttr("disabled");
-      tr.find(".order_material_date").children().removeAttr("disabled");
+      undestroy_color(tr);
       input_check()
   	}
   });
+
+  function destroy_color(li){
+    $(li).css('background-color', 'gray');
+    $(li).find(".select_order_materials").attr("disabled", "disabled");
+    $(li).find(".order_quantity").attr("disabled", "disabled");
+    $(li).find(".input_order_code").attr("disabled", "disabled");
+    $(li).find(".order_material_memo").children().attr("disabled", "disabled");
+    $(li).find(".order_material_date").children().attr("disabled", "disabled");
+  }
+  function undestroy_color(li){
+    $(li).find(".select_order_materials").removeAttr("disabled");
+    $(li).find(".order_quantity").removeAttr("disabled");
+    $(li).find(".input_order_code").removeAttr("disabled");
+    $(li).find(".order_material_memo").children().removeAttr("disabled");
+    $(li).find(".order_material_date").children().removeAttr("disabled");
+  }
 
   $(".orders_all").on('change','.order_quantity', function(){
     input_check()
@@ -293,11 +290,13 @@ $(document).on('turbolinks:load', function() {
       var order_quantity = $(this).find(".order_quantity").val()
       if  ($(this).find(".destroy_order_materials").is(':checked')) {
       }else {
-      if (material_id=="" || order_quantity== ""){
-        $(this).css('background-color', '#FEC9C9');
-      }else {
-        $(this).css('background-color', '#FFFFFF');
-    }}});
+        if (material_id=="" || order_quantity== ""){
+          $(this).css('background-color', '#FEC9C9');
+        }else {
+          $(this).css('background-color', '#FFFFFF');
+        }
+      }
+    });
   };
   // ページ読み込んだ時の色付け
   function first_input_check(){
@@ -305,11 +304,16 @@ $(document).on('turbolinks:load', function() {
     $('.order_materials_tr').each(function(){
       var material_id = $(this).find(".select_order_materials").val()
       var order_quantity = $(this).find(".order_quantity").val()
-      if (material_id=="" || order_quantity== ""){
-        $(this).css('background-color', '#FEC9C9');
-        $(".top_alert").css("color","red").text("＊終売にチェックが付いている商品は選択出来ません")
+      if  ($(this).find(".destroy_order_materials").is(':checked')) {
+        destroy_color(this);
       }else {
-        $(this).css('background-color', '#FFFFFF');
-    }});
+        if (material_id=="" || order_quantity== ""){
+          $(this).css('background-color', '#FEC9C9');
+          $(".top_alert").css("color","red").text("＊終売にチェックが付いている商品は選択出来ません")
+        }else {
+          $(this).css('background-color', '#FFFFFF');
+        }
+      }
+    });
   };
 });

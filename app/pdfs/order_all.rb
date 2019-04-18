@@ -4,7 +4,7 @@ class OrderAll < Prawn::Document
     super(page_size: 'A4')
     font "vendor/assets/fonts/ipaexm.ttf"
     order = order
-    order_materials = order.order_materials
+    order_materials = order.order_materials.where(un_order_flag:false)
     max = vendors.values.length - 1
     for i in 0..max
       u= "id#{i}"

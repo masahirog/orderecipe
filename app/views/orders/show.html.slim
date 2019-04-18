@@ -55,7 +55,7 @@ div class="alert alert-danger" role="alert"
       label.panel-title.col-md-2 備考
       label.panel-title.col-md-2 納品日
     ul.order_materials_ul.list-group.panel-body
-      - @order.order_materials.each do |om|
+      - @order.order_materials.where(un_order_flag:false).each do |om|
         li.index_vendor_list.list-group-item.col-md-12 style="padding:5px;"
           .material_name.col-md-3
             = om.material.name

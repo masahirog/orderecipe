@@ -70,7 +70,7 @@ class Material < ApplicationRecord
 
   def self.get_material_this_vendor(params)
     order = Order.includes(order_materials: :material).find(params[:id])
-    ordermaterials = order.order_materials
+    ordermaterials = order.order_materials.where(un_order_flag:false)
     materials_this_vendor = []
     pvi = params[:vendor][:id].to_i
     ordermaterials.each do |om|
