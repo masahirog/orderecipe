@@ -148,11 +148,11 @@ $(document).on('turbolinks:load', function() {
 
   function destroy_color(li){
     $(li).css('background-color', 'gray');
-    $(li).find(".select_order_materials").attr("disabled", "disabled");
-    $(li).find(".order_quantity").attr("disabled", "disabled");
-    $(li).find(".input_order_code").attr("disabled", "disabled");
-    $(li).find(".order_material_memo").children().attr("disabled", "disabled");
-    $(li).find(".order_material_date").children().attr("disabled", "disabled");
+    // $(li).find(".select_order_materials").attr("disabled", "disabled");
+    // $(li).find(".order_quantity").attr("disabled", "disabled");
+    // $(li).find(".input_order_code").attr("disabled", "disabled");
+    // $(li).find(".order_material_memo").children().attr("disabled", "disabled");
+    // $(li).find(".order_material_date").children().attr("disabled", "disabled");
   }
   function undestroy_color(li){
     $(li).find(".select_order_materials").removeAttr("disabled");
@@ -205,15 +205,13 @@ $(document).on('turbolinks:load', function() {
     //発注しないチェックがはいっていた場合は、inputの検証をスルーする
       destroy_check = 0
       $('.order_materials_tr').each(function(){
-        if ($(this).find(".destroy_order_materials").is(':checked')){}else{
-          var material_id = $(this).find(".select_order_materials").val()
-          var order_quantity = $(this).find(".order_quantity").val()
-          if (material_id=="" || order_quantity== ""){
-            destroy_check = 1
-            alert("入力が不完全です");
-            return false;
-        }else {};
-      }
+        var material_id = $(this).find(".select_order_materials").val()
+        var order_quantity = $(this).find(".order_quantity").val()
+        if (material_id=="" || order_quantity== ""){
+          destroy_check = 1
+          alert("入力が不完全です");
+          return false;
+      }else {};
     });
       if (destroy_check == 1){
         return false;
