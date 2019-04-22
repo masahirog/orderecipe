@@ -25,8 +25,8 @@ class ProductPdfTestAll < Prawn::Document
 
   def header_table(product,num,mochiba)
     bounding_box([0, 570], :width => 830) do
-      data = [["持ち場","お弁当名","bento_id","調理カテゴリ","原価","製造数"],
-              [mochiba,"#{product.name}","#{product.bento_id}","#{product.cook_category}","#{product.cost_price} 円","#{num}人分"]]
+      data = [["","持ち場","お弁当名","bento_id","調理カテゴリ","原価","製造数"],
+              ["",mochiba,"#{product.name}","#{product.bento_id}","#{product.cook_category}","#{product.cost_price} 円","#{num}人分"]]
       table data, cell_style: { size: 9 } do
       cells.padding = 2
       row(0).background_color = 'dcdcdc'
@@ -36,7 +36,7 @@ class ProductPdfTestAll < Prawn::Document
       cells.border_width = 0.2
       cells.height = 14
       self.header = true
-      self.column_widths = [80,350,100,100,100,100]
+      self.column_widths = [30,50,350,100,100,100,100]
       end
     end
   end
