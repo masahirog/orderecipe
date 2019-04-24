@@ -82,7 +82,7 @@ ul.list-group[style="list-style-type:none;"]
   - @product.product_menus.each do |pm|
     li.first_tr.table_tr.col-md-12.list-group-item[style="padding:5px;"]
       .first_tr_td.col-md-2
-        div = link_to pm.menu.name, menu_path(pm.menu)
+        div = link_to pm.menu.name, edit_menu_path(pm.menu)
         div = "#{pm.menu.menu_materials.sum(:calorie).round(2)}kcal"
       .col-md-1
         = pm.menu.cost_price

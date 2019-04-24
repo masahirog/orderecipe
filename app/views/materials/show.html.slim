@@ -2,28 +2,42 @@ ol.breadcrumb
   li = link_to 'ホーム',root_path
   li = link_to "食材資材一覧",materials_path
   li = @material.name
-div
-  .active.col-md-12 style="padding:10px"
-    .col-md-3
-      | 食材資材名
-    .col-md-3
-      | 発注名
-    .col-md-2
-      | 発注量
-    .col-md-1
-      | 発注単位
-    .col-md-3
-      | 値段
-  ul.list.list-group
-    li.list-group-item.col-md-12
-      .col-md-3
-        = @material.name
-      .col-md-3
-        = @material.order_name
-        |  円
-      .col-md-2
-        = @material.calculated_value
-      .col-md-1
-        = @material.calculated_unit
-      .col-md-3
-        = @material.calculated_price
+.col-md-12 style="margin-bottom:20px;"
+  = link_to '食材編集', edit_material_path(@material),class: "btn btn-primary",style:'margin-right:20px;'
+  = link_to '使用確認',include_material_materials_path(id:@material.id),class:"btn btn-default"
+.col-md-12.form-group
+  = @material.name
+.col-md-12.form-group
+  = @material.order_name
+.col-md-12.form-group
+  = @material.storage_location_id
+.col-md-12.form-group
+  = @material.end_of_sales
+.col-md-12.form-group
+  = @material.category
+.col-md-12.form-group
+  = @material.vegetable_flag
+.col-md-12.form-group
+  = @material.vendor.company_name
+.col-md-12.form-group
+  = @material.vendor_stock_flag
+.col-md-12.form-group style="padding:0;"
+  = "#{@material.delivery_deadline}営業日前"
+.col-md-12.form-group
+  = @material.order_code
+.col-md-12.form-group style="padding:0;"
+  = "#{@material.order_unit_quantity} #{@material.order_unit}"
+.col-md-12.form-group style="padding:0;"
+  ="#{@material.calculated_price} 円"
+.col-md-12.form-group style="padding:0;"
+  = @material.calculated_unit
+.col-md-12.form-group style="padding:0;"
+  = @material.calculated_value
+.col-md-12.form-group style="padding:0;"
+  = "#{@material.cost_price} 円"
+.col-md-12.form-group style="padding:0;"
+  = @material.allergy.reject{|e| e == 0}.join("、 ")
+.col-md-12.form-group style="padding:0;"
+  = @material.material_food_additives.map{|fa|fa.food_additive.name}.join("、 ")
+.col-md-12.form-group
+  = @material.memo

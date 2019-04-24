@@ -2,10 +2,11 @@ ol.breadcrumb
   li = link_to 'ホーム',root_path
   li = link_to "メニュー一覧",menus_path
   li = @menu.name
-.col-md-12.form-inline style="margin-bottom:20px;"
-  = link_to 'メニュー編集', edit_menu_path(@menu), method: :get,class: "btn btn-primary pull-right"
-  = link_to "印刷する",print_menus_path(id:@menu.id,:format => :pdf),method:"get", class:"btn btn-success pull-right",:target=>"_blank", style:"margin:0 20px 0 10px;"
-  button.btn.btn-default.pull-right type="button" data-toggle="modal" data-target="#sampleModal" style="margin:0 10px 0 0px;" コピーする
+.col-md-12 style="margin-bottom:20px;"
+  = link_to 'メニュー編集', edit_menu_path(@menu),class: "btn btn-primary"
+  = link_to "印刷する",print_menus_path(id:@menu.id,:format => :pdf), class:"btn btn-default",:target=>"_blank", style:"margin:0 10px 0 10px;"
+  = link_to '使用確認',include_menu_menus_path(id:@menu.id),class:"btn btn-default", style:"margin:0 10px 0 10px;"
+  button.btn.btn-default type="button" data-toggle="modal" data-target="#sampleModal" style="margin:0 10px 0 0px;" コピーする
   #sampleModal.modal.fade[tabindex="-1"]
     .modal-dialog
       .modal-content.col-md-12

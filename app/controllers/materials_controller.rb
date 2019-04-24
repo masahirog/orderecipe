@@ -22,7 +22,7 @@ class MaterialsController < ApplicationController
        end
   end
   def show
-    @material = Material.find(params[:id])
+    @material = Material.includes(material_food_additives:[:food_additive]).find(params[:id])
   end
 
   def edit

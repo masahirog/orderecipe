@@ -34,7 +34,7 @@ table.table
         td
           = "OK" if menu.confirm_flag == 1
         td
-          = link_to "#{menu.name}", "/menus/#{menu.id}"
+          = link_to "#{menu.name}", edit_menu_path(menu)
         td
           = menu.category
         td
