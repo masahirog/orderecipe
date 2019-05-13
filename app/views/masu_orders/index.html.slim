@@ -1,0 +1,15 @@
+h1 枡々オーダー一覧
+= month_calendar do |date|
+  div
+    = link_to date.strftime("%-m月%-d日"), new_masu_order_path(start_time:date)
+  - if @date_order_count[date]
+    div
+      = link_to "オーダー：#{@date_order_count[date]}件",date_masu_orders_path(date:date)
+  table.table
+    - @products.each do |product|
+      - if @date_group[[date,product.id]]
+        tr
+          td style='font-size:11px;'
+            = product.short_name
+          td.text-right style='font-size:11px;'
+            = @date_group[[date,product.id]]

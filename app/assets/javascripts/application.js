@@ -10,17 +10,13 @@
 // Read Sprockets README (https://github.com/rails/sprockets#sprockets-directives) for details
 // about supported directives.
 //
-// require jquery
-// require jquery_ujs
-// require jquery-ui/widgets/sortable
-// require cocoon
-// require turbolinks
-// require_tree .
+
 
 //= require rails-ujs
 //= require jquery3
 //= require activestorage
 //= require cocoon
+//= require select2
 //= require turbolinks
 //= require_tree .
 
@@ -28,8 +24,25 @@ $(document).on("turbolinks:before-cache", function() {
   if ($(".input_select_product").length) {
     $('.input_select_product').select2('destroy');
   }
+
 });
 
+$(document).on('turbolinks:load', function() {
+  // $('#masu_order_details_area').on('cocoon:before-insert', function(e, post_to_be_added) {
+  // }).on('cocoon:after-insert', function(e, added_post) {
+  //   console.log('aaa');
+  // }).on('cocoon:before-remove', function(e, post_to_be_removed) {
+  // }).on('cocoon:after-remove', function(e, removed_post) {
+  // });
+  $('.masu_order_select_product').select2();
+  $('.add_masu_order_detail').on('click',function(){
+    $('.masu_order_select_product').select2('destroy');
+    setTimeout(function(){
+      $('.masu_order_select_product').select2();
+    },5);
+  });
+
+})
 function kanma (number) {
   var number = parseFloat(number);
   var number1 = number * 100;

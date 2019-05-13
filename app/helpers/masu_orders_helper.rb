@@ -1,0 +1,2 @@
+module MasuOrdersHelper
+end

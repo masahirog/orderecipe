@@ -14,6 +14,12 @@ Rails.application.routes.draw do
   post'orders/order_print_all/:id' => 'orders#order_print_all'
   post 'materials/change_additives' => 'materials#change_additives'
 
+  resources :masu_orders do
+    collection do
+      get :date
+      get :print_preparation
+    end
+  end
   resources :menus do
     put :sort
     collection do

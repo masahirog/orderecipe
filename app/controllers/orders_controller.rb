@@ -59,6 +59,18 @@ class OrdersController < ApplicationController
         order_products << hash
       end
       delivery_date = DailyMenu.find(params[:daily_menu_id]).start_time
+    elsif params[:masu_order_date]
+      order_products = []
+      masu_orders = MasuOrder.where(start_time:params[:masu_order_date])
+      products_num_h = masu_orders.joins(:masu_order_details).group('masu_order_details.product_id').sum('masu_order_details.number')
+      products_num_h.each do |aa|
+        hash = {}
+        hash[:product_id] = aa[0]
+        hash[:num] = aa[1]
+        hash[:make_date] = params[:masu_order_date]
+        order_products << hash
+      end
+      delivery_date = Date.parse(params[:masu_order_date])
     else
       order_products = params[:order]
       delivery_date = Date.today

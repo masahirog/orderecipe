@@ -6,6 +6,10 @@ class Product < ApplicationRecord
   has_many :daily_menus, through: :daily_menu_details
   has_many :daily_menu_details
 
+  has_many :masu_orders, through: :masu_order_details
+  has_many :masu_order_details
+
+
   has_many :order_products, dependent: :destroy
   has_many :orders, through: :order_products
 

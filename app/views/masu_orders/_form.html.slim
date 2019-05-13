@@ -1,0 +1,50 @@
+= form_with(model: masu_order, local: true) do |f|
+  - if masu_order.errors.any?
+    #error_explanation
+      h2 = "#{pluralize(masu_order.errors.count, "error")} prohibited this masu_order from being saved:"
+      ul
+        - masu_order.errors.full_messages.each do |message|
+          li = message
+  .form-group.required.col-md-12
+    = f.label :start_time,"日付", class: 'col-md-2 control-label text-right'
+    .col-md-10
+      = f.date_field :start_time, value:params['start_time'], class: 'col-md-10 form-control',readonly: true
+  .form-group.required.col-md-12
+    = f.label :kurumesi_order_id,"くるめしオーダーID", class: 'col-md-2 control-label text-right'
+    .col-md-10
+      = f.number_field :kurumesi_order_id, class: 'col-md-10 form-control'
+
+  .form-group.required.col-md-12
+    = f.label :number,"合計個数", class: 'col-md-2 control-label text-right'
+    .col-md-10
+      = f.number_field :number, class: 'col-md-10 form-control'
+  .form-group.required.col-md-12
+    = f.label :pick_time,"ピックアップ時間", class: 'col-md-2 control-label text-right'
+    .col-md-10
+      = f.time_select :pick_time,{time_separator:'', minute_step: 15, :default => {:hour => '09', :minute => '30'}}, class: 'col-md-10 form-control',style:'display:inline-block;width:auto;width:100px;'
+
+  .form-group.required.col-md-12
+    = f.label :fixed_flag,"確定ステータス", class: 'col-md-2 control-label text-right'
+    .col-md-10
+      = f.select :fixed_flag,[["未確定",false],["確定済",true]],{}, class: 'col-md-10 form-control'
+
+  table.table.table-list.cocoon_are
+    thead
+      tr
+        th.col-md-5 弁当名
+        th.col-md-3
+        th.col-md-2
+    tbody#masu_order_details_area
+      = f.fields_for :masu_order_details do |mod|
+        = render 'masu_order_detail_fields', f: mod
+  = link_to_add_association '商品追加', f, :masu_order_details,
+        class: 'btn btn-default add_masu_order_detail',
+         data: {association_insertion_node: '#masu_order_details_area',
+                association_insertion_method: 'append' }
+
+  .actions.col-md-12
+    button type="button" onclick="submit();" class="col-md-2 col-md-offset-1 btn btn-primary"
+      |登録
+
+style type="text/css"
+  | #masu_order_pick_time_5i { margin-left:20px; }

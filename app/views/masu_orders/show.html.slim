@@ -1,0 +1,40 @@
+.col-md-12 style="margin-bottom:20px;"
+  = link_to '編集する', edit_masu_order_path(@masu_order),class: "btn btn-primary"
+.col-md-12
+  label.col-md-2.text-right
+    |納品日
+  .col-md-8
+    = @masu_order.start_time
+.col-md-12
+  label.col-md-2.text-right
+    |くるめしオーダーID
+  .col-md-8
+    = @masu_order.kurumesi_order_id
+
+.col-md-12
+  label.col-md-2.text-right
+    |合計数
+  .col-md-8
+    = @masu_order.number
+.col-md-12
+  label.col-md-2.text-right
+    |ピックアップ時間
+  .col-md-8
+    = @masu_order.pick_time
+.col-md-12
+  label.col-md-2.text-right
+    |確定？
+  .col-md-8
+    = @masu_order.fixed_flag
+
+
+  table.table
+    thead
+      tr
+        th.col-md-8 弁当名
+        th 個数
+    tbody
+      - @masu_order.masu_order_details.each do |mod|
+        tr
+          td = mod.product.name
+          td = mod.number

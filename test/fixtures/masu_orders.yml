@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  number: 1
+  start_time: 2019-05-13
+  kurumesi_order_id: 1
+  pick_time: 2019-05-13 09:54:21
+
+two:
+  number: 1
+  start_time: 2019-05-13
+  kurumesi_order_id: 1
+  pick_time: 2019-05-13 09:54:21

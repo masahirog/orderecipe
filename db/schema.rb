@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_18_131835) do
+ActiveRecord::Schema.define(version: 2019_05_13_044309) do
 
   create_table "daily_menu_details", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "daily_menu_id", null: false
@@ -63,6 +63,24 @@ ActiveRecord::Schema.define(version: 2019_04_18_131835) do
     t.float "copper"
     t.float "folic_acid"
     t.float "vitamin_d"
+  end
+
+  create_table "masu_order_details", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "masu_order_id", null: false
+    t.integer "product_id", null: false
+    t.integer "number", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "masu_orders", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "number", default: 0, null: false
+    t.date "start_time", null: false
+    t.integer "kurumesi_order_id", null: false
+    t.time "pick_time"
+    t.boolean "fixed_flag", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "material_food_additives", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -190,6 +208,7 @@ ActiveRecord::Schema.define(version: 2019_04_18_131835) do
     t.string "product_image"
     t.integer "bento_id"
     t.text "memo"
+    t.string "short_name"
   end
 
   create_table "stock_materials", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

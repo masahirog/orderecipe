@@ -30,7 +30,9 @@ html
             - if user_signed_in?
               ul.nav.navbar-nav
                 li.menu_li
-                  = link_to "献立",daily_menus_path
+                  = link_to "将軍献立",daily_menus_path
+                li.menu_li
+                  = link_to "枡々オーダー",masu_orders_path
                 li.menu_li
                   = link_to "発注",orders_path
                 li.menu_li

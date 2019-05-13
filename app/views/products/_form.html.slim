@@ -10,9 +10,12 @@
             = message
   .col-md-7
     .col-md-12.form-group
-      .col-md-12
-        = f.label :name, "弁当名"
-        = f.text_field :name, id: "menu_search", autocomplete: "off", class:"name form-control"
+      = f.label :name, "弁当名"
+      = f.text_field :name, id: "menu_search", autocomplete: "off", class:"name form-control"
+    .col-md-12.form-group
+      = f.label :short_name, "短縮名"
+      = f.text_field :short_name,class:"form-control"
+
     .col-md-12.form-group
       - if @product.bento_id.present?
       - else
@@ -32,7 +35,7 @@
         = f.select :cook_category, {'グリル': "グリル", 'コンロ': "コンロ", 'フライヤー': "フライヤー", '前日コンロ': "前日コンロ",'フライヤー・グリル': "フライヤー・グリル",'フライヤー・コンロ': "フライヤー・コンロ", 'グリル・コンロ': "グリルコンロ", '前日グリル': "前日グリル",'その他': "その他",'スチコン': "スチコン"},{include_blank: true},{class: "cook_category_choice form-control"}
       .col-md-4
         = f.label :product_type, "弁当種類"
-        = f.select :product_type,{ W弁: "W弁",新ヘルシー: "新ヘルシー",デラックス: "デラックス", ヘルシー: "ヘルシー", ノーマル: "ノーマル", プレミアム: "プレミアム",ボウル: "ボウル", 麺: "麺", その他: "その他"}, {include_blank: true}, { class: "form-control"}
+        = f.select :product_type,{枡々: "枡々", W弁: "W弁",新ヘルシー: "新ヘルシー",デラックス: "デラックス", ヘルシー: "ヘルシー", ノーマル: "ノーマル", プレミアム: "プレミアム",ボウル: "ボウル", 麺: "麺", その他: "その他"}, {include_blank: true}, { class: "form-control"}
     .col-md-12.form-group
       .col-md-12
         = f.label :description, "説明文"

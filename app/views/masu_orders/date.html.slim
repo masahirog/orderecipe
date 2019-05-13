@@ -1,0 +1,41 @@
+h3 = "#{params[:date]}の枡々オーダー一覧"
+.form-group.col-md-12.clearfix
+  = link_to "発注開始", new_order_path(masu_order_date:params[:date]),class:'btn btn-success',style:'float:left;margin-left:20px;margin-top:10px;'
+  / = link_to "レシピ印刷",products_pdfs_daily_menus_path(daily_menu_id:@daily_menu.id, :format => :pdf),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
+  / = link_to "ラムレシピ",recipes_roma_daily_menus_path(daily_menu_id:@daily_menu.id, :format => :pdf),class:"btn btn-success",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
+  / = link_to "仕込印刷",preparation_all_daily_menus_path(daily_menu_id:@daily_menu.id,format:'pdf'),class:"btn btn-warning",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
+  = link_to "仕込み表テスト",print_preparation_masu_orders_path(date:params[:date],format:'pdf'),class:"btn btn-primary",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
+h3 弁当別製造数
+table.table
+  thead
+    tr
+      th 弁当名
+      th 個数
+  tbody
+    - @products_num_h.each do |product_num|
+      tr
+        td = Product.find(product_num[0]).name
+        td = product_num[1]
+
+h3 オーダー別製造数
+table.table
+  thead
+    tr
+      th.col-md-1 くるめしID
+      th.col-md-1 ピック時間
+      th.col-md-1 合計個数
+      th オーダー内容
+  tbody
+    - @masu_orders.each do |masu_order|
+      tr
+        td = link_to masu_order.kurumesi_order_id,masu_order
+        td = masu_order.pick_time.strftime("%R")
+        td = masu_order.number
+        td
+          ul.list-group
+            - masu_order.masu_order_details.each do |mod|
+              li.list-group-item.col-md-12
+                .col-md-10
+                  = mod.product.name
+                .col-md-2
+                  = mod.number
