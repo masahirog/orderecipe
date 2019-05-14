@@ -2,8 +2,6 @@ Rails.application.routes.draw do
   devise_for :users
 
   root 'daily_menus#index'
-  post 'products/print' => 'products#print'
-  post 'products/print_test' => 'products#print_test'
   post 'orders/new' => 'orders#new'
   post'orders/order_print/:id' => 'orders#order_print'
   post 'products/hyoji' => 'products#hyoji'
@@ -32,14 +30,16 @@ Rails.application.routes.draw do
   end
   resources :products do
     collection do
+      post :print
       get :picture_book
       get :get_menu_cost_price
       get :serving_kana
+      get :serving
       get :recipe_romaji
       get :get_products
       get :input_name_get_products
       get :get_by_category
-      get :print_test_all
+      post :print_preparation
       get :new_band
     end
   end
@@ -67,7 +67,7 @@ Rails.application.routes.draw do
       get :preparation_all
       get :products_pdfs
       get :recipes_roma
-      get :print_test_all
+      get :print_preparation
     end
   end
 

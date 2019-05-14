@@ -1,16 +1,7 @@
-- if f.object.id.present?
-  tr.nested-fields.item.daily_menu_detail_tr
-    td.col-md-5
-      = Product.find(f.object.product_id).name
-    td.col-md-3
-      = f.number_field :number, class: 'form-control'
-    td.col-md-2
-      = link_to_remove_association '削除', f, class: 'btn btn-default'
-- else
-  tr.nested-fields.item.daily_menu_detail_tr
+tr.nested-fields.masu_order_details_tr
     td.col-md-5
       = f.collection_select :product_id, @products, :id, :name, {include_blank:true},class:'form-control product_select masu_order_select_product'
     td.col-md-3
-      = f.number_field :number, class: 'form-control'
+      = f.number_field :number, class: 'form-control masu_order_details_product_number', onClick:"this.select();"
     td.col-md-2
       = link_to_remove_association '削除', f, class: 'btn btn-default'

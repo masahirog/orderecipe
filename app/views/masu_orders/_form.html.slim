@@ -17,7 +17,7 @@
   .form-group.required.col-md-12
     = f.label :number,"合計個数", class: 'col-md-2 control-label text-right'
     .col-md-10
-      = f.number_field :number, class: 'col-md-10 form-control'
+      = f.number_field :number, class: 'col-md-10 form-control masu_order_sum_number',readonly:true
   .form-group.required.col-md-12
     = f.label :pick_time,"ピックアップ時間", class: 'col-md-2 control-label text-right'
     .col-md-10
@@ -26,7 +26,13 @@
   .form-group.required.col-md-12
     = f.label :fixed_flag,"確定ステータス", class: 'col-md-2 control-label text-right'
     .col-md-10
-      = f.select :fixed_flag,[["未確定",false],["確定済",true]],{}, class: 'col-md-10 form-control'
+      label style='margin-right:30px;'
+        |確定済み　
+        = f.radio_button :fixed_flag,true
+      label
+        |未確定　
+        = f.radio_button :fixed_flag,false
+
 
   table.table.table-list.cocoon_are
     thead

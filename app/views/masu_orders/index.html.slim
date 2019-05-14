@@ -1,15 +1,21 @@
 h1 枡々オーダー一覧
 = month_calendar do |date|
-  div
-    = link_to date.strftime("%-m月%-d日"), new_masu_order_path(start_time:date)
+  div.col-md-12 style='font-size:18px;padding:0 0 7px 0;'
+    = date.strftime("%-m月%-d日")
+    = link_to new_masu_order_path(start_time:date),style:'margin-left:5px;' do
+      span class="glyphicon glyphicon-plus-sign" aria-hidden="true"
   - if @date_order_count[date]
-    div
-      = link_to "オーダー：#{@date_order_count[date]}件",date_masu_orders_path(date:date)
+    .clearfix
+      div style='float:left;'
+        = link_to "オーダー：#{@date_order_count[date]}件",date_masu_orders_path(date:date)
+      div style='float:right;'
+        = "計：#{@date_sum[date]}食"
+
   table.table
     - @products.each do |product|
       - if @date_group[[date,product.id]]
         tr
           td style='font-size:11px;'
-            = product.short_name
+            = link_to product.short_name,product
           td.text-right style='font-size:11px;'
             = @date_group[[date,product.id]]

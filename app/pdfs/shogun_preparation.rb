@@ -1,4 +1,4 @@
-class ProductPdfTest < Prawn::Document
+class ShogunPreparation < Prawn::Document
   def initialize(params,product,menus)
     # 初期設定。ここでは用紙のサイズを指定している。
     super(

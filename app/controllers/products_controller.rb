@@ -123,6 +123,12 @@ class ProductsController < ApplicationController
     render :serving_kana, layout: false
   end
 
+  def serving
+    @product = Product.find(params[:id])
+    @menus = @product.menus.includes(:materials, :menu_materials)
+    render :serving_kana, layout: false
+  end
+
 
   def recipe_romaji
     @product = Product.find(params[:id])
@@ -177,14 +183,14 @@ class ProductsController < ApplicationController
      end
    end
   end
-  def print_test
+  def print_preparation
     @params = params
     @product = Product.find(params[:volume][:id])
     @menus = @product.menus.includes(:materials, :menu_materials)
     respond_to do |format|
       format.html
       format.pdf do
-        pdf = ProductPdfTest.new(@params,@product,@menus)
+        pdf = ShogunPreparation.new(@params,@product,@menus)
         send_data pdf.render,
         filename:    "#{@product.name}_#{params[:volume][:num]}shoku.pdf",
         type:        "application/pdf",
@@ -192,20 +198,6 @@ class ProductsController < ApplicationController
       end
     end
   end
-  def print_test_all
-    @order = Order.includes({products: {menus: :menu_materials, menus: :materials}}).find(params[:id])
-    respond_to do |format|
-      format.html
-      format.pdf do
-        pdf = ProductPdfTestAll.new(@order)
-        send_data pdf.render,
-        filename:    "#{@order.id}.pdf",
-        type:        "application/pdf",
-        disposition: "inline"
-      end
-    end
-  end
-
 
   # 食品表示
   # def hyoji

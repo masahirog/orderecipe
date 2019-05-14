@@ -1,4 +1,4 @@
-class ProductPdfTestAll < Prawn::Document
+class ShogunPreparationAll < Prawn::Document
   def initialize(daily_menu)
     super(
       page_size: 'A4',

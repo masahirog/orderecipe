@@ -1,19 +1,21 @@
 class MasuOrdersController < ApplicationController
-  before_action :set_masu_order, only: [:show, :edit, :update, :destroy]
+  before_action :set_masu_order, only: [ :edit, :update, :destroy]
 
   def index
     @products = Product.where(product_type:'枡々')
     @masu_orders = MasuOrder.all
     @date_order_count = MasuOrder.group('start_time').count
     @date_group = MasuOrderDetail.joins(:masu_order,:product).group('masu_orders.start_time').group('products.id').sum(:number)
+    @date_sum = MasuOrderDetail.joins(:masu_order,:product).group('masu_orders.start_time').sum(:number)
   end
 
   def date
     date = params[:date]
-    @masu_orders = MasuOrder.includes(masu_order_details:[:product]).where(start_time:date)
+    @masu_orders = MasuOrder.includes(masu_order_details:[:product]).where(start_time:date).order(:pick_time)
     @products_num_h = @masu_orders.joins(:masu_order_details).group('masu_order_details.product_id').sum('masu_order_details.number')
   end
   def show
+    @masu_order = MasuOrder.includes(masu_order_details:[:product]).find(params[:id])
   end
 
   def print_preparation
@@ -23,7 +25,7 @@ class MasuOrdersController < ApplicationController
     respond_to do |format|
      format.html
      format.pdf do
-       pdf = MasuOrderPdf.new(@products_num_h)
+       pdf = MasuOrderPdf.new(@products_num_h,date)
        pdf.font "vendor/assets/fonts/ipaexm.ttf"
        send_data pdf.render,
          filename:    "#{date}.pdf",
@@ -60,7 +62,7 @@ class MasuOrdersController < ApplicationController
   def update
     respond_to do |format|
       if @masu_order.update(masu_order_params)
-        format.html { redirect_to @masu_order, notice: 'Masu order was successfully updated.' }
+        format.html { redirect_to date_masu_orders_path(date:@masu_order.start_time), notice: 'Masu order was successfully updated.' }
         format.json { render :show, status: :ok, location: @masu_order }
       else
         format.html { render :edit }
@@ -83,7 +85,7 @@ class MasuOrdersController < ApplicationController
     end
 
     def masu_order_params
-      params.require(:masu_order).permit(:start_time,:number,:kurumesi_order_id,:pick_time,
+      params.require(:masu_order).permit(:start_time,:number,:kurumesi_order_id,:pick_time,:fixed_flag,
         masu_order_details_attributes: [:id,:masu_order_id,:product_id,:number])
     end
 end

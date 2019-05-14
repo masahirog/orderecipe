@@ -28,18 +28,20 @@ $(document).on("turbolinks:before-cache", function() {
 });
 
 $(document).on('turbolinks:load', function() {
-  // $('#masu_order_details_area').on('cocoon:before-insert', function(e, post_to_be_added) {
-  // }).on('cocoon:after-insert', function(e, added_post) {
-  //   console.log('aaa');
-  // }).on('cocoon:before-remove', function(e, post_to_be_removed) {
-  // }).on('cocoon:after-remove', function(e, removed_post) {
-  // });
   $('.masu_order_select_product').select2();
   $('.add_masu_order_detail').on('click',function(){
     $('.masu_order_select_product').select2('destroy');
     setTimeout(function(){
       $('.masu_order_select_product').select2();
     },5);
+  });
+
+  $("#masu_order_details_area").on('keyup','.masu_order_details_product_number', function(){
+    var sum = 0;
+    $('.masu_order_details_tr').each(function(i){
+      sum += Number($(this).find('.masu_order_details_product_number').val());
+    });
+    $('.masu_order_sum_number').val(sum);
   });
 
 })
