@@ -162,34 +162,41 @@ $(document).on('turbolinks:load', function() {
 
       $(".aaaad").children().remove()
       $.each(data, function(i){
-        var li = '<li class="li-active products_li col-md-12 list-group-item" id="aaa">'+
-        '<div class="col-md-1">'+
+        var li = '<tr class="products_li">'+
+        '<td>'+
           data[i].bento_id+
-        '</div>'+
-        '<div class="product_name col-md-2">'+
+        '</td>'+
+        '<td class="product_name">'+
         '<a href=/products/'+data[i].id+'>'+data[i].name+'</a>'+
-        '</div>'+
-        '<div class="col-md-1">'+
+        '</td>'+
+        '<td>'+
          data[i].cook_category+
-        '</div>'+
-        '<div class="col-md-1">'+
+        '</td>'+
+        '<td>'+
          data[i].product_type+
-        '</div>'+
-        '<div class="col-md-1">'+
+        '</td>'+
+        '<td>'+
          data[i].sell_price+'円'+
-        '</div>'+
-        '<div class="col-md-1">'+
+        '</td>'+
+        '<td>'+
          data[i].cost_price+'円'+
-        '</div>'+
-        '<div class="col-md-2">'+
-        '</div>'+
-        '<div class="col-md-1">'+
+        '</td>'+
+        '<td>'+
+        '<a class="btn btn-default" target="_blank" style="margin:0 0 0 10px;" href="/products/serving_kana?id='+data[i].id+'">盛付カナ</a>'+
+        '</td>'+
+        '<td>'+
+        '<a class="btn btn-default" target="_blank" style="margin:0 0 0 10px;" href="/products/recipe_romaji?id='+data[i].id+'">ラム</a>'+
+        '</td>'+
+        '<td>'+
+        '<a class="btn btn-default" target="_blank" href="/products/new_band.pdf?id='+data[i].id+'">帯作成</a>'+
+        '</td>'+
+        '<td>'+
         '<a class="btn btn-default" href=/products/'+data[i].id+'.csv>CSV</a>'+
-        '</div>'+
-        '<div class="col-md-1">'+
+        '</td>'+
+        '<td class="col-md-1">'+
         '<img src= '+data[i].product_image.thumb.url+'>' +
-        '</div>'+
-        '</li>';
+        '</td>'+
+        '</tr>';
 
         $(".aaaad").append(li)
       });

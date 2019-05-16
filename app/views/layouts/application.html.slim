@@ -54,12 +54,14 @@ html
                     li = link_to "保管場所",storage_locations_path
                 li.menu_li
                   = link_to '月次計算',monthly_orders_path(year:Date.today.year,month:Date.today.month)
+                li.menu_li
+                  = link_to "領収書",receipt_masu_orders_path
 
-              #navbarEexample.collapse.navbar-collapse.navbar-right
-                ul.nav.navbar-nav
-                  li.menu_li
-                    a#google_translate_element
-                    script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
+              / #navbarEexample.collapse.navbar-collapse.navbar-right
+              /   ul.nav.navbar-nav
+              /     li.menu_li
+              /       a#google_translate_element
+              /       script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
             - else
               #navbarEexample.collapse.navbar-collapse.navbar-right
                 ul.nav.navbar-nav

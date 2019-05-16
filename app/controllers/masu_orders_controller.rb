@@ -1,6 +1,28 @@
 class MasuOrdersController < ApplicationController
   before_action :set_masu_order, only: [ :edit, :update, :destroy]
 
+  def receipt
+  end
+  def print_receipt
+    date = params[:date]
+    total = params[:total].to_i.to_s(:delimited)
+    to = params[:to]
+    keisho = params[:keisho]
+    tadashi = params[:tadashi]
+    uchiwake = params[:uchiwake]
+    data = [date,to,keisho,total,tadashi,uchiwake]
+    respond_to do |format|
+      format.html
+      format.pdf do
+        pdf = MasuOrderReceiptPdf.new(data)
+        pdf.font "vendor/assets/fonts/ipaexm.ttf"
+        send_data pdf.render,
+        filename:    "#{date}.pdf",
+        type:        "application/pdf",
+        disposition: "inline"
+      end
+    end
+  end
   def index
     @products = Product.where(product_type:'枡々')
     @masu_orders = MasuOrder.all
@@ -23,16 +45,16 @@ class MasuOrdersController < ApplicationController
     masu_orders = MasuOrder.includes(masu_order_details:[:product]).where(start_time:date)
     @products_num_h = masu_orders.joins(:masu_order_details).group('masu_order_details.product_id').sum('masu_order_details.number')
     respond_to do |format|
-     format.html
-     format.pdf do
-       pdf = MasuOrderPdf.new(@products_num_h,date)
-       pdf.font "vendor/assets/fonts/ipaexm.ttf"
-       send_data pdf.render,
-         filename:    "#{date}.pdf",
-         type:        "application/pdf",
-         disposition: "inline"
-       end
-     end
+      format.html
+      format.pdf do
+        pdf = MasuOrderPdf.new(@products_num_h,date)
+        pdf.font "vendor/assets/fonts/ipaexm.ttf"
+        send_data pdf.render,
+        filename:    "#{date}.pdf",
+        type:        "application/pdf",
+        disposition: "inline"
+      end
+    end
   end
 
   def new

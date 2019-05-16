@@ -56,8 +56,9 @@ class MasuOrderPdf < Prawn::Document
           else
             post1 = '切出し'
             post2 = '切出/スチコン'
+            post3 = '切出/調理'
           end
-          if menu.menu_materials.map{|mm|mm.post}.include?(post1) || menu.menu_materials.map{|mm|mm.post}.include?(post2)
+          if menu.menu_materials.map{|mm|mm.post}.include?(post1) || menu.menu_materials.map{|mm|mm.post}.include?(post2) || menu.menu_materials.map{|mm|mm.post}.include?(post3)
             num = menu_num[1]
             move_down 10
             table line_item_rows(menu,num) do

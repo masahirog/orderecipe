@@ -16,6 +16,8 @@ Rails.application.routes.draw do
     collection do
       get :date
       get :print_preparation
+      get :receipt
+      post :print_receipt
     end
   end
   resources :menus do
