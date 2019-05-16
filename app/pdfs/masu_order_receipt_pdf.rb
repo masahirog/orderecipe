@@ -25,23 +25,26 @@ class MasuOrderReceiptPdf < Prawn::Document
       text "但し、#{data[4]}として、上記正に領収いたしました。", size: 11, :align => :center
 
       move_down 10
-      text "内　　訳", size: 12
-      line [40, 55], [200, 55]
+      text "　　内　　訳", size: 12
+      line [75, 55], [200, 55]
       stroke
       move_down 10
-      text "税抜金額", size: 12
-      line [40, 33], [200, 33]
+      text "　　税抜金額", size: 12
+      line [75, 33], [200, 33]
       stroke
       move_down 10
-      text "消費税等", size: 12
-      line [40, 11], [200, 11]
+      text "　　消費税等", size: 12
+      line [75, 11], [200, 11]
       stroke
     end
 
-    bounding_box([300, 440], :width => 200, :height => 40) do
-      stroke_bounds
+    bounding_box([330, 610], :width => 200, :height => 70) do
       move_down 10
-      text "領　収　書", size: 20, :align => :center,styles: :bold
+      text "タベル株式会社", size: 11
+      text "〒150-0043", size: 11
+      text "東京都渋谷区道玄坂2-10-12", size: 11
+      text "新大宗ビル3号館9階", size: 11
+      text "TEL：03-5539-6000", size: 11
     end
 
   end
