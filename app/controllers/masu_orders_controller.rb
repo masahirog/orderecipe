@@ -107,7 +107,7 @@ class MasuOrdersController < ApplicationController
     end
 
     def masu_order_params
-      params.require(:masu_order).permit(:start_time,:number,:kurumesi_order_id,:pick_time,:fixed_flag,
+      params.require(:masu_order).permit(:start_time,:number,:kurumesi_order_id,:pick_time,:fixed_flag,:payment,:miso,:tea,
         masu_order_details_attributes: [:id,:masu_order_id,:product_id,:number])
     end
 end

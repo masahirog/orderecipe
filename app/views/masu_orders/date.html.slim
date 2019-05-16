@@ -22,6 +22,9 @@ table.table
       th.col-md-1 確定？
       th.col-md-1 ピック時間
       th.col-md-1 合計個数
+      th.col-md-1 支払い方法
+      th.col-md-1 味噌汁
+      th.col-md-1 お茶
       th オーダー内容
   tbody
     - @masu_orders.each do |masu_order|
@@ -34,13 +37,16 @@ table.table
             |NO
         td = masu_order.pick_time.strftime("%R")
         td = "#{masu_order.number} 個"
+        td = "#{masu_order.number} 個"
+        td = "#{masu_order.number} 個"
+        td = "#{masu_order.number} 個"
         td
           ul.list-group
             - masu_order.masu_order_details.each do |mod|
               li.list-group-item.col-md-12
-                .col-md-1
+                .col-md-2
                   = "#{mod.number} 食"
-                .col-md-2 style='font-weight:bold;'
+                .col-md-3 style='font-weight:bold;'
                   = link_to mod.product.short_name,mod.product
-                .col-md-9 style='font-size:13px;'
+                .col-md-7 style='font-size:13px;'
                   = link_to mod.product.name,mod.product

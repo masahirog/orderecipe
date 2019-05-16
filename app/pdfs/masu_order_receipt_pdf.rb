@@ -10,7 +10,7 @@ class MasuOrderReceiptPdf < Prawn::Document
   end
 
   def body(data)
-    bounding_box([0, 740], :width => 520, :height => 200) do
+    bounding_box([0, 740], :width => 520, :height => 210) do
       stroke_bounds
       move_down 10
       text "領　収　書", size: 20, :align => :center,styles: :bold
@@ -19,22 +19,22 @@ class MasuOrderReceiptPdf < Prawn::Document
       text "　　#{data[1]} #{data[2]}", size: 16,styles: :bold
       move_down 10
       text "￥　#{data[3]} -", size: 16,styles: :bold, :align => :center
-      line [140, 100], [400, 100]
+      line [140, 110], [400, 110]
       stroke
       move_down 15
       text "但し、#{data[4]}として、上記正に領収いたしました。", size: 11, :align => :center
 
-      move_down 10
+      move_down 15
       text "　　内　　訳", size: 12
-      line [75, 55], [200, 55]
+      line [75, 60], [200, 60]
       stroke
-      move_down 10
+      move_down 12
       text "　　税抜金額", size: 12
-      line [75, 33], [200, 33]
+      line [75, 38], [200, 38]
       stroke
-      move_down 10
+      move_down 12
       text "　　消費税等", size: 12
-      line [75, 11], [200, 11]
+      line [75, 16], [200, 16]
       stroke
     end
 
