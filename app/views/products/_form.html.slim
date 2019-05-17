@@ -11,7 +11,7 @@
   .col-md-7
     .col-md-12.form-group
       = f.label :name, "弁当名"
-      = f.text_field :name, id: "menu_search", autocomplete: "off", class:"name form-control"
+      = f.text_field :name, id: "menu_search", class:"name form-control"
     .col-md-12.form-group
       = f.label :short_name, "短縮名"
       = f.text_field :short_name,class:"form-control"
@@ -37,17 +37,18 @@
         = f.label :product_type, "弁当種類"
         = f.select :product_type,{枡々: "枡々", W弁: "W弁",新ヘルシー: "新ヘルシー",デラックス: "デラックス", ヘルシー: "ヘルシー", ノーマル: "ノーマル", プレミアム: "プレミアム",ボウル: "ボウル", 麺: "麺", その他: "その他"}, {include_blank: true}, { class: "form-control"}
     .col-md-12.form-group
-      .col-md-12
-        = f.label :description, "説明文"
-        = f.text_area :description, class:"form-control", style:"height:7em;"
+      = f.label :masu_obi_url, "枡々の帯"
+      = f.text_field :masu_obi_url, class:"form-control"
+
     .col-md-12.form-group
-      .col-md-12
-        = f.label :contents, "内容物"
-        = f.text_area :contents, class:"form-control", style:"height:7em;"
+      = f.label :description, "説明文"
+      = f.text_area :description, class:"form-control", style:"height:7em;"
     .col-md-12.form-group
-      .col-md-12
-        = f.label :memo, "メモ（変更履歴等）"
-        = f.text_area :memo, class:"form-control", style:"height:7em;"
+      = f.label :contents, "内容物"
+      = f.text_area :contents, class:"form-control", style:"height:7em;"
+    .col-md-12.form-group
+      = f.label :memo, "メモ（変更履歴等）"
+      = f.text_area :memo, class:"form-control", style:"height:7em;"
     .col-md-12.form-group
       .col-md-5
         = f.label :sell_price, "販売価格"
@@ -80,21 +81,14 @@
           = f.check_box :remove_product_image
   .menu-area.table-striped
     .col-md-12[style="margin-top:10px;"]
-      label.col-md-1
-        | カテゴリ
-      label.col-md-2
-        | メニュー名
-      label.col-md-1.text-right
-        | メ原価
+      label.col-md-1 カテゴリ
+      label.col-md-2 メニュー名
+      label.col-md-1.text-right メ原価
       .col-md-6
-        label.col-md-4
-          | 材料名
-        label.col-md-2.text-right
-          | 使用量
-        label.col-md-2.text-right
-          | 材原価
-        label.col-md-4
-          | 仕込み
+        label.col-md-4 材料名
+        label.col-md-2.text-right 使用量
+        label.col-md-2.text-right 材原価
+        label.col-md-4 仕込み
       label.col-md-1.text-right
     ul.used_menu_ul.list-group.ul-sortable[style="list-style:none;cursor:move;"]
       = f.fields_for :product_menus do |pr|

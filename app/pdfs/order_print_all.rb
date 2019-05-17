@@ -1,38 +1,27 @@
-class OrderAll < Prawn::Document
-  def initialize(order,vendors)
-
+class OrderPrintAll < Prawn::Document
+  def initialize(order)
     super(page_size: 'A4')
     font "vendor/assets/fonts/ipaexm.ttf"
-    order = order
     order_materials = order.order_materials.where(un_order_flag:false)
-    max = vendors.values.length - 1
-    for i in 0..max
-      u= "id#{i}"
-      id = vendors[u].to_i
-      materials_this_vendor = []
-      for om in order_materials do
-        vendorid = om.material.vendor_id
-        if id == vendorid
-          company_name = om.material.vendor.company_name
-          materials_this_vendor << om
-        end
-        company_name
-      end
+    vendor_ids = order_materials.map{|om|om.material.vendor_id}.uniq
+
+    vendor_ids.each_with_index do |vendor_id,i|
+      company_name = Vendor.find(vendor_id).company_name
+      oms = order_materials.joins(:material).where(:materials => {vendor_id:vendor_id})
       header
       header_lead(company_name)
       header_adress
       header_hello
-      uniq_date = materials_this_vendor.pluck(:delivery_date).uniq
+      uniq_date = oms.pluck(:delivery_date).uniq
       uniq_date.each do |date|
         arr=[]
-        materials_this_vendor.each do |material|
-          arr << material if material.delivery_date == date
+        oms.each do |om|
+          arr << om if om.delivery_date == date
         end
         move_down 20
         table_content(arr,date)
       end
-      start_new_page if i < max
-      i += 1
+      start_new_page unless i + 1 == vendor_ids.length
     end
   end
 

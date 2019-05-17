@@ -186,15 +186,14 @@ class OrdersController < ApplicationController
      end
   end
 
-  def order_print_all
-    @order = Order.includes(order_materials: [material: :vendor]).find(params[:id])
-    @vendors = params[:vendor]
+  def print_all
+    order = Order.includes(order_materials: [material: :vendor]).find(params[:id])
     respond_to do |format|
      format.html
      format.pdf do
-       pdf = OrderAll.new(@order,@vendors)
+       pdf = OrderPrintAll.new(order)
        send_data pdf.render,
-         filename:    "#{@order.id}.pdf",
+         filename:    "#{order.id}.pdf",
          type:        "application/pdf",
          disposition: "inline"
      end

@@ -9,7 +9,6 @@ Rails.application.routes.draw do
   post'materials/include_update' => 'materials#include_update'
   post "versions/:id/revert" => "versions#revert", :as => "revert_version"
   post'menus/include_update' => 'menus#include_update'
-  post'orders/order_print_all/:id' => 'orders#order_print_all'
   post 'materials/change_additives' => 'materials#change_additives'
 
   resources :masu_orders do
@@ -18,6 +17,8 @@ Rails.application.routes.draw do
       get :print_preparation
       get :receipt
       post :print_receipt
+      get :manufacturing_sheet
+      get :loading_sheet
     end
   end
   resources :menus do
@@ -62,6 +63,7 @@ Rails.application.routes.draw do
       get :material_info
       get :get_bento_id
       get :check_bento_id
+      get :print_all
     end
   end
   resources :daily_menus do

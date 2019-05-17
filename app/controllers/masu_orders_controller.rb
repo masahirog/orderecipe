@@ -1,6 +1,38 @@
 class MasuOrdersController < ApplicationController
   before_action :set_masu_order, only: [ :edit, :update, :destroy]
 
+  def manufacturing_sheet
+    date = params[:date]
+    @masu_orders = MasuOrder.includes(masu_order_details:[:product]).where(start_time:date).order(:pick_time)
+    @products_num_h = @masu_orders.joins(:masu_order_details).group('masu_order_details.product_id').sum('masu_order_details.number')
+    respond_to do |format|
+      format.html
+      format.pdf do
+        pdf = MasuOrderManufacturingSheetPdf.new(@products_num_h,date)
+        pdf.font "vendor/assets/fonts/ipaexm.ttf"
+        send_data pdf.render,
+        filename:    "#{date}.pdf",
+        type:        "application/pdf",
+        disposition: "inline"
+      end
+    end
+  end
+  def loading_sheet
+    date = params[:date]
+    @masu_orders = MasuOrder.includes(masu_order_details:[:product]).where(start_time:date).order(:pick_time)
+    @products_num_h = @masu_orders.joins(:masu_order_details).group('masu_order_details.product_id').sum('masu_order_details.number')
+    respond_to do |format|
+      format.html
+      format.pdf do
+        pdf = MasuOrderLoadingSheetPdf.new(@products_num_h,date)
+        pdf.font "vendor/assets/fonts/ipaexm.ttf"
+        send_data pdf.render,
+        filename:    "#{date}.pdf",
+        type:        "application/pdf",
+        disposition: "inline"
+      end
+    end
+  end
   def receipt
   end
   def print_receipt

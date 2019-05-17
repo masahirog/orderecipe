@@ -237,7 +237,7 @@ class ProductsController < ApplicationController
   private
     def product_create_update
       params.require(:product).permit(:name,:memo, :bento_id, :cook_category,:short_name, :product_type, :sell_price, :description, :contents, :product_image,
-                      :remove_product_image, :image_cache, :cost_price, product_menus_attributes: [:id, :product_id, :menu_id,:row_order, :_destroy,
+                      :masu_obi_url,:remove_product_image, :image_cache, :cost_price, product_menus_attributes: [:id, :product_id, :menu_id,:row_order, :_destroy,
                       menu_attributes:[:name, ]])
     end
 end

@@ -2,6 +2,8 @@ h3 = "#{params[:date]}の枡々オーダー一覧"
 .form-group.col-md-12.clearfix
   = link_to "発注開始", new_order_path(masu_order_date:params[:date]),class:'btn btn-success',style:'float:left;margin-left:20px;margin-top:10px;'
   = link_to "仕込み表",print_preparation_masu_orders_path(date:params[:date],format:'pdf'),class:"btn btn-primary",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
+  = link_to "製造表",manufacturing_sheet_masu_orders_path(date:params[:date],format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
+  = link_to "積載表",loading_sheet_masu_orders_path(date:params[:date],format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
 h3 弁当別製造数
 table.table
   thead
@@ -37,9 +39,9 @@ table.table
             |NO
         td = masu_order.pick_time.strftime("%R")
         td = "#{masu_order.number} 個"
-        td = "#{masu_order.number} 個"
-        td = "#{masu_order.number} 個"
-        td = "#{masu_order.number} 個"
+        td = masu_order.payment
+        td = masu_order.miso
+        td = masu_order.tea
         td
           ul.list-group
             - masu_order.masu_order_details.each do |mod|

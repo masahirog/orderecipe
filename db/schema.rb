@@ -212,6 +212,7 @@ ActiveRecord::Schema.define(version: 2019_05_13_044309) do
     t.integer "bento_id"
     t.text "memo"
     t.string "short_name"
+    t.text "masu_obi_url"
   end
 
   create_table "stock_materials", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
