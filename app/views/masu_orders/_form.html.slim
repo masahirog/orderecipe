@@ -8,11 +8,11 @@
   .form-group.required.col-md-12
     = f.label :start_time,"日付", class: 'col-md-2 control-label text-right'
     .col-md-10
-      = f.date_field :start_time, value:params['start_time'], class: 'col-md-10 form-control',readonly: true
+      = f.date_field :start_time, value:params['start_time'], class: 'col-md-10 form-control',readonly: true,style:'width:440px;'
   .form-group.required.col-md-12
     = f.label :kurumesi_order_id,"くるめしオーダーID（下5桁）", class: 'col-md-2 control-label text-right'
     .col-md-10
-      = f.number_field :kurumesi_order_id, class: 'col-md-10 form-control'
+      = f.number_field :kurumesi_order_id, class: 'col-md-10 form-control',style:'width:440px;'
   .form-group.required.col-md-12
     = f.label :pick_time,"ピックアップ時間", class: 'col-md-2 control-label text-right'
     .col-md-10
@@ -61,9 +61,14 @@
         |あり　
         = f.radio_button :miso,:あり
   .form-group.required.col-md-12
+    = f.label :trash_bags,"ゴミ袋", class: 'col-md-2 control-label text-right'
+    .col-md-10
+      = f.select :trash_bags, options_for_select((0..10).to_a,f.object.trash_bags),{},class:'form-control',style:'width:440px;'
+
+  .form-group.required.col-md-12
     = f.label :number,"合計個数", class: 'col-md-2 control-label text-right'
     .col-md-10
-      = f.number_field :number, class: 'col-md-10 form-control masu_order_sum_number',readonly:true
+      = f.number_field :number, class: 'col-md-10 form-control masu_order_sum_number',readonly:true,style:'width:440px;'
 
   table.table.table-list.cocoon_are
     thead

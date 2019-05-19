@@ -31,6 +31,7 @@ table.table
       th.col-md-1 支払い方法
       th.col-md-1 味噌汁
       th.col-md-1 お茶
+      th.col-md-1 ゴミ袋
       th オーダー内容
   tbody
     - @masu_orders.each do |masu_order|
@@ -46,6 +47,7 @@ table.table
         td = masu_order.payment
         td = masu_order.miso
         td = masu_order.tea
+        td = masu_order.trash_bags
         td
           ul.list-group
             - masu_order.masu_order_details.each do |mod|
