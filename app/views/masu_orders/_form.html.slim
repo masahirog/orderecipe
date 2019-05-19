@@ -84,9 +84,11 @@
          data: {association_insertion_node: '#masu_order_details_area',
                 association_insertion_method: 'append' }
 
-  .actions.col-md-12
+  .actions.col-md-12 style='margin-bottom:50px;'
     button type="button" onclick="submit();" class="col-md-2 col-md-offset-1 btn btn-primary"
       |登録
+    - if action_name == 'edit'
+      = link_to "削除する", masu_order_path(@masu_order.id), method: :delete,class:"col-md-offset-1 col-md-2 btn btn-danger"
 
 style type="text/css"
   | #masu_order_pick_time_5i { margin-left:20px; }
