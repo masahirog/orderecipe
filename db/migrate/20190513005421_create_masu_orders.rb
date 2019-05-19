@@ -9,6 +9,7 @@ class CreateMasuOrders < ActiveRecord::Migration[5.2]
       t.integer :payment,null:false,default:0
       t.integer :tea,null:false,default:0
       t.integer :miso,null:false,default:0
+      t.integer :trash_bags,null:false,default:0
 
       t.timestamps
     end

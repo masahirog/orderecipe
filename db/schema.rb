@@ -82,6 +82,7 @@ ActiveRecord::Schema.define(version: 2019_05_13_044309) do
     t.integer "payment", default: 0, null: false
     t.integer "tea", default: 0, null: false
     t.integer "miso", default: 0, null: false
+    t.integer "trash_bags", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
