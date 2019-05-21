@@ -51,6 +51,6 @@ class DailyMenu < ApplicationRecord
     end
     InventoryCalculation.import new_inventory_calculations if new_inventory_calculations.present?
     InventoryCalculation.import update_inventory_calculations, on_duplicate_key_update:[:used_amount] if update_inventory_calculations.present?
-    InventoryCalculation.calculate_stock(date,hash)
+    # InventoryCalculation.calculate_stock(date,hash)
   end
 end

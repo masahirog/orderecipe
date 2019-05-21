@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_20_073054) do
+ActiveRecord::Schema.define(version: 2019_05_20_223333) do
 
   create_table "daily_menu_details", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "daily_menu_id", null: false
@@ -63,6 +63,18 @@ ActiveRecord::Schema.define(version: 2019_05_20_073054) do
     t.float "copper"
     t.float "folic_acid"
     t.float "vitamin_d"
+  end
+
+  create_table "inventory_calculations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.date "date", null: false
+    t.float "start_stock", default: 0.0, null: false
+    t.float "end_stock", default: 0.0, null: false
+    t.float "used_amount", default: 0.0, null: false
+    t.float "delivery_amount", default: 0.0, null: false
+    t.integer "material_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["date", "material_id"], name: "index_inventory_calculations_on_date_and_material_id", unique: true
   end
 
   create_table "masu_order_details", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
