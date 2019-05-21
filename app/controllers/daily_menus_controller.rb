@@ -86,11 +86,12 @@ class DailyMenusController < ApplicationController
     end
   end
   def print_preparation
+    mochiba = params[:mochiba]
     daily_menu = DailyMenu.includes(daily_menu_details:[product:[menus:[:materials]]]).find(params[:daily_menu_id])
     respond_to do |format|
       format.html
       format.pdf do
-        pdf = ShogunPreparationAll.new(daily_menu)
+        pdf = ShogunPreparationAll.new(daily_menu,mochiba)
         send_data pdf.render,
         filename:    "#{daily_menu.id}.pdf",
         type:        "application/pdf",
