@@ -35,7 +35,7 @@ class StocksController < ApplicationController
 
 
   def update
-    @stock = Stock.find(params[:id])
+    @stock = Stock.includes(stock_materials:[:material]).find(params[:id])
     respond_to do |format|
       if @stock.update(stock_create_update)
         format.html { redirect_to @stock, notice: '更新OK' }
@@ -49,6 +49,6 @@ class StocksController < ApplicationController
 
   private
   def stock_create_update
-    params.require(:stock).permit(:date,stock_materials_attributes: [:amount, :stock_id, :material_id, :_destroy])
+    params.require(:stock).permit(:date,stock_materials_attributes: [:id, :stock_id,:amount, :material_id, :_destroy])
   end
 end

@@ -20,6 +20,19 @@ $(document).on('turbolinks:load', function() {
   $('.input_order_code').select2({
   });
 
+  $('.fixed_flag').on('change',function(){
+    var value = $(this).val();
+    if (value=="true") {
+      $(".save-btn").val('確定で保存する');
+      $(".save-btn").removeClass("btn-danger");
+      $(".save-btn").addClass("btn-success");
+    }else{
+      $(".save-btn").val('未確定で保存する');
+      $(".save-btn").removeClass("btn-success");
+      $(".save-btn").addClass("btn-danger");
+    }
+
+  });
 
   $("#all_make_date_change").on("change", function(){
     var date = $(this).val()

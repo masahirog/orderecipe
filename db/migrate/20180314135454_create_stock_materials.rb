@@ -5,6 +5,7 @@ class CreateStockMaterials < ActiveRecord::Migration[5.0]
       t.integer :material_id
       t.float :amount
       t.text :memo
+      t.index [:stock_id, :material_id], unique: true
 
       t.timestamps
     end

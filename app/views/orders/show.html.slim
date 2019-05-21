@@ -30,7 +30,7 @@ div class="alert alert-danger" role="alert"
             = link_to "盛付用VIEW", serving_kana_products_path(id:op.product_id), class:"btn btn-default",:target=>"_blank"
 .col-md-12 style='padding-bottom:15px;'
   .col-md-2 style='padding:0;'
-    = link_to '発注内容の編集',edit_order_path(@order),class: "btn btn-success form-control"
+    = link_to '発注内容の編集',edit_order_path(@order),class: "btn btn-primary"
 
   = form_tag({:controller => "orders", :action => "order_print", format: "pdf"},{:target => "_blank"}) do
     .col-md-2.col-md-offset-1

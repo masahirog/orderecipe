@@ -9,15 +9,16 @@
           = render :partial => "new_form",locals: {i:i}
       .text-center.form-group.col-md-12[style="margin-top:30px;"]
         input.btn.btn-success type="button" onclick="submit();" value="発注開始" style='width:300px;'
-.col-md-12
-  h4 過去の発注一覧
-.col-md-12
-  .col-md-1
-    |お弁当一覧
+h4 過去の発注一覧
 ul.list-group style="list-style-type: none;"
   - @orders.each do |order|
     li.col-md-12.list-group-item
-      .col-md-8
+      .col-md-1
+        - if order.fixed_flag == true
+          h4
+            span class="label label-success" 確定
+        -else
+      .col-md-10
         - order.order_products.each do |op|
           .col-md-3
             .col-md-12.bold style="font-size:10px;"
@@ -25,7 +26,7 @@ ul.list-group style="list-style-type: none;"
                 = "#{op.serving_for}人分"
             .col-md-12 style="font-size:10px;"
               = op.product.name
-      .col-md-3
+      .col-md-1
         = link_to "発注詳細", order_path(order),class:"order btn btn-primary",style:"margin:3px;"
 
 = paginate @orders
