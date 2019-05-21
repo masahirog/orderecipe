@@ -73,13 +73,14 @@ class MasuOrdersController < ApplicationController
   end
 
   def print_preparation
+    mochiba = params[:mochiba]
     date = params[:date]
-    masu_orders = MasuOrder.includes(masu_order_details:[:product]).where(start_time:date)
+    masu_orders = MasuOrder.includes(masu_order_details:[:product]).where(start_time:date).order(:pick_time)
     @products_num_h = masu_orders.joins(:masu_order_details).group('masu_order_details.product_id').sum('masu_order_details.number')
     respond_to do |format|
       format.html
       format.pdf do
-        pdf = MasuOrderPdf.new(@products_num_h,date)
+        pdf = MasuOrderPdf.new(@products_num_h,date,mochiba)
         pdf.font "vendor/assets/fonts/ipaexm.ttf"
         send_data pdf.render,
         filename:    "#{date}.pdf",

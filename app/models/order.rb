@@ -3,7 +3,7 @@ class Order < ApplicationRecord
 
   has_many :order_materials, dependent: :destroy
   has_many :materials, through: :order_materials
-  accepts_nested_attributes_for :order_materials
+  accepts_nested_attributes_for :order_materials, reject_if: :reject_material_blank, allow_destroy: true
 
   has_many :order_products, dependent: :destroy
   has_many :products, through: :order_products
@@ -51,5 +51,9 @@ class Order < ApplicationRecord
     end
     InventoryCalculation.import new_inventory_calculations if new_inventory_calculations.present?
     InventoryCalculation.import update_inventory_calculations, on_duplicate_key_update:[:delivery_amount] if update_inventory_calculations.present?
+  end
+
+  def reject_material_blank(attributes)
+    attributes.merge!(_destroy: "1") if attributes[:material_id].blank?
   end
 end

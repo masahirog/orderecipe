@@ -1,5 +1,5 @@
 class MasuOrderPdf < Prawn::Document
-  def initialize(products_num_h,date)
+  def initialize(products_num_h,date,mochiba)
     # 初期設定。ここでは用紙のサイズを指定している。
     super(
       page_size: 'A4',
@@ -27,23 +27,43 @@ class MasuOrderPdf < Prawn::Document
         hash[menu[0]] = menu[1]
       end
     end
-    text "調理場  #{date}"
-    move_down 2
     arr = []
     products_arr.each do |product_num|
       arr << ["#{product_num[0]}","#{product_num[1]} 食"]
     end
-    table(arr, :column_widths => [500, 100], :cell_style =>{:border_width =>0.1,size:9 })
-    move_down 1
-    table_content(hash,'調理場')
 
-    start_new_page
+    if mochiba == 'choriba'
+      text "調理場  #{date}"
+      move_down 2
+      table(arr, :column_widths => [500, 100], :cell_style =>{:border_width =>0.1,size:9 })
+      move_down 1
+      table_content(hash,'調理場')
+    elsif mochiba == 'kiriba'
+      text "切出し  #{date}"
+      move_down 2
+      table(arr, :column_widths => [500, 100], :cell_style =>{:border_width =>0.1,size:9 })
+      move_down 1
+      table_content(hash,'切出し')
+    else
+      text "調理場  #{date}"
+      move_down 2
+      arr = []
+      products_arr.each do |product_num|
+        arr << ["#{product_num[0]}","#{product_num[1]} 食"]
+      end
+      table(arr, :column_widths => [500, 100], :cell_style =>{:border_width =>0.1,size:9 })
+      move_down 1
+      table_content(hash,'調理場')
 
-    text "切出し  #{date}"
-    move_down 2
-    table(arr, :column_widths => [500, 100], :cell_style =>{:border_width =>0.1,size:9 })
-    move_down 1
-    table_content(hash,'切出し')
+      start_new_page
+
+      text "切出し  #{date}"
+      move_down 2
+      table(arr, :column_widths => [500, 100], :cell_style =>{:border_width =>0.1,size:9 })
+      move_down 1
+      table_content(hash,'切出し')
+
+    end
   end
 
   def table_content(hash,mochiba)

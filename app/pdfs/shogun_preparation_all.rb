@@ -1,5 +1,5 @@
 class ShogunPreparationAll < Prawn::Document
-  def initialize(daily_menu)
+  def initialize(daily_menu,mochiba)
     super(
       page_size: 'A4',
       page_layout: :landscape,
@@ -12,12 +12,22 @@ class ShogunPreparationAll < Prawn::Document
       product = dmd.product
       menus = product.menus
       num = dmd.manufacturing_number
-      header_table(product,num,'調理場')
-      table_content(menus,num,'調理場')
-      start_new_page
-      header_table(product,num,'切出し')
-      table_content(menus,num,'切出し')
-      start_new_page if i<max_i-1
+      if mochiba == 'choriba'
+        header_table(product,num,'調理場')
+        table_content(menus,num,'調理場')
+        start_new_page if i<max_i-1
+      elsif mochiba == 'kiriba'
+        header_table(product,num,'切出し')
+        table_content(menus,num,'切出し')
+        start_new_page if i<max_i-1
+      else
+        header_table(product,num,'調理場')
+        table_content(menus,num,'調理場')
+        start_new_page
+        header_table(product,num,'切出し')
+        table_content(menus,num,'切出し')
+        start_new_page if i<max_i-1
+      end
     end
   end
 

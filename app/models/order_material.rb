@@ -7,4 +7,5 @@ class OrderMaterial < ApplicationRecord
     message: "：小数点1位までの値が入力できます" }
   validates :material_id, presence: true
   validates :delivery_date, presence: true
+
 end
