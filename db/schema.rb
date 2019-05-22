@@ -229,15 +229,6 @@ ActiveRecord::Schema.define(version: 2019_05_20_223333) do
     t.text "masu_obi_url"
   end
 
-  create_table "stock_materials", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "stock_id"
-    t.integer "material_id"
-    t.float "amount"
-    t.text "memo"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "stocks", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "date"
     t.datetime "created_at", null: false

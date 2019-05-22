@@ -115,6 +115,7 @@ class MasuOrdersController < ApplicationController
   end
 
   def update
+    @products = Product.where(product_type:'枡々')
     respond_to do |format|
       if @masu_order.update(masu_order_params)
         format.html { redirect_to date_masu_orders_path(date:@masu_order.start_time), notice: 'Masu order was successfully updated.' }
