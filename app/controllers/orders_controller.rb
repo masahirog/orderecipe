@@ -35,10 +35,8 @@ class OrdersController < ApplicationController
     @order = Order.includes(:products,:order_products,:order_materials,{materials: [:vendor]}).find(params[:id])
     @code_materials = Material.where(end_of_sales:0).where.not(order_code:"")
     @vendors = @order.order_materials.map{|om|[om.material.vendor.company_name,om.material.vendor.id]}.uniq
-
     @order = Order.find(params[:id])
-    @order.update(order_create_update)
-    if @order.save
+    if @order.update(order_create_update)
       redirect_to order_path
     else
       render "edit"
@@ -294,7 +292,7 @@ class OrdersController < ApplicationController
   end
   private
   def order_create_update
-    params.require(:order).permit(order_materials_attributes: [:id, :order_quantity,:calculated_quantity,
+    params.require(:order).permit(:fixed_flag,order_materials_attributes: [:id, :order_quantity,:calculated_quantity,
       :menu_name, :order_id, :material_id,:order_material_memo,:delivery_date,:calculated_unit,:order_unit, :un_order_flag,:_destroy],
       order_products_attributes: [:id,:make_date, :serving_for, :order_id, :product_id, :_destroy])
   end

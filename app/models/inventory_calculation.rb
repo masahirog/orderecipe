@@ -4,7 +4,6 @@ class InventoryCalculation < ApplicationRecord
     hash.each do |material_used|
       material = Material.find(material_used[0])
       used = material_used[1]
-      binding.pry
       ic = previous(date,material.id)
       if ic
         直帰の棚卸しを考慮するべし

@@ -229,6 +229,18 @@ ActiveRecord::Schema.define(version: 2019_05_20_223333) do
     t.text "masu_obi_url"
   end
 
+  create_table "stocks", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "material_id", null: false
+    t.date "date", null: false
+    t.float "start_day_stock", default: 0.0, null: false
+    t.float "end_day_stock", default: 0.0, null: false
+    t.float "used_amount", default: 0.0, null: false
+    t.float "delivery_amount", default: 0.0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["date", "material_id"], name: "index_stocks_on_date_and_material_id", unique: true
+  end
+
   create_table "storage_locations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false

@@ -1,46 +1,6 @@
-= form_for @stock do |f|
-  - if @stock.errors.any?
-    #error_explanation
-      h2
-        = pluralize(@stock.errors.count, "error")
-        |  prohibited this recipe from being saved:
-      ul
-        - @stock.errors.full_messages.each do |message|
-          li
-            = message
-  .col-md-12.form-group
-    = f.label :date, "日付"
-    = f.date_field(:date,value: (f.object.date || Time.now.strftime("%Y-%m-%d")),class:"form-control input_make_date")
-  .col-md-12
-    label
-      | 仕入先
-    = select :vendor, :name, @vendors.map{|t| [t.company_name, t.id]},{include_blank:true},class:"vendor-select form-control"
-  table.table.stock-area.table-striped style="padding:0;"
-    thead
-      tr
-        th 仕入先
-        th 食材・資材名
-        th 管理コード
-        th 在庫量
-        th
-    tbody.stocks-all style="list-style:none;padding:0;"
-      = f.fields_for :stock_materials do |sm|
-        tr.add_stock_material style="padding:5px 0px;border-style:solid;border-width:1px;border-color:#F5F5F5"
-          td
-            span.vendor_name
-              = sm.object.material.vendor.company_name
-            span.vendor_id style='display:none;'
-              = sm.object.material.vendor_id
-          td
-            = sm.object.material.name
-            = sm.number_field :material_id, class:'form-control input-stock-materials',style:"display:none;"
-          td
-            = sm.object.material.order_code
-          td.clearfix
-            div style="width:70%;float:left;"
-              = sm.number_field :amount, class:"input-amount form-control", :step => 0.1
-            .order-unit style="float:left;width:30%;padding:10px 0 0 7px;"
-              = sm.object.material.order_unit
-
-  .actions
-    = f.submit '登録する',class:'btn btn-success'
+= form_tag stocks_path, method: :put do
+   @stocks.each do |stock|
+    = fields_for "stocks[]", stock do |fs|
+      = fs.date_field :date
+      = fs.number_field :material_id
+  = submit_tag

@@ -1,21 +1,27 @@
 class StocksController < ApplicationController
   def index
-    @stocks = Stock.all
+    date = params[:date]
+    @stocks = Stock.where(date:date)
   end
   def new
-    @stock = Stock.new
+    new_stocks = []
+    date = params[:date]
     @vendors = Vendor.all
     materials = Material.includes(:vendor).where(end_of_sales: 0)
+    @materials = []
+    stocks_hash = Stock.where(date:date).map{|stock|[stock.material_id,stock]}.to_h
     materials.each do |material|
-      @stock.stock_materials.build(material_id:material.id,amount:0)
+      new_stocks << Stock.new(date:date,material_id:material.id) unless stocks_hash[material.id].present?
     end
+    Stock.import new_stocks if new_stocks.present?
+    @stocks = Stock.where(date:date)
   end
   def edit
     @stock = Stock.includes(stock_materials:[material:[:vendor]]).find(params[:id])
     @vendors = Vendor.all
   end
   def show
-    @stock = Stock.find(params[:id])
+    @stocks = Stock.find(params[:id])
   end
   def material_info
     @material = Material.find(params[:id])
@@ -25,7 +31,7 @@ class StocksController < ApplicationController
     end
   end
   def create
-    @stock = Stock.create(stock_create_update)
+    @stock = Stock.new(stock_create_update)
      if @stock.save
        redirect_to @stock
      else
