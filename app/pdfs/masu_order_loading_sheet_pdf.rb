@@ -12,18 +12,22 @@ class MasuOrderLoadingSheetPdf < Prawn::Document
   def table_content(products_num_h,date)
     masu_orders = MasuOrder.where(start_time:date)
     total = products_num_h.values.inject(:+)
-
-    bounding_box([20, 550], :width => 840) do
+    bounding_box([0, 570], :width => 840) do
+      text "発行時間：#{Time.now.strftime("%Y年 %m月 %d日　%H:%M")}",size:9
       table line_item_rows2(products_num_h,date,masu_orders,total) do
         row(0..1).background_color = 'f5f5f5'
         cells.padding = [8,6,8,6]
-        cells.size = 10
+        cells.size = 9
         cells.border_width = 0.1
         cells.valign = :center
+        columns(0).size = 7
+        columns(1).size = 10
+        row(0..1).columns(0).size = 10
+        row(-10..-1).columns(0).size = 10
         columns(2..-1).align = :center
         self.header = true
-        columns = Array.new(masu_orders.length){60}
-        self.column_widths = [280,130].push(columns).flatten!
+        columns = Array.new(masu_orders.length){55}
+        self.column_widths = [230,100].push(columns).flatten!
       end
     end
   end
@@ -64,8 +68,8 @@ class MasuOrderLoadingSheetPdf < Prawn::Document
 
     kurumesi_ids = masu_orders.map{|masu_order| masu_order.kurumesi_order_id}
 
-    data = [["配達日： #{date}　　　　お弁当合計：　#{total} 個","オーダーID▶"].push(kurumesi_ids).flatten!]
-    arr2 = ['','ピックアップ時間']
+    data = [["配達日： #{date}","オーダーID▶"].push(kurumesi_ids).flatten!]
+    arr2 = ["お弁当合計：　#{total} 個",'ピックアップ時間']
     masu_orders.each do |masu_order|
       arr2.push(masu_order.pick_time.strftime("%R"))
     end
@@ -74,7 +78,7 @@ class MasuOrderLoadingSheetPdf < Prawn::Document
     products = Product.where(id:product_ids)
 
     products.each do |product|
-      arr = [product.name,product.short_name]
+      arr = [product.name.truncate(30),product.short_name]
       masu_orders.each do |masu_order|
         arr.push(hash[[masu_order.id,product.id]])
       end
