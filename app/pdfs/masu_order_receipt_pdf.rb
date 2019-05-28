@@ -22,7 +22,7 @@ class MasuOrderReceiptPdf < Prawn::Document
       line [140, 110], [400, 110]
       stroke
       move_down 15
-      text "但し、#{data[4]}として、上記正に領収いたしました。", size: 11, :align => :center
+      text "但し、#{data[4]}、上記正に領収いたしました。", size: 11, :align => :center
 
       move_down 15
       text "　　内　　訳", size: 12

@@ -14,7 +14,6 @@ $(document).on('turbolinks:load', function() {
         var i = 0
         $(".menu_materials_li").each(function() {
           var oau = $(this).children(".original_amount_used").children(".original_amount_used_value").text();
-          console.log(oau);
           var order_unit = $(this).children(".original_amount_used").children(".order_unit").text();
           var cal_val = $(this).children(".original_amount_used").children(".calculated_value").text();
           oau = Number(oau);

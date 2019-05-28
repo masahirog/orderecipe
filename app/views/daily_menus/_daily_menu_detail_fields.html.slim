@@ -7,7 +7,7 @@
     td.col-md-3
       = Product.find(f.object.product_id).name
     td.col-md-2
-      = f.number_field :manufacturing_number, class: 'form-control'
+      = f.number_field :manufacturing_number, class: 'form-control manufacturing_number'
     td.col-md-4
       = link_to_remove_association '削除', f, class: 'btn btn-default'
 - else
@@ -19,6 +19,6 @@
     td.col-md-3
       = f.collection_select :product_id, @products, :id, :name, {include_blank:true},class:'form-control product_select input_select_product'
     td.col-md-2
-      = f.number_field :manufacturing_number, class: 'form-control'
+      = f.number_field :manufacturing_number, class: 'form-control manufacturing_number'
     td.col-md-4
       = link_to_remove_association '削除', f, class: 'btn btn-default'

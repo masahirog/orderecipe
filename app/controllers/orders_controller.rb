@@ -8,6 +8,8 @@ class OrdersController < ApplicationController
   end
 
   def edit
+    @hash = {}
+    @prev_stocks = {}
     @materials = Material.where(end_of_sales:0)
     @search_code_materials = Material.where(end_of_sales:0).where.not(order_code:"")
     @order = Order.includes(:products,:order_products,:order_materials,{materials: [:vendor]}).find(params[:id])
@@ -15,7 +17,13 @@ class OrdersController < ApplicationController
     @vendors = @order.order_materials.map{|om|[om.material.vendor.company_name,om.material.vendor.id]}.uniq
     product_ids = @order.products.ids
     materials = Product.includes(:product_menus,[menus: [menu_materials: :material]]).where(id:product_ids).map{|product| product.menus.map{|pm| pm.menu_materials.map{|mm|[mm.material.id, product.name]}}}.flatten(2)
-    @hash = {}
+    if @order.order_products.present?
+      make_date = @order.order_products[0].make_date
+      @order.order_materials.each do |om|
+        prev_stock = Stock.where("date <= ?", make_date).where(material_id:om.material_id).order("date DESC").first
+        @prev_stocks[om.material_id] = prev_stock
+      end
+    end
     materials.each do |material|
       if @hash[material[0]].present?
         @hash.store(material[0],@hash[material[0]] + "、" + material[1])
@@ -26,8 +34,15 @@ class OrdersController < ApplicationController
   end
 
   def index
+    @materials = Material.all
+    @daily_menus = DailyMenu.includes(daily_menu_details:[:product]).all
     @products = Product.all
-    @orders = Order.includes(order_products:[:product]).order("id DESC").page(params[:page])
+    if params[:material_id]
+      material_id = params[:material_id]
+      @orders = Order.includes(order_products:[:product]).joins(:order_materials).where(:order_materials => {material_id:material_id}).order("id DESC").page(params[:page]).per(30)
+    else
+      @orders = Order.includes(order_products:[:product]).order("id DESC").page(params[:page]).per(30)
+    end
   end
   def update
     @materials = Material.where(end_of_sales:0)
@@ -56,7 +71,7 @@ class OrdersController < ApplicationController
         hash[:make_date] = daily_menu.start_time
         order_products << hash
       end
-      delivery_date = DailyMenu.find(params[:daily_menu_id]).start_time
+      sales_date = DailyMenu.find(params[:daily_menu_id]).start_time
     elsif params[:masu_order_date]
       order_products = []
       masu_orders = MasuOrder.where(start_time:params[:masu_order_date])
@@ -68,10 +83,10 @@ class OrdersController < ApplicationController
         hash[:make_date] = params[:masu_order_date]
         order_products << hash
       end
-      delivery_date = Date.parse(params[:masu_order_date])
+      sales_date = Date.parse(params[:masu_order_date])
     else
       order_products = params[:order]
-      delivery_date = Date.today
+      sales_date = Date.today
     end
     order_products.each do |po|
       if po[:product_id].present?
@@ -119,7 +134,7 @@ class OrdersController < ApplicationController
         end
       end
     end
-
+    @prev_stocks = {}
     @b_hash.each do |key,value|
       value.each do |hash|
         calculated_quantity = hash['calculated_order_amount'].round(1)
@@ -133,15 +148,16 @@ class OrdersController < ApplicationController
         menu_name = hash['menu_name']
         unit_amount = hash['unit_amount']
         dead_line = hash['delivery_deadline']
-        date = dead_line.business_days.before(delivery_date)
+        delivery_date = dead_line.business_days.before(sales_date)
         if hash['vendor_id'] == 141 || hash['vendor_id'] == 11 || hash['vendor_id'] == 161
-          @order.order_materials.build(material_id:key,order_quantity:order_quantity,calculated_quantity:calculated_quantity,menu_name:menu_name,calculated_unit:calculated_unit,order_unit:order_unit,order_material_memo:unit_amount,delivery_date:date)
+          @order.order_materials.build(material_id:key,order_quantity:order_quantity,calculated_quantity:calculated_quantity,menu_name:menu_name,calculated_unit:calculated_unit,order_unit:order_unit,order_material_memo:unit_amount,delivery_date:delivery_date)
         else
-          @order.order_materials.build(material_id:key,order_quantity:order_quantity,calculated_quantity:calculated_quantity,menu_name:menu_name,calculated_unit:calculated_unit,order_unit:order_unit,delivery_date:date)
+          @order.order_materials.build(material_id:key,order_quantity:order_quantity,calculated_quantity:calculated_quantity,menu_name:menu_name,calculated_unit:calculated_unit,order_unit:order_unit,delivery_date:delivery_date)
         end
+        prev_stock = Stock.where("date < ?", sales_date).where(material_id:key).order("date DESC").first
+        @prev_stocks[key] = prev_stock
       end
     end
-    @code_materials = Material.where(end_of_sales:0).where.not(order_code:"")
     @materials = Material.where(end_of_sales:0)
     @vendors = @order.order_materials.map{|om|[om.material.vendor.company_name,om.material.vendor.id]}.uniq
   end

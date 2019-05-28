@@ -224,6 +224,7 @@ ActiveRecord::Schema.define(version: 2019_05_20_073054) do
     t.float "end_day_stock", default: 0.0, null: false
     t.float "used_amount", default: 0.0, null: false
     t.float "delivery_amount", default: 0.0, null: false
+    t.boolean "inventory_flag", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["date", "material_id"], name: "index_stocks_on_date_and_material_id", unique: true

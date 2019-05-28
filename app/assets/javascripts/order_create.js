@@ -2,8 +2,8 @@ $(document).on("turbolinks:before-cache", function() {
   if ($(".select_order_materials").length) {
     $('.select_order_materials').select2('destroy');
   }
-  if ($(".input_order_code").length) {
-    $('.input_order_code').select2('destroy');
+  if ($(".material_search_select2").length) {
+    $('.material_search_select2').select2('destroy');
   }
 });
 
@@ -17,7 +17,7 @@ $(document).on('turbolinks:load', function() {
   $('.select_order_materials').select2({
     placeholder: "発注する食材を選択"
   });
-  $('.input_order_code').select2({
+  $('.material_search_select2').select2({
   });
 
   $('.fixed_flag').on('change',function(){

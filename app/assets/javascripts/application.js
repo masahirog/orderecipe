@@ -37,12 +37,22 @@ $(document).on('turbolinks:load', function() {
   });
 
   $("#masu_order_details_area").on('keyup','.masu_order_details_product_number', function(){
+    calculate_num();
+  });
+
+  $("#masu_order_details_area").on('click','.remove_fields', function(){
+    setTimeout(function(){
+      calculate_num();
+    },5);
+  });
+  function calculate_num(){
     var sum = 0;
-    $('.masu_order_details_tr').each(function(i){
+    $('.masu_order_details_tr:visible').each(function(i){
       sum += Number($(this).find('.masu_order_details_product_number').val());
     });
     $('.masu_order_sum_number').val(sum);
-  });
+  }
+
 
 })
 function kanma (number) {

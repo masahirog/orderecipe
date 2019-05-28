@@ -12,6 +12,7 @@ class Material < ApplicationRecord
 
   belongs_to :vendor
   scope :mate_search, lambda { |query|  where(end_of_sales:0).where('name LIKE ?', "%#{query}%").limit(100)}
+  has_many :stocks
 
   belongs_to :storage_location
 
@@ -35,6 +36,7 @@ class Material < ApplicationRecord
      data = data.where(vendor_id: params["vendor_id"]) if params["vendor_id"].present?
      data = data.where(['order_code LIKE ?', "%#{params["order_code"]}%"]) if params["order_code"].present?
      data = data.where(['end_of_sales LIKE ?', "%#{params["end_of_sales"]["value"]}%"]) if params["end_of_sales"].present?
+     data = data.where(storage_location_id:params[:storage_location_id]) if params[:storage_location_id].present?
      data
    else
      Material.order(id: "DESC").all

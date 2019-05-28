@@ -16,11 +16,13 @@ table.table
     tr
       th 弁当名
       th 個数
+      th 帯URL
   tbody
     - @products_num_h.each do |product_num|
       tr
         td = Product.find(product_num[0]).name
         td = product_num[1]
+        td = link_to "帯PDF",Product.find(product_num[0]).masu_obi_url,class:'btn btn-default',:target=>"_blank" if Product.find(product_num[0]).masu_obi_url
 
 h3 オーダー別製造数
 table.table

@@ -14,34 +14,43 @@ class Order < ApplicationRecord
   after_save :input_stock
 
   def initialize_stock
-    if self.fixed_flag == true
-      before_dates = self.order_materials.map{|om|om.delivery_date_was}.uniq
-      after_dates = self.order_materials.map{|om|om.delivery_date_was}.uniq
-      @dates = (before_dates + after_dates).uniq
-      stocks = Stock.where(date:@dates)
-      stocks.update_all(delivery_amount:0)
-    end
+    before_dates = self.order_materials.map{|om|om.delivery_date_was}.uniq
+    after_dates = self.order_materials.map{|om|om.delivery_date}.uniq
+    @dates = (before_dates + after_dates).uniq
+    stocks = Stock.where(date:@dates)
+    stocks.update_all(delivery_amount:0)
   end
 
 
   def input_stock
-    if self.fixed_flag == true
-      new_stocks = []
-      update_stocks = []
-      order_materials_group = OrderMaterial.joins(:order).where(:orders => {fixed_flag:true}).where(delivery_date:@dates).group('delivery_date').group('material_id').sum(:order_quantity)
-      self.order_materials.each do |om|
-        stock = Stock.find_by(date:om.delivery_date,material_id:om.material_id)
-        if stock
-          stock.delivery_amount = order_materials_group[[om.delivery_date,om.material_id]].to_f
-          update_stocks << stock
+    new_stocks = []
+    update_stocks = []
+    order_materials_group = OrderMaterial.where(un_order_flag:false).joins(:order).where(:orders => {fixed_flag:true}).where(delivery_date:@dates).group('delivery_date').group('material_id').sum(:order_quantity)
+    order_materials_group.each do |omg|
+      date = omg[0][0]
+      material_id = omg[0][1]
+      delivery_amount = omg[1].to_f
+      stock = Stock.find_by(date:date,material_id:material_id)
+      if stock
+        stock.delivery_amount = delivery_amount
+        end_day_stock = stock.start_day_stock - stock.used_amount + delivery_amount
+        stock.end_day_stock = end_day_stock
+        update_stocks << stock
+        #未来の在庫を書き換えていく処理
+        Stock.change_stock(update_stocks,material_id,date,end_day_stock)
+      else
+        end_day_stock = 0 + delivery_amount
+        prev_stock = Stock.where("date < ?", date).where(material_id:material_id).order("date DESC").first
+        if prev_stock.present?
+          new_stocks << Stock.new(material_id:material_id,date:date,end_day_stock:end_day_stock,start_day_stock:prev_stock.end_day_stock)
         else
-          new_stocks << Stock.new(material_id:om.material_id,date:om.delivery_date,delivery_amount:order_materials_group[[om.delivery_date,om.material_id]].to_f)
+          new_stocks << Stock.new(material_id:material_id,date:date,end_day_stock:end_day_stock)
         end
+        Stock.change_stock(update_stocks,material_id,date,end_day_stock)
       end
-
-      Stock.import new_stocks if new_stocks.present?
-      Stock.import update_stocks, on_duplicate_key_update:[:delivery_amount] if update_stocks.present?
     end
+    Stock.import new_stocks if new_stocks.present?
+    Stock.import update_stocks, on_duplicate_key_update:[:delivery_amount,:end_day_stock,:start_day_stock] if update_stocks.present?
   end
 
   def reject_material_blank(attributes)

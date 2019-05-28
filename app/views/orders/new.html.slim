@@ -7,14 +7,6 @@
       ul style="list-style:none;"
         - @order.errors.full_messages.each do |message|
           li = message
-  .col-md-12
-    .col-md-6
-      h4 発注弁当
-    .col-md-6
-      div style="float:left;padding-top:8px;font-weight:bold;"
-        |  製造日　　　　　製造日一括変更：
-      div style="float:left"
-        = date_field("all", "make_date_change", value: Time.now.strftime("%Y-%m-%d"),class:"form-control")
   ul.list-group.col-md-12
     = f.fields_for :order_products do |op|
       li.list-group-item.col-md-12 style="padding:5px;"
@@ -26,7 +18,7 @@
           .form-group
             |  人分
         .col-md-2
-          = op.date_field(:make_date,value: (op.object.make_date || Time.now.strftime("%Y-%m-%d")),class:"form-control input_make_date")
+          = op.date_field(:make_date,value: (op.object.make_date || Time.now.strftime("%Y-%m-%d")),class:"form-control input_make_date",readonly:true)
   .col-md-12[style="padding-bottom:10px;"]
     .col-md-2[style="font-size:20px;padding-top:30px;"]
       strong 発注食材・資材一覧
@@ -50,12 +42,11 @@
       thead
         tr
           th style="width:250px;" 食材名
-          th style="width:150px;" 発注コード検索
           th style="width:400px;"
             div style="float:left;width:50%;"
               | 発注量
             div style="float:left;width:50%;"
-              | 計算値
+              = " 計算値（前日の在庫量を表示)"
           th style='min-width:250px;' 備考欄
           th 納品日
           th

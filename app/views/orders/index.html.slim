@@ -5,28 +5,44 @@
   .panel-body
     = form_tag(:controller => "orders", :action => "new") do
       ul.orderform style="list-style:none;"
-        - for i in 0..5
+        - for i in 0..2
           = render :partial => "new_form",locals: {i:i}
       .text-center.form-group.col-md-12[style="margin-top:30px;"]
         input.btn.btn-success type="button" onclick="submit();" value="発注開始" style='width:300px;'
-h4 過去の発注一覧
-ul.list-group style="list-style-type: none;"
-  - @orders.each do |order|
-    li.col-md-12.list-group-item
-      .col-md-1
-        - if order.fixed_flag == true
-          h4
-            span class="label label-success" 確定
-        -else
-      .col-md-10
-        - order.order_products.each do |op|
-          .col-md-3
-            .col-md-12.bold style="font-size:10px;"
-              strong
-                = "#{op.serving_for}人分"
-            .col-md-12 style="font-size:10px;"
+.col-md-12.clearfix
+  h4 style='margin-right:40px;float:left;' 過去の発注一覧
+  = form_tag orders_path, :method => 'get' do
+    .col-md-4
+      = select_tag :material_id, options_from_collection_for_select(@materials, :id, :name,params[:material_id]),include_blank: true, class: "form-control material_search_select2"
+    .col-md-1
+      = submit_tag "検索" ,class:"btn btn-primary"
+
+table.table
+  thead
+    tr
+      th
+      th 確定フラグ
+      th 商品製造日
+      th 発注商品
+  tbody
+    - @orders.each do |order|
+      tr
+        td
+          = link_to "発注詳細", order_path(order),class:"order btn btn-default",style:"margin:3px;"
+        td
+          - if order.fixed_flag == true
+            h4
+              span class="label label-success" 確定
+        td
+          - if order.order_products.present?
+            = order.order_products[0].make_date
+          - else
+            h4
+              span class="label label-danger" 単品発注
+        td.clearfix
+          - order.order_products.each do |op|
+            div style="padding:5px 10px;font-size:11px;width:25%;float:left;"
+              = "#{op.serving_for}食"
               = op.product.name
-      .col-md-1
-        = link_to "発注詳細", order_path(order),class:"order btn btn-primary",style:"margin:3px;"
 
 = paginate @orders

@@ -8,4 +8,8 @@ class OrderMaterial < ApplicationRecord
   validates :material_id, presence: true
   validates :delivery_date, presence: true
 
+
+  def attributes_with_virtual
+    attributes.merge('start_time' => self.delivery_date)
+  end
 end

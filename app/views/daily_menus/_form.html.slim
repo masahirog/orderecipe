@@ -12,7 +12,7 @@
   .form-group.required.col-md-12
     = f.label :total_manufacturing_number,"総製造数", class: 'col-md-2 control-label text-right'
     .col-md-10
-      = f.number_field :total_manufacturing_number, class: 'col-md-10 form-control'
+      = f.number_field :total_manufacturing_number, class: 'col-md-10 form-control total_manufacturing_number',readonly:true
   .form-group.required.col-md-12
     = f.label :fixed_flag,"確定ステータス", class: 'col-md-2 control-label text-right'
     .col-md-10

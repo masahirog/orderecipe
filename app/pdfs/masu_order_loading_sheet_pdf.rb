@@ -15,7 +15,7 @@ class MasuOrderLoadingSheetPdf < Prawn::Document
 
     bounding_box([20, 550], :width => 840) do
       table line_item_rows2(products_num_h,date,masu_orders,total) do
-        row(0).background_color = 'f5f5f5'
+        row(0..1).background_color = 'f5f5f5'
         cells.padding = [8,6,8,6]
         cells.size = 10
         cells.border_width = 0.1
@@ -59,13 +59,17 @@ class MasuOrderLoadingSheetPdf < Prawn::Document
       else
         tea = "缶：#{mo.number}"
       end
-      hash2.store(mo.id,[mo.number,mo.number,miso,miso,tea,trash_bags,'◯','◯',seikyusho,ryoshusho])
+      hash2.store(mo.id,[mo.number+1,mo.number+1,miso,miso,tea,trash_bags,'◯','◯',seikyusho,ryoshusho])
     end
 
     kurumesi_ids = masu_orders.map{|masu_order| masu_order.kurumesi_order_id}
 
     data = [["配達日： #{date}　　　　お弁当合計：　#{total} 個","オーダーID▶"].push(kurumesi_ids).flatten!]
-
+    arr2 = ['','ピックアップ時間']
+    masu_orders.each do |masu_order|
+      arr2.push(masu_order.pick_time.strftime("%R"))
+    end
+    data << arr2
     product_ids = products_num_h.keys
     products = Product.where(id:product_ids)
 

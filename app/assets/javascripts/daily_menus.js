@@ -17,6 +17,28 @@ $(document).on('turbolinks:load', function() {
     },10);
   });
 
+  $("#daily_menu_details_area").on('keyup','.manufacturing_number', function(){
+    calculate_num();
+  });
+
+  $("#daily_menu_details_area").on('keyup','.manufacturing_number', function(){
+    calculate_num();
+  });
+  $("#daily_menu_details_area").on('click','.remove_fields', function(){
+    setTimeout(function(){
+      calculate_num();
+    },5);
+  });
+
+
+
+  function calculate_num(){
+    var sum = 0;
+    $('.daily_menu_detail_tr:visible').each(function(i){
+      sum += Number($(this).find('.manufacturing_number').val());
+    });
+    $('.total_manufacturing_number').val(sum);
+  }
   $("#daily_menu_details_area").on("blur",'.make_dailymenu_bento_id_search',function(){
     var bento_id =  parseInt($(this).val());
     var inp = $(this).parent().parent().find(".input_select_product")

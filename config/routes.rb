@@ -80,6 +80,8 @@ Rails.application.routes.draw do
   resources :stocks do
     collection do
       get :material_info
+      get :inventory
+      put :inventory_update
     end
   end
   resources :storage_locations

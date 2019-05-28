@@ -8,11 +8,6 @@ tr.order_materials_tr.nested-fields
       - if f.object.material.present?
         span = f.object.material.vendor.company_name
         span style='color:red;font-weight:bold;' = "【受注品】" if f.object.material.vendor_stock_flag == false
-  td.order_code_search
-    - if f.object.material_id.present?
-      = select_tag 'page[name]', options_from_collection_for_select(@code_materials, :id, :order_code),include_blank: true,class:"input_order_code"
-    - else
-      = select_tag 'page[name]', options_from_collection_for_select(@code_materials, :id, :order_code),include_blank: true,class:"input_order_code"
   td.quantity style='width:400px;'
     .clearfix
       div style="float:left;width:50%;"
@@ -22,16 +17,22 @@ tr.order_materials_tr.nested-fields
       div style="float:left;"
         = f.text_field :calculated_quantity,class:'calculated_value text-right form-control',style:"float:left;width:100px;",readonly:true
         = f.text_field :calculated_unit, style:'float:left;width:60px;',class:'form-control calculated_material_unit',readonly:true
-    .change_unit style="color:#A9A9A9;padding:1px 0 0 10px;"
-      - if f.object.material_id.present?
-        = f.object.material.order_unit_quantity
-        = f.object.material.order_unit
-        |  ：
-        = f.object.material.calculated_value
-        = f.object.material.calculated_unit
-      - if f.object.material.present?
-        - if f.object.material.memo.present?
-          span style='color:red;margin-left:10px;' class="glyphicon glyphicon-tags" aria-hidden="true"  data-toggle="tooltip" data-placement="top" title="#{f.object.material.memo}"
+    .clearfix style="color:#A9A9A9;padding:1px 0 0 10px;"
+      .change_unit style="float:left;width:50%;"
+        - if f.object.material_id.present?
+          = f.object.material.order_unit_quantity
+          = f.object.material.order_unit
+          |  ：
+          = f.object.material.calculated_value.to_i.to_s(:delimited)
+          = f.object.material.calculated_unit
+        - if f.object.material.present?
+          - if f.object.material.memo.present?
+            span style='color:red;margin-left:10px;' class="glyphicon glyphicon-tags" aria-hidden="true"  data-toggle="tooltip" data-placement="top" title="#{f.object.material.memo}"
+      .text-right style="float:left;width:50%;padding-right:25px;"
+        - if @prev_stocks[f.object.material_id]
+          = "#{(@prev_stocks[f.object.material_id].end_day_stock*f.object.material.calculated_value.to_i).floor.to_s(:delimited)}#{f.object.material.calculated_unit}（#{@prev_stocks[f.object.material_id].end_day_stock.floor(2)} #{f.object.material.order_unit}）"
+        - else
+          |0
   td.order_material_memo style='min-width:250px;'
     = f.text_field :order_material_memo,class:'form-control'
     div style="padding:3px 0 0 8px;color:#A9A9A9;font-size:10px;"

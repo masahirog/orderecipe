@@ -2,13 +2,38 @@ ol.breadcrumb
   li = link_to 'ホーム',root_path
   li 在庫管理トップ
 
-= link_to "新規作成",new_stock_path(date:params[:date]),class:'btn btn-primary'
+= form_tag stocks_path, :method => 'get' do
+  = date_field_tag :date,params[:date], class: "form-control",style:'width:200px;float:left;margin-right:20px;'
+  = select_tag :storage_location_id, options_from_collection_for_select(@storage_locations, :id, :name,params[:storage_location_id]), class: "form-control",style:'width:200px;float:left;margin-right:20px;'
+  = select_tag :vendor_id, options_from_collection_for_select(Vendor.all, :id, :company_name,params[:vendor_id]),include_blank: true, class: "form-control",style:'width:200px;float:left;margin-right:20px;'
+  = submit_tag "検索" ,class:"btn btn-primary",style:'float:left;margin-right:20px;'
+= link_to '棚卸し開始',inventory_stocks_path(date:params[:date],storage_location_id:params[:storage_location_id],vendor_id:params[:vendor_id]),class:'btn btn-default',
+style:'margin-right:20px;', data: { confirm: "#{params[:date]}の棚卸しを開始しますか？"}
 table.table
   thead
     tr
-      th
-      th 日付
+      th 保管
+      th 食材名
+      th 食材名
+      th 使用量
+      th 納品量
+      th 在庫（日初時）
+      th 在庫（日終時）
   tbody
-  - @stocks.each do |stock|
-    tr
-      = stock.id
+    - @materials_inventory.each do |mi|
+      tr
+        td
+          = mi[1]
+        td
+          = mi[2]
+        td
+          = mi[3]
+        td
+          = mi[4]
+        td
+          = mi[5]
+        td
+          = mi[6]
+        td
+          = mi[7]
+= paginate @materials
