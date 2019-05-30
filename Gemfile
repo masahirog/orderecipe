@@ -40,6 +40,7 @@ gem 'simple_calendar', '~> 2.0'
 gem 'business_time'
 gem 'romaji'
 
+
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'pry-rails'
