@@ -5,7 +5,7 @@ class StocksController < ApplicationController
     stocks = Stock.where(date:date).map{|stock|[stock.material_id,[stock.used_amount,stock.delivery_amount,stock.start_day_stock,stock.end_day_stock]]}.to_h
     storage_location_id = params[:storage_location_id]
     @storage_locations = StorageLocation.all
-    @materials = Material.search(params).where(end_of_sales:false).includes(:vendor,:storage_location).page(params[:page]).per(30)
+    @materials = Material.order('vendor_id').search(params).where(end_of_sales:false).includes(:vendor,:storage_location).page(params[:page]).per(30)
     @materials.each do |material|
       if stocks[material.id].present?
         used_amount = stocks[material.id][0]
@@ -78,7 +78,11 @@ class StocksController < ApplicationController
     vendor_id = params[:vendor_id]
     @storage_locations = StorageLocation.all
     @materials = Material.search(params).where(end_of_sales:false).includes(:vendor,:storage_location).page(params[:page]).per(30)
-    @stocks_hash = Stock.where(date:date,material_id:@materials.ids).map{|stock|[stock.material_id,stock]}.to_h
+    if @materials.present?
+      @stocks_hash = Stock.where(date:date,material_id:@materials.ids).map{|stock|[stock.material_id,stock]}.to_h
+    else
+      @stocks_hash = []
+    end
   end
 
   def inventory_update
@@ -112,6 +116,37 @@ class StocksController < ApplicationController
     notice: "<div class='alert alert-success' role='alert' style='font-size:15px;'>在庫を保存しました！</div>".html_safe
   end
 
+  def inventory_sheet
+    date = params[:date]
+    storage_location_id = params[:storage_location_id]
+    if storage_location_id.present?
+      storage_location = StorageLocation.find(storage_location_id)
+    else
+      storage_location = '全体'
+    end
+    vendor_id = params[:vendor_id]
+    @material_stock = {}
+    @materials = Material.order('storage_location_id').order('vendor_id').search(params).where(end_of_sales:false).includes(:vendor,:storage_location)
+    @materials.each do |material|
+      prev_stock = material.stocks.order("date DESC").first
+      if prev_stock
+        @material_stock[material.id] = [material,prev_stock.end_day_stock]
+      else
+        @material_stock[material.id] = [material,0]
+      end
+    end
+    respond_to do |format|
+      format.html
+      format.pdf do
+        pdf = InventorySheetPdf.new(@material_stock,storage_location)
+        pdf.font "vendor/assets/fonts/ipaexm.ttf"
+        send_data pdf.render,
+        filename:    "#{date}.pdf",
+        type:        "application/pdf",
+        disposition: "inline"
+      end
+    end
+  end
 
   private
   def stock_create_update

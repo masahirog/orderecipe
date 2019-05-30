@@ -82,6 +82,7 @@ Rails.application.routes.draw do
       get :material_info
       get :inventory
       put :inventory_update
+      get :inventory_sheet
     end
   end
   resources :storage_locations
