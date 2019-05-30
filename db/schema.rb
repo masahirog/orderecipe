@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_20_073054) do
+ActiveRecord::Schema.define(version: 2019_05_30_071156) do
 
   create_table "daily_menu_details", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "daily_menu_id", null: false
@@ -55,14 +55,20 @@ ActiveRecord::Schema.define(version: 2019_05_20_073054) do
     t.float "vitamin_c"
     t.float "salt"
     t.text "memo"
-    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.float "magnesium"
     t.float "iron"
     t.float "zinc"
     t.float "copper"
     t.float "folic_acid"
     t.float "vitamin_d"
+  end
+
+  create_table "kurumesi_mails", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.text "message"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "masu_order_details", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

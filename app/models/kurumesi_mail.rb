@@ -1,0 +1,2 @@
+class KurumesiMail < ApplicationRecord
+end
