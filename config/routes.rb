@@ -1,7 +1,6 @@
 Rails.application.routes.draw do
   devise_for :users
-  # post 'incoming_emails' => 'incoming_emails#create'
-  post 'incoming_emails' => 'incoming_emails#test'
+  post 'incoming_emails' => 'incoming_emails#create'
 
   root 'daily_menus#index'
   post 'orders/new' => 'orders#new'
