@@ -1,7 +1,7 @@
 require 'mail'
 
 class IncomingEmailsController < ApplicationController
-  protect_from_forgery with: :exception
+  protect_from_forgery except: :create
   def create
     mail = Mail.new(params[:message])
     # TODO: use 'mail' object
