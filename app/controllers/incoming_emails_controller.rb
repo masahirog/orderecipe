@@ -6,6 +6,9 @@ class IncomingEmailsController < ActionController::Base
     mail = Mail.new(params[:message])
     # TODO: use 'mail' object
     # see API for https://github.com/mikel/mail
-    render text: "OK"
+    @kurumesi_mail = KurumesiMail.new(message:'aaa')
+    @kurumesi_mail.save
+    
+    # render text: "OK"
   end
 end
