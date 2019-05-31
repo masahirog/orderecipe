@@ -1,14 +1,11 @@
 require 'mail'
-require 'kconv'
 
-class IncomingEmailsController < ApplicationController
-  skip_before_action :verify_authenticity_token, only: :create
+class IncomingEmailsController < ActionController::Base
+  # protect_from_forgery with: :exception
   def create
-    p 'aa'
-    # mail = Mail.new(params[:message])
-
-    @kurumesi_mail = KurumesiMail.create(message:'aaa')
-    # ここに保存＆ブラウザー通知
+    mail = Mail.new(params[:message])
+    # TODO: use 'mail' object
+    # see API for https://github.com/mikel/mail
     render text: "OK"
   end
 end
