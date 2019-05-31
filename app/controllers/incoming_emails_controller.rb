@@ -1,6 +1,6 @@
 require 'mail'
 
-class IncomingEmailsController < ActionController::Base
+class IncomingEmailsController < ApplicationController
   protect_from_forgery with: :exception
   def create
     mail = Mail.new(params[:message])
