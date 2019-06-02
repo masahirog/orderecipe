@@ -46,7 +46,7 @@ table.table
             |YES
           - else
             |NO
-        td = masu_order.pick_time.strftime("%R")
+        td = masu_order.pick_time.strftime("%R") if masu_order.pick_time
         td = "#{masu_order.number} 個"
         td = masu_order.payment
         td = masu_order.miso

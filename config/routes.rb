@@ -1,6 +1,5 @@
 Rails.application.routes.draw do
   devise_for :users
-  post 'incoming_emails' => 'incoming_emails#create'
 
   root 'daily_menus#index'
   post 'orders/new' => 'orders#new'
@@ -14,6 +13,7 @@ Rails.application.routes.draw do
 
   resources :masu_orders do
     collection do
+      get :test
       get :date
       get :print_preparation
       get :receipt

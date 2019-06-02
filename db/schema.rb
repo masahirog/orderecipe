@@ -66,7 +66,12 @@ ActiveRecord::Schema.define(version: 2019_05_30_071156) do
   end
 
   create_table "kurumesi_mails", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.text "message"
+    t.integer "masu_order_id"
+    t.string "subject"
+    t.text "body"
+    t.integer "status"
+    t.datetime "recieved_datetime"
+    t.boolean "masu_order_reflect_flag", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -84,11 +89,11 @@ ActiveRecord::Schema.define(version: 2019_05_30_071156) do
     t.date "start_time", null: false
     t.integer "kurumesi_order_id", null: false
     t.time "pick_time"
-    t.boolean "fixed_flag", default: false, null: false
     t.integer "payment", default: 0, null: false
     t.integer "tea", default: 0, null: false
     t.integer "miso", default: 0, null: false
     t.integer "trash_bags", default: 0, null: false
+    t.boolean "canceled_flag", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

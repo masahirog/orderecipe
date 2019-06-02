@@ -16,7 +16,7 @@
   .form-group.required.col-md-12
     = f.label :pick_time,"ピックアップ時間", class: 'col-md-2 control-label text-right'
     .col-md-10
-      = f.time_select :pick_time,{time_separator:'', minute_step: 15, :default => {:hour => '09', :minute => '30'}}, class: 'col-md-10 form-control',style:'display:inline-block;width:auto;width:100px;'
+      = f.time_select :pick_time,{time_separator:'', minute_step: 5,include_blank:true }, class: 'col-md-10 form-control',style:'display:inline-block;width:auto;width:100px;'
   .form-group.required.col-md-12
     = f.label :fixed_flag,"確定ステータス", class: 'col-md-2 control-label text-right'
     .col-md-10
