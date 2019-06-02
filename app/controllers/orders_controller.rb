@@ -74,7 +74,7 @@ class OrdersController < ApplicationController
       sales_date = DailyMenu.find(params[:daily_menu_id]).start_time
     elsif params[:masu_order_date]
       order_products = []
-      masu_orders = MasuOrder.where(start_time:params[:masu_order_date])
+      masu_orders = MasuOrder.where(start_time:params[:masu_order_date],canceled_flag:false)
       products_num_h = masu_orders.joins(:masu_order_details).group('masu_order_details.product_id').sum('masu_order_details.number')
       products_num_h.each do |aa|
         hash = {}

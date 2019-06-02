@@ -1,5 +1,5 @@
 class MasuOrderManufacturingSheetPdf < Prawn::Document
-  def initialize(products_num_h,date)
+  def initialize(products_num_h,date,masu_orders)
     # 初期設定。ここでは用紙のサイズを指定している。
     super(
       page_size: 'A4',
@@ -8,7 +8,7 @@ class MasuOrderManufacturingSheetPdf < Prawn::Document
     )
     #日本語のフォント
     font "vendor/assets/fonts/ipaexm.ttf"
-    masu_orders_arr = MasuOrder.where(start_time:date).order(:pick_time).each_slice(6).to_a
+    masu_orders_arr = masu_orders.each_slice(6).to_a
     masu_orders_arr.each_with_index do |moa,i|
       table_content(products_num_h,date,moa,i)
       start_new_page unless i + 1 == masu_orders_arr.length
@@ -47,8 +47,7 @@ class MasuOrderManufacturingSheetPdf < Prawn::Document
     end
     kurumesi_ids = moa.map{|masu_order| masu_order.kurumesi_order_id}
     data = [["配達日：  #{date}","オーダーID▶",''].push(kurumesi_ids).flatten!]
-    data << ["","ピックアップ",''].push(moa.map{|mo|mo.pick_time.strftime("%R")}).flatten!
-    data << ["","確定状況",'▼合計'].push(moa.map{|mo|"FIX" if mo.fixed_flag}).flatten!
+    data << ["","ピックアップ",'▼合計'].push(moa.map{|mo|mo.pick_time.strftime("%R")}).flatten!
     products_num_h.each do |pnh|
       product_id = pnh[0]
       number = pnh[1]

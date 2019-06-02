@@ -19,3 +19,6 @@ h1 枡々オーダー一覧
             = link_to product.short_name,product
           td.text-right style='font-size:11px;'
             = @date_group[[date,product.id]]
+  - if @date_canceled_order_count[date]
+    .clearfix
+      = link_to "キャンセルオーダー：#{@date_canceled_order_count[date]}件",date_masu_orders_path(date:date)

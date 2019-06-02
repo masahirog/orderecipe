@@ -1,16 +1,15 @@
 class MasuOrderLoadingSheetPdf < Prawn::Document
-  def initialize(products_num_h,date)
+  def initialize(products_num_h,date,masu_orders)
     super(
       page_size: 'A4',
       page_layout: :landscape,
       margin:10
     )
     font "vendor/assets/fonts/ipaexm.ttf"
-    table_content(products_num_h,date)
+    table_content(products_num_h,date,masu_orders)
   end
 
-  def table_content(products_num_h,date)
-    masu_orders = MasuOrder.where(start_time:date)
+  def table_content(products_num_h,date,masu_orders)
     total = products_num_h.values.inject(:+)
     bounding_box([0, 570], :width => 840) do
       text "発行時間：#{Time.now.strftime("%Y年 %m月 %d日　%H:%M")}",size:9

@@ -6,26 +6,22 @@
         - masu_order.errors.full_messages.each do |message|
           li = message
   .form-group.required.col-md-12
+    = f.label :canceled_flag,"オーダー状況", class: 'col-md-2 control-label text-right'
+    .col-md-10
+      = f.select :canceled_flag,[['受注',false],['キャンセル',true]],{},class:'form-control',style:'width:440px;'
+
+  .form-group.required.col-md-12
     = f.label :start_time,"日付", class: 'col-md-2 control-label text-right'
     .col-md-10
       = f.date_field :start_time, value:params['start_time'], class: 'col-md-10 form-control',readonly: true,style:'width:440px;'
   .form-group.required.col-md-12
-    = f.label :kurumesi_order_id,"くるめしオーダーID（下5桁）", class: 'col-md-2 control-label text-right'
+    = f.label :kurumesi_order_id,"くるめしオーダーID", class: 'col-md-2 control-label text-right'
     .col-md-10
       = f.number_field :kurumesi_order_id, class: 'col-md-10 form-control',style:'width:440px;'
   .form-group.required.col-md-12
     = f.label :pick_time,"ピックアップ時間", class: 'col-md-2 control-label text-right'
     .col-md-10
       = f.time_select :pick_time,{time_separator:'', minute_step: 5,include_blank:true }, class: 'col-md-10 form-control',style:'display:inline-block;width:auto;width:100px;'
-  .form-group.required.col-md-12
-    = f.label :fixed_flag,"確定ステータス", class: 'col-md-2 control-label text-right'
-    .col-md-10
-      label style='margin-right:30px;'
-        |未確定　
-        = f.radio_button :fixed_flag,false
-      label
-        |確定済み　
-        = f.radio_button :fixed_flag,true
   .form-group.required.col-md-12
     = f.label :payment,"支払い方法", class: 'col-md-2 control-label text-right'
     .col-md-10
@@ -87,8 +83,6 @@
   .actions.col-md-12 style='margin-bottom:50px;'
     button type="button" onclick="submit();" class="col-md-2 col-md-offset-1 btn btn-primary"
       |登録
-    - if action_name == 'edit'
-      = link_to "削除する", masu_order_path(@masu_order.id), method: :delete,class:"col-md-offset-1 col-md-2 btn btn-danger",data: { :confirm => '削除しますYo!ほんとにいいの?'}
 
 style type="text/css"
   | #masu_order_pick_time_5i { margin-left:20px; }

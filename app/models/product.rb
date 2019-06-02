@@ -23,6 +23,10 @@ class Product < ApplicationRecord
   validates :cost_price, presence: true, numericality: true
   validates :bento_id, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, :uniqueness => true, :allow_nil => true
 
+  def view_name_and_id
+    self.bento_id.to_s + '｜' + self.name
+  end
+
   def self.search(params)
    if params
      data = Product.order(id: "DESC").all

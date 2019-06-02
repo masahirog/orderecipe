@@ -15,3 +15,8 @@ task :update_product_cost_price => :environment do
   end
   Product.import products.to_a, :on_duplicate_key_update => [:cost_price]
 end
+
+#10分毎に実行
+task :kurumesi_order_mail_check => :environment do
+  KurumesiMail.routine_check
+end
