@@ -39,7 +39,7 @@ class OrdersController < ApplicationController
     @products = Product.all
     if params[:material_id]
       material_id = params[:material_id]
-      @orders = Order.includes(order_products:[:product]).joins(:order_materials).where(:order_materials => {material_id:material_id}).order("id DESC").page(params[:page]).per(30)
+      @orders = Order.includes(order_products:[:product]).joins(:order_materials).where(:order_materials => {material_id:material_id,un_order_flag:false}).order("id DESC").page(params[:page]).per(30)
     else
       @orders = Order.includes(order_products:[:product]).order("id DESC").page(params[:page]).per(30)
     end

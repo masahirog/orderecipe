@@ -1,5 +1,3 @@
-div class="alert alert-danger" role="alert"
-  |戻るボタンこのページでは効きません。
 .col-md-12
   .col-md-3
     label 発注に使用した弁当
@@ -65,13 +63,3 @@ div class="alert alert-danger" role="alert"
             = om.order_material_memo
           .col-md-2
             = om.delivery_date
-
-javascript:
-  $(function(){
-      // 自身のページを履歴に追加
-      history.pushState(null, null, null);
-      // ページ戻り時にも自身のページを履歴に追加
-      $(window).on("popstate", function(){
-          history.pushState(null, null, null);
-      });
-  });
