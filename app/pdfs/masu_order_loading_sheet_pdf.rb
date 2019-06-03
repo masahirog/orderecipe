@@ -25,7 +25,7 @@ class MasuOrderLoadingSheetPdf < Prawn::Document
         row(-10..-1).columns(0).size = 10
         columns(2..-1).align = :center
         self.header = true
-        columns = Array.new(masu_orders.length){55}
+        columns = Array.new(masu_orders.length){65}
         self.column_widths = [230,100].push(columns).flatten!
       end
     end
@@ -70,7 +70,11 @@ class MasuOrderLoadingSheetPdf < Prawn::Document
     data = [["配達日： #{date}","オーダーID▶"].push(kurumesi_ids).flatten!]
     arr2 = ["お弁当合計：　#{total} 個",'ピックアップ時間']
     masu_orders.each do |masu_order|
-      arr2.push(masu_order.pick_time.strftime("%R"))
+      if masu_order.pick_time.present?
+        arr2.push(masu_order.pick_time.strftime("%R"))
+      else
+        arr2.push("")
+      end
     end
     data << arr2
     product_ids = products_num_h.keys

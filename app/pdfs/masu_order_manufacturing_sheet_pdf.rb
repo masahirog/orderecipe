@@ -31,7 +31,7 @@ class MasuOrderManufacturingSheetPdf < Prawn::Document
         cells.valign = :center
         columns(2..-1).align = :center
         self.header = true
-        columns = Array.new(moa.length){60}
+        columns = Array.new(moa.length){65}
         self.column_widths = [250,100].push(columns).flatten!
       end
 
@@ -47,7 +47,15 @@ class MasuOrderManufacturingSheetPdf < Prawn::Document
     end
     kurumesi_ids = moa.map{|masu_order| masu_order.kurumesi_order_id}
     data = [["配達日：  #{date}","オーダーID▶",''].push(kurumesi_ids).flatten!]
-    data << ["","ピックアップ",'▼合計'].push(moa.map{|mo|mo.pick_time.strftime("%R")}).flatten!
+    pick_arr =  []
+    moa.map do |mo|
+      if mo.pick_time.present?
+        pick_arr << mo.pick_time.strftime("%R")
+      else
+        pick_arr << ''
+      end
+    end
+    data << ["","ピックアップ",'▼合計'].push(pick_arr).flatten!
     products_num_h.each do |pnh|
       product_id = pnh[0]
       number = pnh[1]
