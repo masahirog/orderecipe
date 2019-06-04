@@ -19,6 +19,6 @@ table.table
           - else
             h4 style='margin:0;'
               span class="label label-danger" 失敗
-        td = link_to kurumesi_mail.masu_order.kurumesi_order_id,edit_masu_order_path(kurumesi_mail),target:'_blank' if kurumesi_mail.masu_order_id.present?
+        td = link_to kurumesi_mail.masu_order.kurumesi_order_id,edit_masu_order_path(kurumesi_mail.masu_order),target:'_blank' if kurumesi_mail.masu_order_id.present?
         td = kurumesi_mail.summary
         td = kurumesi_mail.recieved_datetime.strftime("%Y年 %m月 %d日　%H:%M")
