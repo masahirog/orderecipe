@@ -3,6 +3,10 @@ require 'kconv'
 require 'mail'
 
 class KurumesiMail < ApplicationRecord
+  belongs_to :masu_order, optional: true
+
+  enum summary: {その他:0, 新規オーダー:1,内容変更:2,キャンセル:3}
+
   def self.routine_check
     # imapに接続
     imap_host = 'imap.gmail.com' # imapをgmailのhostに設定する

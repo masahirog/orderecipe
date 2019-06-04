@@ -1,0 +1,31 @@
+
+= link_to '編集する', edit_kurumesi_mail_path(@kurumesi_mail),class:'btn btn-default'
+
+table.table
+  tbody
+    tr
+      th.col-md-2 枡々オーダーID
+      td = link_to @kurumesi_mail.masu_order_id,edit_masu_order_path(@kurumesi_mail),target:'_blank' if @kurumesi_mail.masu_order_id.present?
+    tr
+      th オーダー反映
+      td
+        - if @kurumesi_mail.masu_order_reflect_flag.==true
+          h4 style='margin:0;'
+            span class="label label-success" 成功
+        - else
+          h4 style='margin:0;'
+            span class="label label-danger" 失敗
+
+
+    tr
+      th 受信日時
+      td = @kurumesi_mail.recieved_datetime.strftime("%Y年 %m月 %d日　%H:%M")
+    tr
+      th メール概要
+      td = @kurumesi_mail.summary
+    tr
+      th タイトル
+      td = @kurumesi_mail.subject
+    tr
+      th 本文
+      td = text_url_to_link(simple_format(h(@kurumesi_mail.body))).html_safe

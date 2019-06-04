@@ -1,0 +1,24 @@
+h3 くるめしメール
+table.table
+  thead
+    tr
+      th
+      th 反映ステータス
+      th くるめしオーダーID
+      th メール内容
+      th 受信日時
+
+  tbody
+    - @kurumesi_mails.each do |kurumesi_mail|
+      tr
+        td = link_to '詳細', kurumesi_mail,class:'btn btn-default'
+        td
+          - if kurumesi_mail.masu_order_reflect_flag.==true
+            h4 style='margin:0;'
+              span class="label label-success" 成功
+          - else
+            h4 style='margin:0;'
+              span class="label label-danger" 失敗
+        td = link_to kurumesi_mail.masu_order.kurumesi_order_id,edit_masu_order_path(kurumesi_mail),target:'_blank' if kurumesi_mail.masu_order_id.present?
+        td = kurumesi_mail.summary
+        td = kurumesi_mail.recieved_datetime.strftime("%Y年 %m月 %d日　%H:%M")

@@ -4,7 +4,7 @@ class CreateKurumesiMails < ActiveRecord::Migration[5.2]
       t.integer :masu_order_id
       t.string :subject
       t.text :body
-      t.integer :status
+      t.integer :summary
       t.datetime :recieved_datetime
       t.boolean :masu_order_reflect_flag,null:false
       t.timestamps

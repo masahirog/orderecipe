@@ -69,7 +69,7 @@ ActiveRecord::Schema.define(version: 2019_05_30_071156) do
     t.integer "masu_order_id"
     t.string "subject"
     t.text "body"
-    t.integer "status"
+    t.integer "summary"
     t.datetime "recieved_datetime"
     t.boolean "masu_order_reflect_flag", null: false
     t.datetime "created_at", null: false

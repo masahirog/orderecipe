@@ -1,0 +1,9 @@
+= form_for @kurumesi_mail do |f|
+  - if @kurumesi_mail.errors.any?
+    #error_explanation
+      h2 = "#{pluralize(@kurumesi_mail.errors.count, "error")} prohibited this kurumesi_mail from being saved:"
+      ul
+        - @kurumesi_mail.errors.full_messages.each do |message|
+          li = message
+
+  .actions = f.submit

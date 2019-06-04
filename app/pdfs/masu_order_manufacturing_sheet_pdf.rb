@@ -16,8 +16,8 @@ class MasuOrderManufacturingSheetPdf < Prawn::Document
   end
 
   def table_content(products_num_h,date,moa,i)
-    bounding_box([20, 550], :width => 840) do
-      text "発行時間：#{Time.now.strftime("%Y年 %m月 %d日　%H:%M")}　　No.#{i + 1}",size:10
+    bounding_box([20, 550], :width => 780) do
+      text "発行時間：#{Time.now.strftime("%Y年 %m月 %d日　%H:%M")}　　No.#{i + 1}",size:10,:align=>:right
       move_down 10
       table line_item_rows2(products_num_h,date,moa) do
         row(0..2).background_color = 'f5f5f5'
@@ -26,13 +26,13 @@ class MasuOrderManufacturingSheetPdf < Prawn::Document
         columns(0).size = 8
         columns(1).size = 10
         row(0..1).columns(0).size = 10
-
+        row(0).columns(0).size = 12
         cells.border_width = 0.1
         cells.valign = :center
         columns(2..-1).align = :center
         self.header = true
         columns = Array.new(moa.length){65}
-        self.column_widths = [250,100].push(columns).flatten!
+        self.column_widths = [250,90,50].push(columns).flatten!
       end
 
     end
