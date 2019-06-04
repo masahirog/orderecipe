@@ -34,6 +34,7 @@ table.table
   thead
     tr
       th.col-md-1 くるめしID
+      th.col-md-1 メール確認
       th.col-md-1 ピック時間
       th.col-md-1 合計個数
       th.col-md-1 支払い方法
@@ -45,6 +46,7 @@ table.table
     - @masu_orders.each do |masu_order|
       tr
         td = link_to masu_order.kurumesi_order_id,edit_masu_order_path(masu_order)
+        td = link_to 'メール',kurumesi_mails_path(masu_order_id:masu_order.id)
         td = masu_order.pick_time.strftime("%R") if masu_order.pick_time
         td = "#{masu_order.number} 個"
         td = masu_order.payment

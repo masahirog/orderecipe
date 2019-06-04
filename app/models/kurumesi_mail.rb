@@ -7,6 +7,21 @@ class KurumesiMail < ApplicationRecord
 
   enum summary: {その他:0, 新規オーダー:1,内容変更:2,キャンセル:3}
 
+  def self.search(params)
+    if params
+      data = KurumesiMail.order(recieved_datetime: "DESC").all
+      # data = data.where(['name LIKE ?', "%#{params["name"]}%"]) if params["name"].present?
+      # data = data.where(['order_name LIKE ?', "%#{params["order_name"]}%"]) if params["order_name"].present?
+      data = data.where(masu_order_id: params["masu_order_id"]) if params["masu_order_id"].present?
+      # data = data.where(['order_code LIKE ?', "%#{params["order_code"]}%"]) if params["order_code"].present?
+      # data = data.where(['end_of_sales LIKE ?', "%#{params["end_of_sales"]["value"]}%"]) if params["end_of_sales"].present?
+      # data = data.where(storage_location_id:params[:storage_location_id]) if params[:storage_location_id].present?
+      data
+    else
+       KurumesiMail.order(recieved_datetime: "DESC").all
+    end
+  end
+
   def self.routine_check
     # imapに接続
     imap_host = 'imap.gmail.com' # imapをgmailのhostに設定する
