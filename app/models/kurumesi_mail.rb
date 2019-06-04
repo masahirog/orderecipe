@@ -61,20 +61,20 @@ class KurumesiMail < ApplicationRecord
           @kurumei_mail.recieved_datetime = recieved_datetime
           # kurumei_mailの作成
           if subject.include?("ご注文がありました")
-            @kurumei_mail.status = 1
+            @kurumei_mail.summary = 1
             order_info_from_mail = input_order(body)
             new_order(order_info_from_mail) unless MasuOrder.where(kurumesi_order_id:order_info_from_mail[:kurumesi_order_id]).present?
           elsif subject.include?("変更致しました")
-            @kurumei_mail.status = 2
+            @kurumei_mail.summary = 2
             order_info_from_mail = input_order(body)
             update_order(order_info_from_mail)
 
           elsif subject.include?("キャンセルさせて頂きました")
-            @kurumei_mail.status = 3
+            @kurumei_mail.summary = 3
             order_info_from_mail = input_order(body)
             cancel_order(order_info_from_mail)
           else
-            @kurumei_mail.status = 0
+            @kurumei_mail.summary = 0
             @kurumei_mail.save
           end
         end
