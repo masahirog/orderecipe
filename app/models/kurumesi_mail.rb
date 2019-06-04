@@ -53,7 +53,6 @@ class KurumesiMail < ApplicationRecord
         else
           body = m.body.decoded.encode("UTF-8", m.charset)
         end
-
         unless KurumesiMail.find_by(body:body,recieved_datetime:recieved_datetime).present?
           @kurumei_mail = KurumesiMail.new
           @kurumei_mail.subject = subject
@@ -75,6 +74,7 @@ class KurumesiMail < ApplicationRecord
             cancel_order(order_info_from_mail)
           else
             @kurumei_mail.summary = 0
+            @kurumei_mail.masu_order_reflect_flag = false
             @kurumei_mail.save
           end
         end
@@ -163,7 +163,6 @@ class KurumesiMail < ApplicationRecord
     else
       @masu_order = MasuOrder.new
     end
-
     @masu_order.start_time = order_info_from_mail[:delivery_date]
     @masu_order.payment = order_info_from_mail[:pay]
     @masu_order.miso = order_info_from_mail[:miso]
