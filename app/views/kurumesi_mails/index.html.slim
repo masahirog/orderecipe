@@ -3,10 +3,11 @@ table.table
   thead
     tr
       th
-      th オーダー反映
-      th くるめしオーダーID
+      th 情報連携
+      th オーダー情報
       th メール内容
       th 受信日時
+      th くるめし管理
 
   tbody
     - @kurumesi_mails.each do |kurumesi_mail|
@@ -22,3 +23,7 @@ table.table
         td = link_to kurumesi_mail.masu_order.kurumesi_order_id,edit_masu_order_path(kurumesi_mail.masu_order),target:'_blank' if kurumesi_mail.masu_order_id.present?
         td = kurumesi_mail.summary
         td = kurumesi_mail.recieved_datetime.strftime("%Y年 %m月 %d日　%H:%M")
+        td
+          - if kurumesi_mail.masu_order_id.present?
+            = link_to "http://admin.kurumesi-bentou.com/admin_shop/order_detail/#{kurumesi_mail.masu_order.kurumesi_order_id}",target:'_blank' do
+              span class="glyphicon glyphicon-share" aria-hidden="true"

@@ -5,7 +5,7 @@ table.table
   tbody
     tr
       th.col-md-2 枡々オーダーID
-      td = link_to @kurumesi_mail.masu_order_id,edit_masu_order_path(@kurumesi_mail),target:'_blank' if @kurumesi_mail.masu_order_id.present?
+      td = link_to @kurumesi_mail.masu_order.kurumesi_order_id,edit_masu_order_path(@kurumesi_mail.masu_order),target:'_blank' if @kurumesi_mail.masu_order_id.present?
     tr
       th オーダー反映
       td
