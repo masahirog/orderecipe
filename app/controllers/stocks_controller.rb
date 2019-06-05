@@ -93,24 +93,24 @@ class StocksController < ApplicationController
       end_day_stock = stock_param[1][:end_day_stock]
       if end_day_stock.present?
         material_id = stock_param[0]
-
         stock = Stock.find_by(date:date,material_id:material_id)
         if stock
           stock.end_day_stock = end_day_stock
+          stock.inventory_flag = true
           update_stocks << stock
-          # change_stock(update_stocks,material_id,date,end_day_stock)
         else
           prev_stock = Stock.where("date < ?", date).where(material_id:material_id).order("date DESC").first
           if prev_stock.present?
-            new_stocks << Stock.new(material_id:material_id,date:date,end_day_stock:end_day_stock,start_day_stock:prev_stock.end_day_stock)
+            new_stocks << Stock.new(material_id:material_id,date:date,end_day_stock:end_day_stock,start_day_stock:prev_stock.end_day_stock,inventory_flag:true)
           else
-            new_stocks << Stock.new(material_id:material_id,date:date,end_day_stock:end_day_stock)
+            new_stocks << Stock.new(material_id:material_id,date:date,end_day_stock:end_day_stock,inventory_flag:true)
           end
         end
+        Stock.change_stock(update_stocks,material_id,date,end_day_stock)
       end
     end
     Stock.import new_stocks if new_stocks.present?
-    Stock.import update_stocks, on_duplicate_key_update:[:end_day_stock] if update_stocks.present?
+    Stock.import update_stocks, on_duplicate_key_update:[:end_day_stock,:start_day_stock,:inventory_flag] if update_stocks.present?
 
     redirect_to inventory_stocks_path(date:date,page:params[:page],storage_location_id:params[:storage_location_id],vendor_id:params[:vendor_id]),
     notice: "<div class='alert alert-success' role='alert' style='font-size:15px;'>在庫を保存しました！</div>".html_safe
