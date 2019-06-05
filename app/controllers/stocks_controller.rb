@@ -5,7 +5,12 @@ class StocksController < ApplicationController
     stocks = Stock.where(date:date).map{|stock|[stock.material_id,[stock.used_amount,stock.delivery_amount,stock.start_day_stock,stock.end_day_stock]]}.to_h
     storage_location_id = params[:storage_location_id]
     @storage_locations = StorageLocation.all
-    @materials = Material.order('vendor_id').search(params).where(end_of_sales:false).includes(:vendor,:storage_location).page(params[:page]).per(30)
+    if params[:inventory_flag] == 'true'
+      inventory_material_ids = Stock.where(date:date,inventory_flag:true).map{|stock|stock.material_id}
+      @materials = Material.where(id:inventory_material_ids).order('vendor_id').search(params).where(end_of_sales:false).includes(:vendor,:storage_location).page(params[:page]).per(100)
+    else
+      @materials = Material.order('vendor_id').search(params).where(end_of_sales:false).includes(:vendor,:storage_location).page(params[:page]).per(30)
+    end
     @materials.each do |material|
       if stocks[material.id].present?
         used_amount = stocks[material.id][0]
@@ -77,7 +82,12 @@ class StocksController < ApplicationController
     storage_location_id = params[:storage_location_id]
     vendor_id = params[:vendor_id]
     @storage_locations = StorageLocation.all
-    @materials = Material.search(params).where(end_of_sales:false).includes(:vendor,:storage_location).page(params[:page]).per(30)
+    if params[:inventory_flag] == 'true'
+      inventory_material_ids = Stock.where(date:date,inventory_flag:true).map{|stock|stock.material_id}
+      @materials = Material.where(id:inventory_material_ids).order('vendor_id').search(params).where(end_of_sales:false).includes(:vendor,:storage_location).page(params[:page]).per(100)
+    else
+      @materials = Material.order('vendor_id').search(params).where(end_of_sales:false).includes(:vendor,:storage_location).page(params[:page]).per(30)
+    end
     if @materials.present?
       @stocks_hash = Stock.where(date:date,material_id:@materials.ids).map{|stock|[stock.material_id,stock]}.to_h
     else
