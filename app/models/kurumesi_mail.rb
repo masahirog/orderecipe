@@ -10,12 +10,7 @@ class KurumesiMail < ApplicationRecord
   def self.search(params)
     if params
       data = KurumesiMail.order(recieved_datetime: "DESC").all
-      # data = data.where(['name LIKE ?', "%#{params["name"]}%"]) if params["name"].present?
-      # data = data.where(['order_name LIKE ?', "%#{params["order_name"]}%"]) if params["order_name"].present?
       data = data.where(masu_order_id: params["masu_order_id"]) if params["masu_order_id"].present?
-      # data = data.where(['order_code LIKE ?', "%#{params["order_code"]}%"]) if params["order_code"].present?
-      # data = data.where(['end_of_sales LIKE ?', "%#{params["end_of_sales"]["value"]}%"]) if params["end_of_sales"].present?
-      # data = data.where(storage_location_id:params[:storage_location_id]) if params[:storage_location_id].present?
       data
     else
        KurumesiMail.order(recieved_datetime: "DESC").all
@@ -33,7 +28,7 @@ class KurumesiMail < ApplicationRecord
     imap_passwd = 'rohisama'
     imap.login(imap_user, imap_passwd)
     search_criterias = [
-      'FROM','info@kurumesi-bentou.com',
+      'FROM','gon@bento.jp',
       'SINCE', (Date.today).strftime("%d-%b-%Y")
     ]
 
@@ -58,23 +53,25 @@ class KurumesiMail < ApplicationRecord
           @kurumei_mail.subject = subject
           @kurumei_mail.body = body
           @kurumei_mail.recieved_datetime = recieved_datetime
+          @kurumei_mail.masu_order_reflect_flag = false
           # kurumei_mailの作成
           if subject.include?("ご注文がありました")
             @kurumei_mail.summary = 1
+            @kurumei_mail.save
             order_info_from_mail = input_order(body)
             new_order(order_info_from_mail) unless MasuOrder.where(kurumesi_order_id:order_info_from_mail[:kurumesi_order_id]).present?
           elsif subject.include?("変更致しました")
             @kurumei_mail.summary = 2
+            @kurumei_mail.save
             order_info_from_mail = input_order(body)
             update_order(order_info_from_mail)
-
           elsif subject.include?("キャンセルさせて頂きました")
             @kurumei_mail.summary = 3
+            @kurumei_mail.save
             order_info_from_mail = input_order(body)
             cancel_order(order_info_from_mail)
           else
             @kurumei_mail.summary = 0
-            @kurumei_mail.masu_order_reflect_flag = false
             @kurumei_mail.save
           end
         end
@@ -93,7 +90,6 @@ class KurumesiMail < ApplicationRecord
     info_arr = arr[order_info_index..shohin_index-1]
     shohin_arr = arr[shohin_index+1..-1]
     order = {}
-
     info_arr.each do |line|
       order[:delivery_date] = line[6..15] if line[0..5] == "[配達日時]"
       order[:kurumesi_order_id] = line[6..-1].to_i if line[0..5] == "[注文番号]"
@@ -111,18 +107,6 @@ class KurumesiMail < ApplicationRecord
     shohin_arr.join('').gsub('【','$$$').gsub('[請求金額]','$$$').split("$$$").reject(&:blank?).each do |line|
       product_name = ""
       num = ""
-
-      #ごみ袋
-      order[:trash_bags] = line.match(/×(.+)食/)[1].to_i if line.include?("ゴミ袋")
-
-      # 茶の有無
-      if line.include?('ペット茶')
-        order[:tea] = 1
-      elsif line.include?('缶茶')
-        order[:tea] = 2
-      end
-      # 味噌有無
-      order[:miso] = 1 if line.include?('味噌汁付き')
       if line.index('】').present?
         product_name_end_kakko = line.index('】') - 1
         product_name = line[0..product_name_end_kakko]
@@ -131,12 +115,27 @@ class KurumesiMail < ApplicationRecord
         product = Product.find_by(name:product_name)
         if product.present?
           product_id = product.id
-          num = line.match(/×(.+)食/)[1].to_i if line.match(/×(.+)食/).present?
+          num = line.match(/×(.+)食/)[1].to_i
           order_details_arr << {product_id:product_id,num:num}
+          # 味噌有無
+          if line.include?('味噌汁付き')
+            order_details_arr << {product_id:3831,num:num}
+          end
+          # 茶の有無
+          if line.include?('ペット茶')
+            order_details_arr << {product_id:3791,num:num}
+          elsif line.include?('缶茶')
+            order_details_arr << {product_id:3801,num:num}
+          end
         end
       end
     end
-    order[:order_details] = order_details_arr
+    #重複はまとめる！
+    order[:order_details] = order_details_arr.group_by{ |i| i[:product_id]}
+      .map{|k, v|
+         v[1..-1].each {|x| v[0][:num] += x[:num]}
+         v[0]
+       }
     order
   end
 
@@ -183,11 +182,9 @@ class KurumesiMail < ApplicationRecord
 
   def self.reflect_check()
     if @masu_order.save
-      @kurumei_mail.masu_order_id = @masu_order.id
-      @kurumei_mail.masu_order_reflect_flag = true
+      @kurumei_mail.update(masu_order_reflect_flag:true,masu_order_id: @masu_order.id)
     else
-      @kurumei_mail.masu_order_reflect_flag = false
+      @kurumei_mail.update(masu_order_reflect_flag:false)
     end
-    @kurumei_mail.save
   end
 end

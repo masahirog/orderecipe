@@ -1,4 +1,4 @@
-class CreateOrderMaterials < ActiveRecord::Migration[5.0]
+class CreateOrderMaterials < ActiveRecord::Migration[4.2][5.0]
   def change
     create_table :order_materials do |t|
       t.integer :order_id

@@ -1,4 +1,4 @@
-class CreateDailyMenuDetails < ActiveRecord::Migration[5.2]
+class CreateDailyMenuDetails < ActiveRecord::Migration[4.2][5.2]
   def change
     create_table :daily_menu_details do |t|
       t.integer :daily_menu_id, null: false

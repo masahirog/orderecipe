@@ -90,10 +90,8 @@ ActiveRecord::Schema.define(version: 2019_05_30_071156) do
     t.integer "kurumesi_order_id", null: false
     t.time "pick_time"
     t.integer "payment", default: 0, null: false
-    t.integer "tea", default: 0, null: false
-    t.integer "miso", default: 0, null: false
-    t.integer "trash_bags", default: 0, null: false
     t.boolean "canceled_flag", default: false, null: false
+    t.integer "billed_amount", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

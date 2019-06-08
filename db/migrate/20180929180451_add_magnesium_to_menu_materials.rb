@@ -1,4 +1,4 @@
-class AddMagnesiumToMenuMaterials < ActiveRecord::Migration[5.0]
+class AddMagnesiumToMenuMaterials < ActiveRecord::Migration[4.2][5.0]
   def change
     add_column :menu_materials, :magnesium, :float
     add_column :menu_materials, :iron, :float

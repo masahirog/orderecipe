@@ -1,4 +1,4 @@
-class CreateKurumesiMails < ActiveRecord::Migration[5.2]
+class CreateKurumesiMails < ActiveRecord::Migration[4.2][5.2]
   def change
     create_table :kurumesi_mails do |t|
       t.integer :masu_order_id

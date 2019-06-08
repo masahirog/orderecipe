@@ -1,4 +1,4 @@
-class AddGramQuantityToMenuMaterial < ActiveRecord::Migration[5.0]
+class AddGramQuantityToMenuMaterial < ActiveRecord::Migration[4.2][5.0]
   def change
     add_column :menu_materials, :gram_quantity, :float
     add_column :menu_materials, :food_ingredient_id, :integer

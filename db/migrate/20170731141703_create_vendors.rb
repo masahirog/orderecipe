@@ -1,4 +1,4 @@
-class CreateVendors < ActiveRecord::Migration[5.0]
+class CreateVendors < ActiveRecord::Migration[4.2][5.0]
   def change
     create_table :vendors do |t|
       t.string :company_name

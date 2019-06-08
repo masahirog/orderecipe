@@ -1,4 +1,4 @@
-class ChangeOrderQuantityToOrderMaterials < ActiveRecord::Migration[5.0]
+class ChangeOrderQuantityToOrderMaterials < ActiveRecord::Migration[4.2][5.0]
   #変更後の型
   def up
     change_column :order_materials, :order_quantity, :text
