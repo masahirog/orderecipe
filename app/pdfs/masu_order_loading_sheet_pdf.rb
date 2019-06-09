@@ -38,29 +38,12 @@ class MasuOrderLoadingSheetPdf < Prawn::Document
     end
     hash2 = {}
     masu_orders.each do |mo|
-      if mo.miso == "あり"
-        miso = mo.number
-      else
-        miso = ''
-      end
-      if mo.trash_bags == 0
-        trash_bags = ""
-      else
-        trash_bags = mo.trash_bags
-      end
       if mo.payment == '請求書'
         seikyusho = "◯"
         ryoshusho = ""
       else
         seikyusho = ""
         ryoshusho = "◯"
-      end
-      if mo.tea == "不要"
-        tea = ""
-      elsif mo.tea == 'PET'
-        tea = "PET：#{mo.number}"
-      else
-        tea = "缶：#{mo.number}"
       end
       hash2.store(mo.id,[mo.number+1,mo.number+1,miso,miso,tea,trash_bags,'◯','◯',seikyusho,ryoshusho])
     end

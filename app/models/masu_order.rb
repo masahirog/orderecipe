@@ -6,8 +6,6 @@ class MasuOrder < ApplicationRecord
   validates :kurumesi_order_id, presence: true, uniqueness: true
 
   enum payment: {請求書:0, 現金:1, クレジットカード:2}
-  enum miso: {なし:0, あり:1}
-  enum tea: {不要:0, PET:1, 缶:2}
 
   after_save :input_stock
 

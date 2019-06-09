@@ -101,9 +101,6 @@ class KurumesiMail < ApplicationRecord
         end
       end
     end
-    order[:miso] = 0
-    order[:tea] = 0
-    order[:trash_bags] = 0
     shohin_arr.join('').gsub('【','$$$').gsub('[請求金額]','$$$').split("$$$").reject(&:blank?).each do |line|
       product_name = ""
       num = ""
@@ -144,10 +141,7 @@ class KurumesiMail < ApplicationRecord
     @masu_order.start_time = order_info_from_mail[:delivery_date]
     @masu_order.kurumesi_order_id = order_info_from_mail[:kurumesi_order_id]
     @masu_order.payment = order_info_from_mail[:pay]
-    @masu_order.miso = order_info_from_mail[:miso]
     @masu_order.number = order_info_from_mail[:order_details].sum { |hash| hash[:num]}
-    @masu_order.trash_bags = order_info_from_mail[:trash_bags]
-    @masu_order.tea = order_info_from_mail[:tea]
     order_info_from_mail[:order_details].each do |od|
       @masu_order.masu_order_details.build(product_id:od[:product_id],number:od[:num])
     end
@@ -164,10 +158,7 @@ class KurumesiMail < ApplicationRecord
     end
     @masu_order.start_time = order_info_from_mail[:delivery_date]
     @masu_order.payment = order_info_from_mail[:pay]
-    @masu_order.miso = order_info_from_mail[:miso]
     @masu_order.number = order_info_from_mail[:order_details].sum { |hash| hash[:num]}
-    @masu_order.trash_bags = order_info_from_mail[:trash_bags]
-    @masu_order.tea = order_info_from_mail[:tea]
     order_info_from_mail[:order_details].each do |od|
       @masu_order.masu_order_details.build(product_id:od[:product_id],number:od[:num])
     end

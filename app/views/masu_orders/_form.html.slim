@@ -36,32 +36,6 @@
         = f.radio_button :payment,:クレジットカード
 
   .form-group.required.col-md-12
-    = f.label :tea,"お茶", class: 'col-md-2 control-label text-right'
-    .col-md-10
-      label style='margin-right:30px;'
-        |不要　
-        = f.radio_button :tea,:不要
-      label style='margin-right:30px;'
-        |PET　
-        = f.radio_button :tea,:PET
-      label
-        |缶　
-        = f.radio_button :tea,:缶
-  .form-group.required.col-md-12
-    = f.label :miso,"味噌汁", class: 'col-md-2 control-label text-right'
-    .col-md-10
-      label style='margin-right:30px;'
-        |なし　
-        = f.radio_button :miso,:なし
-      label style='margin-right:30px;'
-        |あり　
-        = f.radio_button :miso,:あり
-  .form-group.required.col-md-12
-    = f.label :trash_bags,"ゴミ袋", class: 'col-md-2 control-label text-right'
-    .col-md-10
-      = f.select :trash_bags, options_for_select((0..10).to_a,f.object.trash_bags),{},class:'form-control',style:'width:440px;'
-
-  .form-group.required.col-md-12
     = f.label :number,"合計個数", class: 'col-md-2 control-label text-right'
     .col-md-10
       = f.number_field :number, class: 'col-md-10 form-control masu_order_sum_number',readonly:true,style:'width:440px;'
