@@ -3,3 +3,4 @@ class AddUsedAdditivesToMenu < ActiveRecord::Migration[4.2][5.0]
     add_column :menus, :used_additives, :string
   end
 end
+

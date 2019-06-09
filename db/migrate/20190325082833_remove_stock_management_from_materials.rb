@@ -3,3 +3,4 @@ class RemoveStockManagementFromMaterials < ActiveRecord::Migration[4.2][5.2]
     remove_column :materials, :stock_management, :integer
   end
 end
+

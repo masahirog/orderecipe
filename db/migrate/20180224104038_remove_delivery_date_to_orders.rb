@@ -3,3 +3,4 @@ class RemoveDeliveryDateToOrders < ActiveRecord::Migration[4.2][5.0]
     remove_column :orders, :delivery_date, :string
   end
 end
+

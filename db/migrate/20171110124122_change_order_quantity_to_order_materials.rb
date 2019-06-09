@@ -9,3 +9,4 @@ class ChangeOrderQuantityToOrderMaterials < ActiveRecord::Migration[4.2][5.0]
     change_column :order_materials, :order_quantity, :integer
   end
 end
+

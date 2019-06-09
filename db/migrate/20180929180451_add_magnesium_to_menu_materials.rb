@@ -8,3 +8,4 @@ class AddMagnesiumToMenuMaterials < ActiveRecord::Migration[4.2][5.0]
     add_column :menu_materials, :vitamin_d, :float
   end
 end
+

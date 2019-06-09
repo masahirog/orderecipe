@@ -3,3 +3,4 @@ class AddUsedRatioToProductMenus < ActiveRecord::Migration[4.2][5.0]
     add_column :product_menus, :used_ratio, :float, null: false, default: 1
   end
 end
+

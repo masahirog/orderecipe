@@ -3,3 +3,4 @@ class AddDeliveryDateToOrderMaterials < ActiveRecord::Migration[4.2][5.0]
     add_column :order_materials, :delivery_date, :string
   end
 end
+

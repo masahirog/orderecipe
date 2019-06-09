@@ -18,7 +18,12 @@ class CreateFoodIngredients < ActiveRecord::Migration[4.2][5.0]
       t.float :vitamin_c
       t.float :salt
       t.text :memo
-
+      t.float :magnesium
+      t.float :iron
+      t.float :zinc
+      t.float :copper
+      t.float :folic_acid
+      t.float :vitamin_d
       t.timestamps
     end
   end

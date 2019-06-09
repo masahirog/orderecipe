@@ -3,3 +3,4 @@ class AddVegetableFlagToMaterials < ActiveRecord::Migration[4.2][5.0]
     add_column :materials, :vegetable_flag, :integer, null: false, default: 0
   end
 end
+

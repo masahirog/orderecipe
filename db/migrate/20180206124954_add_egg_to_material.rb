@@ -3,3 +3,4 @@ class AddEggToMaterial < ActiveRecord::Migration[4.2][5.0]
     add_column :materials, :allergy, :text, array: true
   end
 end
+

@@ -9,3 +9,4 @@ class ChangeOrderUnitQuantityToMaterial < ActiveRecord::Migration[4.2][5.0]
     change_column :materials, :order_unit_quantity, :float
   end
 end
+

@@ -28,7 +28,7 @@ class KurumesiMail < ApplicationRecord
     imap_passwd = 'rohisama'
     imap.login(imap_user, imap_passwd)
     search_criterias = [
-      'FROM','gon@bento.jp',
+      'FROM','info@kurumesi-bentou.com',
       'SINCE', (Date.today).strftime("%d-%b-%Y")
     ]
 

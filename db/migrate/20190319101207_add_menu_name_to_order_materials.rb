@@ -5,3 +5,4 @@ class AddMenuNameToOrderMaterials < ActiveRecord::Migration[4.2][5.2]
     add_column :order_materials, :order_unit, :string
   end
 end
+

@@ -8,6 +8,12 @@ class CreateProducts < ActiveRecord::Migration[4.2]
       t.text :description
       t.text :contents
       t.float :cost_price
+      t.string :product_image
+      t.integer :bento_id
+      t.text :memo
+      t.string :short_name, unique: true
+      t.text :masu_obi_url
+
       t.timestamps null: false
     end
   end

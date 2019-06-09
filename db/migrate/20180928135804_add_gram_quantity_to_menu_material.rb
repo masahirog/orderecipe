@@ -15,3 +15,4 @@ class AddGramQuantityToMenuMaterial < ActiveRecord::Migration[4.2][5.0]
     add_column :menu_materials, :salt, :float
   end
 end
+

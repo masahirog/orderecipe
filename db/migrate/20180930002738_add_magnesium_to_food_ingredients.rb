@@ -8,3 +8,4 @@ class AddMagnesiumToFoodIngredients < ActiveRecord::Migration[4.2][5.0]
     add_column :food_ingredients, :vitamin_d, :float
   end
 end
+

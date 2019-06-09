@@ -5,3 +5,4 @@ class AddColumnsToMaterials < ActiveRecord::Migration[4.2][5.0]
 
   end
 end
+

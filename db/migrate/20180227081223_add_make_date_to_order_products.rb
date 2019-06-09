@@ -3,3 +3,4 @@ class AddMakeDateToOrderProducts < ActiveRecord::Migration[4.2][5.0]
     add_column :order_products, :make_date, :string
   end
 end
+

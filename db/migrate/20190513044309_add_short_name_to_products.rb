@@ -4,3 +4,4 @@ class AddShortNameToProducts < ActiveRecord::Migration[4.2][5.2]
     add_column :products, :masu_obi_url, :text
   end
 end
+
