@@ -13,7 +13,7 @@ class MenusController < ApplicationController
 
   def new
     @food_ingredients = FoodIngredient.all
-    @materials = Material.where(end_of_sales:0)
+    @materials = Material.where(unused_flag:false)
     if params[:copy_flag]=='true'
       original_menu = Menu.includes(:menu_materials,{materials:[material_food_additives:[:food_additive]]}).find(params[:menu_id])
       original_menu.menu_materials = original_menu.menu_materials.each{|menu_material|menu_material.amount_used = (menu_material.amount_used * params[:used_rate].to_f).round(2)}
@@ -30,7 +30,7 @@ class MenusController < ApplicationController
 
   def create
     @food_ingredients = FoodIngredient.all
-    @materials = Material.where(end_of_sales:0)
+    @materials = Material.where(unused_flag:false)
     @menu = Menu.new(menu_create_update)
      if @menu.save
        redirect_to @menu,
@@ -60,7 +60,7 @@ class MenusController < ApplicationController
   end
   def update
     @food_ingredients = FoodIngredient.all
-    @materials = Material.where(end_of_sales:0)
+    @materials = Material.where(unused_flag:false)
     @menu = Menu.includes(:menu_materials,{materials:[:vendor,:material_food_additives]}).find(params[:id])
     if @menu.update(menu_create_update)
       if params["menu"]["back_to"].blank?

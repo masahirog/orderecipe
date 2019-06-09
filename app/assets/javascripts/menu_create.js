@@ -318,7 +318,7 @@ $(document).on('turbolinks:load', function() {
     var cost = data.material.cost_price;
     var unit = data.material.calculated_unit;
     var vendor = data.material.vendor_company_name;
-    var eos = data.material.end_of_sales;
+    var eos = data.material.unused_flag;
     $(".add_li_material").eq(u).children(".sales_check").text(eos);
     $(".add_li_material").eq(u).children(".vendor").text(vendor);
     $(".add_li_material").eq(u).children(".cost_price").text(cost);

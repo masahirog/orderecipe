@@ -10,10 +10,10 @@ class OrdersController < ApplicationController
   def edit
     @hash = {}
     @prev_stocks = {}
-    @materials = Material.where(end_of_sales:0)
-    @search_code_materials = Material.where(end_of_sales:0).where.not(order_code:"")
+    @materials = Material.where(unused_flag:false)
+    @search_code_materials = Material.where(unused_flag:false).where.not(order_code:"")
     @order = Order.includes(:products,:order_products,:order_materials,{materials: [:vendor]}).find(params[:id])
-    @code_materials = Material.where(end_of_sales:0).where.not(order_code:"")
+    @code_materials = Material.where(unused_flag:false).where.not(order_code:"")
     @vendors = @order.order_materials.map{|om|[om.material.vendor.company_name,om.material.vendor.id]}.uniq
     product_ids = @order.products.ids
     materials = Product.includes(:product_menus,[menus: [menu_materials: :material]]).where(id:product_ids).map{|product| product.menus.map{|pm| pm.menu_materials.map{|mm|[mm.material.id, product.name]}}}.flatten(2)
@@ -45,10 +45,10 @@ class OrdersController < ApplicationController
     end
   end
   def update
-    @materials = Material.where(end_of_sales:0)
-    @search_code_materials = Material.where(end_of_sales:0).where.not(order_code:"")
+    @materials = Material.where(unused_flag:false)
+    @search_code_materials = Material.where(unused_flag:false).where.not(order_code:"")
     @order = Order.includes(:products,:order_products,:order_materials,{materials: [:vendor]}).find(params[:id])
-    @code_materials = Material.where(end_of_sales:0).where.not(order_code:"")
+    @code_materials = Material.where(unused_flag:false).where.not(order_code:"")
     @vendors = @order.order_materials.map{|om|[om.material.vendor.company_name,om.material.vendor.id]}.uniq
     @order = Order.find(params[:id])
     if @order.update(order_create_update)
@@ -158,14 +158,14 @@ class OrdersController < ApplicationController
         @prev_stocks[key] = prev_stock
       end
     end
-    @materials = Material.where(end_of_sales:0)
+    @materials = Material.where(unused_flag:false)
     @vendors = @order.order_materials.map{|om|[om.material.vendor.company_name,om.material.vendor.id]}.uniq
   end
 
   def create
     @order = Order.create(order_create_update)
-    @code_materials = Material.where(end_of_sales:0).where.not(order_code:"")
-    @materials = Material.where(end_of_sales:0)
+    @code_materials = Material.where(unused_flag:false).where.not(order_code:"")
+    @materials = Material.where(unused_flag:false)
     @vendors = @order.order_materials.map{|om|[om.material.vendor.company_name,om.material.vendor.id]}.uniq
     if @order.save
       redirect_to "/orders/#{@order.id}"
@@ -242,15 +242,15 @@ class OrdersController < ApplicationController
   end
 
 
-  def get_bento_id
-    @product = Product.find_by(bento_id: params[:bento_id])
+  def get_management_id
+    @product = Product.find_by(management_id: params[:management_id])
     respond_to do |format|
       format.html
       format.json{render :json => @product}
     end
   end
 
-  def check_bento_id
+  def check_management_id
     @product = Product.find(params[:id])
     respond_to do |format|
       format.html

@@ -3,7 +3,7 @@
     td.col-md-1.row_order
       = f.number_field :row_order, class: 'form-control',readonly:true
     td.col-md-2
-      = Product.find(f.object.product_id).bento_id
+      = Product.find(f.object.product_id).management_id
     td.col-md-3
       = Product.find(f.object.product_id).name
     td.col-md-2
@@ -15,7 +15,7 @@
     td.col-md-1.row_order
       = f.number_field :row_order, class: 'form-control',readonly:true
     td.col-md-2
-      = text_field_tag :bento_id, params[:bento_id], class:"make_dailymenu_bento_id_search form-control",style:"width:100%"
+      = text_field_tag :management_id, params[:management_id], class:"make_dailymenu_management_id_search form-control",style:"width:100%"
     td.col-md-3
       = f.collection_select :product_id, @products, :id, :name, {include_blank:true},class:'form-control product_select input_select_product'
     td.col-md-2

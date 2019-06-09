@@ -17,7 +17,7 @@
       = f.text_field :short_name,class:"form-control"
 
     .col-md-12.form-group
-      - if @product.bento_id.present?
+      - if @product.management_id.present?
       - else
         .col-md-12
           .col-md-3.text-center
@@ -27,18 +27,18 @@
               |  ←販売が決定した弁当はチェックを付けて保存してください。 bentoID(メニューSSと連携ID)を発行します。(試作時は空欄)
     .col-md-12.form-group
       .col-md-4
-        = f.label :bento_id, "SS連携ID"
-        = number_field_tag("bento_id_hidden",@bento_id,style:"display:none;")
-        = f.number_field :bento_id, class:"bento_id form-control"
+        = f.label :management_id, "管理ID"
+        = number_field_tag("management_id_hidden",@management_id,style:"display:none;")
+        = f.number_field :management_id, class:"management_id form-control"
       .col-md-4
         = f.label :cook_category, "調理カテゴリー"
-        = f.select :cook_category, {'グリル': "グリル", 'コンロ': "コンロ", 'フライヤー': "フライヤー", '前日コンロ': "前日コンロ",'フライヤー・グリル': "フライヤー・グリル",'フライヤー・コンロ': "フライヤー・コンロ", 'グリル・コンロ': "グリルコンロ", '前日グリル': "前日グリル",'その他': "その他",'スチコン': "スチコン"},{include_blank: true},{class: "cook_category_choice form-control"}
+        = f.select :cook_category, options_for_select(Product.cook_categories.keys.to_a,@product.cook_category), {}, class: 'cook_category_choice form-control'
       .col-md-4
         = f.label :product_type, "弁当種類"
-        = f.select :product_type,{枡々: "枡々", W弁: "W弁",新ヘルシー: "新ヘルシー",デラックス: "デラックス", ヘルシー: "ヘルシー", ノーマル: "ノーマル", プレミアム: "プレミアム",ボウル: "ボウル", 麺: "麺", その他: "その他"}, {include_blank: true}, { class: "form-control"}
+        = f.select :product_type, options_for_select(Product.product_types.keys.to_a, @product.product_type), {include_blank:true}, class: 'form-control'
     .col-md-12.form-group
-      = f.label :masu_obi_url, "枡々の帯"
-      = f.text_field :masu_obi_url, class:"form-control"
+      = f.label :obi_url, "枡々の帯"
+      = f.text_field :obi_url, class:"form-control"
 
     .col-md-12.form-group
       = f.label :description, "説明文"
@@ -70,15 +70,15 @@
         .total_calorie
           = "#{MenuMaterial.where(menu_id:@product.menus.ids).sum(:calorie).round(2)} kcal"
   .col-md-5
-    = f.label :product_image, "写真"
-    = f.file_field :product_image
-    = f.hidden_field :product_image_cache
+    = f.label :image, "写真"
+    = f.file_field :image
+    = f.hidden_field :image_cache
     .form-group
-      - if @product.product_image?
-        = image_tag @product.product_image.to_s,class:"img-responsive",style:'max-height:450px;'
+      - if @product.image?
+        = image_tag @product.image.to_s,class:"img-responsive",style:'max-height:450px;'
         div
-          = f.label :remove_product_image,"削除する"
-          = f.check_box :remove_product_image
+          = f.label :remove_image,"削除する"
+          = f.check_box :remove_image
   .menu-area.table-striped
     .col-md-12[style="margin-top:10px;"]
       label.col-md-1 カテゴリ

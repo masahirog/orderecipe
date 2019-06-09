@@ -40,12 +40,12 @@ $(document).on('turbolinks:load', function() {
   });
 
 
-  $(".order_bento_id_search").on("blur",function(){
-    var bento_id =  parseInt($(this).val());
+  $(".order_management_id_search").on("blur",function(){
+    var management_id =  parseInt($(this).val());
     var inp = $(this).parent().parent().find(".input_select_product")
     $.ajax({
-      url: "/orders/get_bento_id",
-      data: { bento_id : bento_id },
+      url: "/orders/get_management_id",
+      data: { management_id : management_id },
       dataType: "json",
       async: false
     })
@@ -61,17 +61,17 @@ $(document).on('turbolinks:load', function() {
 
   $(".input_select_product").on("change",function(){
     var id = $(this).val();
-    var inp_bentoid = $(this).parent().parent().find(".order_bento_id_search")
+    var inp_bentoid = $(this).parent().parent().find(".order_management_id_search")
     $.ajax({
-      url: "/orders/check_bento_id",
+      url: "/orders/check_management_id",
       data: { id : id },
       dataType: "json",
       async: false
     })
     .done(function(data){
       if (data) {
-        var bento_id = parseInt(data.bento_id)
-        inp_bentoid.val(bento_id);
+        var management_id = parseInt(data.management_id)
+        inp_bentoid.val(management_id);
       }else{
         inp_bentoid.val("");
       }

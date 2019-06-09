@@ -30,13 +30,13 @@ $(document).on('turbolinks:load', function() {
 
 
   //englishページ検索ajax
-  $(".bento_id_search_en").val("");
-  $(".bento_id_search_en").on("blur",function(){
-    var bento_id =  parseInt($(this).val());
+  $(".management_id_search_en").val("");
+  $(".management_id_search_en").on("blur",function(){
+    var management_id =  parseInt($(this).val());
     var inp = $(this).parent().parent().find(".input_select_product_en")
     $.ajax({
-      url: "/orders/get_bento_id",
-      data: { bento_id : bento_id },
+      url: "/orders/get_management_id",
+      data: { management_id : management_id },
       dataType: "json",
       async: false
     })
@@ -52,17 +52,17 @@ $(document).on('turbolinks:load', function() {
 
   $(".input_select_product_en").on("change",function(){
     var id = $(this).val();
-    var inp_bentoid = $(this).parent().parent().find(".bento_id_search_en")
+    var inp_bentoid = $(this).parent().parent().find(".management_id_search_en")
     $.ajax({
-      url: "/orders/check_bento_id",
+      url: "/orders/check_management_id",
       data: { id : id },
       dataType: "json",
       async: false
     })
     .done(function(data){
       if (data) {
-        var bento_id = parseInt(data.bento_id)
-        inp_bentoid.val(bento_id);
+        var management_id = parseInt(data.management_id)
+        inp_bentoid.val(management_id);
       }else{
         inp_bentoid.val("");
       }
@@ -74,11 +74,11 @@ $(document).on('turbolinks:load', function() {
   //bentoIDの発行
   $(".registration").on("change",function(){
     var prop = $('.registration').prop('checked');
-    var bento_id = $('#bento_id_hidden').val();
+    var management_id = $('#management_id_hidden').val();
     if (prop) {
-      $(".bento_id").val(bento_id);
+      $(".management_id").val(management_id);
     }else {
-      $(".bento_id").val("");
+      $(".management_id").val("");
       };
     });
 
@@ -164,7 +164,7 @@ $(document).on('turbolinks:load', function() {
       $.each(data, function(i){
         var li = '<tr class="products_li">'+
         '<td>'+
-          data[i].bento_id+
+          data[i].management_id+
         '</td>'+
         '<td class="product_name">'+
         '<a href=/products/'+data[i].id+'>'+data[i].name+'</a>'+
@@ -173,7 +173,7 @@ $(document).on('turbolinks:load', function() {
          data[i].cook_category+
         '</td>'+
         '<td>'+
-         data[i].product_type+
+         data[i].type+
         '</td>'+
         '<td>'+
          data[i].sell_price+'円'+
@@ -194,7 +194,7 @@ $(document).on('turbolinks:load', function() {
         '<a class="btn btn-default" href=/products/'+data[i].id+'.csv>CSV</a>'+
         '</td>'+
         '<td class="col-md-1">'+
-        '<img src= '+data[i].product_image.thumb.url+'>' +
+        '<img src= '+data[i].image.thumb.url+'>' +
         '</td>'+
         '</tr>';
 

@@ -1,7 +1,0 @@
-class AddShortNameToProducts < ActiveRecord::Migration[4.2][5.2]
-  def change
-    add_column :products, :short_name, :string, unique: true
-    add_column :products, :masu_obi_url, :text
-  end
-end
-

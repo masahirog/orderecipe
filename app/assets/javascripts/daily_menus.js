@@ -39,12 +39,12 @@ $(document).on('turbolinks:load', function() {
     });
     $('.total_manufacturing_number').val(sum);
   }
-  $("#daily_menu_details_area").on("blur",'.make_dailymenu_bento_id_search',function(){
-    var bento_id =  parseInt($(this).val());
+  $("#daily_menu_details_area").on("blur",'.make_dailymenu_management_id_search',function(){
+    var management_id =  parseInt($(this).val());
     var inp = $(this).parent().parent().find(".input_select_product")
     $.ajax({
-      url: "/orders/get_bento_id",
-      data: { bento_id : bento_id },
+      url: "/orders/get_management_id",
+      data: { management_id : management_id },
       dataType: "json",
       async: false
     })

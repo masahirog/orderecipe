@@ -23,13 +23,13 @@
 
   .col-md-12.form-group
     .col-md-5
-      = f.label :end_of_sales, "販売ステータス"
-      = f.select :end_of_sales,[['販売中',0],['終売',1]],{}, class:"form-control"
+      = f.label :unused_flag, "販売ステータス"
+      = f.select :unused_flag,[['使用中',0],['使用停止',1]],{}, class:"form-control"
 
   .col-md-12.form-group
     .col-md-5
       = f.label :category, "カテゴリー"
-      = f.select :category, [["食材", "食材"], ["弁当備品", "弁当備品"], ["厨房備品", "厨房備品"],["弁当容器", "弁当容器"]],{}, { class: "form-control"}
+      = f.select :category, Material.categories.keys.to_a, {}, class: 'form-control'
   .col-md-12.form-group
     .col-md-5
       = f.label :vegetable_flag, "野菜フラグ(Dailyの'野菜多め'の計算に使用する)"

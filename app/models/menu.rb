@@ -17,6 +17,7 @@ class Menu < ApplicationRecord
   validates :food_label_name, presence: true, format: { with:/\A[^０-９ａ-ｚＡ-Ｚ]+\z/,
     message: "：全角英数字は使用出来ません。"}
 
+  enum category: {主食:1,主菜:2,副菜:3,容器:4}
   def self.search(params)
    if params
      data = Menu.order(id: "DESC").all

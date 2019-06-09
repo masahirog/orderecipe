@@ -16,7 +16,7 @@ ol.breadcrumb
     .col-md-2
       = text_field_tag :order_code, params[:order_code], class:"form-control",placeholder:'管理コード'
     .col-md-1
-      = select_tag :end_of_sales, options_for_select([["販売のみ", 0], ["終売のみ", 1]],params[:end_of_sales]), include_blank: true, class:"form-control"
+      = select_tag :unused_flag, options_for_select([["使用中", 0], ["使用停止", 1]],params[:unused_flag]), include_blank: true, class:"form-control"
 
     .kensaku.col-md-1
       label 　
@@ -48,8 +48,8 @@ table.table
         = material.calculated_unit
       td
         = material.vendor.company_name
-      td.end_of_sales
-        = "終売" if material.end_of_sales == 1
+      td.unused_flag
+        = "終売" if material.unused_flag == true
       td style="text-align:center;"
         = link_to '確認',include_material_materials_path(id:material.id),class:"btn btn-default btn-sm"
 - if @search.size == 0 then

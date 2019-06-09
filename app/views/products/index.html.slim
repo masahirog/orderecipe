@@ -7,13 +7,13 @@ ol.breadcrumb
     = link_to '新規作成',new_product_path,class:'btn btn-primary'
   = form_tag Product, :method => 'get' do
     .col-md-1
-      = text_field_tag :bento_id, params[:bento_id], class:"id_search form-control",style:"width:100%",placeholder:'bentoID'
+      = text_field_tag :management_id, params[:management_id], class:"id_search form-control",style:"width:100%",placeholder:'bentoID'
     .col-md-3
       = select_tag :name,options_for_select(Product.pluck(:name)),include_blank: true, class:"name_search form-control"
     .col-md-2
-      = select_tag :cook_category, options_for_select(Product.pluck(:cook_category).uniq.reject(&:blank?),params[:cook_category]), include_blank: true, class: "form-control",style:"width:100%"
+      = select_tag :cook_category, options_for_select(Product.cook_categories.keys.to_a,params[:cook_category]),include_blank:true, class: "form-control",style:"width:100%"
     .col-md-2
-      = select_tag :product_type, options_for_select(Product.pluck(:product_type).uniq.reject(&:blank?),params[:product_type]), include_blank: true, class: "form-control",style:"width:100%"
+      = select_tag :product_type, options_for_select(Product.product_types.keys.to_a,params[:product_type]),include_blank:true, class: "form-control",style:"width:100%"
     .col-md-2
       = select_tag :order,options_for_select([['原価高い順','cost_price DESC'],['原価低い順','cost_price ASC']],params[:order]), include_blank: true, class:"form-control",style:"width:150px;"
     .col-md-1
@@ -40,7 +40,7 @@ table.table
       tr.products_li
         td.product_id[style="display:none;"]
           = product.id
-        td = product.bento_id
+        td = product.management_id
         td.product_name = link_to "#{product.name}", "/products/#{product.id}/"
         td = product.cook_category
         td = product.product_type
@@ -50,7 +50,7 @@ table.table
         td = link_to "ラム", recipe_romaji_products_path(id:product.id), class:"btn btn-default",:target=>"_blank", style:"margin:0 0 0 10px;"
         td = link_to "帯作成", new_band_products_path(id:product.id,format:'pdf'), class:"btn btn-default",:target=>"_blank"
         td = link_to "CSV", product_path(product,format:'csv'), class: "btn btn-default"
-        td = image_tag product.product_image.thumb.url if product.product_image.present?
+        td = image_tag product.image.thumb.url if product.image.present?
 
 - if @search.size == 0 then
   | 該当するお弁当が存在しません

@@ -23,11 +23,11 @@ table.table
     - @products_num_h.each do |product_num|
       - product = Product.find(product_num[0])
       tr
-        td = product.bento_id
+        td = product.management_id
         td = product.name
         td = product.short_name
         td = product_num[1]
-        td = link_to "帯PDF",Product.find(product_num[0]).masu_obi_url,class:'btn btn-default',:target=>"_blank" if Product.find(product_num[0]).masu_obi_url
+        td = link_to "帯PDF",Product.find(product_num[0]).obi_url,class:'btn btn-default',:target=>"_blank" if Product.find(product_num[0]).obi_url
 
 h3 オーダー別製造数
 table.table

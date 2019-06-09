@@ -4,16 +4,16 @@ ol.breadcrumb
 = form_tag picture_book_products_path, :method => 'get', class:"form-group col-md-12" do
   .kensaku.col-md-1
     p bentoID▼
-    = text_field_tag :bento_id, params[:bento_id], class:"id_search form-control",style:"width:100%"
+    = text_field_tag :management_id, params[:management_id], class:"id_search form-control",style:"width:100%"
   .kensaku.col-md-3
     p お弁当名▼
     = select_tag :name, options_for_select(Product.pluck(:name).reject(&:blank?)),include_blank: true, class:"name_search form-control"
   .kensaku.col-md-2
     p 調理カテゴリー▼
-    = select_tag :cook_category, options_for_select(Product.pluck(:cook_category).uniq.reject(&:blank?)), include_blank: true, class: "form-control",style:"width:100%"
+    = select_tag :cook_category, Product.cook_categories.keys.to_a, {}, include_blank: true, class: "form-control",style:"width:100%"
   .kensaku.col-md-2
     p お弁当タイプ▼
-    = select_tag :product_type, options_for_select(Product.pluck(:product_type).uniq.reject(&:blank?)), include_blank: true, class: "form-control",style:"width:100%"
+    = select_tag :product_type, Product.product_types.keys.to_a, include_blank: true, class: "form-control",style:"width:100%"
   .kensaku.col-md-2
     p 並び替え▼
     = select_tag :order,options_for_select([['原価高い順','cost_price DESC'],['原価低い順','cost_price ASC']],params[:order]), include_blank: true, class:"form-control",style:"width:150px;"
@@ -28,8 +28,8 @@ ol.breadcrumb
     = link_to product_path(product) do
       div style='width:20%;float:left;padding:10px 5px;'
         .text-center style='width:100%;padding:5px 0;'
-          - if product.product_image.present?
-            = image_tag product.product_image.url,style:'max-height:160px;max-width: 100%;'
+          - if product.image.present?
+            = image_tag product.image.url,style:'max-height:160px;max-width: 100%;'
           - else
             = image_tag 'noimage.png',style:'max-height:160px;max-width: 100%;'
         .text-center style='width:100%;height:20px;white-space:nowrap;overflow: hidden;text-overflow:ellipsis;'

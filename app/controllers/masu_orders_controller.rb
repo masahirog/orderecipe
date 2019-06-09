@@ -56,7 +56,7 @@ class MasuOrdersController < ApplicationController
     end
   end
   def index
-    @products = Product.where(product_type:'枡々')
+    @products = Product.where(brand_id:11)
     @date_order_count = MasuOrder.where(canceled_flag:false).group('start_time').count
     @date_canceled_order_count = MasuOrder.where(canceled_flag:true).group('start_time').count
     @date_group = MasuOrderDetail.joins(:masu_order,:product).where(:masu_orders => {canceled_flag:false}).group('masu_orders.start_time').group('products.id').sum(:number)
@@ -92,17 +92,17 @@ class MasuOrdersController < ApplicationController
   end
 
   def new
-    @products = Product.where(product_type:'枡々')
+    @products = Product.where(brand_id:11)
     @masu_order = MasuOrder.new
     @masu_order.masu_order_details.build
   end
 
   def edit
-    @products = Product.where(product_type:'枡々')
+    @products = Product.where(brand_id:11)
   end
 
   def create
-    @products = Product.where(product_type:'枡々')
+    @products = Product.where(brand_id:11)
     if params['masu_order']["pick_time(4i)"]==''||params['masu_order']["pick_time(5i)"]==''
       @masu_order = MasuOrder.new(masu_order_picktimenone_params)
     else
@@ -116,7 +116,7 @@ class MasuOrdersController < ApplicationController
   end
 
   def update
-    @products = Product.where(product_type:'枡々')
+    @products = Product.where(brand_id:11)
     if params['masu_order']["pick_time(4i)"]==''||params['masu_order']["pick_time(5i)"]==''
       if @masu_order.update(masu_order_picktimenone_params)
         redirect_to date_masu_orders_path(date:@masu_order.start_time), notice: 'Masu order was successfully updated.'

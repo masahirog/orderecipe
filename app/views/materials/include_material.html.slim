@@ -8,7 +8,7 @@
   .col-md-12 style="padding:0 0 10px 0;"
     |▼チェックの付いたメニューの食材を一括変更する
   .col-md-4 style="padding:0px;"
-    = select :material_id,:material_id, Material.where(end_of_sales:0).pluck(:name, :id),{include_blank: true}, class:'all_select_material'
+    = select :material_id,:material_id, Material.where(unused_flag:false).pluck(:name, :id),{include_blank: true}, class:'all_select_material'
 = form_tag(:controller => "materials", :action => "include_update") do
   = hidden_field_tag "material_id",params[:id]
   .col-md-12

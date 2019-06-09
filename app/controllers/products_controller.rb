@@ -24,7 +24,7 @@ class ProductsController < ApplicationController
   end
 
   def get_products
-    @products = Product.where(['bento_id LIKE ?', "%#{params["id"]}%"]).limit(10)
+    @products = Product.where(['management_id LIKE ?', "%#{params["id"]}%"]).limit(10)
     respond_to do |format|
       format.html
       format.json { render 'index', json: @products }
@@ -47,9 +47,9 @@ class ProductsController < ApplicationController
       original_product = Product.includes(product_menus:[menu:[menu_materials:[:material]]]).find(params[:product_id])
       original_product.name = "#{original_product.name}のコピー"
       @product = original_product.deep_clone(include: [:product_menus])
-      flash.now[:notice] = "#{original_product.name}を複製しました。この商品を登録する前に、コピーした元の商品のbento_idを消してください。名前も変更してください。"
+      flash.now[:notice] = "#{original_product.name}を複製しました。この商品を登録する前に、コピーした元の商品のmanagement_idを消してください。名前も変更してください。"
     else
-      @bento_id = Product.bentoid()
+      @management_id = Product.bentoid()
       @product = Product.new
       @product.product_menus.build(row_order: 0)
     end
@@ -78,7 +78,7 @@ class ProductsController < ApplicationController
   end
 
   def edit
-    @bento_id = Product.bentoid()
+    @management_id = Product.bentoid()
     @product = Product.includes(:product_menus,{menus: [:menu_materials,:materials]}).find(params[:id])
     @product.product_menus.build  if @product.menus.length == 0
     @allergies = Product.allergy_seiri(@product)
@@ -236,8 +236,8 @@ class ProductsController < ApplicationController
   end
   private
     def product_create_update
-      params.require(:product).permit(:name,:memo, :bento_id, :cook_category,:short_name, :product_type, :sell_price, :description, :contents, :product_image,
-                      :masu_obi_url,:remove_product_image, :image_cache, :cost_price, product_menus_attributes: [:id, :product_id, :menu_id,:row_order, :_destroy,
-                      menu_attributes:[:name, ]])
+      params.require(:product).permit(:name,:memo, :management_id, :cook_category,:short_name, :product_type, :sell_price, :description, :contents, :image,:brand_id,
+                      :obi_url,:remove_image, :image_cache, :cost_price, product_menus_attributes: [:id, :product_id, :menu_id,:row_order, :_destroy,
+                      menu_attributes:[:name ]])
     end
 end

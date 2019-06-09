@@ -1,12 +1,12 @@
 class CreateOrderMaterials < ActiveRecord::Migration[4.2][5.0]
   def change
     create_table :order_materials do |t|
-      t.integer :order_id
-      t.integer :material_id
-      t.string :order_quantity
+      t.integer :order_id, null:false
+      t.integer :material_id, null:false
+      t.string :order_quantity, null:false,default:0
       t.float :calculated_quantity
       t.string :order_material_memo
-      t.string :delivery_date
+      t.date :delivery_date
       t.string :menu_name
       t.string :calculated_unit
       t.string :order_unit

@@ -14,7 +14,7 @@ h1 献立
       - daily_menu[0].daily_menu_details.each do |dmd|
         tr
           td style='font-size:11px;'
-            = dmd.product.bento_id
+            = dmd.product.management_id
           td style='font-size:11px;'
             = link_to dmd.product.name,product_path(dmd.product),:target=>"_blank"
           td.text-right style='font-size:11px;'

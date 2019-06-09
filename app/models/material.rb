@@ -11,7 +11,7 @@ class Material < ApplicationRecord
   accepts_nested_attributes_for :material_food_additives, allow_destroy: true, :reject_if => :reject_additives
 
   belongs_to :vendor
-  scope :mate_search, lambda { |query|  where(end_of_sales:0).where('name LIKE ?', "%#{query}%").limit(100)}
+  scope :mate_search, lambda { |query|  where(unused_flag:false).where('name LIKE ?', "%#{query}%").limit(100)}
   has_many :stocks
 
   belongs_to :storage_location
@@ -28,6 +28,8 @@ class Material < ApplicationRecord
   validates :cost_price, presence: true, numericality: true
   validates :vendor_id, presence: true
 
+  enum category: {食材:1,弁当備品:2,厨房備品:3,弁当容器:4}
+
   def self.search(params)
    if params
      data = Material.order(id: "DESC").all
@@ -35,7 +37,7 @@ class Material < ApplicationRecord
      data = data.where(['order_name LIKE ?', "%#{params["order_name"]}%"]) if params["order_name"].present?
      data = data.where(vendor_id: params["vendor_id"]) if params["vendor_id"].present?
      data = data.where(['order_code LIKE ?', "%#{params["order_code"]}%"]) if params["order_code"].present?
-     data = data.where(['end_of_sales LIKE ?', "%#{params["end_of_sales"]["value"]}%"]) if params["end_of_sales"].present?
+     data = data.where(['unused_flag LIKE ?', "%#{params["unused_flag"]["value"]}%"]) if params["unused_flag"].present?
      data = data.where(storage_location_id:params[:storage_location_id]) if params[:storage_location_id].present?
      data
    else

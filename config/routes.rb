@@ -62,8 +62,8 @@ Rails.application.routes.draw do
       get :products_pdfs
       get :products_pdfs_roma
       get :material_info
-      get :get_bento_id
-      get :check_bento_id
+      get :get_management_id
+      get :check_management_id
       get :print_all
     end
   end

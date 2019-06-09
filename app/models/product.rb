@@ -13,7 +13,7 @@ class Product < ApplicationRecord
   has_many :order_products, dependent: :destroy
   has_many :orders, through: :order_products
 
-  mount_uploader :product_image, ProductImageUploader
+  mount_uploader :image, ProductImageUploader
 
   validates :name, presence: true, uniqueness: true, format: { with: /\A[^０-９ａ-ｚＡ-Ｚ]+\z/,
     message: "：全角英数字は使用出来ません。"}
@@ -21,16 +21,19 @@ class Product < ApplicationRecord
   validates :product_type, presence: true
   validates :sell_price, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :cost_price, presence: true, numericality: true
-  validates :bento_id, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, :uniqueness => true, :allow_nil => true
+  validates :management_id, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, :uniqueness => true, :allow_nil => true
+
+  enum product_type: {ノーマル:1,デラックス:2,ヘルシー:3,ボウル:4,新ヘルシー:5,W弁:6,プレミアム:7}
+  enum cook_category: {その他:1,グリル:2,コンロ:3,フライヤー:4,グリルコンロ:5,スチコン:6,前日コンロ:7,グリルコンロ:8,前日グリル:9,フライヤー・コンロ:10,フライヤー・グリル:11}
 
   def view_name_and_id
-    self.bento_id.to_s + '｜' + self.name
+    self.management_id.to_s + '｜' + self.name
   end
 
   def self.search(params)
    if params
      data = Product.order(id: "DESC").all
-     data = data.where(['bento_id LIKE ?', "%#{params["bento_id"]}%"]) if params["bento_id"].present?
+     data = data.where(['management_id LIKE ?', "%#{params["management_id"]}%"]) if params["management_id"].present?
      data = data.where(cook_category: params["cook_category"]) if params["cook_category"].present?
      data = data.where(product_type: params["product_type"]) if params["product_type"].present?
      data = data.where(['name LIKE ?', "%#{params["name"]}%"]) if params["name"].present?
@@ -41,7 +44,7 @@ class Product < ApplicationRecord
    end
   end
   def self.bentoid
-    max = Product.maximum(:bento_id)
+    max = Product.maximum(:management_id)
     if max.nil?
       data = 1
     else

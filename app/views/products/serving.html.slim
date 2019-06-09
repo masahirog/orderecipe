@@ -76,6 +76,5 @@ head
                     .form-group[style="display:none;padding:0;"]
                       = mm.material.order_unit
 
-      .product_image_l.col-md-4
-        = image_tag @product.product_image.to_s, class:"img-responsive"
-  
+      .image_l.col-md-4
+        = image_tag @product.image.to_s, class:"img-responsive"
