@@ -38,6 +38,17 @@ class MasuOrderLoadingSheetPdf < Prawn::Document
     end
     hash2 = {}
     masu_orders.each do |mo|
+      miso = ''
+      miso = mo.masu_order_details.find_by(product_id:3831).number if mo.masu_order_details.find_by(product_id:3831)
+      tea = ''
+      if mo.masu_order_details.find_by(product_id:3801)
+        tea = "缶：#{mo.masu_order_details.find_by(product_id:3801).number}"
+      elsif mo.masu_order_details.find_by(product_id:3791)
+        tea = "PET：#{mo.masu_order_details.find_by(product_id:3791).number}"
+      end
+      trash_bags = ''
+      trash_bags = mo.masu_order_details.find_by(product_id:3811).number if mo.masu_order_details.find_by(product_id:3811)
+
       if mo.payment == '請求書'
         seikyusho = "◯"
         ryoshusho = ""
