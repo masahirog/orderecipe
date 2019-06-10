@@ -18,7 +18,7 @@
           .col-md-2
             = "#{op.serving_for}食"
           .col-md-2
-            = "#{Date.parse(op.make_date).strftime("%Y年%-m月%-d日(#{%w(日 月 火 水 木 金 土)[Date.parse(op.make_date).wday]})")}"
+            = "#{op.make_date.strftime("%Y年%-m月%-d日(#{%w(日 月 火 水 木 金 土)[op.make_date.wday]})")}"
           .col-md-2
             = form_tag({:controller => "products", :action => "print", format: "pdf"},{:target => "_blank"}) do
               = number_field(:volume,:id,value:op.product_id,style:"display:none;")

@@ -73,7 +73,6 @@ class OrderPrintAll < Prawn::Document
   end
 
   def line_item_rows(arr,date)
-    date = DateTime.parse(date)
     data= [[{:content => "#{date.strftime("%Y年%-m月%-d日(#{%w(日 月 火 水 木 金 土)[date.wday]})")} 納品分",colspan:4}]]
     data<< ["管理コード","品名","数量","備考"]
     arr.each do |mtv|
