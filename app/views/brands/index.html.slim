@@ -1,0 +1,13 @@
+h1 ブランド一覧
+= link_to '新規作成', new_brand_path,class:'btn btn-primary'
+table.table
+  thead
+    tr
+      th ブランド名
+      th
+
+  tbody
+    - @brands.each do |brand|
+      tr
+        td = brand.name
+        td = link_to '編集', edit_brand_path(brand)

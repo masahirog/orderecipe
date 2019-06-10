@@ -88,4 +88,5 @@ Rails.application.routes.draw do
   end
   resources :storage_locations
   resources :kurumesi_mails
+  resources :brands
 end

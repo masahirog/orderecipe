@@ -23,15 +23,15 @@ ol.breadcrumb
 table.table
   thead
     tr
-      td bentoID
+      td 管理ID
       td 弁当名
-      td カテゴリ
+      td ブランド名
+      td 主調理工程
       td 弁当種類
       td 販売価格
       td 原価(税込)
       td 盛付カナ
       td レシピROMA
-      td Daily帯
       td csv
       td 画像
 
@@ -42,13 +42,13 @@ table.table
           = product.id
         td = product.management_id
         td.product_name = link_to "#{product.name}", "/products/#{product.id}/"
+        td = product.brand.name
         td = product.cook_category
         td = product.product_type
         td.text-right = "#{product.sell_price}円"
         td.price.text-right = "#{product.cost_price}円"
         td = link_to "盛付カナ", serving_kana_products_path(id:product.id), class:"btn btn-default",:target=>"_blank", style:"margin:0 0 0 10px;"
         td = link_to "ラム", recipe_romaji_products_path(id:product.id), class:"btn btn-default",:target=>"_blank", style:"margin:0 0 0 10px;"
-        td = link_to "帯作成", new_band_products_path(id:product.id,format:'pdf'), class:"btn btn-default",:target=>"_blank"
         td = link_to "CSV", product_path(product,format:'csv'), class: "btn btn-default"
         td = image_tag product.image.thumb.url if product.image.present?
 

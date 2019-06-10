@@ -5,5 +5,25 @@
       ul
         - @kurumesi_mail.errors.full_messages.each do |message|
           li = message
+  .actions
+    = f.submit '登録する',class:'btn btn-success'
+  .form-group
+    = f.label :masu_order_id, "枡々オーダーID"
+    = f.text_field :masu_order_id, class:"form-control"
+  .form-group
+    = f.label :masu_order_reflect_flag, "枡々オーダー連携ステータス"
+    = f.select :masu_order_reflect_flag,[['反映成功',true],['反映失敗',false]],{}, class:"form-control"
 
-  .actions = f.submit
+  .form-group
+    = f.label :summary, "概要"
+    = f.select :summary, options_for_select(KurumesiMail.summaries.keys.to_a,@kurumesi_mail.summary),{}, { class: "form-control",readonly:true}
+  .form-group
+    = f.label :recieved_datetime, "メール受信日時"
+    = f.text_field :recieved_datetime, class:"form-control",readonly:true
+
+  .form-group
+    = f.label :subject, "タイトル"
+    = f.text_field :subject, class:"form-control",readonly:true
+  .form-group
+    = f.label :body, "本文"
+    = f.text_area :body, class:"form-control",readonly:true,rows: 20

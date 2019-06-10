@@ -10,6 +10,11 @@
             = message
   .col-md-7
     .col-md-12.form-group
+      = f.label :brand_id, "ブランド"
+      = f.collection_select :brand_id, Brand.all, :id, :name, {}, { class: "form-control"}
+
+
+    .col-md-12.form-group
       = f.label :name, "弁当名"
       = f.text_field :name, id: "menu_search", class:"name form-control"
     .col-md-12.form-group
