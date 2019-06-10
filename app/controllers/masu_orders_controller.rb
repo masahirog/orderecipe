@@ -64,8 +64,8 @@ class MasuOrdersController < ApplicationController
     @products = Product.where(brand_id:11)
     @date_order_count = MasuOrder.where(canceled_flag:false).group('start_time').count
     @date_canceled_order_count = MasuOrder.where(canceled_flag:true).group('start_time').count
-    @date_group = MasuOrderDetail.joins(:masu_order,:product).where(:masu_orders => {canceled_flag:false}).where(:products => {product_type:1}).group('masu_orders.start_time').group('products.id').sum(:number)
-    @date_sum = MasuOrderDetail.joins(:masu_order,:product).where(:masu_orders => {canceled_flag:false}).group('masu_orders.start_time').sum(:number)
+    @date_group = MasuOrderDetail.joins(:masu_order,:product).where(:masu_orders => {canceled_flag:false}).where(:products => {product_category:1}).group('masu_orders.start_time').group('products.id').sum(:number)
+    @date_sum = MasuOrderDetail.joins(:masu_order,:product).where(:masu_orders => {canceled_flag:false}).where(:products => {product_category:1}).group('masu_orders.start_time').sum(:number)
   end
 
   def date
