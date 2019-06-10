@@ -1,5 +1,5 @@
 class MasuOrderManufacturingSheetPdf < Prawn::Document
-  def initialize(products_num_h,date,masu_orders)
+  def initialize(bentos_num_h,date,masu_orders,masu_orders_num_h)
     # 初期設定。ここでは用紙のサイズを指定している。
     super(
       page_size: 'A4',
@@ -10,16 +10,16 @@ class MasuOrderManufacturingSheetPdf < Prawn::Document
     font "vendor/assets/fonts/ipaexm.ttf"
     masu_orders_arr = masu_orders.each_slice(6).to_a
     masu_orders_arr.each_with_index do |moa,i|
-      table_content(products_num_h,date,moa,i)
+      table_content(bentos_num_h,date,moa,i,masu_orders_num_h)
       start_new_page unless i + 1 == masu_orders_arr.length
     end
   end
 
-  def table_content(products_num_h,date,moa,i)
+  def table_content(bentos_num_h,date,moa,i,masu_orders_num_h)
     bounding_box([20, 550], :width => 780) do
       text "発行時間：#{Time.now.strftime("%Y年 %m月 %d日　%H:%M")}　　No.#{i + 1}",size:10,:align=>:right
       move_down 10
-      table line_item_rows2(products_num_h,date,moa) do
+      table line_item_rows2(bentos_num_h,date,moa,masu_orders_num_h) do
         row(0..2).background_color = 'f5f5f5'
         cells.padding = 6
         cells.size = 10
@@ -38,8 +38,8 @@ class MasuOrderManufacturingSheetPdf < Prawn::Document
     end
   end
 
-  def line_item_rows2(products_num_h,date,moa)
-    total = products_num_h.values.inject(:+)
+  def line_item_rows2(bentos_num_h,date,moa,masu_orders_num_h)
+    total = bentos_num_h.values.inject(:+)
     hash = {}
     moa_ids = moa.map{|mo|mo.id}
     MasuOrderDetail.where(masu_order_id:moa_ids).each do |mso|
@@ -56,7 +56,7 @@ class MasuOrderManufacturingSheetPdf < Prawn::Document
       end
     end
     data << ["","ピックアップ",'▼合計'].push(pick_arr).flatten!
-    products_num_h.each do |pnh|
+    bentos_num_h.each do |pnh|
       product_id = pnh[0]
       number = pnh[1]
       product = Product.find(product_id)
@@ -68,7 +68,7 @@ class MasuOrderManufacturingSheetPdf < Prawn::Document
     end
     total_num = ['','合計',total]
     moa.each do |masu_order|
-      total_num.push(masu_order.number)
+      total_num.push(masu_orders_num_h[masu_order.id])
     end
     data << total_num
     data

@@ -20,14 +20,14 @@ table.table
       th 個数
       th 帯URL
   tbody
-    - @products_num_h.each do |product_num|
+    - @bentos_num_h.each do |product_num|
       - product = Product.find(product_num[0])
       tr
         td = product.management_id
         td = product.name
         td = product.short_name
         td = product_num[1]
-        td = link_to "帯PDF",Product.find(product_num[0]).obi_url,class:'btn btn-default',:target=>"_blank" if Product.find(product_num[0]).obi_url
+        td = link_to "帯PDF",Product.find(product_num[0]).obi_url,class:'btn btn-default',:target=>"_blank" if Product.find(product_num[0]).obi_url.present?
 
 h3 オーダー別製造数
 table.table
@@ -36,7 +36,7 @@ table.table
       th.col-md-1 くるめしID
       th.col-md-1 メール確認
       th.col-md-1 ピック時間
-      th.col-md-1 合計個数
+      th.col-md-1 弁当個数
       th.col-md-1 支払い方法
       th オーダー内容
   tbody
@@ -45,7 +45,7 @@ table.table
         td = link_to masu_order.kurumesi_order_id,edit_masu_order_path(masu_order)
         td = link_to 'メール',kurumesi_mails_path(masu_order_id:masu_order.id)
         td = masu_order.pick_time.strftime("%R") if masu_order.pick_time
-        td = "#{masu_order.number} 個"
+        td = "#{@masu_orders_num_h[masu_order.id]} 個"
         td = masu_order.payment
         td
           ul.list-group

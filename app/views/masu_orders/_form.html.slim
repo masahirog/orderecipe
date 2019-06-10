@@ -35,11 +35,6 @@
         |クレカ　
         = f.radio_button :payment,:クレジットカード
 
-  .form-group.required.col-md-12
-    = f.label :number,"合計個数", class: 'col-md-2 control-label text-right'
-    .col-md-10
-      = f.number_field :number, class: 'col-md-10 form-control masu_order_sum_number',readonly:true,style:'width:440px;'
-
   table.table.table-list.cocoon_are
     thead
       tr

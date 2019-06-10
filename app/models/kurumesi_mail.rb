@@ -141,7 +141,6 @@ class KurumesiMail < ApplicationRecord
     @masu_order.start_time = order_info_from_mail[:delivery_date]
     @masu_order.kurumesi_order_id = order_info_from_mail[:kurumesi_order_id]
     @masu_order.payment = order_info_from_mail[:pay]
-    @masu_order.number = order_info_from_mail[:order_details].sum { |hash| hash[:num]}
     order_info_from_mail[:order_details].each do |od|
       @masu_order.masu_order_details.build(product_id:od[:product_id],number:od[:num])
     end
@@ -158,7 +157,6 @@ class KurumesiMail < ApplicationRecord
     end
     @masu_order.start_time = order_info_from_mail[:delivery_date]
     @masu_order.payment = order_info_from_mail[:pay]
-    @masu_order.number = order_info_from_mail[:order_details].sum { |hash| hash[:num]}
     order_info_from_mail[:order_details].each do |od|
       @masu_order.masu_order_details.build(product_id:od[:product_id],number:od[:num])
     end

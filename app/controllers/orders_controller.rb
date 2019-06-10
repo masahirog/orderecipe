@@ -75,8 +75,8 @@ class OrdersController < ApplicationController
     elsif params[:masu_order_date]
       order_products = []
       masu_orders = MasuOrder.where(start_time:params[:masu_order_date],canceled_flag:false)
-      products_num_h = masu_orders.joins(:masu_order_details).group('masu_order_details.product_id').sum('masu_order_details.number')
-      products_num_h.each do |aa|
+      bentos_num_h = masu_orders.joins(:masu_order_details).group('masu_order_details.product_id').sum('masu_order_details.number')
+      bentos_num_h.each do |aa|
         hash = {}
         hash[:product_id] = aa[0]
         hash[:num] = aa[1]

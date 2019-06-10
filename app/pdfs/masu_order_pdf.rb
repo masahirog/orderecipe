@@ -1,5 +1,5 @@
 class MasuOrderPdf < Prawn::Document
-  def initialize(products_num_h,date,mochiba)
+  def initialize(bentos_num_h,date,mochiba)
     # 初期設定。ここでは用紙のサイズを指定している。
     super(
       page_size: 'A4',
@@ -11,7 +11,7 @@ class MasuOrderPdf < Prawn::Document
 
     menus = []
     products_arr = []
-    products_num_h.each do |prnm|
+    bentos_num_h.each do |prnm|
       product = Product.find(prnm[0])
       num = prnm[1]
       products_arr << [product.name,prnm[1]]

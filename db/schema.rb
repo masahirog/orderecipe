@@ -91,7 +91,6 @@ ActiveRecord::Schema.define(version: 2019_06_09_075833) do
   end
 
   create_table "masu_orders", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "number", default: 0, null: false
     t.date "start_time", null: false
     t.integer "kurumesi_order_id", null: false
     t.time "pick_time"
@@ -229,6 +228,7 @@ ActiveRecord::Schema.define(version: 2019_06_09_075833) do
     t.string "short_name"
     t.text "obi_url"
     t.integer "brand_id"
+    t.integer "product_category", default: 1, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

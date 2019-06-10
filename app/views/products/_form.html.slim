@@ -15,32 +15,26 @@
 
 
     .col-md-12.form-group
-      = f.label :name, "弁当名"
+      = f.label :name, "商品名"
       = f.text_field :name, id: "menu_search", class:"name form-control"
     .col-md-12.form-group
       = f.label :short_name, "短縮名"
       = f.text_field :short_name,class:"form-control"
+    .col-md-12.form-group
+      = f.label :management_id, "管理ID（各ブランドの商品ID）"
+      = f.number_field :management_id, class:"management_id form-control"
 
     .col-md-12.form-group
-      - if @product.management_id.present?
-      - else
-        .col-md-12
-          .col-md-3.text-center
-            input.registration[type="checkbox" style="width: 24px; height: 24px;"]
-          .col-md-9
-            strong
-              |  ←販売が決定した弁当はチェックを付けて保存してください。 bentoID(メニューSSと連携ID)を発行します。(試作時は空欄)
-    .col-md-12.form-group
       .col-md-4
-        = f.label :management_id, "管理ID"
-        = number_field_tag("management_id_hidden",@management_id,style:"display:none;")
-        = f.number_field :management_id, class:"management_id form-control"
-      .col-md-4
-        = f.label :cook_category, "調理カテゴリー"
-        = f.select :cook_category, options_for_select(Product.cook_categories.keys.to_a,@product.cook_category), {}, class: 'cook_category_choice form-control'
+        = f.label :product_category, "商品カテゴリー"
+        = f.select :product_category, options_for_select(Product.product_categories.keys.to_a,@product.product_category), {}, class: 'form-control'
       .col-md-4
         = f.label :product_type, "弁当種類"
         = f.select :product_type, options_for_select(Product.product_types.keys.to_a, @product.product_type), {include_blank:true}, class: 'form-control'
+      .col-md-4
+        = f.label :cook_category, "調理カテゴリー"
+        = f.select :cook_category, options_for_select(Product.cook_categories.keys.to_a,@product.cook_category), {}, class: 'cook_category_choice form-control'
+
     .col-md-12.form-group
       = f.label :obi_url, "枡々の帯"
       = f.text_field :obi_url, class:"form-control"
@@ -63,7 +57,7 @@
             .form-group
               |  円
       .col-md-5
-        = f.label :cost_price, "弁当原価（税込み）"
+        = f.label :cost_price, "商品原価（税込み）"
         .form-inline
           .form-group
             = f.number_field :cost_price, :readonly => 'readonly', class:"product_cost_price form-control text-right"

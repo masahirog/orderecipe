@@ -72,15 +72,15 @@ $(document).on('turbolinks:load', function() {
 
 
   //bentoIDの発行
-  $(".registration").on("change",function(){
-    var prop = $('.registration').prop('checked');
-    var management_id = $('#management_id_hidden').val();
-    if (prop) {
-      $(".management_id").val(management_id);
-    }else {
-      $(".management_id").val("");
-      };
-    });
+  // $(".registration").on("change",function(){
+  //   var prop = $('.registration').prop('checked');
+  //   var management_id = $('#management_id_hidden').val();
+  //   if (prop) {
+  //     $(".management_id").val(management_id);
+  //   }else {
+  //     $(".management_id").val("");
+  //     };
+  //   });
 
 
 

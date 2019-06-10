@@ -4,11 +4,13 @@ class MasuOrdersController < ApplicationController
   def manufacturing_sheet
     date = params[:date]
     @masu_orders = MasuOrder.includes(masu_order_details:[:product]).where(start_time:date,canceled_flag:false).order(:pick_time)
-    @products_num_h = @masu_orders.joins(:masu_order_details).group('masu_order_details.product_id').sum('masu_order_details.number')
+    # @bentos_num_h = @masu_orders.joins(:masu_order_details).group('masu_order_details.product_id').sum('masu_order_details.number')
+    @bentos_num_h = @masu_orders.joins(masu_order_details:[:product]).where(:products => {product_category:1}).group('masu_order_details.product_id').sum('masu_order_details.number')
+    @masu_orders_num_h = @masu_orders.joins(masu_order_details:[:product]).where(:products => {product_category:1}).group('masu_order_details.masu_order_id').sum('masu_order_details.number')
     respond_to do |format|
       format.html
       format.pdf do
-        pdf = MasuOrderManufacturingSheetPdf.new(@products_num_h,date,@masu_orders)
+        pdf = MasuOrderManufacturingSheetPdf.new(@bentos_num_h,date,@masu_orders,@masu_orders_num_h)
         pdf.font "vendor/assets/fonts/ipaexm.ttf"
         send_data pdf.render,
         filename:    "#{date}.pdf",
@@ -20,11 +22,14 @@ class MasuOrdersController < ApplicationController
   def loading_sheet
     date = params[:date]
     @masu_orders = MasuOrder.includes(masu_order_details:[:product]).where(start_time:date,canceled_flag:false).order(:pick_time)
-    @products_num_h = @masu_orders.joins(:masu_order_details).group('masu_order_details.product_id').sum('masu_order_details.number')
+    # @bentos_num_h = @masu_orders.joins(masu_order_details:[:product]).where(:products => {product_category:1}).group('masu_order_details.product_id').sum('masu_order_details.number')
+    @masu_orders_num_h = @masu_orders.joins(masu_order_details:[:product]).where(:products => {product_category:1}).group('masu_order_details.masu_order_id').sum('masu_order_details.number')
+    @products_num_h = @masu_orders.joins(masu_order_details:[:product]).group('masu_order_details.product_id').sum('masu_order_details.number')
+    # @masu_order_details = MasuOrderDetail.joins(masu_order:[:product]).where(:masu_orders => {id:@masu_orders.ids}).order('product.product_category')
     respond_to do |format|
       format.html
       format.pdf do
-        pdf = MasuOrderLoadingSheetPdf.new(@products_num_h,date,@masu_orders)
+        pdf = MasuOrderLoadingSheetPdf.new(date,@masu_orders,@masu_orders_num_h,@products_num_h)
         pdf.font "vendor/assets/fonts/ipaexm.ttf"
         send_data pdf.render,
         filename:    "#{date}.pdf",
@@ -67,7 +72,8 @@ class MasuOrdersController < ApplicationController
     date = params[:date]
     @masu_orders = MasuOrder.includes(masu_order_details:[:product]).where(start_time:date,canceled_flag:false).order(:pick_time)
     @canceled_masu_orders = MasuOrder.includes(masu_order_details:[:product]).where(start_time:date,canceled_flag:true).order(:pick_time)
-    @products_num_h = @masu_orders.joins(:masu_order_details).group('masu_order_details.product_id').sum('masu_order_details.number')
+    @bentos_num_h = @masu_orders.joins(masu_order_details:[:product]).where(:products => {product_category:1}).group('masu_order_details.product_id').sum('masu_order_details.number')
+    @masu_orders_num_h = @masu_orders.joins(masu_order_details:[:product]).where(:products => {product_category:1}).group('masu_order_details.masu_order_id').sum('masu_order_details.number')
   end
   def show
     @masu_order = MasuOrder.includes(masu_order_details:[:product]).find(params[:id])
@@ -77,11 +83,11 @@ class MasuOrdersController < ApplicationController
     mochiba = params[:mochiba]
     date = params[:date]
     masu_orders = MasuOrder.includes(masu_order_details:[:product]).where(start_time:date,canceled_flag:false).order(:pick_time)
-    @products_num_h = masu_orders.joins(:masu_order_details).group('masu_order_details.product_id').sum('masu_order_details.number')
+    @bentos_num_h = masu_orders.joins(masu_order_details:[:product]).where(:products => {product_category:1}).group('masu_order_details.product_id').sum('masu_order_details.number')
     respond_to do |format|
       format.html
       format.pdf do
-        pdf = MasuOrderPdf.new(@products_num_h,date,mochiba)
+        pdf = MasuOrderPdf.new(@bentos_num_h,date,mochiba)
         pdf.font "vendor/assets/fonts/ipaexm.ttf"
         send_data pdf.render,
         filename:    "#{date}.pdf",
@@ -146,12 +152,12 @@ class MasuOrdersController < ApplicationController
     end
 
     def masu_order_picktimenone_params
-      params.require(:masu_order).permit(:start_time,:number,:kurumesi_order_id,:canceled_flag,:payment,
+      params.require(:masu_order).permit(:start_time,:kurumesi_order_id,:canceled_flag,:payment,
         masu_order_details_attributes: [:id,:masu_order_id,:product_id,:number,:_destroy])
     end
 
     def masu_order_params
-      params.require(:masu_order).permit(:start_time,:number,:kurumesi_order_id,:pick_time,:canceled_flag,:payment,
+      params.require(:masu_order).permit(:start_time,:kurumesi_order_id,:pick_time,:canceled_flag,:payment,
         masu_order_details_attributes: [:id,:masu_order_id,:product_id,:number,:_destroy])
     end
 end
