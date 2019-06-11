@@ -77,6 +77,9 @@ class KurumesiMail < ApplicationRecord
         end
       end
     end
+    user = User.find(1)
+    now = Time.now
+    user.update(last_mail_check:now)
   end
 
 

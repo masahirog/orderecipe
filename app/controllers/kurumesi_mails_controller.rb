@@ -2,7 +2,7 @@ class KurumesiMailsController < ApplicationController
   before_action :set_kurumesi_mail, only: [:show, :edit, :update, :destroy]
 
   def index
-    @kurumesi_mails = KurumesiMail.search(params).order('recieved_datetime DESC').all
+    @kurumesi_mails = KurumesiMail.includes(:masu_order).search(params).order('recieved_datetime DESC').all
 
   end
 

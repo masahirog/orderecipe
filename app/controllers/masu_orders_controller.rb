@@ -97,6 +97,23 @@ class MasuOrdersController < ApplicationController
     end
   end
 
+  def material_preparation
+    mochiba = params[:mochiba]
+    date = params[:date]
+    masu_orders = MasuOrder.includes(masu_order_details:[:product]).where(start_time:date,canceled_flag:false).order(:pick_time)
+    @bentos_num_h = masu_orders.joins(masu_order_details:[:product]).where(:products => {product_category:1}).group('masu_order_details.product_id').sum('masu_order_details.number')
+    respond_to do |format|
+      format.html
+      format.pdf do
+        pdf = MaterialPreparation.new(@bentos_num_h,date,mochiba)
+        pdf.font "vendor/assets/fonts/ipaexm.ttf"
+        send_data pdf.render,
+        filename:    "#{date}.pdf",
+        type:        "application/pdf",
+        disposition: "inline"
+      end
+    end
+  end
   def new
     @products = Product.where(brand_id:11)
     @masu_order = MasuOrder.new

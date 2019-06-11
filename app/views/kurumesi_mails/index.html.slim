@@ -1,4 +1,6 @@
 h3 くるめしメール
+span
+  = "直近確認日時：#{current_user.last_mail_check.strftime("%Y年 %m月 %d日　%H:%M")}"
 table.table
   thead
     tr

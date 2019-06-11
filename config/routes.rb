@@ -20,6 +20,7 @@ Rails.application.routes.draw do
       post :print_receipt
       get :manufacturing_sheet
       get :loading_sheet
+      get :material_preparation
     end
   end
   resources :menus do
