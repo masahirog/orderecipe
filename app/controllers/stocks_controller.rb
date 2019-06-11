@@ -13,10 +13,10 @@ class StocksController < ApplicationController
     end
     @materials.each do |material|
       if stocks[material.id].present?
-        used_amount = stocks[material.id][0]
-        delivery_amount = stocks[material.id][1]
-        start_day_stock = stocks[material.id][3]
-        end_day_stock = stocks[material.id][4]
+        used_amount = "- #{(stocks[material.id][0]).round(1)} #{material.order_unit}"
+        delivery_amount = "+ #{(stocks[material.id][1]).round(1)} #{material.order_unit}"
+        start_day_stock = "#{(stocks[material.id][2]).round(1)} #{material.order_unit}"
+        end_day_stock = "#{(stocks[material.id][3]).round(1)} #{material.order_unit}"
       else
         used_amount = ""
         delivery_amount = ""
@@ -156,6 +156,10 @@ class StocksController < ApplicationController
         disposition: "inline"
       end
     end
+  end
+
+  def history
+    material_id = params[:material_id]
   end
 
   private

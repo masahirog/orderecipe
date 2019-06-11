@@ -16,26 +16,26 @@ table.table
     tr
       th 保管
       th 食材名
-      th 食材名
-      th 使用量
-      th 納品量
-      th 在庫（日初時）
-      th 在庫（日終時）
+      th 業者名
+      th.text-right 在庫（日初時）
+      th.text-right 使用量
+      th.text-right 納品量
+      th.text-right 在庫（日終時）
   tbody
     - @materials_inventory.each do |mi|
       tr
         td
           = mi[1]
         td
-          = mi[2]
+          = link_to mi[2],material_path(mi[0])
         td
           = mi[3]
-        td
-          = mi[4]
-        td
-          = mi[5]
-        td
+        td.text-right
           = mi[6]
-        td
+        td.text-right
+          = mi[4]
+        td.text-right
+          = mi[5]
+        td.text-right
           = mi[7]
 = paginate @materials
