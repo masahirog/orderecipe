@@ -18,9 +18,9 @@ class MasuOrderManufacturingSheetPdf < Prawn::Document
   def table_content(bentos_num_h,date,moa,i,masu_orders_num_h)
     bounding_box([20, 550], :width => 780) do
       text "発行時間：#{Time.now.strftime("%Y年 %m月 %d日　%H:%M")}　　No.#{i + 1}",size:10,:align=>:right
-      move_down 10
+      move_down 5
       table line_item_rows2(bentos_num_h,date,moa,masu_orders_num_h) do
-        row(0..2).background_color = 'f5f5f5'
+        row(0..1).background_color = 'f5f5f5'
         cells.padding = 6
         cells.size = 10
         columns(0).size = 8

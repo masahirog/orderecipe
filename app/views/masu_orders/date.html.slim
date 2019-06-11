@@ -55,9 +55,9 @@ table.table
                 .col-md-2
                   = "#{mod.number} 食"
                 .col-md-3 style='font-weight:bold;'
-                  = link_to mod.product.short_name,mod.product
+                  = mod.product.short_name
                 .col-md-7 style='font-size:13px;'
-                  = link_to mod.product.name,mod.product
+                  = link_to "#{mod.product.management_id}｜#{mod.product.name}",mod.product
 - if @canceled_masu_orders.present?
   h3 キャンセルオーダー
   table.table
