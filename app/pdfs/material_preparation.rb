@@ -20,53 +20,37 @@ class MaterialPreparation < Prawn::Document
       product.menus.each do |menu|
         menu.menu_materials.each do |mm|
           if hash[[mm.id,mm.material_id]]
-            hash[[mm.id,mm.material_id]][1] += num
+            hash[[mm.id,mm.material_id]] = [mm,num + hash[[mm.id,mm.material_id]][1],hash[[mm.id,mm.material_id]][2] +"/"+ "#{product.short_name}:#{num}個"]
           else
-            hash[[mm.id,mm.material_id]] = [mm,num]
+            hash[[mm.id,mm.material_id]] = [mm,num,"#{product.short_name}:#{num}個"]
           end
         end
       end
     end
     hash.each do |key, value|
-      menu_materials_choriba_arr << [value[0],value[1]] if value[0].post == '調理場' || value[0].post == '切出/調理'
-      menu_materials_kiriba_arr << [value[0],value[1]] if value[0].post == '切出し' || value[0].post == '切出/スチコン' || value[0].post == '切出/調理'
+      menu_materials_choriba_arr << [value[0],value[1],value[2]] if value[0].post == '調理場' || value[0].post == '切出/調理'
+      menu_materials_kiriba_arr << [value[0],value[1],value[2]] if value[0].post == '切出し' || value[0].post == '切出/スチコン' || value[0].post == '切出/調理'
     end
     menu_materials_choriba_arr = menu_materials_choriba_arr.sort { |a, b| b[0].material_id <=> a[0].material_id }
     menu_materials_kiriba_arr = menu_materials_kiriba_arr.sort { |a, b| b[0].material_id <=> a[0].material_id }
-    arr = []
-    products_arr.each do |product_num|
-      arr << ["#{product_num[0]}","#{product_num[1]} 食"]
-    end
 
     if mochiba == 'choriba'
       text "調理場  #{date}"
       move_down 2
-      table(arr, :column_widths => [500, 100], :cell_style =>{:border_width =>0.1,size:9 })
-      move_down 1
       table_content(menu_materials_choriba_arr,'調理場')
     elsif mochiba == 'kiriba'
       text "切出し  #{date}"
       move_down 2
-      table(arr, :column_widths => [500, 100], :cell_style =>{:border_width =>0.1,size:9 })
-      move_down 1
       table_content(menu_materials_kiriba_arr,'切出し')
     else
       text "調理場  #{date}"
       move_down 2
-      arr = []
-      products_arr.each do |product_num|
-        arr << ["#{product_num[0]}","#{product_num[1]} 食"]
-      end
-      table(arr, :column_widths => [500, 100], :cell_style =>{:border_width =>0.1,size:9 })
-      move_down 1
       table_content(menu_materials_choriba_arr,'調理場')
 
       start_new_page
 
       text "切出し  #{date}"
       move_down 2
-      table(arr, :column_widths => [500, 100], :cell_style =>{:border_width =>0.1,size:9 })
-      move_down 1
       table_content(menu_materials_kiriba_arr,'切出し')
 
     end
@@ -81,16 +65,18 @@ class MaterialPreparation < Prawn::Document
       cells.border_width = 0.1
       cells.valign = :center
       column(2).align = :right
+      columns(7).size = 6
+      columns(6).size = 6
       row(0).column(2).align = :left
       self.header = true
-      self.column_widths = [150,80,60,30,60,200,150]
+      self.column_widths = [150,80,60,30,60,200,150,90]
     end
   end
 
   def line_item_rows(menu_materials_arr)
     data = [['食材名','保管場所',{:content => "分量", :colspan => 2},{:content => "仕込み", :colspan => 2},'メニュー名']]
     menu_materials_arr.each do |mma|
-        data << [mma[0].material.name,mma[0].material.storage_location.name,(mma[0].amount_used * mma[1]).round(1),mma[0].material.calculated_unit,mma[0].post,mma[0].preparation,mma[0].menu.name]
+        data << [mma[0].material.name,mma[0].material.storage_location.name,(mma[0].amount_used * mma[1]).round(1),mma[0].material.calculated_unit,mma[0].post,mma[0].preparation,mma[0].menu.name,mma[2]]
     end
     data
   end
