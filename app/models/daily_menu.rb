@@ -7,7 +7,8 @@ class DailyMenu < ApplicationRecord
 
   def input_stock
     #saveされたdailymenuの日付を取得
-    date = self.start_time - 1
-    Stock.calculate_stock(date)
+    date = self.start_time
+    previous_day = self.start_time - 1
+    Stock.calculate_stock(date,previous_day)
   end
 end
