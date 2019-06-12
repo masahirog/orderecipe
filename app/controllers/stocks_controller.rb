@@ -160,6 +160,8 @@ class StocksController < ApplicationController
 
   def history
     material_id = params[:material_id]
+    @stocks = Stock.where(material_id:material_id).order('date ASC')
+    @unit = Material.find(material_id).order_unit
   end
 
   private

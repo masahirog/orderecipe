@@ -21,6 +21,7 @@ table.table
       th.text-right 使用量
       th.text-right 納品量
       th.text-right 在庫（日終時）
+      th 履歴
   tbody
     - @materials_inventory.each do |mi|
       tr
@@ -38,4 +39,6 @@ table.table
           = mi[5]
         td.text-right
           = mi[7]
+        td
+          = link_to '変更履歴',history_stocks_path(material_id:mi[0])
 = paginate @materials
