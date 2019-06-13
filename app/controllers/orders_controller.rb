@@ -59,6 +59,7 @@ class OrdersController < ApplicationController
   end
 
   def new
+
     @arr = []
     @order = Order.new
     if params[:daily_menu_id]
@@ -135,6 +136,7 @@ class OrdersController < ApplicationController
       end
     end
     @prev_stocks = {}
+    @stock_hash = {}
     @b_hash.each do |key,value|
       value.each do |hash|
         calculated_quantity = hash['calculated_order_amount'].round(1)
@@ -157,6 +159,9 @@ class OrdersController < ApplicationController
         prev_stock = Stock.where("date < ?", sales_date).where(material_id:key).order("date DESC").first
         @prev_stocks[key] = prev_stock
       end
+      today = Date.today
+      @stocks = Stock.where(material_id:key,date:(today - 10)..(today + 10)).order('date ASC')
+      @stock_hash[key] = @stocks.map{|stock|["#{stock.date}　納品：#{stock.delivery_amount}#{stock.material.order_unit}　使用：#{stock.used_amount}#{stock.material.order_unit}　在庫：#{stock.end_day_stock}#{stock.material.order_unit}"]}
     end
     @materials = Material.where(unused_flag:false)
     @vendors = @order.order_materials.map{|om|[om.material.vendor.company_name,om.material.vendor.id]}.uniq

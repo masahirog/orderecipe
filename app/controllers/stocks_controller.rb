@@ -41,7 +41,7 @@ class StocksController < ApplicationController
     @stocks = Stock.where(date:date)
   end
   def edit
-    @stock = Stock.includes(stock_materials:[material:[:vendor]]).find(params[:id])
+    @stock = Stock.find(params[:id])
     @vendors = Vendor.all
   end
   def show
@@ -65,10 +65,15 @@ class StocksController < ApplicationController
 
 
   def update
-    @stock = Stock.includes(stock_materials:[:material]).find(params[:id])
+    @stock = Stock.find(params[:id])
     respond_to do |format|
       if @stock.update(stock_create_update)
-        format.html { redirect_to @stock, notice: '更新OK' }
+        if @stock.inventory_flag == true
+          update_stocks = []
+          Stock.change_stock(update_stocks,@stock.material_id,@stock.date,@stock.end_day_stock)
+          Stock.import update_stocks, on_duplicate_key_update:[:end_day_stock,:start_day_stock] if update_stocks.present?
+        end
+        format.html { redirect_to history_stocks_path(material_id:@stock.material_id), notice: '更新OK' }
         format.json { render :show, status: :ok, location: @stock }
       else
         format.html { render :edit }
@@ -160,13 +165,15 @@ class StocksController < ApplicationController
 
   def history
     material_id = params[:material_id]
-    @stocks = Stock.where(material_id:material_id).order('date ASC')
+    @material = Material.find(material_id)
+    today = Date.today
+    @stocks = Stock.where(material_id:material_id,date:(today - 10)..(today + 10)).order('date ASC')
     @unit = Material.find(material_id).order_unit
   end
 
   private
   def stock_create_update
-    params.require(:stock).permit(:date,stock_materials_attributes: [:id, :stock_id,:amount, :material_id, :_destroy])
+    params.require(:stock).permit(:date,:material_id,:start_day_stock,:end_day_stock,:used_amount,:delivery_amount,:inventory_flag)
   end
   def stocks_once_update_params
     params.require(:stock)

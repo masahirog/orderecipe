@@ -1,6 +1,42 @@
-= form_tag stocks_path, method: :put do
-   @stocks.each do |stock|
-    = fields_for "stocks[]", stock do |fs|
-      = fs.date_field :date
-      = fs.number_field :material_id
-  = submit_tag
+= form_for @stock do |f|
+  - if @stock.errors.any?
+    #error_explanation
+      h2 = "#{pluralize(@stock.errors.count, "error")} prohibited this brand from being saved:"
+      ul
+        - @stock.errors.full_messages.each do |message|
+          li = message
+
+  h2
+    = @stock.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@stock.date.wday]})")
+  table.table
+    thead
+      tr
+        th 保管
+        th 食材名
+        th 業者名
+        th 使用量
+        th 納品量
+        th 在庫（日初時）
+        th 棚卸しチェック
+        th 在庫（日終時）
+    tbody
+      tr
+        td
+          = @stock.material.storage_location.name
+        td
+          = @stock.material.name
+        td
+          = @stock.material.vendor.company_name
+        td
+          = @stock.used_amount
+        td
+          = @stock.delivery_amount
+        td
+          = @stock.start_day_stock
+        td
+          = f.check_box :inventory_flag, class:"form-control"
+        td
+          = f.text_field :end_day_stock, required: true, class:"form-control"
+
+  .actions
+    = f.submit '登録する',class:'btn btn-success'

@@ -33,6 +33,9 @@ tr.order_materials_tr.nested-fields
           = "#{(@prev_stocks[f.object.material_id].end_day_stock*f.object.material.calculated_value.to_i).floor.to_s(:delimited)}#{f.object.material.calculated_unit}（#{@prev_stocks[f.object.material_id].end_day_stock.floor(2)} #{f.object.material.order_unit}）"
         - else
           |0
+        - if f.object.material_id.present?
+          = link_to history_stocks_path(material_id:f.object.material_id),target:'_blank' do
+            span data-html="true" style='color:blue;margin-left:10px;' class="glyphicon glyphicon-new-window" aria-hidden="true"  data-toggle="tooltip" data-placement="top" title="#{@stock_hash[f.object.material_id].flatten.join('<br>')}"
   td.order_material_memo style='min-width:250px;'
     = f.text_field :order_material_memo,class:'form-control'
     div style="padding:3px 0 0 8px;color:#A9A9A9;font-size:10px;"
@@ -53,3 +56,7 @@ tr.order_materials_tr.nested-fields
 
   td.destroy_order_material.text-center
     = f.check_box :un_order_flag,class:"form-control destroy_order_materials check_box",style:" height:50px;margin:0;"
+
+sass:
+  .tooltip-inner
+    max-width: 400px
