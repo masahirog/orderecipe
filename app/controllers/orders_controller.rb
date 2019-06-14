@@ -161,7 +161,34 @@ class OrdersController < ApplicationController
       end
       today = Date.today
       @stocks = Stock.where(material_id:key,date:(today - 10)..(today + 10)).order('date ASC')
-      @stock_hash[key] = @stocks.map{|stock|["#{stock.date}　納品：#{stock.delivery_amount}#{stock.material.order_unit}　使用：#{stock.used_amount}#{stock.material.order_unit}　在庫：#{stock.end_day_stock}#{stock.material.order_unit}"]}
+      @stock_hash[key] = @stocks.map do |stock|
+        if stock.used_amount == 0
+          used_amount = "<td style='color:silver;'>0</td>"
+        else
+          used_amount = "<td style='color:red;'>- #{stock.used_amount.round(2)}#{stock.material.order_unit}</td>"
+        end
+        if stock.delivery_amount == 0
+          delivery_amount = "<td style='color:silver;'>0</td>"
+        else
+          delivery_amount = "<td style='color:blue;'>+ #{stock.delivery_amount.round(2)}#{stock.material.order_unit}</td>"
+        end
+        if stock.end_day_stock == 0
+          end_day_stock = "<td style='color:silver;'>0</td>"
+        else
+          end_day_stock = "<td style=''>#{stock.end_day_stock.round(2)}#{stock.material.order_unit}</td>"
+        end
+        if stock.inventory_flag == true
+          inventory = "<td><span class='label label-success'>棚卸し</span></td>"
+        else
+          inventory = "<td></td>"
+        end
+        if stock.date >= Date.today
+          ["<tr style='background-color:#ffebcd;'><td>#{stock.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[stock.date.wday]})")}</td>#{delivery_amount}#{used_amount}#{end_day_stock}#{inventory}</tr>"]
+        else
+          ["<tr><td>#{stock.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[stock.date.wday]})")}</td>#{delivery_amount}#{used_amount}#{end_day_stock}#{inventory}</tr>"]
+        end
+
+      end
     end
     @materials = Material.where(unused_flag:false)
     @vendors = @order.order_materials.map{|om|[om.material.vendor.company_name,om.material.vendor.id]}.uniq
