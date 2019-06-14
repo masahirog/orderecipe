@@ -8,6 +8,8 @@ class OrdersController < ApplicationController
   end
 
   def edit
+    today = Date.today
+    @stock_hash ={}
     @hash = {}
     @prev_stocks = {}
     @materials = Material.where(unused_flag:false)
@@ -29,6 +31,34 @@ class OrdersController < ApplicationController
         @hash.store(material[0],@hash[material[0]] + "、" + material[1])
       else
         @hash.store(material[0],material[1])
+      end
+      @stocks = Stock.where(material_id:material[0],date:(today - 5)..(today + 10)).order('date ASC')
+      @stock_hash[material[0]] = @stocks.map do |stock|
+        if stock.used_amount == 0
+          used_amount = "<td style='color:silver;'>0</td>"
+        else
+          used_amount = "<td style='color:red;'>- #{stock.used_amount.round(2)}#{stock.material.order_unit}</td>"
+        end
+        if stock.delivery_amount == 0
+          delivery_amount = "<td style='color:silver;'>0</td>"
+        else
+          delivery_amount = "<td style='color:blue;'>+ #{stock.delivery_amount.round(2)}#{stock.material.order_unit}</td>"
+        end
+        if stock.end_day_stock == 0
+          end_day_stock = "<td style='color:silver;'>0</td>"
+        else
+          end_day_stock = "<td style=''>#{stock.end_day_stock.round(2)}#{stock.material.order_unit}</td>"
+        end
+        if stock.inventory_flag == true
+          inventory = "<td><span class='label label-success'>棚卸し</span></td>"
+        else
+          inventory = "<td></td>"
+        end
+        if stock.date >= today
+          ["<tr style='background-color:#ffebcd;'><td>#{stock.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[stock.date.wday]})")}</td>#{delivery_amount}#{used_amount}#{end_day_stock}#{inventory}</tr>"]
+        else
+          ["<tr><td>#{stock.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[stock.date.wday]})")}</td>#{delivery_amount}#{used_amount}#{end_day_stock}#{inventory}</tr>"]
+        end
       end
     end
   end
@@ -160,7 +190,7 @@ class OrdersController < ApplicationController
         @prev_stocks[key] = prev_stock
       end
       today = Date.today
-      @stocks = Stock.where(material_id:key,date:(today - 10)..(today + 10)).order('date ASC')
+      @stocks = Stock.where(material_id:key,date:(today - 5)..(today + 10)).order('date ASC')
       @stock_hash[key] = @stocks.map do |stock|
         if stock.used_amount == 0
           used_amount = "<td style='color:silver;'>0</td>"
@@ -187,7 +217,6 @@ class OrdersController < ApplicationController
         else
           ["<tr><td>#{stock.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[stock.date.wday]})")}</td>#{delivery_amount}#{used_amount}#{end_day_stock}#{inventory}</tr>"]
         end
-
       end
     end
     @materials = Material.where(unused_flag:false)

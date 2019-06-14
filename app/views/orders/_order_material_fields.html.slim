@@ -35,7 +35,7 @@ tr.order_materials_tr.nested-fields
           |0
         - if f.object.material_id.present?
           = link_to history_stocks_path(material_id:f.object.material_id),target:'_blank',class:'stock-tooltip' do
-            span data-html="true" style='color:blue;margin-left:10px;' class="glyphicon glyphicon-new-window" aria-hidden="true"  data-toggle="tooltip" data-placement="top" title="<table class='table tooltip-table'><thead><tr><th style='text-align: center'>日付</th><th style='text-align: center'>納品</th><th style='text-align: center'>使用</th><th style='text-align: center'>在庫</th><th></th></tr></thead><tbody>#{@stock_hash[f.object.material_id].flatten.join('')}</tbody></table>"
+            span data-html="true" style='color:blue;margin-left:10px;' class="glyphicon glyphicon-new-window" aria-hidden="true"  data-toggle="tooltip" data-placement="#{position}" title="<table class='table tooltip-table'><thead><tr><th style='text-align: center'>日付</th><th style='text-align: center'>納品</th><th style='text-align: center'>使用</th><th style='text-align: center'>在庫</th><th></th></tr></thead><tbody>#{@stock_hash[f.object.material_id].flatten.join('')}</tbody></table>"
   td.order_material_memo style='min-width:250px;'
     = f.text_field :order_material_memo,class:'form-control'
     div style="padding:3px 0 0 8px;color:#A9A9A9;font-size:10px;"
