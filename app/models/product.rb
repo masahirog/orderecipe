@@ -45,6 +45,7 @@ class Product < ApplicationRecord
      data = Product.order(id: "DESC").all
    end
   end
+
   def self.bentoid
     max = Product.maximum(:management_id)
     if max.nil?
@@ -53,6 +54,7 @@ class Product < ApplicationRecord
       data = max + 1
     end
   end
+
   def self.allergy_seiri(product)
     arr=[]
     product.menus.each do |prme|
@@ -79,16 +81,20 @@ class Product < ApplicationRecord
     @brr = @brr.map{|br| FoodAdditive.find(br).name}
   end
 
+
   def self.make_katakana(kanji)
+    result = ''
     app_id = "6e84997fe5d4d3865152e765091fd0faab2f76bfe5dba29d638cc6683efa1184"
     header = {'Content-type'=>'application/json'}
     https = Net::HTTP.new('labs.goo.ne.jp', 443)
     https.use_ssl = true
     request_data = {'app_id'=>app_id, "sentence"=>kanji}.to_json
-
-    response = https.post('/api/morph', request_data, header)
-    if JSON.parse(response.body)["word_list"].present?
-      result = JSON.parse(response.body)["word_list"]
+    while result.blank? do
+      sleep(1)
+      response = https.post('/api/morph', request_data, header)
+      if JSON.parse(response.body)["word_list"].present?
+        result = JSON.parse(response.body)["word_list"]
+      end
     end
     @katakana = ''
     if result.present?
@@ -111,7 +117,7 @@ class Product < ApplicationRecord
           @katakana += ar[2]
         end
       end
-      @katakana = @katakana.split("^^")
+      @katakana = @katakana.split("^^", -1)
     end
   end
 end

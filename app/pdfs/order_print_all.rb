@@ -8,20 +8,20 @@ class OrderPrintAll < Prawn::Document
     vendor_ids.each_with_index do |vendor_id,i|
       company_name = Vendor.find(vendor_id).company_name
       oms = order_materials.joins(:material).where(:materials => {vendor_id:vendor_id})
-      header
-      header_lead(company_name)
-      header_adress
-      header_hello
       uniq_date = oms.pluck(:delivery_date).uniq
       uniq_date.each do |date|
         arr=[]
         oms.each do |om|
           arr << om if om.delivery_date == date
         end
+        header
+        header_lead(company_name)
+        header_adress
+        header_hello
         move_down 20
         table_content(arr,date)
+        start_new_page unless i + 1 == vendor_ids.length
       end
-      start_new_page unless i + 1 == vendor_ids.length
     end
   end
 

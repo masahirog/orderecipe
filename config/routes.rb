@@ -61,7 +61,6 @@ Rails.application.routes.draw do
       get :preparation_all
       get :monthly
       get :products_pdfs
-      get :products_pdfs_roma
       get :material_info
       get :get_management_id
       get :check_management_id

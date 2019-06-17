@@ -6,32 +6,17 @@ class ProductPdfAllRoma < Prawn::Document
       margin:10
     )
     font "vendor/assets/fonts/ipaexm.ttf"
-    if controller == 'daily_menus'
-      daily_menu = DailyMenu.find(id)
-      max_i = daily_menu.daily_menu_details.length
-      date = daily_menu.start_time
-      daily_menu.daily_menu_details.each_with_index do |dmd,i|
-        product = dmd.product
-        menus = product.menus
-        num = dmd.manufacturing_number
-        kanji(product,menus,num)
-        header_table(product,num,date)
-        table_content(menus,num)
-        start_new_page if i<max_i-1
-      end
-    else
-      order = Order.find(id)
-      max_i = order.order_products.length
-      order.order_products.each_with_index do |op,i|
-        product = op.product
-        menus = product.menus
-        num = op.serving_for
-        date = op.make_date
-        kanji(product,menus,num)
-        header_table(product,num,date)
-        table_content(menus,num)
-        start_new_page if i<max_i-1
-      end
+    daily_menu = DailyMenu.find(id)
+    max_i = daily_menu.daily_menu_details.length
+    date = daily_menu.start_time
+    daily_menu.daily_menu_details.each_with_index do |dmd,i|
+      product = dmd.product
+      menus = product.menus
+      num = dmd.manufacturing_number
+      kanji(product,menus,num)
+      header_table(product,num,date)
+      table_content(menus,num)
+      start_new_page if i<max_i-1
     end
   end
 
@@ -117,6 +102,13 @@ class ProductPdfAllRoma < Prawn::Document
 
 
   def kanji(product,menus,num)
+    kana_recipes = ""
+    kana_posts = ""
+    kana_preparations = ""
+    kana_product_name = ""
+    kana_menu_names = ''
+    kana_material_names = ""
+    kana_recipes = ''
     menu_names = ""
     recipes = ""
     material_names = ""
@@ -131,20 +123,21 @@ class ProductPdfAllRoma < Prawn::Document
         preparations += mmm.preparation + "^^"
       end
     end
-    product.name = Romaji.kana2romaji Product.make_katakana(product.name)[0]
-    menu_names = Product.make_katakana(menu_names)
-    menu_recipes = Product.make_katakana(recipes)
-    material_names = Product.make_katakana(material_names)
-    posts = Product.make_katakana(posts)
-    preparations = Product.make_katakana(preparations)
+    kana_product_name = Product.make_katakana(product.name)[0]
+    kana_menu_names = Product.make_katakana(menu_names)
+    kana_material_names = Product.make_katakana(material_names)
+    kana_recipes = Product.make_katakana(recipes)
+    kana_posts = Product.make_katakana(posts)
+    kana_preparations = Product.make_katakana(preparations)
+    product.name = Romaji.kana2romaji kana_product_name
     ii=0
     menus.each_with_index do |menu,i|
-      menu.name = Romaji.kana2romaji menu_names[i]
-      menu.recipe = Romaji.kana2romaji menu_recipes[i] if menu_recipes[i]
+      menu.name = Romaji.kana2romaji kana_menu_names[i]
+      menu.recipe = Romaji.kana2romaji kana_recipes[i]
       menu.menu_materials.each do |mmm|
-        mmm.material.name = Romaji.kana2romaji material_names[ii]
-        mmm.post = Romaji.kana2romaji posts[ii] if posts[ii]
-        mmm.preparation = Romaji.kana2romaji preparations[ii] if preparations[ii]
+        mmm.material.name = Romaji.kana2romaji kana_material_names[ii]
+        mmm.post = Romaji.kana2romaji kana_posts[ii]
+        mmm.preparation = Romaji.kana2romaji kana_preparations[ii]
         ii += 1
       end
     end
