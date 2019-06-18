@@ -24,7 +24,9 @@ table.table.table-list
       th 原価
       th 製造数
       th 総原価
-      th
+      th 帯
+      th 盛り付け
+      th 盛り付け
   tbody
     -@daily_menu_details.each do |dmd|
       tr
@@ -39,3 +41,7 @@ table.table.table-list
         td
           - if dmd.product.product_type == "新ヘルシー"
             = link_to "帯作成", new_band_products_path(id:dmd.product.id,format:'pdf'), class:"btn btn-default",:target=>"_blank"
+        td
+          = link_to "漢字", serving_products_path(id:dmd.product.id), class:"btn btn-default",:target=>"_blank", style:"margin:0 0 0 10px;float:left;"
+        td
+          = link_to "カナ", serving_kana_products_path(id:dmd.product.id), class:"btn btn-default",:target=>"_blank", style:"margin:0 0 0 10px;float:left;"

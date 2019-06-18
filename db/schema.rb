@@ -97,6 +97,7 @@ ActiveRecord::Schema.define(version: 2019_06_09_075833) do
     t.integer "payment", default: 0, null: false
     t.boolean "canceled_flag", default: false, null: false
     t.integer "billed_amount", default: 0, null: false
+    t.text "memo"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

@@ -7,6 +7,7 @@ class CreateMasuOrders < ActiveRecord::Migration[4.2][5.2]
       t.integer :payment,null:false,default:0
       t.boolean :canceled_flag,default:false,null:false
       t.integer :billed_amount,default:0,null:false
+      t.text :memo
 
       t.timestamps
     end
