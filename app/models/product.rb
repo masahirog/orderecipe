@@ -90,7 +90,7 @@ class Product < ApplicationRecord
     https.use_ssl = true
     request_data = {'app_id'=>app_id, "sentence"=>kanji}.to_json
     while result.blank? do
-      sleep(1)
+      sleep(0.1)
       response = https.post('/api/morph', request_data, header)
       if JSON.parse(response.body)["word_list"].present?
         result = JSON.parse(response.body)["word_list"]

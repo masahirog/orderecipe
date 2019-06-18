@@ -12,61 +12,75 @@ table.table
       th.text-right.col-md-1
       th.text-right.col-md-1
   tbody
-    - @stocks.each do |stock|
-      - if stock.date >= Date.today
-        tr style='background-color:#ffebcd;'
-          td.text-right
-            span 予想！
-          td.text-right
-            = stock.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[stock.date.wday]})")
-          td.text-right
-            = "#{stock.start_day_stock} #{@unit}"
-          td.text-right
-            - if stock.used_amount == 0
-              span style='color:silver;' 0
-            - else
-              span style='font-weight:bold;font-size:16px;color:red;' = "- #{stock.used_amount} #{@unit}"
-          td.text-right
-            - if stock.delivery_amount == 0
-              span style='color:silver;' 0
-            - else
-              span style='font-weight:bold;font-size:16px;color:blue;' = "+ #{stock.delivery_amount} #{@unit}"
-          - if stock.inventory_flag == true
-            td.text-right style='font-weight:bold;'
-              = "#{stock.end_day_stock} #{@unit}"
-            td
-              span class="label label-success" 棚卸し
-          - else
+    - @dates.each do |date|
+      - stock = @stocks_hash[date]
+      - if stock.present?
+        - if date >= Date.today
+          tr style='background-color:#ffebcd;'
             td.text-right
-              = "#{stock.end_day_stock} #{@unit}"
+              span 予想！
+            td.text-right
+              = stock.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[stock.date.wday]})")
+            td.text-right
+              = "#{stock.start_day_stock} #{@unit}"
+            td.text-right
+              - if stock.used_amount == 0
+                span style='color:silver;' 0
+              - else
+                span style='font-weight:bold;font-size:16px;color:red;' = "- #{stock.used_amount} #{@unit}"
+            td.text-right
+              - if stock.delivery_amount == 0
+                span style='color:silver;' 0
+              - else
+                span style='font-weight:bold;font-size:16px;color:blue;' = "+ #{stock.delivery_amount} #{@unit}"
+            - if stock.inventory_flag == true
+              td.text-right style='font-weight:bold;'
+                = "#{stock.end_day_stock} #{@unit}"
+              td
+                span class="label label-success" 棚卸し
+            - else
+              td.text-right
+                = "#{stock.end_day_stock} #{@unit}"
+              td
             td
-          td
-            = link_to '棚卸し編集', edit_stock_path(stock),class:'btn btn-default btn-sm'
+              = link_to '棚卸し編集', edit_stock_path(stock),class:'btn btn-default btn-sm'
+        - else
+          tr
+            td.text-right
+            td.text-right
+              = stock.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[stock.date.wday]})")
+            td.text-right
+              = "#{stock.start_day_stock} #{@unit}"
+            td.text-right
+              - if stock.used_amount == 0
+                span style='color:silver;' 0
+              - else
+                span style='font-weight:bold;font-size:16px;color:red;' = "- #{stock.used_amount}  #{@unit}"
+            td.text-right
+              - if stock.delivery_amount == 0
+                span style='color:silver;' 0
+              - else
+                span style='font-weight:bold;font-size:16px;color:blue;' = "+ #{stock.delivery_amount}  #{@unit}"
+            - if stock.inventory_flag == true
+              td.text-right style='font-weight:bold;'
+                = "#{stock.end_day_stock} #{@unit}"
+              td
+                span class="label label-success" 棚卸し
+            - else
+              td.text-right
+                = "#{stock.end_day_stock} #{@unit}"
+              td
+            td
+              = link_to '棚卸し編集', edit_stock_path(stock),class:'btn btn-default btn-sm'
       - else
-        tr
-          td.text-right
-          td.text-right
-            = stock.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[stock.date.wday]})")
-          td.text-right
-            = "#{stock.start_day_stock} #{@unit}"
-          td.text-right
-            - if stock.used_amount == 0
-              span style='color:silver;' 0
-            - else
-              span style='font-weight:bold;font-size:16px;color:red;' = "- #{stock.used_amount}  #{@unit}"
-          td.text-right
-            - if stock.delivery_amount == 0
-              span style='color:silver;' 0
-            - else
-              span style='font-weight:bold;font-size:16px;color:blue;' = "+ #{stock.delivery_amount}  #{@unit}"
-          - if stock.inventory_flag == true
-            td.text-right style='font-weight:bold;'
-              = "#{stock.end_day_stock} #{@unit}"
-            td
-              span class="label label-success" 棚卸し
-          - else
+          tr
             td.text-right
-              = "#{stock.end_day_stock} #{@unit}"
+            td.text-right
+              = date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})")
+            td.text-right
+            td.text-right
+            td.text-right
+            td.text-right
             td
-          td
-            = link_to '棚卸し編集', edit_stock_path(stock),class:'btn btn-default btn-sm'
+            td
+              = link_to '棚卸し作成', new_stock_path(date:date),class:'btn btn-primary btn-sm'

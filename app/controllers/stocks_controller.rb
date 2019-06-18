@@ -28,17 +28,23 @@ class StocksController < ApplicationController
     @materials_inventory = arr
   end
   def new
-    new_stocks = []
+    @stock = Stock.new
     date = params[:date]
-    @vendors = Vendor.all
-    materials = Material.includes(:vendor).where(unused_flag: false)
-    @materials = []
-    stocks_hash = Stock.where(date:date).map{|stock|[stock.material_id,stock]}.to_h
-    materials.each do |material|
-      new_stocks << Stock.new(date:date,material_id:material.id) unless stocks_hash[material.id].present?
+    material_id = params[:material_id]
+    @stock.date = date
+    @stock.material_id = material_id
+    prev_stock = Stock.where("date < ?", date).where(material_id:material_id).order("date DESC").first
+    if prev_stock.present?
+      @stock.start_day_stock = prev_stock.end_day_stock
+      @stock.end_day_stock = prev_stock.end_day_stock
+    else
+      @stock.start_day_stock = 0
+      @stock.end_day_stock = 0
     end
-    Stock.import new_stocks if new_stocks.present?
-    @stocks = Stock.where(date:date)
+    @stock.used_amount = 0
+    @stock.delivery_amount = 0
+
+
   end
   def edit
     @stock = Stock.find(params[:id])
@@ -167,7 +173,12 @@ class StocksController < ApplicationController
     material_id = params[:material_id]
     @material = Material.find(material_id)
     today = Date.today
-    @stocks = Stock.where(material_id:material_id,date:(today - 10)..(today + 10)).order('date ASC')
+    @stocks_hash = Stock.where(material_id:material_id,date:(today - 10)..(today + 10)).map{|stock|[stock.date, stock]}.to_h
+    if @stocks_hash.keys.include?(today)
+      @dates = @stocks_hash.keys.sort
+    else
+      @dates = @stocks_hash.keys.push(today).sort
+    end
     @unit = Material.find(material_id).order_unit
   end
 
