@@ -97,7 +97,6 @@ class KurumesiMail < ApplicationRecord
       order[:delivery_date] = line[5..14] if line[0..3] == "配達日時"
       order[:kurumesi_order_id] = line[5..-1].to_i if line[0..3] == "注文番号"
       if line[0..3]== "支払方法"
-        binding.pry
         if line[5..7] == '請求書'
           order[:pay] = 0
         else
