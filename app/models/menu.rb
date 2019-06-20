@@ -40,7 +40,7 @@ class Menu < ApplicationRecord
       hash.store("material_name", mm.material.name)
       hash.store("material_cost_price", mm.material.cost_price)
       hash.store("amount_used", mm.amount_used)
-      hash.store("calculated_unit", mm.material.calculated_unit)
+      hash.store("recipe_unit", mm.material.recipe_unit)
       hash.store("preparation", mm.preparation)
       hoge << hash
     end

@@ -37,15 +37,15 @@ table.table
       td.material_name
         = link_to material.name, edit_material_path(material)
       td
-        = "#{material.cost_price} 円/#{material.calculated_unit}"
+        = "#{material.cost_price} 円/#{material.recipe_unit}"
       td
         = material.memo
       td
         = material.order_unit_quantity
         = material.order_unit
         |  ：
-        = number_with_delimiter(material.calculated_value)
-        = material.calculated_unit
+        = number_with_delimiter(material.recipe_unit_quantity)
+        = material.recipe_unit
       td
         = material.vendor.company_name
       td.unused_flag

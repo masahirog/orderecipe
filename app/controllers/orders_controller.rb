@@ -134,13 +134,13 @@ class OrdersController < ApplicationController
               hash['material_id'] = menu_material.material_id
               hash['calculated_order_amount'] = (po[:num].to_f * menu_material.amount_used)
               hash["menu_name"] = menu.name
-              hash["calculated_value"] = menu_material.material.calculated_value
+              hash["recipe_unit_quantity"] = menu_material.material.recipe_unit_quantity
               hash["order_unit_quantity"] = menu_material.material.order_unit_quantity
               hash["vendor_id"] = menu_material.material.vendor_id
-              hash['calculated_unit'] = menu_material.material.calculated_unit
+              hash['recipe_unit'] = menu_material.material.recipe_unit
               hash['order_unit'] = menu_material.material.order_unit
               hash['delivery_deadline'] = menu_material.material.delivery_deadline
-              hash['unit_amount'] = "#{menu_material.material.order_unit_quantity} #{menu_material.material.order_unit}：#{menu_material.material.calculated_value} #{menu_material.material.calculated_unit}"
+              hash['unit_amount'] = "#{menu_material.material.order_unit_quantity} #{menu_material.material.order_unit}：#{menu_material.material.recipe_unit_quantity} #{menu_material.material.recipe_unit}"
               @arr << hash
             end
           end
@@ -171,20 +171,20 @@ class OrdersController < ApplicationController
       value.each do |hash|
         calculated_quantity = hash['calculated_order_amount'].round(1)
         if hash['order_unit_quantity'].to_f < 1
-          order_quantity = BigDecimal((calculated_quantity / hash['calculated_value'].to_f * hash['order_unit_quantity'].to_f).to_s).ceil(1)
+          order_quantity = BigDecimal((calculated_quantity / hash['recipe_unit_quantity'].to_f * hash['order_unit_quantity'].to_f).to_s).ceil(1)
         else
-          order_quantity = BigDecimal((calculated_quantity / hash['calculated_value'].to_f * hash['order_unit_quantity'].to_f).to_s).ceil
+          order_quantity = BigDecimal((calculated_quantity / hash['recipe_unit_quantity'].to_f * hash['order_unit_quantity'].to_f).to_s).ceil
         end
-        calculated_unit = hash['calculated_unit']
+        recipe_unit = hash['recipe_unit']
         order_unit = hash['order_unit']
         menu_name = hash['menu_name']
         unit_amount = hash['unit_amount']
         dead_line = hash['delivery_deadline']
         delivery_date = dead_line.business_days.before(sales_date)
         if hash['vendor_id'] == 141 || hash['vendor_id'] == 11 || hash['vendor_id'] == 161
-          @order.order_materials.build(material_id:key,order_quantity:order_quantity,calculated_quantity:calculated_quantity,menu_name:menu_name,calculated_unit:calculated_unit,order_unit:order_unit,order_material_memo:unit_amount,delivery_date:delivery_date)
+          @order.order_materials.build(material_id:key,order_quantity:order_quantity,calculated_quantity:calculated_quantity,menu_name:menu_name,recipe_unit:recipe_unit,order_unit:order_unit,order_material_memo:unit_amount,delivery_date:delivery_date)
         else
-          @order.order_materials.build(material_id:key,order_quantity:order_quantity,calculated_quantity:calculated_quantity,menu_name:menu_name,calculated_unit:calculated_unit,order_unit:order_unit,delivery_date:delivery_date)
+          @order.order_materials.build(material_id:key,order_quantity:order_quantity,calculated_quantity:calculated_quantity,menu_name:menu_name,recipe_unit:recipe_unit,order_unit:order_unit,delivery_date:delivery_date)
         end
         prev_stock = Stock.where("date < ?", sales_date).where(material_id:key).order("date DESC").first
         @prev_stocks[key] = prev_stock
@@ -358,7 +358,7 @@ class OrdersController < ApplicationController
   private
   def order_create_update
     params.require(:order).permit(:fixed_flag,order_materials_attributes: [:id, :order_quantity,:calculated_quantity,
-      :menu_name, :order_id, :material_id,:order_material_memo,:delivery_date,:calculated_unit,:order_unit, :un_order_flag,:_destroy],
+      :menu_name, :order_id, :material_id,:order_material_memo,:delivery_date,:recipe_unit,:order_unit, :un_order_flag,:_destroy],
       order_products_attributes: [:id,:make_date, :serving_for, :order_id, :product_id, :_destroy])
   end
 end

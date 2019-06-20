@@ -96,11 +96,11 @@ class ProductPdfAll < Prawn::Document
         if i == 0
           data << [{:content => "#{menu.name}", :rowspan => u, size: recipe_size},{:content => "#{menu.recipe}", :rowspan => u, size: recipe_size},
             {:content => "#{menu.serving_memo}", :rowspan => u, size: recipe_size },{:content => "#{mm.material.name}", size: recipe_size },{:content => "#{mm.post}", size: recipe_size },{:content => "#{mm.preparation}", size: recipe_size },
-            {:content => "#{mm.amount_used} #{mm.material.calculated_unit}", size: recipe_size },{:content => "#{(mm.material.cost_price * mm.amount_used).round(1)}", size: recipe_size },
-          "",{:content => "#{((mm.amount_used * num.to_i).round).to_s(:delimited)} #{mm.material.calculated_unit}", size: recipe_size }]
+            {:content => "#{mm.amount_used} #{mm.material.recipe_unit}", size: recipe_size },{:content => "#{(mm.material.cost_price * mm.amount_used).round(1)}", size: recipe_size },
+          "",{:content => "#{((mm.amount_used * num.to_i).round).to_s(:delimited)} #{mm.material.recipe_unit}", size: recipe_size }]
         else
-          data << [{:content => "#{mm.material.name}", size: recipe_size },{:content => "#{mm.post}", size: recipe_size },{:content => "#{mm.preparation}", size: recipe_size },{:content => "#{mm.amount_used} #{mm.material.calculated_unit}", size: recipe_size },
-            {:content => "#{(mm.material.cost_price * mm.amount_used).round(1)}", size: recipe_size },"",{:content => "#{((mm.amount_used * num.to_i).round).to_s(:delimited)} #{mm.material.calculated_unit}", size: recipe_size }]
+          data << [{:content => "#{mm.material.name}", size: recipe_size },{:content => "#{mm.post}", size: recipe_size },{:content => "#{mm.preparation}", size: recipe_size },{:content => "#{mm.amount_used} #{mm.material.recipe_unit}", size: recipe_size },
+            {:content => "#{(mm.material.cost_price * mm.amount_used).round(1)}", size: recipe_size },"",{:content => "#{((mm.amount_used * num.to_i).round).to_s(:delimited)} #{mm.material.recipe_unit}", size: recipe_size }]
         end
       end
     end

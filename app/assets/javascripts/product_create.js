@@ -228,7 +228,7 @@ $(document).on('turbolinks:load', function() {
     $.each(menu_materials_info,function(index,mmi){
       var amount_used = mmi.amount_used;
       var name =  mmi.material_name;
-      var unit = mmi.calculated_unit;
+      var unit = mmi.recipe_unit;
       var material_cost_price = mmi.material_cost_price;
       var cost = Math.round( ( amount_used * material_cost_price ) * 10 ) / 10
       var prepa = mmi.preparation;

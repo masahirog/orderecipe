@@ -40,7 +40,7 @@ class InventorySheetPdf < Prawn::Document
       if material.order_unit =='kg'
         henkan = ""
       else
-        henkan = "#{material.order_unit_quantity}#{material.order_unit}あたり#{material.calculated_value}#{material.calculated_unit}"
+        henkan = "#{material.order_unit_quantity}#{material.order_unit}あたり#{material.recipe_unit_quantity}#{material.recipe_unit}"
       end
       data << [material.name,material.vendor.company_name,material.storage_location.name,'','',material.order_unit,henkan]
     end

@@ -112,9 +112,9 @@ ActiveRecord::Schema.define(version: 2019_06_09_075833) do
   create_table "materials", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
     t.string "order_name"
-    t.float "calculated_value"
+    t.float "recipe_unit_quantity"
     t.string "recipe_unit"
-    t.float "calculated_price"
+    t.float "recipe_unit_price"
     t.float "cost_price"
     t.integer "category"
     t.string "order_code"

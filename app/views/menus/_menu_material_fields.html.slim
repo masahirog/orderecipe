@@ -7,8 +7,8 @@ li.add_li_material.col-md-12.list-group-item.item.nested-fields.field
   .amount_used.col-md-2[style="display:inline-flex"]
     div[style="padding-right:10px;"]
       = f.text_field :amount_used, class:'amount_used_input form-control form-group', :autocomplete => :off
-    span.calculated_unit[style="padding-top:10px;"]
-      = f.object.material.calculated_unit if f.object.material.present?
+    span.recipe_unit[style="padding-top:10px;"]
+      = f.object.material.recipe_unit if f.object.material.present?
   .cost_price.col-md-1.form-inline
     = f.object.material.cost_price if f.object.material.present?
   .vendor.col-md-1
@@ -38,7 +38,7 @@ li.add_li_material.col-md-12.list-group-item.item.nested-fields.field
           - if f.object.material.nil?
             = f.number_field :gram_quantity,class:'form-control input_gram_quantity'
           - else
-            - if f.object.material.calculated_unit=='g'||f.object.material.calculated_unit=='ml'
+            - if f.object.material.recipe_unit=='g'||f.object.material.recipe_unit=='ml'
               = f.number_field :gram_quantity,class:'form-control input_gram_quantity',value:f.object.amount_used,readonly:true
             - else
               = f.number_field :gram_quantity,class:'form-control input_gram_quantity',style:'background-color: #ffa2a2;'

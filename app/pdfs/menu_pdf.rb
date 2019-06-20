@@ -73,7 +73,7 @@ class MenuPdf < Prawn::Document
     data= [["食材・資材",{:content => "仕込み内容", :colspan => 2},"1人分","使用原価"]]
     menu_materials.each_with_index do |mm|
         data << [{content:"#{mm.material.name}", size: 9},{content: "#{mm.post}", size: 9},{content:"#{mm.preparation}", size: 9},
-          {content:"#{mm.amount_used} #{mm.material.calculated_unit}", size: 9},{content:"#{(mm.material.cost_price * mm.amount_used).round(1)}", size: 9}]
+          {content:"#{mm.amount_used} #{mm.material.recipe_unit}", size: 9},{content:"#{(mm.material.cost_price * mm.amount_used).round(1)}", size: 9}]
     end
     data
   end

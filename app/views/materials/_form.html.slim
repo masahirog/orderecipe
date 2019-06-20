@@ -70,24 +70,24 @@
   .col-md-12.form-group style="padding:0;"
     .col-md-5
       .col-md-12
-        = f.label :calculated_price, "-",class:"calculated_price_label col-md-12"
+        = f.label :recipe_unit_price, "-",class:"recipe_unit_price_label col-md-12"
       .col-md-8
-        = f.text_field :calculated_price, class:'form-control'
+        = f.text_field :recipe_unit_price, class:'form-control'
       .col-md-4 style="margin-top:10px;padding:0;"
         |  円
   .col-md-12.form-group style="padding:0;"
     .col-md-5
       .col-md-12
-        = f.label :calculated_unit, "レシピ中使用単位"
+        = f.label :recipe_unit, "レシピ中使用単位"
       .col-md-8
-        = f.select :calculated_unit, {ml: "ml", g: "g", 袋: "袋",尾: "尾", 本: "本", 枚: "枚",切: "切", 個: "個"},{include_blank: true}, { class: "input_calculated_unit form-control"}
+        = f.select :recipe_unit, {ml: "ml", g: "g", 袋: "袋",尾: "尾", 本: "本", 枚: "枚",切: "切", 個: "個"},{include_blank: true}, { class: "input_recipe_unit form-control"}
   .col-md-12.form-group style="padding:0;"
     .col-md-5
       .col-md-12
-        = f.label :calculated_value, "-",class:"calculated_value_label col-md-12"
+        = f.label :recipe_unit_quantity, "-",class:"recipe_unit_quantity_label col-md-12"
       .col-md-8.form-group.form-group
-        = f.text_field :calculated_value, class:'form-control'
-      .calculated_value_unit.col-md-4 style="font-size:18px;margin-top:10px;padding:0;"
+        = f.text_field :recipe_unit_quantity, class:'form-control'
+      .recipe_unit_quantity_unit.col-md-4 style="font-size:18px;margin-top:10px;padding:0;"
 
   .col-md-12.form-group style="padding:0;"
     .col-md-5

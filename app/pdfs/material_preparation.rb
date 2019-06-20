@@ -76,7 +76,7 @@ class MaterialPreparation < Prawn::Document
   def line_item_rows(menu_materials_arr)
     data = [['食材名','保管場所',{:content => "分量", :colspan => 2},{:content => "仕込み", :colspan => 2},'メニュー名']]
     menu_materials_arr.each do |mma|
-        data << [mma[0].material.name,mma[0].material.storage_location.name,(mma[0].amount_used * mma[1]).round(1),mma[0].material.calculated_unit,mma[0].post,mma[0].preparation,mma[0].menu.name,mma[2]]
+        data << [mma[0].material.name,mma[0].material.storage_location.name,(mma[0].amount_used * mma[1]).round(1),mma[0].material.recipe_unit,mma[0].post,mma[0].preparation,mma[0].menu.name,mma[2]]
     end
     data
   end

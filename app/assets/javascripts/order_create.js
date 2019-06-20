@@ -193,14 +193,14 @@ $(document).on('turbolinks:load', function() {
         async: false
     })
     .done(function(data){
-      var unit = data.material.calculated_unit;
+      var unit = data.material.recipe_unit;
       var vendor = data.material.vendor_company_name;
       var color = data.material.color;
-      var calculated_value = data.material.calculated_value;
+      var recipe_unit_quantity = data.material.recipe_unit_quantity;
       var order_unit = data.material.order_unit;
       var order_unit_quantity = data.material.order_unit_quantity;
       var delivery_deadline = data.material.delivery_deadline
-      var change_unit = order_unit_quantity+order_unit+"："+ calculated_value+" "+unit
+      var change_unit = order_unit_quantity+order_unit+"："+ recipe_unit_quantity+" "+unit
       if (color=='') {
         $(".order_materials_tr").eq(u).find(".vendor_company_name").text(vendor).css("color",'color:#A9A9A9;').css("font-weight",'normal');
       }else{

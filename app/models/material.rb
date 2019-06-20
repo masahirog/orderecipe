@@ -21,10 +21,10 @@ class Material < ApplicationRecord
     message: "：全角英数字は使用出来ません。"}
   validates :order_name, presence: true, format: { with:/\A[^０-９ａ-ｚＡ-Ｚ]+\z/,
     message: "：全角英数字は使用出来ません。"}
-  validates :calculated_value, presence: true, numericality: true
+  validates :recipe_unit_quantity, presence: true, numericality: true
   validates :order_unit_quantity, presence: true, numericality: true
-  validates :calculated_unit, presence: true
-  validates :calculated_price, presence: true, numericality: true
+  validates :recipe_unit, presence: true
+  validates :recipe_unit_price, presence: true, numericality: true
   validates :cost_price, presence: true, numericality: true
   validates :vendor_id, presence: true
 

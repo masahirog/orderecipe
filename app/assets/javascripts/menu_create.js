@@ -139,7 +139,7 @@ $(document).on('turbolinks:load', function() {
       // var calculate_price = (cost_price * amount_used).toFixed(2)};
       $(this).parent(".add_li_material").children(".price_used").text(calculate_price);
       calculate_menu_price();
-      var unit = $(".add_li_material").eq(u).find(".calculated_unit").text().trim();
+      var unit = $(".add_li_material").eq(u).find(".recipe_unit").text().trim();
       var id = $(".add_li_material").eq(u).find(".input_food_ingredient").val();
       if (unit=='g'||unit=='ml') {
         $(this).parent(".add_li_material").find(".input_gram_quantity").val(amount_used);
@@ -316,13 +316,13 @@ $(document).on('turbolinks:load', function() {
   function get_material_info(data,u){
     var amount_used = $(".add_li_material").eq(u).find(".amount_used_input").val();
     var cost = data.material.cost_price;
-    var unit = data.material.calculated_unit;
+    var unit = data.material.recipe_unit;
     var vendor = data.material.vendor_company_name;
     var eos = data.material.unused_flag;
     $(".add_li_material").eq(u).children(".sales_check").text(eos);
     $(".add_li_material").eq(u).children(".vendor").text(vendor);
     $(".add_li_material").eq(u).children(".cost_price").text(cost);
-    $(".add_li_material").eq(u).find(".calculated_unit").text(unit);
+    $(".add_li_material").eq(u).find(".recipe_unit").text(unit);
     //終売のアラートon
     eos_check(eos,u)
     if (isNaN(amount_used) == true){

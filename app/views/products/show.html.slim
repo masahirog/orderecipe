@@ -107,7 +107,7 @@ ul.list-group[style="list-style-type:none;"]
                 = link_to mm.material.name, edit_material_path(mm.material)
               .original_amount_used.text-right.col-md-2
                 = mm.amount_used
-                = mm.material.calculated_unit
+                = mm.material.recipe_unit
               .original_cost_price.text-right.col-md-1[style="padding-left:0"]
                 = (mm.amount_used * mm.material.cost_price).round(1)
               .col-md-3[style="padding:0;"]

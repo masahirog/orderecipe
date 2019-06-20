@@ -1,6 +1,6 @@
 json.material do |json|
   json.order_unit    @material.order_unit
-  json.calculated_unit    @material.calculated_unit
+  json.recipe_unit    @material.recipe_unit
   if @material.vendor_stock_flag == false
     json.vendor_company_name    @material.vendor.company_name + "【受注品】"
     json.color   'red'
@@ -16,6 +16,6 @@ json.material do |json|
     json.color  ''
   end
 
-  json.calculated_value    @material.calculated_value
+  json.recipe_unit_quantity    @material.recipe_unit_quantity
   json.order_unit_quantity    @material.order_unit_quantity
 end

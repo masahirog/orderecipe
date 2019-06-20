@@ -29,7 +29,7 @@ $(document).on('turbolinks:load', function() {
   });
   var input_order_unit_quantity = $(".input_order_unit_quantity").val();
   var order_unit = $(".input_order_unit").val();
-  var recipe_unit = $(".input_calculated_unit").val();
+  var recipe_unit = $(".input_recipe_unit").val();
   if (order_unit){
     check_order_unit(input_order_unit_quantity,order_unit)
   };
@@ -48,20 +48,20 @@ $(document).on('turbolinks:load', function() {
     var input_order_unit_quantity = $(".input_order_unit_quantity").val();
     check_order_unit(input_order_unit_quantity, order_unit)
   });
-  $(".input_calculated_unit").on("change",function(){
+  $(".input_recipe_unit").on("change",function(){
     console.log($(this).val());
   });
 
   var previous;
 
-  $(".input_calculated_unit").on('focus', function () {
+  $(".input_recipe_unit").on('focus', function () {
     previous = this.value;
   }).change(function() {
     if(!confirm('変更すると、レシピに大きく影響します。本当に変更しますか？（変更した場合はレシピを確認してください。）')){
       $(this).val(previous);
       return false;
     }else{
-      var recipe_unit = $(".input_calculated_unit").val();
+      var recipe_unit = $(".input_recipe_unit").val();
       check_recipe_unit(recipe_unit)
     }
   });
@@ -88,18 +88,18 @@ $(document).on('turbolinks:load', function() {
     });
   });
 
-  $("#material_calculated_value").on('blur', function(){
+  $("#material_recipe_unit_quantity").on('blur', function(){
     cost_price_calculate()
   });
-  $("#material_calculated_price").on('blur', function(){
+  $("#material_recipe_unit_price").on('blur', function(){
     cost_price_calculate()
   });
 
 
 
   function cost_price_calculate(){
-    var amount = $("#material_calculated_value").val();
-    var price = $("#material_calculated_price").val();
+    var amount = $("#material_recipe_unit_quantity").val();
+    var price = $("#material_recipe_unit_price").val();
     var cost_price = Math.round( (price / amount) * 100 ) / 100 ;
     if (isNaN(cost_price)){
       $("#material_cost_price").val(0);
@@ -108,11 +108,11 @@ $(document).on('turbolinks:load', function() {
   };
 
   function check_order_unit(input_order_unit_quantity,order_unit){
-    $(".calculated_price_label").text(input_order_unit_quantity+order_unit+"あたりの仕入価格(税抜き)").css('background-color','#F6CECE');
-    $(".calculated_value_label").text(input_order_unit_quantity+order_unit+"あたりの分量").css('background-color','#F6CECE');
+    $(".recipe_unit_price_label").text(input_order_unit_quantity+order_unit+"あたりの仕入価格(税抜き)").css('background-color','#F6CECE');
+    $(".recipe_unit_quantity_label").text(input_order_unit_quantity+order_unit+"あたりの分量").css('background-color','#F6CECE');
   };
   function check_recipe_unit(recipe_unit){
-    $(".calculated_value_unit").text(recipe_unit);
+    $(".recipe_unit_quantity_unit").text(recipe_unit);
     $(".cost_unit_label").text("単位単価(１"+recipe_unit+"あたりの価格 税抜き)");
   };
 

@@ -116,9 +116,9 @@ class ShogunPreparationAll < Prawn::Document
           if i == 0
             data << [{content: "#{menu.name}", rowspan: u},
               {content: "#{menu.recipe}", rowspan: u, size: recipe_size},{content: "#{menu.serving_memo}", rowspan: u},"#{mm.material.name}",
-              "#{((mm.amount_used * num.to_i).round).to_s(:delimited)} #{mm.material.calculated_unit}",check,mm.post,mm.preparation]
+              "#{((mm.amount_used * num.to_i).round).to_s(:delimited)} #{mm.material.recipe_unit}",check,mm.post,mm.preparation]
           else
-            data << [mm.material.name,{content:"#{((mm.amount_used * num.to_i).round).to_s(:delimited)} #{mm.material.calculated_unit}"},
+            data << [mm.material.name,{content:"#{((mm.amount_used * num.to_i).round).to_s(:delimited)} #{mm.material.recipe_unit}"},
               check,mm.post,mm.preparation]
           end
         end

@@ -33,7 +33,7 @@
           = link_to mm.menu.name,edit_menu_path(mm.menu)
         .col-md-2
           = mm.amount_used
-          = mm.material.calculated_unit
+          = mm.material.recipe_unit
         .col-md-1 style="display:none;"
           = text_field_tag :id, mm.id, name:"post[][mm_id]"
         .col-md-2.select_material

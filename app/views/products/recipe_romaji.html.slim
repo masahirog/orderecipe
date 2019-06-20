@@ -77,15 +77,15 @@ head
                     .original_amount_used_value.text-right.form-group
                       = mm.amount_used
                     .form-group
-                      = mm.material.calculated_unit
-                    .calculated_value[style="display:none;"]
-                      = mm.material.calculated_value
+                      = mm.material.recipe_unit
+                    .recipe_unit_quantity[style="display:none;"]
+                      = mm.material.recipe_unit_quantity
                     .order_unit[style="display:none;"]
                       = mm.material.order_unit
-                  .calculated_unit.col-md-2.form-inline.text-right
+                  .recipe_unit.col-md-2.form-inline.text-right
                     .calculate_amount_used.form-group[style="display:none;font-weight:bold; font-size:20px;"]
                     .form-group[style="display:none;font-weight:bold;"]
-                      = mm.material.calculated_unit
+                      = mm.material.recipe_unit
                   .cal_val_order_unit.col-md-1.form-inline[style="padding:0;"]
                     .calculate_amount_used.form-group
                     .form-group[style="display:none;padding:0;"]

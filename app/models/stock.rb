@@ -16,9 +16,9 @@ class Stock < ApplicationRecord
       material_id = data[0]
       material = Material.find(material_id)
       # 単位変換
-      calculated_value = material.calculated_value.to_f
+      recipe_unit_quantity = material.recipe_unit_quantity.to_f
       order_unit_quantity = material.order_unit_quantity.to_f
-      used_amount = (data[1] / calculated_value) * order_unit_quantity
+      used_amount = (data[1] / recipe_unit_quantity) * order_unit_quantity
       #すでにstockのobjectがあるかどうか？
       stock = Stock.find_by(date:previous_day,material_id:material_id)
       if stock
