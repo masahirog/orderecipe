@@ -169,12 +169,12 @@ class MasuOrdersController < ApplicationController
     end
 
     def masu_order_picktimenone_params
-      params.require(:masu_order).permit(:start_time,:kurumesi_order_id,:canceled_flag,:payment,
+      params.require(:masu_order).permit(:start_time,:kurumesi_order_id,:canceled_flag,:payment,:memo,
         masu_order_details_attributes: [:id,:masu_order_id,:product_id,:number,:_destroy])
     end
 
     def masu_order_params
       params.require(:masu_order).permit(:start_time,:kurumesi_order_id,:pick_time,:canceled_flag,:payment,
-        masu_order_details_attributes: [:id,:masu_order_id,:product_id,:number,:_destroy])
+        :memo,masu_order_details_attributes: [:id,:masu_order_id,:product_id,:number,:_destroy])
     end
 end

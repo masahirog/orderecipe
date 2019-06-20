@@ -43,12 +43,12 @@ table.table
   tbody
     - @masu_orders.each do |masu_order|
       tr
-        td = link_to masu_order.kurumesi_order_id,edit_masu_order_path(masu_order)
+        td style='height:38px;' = link_to masu_order.kurumesi_order_id,edit_masu_order_path(masu_order)
         td = link_to 'メール',kurumesi_mails_path(masu_order_id:masu_order.id)
         td = masu_order.pick_time.strftime("%R") if masu_order.pick_time
         td = "#{@masu_orders_num_h[masu_order.id]} 個"
         td = masu_order.payment
-        td
+        td rowspan='2'
           ul.list-group
             - masu_order.masu_order_details.each do |mod|
               li.list-group-item.col-md-12
@@ -58,6 +58,11 @@ table.table
                   = mod.product.short_name
                 .col-md-7 style='font-size:13px;'
                   = link_to "#{mod.product.management_id}｜#{mod.product.name}",mod.product
+      tr
+        td colspan='5' style='border:0;color:red;'
+          - if masu_order.memo.present?
+            = "メモ：#{masu_order.memo}"
+
 - if @canceled_masu_orders.present?
   h3 キャンセルオーダー
   table.table

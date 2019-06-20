@@ -28,7 +28,8 @@ class KurumesiMail < ApplicationRecord
     imap_passwd = 'rohisama'
     imap.login(imap_user, imap_passwd)
     search_criterias = [
-      'FROM','info@kurumesi-bentou.com',
+      'FROM','gon@bento.jp',
+      # 'FROM','info@kurumesi-bentou.com'
       'SINCE', (Date.today).strftime("%d-%b-%Y")
     ]
 
@@ -93,17 +94,19 @@ class KurumesiMail < ApplicationRecord
     info_arr = arr[order_info_index..shohin_index-1]
     shohin_arr = arr[shohin_index+1..-1]
     order = {}
-    info_arr.each do |line|
-      order[:delivery_date] = line[6..15] if line[0..5] == "[配達日時]"
-      order[:kurumesi_order_id] = line[6..-1].to_i if line[0..5] == "[注文番号]"
-      if line[0..5]== "[支払方法]"
-        if line[6..7] == '請求'
+    info_arr.join('').gsub('[','$$$').split("$$$").reject(&:blank?).each do |line|
+      order[:delivery_date] = line[5..14] if line[0..3] == "配達日時"
+      order[:kurumesi_order_id] = line[5..-1].to_i if line[0..3] == "注文番号"
+      if line[0..3]== "支払方法"
+        binding.pry
+        if line[5..7] == '請求書'
           order[:pay] = 0
         else
           order[:pay] = 1
         end
       end
     end
+
     shohin_arr.join('').gsub('【','$$$').gsub('[請求金額]','$$$').split("$$$").reject(&:blank?).each do |line|
       product_name = ""
       num = ""

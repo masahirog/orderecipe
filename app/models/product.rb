@@ -72,6 +72,7 @@ class Product < ApplicationRecord
   def self.additive_seiri(product)
     arr=[]
     product.menus.each do |prme|
+      binding.pry
       arr << prme.used_additives
     end
     @brr = arr.flatten.uniq
