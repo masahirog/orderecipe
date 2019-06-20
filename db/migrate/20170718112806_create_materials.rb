@@ -4,7 +4,7 @@ class CreateMaterials < ActiveRecord::Migration[4.2]
       t.string :name, unique: true
       t.string :order_name, unique: true
       t.float :calculated_value
-      t.string :calculated_unit
+      t.string :recipe_unit
       t.float :calculated_price
       t.float :cost_price
       t.integer :category

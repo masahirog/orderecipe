@@ -8,7 +8,7 @@ class CreateOrderMaterials < ActiveRecord::Migration[4.2][5.0]
       t.string :order_material_memo
       t.date :delivery_date
       t.string :menu_name
-      t.string :calculated_unit
+      t.string :recipe_unit
       t.string :order_unit
       t.boolean :un_order_flag,default:false,null:false
       t.timestamps

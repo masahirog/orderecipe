@@ -113,7 +113,7 @@ ActiveRecord::Schema.define(version: 2019_06_09_075833) do
     t.string "name"
     t.string "order_name"
     t.float "calculated_value"
-    t.string "calculated_unit"
+    t.string "recipe_unit"
     t.float "calculated_price"
     t.float "cost_price"
     t.integer "category"
@@ -185,7 +185,7 @@ ActiveRecord::Schema.define(version: 2019_06_09_075833) do
     t.string "order_material_memo"
     t.date "delivery_date"
     t.string "menu_name"
-    t.string "calculated_unit"
+    t.string "recipe_unit"
     t.string "order_unit"
     t.boolean "un_order_flag", default: false, null: false
     t.datetime "created_at", null: false
