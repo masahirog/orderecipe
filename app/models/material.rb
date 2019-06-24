@@ -37,7 +37,8 @@ class Material < ApplicationRecord
      data = data.where(['order_name LIKE ?', "%#{params["order_name"]}%"]) if params["order_name"].present?
      data = data.where(vendor_id: params["vendor_id"]) if params["vendor_id"].present?
      data = data.where(['order_code LIKE ?', "%#{params["order_code"]}%"]) if params["order_code"].present?
-     data = data.where(['unused_flag LIKE ?', "%#{params["unused_flag"]["value"]}%"]) if params["unused_flag"].present?
+     data = data.where(unused_flag:params["unused_flag"]) if params["unused_flag"].present?
+
      data = data.where(storage_location_id:params[:storage_location_id]) if params[:storage_location_id].present?
      data
    else

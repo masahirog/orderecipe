@@ -20,6 +20,8 @@ class CreateMaterials < ActiveRecord::Migration[4.2]
       t.integer :delivery_deadline, :null => false, :default => 1
       t.integer :storage_location_id,null:false
       t.timestamps null: false
+      t.string :accounting_unit
+      t.integer :accounting_unit_quantity
     end
   end
 end

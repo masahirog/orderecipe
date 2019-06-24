@@ -30,11 +30,15 @@ $(document).on('turbolinks:load', function() {
   var input_order_unit_quantity = $(".input_order_unit_quantity").val();
   var order_unit = $(".input_order_unit").val();
   var recipe_unit = $(".input_recipe_unit").val();
+  var accounting_unit = $(".input_accounting_unit").val();
   if (order_unit){
     check_order_unit(input_order_unit_quantity,order_unit)
   };
   if (recipe_unit){
     check_recipe_unit(recipe_unit)
+  };
+  if (accounting_unit){
+    check_accounting_unit(accounting_unit)
   };
 
   $(".input_order_unit_quantity").on("change",function(){
@@ -48,8 +52,10 @@ $(document).on('turbolinks:load', function() {
     var input_order_unit_quantity = $(".input_order_unit_quantity").val();
     check_order_unit(input_order_unit_quantity, order_unit)
   });
-  $(".input_recipe_unit").on("change",function(){
-    console.log($(this).val());
+
+  $(".input_accounting_unit").on("change",function(){
+    var accounting_unit = $(".input_accounting_unit").val();
+    check_accounting_unit(accounting_unit)
   });
 
   var previous;
@@ -108,13 +114,17 @@ $(document).on('turbolinks:load', function() {
   };
 
   function check_order_unit(input_order_unit_quantity,order_unit){
-    $(".recipe_unit_price_label").text(input_order_unit_quantity+order_unit+"あたりの仕入価格(税抜き)").css('background-color','#F6CECE');
-    $(".recipe_unit_quantity_label").text(input_order_unit_quantity+order_unit+"あたりの分量").css('background-color','#F6CECE');
+    $(".recipe_unit_quantity_label").text("＊"+input_order_unit_quantity+order_unit).css('font-size','16px').css('font-weight','bold');
   };
   function check_recipe_unit(recipe_unit){
-    $(".recipe_unit_quantity_unit").text(recipe_unit);
-    $(".cost_unit_label").text("単位単価(１"+recipe_unit+"あたりの価格 税抜き)");
+    $(".recipe_unit_quantity_unit").text(recipe_unit).css('font-weight','bold').css('font-size','16px');
+    $(".cost_unit_label").text("１"+recipe_unit).css('font-weight','bold').css('font-size','16px');
   };
+  function check_accounting_unit(accounting_unit){
+    // $(".recipe_unit_quantity_unit").text(recipe_unit + " 入り");
+    $(".accounting_unit_quantity_label").text("＊１"+accounting_unit).css('font-size','16px').css('font-weight','bold');
+  };
+
 
   function addInput(){
     var u = $(".add_li_food_additive").length

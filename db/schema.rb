@@ -130,6 +130,8 @@ ActiveRecord::Schema.define(version: 2019_06_09_075833) do
     t.integer "storage_location_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "accounting_unit"
+    t.integer "accounting_unit_quantity"
   end
 
   create_table "menu_materials", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

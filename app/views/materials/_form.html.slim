@@ -24,7 +24,7 @@
   .col-md-12.form-group
     .col-md-5
       = f.label :unused_flag, "販売ステータス"
-      = f.select :unused_flag,[['使用中',0],['使用停止',1]],{}, class:"form-control"
+      = f.select :unused_flag,[['使用中',false],['使用停止',true]],{selected:@material.unused_flag}, class:"form-control"
 
   .col-md-12.form-group
     .col-md-5
@@ -56,46 +56,35 @@
     .col-md-5
       = f.label :order_code, "業者管理コード"
       = f.text_field :order_code, class:'form-control'
-  .col-md-12.form-group style="padding:0;"
-    .col-md-5
-      .col-md-12
-        = f.label :order_unit, "発注時の単位（小数にすると、発注時にその小数での発注が可能です）"
-      .col-md-5
-        - if local_assigns[:locals][:edit_flag] == true
-          = f.text_field :order_unit_quantity,class:"input_order_unit_quantity form-control text-right"
-        - else
-          = f.text_field :order_unit_quantity,class:"input_order_unit_quantity form-control text-right",value:1
-      .col-md-6
-        = f.select :order_unit, [["kg", "kg"], ["p/c", "p/c"], ["c/s", "c/s"], ["缶", "缶"], ["束", "束"],["袋", "袋"],["箱", "箱"],["枚", "枚"],["個", "個"],["本", "本"],["匹", "匹"]],{include_blank: true}, { class: "form-control input_order_unit"}
-  .col-md-12.form-group style="padding:0;"
-    .col-md-5
-      .col-md-12
-        = f.label :recipe_unit_price, "-",class:"recipe_unit_price_label col-md-12"
-      .col-md-8
-        = f.text_field :recipe_unit_price, class:'form-control'
-      .col-md-4 style="margin-top:10px;padding:0;"
-        |  円
-  .col-md-12.form-group style="padding:0;"
-    .col-md-5
-      .col-md-12
-        = f.label :recipe_unit, "レシピ中使用単位"
-      .col-md-8
-        = f.select :recipe_unit, {ml: "ml", g: "g", 袋: "袋",尾: "尾", 本: "本", 枚: "枚",切: "切", 個: "個"},{include_blank: true}, { class: "input_recipe_unit form-control"}
-  .col-md-12.form-group style="padding:0;"
-    .col-md-5
-      .col-md-12
-        = f.label :recipe_unit_quantity, "-",class:"recipe_unit_quantity_label col-md-12"
-      .col-md-8.form-group.form-group
-        = f.text_field :recipe_unit_quantity, class:'form-control'
-      .recipe_unit_quantity_unit.col-md-4 style="font-size:18px;margin-top:10px;padding:0;"
+  .col-md-12
+    .box26.clearfix
+      span class="box-title" 発注最小ロット、単位と価格
+      = f.text_field :order_unit_quantity,class:"input_order_unit_quantity form-control text-right",placeholder:1,style:'width:140px;float:left;margin-right:5px;'
+      = f.select :order_unit, ["kg","p/c", "c/s","缶", "束", "枚","個","本"],{}, { class: "form-control input_order_unit",style:'width:70px;float:left;'}
+      span style='padding:15px 15px 0 15px;float:left;' あたり
+      = f.text_field :recipe_unit_price, class:'form-control',style:'width:140px;float:left;'
+      span style='padding:15px 0 0 15px;float:left;' 円
+    .box26.clearfix
+      span class="box-title" レシピ上の使用単位
+      = f.select :recipe_unit, ["ml","g","袋","本","枚","個"],{}, { class: "input_recipe_unit form-control",style:'float:left;width:150px;'}
+      span.recipe_unit_quantity_label style='padding:13px 5px 0 50px;float:left;'
+      span style='padding:15px 10px 0 0;float:left;'  あたり
+      = f.text_field :recipe_unit_quantity, class:'form-control',placeholder:1,style:'float:left;width:150px;'
+      .recipe_unit_quantity_unit style='padding:13px 0 0 10px;float:left;'
+      span style='float:left;padding:15px 0 0 8px;' 入り、
+      span.cost_unit_label style='float:left;padding:13px 0 0 0;'
+      span style='float:left;padding:15px 10px 0 0;' あたり
+      = f.text_field :cost_price, class:'form-control', readonly: 'readonly',style:'float:left;width:100px;'
+      span style='float:left;padding:15px 0 0 10px;' 円
 
-  .col-md-12.form-group style="padding:0;"
-    .col-md-5
-      = f.label :cost_price, "単位単価 税抜き", class:"cost_unit_label col-md-12",style:"padding:0;margin-left:20px;"
-      .col-md-8.form-group
-        = f.text_field :cost_price, class:'form-control', readonly: 'readonly'
-      .col-md-4.form-group style="margin-top:10px;padding:0;"
-        |  円
+    .box26.clearfix
+      span class="box-title" 計上時の使用単位（在庫管理時の単位）
+      = f.select :accounting_unit, ["p/c","kg","袋","本","枚","個", "c/s","缶", "束","ml","g"],{}, { class: "input_accounting_unit form-control",style:'float:left;width:150px;'}
+      span.accounting_unit_quantity_label style='float:left;padding:13px 5px 0 50px;'
+      span style='float:left;padding:15px 10px 0 0;' あたり
+      = f.text_field :accounting_unit_quantity, class:'form-control',placeholder:1,style:'float:left;width:150px;'
+      .recipe_unit_quantity_unit style='padding:15px 0 0 15px;float:left;'
+
   - if @material.allergy.nil?
     .col-md-12.form-group style="padding:0;"
       = f.label :allergy, "アレルギー", class:"col-md-12",style:"margin-left:20px;"
@@ -191,3 +180,23 @@
         .modal-footer
           button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
           = f.submit '作成する', data: { confirm: "新規作成してよろしいですか？"} , class:"btn btn-primary"
+
+sass:
+  .box26
+    position: relative
+    margin: 2em 0
+    padding: 1.5em 1.3em
+    border: solid 2px #6091d3
+    border-radius: 8px
+    width: 1000px
+  .box26 .box-title
+    position: absolute
+    display: inline-block
+    top: -13px
+    left: 10px
+    padding: 0 9px
+    line-height: 1
+    font-size: 16px
+    background: #FFF
+    color: #6091d3
+    font-weight: bold

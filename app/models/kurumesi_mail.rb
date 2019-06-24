@@ -1,6 +1,7 @@
 require 'net/imap'
 require 'kconv'
 require 'mail'
+require 'nkf'
 
 class KurumesiMail < ApplicationRecord
   belongs_to :masu_order, optional: true
@@ -35,7 +36,7 @@ class KurumesiMail < ApplicationRecord
     imap.select('INBOX') # 対象のメールボックスを選択
     ids = imap.search(search_criterias) # 全てのメールを取得
     ids.each_slice(100).to_a.each do |id_block| # 100件ごとにメールをfetchする
-      imap.fetch(id_block, "RFC822").each do |mail|
+      imap.fetch(ids, ["RFC822", "ENVELOPE"]).each do |mail|
         m = Mail.new(mail.attr["RFC822"])
         subject = m.subject
         recieved_datetime = m.date
@@ -46,7 +47,8 @@ class KurumesiMail < ApplicationRecord
             body = m.html_part.decoded
           end
         else
-          body = m.body.decoded.encode("UTF-8", m.charset)
+          # body = m.body.decoded.encode("UTF-8", m.charset)
+          body = m.body.decoded.toutf8
         end
         unless KurumesiMail.find_by(body:body,recieved_datetime:recieved_datetime).present?
           @kurumei_mail = KurumesiMail.new
