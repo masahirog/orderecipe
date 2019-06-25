@@ -13,10 +13,10 @@ class StocksController < ApplicationController
     end
     @materials.each do |material|
       if stocks[material.id].present?
-        used_amount = "- #{(stocks[material.id][0]).round(1)} #{material.order_unit}"
-        delivery_amount = "+ #{(stocks[material.id][1]).round(1)} #{material.order_unit}"
-        start_day_stock = "#{(stocks[material.id][2]).round(1)} #{material.order_unit}"
-        end_day_stock = "#{(stocks[material.id][3]).round(1)} #{material.order_unit}"
+        used_amount = "- #{(stocks[material.id][0]/material.accounting_unit_quantity).round(1)} #{material.accounting_unit}"
+        delivery_amount = "+ #{(stocks[material.id][1]/material.accounting_unit_quantity).round(1)} #{material.accounting_unit}"
+        start_day_stock = "#{(stocks[material.id][2]/material.accounting_unit_quantity).round(1)} #{material.accounting_unit}"
+        end_day_stock = "#{(stocks[material.id][3]/material.accounting_unit_quantity).round(1)} #{material.accounting_unit}"
       else
         used_amount = ""
         delivery_amount = ""
@@ -43,8 +43,6 @@ class StocksController < ApplicationController
     end
     @stock.used_amount = 0
     @stock.delivery_amount = 0
-
-
   end
   def edit
     @stock = Stock.find(params[:id])
@@ -62,19 +60,31 @@ class StocksController < ApplicationController
   end
   def create
     @stock = Stock.new(stock_create_update)
-     if @stock.save
-       redirect_to history_stocks_path(material_id:@stock.material_id)
-     else
-       render 'new'
-     end
+    @stock.end_day_stock = params[:end_day_stock_accounting_unit].to_f*@stock.material.accounting_unit_quantity
+    if params[:stock][:inventory_flag] == "0"
+      @stock.inventory_flag=false
+    else
+      @stock.inventory_flag=true
+    end
+    if @stock.save
+      redirect_to history_stocks_path(material_id:@stock.material_id)
+    else
+      render 'new'
+    end
   end
 
 
   def update
     @stock = Stock.find(params[:id])
+    end_day_stock = params[:end_day_stock_accounting_unit].to_f*@stock.material.accounting_unit_quantity
+    if params[:stock][:inventory_flag] == "0"
+      inventory_flag=false
+    else
+      inventory_flag=true
+    end
     respond_to do |format|
-      if @stock.update(stock_create_update)
-        if @stock.inventory_flag == true
+      if @stock.update(end_day_stock:end_day_stock,inventory_flag:inventory_flag)
+        if inventory_flag == true
           update_stocks = []
           Stock.change_stock(update_stocks,@stock.material_id,@stock.date,@stock.end_day_stock)
           Stock.import update_stocks, on_duplicate_key_update:[:end_day_stock,:start_day_stock] if update_stocks.present?
@@ -89,7 +99,7 @@ class StocksController < ApplicationController
   end
 
   def inventory
-    date = params[:date]
+    date = Date.parse(params[:date])
     storage_location_id = params[:storage_location_id]
     vendor_id = params[:vendor_id]
     @storage_locations = StorageLocation.all
@@ -101,6 +111,38 @@ class StocksController < ApplicationController
     end
     if @materials.present?
       @stocks_hash = Stock.where(date:date,material_id:@materials.ids).map{|stock|[stock.material_id,stock]}.to_h
+      @stock_hash ={}
+      @hash = {}
+      @materials.each do |material|
+        @stocks = Stock.includes(:material).where(material_id:material.id,date:(date - 5)..(date + 10)).order('date ASC')
+        @stock_hash[material.id] = @stocks.map do |stock|
+          if stock.used_amount == 0
+            used_amount = "<td style='color:silver;'>0</td>"
+          else
+            used_amount = "<td style='color:red;'>- #{(stock.used_amount/material.accounting_unit_quantity).ceil(1)}#{material.accounting_unit}</td>"
+          end
+          if stock.delivery_amount == 0
+            delivery_amount = "<td style='color:silver;'>0</td>"
+          else
+            delivery_amount = "<td style='color:blue;'>+ #{(stock.delivery_amount/material.accounting_unit_quantity).floor(1)}#{material.accounting_unit}</td>"
+          end
+          if stock.end_day_stock == 0
+            end_day_stock = "<td style='color:silver;'>0</td>"
+          else
+            end_day_stock = "<td style=''>#{(stock.end_day_stock/material.accounting_unit_quantity).floor(1)}#{material.accounting_unit}</td>"
+          end
+          if stock.inventory_flag == true
+            inventory = "<td><span class='label label-success'>棚卸し</span></td>"
+          else
+            inventory = "<td></td>"
+          end
+          if stock.date >= date
+            ["<tr style='background-color:#ffebcd;'><td>#{stock.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[stock.date.wday]})")}</td>#{delivery_amount}#{used_amount}#{end_day_stock}#{inventory}</tr>"]
+          else
+            ["<tr><td>#{stock.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[stock.date.wday]})")}</td>#{delivery_amount}#{used_amount}#{end_day_stock}#{inventory}</tr>"]
+          end
+        end
+      end
     else
       @stocks_hash = []
     end
@@ -111,9 +153,11 @@ class StocksController < ApplicationController
     update_stocks = []
     date = params[:date]
     stocks_once_update_params.each do |stock_param|
-      end_day_stock = stock_param[1][:end_day_stock]
-      if end_day_stock.present?
+      end_day_stock_accounting_unit = stock_param[1][:end_day_stock]
+      if end_day_stock_accounting_unit.present?
         material_id = stock_param[0]
+        material = Material.find(material_id)
+        end_day_stock = end_day_stock_accounting_unit.to_f*material.accounting_unit_quantity
         stock = Stock.find_by(date:date,material_id:material_id)
         if stock
           stock.end_day_stock = end_day_stock
@@ -179,7 +223,7 @@ class StocksController < ApplicationController
     else
       @dates = @stocks_hash.keys.push(today).sort
     end
-    @unit = Material.find(material_id).order_unit
+    @unit = Material.find(material_id).accounting_unit
   end
 
   private

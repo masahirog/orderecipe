@@ -29,8 +29,11 @@ class Order < ApplicationRecord
     order_materials_group.each do |omg|
       date = omg[0][0]
       material_id = omg[0][1]
-      delivery_amount = omg[1].to_f
+      material = Material.find(material_id)
+      #レシピ単位で計上する!
+      delivery_amount = omg[1].to_f * material.recipe_unit_quantity
       stock = Stock.find_by(date:date,material_id:material_id)
+
       if stock
         stock.delivery_amount = delivery_amount
         end_day_stock = stock.start_day_stock - stock.used_amount + delivery_amount
@@ -39,7 +42,7 @@ class Order < ApplicationRecord
         #未来の在庫を書き換えていく処理
         Stock.change_stock(update_stocks,material_id,date,end_day_stock)
       else
-        end_day_stock = 0 + delivery_amount
+        end_day_stock = delivery_amount
         prev_stock = Stock.where("date < ?", date).where(material_id:material_id).order("date DESC").first
         if prev_stock.present?
           new_stocks << Stock.new(material_id:material_id,date:date,end_day_stock:end_day_stock,start_day_stock:prev_stock.end_day_stock)

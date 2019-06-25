@@ -33,15 +33,17 @@
         td
           = @stock.material.vendor.company_name
         td
-          = @stock.used_amount
+          = (@stock.used_amount/@stock.material.accounting_unit_quantity).ceil(1)
         td
-          = @stock.delivery_amount
+          = (@stock.delivery_amount/@stock.material.accounting_unit_quantity).ceil(1)
         td
-          = @stock.start_day_stock
+          = "#{(@stock.start_day_stock/@stock.material.accounting_unit_quantity).ceil(1)} #{@stock.material.accounting_unit}"
         td
           = f.check_box :inventory_flag, class:"form-control"
-        td
-          = f.text_field :end_day_stock, required: true, class:"form-control"
+        td.clear_fix
+          = number_field_tag 'end_day_stock_accounting_unit',(@stock.end_day_stock/@stock.material.accounting_unit_quantity).floor(2),
+           class:"form-control",required:true,style:'width:120px;float:left;', :step => 0.01
+          span style='padding:10px 0 0 5px;float:left;' = @stock.material.accounting_unit
 
   .actions
     = f.submit '登録する',class:'btn btn-success'
