@@ -283,6 +283,7 @@ ActiveRecord::Schema.define(version: 2019_06_09_075833) do
     t.string "staff_name"
     t.string "staff_phone"
     t.string "staff_mail"
+    t.string "management_id"
     t.text "memo"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

@@ -22,25 +22,25 @@ table.table
             td.text-right
               = stock.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[stock.date.wday]})")
             td.text-right
-              = "#{stock.start_day_stock} #{@unit}"
+              = "#{BigDecimal(stock.start_day_stock.to_s).floor(1)} #{@unit}"
             td.text-right
               - if stock.used_amount == 0
                 span style='color:silver;' 0
               - else
-                span style='font-weight:bold;font-size:16px;color:red;' = "- #{stock.used_amount} #{@unit}"
+                span style='font-weight:bold;font-size:16px;color:red;' = "- #{BigDecimal(stock.used_amount.to_s).ceil(1)} #{@unit}"
             td.text-right
               - if stock.delivery_amount == 0
                 span style='color:silver;' 0
               - else
-                span style='font-weight:bold;font-size:16px;color:blue;' = "+ #{stock.delivery_amount} #{@unit}"
+                span style='font-weight:bold;font-size:16px;color:blue;' = "+ #{BigDecimal(stock.delivery_amount.to_s).floor(1)} #{@unit}"
             - if stock.inventory_flag == true
               td.text-right style='font-weight:bold;'
-                = "#{stock.end_day_stock} #{@unit}"
+                = "#{BigDecimal(stock.end_day_stock.to_s).floor(1)} #{@unit}"
               td
                 span class="label label-success" 棚卸し
             - else
               td.text-right
-                = "#{stock.end_day_stock} #{@unit}"
+                = "#{BigDecimal(stock.end_day_stock.to_s).floor(1)} #{@unit}"
               td
             td
               = link_to '棚卸し編集', edit_stock_path(stock),class:'btn btn-default btn-sm'
@@ -50,25 +50,25 @@ table.table
             td.text-right
               = stock.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[stock.date.wday]})")
             td.text-right
-              = "#{stock.start_day_stock} #{@unit}"
+              = "#{BigDecimal(stock.start_day_stock.to_s).floor(1)} #{@unit}"
             td.text-right
               - if stock.used_amount == 0
                 span style='color:silver;' 0
               - else
-                span style='font-weight:bold;font-size:16px;color:red;' = "- #{stock.used_amount}  #{@unit}"
+                span style='font-weight:bold;font-size:16px;color:red;' = "- #{BigDecimal(stock.used_amount.to_s).ceil(1)}  #{@unit}"
             td.text-right
               - if stock.delivery_amount == 0
                 span style='color:silver;' 0
               - else
-                span style='font-weight:bold;font-size:16px;color:blue;' = "+ #{stock.delivery_amount}  #{@unit}"
+                span style='font-weight:bold;font-size:16px;color:blue;' = "+ #{BigDecimal(stock.delivery_amount.to_s).floor(1)}  #{@unit}"
             - if stock.inventory_flag == true
               td.text-right style='font-weight:bold;'
-                = "#{stock.end_day_stock} #{@unit}"
+                = "#{BigDecimal(stock.stock.end_day_stock.to_s).floor(1)} #{@unit}"
               td
                 span class="label label-success" 棚卸し
             - else
               td.text-right
-                = "#{stock.end_day_stock} #{@unit}"
+                = "#{BigDecimal(stock.end_day_stock.to_s).floor(1)} #{@unit}"
               td
             td
               = link_to '棚卸し編集', edit_stock_path(stock),class:'btn btn-default btn-sm'

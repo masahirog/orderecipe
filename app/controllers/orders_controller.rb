@@ -89,7 +89,6 @@ class OrdersController < ApplicationController
   end
 
   def new
-
     @arr = []
     @order = Order.new
     if params[:daily_menu_id]
@@ -190,7 +189,7 @@ class OrdersController < ApplicationController
         @prev_stocks[key] = prev_stock
       end
       today = Date.today
-      @stocks = Stock.where(material_id:key,date:(today - 5)..(today + 10)).order('date ASC')
+      @stocks = Stock.includes(:material).where(material_id:key,date:(today - 5)..(today + 10)).order('date ASC')
       @stock_hash[key] = @stocks.map do |stock|
         if stock.used_amount == 0
           used_amount = "<td style='color:silver;'>0</td>"
