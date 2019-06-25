@@ -6,6 +6,11 @@
         - @stock.errors.full_messages.each do |message|
           li = message
 
+  = f.hidden_field :material_id
+  = f.hidden_field :date
+  = f.hidden_field :start_day_stock
+  = f.hidden_field :used_amount
+  = f.hidden_field :delivery_amount
   h2
     = @stock.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@stock.date.wday]})")
   table.table

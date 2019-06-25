@@ -63,7 +63,7 @@ class StocksController < ApplicationController
   def create
     @stock = Stock.new(stock_create_update)
      if @stock.save
-       redirect_to @stock
+       redirect_to history_stocks_path(material_id:@stock.material_id)
      else
        render 'new'
      end
