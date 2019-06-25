@@ -39,7 +39,7 @@ class ProductsController < ApplicationController
   end
 
   def index
-    @search = Product.search(params).page(params[:page]).per(30)
+    @search = Product.includes(:brand).search(params).page(params[:page]).per(30)
   end
 
   def new

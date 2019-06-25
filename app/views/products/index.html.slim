@@ -23,17 +23,18 @@ ol.breadcrumb
 table.table
   thead
     tr
-      td 管理ID
-      td 弁当名
-      td ブランド名
-      td 主調理工程
-      td 弁当種類
-      td 販売価格
-      td 原価(税込)
-      td 盛付カナ
-      td レシピROMA
-      td csv
-      td 画像
+      th 管理ID
+      th style='width:400px;' 弁当名
+      th ブランド名
+      th 主調理工程
+      th 弁当種類
+      th 売価
+      th 原価
+      th 原価率
+      th 盛付カナ
+      th レシピROMA
+      th csv
+      th 画像
 
   tbody.aaaad
     - @search.each do |product|
@@ -47,6 +48,14 @@ table.table
         td = product.product_type
         td.text-right = "#{product.sell_price}円"
         td.price.text-right = "#{product.cost_price}円"
+        td.text-right
+          - if product.cost_price/product.sell_price < 0.36
+            span style='color:blue;' = "#{((product.cost_price/product.sell_price)*100).round(1)}%"
+          - elsif product.cost_price/product.sell_price < 0.39
+            span style='color:purple;' = "#{((product.cost_price/product.sell_price)*100).round(1)}%"
+          - else
+            span style='color:red;' = "#{((product.cost_price/product.sell_price)*100).round(1)}%"
+
         td = link_to "盛付カナ", serving_kana_products_path(id:product.id), class:"btn btn-default",:target=>"_blank", style:"margin:0 0 0 10px;"
         td = link_to "ラム", recipe_romaji_products_path(id:product.id), class:"btn btn-default",:target=>"_blank", style:"margin:0 0 0 10px;"
         td = link_to "CSV", product_path(product,format:'csv'), class: "btn btn-default"
