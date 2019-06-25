@@ -94,6 +94,7 @@ class KurumesiMail < ApplicationRecord
     shohin_index = arr.index("┏▼ご注文商品━━━━━━━━━━━━━━━━━━━━━━━━━━━┓")
     info_arr = arr[order_info_index..shohin_index-1]
     shohin_arr = arr[shohin_index+1..-1]
+    binding.pry
     order = {}
     info_arr.join('').gsub('[','$$$').split("$$$").reject(&:blank?).each do |line|
       order[:delivery_date] = line[5..14] if line[0..3] == "配達日時"
@@ -106,7 +107,6 @@ class KurumesiMail < ApplicationRecord
         end
       end
     end
-
     shohin_arr.join('').gsub('【','$$$').gsub('[請求金額]','$$$').split("$$$").reject(&:blank?).each do |line|
       product_name = ""
       num = ""

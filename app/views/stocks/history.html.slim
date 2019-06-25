@@ -83,4 +83,4 @@ table.table
             td.text-right
             td
             td
-              = link_to '棚卸し作成', new_stock_path(date:date),class:'btn btn-primary btn-sm'
+              = link_to '棚卸し作成', new_stock_path(date:date,material_id:@material.id),class:'btn btn-primary btn-sm'
