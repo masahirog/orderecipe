@@ -37,17 +37,17 @@ class OrdersController < ApplicationController
         if stock.used_amount == 0
           used_amount = "<td style='color:silver;'>0</td>"
         else
-          used_amount = "<td style='color:red;'>- #{(stock.used_amount/material.accounting_unit_quantity).ceil(1)}#{material.accounting_unit}</td>"
+          used_amount = "<td style='color:red;'>- #{(stock.used_amount/stock.material.accounting_unit_quantity).ceil(1)}#{stock.material.accounting_unit}</td>"
         end
         if stock.delivery_amount == 0
           delivery_amount = "<td style='color:silver;'>0</td>"
         else
-          delivery_amount = "<td style='color:blue;'>+ #{(stock.delivery_amount/material.accounting_unit_quantity).floor(1)}#{material.accounting_unit}</td>"
+          delivery_amount = "<td style='color:blue;'>+ #{(stock.delivery_amount/stock.material.accounting_unit_quantity).floor(1)}#{stock.material.accounting_unit}</td>"
         end
         if stock.end_day_stock == 0
           end_day_stock = "<td style='color:silver;'>0</td>"
         else
-          end_day_stock = "<td style=''>#{(stock.end_day_stock/material.accounting_unit_quantity).floor(1)}#{material.accounting_unit}</td>"
+          end_day_stock = "<td style=''>#{(stock.end_day_stock/stock.material.accounting_unit_quantity).floor(1)}#{stock.material.accounting_unit}</td>"
         end
         if stock.inventory_flag == true
           inventory = "<td><span class='label label-success'>棚卸し</span></td>"
