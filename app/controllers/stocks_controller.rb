@@ -193,11 +193,11 @@ class StocksController < ApplicationController
     @material_stock = {}
     @materials = Material.order('storage_location_id').order('vendor_id').search(params).where(unused_flag:false).includes(:vendor,:storage_location)
     @materials.each do |material|
-      prev_stock = material.stocks.order("date DESC").first
+      prev_stock = material.stocks.where("date <= ?", date).order("date DESC").first
       if prev_stock
         @material_stock[material.id] = [material,prev_stock.end_day_stock]
       else
-        @material_stock[material.id] = [material,0]
+        @material_stock[material.id] = [material,'']
       end
     end
     respond_to do |format|
