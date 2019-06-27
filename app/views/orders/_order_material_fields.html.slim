@@ -9,16 +9,15 @@ tr.order_materials_tr.nested-fields
         span = f.object.material.vendor.company_name
         span style='color:red;font-weight:bold;' = "【受注品】" if f.object.material.vendor_stock_flag == false
   td.quantity
-    .clearfix
+    .clearfix.text-right
       div style="float:left;width:50%;"
-        = f.text_field :order_quantity,class:'order_quantity text-right form-control',style:"float:left;width:100px;"
-        = f.text_field :order_unit, style:'float:left;width:60px;',class:'form-control order_material_unit',readonly:true
-
-      div style="float:left;"
-        = f.text_field :calculated_quantity,class:'recipe_unit_quantity text-right form-control',style:"float:left;width:100px;",readonly:true
-        = f.text_field :recipe_unit, style:'float:left;width:60px;',class:'form-control calculated_material_unit',readonly:true
+        = f.text_field :order_unit, style:'float:right;width:20%;',class:'form-control order_material_unit',readonly:true
+        = f.text_field :order_quantity,class:'order_quantity text-right form-control',style:"float:right;width:70%;"
+      div style="float:left;width:50%;"
+        = f.text_field :calculated_quantity,class:'recipe_unit_quantity text-right form-control',style:"float:right;width:70%;",readonly:true
+        = f.text_field :recipe_unit, style:'float:right;width:20%;',class:'form-control calculated_material_unit',readonly:true
     .clearfix style="color:#A9A9A9;padding:1px 0 0 10px;"
-      .change_unit.memo-tooltip style="float:left;width:50%;"
+      .text-right.change_unit.memo-tooltip style="float:left;width:50%;padding-right:5px;"
         - if f.object.material_id.present?
           = f.object.material.order_unit_quantity
           = f.object.material.order_unit
@@ -28,7 +27,7 @@ tr.order_materials_tr.nested-fields
         - if f.object.material.present?
           - if f.object.material.memo.present?
             span style='color:red;margin-left:10px;' class="glyphicon glyphicon-tags original-tooltip" aria-hidden="true"  data-toggle="tooltip" data-placement="top" title="#{f.object.material.memo}"
-      .text-right style="float:left;width:50%;padding-right:25px;"
+      .text-right style="float:left;width:50%;"
         - if @prev_stocks[f.object.material_id]
           = "#{(@prev_stocks[f.object.material_id].end_day_stock/f.object.material.accounting_unit_quantity).floor(1)} #{f.object.material.accounting_unit}（#{@prev_stocks[f.object.material_id].end_day_stock.floor}#{f.object.material.recipe_unit}）"
         - else
@@ -36,7 +35,10 @@ tr.order_materials_tr.nested-fields
         - if f.object.material_id.present?
           - if @stock_hash[f.object.material_id].present?
             = link_to history_stocks_path(material_id:f.object.material_id),target:'_blank',class:'stock-tooltip' do
-              span data-html="true" style='color:blue;margin-left:10px;' class="glyphicon glyphicon-new-window" aria-hidden="true"  data-toggle="tooltip" data-placement="#{position}" title="<table class='table tooltip-table'><thead><tr><th style='text-align: center'>日付</th><th style='text-align: center'>納品</th><th style='text-align: center'>使用</th><th style='text-align: center'>在庫</th><th></th></tr></thead><tbody>#{@stock_hash[f.object.material_id].flatten.join('')}</tbody></table>"
+              span data-html="true" style='color:blue;margin-left:10px;' class="glyphicon glyphicon-eye-open" aria-hidden="true"  data-toggle="tooltip" data-placement="#{position}" title="<table class='table tooltip-table'><thead><tr><th style='text-align: center'>日付</th><th style='text-align: center'>納品</th><th style='text-align: center'>使用</th><th style='text-align: center'>在庫</th><th></th></tr></thead><tbody>#{@stock_hash[f.object.material_id].flatten.join('')}</tbody></table>"
+            = link_to edit_material_path(f.object.material),target:'_blank',class:'stock-tooltip' do
+              span style='color:green;margin-left:10px;' class="glyphicon glyphicon-pencil" aria-hidden="true"
+
   td.order_material_memo
     = f.text_field :order_material_memo,class:'form-control'
     div style="padding:3px 0 0 8px;color:#A9A9A9;font-size:10px;"
