@@ -171,7 +171,7 @@ ActiveRecord::Schema.define(version: 2019_06_09_075833) do
     t.text "serving_memo"
     t.float "cost_price"
     t.string "food_label_name"
-    t.string "used_additives"
+    t.string "used_additives", default: "", null: false
     t.boolean "confirm_flag", default: false, null: false
     t.text "taste_description"
     t.string "image"
