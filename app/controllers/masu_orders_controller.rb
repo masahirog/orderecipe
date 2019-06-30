@@ -61,11 +61,15 @@ class MasuOrdersController < ApplicationController
     end
   end
   def index
+    @memo_orders = MasuOrder.where.not(memo:nil).where.not(memo:'').group('start_time').count
     @products = Product.where(brand_id:11)
     @date_order_count = MasuOrder.where(canceled_flag:false).group('start_time').count
     @date_canceled_order_count = MasuOrder.where(canceled_flag:true).group('start_time').count
     @date_group = MasuOrderDetail.joins(:masu_order,:product).where(:masu_orders => {canceled_flag:false}).where(:products => {product_category:1}).group('masu_orders.start_time').group('products.id').sum(:number)
     @date_sum = MasuOrderDetail.joins(:masu_order,:product).where(:masu_orders => {canceled_flag:false}).where(:products => {product_category:1}).group('masu_orders.start_time').sum(:number)
+    @miso_num = MasuOrderDetail.joins(:masu_order,:product).where(:masu_orders => {canceled_flag:false}).where(:products => {id:3831}).group('masu_orders.start_time').sum(:number)
+    @cantea_num = MasuOrderDetail.joins(:masu_order,:product).where(:masu_orders => {canceled_flag:false}).where(:products => {id:3801}).group('masu_orders.start_time').sum(:number)
+    @pettea_num = MasuOrderDetail.joins(:masu_order,:product).where(:masu_orders => {canceled_flag:false}).where(:products => {id:3791}).group('masu_orders.start_time').sum(:number)
   end
 
   def date

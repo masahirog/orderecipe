@@ -50,7 +50,13 @@ class MasuOrderLoadingSheetPdf < Prawn::Document
       hash2.store(mo.id,[masu_orders_num_h[mo.id]+1,masu_orders_num_h[mo.id]+1,'◯','◯',seikyusho,ryoshusho])
     end
 
-    kurumesi_ids = moa.map{|masu_order| masu_order.kurumesi_order_id}
+    kurumesi_ids = moa.map do |masu_order|
+      if masu_order.memo.present?
+        "#{masu_order.kurumesi_order_id} ★memo★"
+      else
+        masu_order.kurumesi_order_id
+      end
+    end
 
     data = [["配達日： #{date}","オーダーID▶"].push(kurumesi_ids).flatten!]
     arr2 = ['','ピックアップ時間']

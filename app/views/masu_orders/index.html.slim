@@ -7,11 +7,25 @@ h1 枡々オーダー一覧
   - if @date_order_count[date]
     .clearfix
       div style='float:left;'
-        = link_to "オーダー：#{@date_order_count[date]}件",date_masu_orders_path(date:date)
+        - if @memo_orders[date].present?
+          = link_to "オーダー：#{@date_order_count[date]}件",date_masu_orders_path(date:date)
+          span style='color:red;'  メモあり
+        - else
+          = link_to "オーダー：#{@date_order_count[date]}件",date_masu_orders_path(date:date)
       div style='float:right;'
         = "計：#{@date_sum[date]}食"
 
   table.table
+    tr style='font-size:11px;'
+      td 味噌
+      td.text-right = @miso_num[date]
+    tr style='font-size:11px;'
+      td PET
+      td.text-right = @pettea_num[date]
+    tr style='font-size:11px;'
+      td CAN
+      td.text-right = @cantea_num[date]
+
     - @products.each do |product|
       - if @date_group[[date,product.id]]
         tr

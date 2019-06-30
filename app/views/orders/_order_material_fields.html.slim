@@ -14,8 +14,8 @@ tr.order_materials_tr.nested-fields
         = f.text_field :order_unit, style:'float:right;width:20%;',class:'form-control order_material_unit',readonly:true
         = f.text_field :order_quantity,class:'order_quantity text-right form-control',style:"float:right;width:70%;"
       div style="float:left;width:50%;"
-        = f.text_field :calculated_quantity,class:'recipe_unit_quantity text-right form-control',style:"float:right;width:70%;",readonly:true
         = f.text_field :recipe_unit, style:'float:right;width:20%;',class:'form-control calculated_material_unit',readonly:true
+        = f.text_field :calculated_quantity,class:'recipe_unit_quantity text-right form-control',style:"float:right;width:70%;",readonly:true
     .clearfix style="color:#A9A9A9;padding:1px 0 0 10px;"
       .text-right.change_unit.memo-tooltip style="float:left;width:50%;padding-right:5px;"
         - if f.object.material_id.present?
@@ -28,16 +28,19 @@ tr.order_materials_tr.nested-fields
           - if f.object.material.memo.present?
             span style='color:red;margin-left:10px;' class="glyphicon glyphicon-tags original-tooltip" aria-hidden="true"  data-toggle="tooltip" data-placement="top" title="#{f.object.material.memo}"
       .text-right style="float:left;width:50%;"
-        - if @prev_stocks[f.object.material_id]
-          = "#{(@prev_stocks[f.object.material_id].end_day_stock/f.object.material.accounting_unit_quantity).floor(1)} #{f.object.material.accounting_unit}（#{@prev_stocks[f.object.material_id].end_day_stock.floor}#{f.object.material.recipe_unit}）"
-        - else
-          |0
+        span class="stock_yoso_#{f.object.material_id} text-right"
+          - if @prev_stocks[f.object.material_id]
+            = "#{(@prev_stocks[f.object.material_id].end_day_stock/f.object.material.accounting_unit_quantity).floor(1)} #{f.object.material.accounting_unit}（#{@prev_stocks[f.object.material_id].end_day_stock.floor.to_s(:delimited)}#{f.object.material.recipe_unit}）"
+          - else
+            |0
         - if f.object.material_id.present?
           - if @stock_hash[f.object.material_id].present?
             = link_to history_stocks_path(material_id:f.object.material_id),target:'_blank',class:'stock-tooltip' do
               span data-html="true" style='color:blue;margin-left:10px;' class="glyphicon glyphicon-eye-open" aria-hidden="true"  data-toggle="tooltip" data-placement="#{position}" title="<table class='table tooltip-table'><thead><tr><th style='text-align: center'>日付</th><th style='text-align: center'>納品</th><th style='text-align: center'>使用</th><th style='text-align: center'>在庫</th><th></th></tr></thead><tbody>#{@stock_hash[f.object.material_id].flatten.join('')}</tbody></table>"
             = link_to edit_material_path(f.object.material),target:'_blank',class:'stock-tooltip' do
-              span style='color:green;margin-left:10px;' class="glyphicon glyphicon-pencil" aria-hidden="true"
+              span style='color:green;margin-left:10px;' class="glyphicon glyphicon-pencil" aria-hidden="true"  data-toggle="tooltip" data-placement="#{position}" title="食材の編集"
+            = link_to material_reload_orders_path(material_id:f.object.material_id,date:@prev_stocks.first[1].date), method: :post, remote: true
+              span style='color:red;margin-left:10px;' class="glyphicon glyphicon-refresh" aria-hidden="true"
 
   td.order_material_memo
     = f.text_field :order_material_memo,class:'form-control'

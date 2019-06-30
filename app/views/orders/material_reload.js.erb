@@ -1,0 +1,1 @@
+$(".stock_yoso_<%= @material.id %>").text("<%= (@prev_stock.end_day_stock/@material.accounting_unit_quantity).floor(1) %> <%= @material.accounting_unit %>（<%= @prev_stock.end_day_stock.floor.to_s(:delimited) %><%= @material.recipe_unit %>）");

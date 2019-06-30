@@ -1,4 +1,9 @@
 class OrdersController < ApplicationController
+  def material_reload
+    @material = Material.find(params[:material_id])
+    date = params[:date]
+    @prev_stock = Stock.where("date <= ?", date).where(material_id:params[:material_id]).order("date DESC").first
+  end
   def material_info
     @material = Material.find(params[:id])
     respond_to do |format|

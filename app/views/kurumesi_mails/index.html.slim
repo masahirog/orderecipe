@@ -29,3 +29,4 @@ table.table
           - if kurumesi_mail.masu_order_id.present?
             = link_to "http://admin.kurumesi-bentou.com/admin_shop/order_detail/#{kurumesi_mail.masu_order.kurumesi_order_id}",target:'_blank' do
               span class="glyphicon glyphicon-share" aria-hidden="true"
+= paginate @kurumesi_mails

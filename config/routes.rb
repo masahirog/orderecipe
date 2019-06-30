@@ -65,6 +65,7 @@ Rails.application.routes.draw do
       get :get_management_id
       get :check_management_id
       get :print_all
+      post :material_reload
     end
   end
   resources :daily_menus do

@@ -1,5 +1,6 @@
 h4
-  = "「#{@material.name}」の直近10日前後の在庫"
+  = "「#{@material.name}」の在庫変動履歴"
+/ = link_to 'すべての履歴',history_stocks_path(material_id:@material.id),class:'btn btn-primary pull-right'
 table.table
   thead
     tr
@@ -7,6 +8,7 @@ table.table
       th.text-right.col-md-1 日付
       th.text-right.col-md-2  在庫（日初時）
       th.text-right.col-md-2  使用量
+      th.text-right.col-md-1  確認
       th.text-right.col-md-2  納品量
       th.text-right.col-md-2  在庫（日終時）
       th.text-right.col-md-1
@@ -28,6 +30,9 @@ table.table
                 span style='color:silver;' 0
               - else
                 span style='font-weight:bold;font-size:16px;color:red;' = "- #{(stock.used_amount/@material.accounting_unit_quantity).ceil(1)} #{@unit}"
+            td
+              - if @hash_date[date]
+                span data-html="true" style='color:blue;margin-left:10px;' class="glyphicon glyphicon-eye-open" aria-hidden="true"  data-toggle="tooltip" data-placement="top" title="#{@hash_date[date]}"
             td.text-right
               - if stock.delivery_amount == 0
                 span style='color:silver;' 0
@@ -56,6 +61,11 @@ table.table
                 span style='color:silver;' 0
               - else
                 span style='font-weight:bold;font-size:16px;color:red;' = "- #{(stock.used_amount/@material.accounting_unit_quantity).ceil(1)}  #{@unit}"
+            td
+              - if @hash_date[date]
+                span data-html="true" style='color:blue;margin-left:10px;' class="glyphicon glyphicon-eye-open" aria-hidden="true"  data-toggle="tooltip" data-placement="top" title="#{@hash_date[date]}"
+
+
             td.text-right
               - if stock.delivery_amount == 0
                 span style='color:silver;' 0
@@ -79,8 +89,32 @@ table.table
               = date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})")
             td.text-right
             td.text-right
+            td
             td.text-right
             td.text-right
             td
             td
               = link_to '棚卸し作成', new_stock_path(date:date,material_id:@material.id),class:'btn btn-primary btn-sm'
+  / = paginate @stocks
+sass:
+  .stock-tooltip
+    .tooltip
+      width: 600px
+      font-size: 14px
+  .memo-tooltip
+    .tooltip
+      width: 300px
+      font-size: 14px
+
+  .tooltip-inner
+    max-width: 1000px
+
+  .tooltip .tooltip-inner
+    background-color: white
+    opacity: 1.0
+    border: 2px solid black
+    color: black
+    filter: alpha(opacity=100)
+  .tooltip.in
+    opacity: 1 !important
+    filter: alpha(opacity=100)

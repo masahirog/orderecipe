@@ -217,11 +217,35 @@ class StocksController < ApplicationController
     material_id = params[:material_id]
     @material = Material.find(material_id)
     today = Date.today
-    @stocks_hash = Stock.where(material_id:material_id,date:(today - 10)..(today + 10)).map{|stock|[stock.date, stock]}.to_h
+    @stocks_hash = Stock.where(material_id:material_id).order('date DESC').limit(20).map{|stock|[stock.date, stock]}.to_h
     if @stocks_hash.keys.include?(today)
       @dates = @stocks_hash.keys.sort
     else
       @dates = @stocks_hash.keys.push(today).sort
+    end
+    @hash_date = {}
+    @hash = {}
+    menu_ids = MenuMaterial.where(material_id:material_id).map{|mm|mm.menu_id}.uniq
+    product_ids = ProductMenu.where(menu_id:menu_ids).map{|pm|pm.product_id}.uniq
+
+    @dates.each do |date|
+      next_date = date + 1
+      MasuOrderDetail.joins(:masu_order).where(:masu_orders => {start_time:next_date}).where(product_id:product_ids).map do |mod|
+        if @hash[mod.product_id].present?
+          @hash[mod.product_id] += mod.number.to_i
+        else
+          @hash[mod.product_id] = mod.number.to_i
+        end
+      end
+      DailyMenuDetail.joins(:daily_menu).where(:daily_menus => {start_time:next_date}).where(product_id:product_ids).map do |dmd|
+        if @hash[dmd.product_id].present?
+          @hash[dmd.product_id] += dmd.manufacturing_number.to_i
+        else
+          @hash[dmd.product_id] = dmd.manufacturing_number.to_i
+        end
+      end
+      @hash_date[date] = "<table><thead><tr><th>#{next_date}</th><th>食数</th></tr></thead><tbody>#{@hash.map{|h|"<tr><td>#{Product.find(h[0]).name}</td><td>#{h[1]}食</td><tr>"}.join('')}</tbody></table>"
+      @hash = {}
     end
     @unit = Material.find(material_id).accounting_unit
   end
