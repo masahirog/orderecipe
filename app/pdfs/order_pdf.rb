@@ -3,18 +3,17 @@ class OrderPdf < Prawn::Document
     super(page_size: 'A4')
     uniq_date = materials_this_vendor.pluck(:delivery_date).uniq
     font "vendor/assets/fonts/ipaexm.ttf"
-    header
-    header_lead(vendor)
-    header_adress(vendor)
-    header_hello
-
-    uniq_date.each do |date|
+    uniq_date.each_with_index do |date,i|
       arr=[]
       materials_this_vendor.each do |material|
         arr << material if material.delivery_date == date
       end
+      start_new_page unless i == 0
+      header
+      header_lead(vendor)
+      header_adress(vendor)
+      header_hello
       table_content(arr,date)
-      move_down 20
     end
   end
 
@@ -37,14 +36,14 @@ class OrderPdf < Prawn::Document
     bounding_box([330, 700], :width => 200, :height =>70) do
         font_size 10
         text "タベル株式会社", :leading => 3
-        text "No：#{vendor.management_id}", :leading => 3
+        text "No：#{vendor.management_id}", :leading => 3 if vendor.management_id.present?
         text "〒164-0003 東京都中野区東中野1-35-1", :leading => 3
         text "TEL：03-5937-5431", :leading => 3
         text "FAX：03-5937-5432", :leading => 3
     end
   end
   def header_hello
-    bounding_box([20, 690], :width => 200, :height => 50) do
+    bounding_box([20, 685], :width => 200, :height => 50) do
         font_size 10
         text "いつも大変お世話になっております。", :leading => 3
         text "下記の通り発注致します。", :leading => 3
