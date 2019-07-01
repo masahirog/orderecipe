@@ -1,4 +1,6 @@
 class Product < ApplicationRecord
+  acts_as_ordered_taggable_on :tags
+
   belongs_to :brand
 
   has_many :product_menus,->{order("product_menus.row_order asc") }, dependent: :destroy
@@ -17,8 +19,7 @@ class Product < ApplicationRecord
 
   mount_uploader :image, ProductImageUploader
 
-  validates :name, presence: true, uniqueness: true, format: { with: /\A[^０-９ａ-ｚＡ-Ｚ]+\z/,
-    message: "：全角英数字は使用出来ません。"}
+  validates :name, presence: true, uniqueness: true, format: { with: /\A[^０-９ａ-ｚＡ-Ｚ]+\z/,message: "：全角英数字は使用出来ません。"}
   validates :cook_category, presence: true
   validates :product_type, presence: true
   validates :sell_price, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
@@ -35,6 +36,7 @@ class Product < ApplicationRecord
   def self.search(params)
    if params
      data = Product.order(id: "DESC").all
+     data = data.tagged_with("#{params[:tag_name]}") if params["tag_name"].present?
      data = data.where(['management_id LIKE ?', "%#{params["management_id"]}%"]) if params["management_id"].present?
      data = data.where(cook_category: params["cook_category"]) if params["cook_category"].present?
      data = data.where(product_type: params["product_type"]) if params["product_type"].present?

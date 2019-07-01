@@ -18,6 +18,8 @@ Rails.application.routes.draw do
       get :print_preparation
       get :receipt
       post :print_receipt
+      get :invoice
+      post :print_invoice
       get :manufacturing_sheet
       get :loading_sheet
       get :material_preparation

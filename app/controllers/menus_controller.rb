@@ -8,7 +8,7 @@ class MenusController < ApplicationController
   end
 
   def index
-    @search = Menu.search(params).page(params[:page]).per(20)
+    @search = Menu.includes(:taggings).search(params).page(params[:page]).per(20)
   end
 
   def new
@@ -138,7 +138,7 @@ class MenusController < ApplicationController
 
     def menu_create_update
       params.require(:menu).permit({used_additives:[]},:name, :recipe, :category, :recipe, :serving_memo, :cost_price,:food_label_name,:confirm_flag,:taste_description, :image,
-                                    :remove_image, :image_cache,menu_materials_attributes: [:id, :amount_used, :material_id, :_destroy,:preparation,:post,
+                                    :remove_image, :tag_list, :image_cache,menu_materials_attributes: [:id, :amount_used, :material_id, :_destroy,:preparation,:post,
                                      :row_order,:gram_quantity,:food_ingredient_id,:calorie,:protein,:lipid,:carbohydrate,:dietary_fiber,
                                      :potassium,:calcium,:vitamin_b1,:vitamin_b2,:vitamin_c,:salt,:magnesium,:iron,:zinc,:copper,:folic_acid,:vitamin_d])
     end

@@ -1,7 +1,7 @@
 class MaterialsController < ApplicationController
   protect_from_forgery :except => [:change_additives]
   def index
-    @search = Material.search(params).includes(:vendor).page(params[:page]).per(30)
+    @search = Material.includes(:vendor,:taggings).search(params).page(params[:page]).per(30)
   end
 
   def new
@@ -85,7 +85,7 @@ class MaterialsController < ApplicationController
 
   private
   def material_params
-    params.require(:material).permit(:name, :order_name, :recipe_unit_quantity, :recipe_unit,:vegetable_flag,:vendor_stock_flag,:storage_location_id,
+    params.require(:material).permit(:name, :order_name, :recipe_unit_quantity, :recipe_unit,:vegetable_flag,:vendor_stock_flag,:storage_location_id, :tag_list,
      :recipe_unit_price, :cost_price, :category, :order_code, :order_unit, :memo, :unused_flag, :vendor_id,:order_unit_quantity,:delivery_deadline,:accounting_unit,:accounting_unit_quantity,
      {allergy:[]},material_food_additives_attributes:[:id,:material_id,:food_additive_id,:_destroy])
   end

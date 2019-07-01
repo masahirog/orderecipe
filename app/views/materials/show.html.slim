@@ -5,39 +5,65 @@ ol.breadcrumb
 .col-md-12 style="margin-bottom:20px;"
   = link_to '食材編集', edit_material_path(@material),class: "btn btn-primary",style:'margin-right:20px;'
   = link_to '使用確認',include_material_materials_path(id:@material.id),class:"btn btn-default"
-.col-md-12.form-group
-  = @material.name
-.col-md-12.form-group
-  = @material.order_name
-.col-md-12.form-group
-  = @material.storage_location_id
-.col-md-12.form-group
-  = @material.unused_flag
-.col-md-12.form-group
-  = @material.category
-.col-md-12.form-group
-  = @material.vegetable_flag
-.col-md-12.form-group
-  = @material.vendor.company_name
-.col-md-12.form-group
-  = @material.vendor_stock_flag
-.col-md-12.form-group style="padding:0;"
-  = "#{@material.delivery_deadline}営業日前"
-.col-md-12.form-group
-  = @material.order_code
-.col-md-12.form-group style="padding:0;"
-  = "#{@material.order_unit_quantity} #{@material.order_unit}"
-.col-md-12.form-group style="padding:0;"
-  ="#{@material.recipe_unit_price} 円"
-.col-md-12.form-group style="padding:0;"
-  = @material.recipe_unit
-.col-md-12.form-group style="padding:0;"
-  = @material.recipe_unit_quantity
-.col-md-12.form-group style="padding:0;"
-  = "#{@material.cost_price} 円"
-.col-md-12.form-group style="padding:0;"
-  = @material.allergy.reject{|e| e == 0}.join("、 ")
-.col-md-12.form-group style="padding:0;"
-  = @material.material_food_additives.map{|fa|fa.food_additive.name}.join("、 ")
-.col-md-12.form-group
-  = @material.memo
+
+.col-md-6
+  table.table
+    tr
+      th.col-md-4 食材名
+      td = @material.name
+    tr
+      th.col-md-4 発注書名
+      td = @material.order_name
+    tr
+      th.col-md-4 使用状況
+      td = '使用終了' if @material.unused_flag == true
+    tr
+      th.col-md-4 保管場所
+      td = @material.storage_location.name
+    tr
+      th.col-md-4 カテゴリー
+      td = @material.category
+    tr
+      th.col-md-4 タグ
+      td
+        - @material.tag_list.each do |tag|
+          h4 style='float:left;margin:0 1px;'
+            span.label.label-primary
+              = link_to tag, materials_path(tag_name: tag), class: "",style:'color:white;'
+
+    tr
+      th.col-md-4 野菜フラグ
+      td = @material.vegetable_flag
+    tr
+      th.col-md-4 仕入先
+      td = @material.vendor.company_name
+    tr
+      th.col-md-4 仕入先在庫状況
+      td = @material.vendor_stock_flag
+    tr
+      th.col-md-4 発注締め切り
+      td = "#{@material.delivery_deadline}営業日前"
+    tr
+      th.col-md-4 発注単位
+      td = "#{@material.order_unit_quantity} #{@material.order_unit}"
+    tr
+      th.col-md-4 価格
+      td ="#{@material.recipe_unit_price} 円"
+    tr
+      th.col-md-4 レシピ単位
+      td = "#{@material.recipe_unit}"
+    tr
+      th.col-md-4 発注量変換
+      td = "#{@material.recipe_unit_quantity} #{@material.recipe_unit}"
+    tr
+      th.col-md-4 単価
+      td = "#{@material.cost_price} 円"
+    tr
+      th.col-md-4 アレルギー
+      td = @material.allergy.reject{|e| e == '0'}.join("、 ")
+    tr
+      th.col-md-4 使用添加物
+      td = @material.material_food_additives.map{|fa|fa.food_additive.name}.join("、 ")
+    tr
+      th.col-md-4 メモ
+      td = @material.memo

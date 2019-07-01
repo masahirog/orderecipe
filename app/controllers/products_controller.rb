@@ -39,7 +39,7 @@ class ProductsController < ApplicationController
   end
 
   def index
-    @search = Product.includes(:brand).search(params).page(params[:page]).per(30)
+    @search = Product.includes(:brand,:taggings).search(params).page(params[:page]).per(30)
   end
 
   def new
@@ -237,7 +237,7 @@ class ProductsController < ApplicationController
   private
     def product_create_update
       params.require(:product).permit(:name,:memo, :management_id, :cook_category,:short_name, :product_type, :sell_price, :description, :contents, :image,:brand_id,:product_category,
-                      :obi_url,:remove_image, :image_cache, :cost_price, product_menus_attributes: [:id, :product_id, :menu_id,:row_order, :_destroy,
+                      :obi_url,:remove_image, :image_cache, :cost_price, :tag_list, product_menus_attributes: [:id, :product_id, :menu_id,:row_order, :_destroy,
                       menu_attributes:[:name ]])
     end
 end

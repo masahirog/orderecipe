@@ -60,6 +60,31 @@ class MasuOrdersController < ApplicationController
       end
     end
   end
+
+  def invoice
+  end
+  def print_invoice
+    date = params[:date]
+    total = params[:total].to_i.to_s(:delimited)
+    to = params[:to]
+    keisho = params[:keisho]
+    tadashi = params[:tadashi]
+    uchiwake = params[:uchiwake]
+    data = [date,to,keisho,total,tadashi,uchiwake]
+    respond_to do |format|
+      format.html
+      format.pdf do
+        pdf = MasuOrderReceiptPdf.new(data)
+        pdf.font "vendor/assets/fonts/ipaexm.ttf"
+        send_data pdf.render,
+        filename:    "#{date}.pdf",
+        type:        "application/pdf",
+        disposition: "inline"
+      end
+    end
+  end
+
+
   def index
     @memo_orders = MasuOrder.where.not(memo:nil).where.not(memo:'').group('start_time').count
     @products = Product.where(brand_id:11)

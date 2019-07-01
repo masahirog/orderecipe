@@ -27,11 +27,11 @@ table.table
   tr style="padding:10px;"
     th 食材・資材名
     th 単価
-    th メモ
-    th 発注単位
     th 仕入先
+    th タグ
+    th メモ
     th
-    th style="text-align:center;" 使用
+    th
   - @search.each do |material|
     tr.materials_li
       td.material_name
@@ -39,15 +39,15 @@ table.table
       td
         = "#{material.cost_price} 円/#{material.recipe_unit}"
       td
-        = material.memo
-      td
-        = material.order_unit_quantity
-        = material.order_unit
-        |  ：
-        = number_with_delimiter(material.recipe_unit_quantity)
-        = material.recipe_unit
-      td
         = material.vendor.company_name
+      td
+        - material.tag_list.each do |tag|
+          h4 style='float:left;margin:0 1px;'
+            span.label.label-primary style='font-weight:normal;'
+              = link_to tag, materials_path(tag_name: tag), class: "",style:'color:white;'
+
+      td
+        = material.memo
       td.unused_flag
         = "使用停止" if material.unused_flag == true
       td style="text-align:center;"

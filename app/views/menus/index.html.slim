@@ -22,6 +22,7 @@ table.table
     tr
       th 確定
       th メニュー名
+      th タグ
       th カテゴリ
       th 画像
       th.text-right 原価(税込)
@@ -32,9 +33,14 @@ table.table
     - @search.each do |menu|
       tr.menus_li
         td
-          = "OK" if menu.confirm_flag == 1
+          = "OK" if menu.confirm_flag == true
         td
           = link_to "#{menu.name}", edit_menu_path(menu)
+        td
+          - menu.tag_list.each do |tag|
+            h4 style='float:left;margin:0 1px;'
+              span.label.label-primary style='font-weight:normal;'
+                = link_to tag, menus_path(tag_name: tag), class: "",style:'color:white;'
         td
           = menu.category
         td

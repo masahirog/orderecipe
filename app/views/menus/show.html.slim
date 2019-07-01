@@ -34,6 +34,13 @@ ol.breadcrumb
       th.active.col-md-4 カテゴリー
       td = @menu.category
     tr
+      th.active.col-md-4 タグ
+      td
+        - @menu.tag_list.each do |tag|
+          h4 style='float:left;margin:0 1px;'
+            span.label.label-primary
+              = link_to tag, menus_path(tag_name: tag), class: "",style:'color:white;'
+    tr
       th.active.col-md-4 アレルギー
       td
         = @arr.join('、')

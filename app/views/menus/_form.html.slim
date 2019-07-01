@@ -16,9 +16,13 @@
   .form-group.col-md-4
     = f.label :food_label_name ,'食品表示名'
     = f.text_field :food_label_name, class: "form-control", id: "food_label_name",style:"width:100%;"
-  .form-group.col-md-3
+  .form-group.col-md-4
     = f.label :category ,'カテゴリー'
     = f.select :category, options_for_select(Menu.categories.keys.to_a,@menu.category),{include_blank: true}, { class: "form-control",style:"width:100%;"}
+  .col-md-12.form-group
+    = f.label :tag_list,"タグ"
+    = f.text_field :tag_list, value: @menu.tag_list.join(','), class: "form-control"
+
   .col-md-4.form-group
     = f.label :recipe ,'調理メモ'
     = f.text_area :recipe, style:"height:10em;width:100%;", class:"form-control"

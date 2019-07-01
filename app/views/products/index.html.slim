@@ -26,14 +26,12 @@ table.table
       th 管理ID
       th style='width:400px;' 弁当名
       th ブランド名
+      th タグ
       th 主調理工程
       th 弁当種類
-      th 売価
-      th 原価
-      th 原価率
-      th 盛付カナ
-      th レシピROMA
-      th csv
+      th.text-right 売価
+      th.text-right 原価
+      th.text-right 原価率
       th 画像
 
   tbody.aaaad
@@ -44,6 +42,12 @@ table.table
         td = product.management_id
         td.product_name = link_to "#{product.name}", "/products/#{product.id}/"
         td = product.brand.name
+        td
+          - product.tag_list.each do |tag|
+            h4 style='float:left;margin:0 1px;'
+              span.label.label-primary style='font-weight:normal;'
+                = link_to tag, products_path(tag_name: tag), class: "",style:'color:white;'
+
         td = product.cook_category
         td = product.product_type
         td.text-right = "#{product.sell_price}円"
@@ -55,10 +59,6 @@ table.table
             span style='color:purple;' = "#{((product.cost_price/product.sell_price)*100).round(1)}%"
           - else
             span style='color:red;' = "#{((product.cost_price/product.sell_price)*100).round(1)}%"
-
-        td = link_to "盛付カナ", serving_kana_products_path(id:product.id), class:"btn btn-default",:target=>"_blank", style:"margin:0 0 0 10px;"
-        td = link_to "ラム", recipe_romaji_products_path(id:product.id), class:"btn btn-default",:target=>"_blank", style:"margin:0 0 0 10px;"
-        td = link_to "CSV", product_path(product,format:'csv'), class: "btn btn-default"
         td = image_tag product.image.thumb.url if product.image.present?
 
 - if @search.size == 0 then

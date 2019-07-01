@@ -1,0 +1,31 @@
+h4 請求書作成
+= form_tag(:controller => "masu_orders", :action => "print_receipt",:format => 'pdf') do
+  .form-group
+    label 日付
+    = date_field_tag :date,Date.tomorrow, class:"form-control"
+  .form-group
+    label 注文番号
+    = text_field_tag :kurumesi_order_id,"", class:"form-control"
+
+  .form-group
+    label 宛名
+    = text_field_tag :to,'', class:"form-control"
+  .form-group
+    label 納品場所
+    = text_field_tag :delivery_place,"", class:"form-control"
+  .form-group
+    label 請求金額
+    = number_field_tag :total,"",class:'form-control', placeholder:"金額"
+  .form-group
+    label 締め日
+    = date_field_tag :closing_date,Date.tomorrow.end_of_month, class:"form-control"
+  .form-group
+    label 支払期限
+    = date_field_tag :due_date,Date.new(Date.tomorrow.year,Date.tomorrow.next_month.month,10), class:"form-control"
+
+  .form-group
+    label 項目1
+    = text_field_tag '',"", class:"form-control"
+
+  .form-group
+    input.btn.btn-success type="button" onclick="submit();" value="印刷" style='width:300px;'

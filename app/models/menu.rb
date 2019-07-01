@@ -1,4 +1,5 @@
 class Menu < ApplicationRecord
+  acts_as_ordered_taggable_on :tags
   mount_uploader :image, ImageUploader
   serialize :used_additives
   has_paper_trail
@@ -21,6 +22,7 @@ class Menu < ApplicationRecord
   def self.search(params)
    if params
      data = Menu.order(id: "DESC").all
+     data = data.tagged_with("#{params[:tag_name]}") if params["tag_name"].present?
      data = data.where(['name LIKE ?', "%#{params["name"]}%"]) if params["name"].present?
      data = data.where(category: params["category"]) if params["category"].present?
      data = data.where(confirm_flag: params["confirm_flag"]) if params["confirm_flag"].present?

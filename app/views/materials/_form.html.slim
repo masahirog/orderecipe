@@ -32,6 +32,11 @@
       = f.select :category, Material.categories.keys.to_a, {}, class: 'form-control'
   .col-md-12.form-group
     .col-md-5
+      = f.label :tag_list,"タグ"
+      = f.text_field :tag_list, value: @material.tag_list.join(','), class: "form-control"
+
+  .col-md-12.form-group
+    .col-md-5
       = f.label :vegetable_flag, "野菜フラグ(Dailyの'野菜多め'の計算に使用する)"
       = f.check_box :vegetable_flag, class: "form-control"
   .col-md-12.form-group
