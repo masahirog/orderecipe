@@ -55,7 +55,7 @@ $(document).on('turbolinks:load', function() {
   }
   if (controller=='materials' && action == 'edit' || controller=='materials' && action == 'new'|| controller=='materials' && action == 'create' || controller=='materials' && action == 'update') {
     $('#material-tags').tagit({
-      fieldName: 'materials[tag_list]',
+      fieldName: 'material[tag_list]',
       singleField: true,
       availableTags: gon.available_tags
       });
@@ -66,7 +66,7 @@ $(document).on('turbolinks:load', function() {
       results = [];
       for (i = 0, len = ref.length; i < len; i++) {
         tag = ref[i];
-        results.push($('#materials-tags').tagit('createTag', tag));
+        results.push($('#material-tags').tagit('createTag', tag));
       }
     }
   }
