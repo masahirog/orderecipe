@@ -53,6 +53,8 @@ class ProductsController < ApplicationController
       @product = Product.new
       @product.product_menus.build(row_order: 0)
     end
+    gon.available_tags = Product.tags_on(:tags).pluck(:name)
+
   end
 
   def show
@@ -70,6 +72,8 @@ class ProductsController < ApplicationController
 
   def create
     @product = Product.new(product_create_update)
+    gon.product_tags = @product.tag_list
+    gon.available_tags = Product.tags_on(:tags).pluck(:name)
     if @product.save
       redirect_to products_path
     else
@@ -82,6 +86,9 @@ class ProductsController < ApplicationController
     @product = Product.includes(:product_menus,{menus: [:menu_materials,:materials]}).find(params[:id])
     @product.product_menus.build  if @product.menus.length == 0
     @allergies = Product.allergy_seiri(@product)
+    gon.product_tags = @product.tag_list
+    gon.available_tags = Product.tags_on(:tags).pluck(:name)
+
   end
 
   def update
@@ -91,6 +98,8 @@ class ProductsController < ApplicationController
     else
       render 'edit'
     end
+    gon.product_tags = @product.tag_list
+    gon.available_tags = Product.tags_on(:tags).pluck(:name)
   end
 
   def serving_kana

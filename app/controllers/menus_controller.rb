@@ -26,12 +26,17 @@ class MenusController < ApplicationController
       @menu.menu_materials.build(row_order: 0)
       @ar = Menu.used_additives(@menu.materials)
     end
+    gon.available_tags = Menu.tags_on(:tags).pluck(:name)
+
   end
 
   def create
     @food_ingredients = FoodIngredient.all
     @materials = Material.where(unused_flag:false)
     @menu = Menu.new(menu_create_update)
+    gon.menu_tags = @menu.tag_list
+    gon.available_tags = Menu.tags_on(:tags).pluck(:name)
+
      if @menu.save
        redirect_to @menu,
        notice: "
@@ -57,6 +62,9 @@ class MenusController < ApplicationController
     end
     @menu.menu_materials.build  if @menu.materials.length == 0
     @ar = Menu.used_additives(@menu.materials)
+    gon.menu_tags = @menu.tag_list
+    gon.available_tags = Menu.tags_on(:tags).pluck(:name)
+
   end
   def update
     @food_ingredients = FoodIngredient.all
@@ -76,6 +84,8 @@ class MenusController < ApplicationController
       @ar = Menu.used_additives(@menu.materials)
       render "edit"
     end
+    gon.menu_tags = @menu.tag_list
+    gon.available_tags = Menu.tags_on(:tags).pluck(:name)
   end
 
   def show

@@ -9,17 +9,20 @@ class MaterialsController < ApplicationController
     @material.material_food_additives.build
     @food_additive = FoodAdditive.new
     @storage_locations = StorageLocation.all
+    gon.available_tags = Material.tags_on(:tags).pluck(:name)
   end
 
   def create
     @material = Material.create(material_params)
-       if @material.save
-         redirect_to @material, notice: "
-         <div class='alert alert-success' role='alert' style='font-size:15px;'>「#{@material.name}」を作成しました：
-         　　続けて食材を作成する：<a href='/materials/new'>新規作成</a></div>".html_safe
-       else
-         render 'new'
-       end
+    gon.material_tags = @material.tag_list
+    gon.available_tags = Material.tags_on(:tags).pluck(:name)
+    if @material.save
+     redirect_to @material, notice: "
+     <div class='alert alert-success' role='alert' style='font-size:15px;'>「#{@material.name}」を作成しました：
+     　　続けて食材を作成する：<a href='/materials/new'>新規作成</a></div>".html_safe
+    else
+     render 'new'
+    end
   end
   def show
     @material = Material.includes(material_food_additives:[:food_additive]).find(params[:id])
@@ -36,6 +39,8 @@ class MaterialsController < ApplicationController
     @material.material_food_additives.build if @material.material_food_additives.length == 0
     @food_additive = FoodAdditive.new
     @storage_locations = StorageLocation.all
+    gon.material_tags = @material.tag_list
+    gon.available_tags = Material.tags_on(:tags).pluck(:name)
   end
 
   def update
@@ -53,6 +58,8 @@ class MaterialsController < ApplicationController
     else
       render "edit"
     end
+    gon.material_tags = @material.tag_list
+    gon.available_tags = Material.tags_on(:tags).pluck(:name)
   end
 
   def include_material

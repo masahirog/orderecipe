@@ -38,9 +38,9 @@
     .col-md-12.form-group
       = f.label :obi_url, "枡々の帯"
       = f.text_field :obi_url, class:"form-control"
-    .col-md-12.form-group
+    .col-md-12.form-group.container
       = f.label :tag_list,"タグ"
-      = f.text_field :tag_list, value: @product.tag_list.join(','), class: "form-control"
+      ul#product-tags style='border-radius:0.25em;'
     .col-md-12.form-group
       = f.label :description, "説明文"
       = f.text_area :description, class:"form-control", style:"height:7em;"

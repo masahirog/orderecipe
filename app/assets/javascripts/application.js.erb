@@ -1,0 +1,111 @@
+//= require rails-ujs
+//= require jquery3
+//= require activestorage
+//= require cocoon
+//= require turbolinks
+//= require jquery-ui
+//= require tag-it
+//= require_tree .
+
+$(document).on("turbolinks:before-cache", function() {
+  if ($(".input_select_product").length) {
+    $('.input_select_product').select2('destroy');
+  }
+  $('#product-tags').tagit('destroy');
+  $('#menu-tags').tagit('destroy');
+  $('#material-tags').tagit('destroy');
+});
+
+$(document).on('turbolinks:load', function() {
+  var controller = $('body').data('controller');
+  var action = $('body').data('action');
+  if (controller=='products' && action == 'edit' || controller=='products' && action == 'new'|| controller=='products' && action == 'create'|| controller=='products' && action == 'update' ) {
+    $('#product-tags').tagit({
+      fieldName: 'product[tag_list]',
+      singleField: true,
+      availableTags: gon.available_tags
+      });
+      //編集時にたぐを表示出来る機能
+    var i, len, ref, results, tag;
+    if (gon.product_tags != null) {
+      ref = gon.product_tags;
+      results = [];
+      for (i = 0, len = ref.length; i < len; i++) {
+        tag = ref[i];
+        results.push($('#product-tags').tagit('createTag', tag));
+      }
+    }
+  }
+  if (controller=='menus' && action == 'edit' || controller=='menus' && action == 'new'|| controller=='menus' && action == 'create'|| controller=='menus' && action == 'update' ) {
+    $('#menu-tags').tagit({
+      fieldName: 'menu[tag_list]',
+      singleField: true,
+      availableTags: gon.available_tags
+      });
+      //編集時にたぐを表示出来る機能
+    var i, len, ref, results, tag;
+    if (gon.menu_tags != null) {
+      ref = gon.menu_tags;
+      results = [];
+      for (i = 0, len = ref.length; i < len; i++) {
+        tag = ref[i];
+        results.push($('#menu-tags').tagit('createTag', tag));
+      }
+    }
+  }
+  if (controller=='materials' && action == 'edit' || controller=='materials' && action == 'new'|| controller=='materials' && action == 'create' || controller=='materials' && action == 'update') {
+    $('#material-tags').tagit({
+      fieldName: 'materials[tag_list]',
+      singleField: true,
+      availableTags: gon.available_tags
+      });
+      //編集時にたぐを表示出来る機能
+    var i, len, ref, results, tag;
+    if (gon.materials_tags != null) {
+      ref = gon.materials_tags;
+      results = [];
+      for (i = 0, len = ref.length; i < len; i++) {
+        tag = ref[i];
+        results.push($('#materials-tags').tagit('createTag', tag));
+      }
+    }
+  }
+
+  $('.masu_order_select_product').select2();
+  $('.add_masu_order_detail').on('click',function(){
+    $('.masu_order_select_product').select2('destroy');
+    setTimeout(function(){
+      $('.masu_order_select_product').select2();
+    },5);
+  });
+
+  $("#masu_order_details_area").on('keyup','.masu_order_details_product_number', function(){
+    calculate_num();
+  });
+
+  $("#masu_order_details_area").on('click','.remove_fields', function(){
+    setTimeout(function(){
+      calculate_num();
+    },5);
+  });
+  function calculate_num(){
+    var sum = 0;
+    $('.masu_order_details_tr:visible').each(function(i){
+      sum += Number($(this).find('.masu_order_details_product_number').val());
+    });
+    $('.masu_order_sum_number').val(sum);
+  }
+
+
+})
+function kanma (number) {
+  var number = parseFloat(number);
+  var number1 = number * 100;
+  // //四捨五入したあと、小数点の位置を元に戻す
+  number1 = Math.round(number1) / 100;
+  var numData = number1.toString().split('.');
+  // 整数部分を3桁カンマ区切りへ
+  numData[0] = Number(numData[0]).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  // 小数部分と結合して返却
+  return numData.join('.');
+};

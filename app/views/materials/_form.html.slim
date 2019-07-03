@@ -33,7 +33,7 @@
   .col-md-12.form-group
     .col-md-5
       = f.label :tag_list,"タグ"
-      = f.text_field :tag_list, value: @material.tag_list.join(','), class: "form-control"
+      ul#material-tags style='border-radius:0.25em;'
 
   .col-md-12.form-group
     .col-md-5
