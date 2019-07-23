@@ -184,12 +184,6 @@ class OrdersController < ApplicationController
     @prev_stocks = {}
     @stock_hash = {}
     @b_hash.each do |key,value|
-      calculated_quantity = value['calculated_order_amount'].round(1)
-      if value['order_unit_quantity'].to_f < 1
-        order_quantity = BigDecimal((calculated_quantity / value['recipe_unit_quantity'].to_f * value['order_unit_quantity'].to_f).to_s).ceil(1)
-      else
-        order_quantity = BigDecimal((calculated_quantity / value['recipe_unit_quantity'].to_f * value['order_unit_quantity'].to_f).to_s).ceil
-      end
       recipe_unit = value['recipe_unit']
       order_unit = value['order_unit']
       a = []
@@ -200,15 +194,25 @@ class OrdersController < ApplicationController
       delivery_date = dead_line.business_days.before(sales_date)
       prev_stock = Stock.where("date < ?", sales_date).where(material_id:key).order("date DESC").first
       @prev_stocks[key] = prev_stock
+      calculated_quantity = value['calculated_order_amount'].round(1)
       if prev_stock.present?
         if prev_stock.end_day_stock < 0
-          @order.order_materials.build(material_id:key,order_quantity:order_quantity,calculated_quantity:calculated_quantity,menu_name:menu_name,recipe_unit:recipe_unit,order_unit:order_unit,order_material_memo:order_material_memo,delivery_date:delivery_date)
+          shortage_stock = (-1 * prev_stock.end_day_stock).round(1)
+          if value['order_unit_quantity'].to_f < 1
+            i = 1
+          else
+            i = 0
+          end
+          order_quantity = BigDecimal((shortage_stock / value['recipe_unit_quantity'].to_f * value['order_unit_quantity'].to_f).to_s).ceil(i)
         else
-          @order.order_materials.build(material_id:key,order_quantity:order_quantity,calculated_quantity:calculated_quantity,menu_name:menu_name,recipe_unit:recipe_unit,order_unit:order_unit,order_material_memo:order_material_memo,delivery_date:delivery_date,un_order_flag:true)
+          un_order_flag = true
+          order_quantity = 0
         end
       else
-        @order.order_materials.build(material_id:key,order_quantity:order_quantity,calculated_quantity:calculated_quantity,menu_name:menu_name,recipe_unit:recipe_unit,order_unit:order_unit,order_material_memo:order_material_memo,delivery_date:delivery_date)
+        order_quantity = BigDecimal((calculated_quantity / value['recipe_unit_quantity'].to_f * value['order_unit_quantity'].to_f).to_s).ceil
+        un_order_flag = false
       end
+      @order.order_materials.build(material_id:key,order_quantity:order_quantity,calculated_quantity:calculated_quantity,menu_name:menu_name,recipe_unit:recipe_unit,order_unit:order_unit,order_material_memo:order_material_memo,delivery_date:delivery_date,un_order_flag:un_order_flag)
       # 在庫が必要である日==前日
       date = sales_date - 1
       @stocks = Stock.includes(:material).where(material_id:key,date:(date - 10)..(date + 5)).order('date ASC')
