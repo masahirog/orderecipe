@@ -4,7 +4,6 @@ h4
 table.table
   thead
     tr
-      th.text-right.col-md-1
       th.text-right.col-md-1 日付
       th.text-right.col-md-2  在庫（日初時）
       th.text-right.col-md-2  使用量
@@ -12,79 +11,13 @@ table.table
       th.text-right.col-md-2  納品量
       th.text-right.col-md-2  在庫（日終時）
       th.text-right.col-md-1
-      th.text-right.col-md-1
-  tbody
+  tbody.add_point
     - @dates.each do |date|
       - stock = @stocks_hash[date]
       - if stock.present?
-        - if date >= Date.today
-          tr style='background-color:#ffebcd;'
-            td.text-right
-              span 予想！
-            td.text-right
-              = stock.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[stock.date.wday]})")
-            td.text-right
-              = "#{(stock.start_day_stock/@material.accounting_unit_quantity).floor(1)} #{@unit}"
-            td.text-right
-              - if stock.used_amount == 0
-                span style='color:silver;' 0
-              - else
-                span style='font-weight:bold;font-size:16px;color:red;' = "- #{(stock.used_amount/@material.accounting_unit_quantity).ceil(1)} #{@unit}"
-            td
-              - if @hash_date[date]
-                span data-html="true" style='color:blue;margin-left:10px;' class="glyphicon glyphicon-eye-open" aria-hidden="true"  data-toggle="tooltip" data-placement="top" title="#{@hash_date[date]}"
-            td.text-right
-              - if stock.delivery_amount == 0
-                span style='color:silver;' 0
-              - else
-                span style='font-weight:bold;font-size:16px;color:blue;' = "+ #{(stock.delivery_amount/@material.accounting_unit_quantity).floor(1)} #{@unit}"
-            - if stock.inventory_flag == true
-              td.text-right style='font-weight:bold;'
-                = "#{(stock.end_day_stock/@material.accounting_unit_quantity).floor(1)} #{@unit}"
-              td
-                span class="label label-success" 棚卸し
-            - else
-              td.text-right
-                = "#{(stock.end_day_stock/@material.accounting_unit_quantity).floor(1)} #{@unit}"
-              td
-            td
-              = link_to '棚卸し編集', edit_stock_path(stock),class:'btn btn-default btn-sm'
-        - else
-          tr
-            td.text-right
-            td.text-right
-              = stock.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[stock.date.wday]})")
-            td.text-right
-              = "#{(stock.start_day_stock/@material.accounting_unit_quantity).floor(1)} #{@unit}"
-            td.text-right
-              - if stock.used_amount == 0
-                span style='color:silver;' 0
-              - else
-                span style='font-weight:bold;font-size:16px;color:red;' = "- #{(stock.used_amount/@material.accounting_unit_quantity).ceil(1)}  #{@unit}"
-            td
-              - if @hash_date[date]
-                span data-html="true" style='color:blue;margin-left:10px;' class="glyphicon glyphicon-eye-open" aria-hidden="true"  data-toggle="tooltip" data-placement="top" title="#{@hash_date[date]}"
-
-
-            td.text-right
-              - if stock.delivery_amount == 0
-                span style='color:silver;' 0
-              - else
-                span style='font-weight:bold;font-size:16px;color:blue;' = "+ #{(stock.delivery_amount/@material.accounting_unit_quantity).floor(1)}  #{@unit}"
-            - if stock.inventory_flag == true
-              td.text-right style='font-weight:bold;'
-                = "#{(stock.end_day_stock/@material.accounting_unit_quantity).floor(1)} #{@unit}"
-              td
-                span class="label label-success" 棚卸し
-            - else
-              td.text-right
-                = "#{(stock.end_day_stock/@material.accounting_unit_quantity).floor(1)} #{@unit}"
-              td
-            td
-              = link_to '棚卸し編集', edit_stock_path(stock),class:'btn btn-default btn-sm'
+        = render partial: "history_tr", locals: { date:date,stock:stock }
       - else
-          tr
-            td.text-right
+          tr.inventory_today_tr
             td.text-right
               = date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})")
             td.text-right
@@ -92,9 +25,15 @@ table.table
             td
             td.text-right
             td.text-right
+              = form_with(model: Stock.new, data: {remote: true}) do |f|
+                = f.hidden_field :history_flag,value:true
+                = f.hidden_field :material_id,value:@material.id
+                = f.hidden_field :date,value:date
+                = f.hidden_field :inventory_flag,value:true
+                span.accounting_unit_span style='float:right;padding-top:10px;' = @material.accounting_unit
+                = f.number_field :end_day_stock_accounting_unit,value:'',class:'input_inventory_stock form-control',style:'width:120px;float:right;margin-right:10px;', :step => 0.01
+
             td
-            td
-              = link_to '棚卸し作成', new_stock_path(date:date,material_id:@material.id),class:'btn btn-primary btn-sm'
   / = paginate @stocks
 sass:
   .stock-tooltip

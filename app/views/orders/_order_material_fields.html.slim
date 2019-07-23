@@ -44,7 +44,7 @@ tr.order_materials_tr.nested-fields
 
   td.order_material_memo
     = f.text_field :order_material_memo,class:'form-control'
-    div style="padding:3px 0 0 8px;color:#A9A9A9;font-size:10px;"
+    div style="padding:3px 0 0 8px;color:gray;font-size:10px;"
       - if controller.action_name == "new"
         = f.object.menu_name
         = f.hidden_field :menu_name

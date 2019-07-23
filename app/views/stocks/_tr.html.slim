@@ -1,0 +1,39 @@
+tr class="inventory_tr_#{material.id}"
+  td
+    = material.storage_location.name
+  td
+    = link_to material.name,material,target:'_blank',class:'not_alert'
+  td
+    = material.vendor.company_name
+  td.rireki
+    - if @stock_hash[material.id].present?
+      = link_to history_stocks_path(material_id:material.id),target:'_blank',class:'stock-tooltip not_alert' do
+        span.rireki_span data-html="true" style='color:blue;margin-left:10px;' class="glyphicon glyphicon-new-window" aria-hidden="true"  data-toggle="tooltip" data-placement="top" title="<table class='table tooltip-table'><thead><tr><th style='text-align: center'>日付</th><th style='text-align: center'>納品</th><th style='text-align: center'>使用</th><th style='text-align: center'>在庫</th><th></th></tr></thead><tbody>#{@stock_hash[material.id].flatten.join('')}</tbody></table>"
+
+  - if @stocks_hash[material.id]
+    td.start_day_stock_td = "#{(@stocks_hash[material.id].start_day_stock/material.accounting_unit_quantity).floor(1)} #{material.accounting_unit}"
+    td.used_amount_td style='color:red;' = "- #{(@stocks_hash[material.id].used_amount/material.accounting_unit_quantity).ceil(1)} #{material.accounting_unit}"
+    td.delivery_amount_td style='color:blue;' = "+ #{(@stocks_hash[material.id].delivery_amount/material.accounting_unit_quantity).floor(1)} #{material.accounting_unit}"
+    td
+      = form_with(model: @stocks_hash[material.id], data: {remote: true}) do |f|
+        = f.hidden_field :inventory_flag,value:true
+        = f.number_field :end_day_stock_accounting_unit,value:(@stocks_hash[material.id].end_day_stock/material.accounting_unit_quantity).floor(1),class:'input_inventory_stock form-control',style:'width:120px;float:left;margin-right:10px;', :step => 0.01
+        span.accounting_unit_span style='float:left;padding-top:10px;' = material.accounting_unit
+    td.inventory_flag_td
+      - if @stocks_hash[material.id].inventory_flag == true
+        span class="label label-success" 棚卸し
+    td.save_flag
+      span class="label label-danger" style='display:none;' 更新！
+  - else
+    td.start_day_stock_td
+    td.used_amount_td
+    td.delivery_amount_td
+    td.end_day_stock_td
+      = form_with(model: Stock.new, data: {remote: true}) do |f|
+        = f.hidden_field :material_id,value:material.id
+        = f.hidden_field :date,value:params[:date]
+        = f.hidden_field :inventory_flag,value:true
+        = f.number_field :end_day_stock_accounting_unit,value:'',class:'input_inventory_stock form-control',style:'width:120px;float:left;margin-right:10px;', :step => 0.01
+        span.accounting_unit_span style='float:left;padding-top:10px;' = material.accounting_unit
+    td
+    td

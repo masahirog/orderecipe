@@ -133,66 +133,74 @@ class OrdersController < ApplicationController
         end
         product.menus.each do |menu|
           menu.menu_materials.each do |menu_material|
-            unless menu_material.material.vendor_id == 111 || menu_material.material.vendor_id == 171 || menu_material.material.vendor_id == 21
-              hash = {}
-              hash['material_id'] = menu_material.material_id
-              hash['calculated_order_amount'] = (po[:num].to_f * menu_material.amount_used)
-              hash["menu_name"] = menu.name
-              hash["recipe_unit_quantity"] = menu_material.material.recipe_unit_quantity
-              hash["order_unit_quantity"] = menu_material.material.order_unit_quantity
-              hash["vendor_id"] = menu_material.material.vendor_id
-              hash['recipe_unit'] = menu_material.material.recipe_unit
-              hash['order_unit'] = menu_material.material.order_unit
-              hash['delivery_deadline'] = menu_material.material.delivery_deadline
-              hash['unit_amount'] = "#{menu_material.material.order_unit_quantity} #{menu_material.material.order_unit}：#{menu_material.material.recipe_unit_quantity} #{menu_material.material.recipe_unit}"
-              @arr << hash
+            hash = {}
+            hash['make_num'] = po[:num]
+            hash['product_id'] = [product.id]
+            hash['menu_num'] = {menu.name => po[:num]}
+            hash['material_id'] = menu_material.material_id
+            hash['calculated_order_amount'] = (po[:num].to_f * menu_material.amount_used)
+            hash["recipe_unit_quantity"] = menu_material.material.recipe_unit_quantity
+            hash["order_unit_quantity"] = menu_material.material.order_unit_quantity
+            hash["vendor_id"] = menu_material.material.vendor_id
+            hash['recipe_unit'] = menu_material.material.recipe_unit
+            hash['order_unit'] = menu_material.material.order_unit
+            hash['delivery_deadline'] = menu_material.material.delivery_deadline
+            if hash['vendor_id'] == 141 || hash['vendor_id'] == 11 || hash['vendor_id'] == 161
+              hash['order_material_memo'] = "#{menu_material.material.order_unit_quantity} #{menu_material.material.order_unit}：#{menu_material.material.recipe_unit_quantity} #{menu_material.material.recipe_unit}"
+            else
+              hash['order_material_memo'] =''
             end
+            @arr << hash
           end
         end
       end
     end
     @b_hash = Hash.new { |h,k| h[k] = {} }
     @arr.sort_by! { |a| a['vendor_id'] }.each do |info|
-      if info['vendor_id'] == 121 || info['vendor_id'] == 151
-        if @b_hash[info['material_id']].present?
-          @b_hash[info['material_id']] << info
+      if @b_hash[info['material_id']].present?
+        if @b_hash[info['material_id']]['product_id'].include?(info['product_id'])
+          if @b_hash[info['material_id']]['menu_num'][info["menu_num"].keys[0]].present?
+            @b_hash[info['material_id']]['calculated_order_amount'] += info['calculated_order_amount']
+            @b_hash[info['material_id']]['menu_num'][info["menu_num"].keys[0]] += info['menu_num'].values[0]
+          else
+            @b_hash[info['material_id']]['calculated_order_amount'] += info['calculated_order_amount']
+            @b_hash[info['material_id']]['menu_num'][info["menu_num"].keys[0]] = info['menu_num'].values[0]
+          end
         else
-          @b_hash[info['material_id']] = [info]
+          if @b_hash[info['material_id']]['menu_num'][info["menu_num"].keys[0]].present?
+            @b_hash[info['material_id']]['calculated_order_amount'] += info['calculated_order_amount']
+            @b_hash[info['material_id']]['menu_num'][info["menu_num"].keys[0]] += info['menu_num'].values[0]
+            @b_hash[info['material_id']]['product_id'] << info['product_id'][0]
+          else
+            @b_hash[info['material_id']]['calculated_order_amount'] += info['calculated_order_amount']
+            @b_hash[info['material_id']]['menu_num'][info["menu_num"].keys[0]] = info['menu_num'].values[0]
+            @b_hash[info['material_id']]['product_id'] << info['product_id'][0]
+          end
         end
       else
-        if @b_hash[info['material_id']].present?
-          @b_hash[info['material_id']][0]['calculated_order_amount'] += info['calculated_order_amount']
-
-          @b_hash[info['material_id']][0]['menu_name'] += "、" + info['menu_name']
-        else
-          @b_hash[info['material_id']] = [info]
-        end
+        @b_hash[info['material_id']] = info
       end
     end
     @prev_stocks = {}
     @stock_hash = {}
     @b_hash.each do |key,value|
-      value.each do |hash|
-        calculated_quantity = hash['calculated_order_amount'].round(1)
-        if hash['order_unit_quantity'].to_f < 1
-          order_quantity = BigDecimal((calculated_quantity / hash['recipe_unit_quantity'].to_f * hash['order_unit_quantity'].to_f).to_s).ceil(1)
-        else
-          order_quantity = BigDecimal((calculated_quantity / hash['recipe_unit_quantity'].to_f * hash['order_unit_quantity'].to_f).to_s).ceil
-        end
-        recipe_unit = hash['recipe_unit']
-        order_unit = hash['order_unit']
-        menu_name = hash['menu_name']
-        unit_amount = hash['unit_amount']
-        dead_line = hash['delivery_deadline']
-        delivery_date = dead_line.business_days.before(sales_date)
-        if hash['vendor_id'] == 141 || hash['vendor_id'] == 11 || hash['vendor_id'] == 161
-          @order.order_materials.build(material_id:key,order_quantity:order_quantity,calculated_quantity:calculated_quantity,menu_name:menu_name,recipe_unit:recipe_unit,order_unit:order_unit,order_material_memo:unit_amount,delivery_date:delivery_date)
-        else
-          @order.order_materials.build(material_id:key,order_quantity:order_quantity,calculated_quantity:calculated_quantity,menu_name:menu_name,recipe_unit:recipe_unit,order_unit:order_unit,delivery_date:delivery_date)
-        end
-        prev_stock = Stock.where("date < ?", sales_date).where(material_id:key).order("date DESC").first
-        @prev_stocks[key] = prev_stock
+      calculated_quantity = value['calculated_order_amount'].round(1)
+      if value['order_unit_quantity'].to_f < 1
+        order_quantity = BigDecimal((calculated_quantity / value['recipe_unit_quantity'].to_f * value['order_unit_quantity'].to_f).to_s).ceil(1)
+      else
+        order_quantity = BigDecimal((calculated_quantity / value['recipe_unit_quantity'].to_f * value['order_unit_quantity'].to_f).to_s).ceil
       end
+      recipe_unit = value['recipe_unit']
+      order_unit = value['order_unit']
+      a = []
+      value['menu_num'].each{|menu_name, num|a << "#{menu_name}【#{num}食】"}
+      menu_name = a.join(',')
+      order_material_memo = value['order_material_memo']
+      dead_line = value['delivery_deadline']
+      delivery_date = dead_line.business_days.before(sales_date)
+      @order.order_materials.build(material_id:key,order_quantity:order_quantity,calculated_quantity:calculated_quantity,menu_name:menu_name,recipe_unit:recipe_unit,order_unit:order_unit,order_material_memo:order_material_memo,delivery_date:delivery_date)
+      prev_stock = Stock.where("date < ?", sales_date).where(material_id:key).order("date DESC").first
+      @prev_stocks[key] = prev_stock
       today = Date.today
       @stocks = Stock.includes(:material).where(material_id:key,date:(today - 5)..(today + 10)).order('date ASC')
 
@@ -223,35 +231,6 @@ class OrdersController < ApplicationController
           ["<tr><td>#{stock.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[stock.date.wday]})")}</td>#{delivery_amount}#{used_amount}#{end_day_stock}#{inventory}</tr>"]
         end
       end
-
-
-      # @stock_hash[key] = @stocks.map do |stock|
-      #   if stock.used_amount == 0
-      #     used_amount = "<td style='color:silver;'>0</td>"
-      #   else
-      #     used_amount = "<td style='color:red;'>- #{stock.used_amount.round(2)}#{stock.material.order_unit}</td>"
-      #   end
-      #   if stock.delivery_amount == 0
-      #     delivery_amount = "<td style='color:silver;'>0</td>"
-      #   else
-      #     delivery_amount = "<td style='color:blue;'>+ #{stock.delivery_amount.round(2)}#{stock.material.order_unit}</td>"
-      #   end
-      #   if stock.end_day_stock == 0
-      #     end_day_stock = "<td style='color:silver;'>0</td>"
-      #   else
-      #     end_day_stock = "<td style=''>#{stock.end_day_stock.round(2)}#{stock.material.order_unit}</td>"
-      #   end
-      #   if stock.inventory_flag == true
-      #     inventory = "<td><span class='label label-success'>棚卸し</span></td>"
-      #   else
-      #     inventory = "<td></td>"
-      #   end
-      #   if stock.date >= Date.today
-      #     ["<tr style='background-color:#ffebcd;'><td>#{stock.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[stock.date.wday]})")}</td>#{delivery_amount}#{used_amount}#{end_day_stock}#{inventory}</tr>"]
-      #   else
-      #     ["<tr><td>#{stock.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[stock.date.wday]})")}</td>#{delivery_amount}#{used_amount}#{end_day_stock}#{inventory}</tr>"]
-      #   end
-      # end
     end
     @materials = Material.where(unused_flag:false)
     @vendors = @order.order_materials.map{|om|[om.material.vendor.company_name,om.material.vendor.id]}.uniq

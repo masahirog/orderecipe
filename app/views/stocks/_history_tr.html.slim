@@ -1,0 +1,27 @@
+tr class="inventory_tr_#{stock.id}"
+  td.text-right
+    = stock.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[stock.date.wday]})")
+  td.text-right
+    = "#{(stock.start_day_stock/@material.accounting_unit_quantity).floor(1)} #{@unit}"
+  td.text-right
+    - if stock.used_amount == 0
+      span style='color:silver;' 0
+    - else
+      span style='font-weight:bold;font-size:16px;color:red;' = "- #{(stock.used_amount/@material.accounting_unit_quantity).ceil(1)} #{@unit}"
+  td
+    - if @hash_date[date]
+      span data-html="true" style='color:blue;margin-left:10px;' class="glyphicon glyphicon-eye-open" aria-hidden="true"  data-toggle="tooltip" data-placement="top" title="#{@hash_date[date]}"
+  td.text-right
+    - if stock.delivery_amount == 0
+      span style='color:silver;' 0
+    - else
+      span style='font-weight:bold;font-size:16px;color:blue;' = "+ #{(stock.delivery_amount/@material.accounting_unit_quantity).floor(1)} #{@unit}"
+  td style='font-weight:bold;'
+    = form_with(model: stock, data: {remote: true}) do |f|
+      = f.hidden_field :history_flag,value:true
+      = f.hidden_field :inventory_flag,value:true
+      span.accounting_unit_span style='float:right;padding-top:10px;' = @material.accounting_unit
+      = f.number_field :end_day_stock_accounting_unit,value:(stock.end_day_stock/@material.accounting_unit_quantity).floor(1),class:'input_inventory_stock form-control',style:'width:120px;float:right;margin-right:10px;', :step => 0.01
+  td
+    - if stock.inventory_flag == true
+      span class="label label-success" 棚卸し

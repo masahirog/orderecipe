@@ -3,74 +3,27 @@
   = text_field_tag :name, params[:name], class:"form-control",placeholder:'食材・資材名',style:'width:200px;float:left;margin-right:20px;'
   = select_tag :storage_location_id, options_from_collection_for_select(@storage_locations, :id, :name,params[:storage_location_id]), class: "form-control",style:'width:200px;float:left;margin-right:20px;',include_blank:true
   = select_tag :vendor_id, options_from_collection_for_select(Vendor.all, :id, :company_name,params[:vendor_id]),include_blank: true, class: "form-control",style:'width:200px;float:left;margin-right:20px;'
-  = submit_tag "検索" ,class:"btn btn-primary",style:'float:left;margin-right:20px;',data:{confirm:'入力した内容は保存しましたか？'}
-= form_tag inventory_update_stocks_path, method: :put do
-  = hidden_field_tag :date,params[:date]
-  = hidden_field_tag :name,params[:name]
-  = hidden_field_tag :page,params[:page]
-  = hidden_field_tag :storage_location_id,params[:storage_location_id]
-  = hidden_field_tag :vendor_id,params[:vendor_id]
-  input type="button" onclick="submit();" value="保存する" class='btn btn-success pull-right'
-
-  table.table
-    thead
-      tr
-        th 保管
-        th 食材名
-        th 業者名
-        th 変更履歴
-        th 日初在庫
-        th 使用量
-        th 納品量
-        th 日終在庫
-        th
-    tbody
-      - @materials.each do |material|
-        tr
-          td
-            = material.storage_location.name
-          td
-            = link_to material.name,material,target:'_blank',class:'not_alert'
-          td
-            = material.vendor.company_name
-          td
-            - if @stock_hash[material.id].present?
-              = link_to history_stocks_path(material_id:material.id),target:'_blank',class:'stock-tooltip not_alert' do
-                span data-html="true" style='color:blue;margin-left:10px;' class="glyphicon glyphicon-new-window" aria-hidden="true"  data-toggle="tooltip" data-placement="top" title="<table class='table tooltip-table'><thead><tr><th style='text-align: center'>日付</th><th style='text-align: center'>納品</th><th style='text-align: center'>使用</th><th style='text-align: center'>在庫</th><th></th></tr></thead><tbody>#{@stock_hash[material.id].flatten.join('')}</tbody></table>"
-
-          - if @stocks_hash[material.id]
-            td = "#{(@stocks_hash[material.id].start_day_stock/material.accounting_unit_quantity).floor(1)} #{material.accounting_unit}"
-            td style='color:red;' = "- #{(@stocks_hash[material.id].used_amount/material.accounting_unit_quantity).ceil(1)} #{material.accounting_unit}"
-            td style='color:blue;' = "+ #{(@stocks_hash[material.id].delivery_amount/material.accounting_unit_quantity).floor(1)} #{material.accounting_unit}"
-            td
-              = number_field_tag "stock[#{material.id}][end_day_stock]",(@stocks_hash[material.id].end_day_stock/material.accounting_unit_quantity).floor(1),class:'form-control',style:'width:120px;float:left;margin-right:10px;', :step => 0.01
-              span style='float:left;padding-top:10px;' = material.accounting_unit
-            td
-              - if @stocks_hash[material.id].inventory_flag == true
-                span class="label label-success" 棚卸し
-          - else
-            td
-            td
-            td
-            td
-              = number_field_tag "stock[#{material.id}][end_day_stock]","",class:'form-control',style:'width:120px;float:left;margin-right:10px;', :step => 0.01
-              span style='float:left;padding-top:10px;' = material.order_unit
-            td
+  = submit_tag "検索" ,class:"btn btn-primary",style:'float:left;margin-right:20px;'
+= link_to '棚卸シート印刷',inventory_sheet_stocks_path(date:params[:date],storage_location_id:params[:storage_location_id],vendor_id:params[:vendor_id],format:'pdf'),class:'btn btn-default',target:'_blank'
+table.table
+  thead
+    tr
+      th 保管場所
+      th 食材名
+      th 業者名
+      th 変更履歴
+      th 日初在庫
+      th 使用量
+      th 納品量
+      th 日終在庫
+      th
+      th
+  tbody
+    - @materials.each do |material|
+      = render partial: "tr", locals: { material:material }
 
 
 = paginate @materials
-javascript:
-  $(function(){
-    $("a").not('.not_alert').on('click',function(event){
-       event.preventDefault();
-       var linkUrl = $(this).attr('href');
-       if(confirm('ページを移動してOKですか？入力した内容はページ移動前に一度保存をしてください！')) {
-         location.href=linkUrl;
-       } else {
-         return false;
-       }
-    });
-  })
 sass:
   .stock-tooltip
     .tooltip
