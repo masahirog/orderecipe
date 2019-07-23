@@ -198,12 +198,20 @@ class OrdersController < ApplicationController
       order_material_memo = value['order_material_memo']
       dead_line = value['delivery_deadline']
       delivery_date = dead_line.business_days.before(sales_date)
-      @order.order_materials.build(material_id:key,order_quantity:order_quantity,calculated_quantity:calculated_quantity,menu_name:menu_name,recipe_unit:recipe_unit,order_unit:order_unit,order_material_memo:order_material_memo,delivery_date:delivery_date)
       prev_stock = Stock.where("date < ?", sales_date).where(material_id:key).order("date DESC").first
       @prev_stocks[key] = prev_stock
-      today = Date.today
-      @stocks = Stock.includes(:material).where(material_id:key,date:(today - 5)..(today + 10)).order('date ASC')
-
+      if prev_stock.present?
+        if prev_stock.end_day_stock < 0
+          @order.order_materials.build(material_id:key,order_quantity:order_quantity,calculated_quantity:calculated_quantity,menu_name:menu_name,recipe_unit:recipe_unit,order_unit:order_unit,order_material_memo:order_material_memo,delivery_date:delivery_date)
+        else
+          @order.order_materials.build(material_id:key,order_quantity:order_quantity,calculated_quantity:calculated_quantity,menu_name:menu_name,recipe_unit:recipe_unit,order_unit:order_unit,order_material_memo:order_material_memo,delivery_date:delivery_date,un_order_flag:true)
+        end
+      else
+        @order.order_materials.build(material_id:key,order_quantity:order_quantity,calculated_quantity:calculated_quantity,menu_name:menu_name,recipe_unit:recipe_unit,order_unit:order_unit,order_material_memo:order_material_memo,delivery_date:delivery_date)
+      end
+      # 在庫が必要である日==前日
+      date = sales_date - 1
+      @stocks = Stock.includes(:material).where(material_id:key,date:(date - 10)..(date + 5)).order('date ASC')
       @stock_hash[key] = @stocks.map do |stock|
         if stock.used_amount == 0
           used_amount = "<td style='color:silver;'>0</td>"
@@ -225,7 +233,7 @@ class OrdersController < ApplicationController
         else
           inventory = "<td></td>"
         end
-        if stock.date >= today
+        if stock.date == date
           ["<tr style='background-color:#ffebcd;'><td>#{stock.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[stock.date.wday]})")}</td>#{delivery_amount}#{used_amount}#{end_day_stock}#{inventory}</tr>"]
         else
           ["<tr><td>#{stock.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[stock.date.wday]})")}</td>#{delivery_amount}#{used_amount}#{end_day_stock}#{inventory}</tr>"]

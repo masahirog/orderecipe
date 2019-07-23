@@ -65,7 +65,7 @@
     .box26.clearfix
       span class="box-title" 発注最小ロット、単位と価格
       = f.text_field :order_unit_quantity,class:"input_order_unit_quantity form-control text-right",placeholder:1,style:'width:140px;float:left;margin-right:5px;'
-      = f.select :order_unit, ["kg","p/c", "c/s","缶", "束", "枚","個","本"],{}, { class: "form-control input_order_unit",style:'width:70px;float:left;'}
+      = f.select :order_unit, ["kg","p/c", "c/s","箱","缶", "束", "枚","個","本"],{}, { class: "form-control input_order_unit",style:'width:70px;float:left;'}
       span style='padding:15px 15px 0 15px;float:left;' あたり
       = f.text_field :recipe_unit_price, class:'form-control',style:'width:140px;float:left;'
       span style='padding:15px 0 0 15px;float:left;' 円
@@ -84,7 +84,7 @@
 
     .box26.clearfix
       span class="box-title" 計上時の使用単位（在庫管理時の単位）
-      = f.select :accounting_unit, ["p/c","kg","袋","本","枚","個", "c/s","缶", "束","ml","g"],{}, { class: "input_accounting_unit form-control",style:'float:left;width:150px;'}
+      = f.select :accounting_unit, ["p/c","kg","袋","本","枚","個", "c/s","箱","缶", "束","ml","g"],{}, { class: "input_accounting_unit form-control",style:'float:left;width:150px;'}
       span.accounting_unit_quantity_label style='float:left;padding:13px 5px 0 50px;'
       span style='float:left;padding:15px 10px 0 0;' あたり
       = f.text_field :accounting_unit_quantity, class:'form-control',placeholder:1,style:'float:left;width:150px;'
