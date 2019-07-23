@@ -30,7 +30,10 @@ tr.order_materials_tr.nested-fields
       .text-right style="float:left;width:50%;"
         span class="stock_yoso_#{f.object.material_id} text-right"
           - if @prev_stocks[f.object.material_id]
-            = "#{(@prev_stocks[f.object.material_id].end_day_stock/f.object.material.accounting_unit_quantity).floor(1)} #{f.object.material.accounting_unit}（#{@prev_stocks[f.object.material_id].end_day_stock.floor.to_s(:delimited)}#{f.object.material.recipe_unit}）"
+            - if @prev_stocks[f.object.material_id].end_day_stock < 0
+              span style='color:red;' = "#{(@prev_stocks[f.object.material_id].end_day_stock/f.object.material.accounting_unit_quantity).floor(1)} #{f.object.material.accounting_unit} "
+            - else
+              span style='color:lime;' = "#{(@prev_stocks[f.object.material_id].end_day_stock/f.object.material.accounting_unit_quantity).floor(1)} #{f.object.material.accounting_unit} "
           - else
             |0
         - if f.object.material_id.present?
