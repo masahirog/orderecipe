@@ -144,7 +144,7 @@ class MasuOrdersController < ApplicationController
     end
   end
   def new
-    @products = Product.where(brand_id:11)
+    @products = Product.where(brand_id:[11,21])
     @masu_order = MasuOrder.new
     @masu_order.masu_order_details.build
   end
