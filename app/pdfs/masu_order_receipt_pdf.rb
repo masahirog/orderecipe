@@ -1,4 +1,4 @@
-class MasuOrderReceiptPdf < Prawn::Document
+class KurumesiOrderReceiptPdf < Prawn::Document
   def initialize(data)
     super(
       page_size: 'A4',

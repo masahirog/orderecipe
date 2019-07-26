@@ -1,11 +1,11 @@
 h4 請求書作成
-= form_tag(:controller => "masu_orders", :action => "print_receipt",:format => 'pdf') do
+= form_tag(:controller => "kurumesi_orders", :action => "print_receipt",:format => 'pdf') do
   .form-group
     label 日付
     = date_field_tag :date,Date.tomorrow, class:"form-control"
   .form-group
     label 注文番号
-    = text_field_tag :kurumesi_order_id,"", class:"form-control"
+    = text_field_tag :management_id,"", class:"form-control"
 
   .form-group
     label 宛名

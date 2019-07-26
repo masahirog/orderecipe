@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_01_222742) do
+ActiveRecord::Schema.define(version: 2019_07_26_070953) do
 
   create_table "brands", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name", null: false
@@ -72,32 +72,33 @@ ActiveRecord::Schema.define(version: 2019_07_01_222742) do
   end
 
   create_table "kurumesi_mails", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "masu_order_id"
+    t.integer "kurumesi_order_id"
     t.string "subject"
     t.text "body"
     t.integer "summary"
     t.datetime "recieved_datetime"
-    t.boolean "masu_order_reflect_flag", null: false
+    t.boolean "kurumesi_order_reflect_flag", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "masu_order_details", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "masu_order_id", null: false
+  create_table "kurumesi_order_details", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "kurumesi_order_id", null: false
     t.integer "product_id", null: false
     t.integer "number", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "masu_orders", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "kurumesi_orders", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.date "start_time", null: false
-    t.integer "kurumesi_order_id", null: false
+    t.integer "management_id", null: false
     t.time "pick_time"
     t.integer "payment", default: 0, null: false
     t.boolean "canceled_flag", default: false, null: false
     t.integer "billed_amount", default: 0, null: false
     t.text "memo"
+    t.integer "brand_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

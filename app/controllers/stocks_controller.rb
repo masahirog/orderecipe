@@ -229,7 +229,7 @@ class StocksController < ApplicationController
     product_ids = ProductMenu.where(menu_id:menu_ids).map{|pm|pm.product_id}.uniq
     @dates.each do |date|
       next_date = date + 1
-      MasuOrderDetail.joins(:masu_order).where(:masu_orders => {start_time:next_date}).where(product_id:product_ids).map do |mod|
+      KurumesiOrderDetail.joins(:kurumesi_order).where(:kurumesi_orders => {start_time:next_date}).where(product_id:product_ids).map do |mod|
         if @hash[mod.product_id].present?
           @hash[mod.product_id] += mod.number.to_i
         else

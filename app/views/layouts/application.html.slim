@@ -33,14 +33,14 @@ html
                 li.menu_li
                   = link_to "将軍献立",daily_menus_path
                 li.menu_li
-                  = link_to "枡々オーダー",masu_orders_path
+                  = link_to "くるめしオーダー",kurumesi_orders_path
                 li.dropdown
                   a.dropdown-toggle href="#" data-toggle="dropdown" role="button"
                     |発注
                     span.caret
                   ul.dropdown-menu role="menu"
                     li = link_to "発注",orders_path
-                    li = link_to "枡々備品手配","https://docs.google.com/spreadsheets/d/1KivYZ3IIo7ySJBZklBwWRuxZqtFDs-cVQ2fTcBjShM0/edit#gid=104376609",target:'_blank'
+                    li = link_to "くるめし備品手配","https://docs.google.com/spreadsheets/d/1KivYZ3IIo7ySJBZklBwWRuxZqtFDs-cVQ2fTcBjShM0/edit#gid=104376609",target:'_blank'
 
                 li.menu_li
                   = link_to "お弁当一覧",products_path
@@ -61,9 +61,9 @@ html
                 / li.menu_li
                 /   = link_to '月次計算',monthly_orders_path(year:Date.today.year,month:Date.today.month)
                 li.menu_li
-                  = link_to "領収書",receipt_masu_orders_path,target:'_blank'
+                  = link_to "領収書",receipt_kurumesi_orders_path,target:'_blank'
                 / li.menu_li
-                /   = link_to "請求書",invoice_masu_orders_path,target:'_blank'
+                /   = link_to "請求書",invoice_kurumesi_orders_path,target:'_blank'
 
                 li.menu_li
                   = link_to "くるめしメール",kurumesi_mails_path

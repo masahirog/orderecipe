@@ -1,4 +1,4 @@
-class MasuOrderPdf < Prawn::Document
+class KurumesiOrderPdf < Prawn::Document
   def initialize(bentos_num_h,date,mochiba)
     # 初期設定。ここでは用紙のサイズを指定している。
     super(

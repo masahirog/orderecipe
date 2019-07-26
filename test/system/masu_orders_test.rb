@@ -1,17 +1,17 @@
 require "application_system_test_case"
 
-class MasuOrdersTest < ApplicationSystemTestCase
+class KurumesiOrdersTest < ApplicationSystemTestCase
   setup do
-    @masu_order = masu_orders(:one)
+    @kurumesi_order = kurumesi_orders(:one)
   end
 
   test "visiting the index" do
-    visit masu_orders_url
+    visit kurumesi_orders_url
     assert_selector "h1", text: "Masu Orders"
   end
 
   test "creating a Masu order" do
-    visit masu_orders_url
+    visit kurumesi_orders_url
     click_on "New Masu Order"
 
     click_on "Create Masu order"
@@ -21,7 +21,7 @@ class MasuOrdersTest < ApplicationSystemTestCase
   end
 
   test "updating a Masu order" do
-    visit masu_orders_url
+    visit kurumesi_orders_url
     click_on "Edit", match: :first
 
     click_on "Update Masu order"
@@ -31,7 +31,7 @@ class MasuOrdersTest < ApplicationSystemTestCase
   end
 
   test "destroying a Masu order" do
-    visit masu_orders_url
+    visit kurumesi_orders_url
     page.accept_confirm do
       click_on "Destroy", match: :first
     end

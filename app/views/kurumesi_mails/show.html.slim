@@ -4,12 +4,12 @@
 table.table
   tbody
     tr
-      th.col-md-2 枡々オーダーID
-      td = link_to @kurumesi_mail.masu_order.kurumesi_order_id,edit_masu_order_path(@kurumesi_mail.masu_order),target:'_blank' if @kurumesi_mail.masu_order_id.present?
+      th.col-md-2 くるめしオーダーID
+      td = link_to @kurumesi_mail.kurumesi_order.management_id,edit_kurumesi_order_path(@kurumesi_mail.kurumesi_order),target:'_blank' if @kurumesi_mail.kurumesi_order_id.present?
     tr
       th オーダー反映
       td
-        - if @kurumesi_mail.masu_order_reflect_flag.==true
+        - if @kurumesi_mail.kurumesi_order_reflect_flag.==true
           h4 style='margin:0;'
             span class="label label-success" 成功
         - else

@@ -2,7 +2,7 @@ class KurumesiMailsController < ApplicationController
   before_action :set_kurumesi_mail, only: [:show, :edit, :update, :destroy]
 
   def index
-    @kurumesi_mails = KurumesiMail.includes(:masu_order).search(params).order('recieved_datetime DESC').page(params[:page]).per(20)
+    @kurumesi_mails = KurumesiMail.includes(:kurumesi_order).search(params).order('recieved_datetime DESC').page(params[:page]).per(20)
 
   end
 
@@ -56,6 +56,6 @@ class KurumesiMailsController < ApplicationController
     end
 
     def kurumesi_mail_params
-      params.require(:kurumesi_mail).permit(:id,:masu_order_id,:subject,:body,:status,:recieved_datetime,:masu_order_reflect_flag)
+      params.require(:kurumesi_mail).permit(:id,:kurumesi_order_id,:subject,:body,:status,:recieved_datetime,:kurumesi_order_reflect_flag)
     end
 end

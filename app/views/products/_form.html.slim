@@ -36,7 +36,7 @@
         = f.select :cook_category, options_for_select(Product.cook_categories.keys.to_a,@product.cook_category), {}, class: 'cook_category_choice form-control'
 
     .col-md-12.form-group
-      = f.label :obi_url, "枡々の帯"
+      = f.label :obi_url, "くるめしの帯"
       = f.text_field :obi_url, class:"form-control"
     .col-md-12.form-group.container
       = f.label :tag_list,"タグ"

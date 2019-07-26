@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  start_time: 2019-07-26
+  management_id: 1
+  pick_time: 2019-07-26 16:06:28
+  payment: 1
+  canceled_flag: false
+  billed_amount: 1
+  memo: MyText
+
+two:
+  start_time: 2019-07-26
+  management_id: 1
+  pick_time: 2019-07-26 16:06:28
+  payment: 1
+  canceled_flag: false
+  billed_amount: 1
+  memo: MyText

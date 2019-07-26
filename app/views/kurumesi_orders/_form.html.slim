@@ -1,9 +1,9 @@
-= form_with(model: masu_order, local: true) do |f|
-  - if masu_order.errors.any?
+= form_with(model: kurumesi_order, local: true) do |f|
+  - if kurumesi_order.errors.any?
     #error_explanation
-      h2 = "#{pluralize(masu_order.errors.count, "error")} prohibited this masu_order from being saved:"
+      h2 = "#{pluralize(kurumesi_order.errors.count, "error")} prohibited this kurumesi_order from being saved:"
       ul
-        - masu_order.errors.full_messages.each do |message|
+        - kurumesi_order.errors.full_messages.each do |message|
           li = message
   .form-group.required.col-md-12
     = f.label :canceled_flag,"オーダー状況", class: 'col-md-2 control-label text-right'
@@ -15,9 +15,9 @@
     .col-md-10
       = f.date_field :start_time, value:params['start_time'], class: 'col-md-10 form-control',readonly: true,style:'width:440px;'
   .form-group.required.col-md-12
-    = f.label :kurumesi_order_id,"くるめしオーダーID", class: 'col-md-2 control-label text-right'
+    = f.label :management_id,"くるめしオーダーID", class: 'col-md-2 control-label text-right'
     .col-md-10
-      = f.number_field :kurumesi_order_id, class: 'col-md-10 form-control',style:'width:440px;'
+      = f.number_field :management_id, class: 'col-md-10 form-control',style:'width:440px;'
   .form-group.required.col-md-12
     = f.label :pick_time,"ピックアップ時間", class: 'col-md-2 control-label text-right'
     .col-md-10
@@ -46,12 +46,12 @@
         th.col-md-5 弁当名
         th.col-md-3
         th.col-md-2
-    tbody#masu_order_details_area
-      = f.fields_for :masu_order_details do |mod|
-        = render 'masu_order_detail_fields', f: mod
-  = link_to_add_association '商品追加', f, :masu_order_details,
-        class: 'btn btn-default add_masu_order_detail',
-         data: {association_insertion_node: '#masu_order_details_area',
+    tbody#kurumesi_order_details_area
+      = f.fields_for :kurumesi_order_details do |mod|
+        = render 'kurumesi_order_detail_fields', f: mod
+  = link_to_add_association '商品追加', f, :kurumesi_order_details,
+        class: 'btn btn-default add_kurumesi_order_detail',
+         data: {association_insertion_node: '#kurumesi_order_details_area',
                 association_insertion_method: 'append' }
 
   .actions.col-md-12 style='margin-bottom:50px;'
@@ -59,4 +59,4 @@
       |登録
 
 style type="text/css"
-  | #masu_order_pick_time_5i { margin-left:20px; }
+  | #kurumesi_order_pick_time_5i { margin-left:20px; }

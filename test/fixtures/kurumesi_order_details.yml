@@ -1,11 +1,11 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  masu_order_id: 1
+  kurumesi_order_id: 1
   product_id: 1
   number: 1
 
 two:
-  masu_order_id: 1
+  kurumesi_order_id: 1
   product_id: 1
   number: 1

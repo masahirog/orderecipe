@@ -1,9 +1,9 @@
-class MasuOrder < ApplicationRecord
+class KurumesiOrder < ApplicationRecord
   has_many :kurumei_mails
-  has_many :masu_order_details, dependent: :destroy
-  accepts_nested_attributes_for :masu_order_details, allow_destroy: true
+  has_many :kurumesi_order_details, dependent: :destroy
+  accepts_nested_attributes_for :kurumesi_order_details, allow_destroy: true
 
-  validates :kurumesi_order_id, presence: true, uniqueness: true
+  validates :management_id, presence: true, uniqueness: true
 
   enum payment: {請求書:0, 現金:1, クレジットカード:2}
 

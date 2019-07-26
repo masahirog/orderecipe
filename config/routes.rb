@@ -11,7 +11,7 @@ Rails.application.routes.draw do
   post'menus/include_update' => 'menus#include_update'
   post 'materials/change_additives' => 'materials#change_additives'
 
-  resources :masu_orders do
+  resources :kurumesi_orders do
     collection do
       get :test
       get :date

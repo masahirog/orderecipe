@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class MasuOrderDetailTest < ActiveSupport::TestCase
+class KurumesiOrdersControllerTest < ActionDispatch::IntegrationTest
   # test "the truth" do
   #   assert true
   # end

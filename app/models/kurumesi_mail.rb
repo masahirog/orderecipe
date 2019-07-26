@@ -4,14 +4,14 @@ require 'mail'
 require 'nkf'
 
 class KurumesiMail < ApplicationRecord
-  belongs_to :masu_order, optional: true
+  belongs_to :kurumesi_order, optional: true
 
   enum summary: {その他:0, 新規オーダー:1,内容変更:2,キャンセル:3}
 
   def self.search(params)
     if params
       data = KurumesiMail.order(recieved_datetime: "DESC").all
-      data = data.where(masu_order_id: params["masu_order_id"]) if params["masu_order_id"].present?
+      data = data.where(kurumesi_order_id: params["kurumesi_order_id"]) if params["kurumesi_order_id"].present?
       data
     else
        KurumesiMail.order(recieved_datetime: "DESC").all
@@ -55,13 +55,13 @@ class KurumesiMail < ApplicationRecord
           @kurumei_mail.subject = subject
           @kurumei_mail.body = body
           @kurumei_mail.recieved_datetime = recieved_datetime
-          @kurumei_mail.masu_order_reflect_flag = false
+          @kurumei_mail.kurumesi_order_reflect_flag = false
           # kurumei_mailの作成
           if subject.include?("ご注文がありました")
             @kurumei_mail.summary = 1
             @kurumei_mail.save
             order_info_from_mail = input_order(body)
-            new_order(order_info_from_mail) unless MasuOrder.where(kurumesi_order_id:order_info_from_mail[:kurumesi_order_id]).present?
+            new_order(order_info_from_mail) unless KurumesiOrder.where(management_id:order_info_from_mail[:management_id]).present?
           elsif subject.include?("変更致しました")
             @kurumei_mail.summary = 2
             @kurumei_mail.save
@@ -97,7 +97,7 @@ class KurumesiMail < ApplicationRecord
     order = {}
     info_arr.join('').gsub('[','$$$').split("$$$").reject(&:blank?).each do |line|
       order[:delivery_date] = line[5..14] if line[0..3] == "配達日時"
-      order[:kurumesi_order_id] = line[5..-1].to_i if line[0..3] == "注文番号"
+      order[:management_id] = line[5..-1].to_i if line[0..3] == "注文番号"
       if line[0..3]== "支払方法"
         if line[5..7] == '請求書'
           order[:pay] = 0
@@ -142,43 +142,44 @@ class KurumesiMail < ApplicationRecord
   end
 
   def self.new_order(order_info_from_mail)
-    @masu_order = MasuOrder.new
-    @masu_order.start_time = order_info_from_mail[:delivery_date]
-    @masu_order.kurumesi_order_id = order_info_from_mail[:kurumesi_order_id]
-    @masu_order.payment = order_info_from_mail[:pay]
+    @kurumesi_order = KurumesiOrder.new
+    @kurumesi_order.start_time = order_info_from_mail[:delivery_date]
+    @kurumesi_order.brand_id = 11
+    @kurumesi_order.management_id = order_info_from_mail[:management_id]
+    @kurumesi_order.payment = order_info_from_mail[:pay]
     order_info_from_mail[:order_details].each do |od|
-      @masu_order.masu_order_details.build(product_id:od[:product_id],number:od[:num])
+      @kurumesi_order.kurumesi_order_details.build(product_id:od[:product_id],number:od[:num])
     end
     reflect_check()
   end
 
   def self.update_order(order_info_from_mail)
-    @masu_order = MasuOrder.find_by(kurumesi_order_id:order_info_from_mail[:kurumesi_order_id])
-    if @masu_order.present?
+    @kurumesi_order = KurumesiOrder.find_by(management_id:order_info_from_mail[:management_id])
+    if @kurumesi_order.present?
       #詳細をすべて一旦削除
-      @masu_order.masu_order_details.destroy_all
+      @kurumesi_order.kurumesi_order_details.destroy_all
     else
-      @masu_order = MasuOrder.new
+      @kurumesi_order = KurumesiOrder.new
     end
-    @masu_order.start_time = order_info_from_mail[:delivery_date]
-    @masu_order.payment = order_info_from_mail[:pay]
+    @kurumesi_order.start_time = order_info_from_mail[:delivery_date]
+    @kurumesi_order.payment = order_info_from_mail[:pay]
     order_info_from_mail[:order_details].each do |od|
-      @masu_order.masu_order_details.build(product_id:od[:product_id],number:od[:num])
+      @kurumesi_order.kurumesi_order_details.build(product_id:od[:product_id],number:od[:num])
     end
     reflect_check()
   end
 
   def self.cancel_order(order_info_from_mail)
-    @masu_order = MasuOrder.find_by(kurumesi_order_id:order_info_from_mail[:kurumesi_order_id])
-    @masu_order.canceled_flag = true
+    @kurumesi_order = KurumesiOrder.find_by(management_id:order_info_from_mail[:management_id])
+    @kurumesi_order.canceled_flag = true
     reflect_check()
   end
 
   def self.reflect_check()
-    if @masu_order.save
-      @kurumei_mail.update(masu_order_reflect_flag:true,masu_order_id: @masu_order.id)
+    if @kurumesi_order.save
+      @kurumei_mail.update(kurumesi_order_reflect_flag:true,kurumesi_order_id: @kurumesi_order.id)
     else
-      @kurumei_mail.update(masu_order_reflect_flag:false)
+      @kurumei_mail.update(kurumesi_order_reflect_flag:false)
     end
   end
 end
