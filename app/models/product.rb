@@ -90,7 +90,8 @@ class Product < ApplicationRecord
     header = {'Content-type'=>'application/json'}
     https = Net::HTTP.new('labs.goo.ne.jp', 443)
     https.use_ssl = true
-    request_data = {'app_id'=>app_id, "sentence"=>kanji}.to_json
+    sentence = kanji.gsub(/\r\n/, '|||').gsub(/\n/, '|||')
+    request_data = {'app_id'=>app_id, "sentence"=>sentence}.to_json
     while result.blank? do
       sleep(0.1)
       response = https.post('/api/morph', request_data, header)
@@ -101,25 +102,19 @@ class Product < ApplicationRecord
     @katakana = ''
     if result.present?
       result.flatten.in_groups_of(3).each do |ar|
-        if ar[2] == "＄"
-          if ar[1] == '句点'
-            @katakana += "。"
-          elsif ar[1] == '読点'
-            @katakana += "、"
-          elsif ar[1] == 'Number' || ar[0] == '-' || ar[1] == '括弧'
-            @katakana += ar[0]
-          elsif ar[1] == '空白'
-            @katakana += "　"
-          elsif ar[1] == "Symbol"
-            @katakana += ar[0]
-          end
-        elsif ar[1] == "Alphabet" || ar[1] == "Number"
+        if ar[1] == '句点'
+          @katakana += "。"
+        elsif ar[1] == '読点'
+          @katakana += "、"
+        elsif ar[1] == 'Number' || ar[0] == '-' || ar[1] == '括弧'|| ar[1] == "Alphabet" || ar[1] == "Symbol"
           @katakana += ar[0]
+        elsif ar[1] == '空白'
+          @katakana += "　"
         else
           @katakana += ar[2]
         end
       end
-      @katakana = @katakana.split("^^", -1)
+      @katakana = @katakana.gsub('|||',"\n").split("^^", -1)
     end
   end
 end

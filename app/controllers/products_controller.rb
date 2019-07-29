@@ -142,7 +142,6 @@ class ProductsController < ApplicationController
   def recipe_romaji
     @product = Product.find(params[:id])
     @menus = @product.menus.includes(:materials, :menu_materials)
-
     menu_names = ""
     recipes = ""
     material_names = ""
