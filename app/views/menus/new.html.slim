@@ -1,5 +1,4 @@
-ol.breadcrumb
-  li = link_to 'ホーム',root_path
-  li = link_to "メニュー一覧",menus_path
-  li 新規作成
+- if @base_menu.present?
+  = link_to @base_menu.name,@base_menu,target:'_blank'
+  |　をコピーして、新規作成しています。食材の追加等はオリジナルメニュー上で行う事が出来ます。
 = render 'form', path: menus_path, locals: {edit_flag:false}

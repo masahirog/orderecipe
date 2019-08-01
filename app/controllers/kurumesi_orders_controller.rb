@@ -147,10 +147,12 @@ class KurumesiOrdersController < ApplicationController
     @products = Product.where(brand_id:[11,21])
     @kurumesi_order = KurumesiOrder.new
     @kurumesi_order.kurumesi_order_details.build
+    @brands = Brand.all
   end
 
   def edit
     @products = Product.where(brand_id:11)
+    @brands = Brand.all
   end
 
   def create
@@ -198,12 +200,12 @@ class KurumesiOrdersController < ApplicationController
     end
 
     def kurumesi_order_picktimenone_params
-      params.require(:kurumesi_order).permit(:start_time,:management_id,:canceled_flag,:payment,:memo,
+      params.require(:kurumesi_order).permit(:start_time,:management_id,:canceled_flag,:payment,:memo,:brand_id,
         kurumesi_order_details_attributes: [:id,:kurumesi_order_id,:product_id,:number,:_destroy])
     end
 
     def kurumesi_order_params
-      params.require(:kurumesi_order).permit(:start_time,:management_id,:pick_time,:canceled_flag,:payment,
+      params.require(:kurumesi_order).permit(:start_time,:management_id,:pick_time,:canceled_flag,:payment,:brand_id,
         :memo,kurumesi_order_details_attributes: [:id,:kurumesi_order_id,:product_id,:number,:_destroy])
     end
 end

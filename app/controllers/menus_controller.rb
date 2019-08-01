@@ -17,17 +17,17 @@ class MenusController < ApplicationController
     if params[:copy_flag]=='true'
       original_menu = Menu.includes(:menu_materials,{materials:[material_food_additives:[:food_additive]]}).find(params[:menu_id])
       original_menu.menu_materials = original_menu.menu_materials.each{|menu_material|menu_material.amount_used = (menu_material.amount_used * params[:used_rate].to_f).round(2)}
-      original_menu.name = "#{original_menu.name}のコピー"
       @menu = original_menu.deep_clone(include: [:menu_materials])
+      @menu.name = "#{original_menu.name}のコピー"
+      @menu.base_menu_id = original_menu.id
+      @base_menu = original_menu
       @ar = Menu.used_additives(original_menu.materials)
-      flash.now[:notice] = "#{original_menu.name}を#{(params[:used_rate].to_f * 100).round}%でコピーして、新規作成しています。"
     else
       @menu = Menu.new
       @menu.menu_materials.build(row_order: 0)
       @ar = Menu.used_additives(@menu.materials)
     end
     gon.available_tags = Menu.tags_on(:tags).pluck(:name)
-
   end
 
   def create
@@ -36,7 +36,6 @@ class MenusController < ApplicationController
     @menu = Menu.new(menu_create_update)
     gon.menu_tags = @menu.tag_list
     gon.available_tags = Menu.tags_on(:tags).pluck(:name)
-
      if @menu.save
        redirect_to @menu,
        notice: "
@@ -54,6 +53,7 @@ class MenusController < ApplicationController
       @back_to = request.referer
     end
     @menu = Menu.includes(:menu_materials,{materials:[:vendor,material_food_additives:[:food_additive]]}).find(params[:id])
+    @base_menu = Menu.find(@menu.base_menu_id) unless @menu.base_menu_id == @menu.id
     @materials = Material.where(id:@menu.menu_materials.pluck(:material_id))
     if @menu.menu_materials.pluck(:food_ingredient_id).uniq[0].nil?
       @food_ingredients=[]
@@ -64,7 +64,6 @@ class MenusController < ApplicationController
     @ar = Menu.used_additives(@menu.materials)
     gon.menu_tags = @menu.tag_list
     gon.available_tags = Menu.tags_on(:tags).pluck(:name)
-
   end
   def update
     @food_ingredients = FoodIngredient.all
@@ -92,6 +91,7 @@ class MenusController < ApplicationController
     @menu = Menu.includes(:menu_materials,{materials: [:vendor]}).find(params[:id])
     @food_additives = FoodAdditive.where(id:@menu.used_additives)
     @arr = Menu.allergy_seiri(@menu)
+    @base_menu = Menu.find(@menu.base_menu_id) unless @menu.base_menu_id == @menu.id
     respond_to do |format|
       format.html
       format.csv do
@@ -147,8 +147,8 @@ class MenusController < ApplicationController
   private
 
     def menu_create_update
-      params.require(:menu).permit({used_additives:[]},:name, :recipe, :category, :recipe, :serving_memo, :cost_price,:food_label_name,:confirm_flag,:taste_description, :image,
-                                    :remove_image, :tag_list, :image_cache,menu_materials_attributes: [:id, :amount_used, :material_id, :_destroy,:preparation,:post,
+      params.require(:menu).permit({used_additives:[]},:name, :recipe, :category, :recipe, :serving_memo, :cost_price,:food_label_name,:confirm_flag,:taste_description, :image,:base_menu_id,
+                                    :remove_image, :tag_list, :image_cache,menu_materials_attributes: [:id, :amount_used, :material_id, :_destroy,:preparation,:post,:base_menu_material_id,
                                      :row_order,:gram_quantity,:food_ingredient_id,:calorie,:protein,:lipid,:carbohydrate,:dietary_fiber,
                                      :potassium,:calcium,:vitamin_b1,:vitamin_b2,:vitamin_c,:salt,:magnesium,:iron,:zinc,:copper,:folic_acid,:vitamin_d])
     end

@@ -14,6 +14,7 @@ class MaterialsController < ApplicationController
 
   def create
     @material = Material.create(material_params)
+    @storage_locations = StorageLocation.all
     gon.material_tags = @material.tag_list
     gon.available_tags = Material.tags_on(:tags).pluck(:name)
     if @material.save
@@ -45,21 +46,29 @@ class MaterialsController < ApplicationController
 
   def update
     @material = Material.find(params[:id])
-    if @material.update(material_params)
-      if params["material"]["back_to"].blank?
-        redirect_to material_path, notice: "
-        <div class='alert alert-success' role='alert' style='font-size:15px;'>「#{@material.name}」を更新しました：
-        　　続けてメニューを作成する：<a href='/materials/new'>新規作成</a></div>".html_safe
-
-      else
-        redirect_to params["material"]["back_to"], notice: "
-        <div class='alert alert-success' role='alert' style='font-size:15px;'>「#{@material.name}」を更新しました：".html_safe
-      end
-    else
-      render "edit"
+    @storage_locations = StorageLocation.all
+    if params[:material][:inventory_flag] == 'true'
+      @class_name = ".inventory_tr_#{@material.id}"
     end
-    gon.material_tags = @material.tag_list
-    gon.available_tags = Material.tags_on(:tags).pluck(:name)
+    respond_to do |format|
+      if @material.update(material_params)
+        format.html {
+          if params["material"]["back_to"].blank?
+            redirect_to material_path, notice: "
+            <div class='alert alert-success' role='alert' style='font-size:15px;'>「#{@material.name}」を更新しました：
+            　　続けてメニューを作成する：<a href='/materials/new'>新規作成</a></div>".html_safe
+          else
+            redirect_to params["material"]["back_to"], notice: "
+            <div class='alert alert-success' role='alert' style='font-size:15px;'>「#{@material.name}」を更新しました：".html_safe
+          end
+        }
+        format.js
+      else
+        format.html { render :edit }
+      end
+      gon.material_tags = @material.tag_list
+      gon.available_tags = Material.tags_on(:tags).pluck(:name)
+    end
   end
 
   def include_material

@@ -161,6 +161,7 @@ ActiveRecord::Schema.define(version: 2019_07_26_070953) do
     t.float "copper"
     t.float "folic_acid"
     t.float "vitamin_d"
+    t.integer "base_menu_material_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -176,6 +177,7 @@ ActiveRecord::Schema.define(version: 2019_07_26_070953) do
     t.boolean "confirm_flag", default: false, null: false
     t.text "taste_description"
     t.string "image"
+    t.integer "base_menu_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

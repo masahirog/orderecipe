@@ -60,7 +60,9 @@ ol.breadcrumb
       td = "#{@material.cost_price} 円"
     tr
       th.col-md-4 アレルギー
-      td = @material.allergy.reject{|e| e == '0'}.join("、 ")
+      td
+        - if @material.allergy.present? 
+          = @material.allergy.reject{|e| e == '0'}.join("、 ")
     tr
       th.col-md-4 使用添加物
       td = @material.material_food_additives.map{|fa|fa.food_additive.name}.join("、 ")

@@ -4,13 +4,16 @@
   = select_tag :storage_location_id, options_from_collection_for_select(@storage_locations, :id, :name,params[:storage_location_id]), class: "form-control",style:'width:200px;float:left;margin-right:20px;',include_blank:true
   = select_tag :vendor_id, options_from_collection_for_select(Vendor.all, :id, :company_name,params[:vendor_id]),include_blank: true, class: "form-control",style:'width:200px;float:left;margin-right:20px;'
   = submit_tag "検索" ,class:"btn btn-primary",style:'float:left;margin-right:20px;'
-= link_to '棚卸シート印刷',inventory_sheet_stocks_path(date:params[:date],storage_location_id:params[:storage_location_id],vendor_id:params[:vendor_id],format:'pdf'),class:'btn btn-default',target:'_blank'
+= link_to '棚卸シート印刷',inventory_sheet_stocks_path(date:params[:date],storage_location_id:params[:storage_location_id],vendor_id:params[:vendor_id],format:'pdf'),class:'btn btn-default',target:'_blank',style:'float:left;margin-right:20px;'
+= link_to 'アラート食材',inventory_stocks_path(date:Date.today,alert_date:Date.today.months_ago(2)),class:'btn btn-danger'
 table.table
   thead
     tr
       th 保管場所
       th 食材名
       th 業者名
+      th 直近棚卸し日
+      th 直近在庫
       th 変更履歴
       th 日初在庫
       th 使用量
@@ -21,6 +24,7 @@ table.table
   tbody
     - @materials.each do |material|
       = render partial: "tr", locals: { material:material }
+
 
 
 = paginate @materials

@@ -5,6 +5,11 @@
       ul
         - kurumesi_order.errors.full_messages.each do |message|
           li = message
+
+  .form-group.required.col-md-12
+    = f.label :bland_id,"対象ブランド", class: 'col-md-2 control-label text-right'
+    .col-md-10
+      = f.collection_select :brand_id, @brands, :id, :name,{},class:'form-control',style:'width:440px;'
   .form-group.required.col-md-12
     = f.label :canceled_flag,"オーダー状況", class: 'col-md-2 control-label text-right'
     .col-md-10

@@ -29,7 +29,7 @@ class MaterialPreparation < Prawn::Document
     end
     hash.each do |key, value|
       menu_materials_choriba_arr << [value[0],value[1],value[2]] if value[0].post == '調理場' || value[0].post == '切出/調理'
-      menu_materials_kiriba_arr << [value[0],value[1],value[2]] if value[0].post == '切出し' || value[0].post == '切出/スチコン' || value[0].post == '切出/調理'
+      menu_materials_kiriba_arr << [value[0],value[1],value[2]] if value[0].post == '切出し' || value[0].post == '切出/スチ' || value[0].post == '切出/調理'
     end
     menu_materials_choriba_arr = menu_materials_choriba_arr.sort { |a, b| b[0].material_id <=> a[0].material_id }
     menu_materials_kiriba_arr = menu_materials_kiriba_arr.sort { |a, b| b[0].material_id <=> a[0].material_id }

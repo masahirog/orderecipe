@@ -1,7 +1,12 @@
 li.add_li_material.col-md-12.list-group-item.item.nested-fields.field
   = f.hidden_field :row_order, class:"input_row_order"
+  = f.hidden_field :base_menu_material_id
   .select_material.col-md-3[style="padding:3px;"]
-    = f.collection_select :material_id, @materials, :id, :name, {include_blank: true}, { class: "input_select_material select2 col-md-12"}
+    - if @base_menu.present?
+      = f.object.material.name
+      = f.hidden_field :material_id
+    - else
+      = f.collection_select :material_id, @materials, :id, :name, {include_blank: true}, { class: "input_select_material select2 col-md-12"}
   .sales_check[style="display:none;"]
     = f.object.material.unused_flag if f.object.material.present?
   .amount_used.col-md-2[style="display:inline-flex"]
@@ -26,13 +31,17 @@ li.add_li_material.col-md-12.list-group-item.item.nested-fields.field
       option[value="計量"]
 
   .select_post.col-md-1
-    = f.select :post, [["調理場", "調理場"],[ "切出し", "切出し"],[ "切出/調理", "切出/調理"],[ "切出/スチコン", "切出/スチコン"]],{include_blank: true}, { class: "form-control"}
+    = f.select :post, [["調理場", "調理場"],[ "切出し", "切出し"],[ "切出/調理", "切出/調理"],[ "切出/スチ", "切出/スチ"]],{include_blank: true}, { class: "form-control"}
   .remove_material.col-md-1
-    = link_to_remove_association '削除', f, class: 'btn btn-danger'
+    = link_to_remove_association '削除', f, class: 'btn btn-danger' unless @base_menu.present?
   .col-md-12.menu_materials_li[style="padding:0;"]
     .col-md-12[style="padding:0;"]
       .col-md-3[style="padding:3px;"]
-        = f.collection_select :food_ingredient_id, @food_ingredients, :id, :name, {include_blank: true},{ class: "form-control select2 input_food_ingredient"}
+        - if @base_menu.present?
+          = f.object.food_ingredient.name if f.object.food_ingredient_id.present?
+          = f.hidden_field :food_ingredient_id
+        - else
+          = f.collection_select :food_ingredient_id, @food_ingredients, :id, :name, {include_blank: true},{ class: "form-control select2 input_food_ingredient"}
       .name.col-md-2[style="display:inline-flex"]
         div[style="padding-right:10px;"]
           - if f.object.material.nil?

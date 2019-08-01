@@ -20,20 +20,26 @@ ol.breadcrumb
 table.table
   thead
     tr
-      th 確定
+      th オリジナルID
       th メニュー名
       th タグ
       th カテゴリ
       th 画像
       th.text-right 原価(税込)
       th.text-right カロリー
-      th csv
       th.text-right 使用お弁当
   tbody
     - @search.each do |menu|
       tr.menus_li
         td
-          = "OK" if menu.confirm_flag == true
+          - if menu.base_menu_id == menu.id
+            - copy = Menu.where(base_menu_id:menu.base_menu_id).length - 1
+            - if copy > 0
+              = link_to "コピー#{copy}件",menus_path(base_menu_id:menu.base_menu_id)
+            - else
+
+          - else
+            = link_to menu.base_menu_id,menu_path(id:menu.base_menu_id)
         td
           = link_to "#{menu.name}", edit_menu_path(menu)
         td
@@ -49,7 +55,6 @@ table.table
           = "#{menu.cost_price}円"
         td.text-right
           = "#{menu.menu_materials.sum(:calorie).round(2)}kcal"
-        td = link_to "CSV", menu_path(id:menu.id,format: 'csv'), class: "btn btn-default"
         td.text-right = link_to '確認',include_menu_menus_path(id:menu.id),class:"btn btn-default btn-sm"
 - if @search.size == 0 then
   p 該当するメニューは存在しません

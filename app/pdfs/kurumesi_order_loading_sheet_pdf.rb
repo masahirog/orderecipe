@@ -43,9 +43,12 @@ class KurumesiOrderLoadingSheetPdf < Prawn::Document
       if mo.payment == '請求書'
         seikyusho = "◯"
         ryoshusho = ""
-      else
+      elsif mo.payment == '現金'
         seikyusho = ""
         ryoshusho = "◯"
+      else
+        seikyusho = ""
+        ryoshusho = ""
       end
       hash2.store(mo.id,[kurumesi_orders_num_h[mo.id]+1,kurumesi_orders_num_h[mo.id]+1,'◯','◯',seikyusho,ryoshusho])
     end
@@ -72,7 +75,7 @@ class KurumesiOrderLoadingSheetPdf < Prawn::Document
     products = Product.where(id:product_ids).order('product_category ASC')
 
     products.each do |product|
-      arr = [product.name.truncate(28),product.short_name]
+      arr = [product.name.truncate(25),product.short_name]
       moa.each do |kurumesi_order|
         arr.push(hash[[kurumesi_order.id,product.id]])
       end

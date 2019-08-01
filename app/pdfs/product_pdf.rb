@@ -68,11 +68,11 @@ class ProductPdf < Prawn::Document
             {content: "#{menu.recipe}", rowspan: u, size: recipe_size},
             {content: "#{menu.serving_memo}", rowspan: u, size: 9},{content:"#{mm.material.name}", size: 9},{content: "#{mm.post}", size: 9},{content:"#{mm.preparation}", size: 9},
             {content:"#{mm.amount_used} #{mm.material.recipe_unit}", size: 9},{content:"#{(mm.material.cost_price * mm.amount_used).round(1)}", size: 9},"",
-            {content:"#{((mm.amount_used * num.to_i).round).to_s(:delimited)} #{mm.material.recipe_unit}",size:9}]
+            {content:"#{((mm.amount_used * num.to_i).round(1)).to_s(:delimited)} #{mm.material.recipe_unit}",size:9}]
         else
           data << [{content:"#{mm.material.name}", size: 9},{content:"#{mm.post}", size: 9},{content:"#{mm.preparation}", size: 9},
             {content:"#{mm.amount_used} #{mm.material.recipe_unit}", size: 9},{content:"#{(mm.material.cost_price * mm.amount_used).round(1)}", size: 9},"",
-          {content:"#{((mm.amount_used * num.to_i).round).to_s(:delimited)} #{mm.material.recipe_unit}",size:9}]
+          {content:"#{((mm.amount_used * num.to_i).round(1)).to_s(:delimited)} #{mm.material.recipe_unit}",size:9}]
         end
       end
     end

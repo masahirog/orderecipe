@@ -28,6 +28,12 @@ class KurumesiMail < ApplicationRecord
     imap_user = 'gon@bento.jp'
     imap_passwd = 'rohisama'
     imap.login(imap_user, imap_passwd)
+    # テスト
+    # search_criterias = [
+    #   'FROM','gon@bento.jp',
+    #   'SINCE', (Date.today).strftime("%d-%b-%Y")
+    # ]
+    # 本番
     search_criterias = [
       'FROM','info@kurumesi-bentou.com',
       'SINCE', (Date.today).strftime("%d-%b-%Y")
@@ -101,8 +107,10 @@ class KurumesiMail < ApplicationRecord
       if line[0..3]== "支払方法"
         if line[5..7] == '請求書'
           order[:pay] = 0
-        else
+        elsif line[5..7] == "現金"
           order[:pay] = 1
+        else
+          order[:pay] = 2
         end
       end
     end

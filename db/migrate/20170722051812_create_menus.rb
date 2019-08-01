@@ -11,6 +11,7 @@ class CreateMenus < ActiveRecord::Migration[4.2]
       t.boolean :confirm_flag, null: false, default: false
       t.text :taste_description
       t.string :image
+      t.integer :base_menu_id
       t.timestamps null: false
     end
   end
