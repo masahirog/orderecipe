@@ -78,6 +78,12 @@ $(document).on('turbolinks:load', function() {
     $('.kurumesi_order_select_product').select2('destroy');
     setTimeout(function(){
       $('.kurumesi_order_select_product').select2();
+      var brand_id = $('.select_brand').val();
+      $.get({
+        url: "/kurumesi_orders/change_brands",
+        data: { brand_id:brand_id}
+      });
+
     },5);
   });
 

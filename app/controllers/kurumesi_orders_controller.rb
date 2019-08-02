@@ -194,6 +194,11 @@ class KurumesiOrdersController < ApplicationController
     end
   end
 
+  def change_brands
+    brand_id = params[:brand_id]
+    @products = Product.where(brand_id:brand_id)
+  end
+
   private
     def set_kurumesi_order
       @kurumesi_order = KurumesiOrder.find(params[:id])

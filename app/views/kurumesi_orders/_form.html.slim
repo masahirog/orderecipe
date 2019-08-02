@@ -9,7 +9,7 @@
   .form-group.required.col-md-12
     = f.label :bland_id,"対象ブランド", class: 'col-md-2 control-label text-right'
     .col-md-10
-      = f.collection_select :brand_id, @brands, :id, :name,{},class:'form-control',style:'width:440px;'
+      = f.collection_select :brand_id, @brands, :id, :name,{},class:'select_brand form-control',style:'width:440px;'
   .form-group.required.col-md-12
     = f.label :canceled_flag,"オーダー状況", class: 'col-md-2 control-label text-right'
     .col-md-10
@@ -62,6 +62,18 @@
   .actions.col-md-12 style='margin-bottom:50px;'
     button type="button" onclick="submit();" class="col-md-2 col-md-offset-1 btn btn-primary"
       |登録
+
+
+javascript:
+  $(function() {
+    $('.select_brand').on('change',function() {
+      var brand_id = $(this).val();
+      $.get({
+        url: "/kurumesi_orders/change_brands",
+        data: { brand_id:brand_id}
+      });
+    });
+  });
 
 style type="text/css"
   | #kurumesi_order_pick_time_5i { margin-left:20px; }
