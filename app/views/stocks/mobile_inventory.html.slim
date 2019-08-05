@@ -1,0 +1,115 @@
+doctype html
+html
+  head
+    title
+      | Order
+    = include_gon
+    = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload'
+    = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
+
+    = csrf_meta_tags
+    link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet"
+    link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-rc.2/css/select2.min.css" rel="stylesheet"
+    script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.0/jquery-ui.min.js"
+    script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"
+    script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-rc.2/js/select2.min.js"
+
+  body data-controller="#{controller_name}" data-action="#{action_name}"
+    header
+      nav.navbar.navbar-default
+        .container-fluid
+          .navbar-header
+            button.navbar-toggle.collapsed[type="button" data-toggle="collapse" data-target="#navbarEexample"]
+              span.sr-only
+                | Toggle navigation
+              span.icon-bar
+              span.icon-bar
+              span.icon-bar
+            a.navbar-brand style="padding:12px 10px 8px 20px;" href="/"
+              = image_tag 'orderecipe.png',height:'85%'
+          #navbarEexample.collapse.navbar-collapse
+            - if user_signed_in?
+              ul.nav.navbar-nav
+                li.menu_li
+                  = link_to "将軍献立",daily_menus_path
+                li.menu_li
+                  = link_to "くるめしオーダー",kurumesi_orders_path
+                li.dropdown
+                  a.dropdown-toggle href="#" data-toggle="dropdown" role="button"
+                    |発注
+                    span.caret
+                  ul.dropdown-menu role="menu"
+                    li = link_to "発注",orders_path
+                    li = link_to "くるめし備品手配","https://docs.google.com/spreadsheets/d/1KivYZ3IIo7ySJBZklBwWRuxZqtFDs-cVQ2fTcBjShM0/edit#gid=104376609",target:'_blank'
+
+                li.menu_li
+                  = link_to "お弁当一覧",products_path
+                li.menu_li
+                  = link_to "メニュー",menus_path
+                li.menu_li
+                  = link_to "食材・資材",materials_path
+                li.menu_li
+                  = link_to "仕入先",vendors_path
+                li.dropdown
+                  a.dropdown-toggle href="#" data-toggle="dropdown" role="button"
+                    |棚卸し
+                    span.caret
+                  ul.dropdown-menu role="menu"
+                    li = link_to "棚卸し",inventory_stocks_path(date:Date.today)
+                    li = link_to "保管場所",storage_locations_path
+                    li = link_to "保管場所（図）",'https://docs.google.com/presentation/d/1ELHD2Ky1qMtVCj0pIEkQZ_mMwSrxEoRF2u7iXb7nVJA/edit?usp=sharing',target:'_blank'
+
+                li.menu_li
+                  = link_to "くるめしメール",kurumesi_mails_path
+                li.menu_li
+                  = link_to "ブランド",brands_path
+
+            - else
+              #navbarEexample.collapse.navbar-collapse.navbar-right
+                ul.nav.navbar-nav
+                  li.user_nav.grid-6
+                    = link_to "ログイン", new_user_session_path, class: 'post'
+    - flash.each do |name, msg|
+      = content_tag :div, raw(msg), :id => name, :class => "alert"
+    .all_body.col-sm-12
+      = form_tag inventory_stocks_path, :method => 'get' do
+        .col-sm-12.form-group
+          = date_field_tag :date,params[:date], class: "form-control",style:'float:left;width:50%;'
+          = select_tag :storage_location_id, options_from_collection_for_select(@storage_locations, :id, :name,params[:storage_location_id]), class: "form-control",style:'float:left;width:50%;',include_blank:true
+        .col-sm-12.form-group
+          = text_field_tag :name, params[:name], class:"form-control",placeholder:'食材・資材名',style:'float:left;margin-right:20px;'
+        .col-sm-12.form-group
+          = submit_tag "検索" ,class:"btn btn-primary",style:'float:left;margin-right:20px;'
+      = link_to 'アラート食材',inventory_stocks_path(date:Date.today,alert_date:Date.today.months_ago(2)),class:'btn btn-danger'
+      ul.list-group.col-sm-12
+        li.list-group-item.col-sm-12
+          .col-sm-3
+            |aaa
+        - @materials.each do |material|
+          = render partial: "li", locals: { material:material }
+      = paginate @materials
+
+    .col-md-12.footer style="height:20px;"
+
+sass:
+  .stock-tooltip
+    .tooltip
+      width: 600px
+      font-size: 14px
+  .memo-tooltip
+    .tooltip
+      width: 300px
+      font-size: 14px
+
+  .tooltip-inner
+    max-width: 1000px
+
+  .tooltip .tooltip-inner
+    background-color: white
+    opacity: 1.0
+    border: 2px solid black
+    color: black
+    filter: alpha(opacity=100)
+  .tooltip.in
+    opacity: 1 !important
+    filter: alpha(opacity=100)

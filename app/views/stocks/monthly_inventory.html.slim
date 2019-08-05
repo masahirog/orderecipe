@@ -1,0 +1,19 @@
+table.table
+  thead
+    tr
+      th 食材
+      th.text-right 在庫
+      th.text-right 価格
+      th.text-right 最終変動日
+  tbody
+    - @materials.each do |material|
+      tr
+        td
+          = material.name
+        td.text-right
+          = "#{(@stocks_h[material.id].end_day_stock / material.accounting_unit_quantity).floor(1)} #{material.accounting_unit}"
+        td.text-right
+          = "#{(@stocks_h[material.id].end_day_stock * material.cost_price).round(1).to_s(:delimited)} 円"
+        td.text-right
+          = @stocks_h[material.id].date
+= paginate @materials

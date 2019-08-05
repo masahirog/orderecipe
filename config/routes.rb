@@ -84,6 +84,8 @@ Rails.application.routes.draw do
   resources :food_additives
   resources :stocks do
     collection do
+      get :monthly_inventory
+      get :mobile_inventory
       get :history
       get :material_info
       get :inventory

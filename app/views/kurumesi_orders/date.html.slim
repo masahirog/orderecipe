@@ -48,7 +48,7 @@ table.table
         td = kurumesi_order.pick_time.strftime("%R") if kurumesi_order.pick_time
         td = "#{@kurumesi_orders_num_h[kurumesi_order.id]} 個"
         td = kurumesi_order.payment
-        td rowspan='2'
+        td rowspan='3'
           ul.list-group
             - kurumesi_order.kurumesi_order_details.each do |mod|
               li.list-group-item.col-md-12
@@ -58,6 +58,9 @@ table.table
                   = mod.product.short_name
                 .col-md-7 style='font-size:13px;'
                   = link_to "#{mod.product.management_id}｜#{mod.product.name}",mod.product
+      tr
+        td colspan='5' style='border:0;'
+          = "作成日時間：#{kurumesi_order.created_at.strftime("%Y年 %m月 %d日　%H:%M")}"
       tr
         td colspan='5' style='border:0;color:red;'
           - if kurumesi_order.memo.present?

@@ -1,31 +1,37 @@
 class StocksController < ApplicationController
   def index
-    arr = []
-    date = params[:date]
-    stocks = Stock.where(date:date).map{|stock|[stock.material_id,[stock.used_amount,stock.delivery_amount,stock.start_day_stock,stock.end_day_stock]]}.to_h
-    storage_location_id = params[:storage_location_id]
-    @storage_locations = StorageLocation.all
-    if params[:inventory_flag] == 'true'
-      inventory_material_ids = Stock.where(date:date,inventory_flag:true).map{|stock|stock.material_id}
-      @materials = Material.where(id:inventory_material_ids).order('vendor_id').search(params).where(unused_flag:false).includes(:vendor,:storage_location).page(params[:page]).per(100)
-    else
-      @materials = Material.order('vendor_id').search(params).where(unused_flag:false).includes(:vendor,:storage_location).page(params[:page]).per(30)
+    today = Date.today
+    end_month_date = today.end_of_month
+    @dates = []
+    i = 0
+    while i < 11 do
+      @dates << end_month_date - i.months
+      i += 1
     end
-    @materials.each do |material|
-      if stocks[material.id].present?
-        used_amount = "- #{(stocks[material.id][0]/material.accounting_unit_quantity).round(1)} #{material.accounting_unit}"
-        delivery_amount = "+ #{(stocks[material.id][1]/material.accounting_unit_quantity).round(1)} #{material.accounting_unit}"
-        start_day_stock = "#{(stocks[material.id][2]/material.accounting_unit_quantity).round(1)} #{material.accounting_unit}"
-        end_day_stock = "#{(stocks[material.id][3]/material.accounting_unit_quantity).round(1)} #{material.accounting_unit}"
-      else
-        used_amount = ""
-        delivery_amount = ""
-        start_day_stock = ""
-        end_day_stock = ""
+    @month_total_amount = {}
+    @dates.each do |date|
+      stocks = Stock.order(date: :desc).includes(:material).where("date <= ?", date).each{|stock|stock.end_day_stock = 0 if stock.end_day_stock < 0}
+      stocks = stocks.uniq(&:material_id)
+      price = 0
+      shokuzai_price = 0
+      bento_bihin_price = 0
+      youki = 0
+      kitchen_bihin_price = 0
+      stocks.each do |stock|
+        material_price = (stock.end_day_stock * stock.material.cost_price)
+        price += material_price
+        if stock.material.category == '食材'
+          shokuzai_price += material_price
+        elsif stock.material.category == '弁当備品'
+          bento_bihin_price += material_price
+        elsif stock.material.category == '弁当容器'
+          youki += material_price
+        elsif stock.material.category == '厨房備品'
+          kitchen_bihin_price += material_price
+        end
       end
-      arr << [material.id,material.storage_location.name,material.name,material.vendor.company_name,used_amount,delivery_amount,start_day_stock,end_day_stock]
+      @month_total_amount[date] = [price.round,stocks.length,shokuzai_price.round,bento_bihin_price.round,youki.round,kitchen_bihin_price.round]
     end
-    @materials_inventory = arr
   end
   def new
     @stock = Stock.new
@@ -114,6 +120,53 @@ class StocksController < ApplicationController
         format.json { render json: @stock.errors, status: :unprocessable_entity }
       end
     end
+  end
+
+  def mobile_inventory
+    date = Date.parse(params[:date])
+    storage_location_id = params[:storage_location_id]
+    vendor_id = params[:vendor_id]
+    @storage_locations = StorageLocation.all
+    if params[:inventory_flag] == 'true'
+      inventory_material_ids = Stock.where(date:date,inventory_flag:true).map{|stock|stock.material_id}
+      @materials = Material.where(id:inventory_material_ids).order('vendor_id').search(params).where(unused_flag:false).includes(:vendor,:storage_location).page(params[:page]).per(100)
+    elsif params[:alert_date].present?
+      all_material_ids = Stock.pluck("material_id").uniq
+      inventory_ok_material_ids = Stock.where('date >= ?',params[:alert_date]).where(inventory_flag:true).pluck('material_id').uniq
+      need_inventory_material_ids = all_material_ids - inventory_ok_material_ids
+      @materials = Material.order('vendor_id').search(params).where(id:need_inventory_material_ids).includes(:vendor,:storage_location).page(params[:page]).per(100)
+    else
+      @materials = Material.order('vendor_id').search(params).where(unused_flag:false).includes(:vendor,:storage_location).page(params[:page]).per(100)
+    end
+    @stocks_info_hash = {}
+    if @materials.present?
+      inventory_date_hash = Stock.where(material_id:@materials.ids,inventory_flag:true).order("date ASC").map{|stock|[stock.material_id, stock.date]}.to_h
+      stocks = Stock.where('date <= ?',params[:date]).where(material_id:@materials.ids).order("date ASC").map{|stock|[stock.material_id, [stock.end_day_stock,stock.date]]}.to_h
+      @materials.each do |material|
+        if inventory_date_hash[material.id].present?
+          last_inventory_date = inventory_date_hash[material.id].strftime("%-m月%-d日")
+        else
+          last_inventory_date = ''
+        end
+        if stocks[material.id].present?
+          last_stock = stocks[material.id][0]
+          last_stock_date = stocks[material.id][1].strftime("%-m月%-d日")
+        else
+          last_stock = ''
+          last_stock_date = ''
+        end
+        @stocks_info_hash[material.id] = [last_inventory_date,last_stock,last_stock_date]
+      end
+      @stocks_hash = Stock.where(date:date,material_id:@materials.ids).map{|stock|[stock.material_id,stock]}.to_h
+      @stock_hash ={}
+      @hash = {}
+      @materials.each do |material|
+        aaa(material,date)
+      end
+    else
+      @stocks_hash = []
+    end
+    render :mobile_inventory, layout: false
   end
 
   def inventory
@@ -225,6 +278,17 @@ class StocksController < ApplicationController
         disposition: "inline"
       end
     end
+  end
+
+  def monthly_inventory
+    date = params[:date]
+    category = params[:category]
+    ids = Material.where(category:category).ids
+    stocks = Stock.where(material_id:ids).where("date <= ?", date).order(date: :desc).uniq(&:material_id)
+    @stocks_h = stocks.map{|stock| [stock.material_id,stock]}.to_h
+    material_ids = stocks.pluck(:material_id)
+    @materials = Material.where(id:material_ids).page(params[:page]).per(20)
+    @stocks = stocks.each{|stock|stock.end_day_stock = 0 if stock.end_day_stock < 0}
   end
 
   def history
