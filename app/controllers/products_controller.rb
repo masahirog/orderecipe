@@ -31,10 +31,17 @@ class ProductsController < ApplicationController
     end
   end
   def input_name_get_products
-    @products = Product.where(['name LIKE ?', "%#{params["id"]}%"]).limit(10)
+    @products = Product.includes(:brand).where(['name LIKE ?', "%#{params["id"]}%"]).limit(10)
+    @product_hash = {}
+    @products.each_with_index do |product,i|
+      cost_rate = ((product.cost_price / product.sell_price)*100).round
+      @product_hash[i]= {name:product.name,product_id:product.id,management_id:product.management_id,brand:product.brand.name,image:product.image,
+        cook_category:product.cook_category,type:product.product_type,sell_price:product.sell_price,cost_price:product.cost_price,cost_rate:cost_rate}
+    end
+
     respond_to do |format|
       format.html
-      format.json { render 'index', json: @products }
+      format.json { render 'index', json: @product_hash }
     end
   end
 

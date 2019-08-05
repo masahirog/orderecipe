@@ -164,37 +164,33 @@ $(document).on('turbolinks:load', function() {
       $.each(data, function(i){
         var li = '<tr class="products_li">'+
         '<td>'+
-          data[i].management_id+
+          data[i]['management_id']+
         '</td>'+
         '<td class="product_name">'+
-        '<a href=/products/'+data[i].id+'>'+data[i].name+'</a>'+
+        '<a href=/products/'+data[i]['product_id']+'>'+data[i]['name']+'</a>'+
         '</td>'+
         '<td>'+
-         data[i].cook_category+
+         data[i]['brand']+
         '</td>'+
         '<td>'+
-         data[i].type+
         '</td>'+
         '<td>'+
-         data[i].sell_price+'円'+
+         data[i]['cook_category']+
         '</td>'+
         '<td>'+
-         data[i].cost_price+'円'+
+         data[i]['type']+
         '</td>'+
-        '<td>'+
-        '<a class="btn btn-default" target="_blank" style="margin:0 0 0 10px;" href="/products/serving_kana?id='+data[i].id+'">盛付カナ</a>'+
+        '<td class="text-right">'+
+         data[i]['sell_price']+'円'+
         '</td>'+
-        '<td>'+
-        '<a class="btn btn-default" target="_blank" style="margin:0 0 0 10px;" href="/products/recipe_romaji?id='+data[i].id+'">ラム</a>'+
+        '<td class="text-right">'+
+         data[i]['cost_price']+'円'+
         '</td>'+
-        '<td>'+
-        '<a class="btn btn-default" target="_blank" href="/products/new_band.pdf?id='+data[i].id+'">帯作成</a>'+
-        '</td>'+
-        '<td>'+
-        '<a class="btn btn-default" href=/products/'+data[i].id+'.csv>CSV</a>'+
+        '<td class="text-right">'+
+         data[i]['cost_rate']+'%'+
         '</td>'+
         '<td class="col-md-1">'+
-        '<img src= '+data[i].image.thumb.url+'>' +
+        '<img src= '+data[i]['image'].thumb.url+'>' +
         '</td>'+
         '</tr>';
 
