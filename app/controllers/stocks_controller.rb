@@ -285,10 +285,11 @@ class StocksController < ApplicationController
     category = params[:category]
     ids = Material.where(category:category).ids
     stocks = Stock.where(material_id:ids).where("date <= ?", date).order(date: :desc).uniq(&:material_id)
-    @stocks_h = stocks.map{|stock| [stock.material_id,stock]}.to_h
-    material_ids = stocks.pluck(:material_id)
-    @materials = Material.where(id:material_ids).page(params[:page]).per(20)
-    @stocks = stocks.each{|stock|stock.end_day_stock = 0 if stock.end_day_stock < 0}
+    stocks = stocks.each{|stock|stock.end_day_stock = 0 if stock.end_day_stock < 0}
+    @stocks_h = stocks.map{|stock| [stock.material_id,[stock.end_day_stock,(stock.end_day_stock * stock.material.cost_price),stock.date]]}.to_h
+    @stocks_h = Hash[ @stocks_h.sort_by{ |_, v| -v[1] } ]
+    material_ids = @stocks_h.keys
+    @materials = Material.where(id:material_ids).order("field(id, #{material_ids.join(',')})").page(params[:page]).per(20)
   end
 
   def history

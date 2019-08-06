@@ -11,9 +11,9 @@ table.table
         td
           = material.name
         td.text-right
-          = "#{(@stocks_h[material.id].end_day_stock / material.accounting_unit_quantity).floor(1)} #{material.accounting_unit}"
+          = "#{@stocks_h[material.id][0].floor(1)} #{material.accounting_unit}"
         td.text-right
-          = "#{(@stocks_h[material.id].end_day_stock * material.cost_price).round(1).to_s(:delimited)} 円"
+          = "#{@stocks_h[material.id][1].round.to_s(:delimited)} 円"
         td.text-right
-          = @stocks_h[material.id].date
+          = @stocks_h[material.id][2]
 = paginate @materials
