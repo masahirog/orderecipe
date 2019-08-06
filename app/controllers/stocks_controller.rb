@@ -286,7 +286,7 @@ class StocksController < ApplicationController
     ids = Material.where(category:category).ids
     stocks = Stock.where(material_id:ids).where("date <= ?", date).order(date: :desc).uniq(&:material_id)
     stocks = stocks.each{|stock|stock.end_day_stock = 0 if stock.end_day_stock < 0}
-    @stocks_h = stocks.map{|stock| [stock.material_id,[stock.end_day_stock,(stock.end_day_stock * stock.material.cost_price),stock.date]]}.to_h
+    @stocks_h = stocks.map{|stock| [stock.material_id,[(stock.end_day_stock/stock.material.accounting_unit_quantity),(stock.end_day_stock * stock.material.cost_price),stock.date]]}.to_h
     @stocks_h = Hash[ @stocks_h.sort_by{ |_, v| -v[1] } ]
     material_ids = @stocks_h.keys
     @materials = Material.where(id:material_ids).order("field(id, #{material_ids.join(',')})").page(params[:page]).per(20)
