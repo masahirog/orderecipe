@@ -9,9 +9,9 @@ table.table
     - @materials.each do |material|
       tr
         td
-          = material.name
+          = link_to material.name,edit_material_path(material),target:'_blank',class:'stock-tooltip not_alert'
         td.text-right
-          = "#{@stocks_h[material.id][0].floor(1)} #{material.accounting_unit}"
+          = link_to "#{@stocks_h[material.id][0].floor(1)} #{material.accounting_unit}",history_stocks_path(material_id:material.id),target:'_blank',class:'stock-tooltip not_alert'
         td.text-right
           = "#{@stocks_h[material.id][1].round.to_s(:delimited)} 円"
         td.text-right
