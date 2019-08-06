@@ -74,7 +74,7 @@
       = f.select :recipe_unit, ["ml","g","袋","本","枚","個"],{}, { class: "input_recipe_unit form-control",style:'float:left;width:150px;'}
       span.recipe_unit_quantity_label style='padding:13px 5px 0 50px;float:left;'
       span style='padding:15px 10px 0 0;float:left;'  あたり
-      = f.text_field :recipe_unit_quantity, class:'form-control',placeholder:1,style:'float:left;width:150px;'
+      = f.text_field :recipe_unit_quantity, class:'form-control',style:'float:left;width:150px;'
       .recipe_unit_quantity_unit style='padding:13px 0 0 10px;float:left;'
       span style='float:left;padding:15px 0 0 8px;' 入り、
       span.cost_unit_label style='float:left;padding:13px 0 0 0;'
@@ -87,7 +87,7 @@
       = f.select :accounting_unit, ["p/c","kg","袋","本","枚","個", "c/s","箱","缶", "束","ml","g"],{}, { class: "input_accounting_unit form-control",style:'float:left;width:150px;'}
       span.accounting_unit_quantity_label style='float:left;padding:13px 5px 0 50px;'
       span style='float:left;padding:15px 10px 0 0;' あたり
-      = f.text_field :accounting_unit_quantity, class:'form-control',placeholder:1,style:'float:left;width:150px;'
+      = f.text_field :accounting_unit_quantity, class:'form-control',style:'float:left;width:150px;'
       .recipe_unit_quantity_unit style='padding:15px 0 0 15px;float:left;'
 
   - if @material.allergy.nil?

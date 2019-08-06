@@ -28,6 +28,8 @@ class Material < ApplicationRecord
   validates :recipe_unit_price, presence: true, numericality: true
   validates :cost_price, presence: true, numericality: true
   validates :vendor_id, presence: true
+  validates :accounting_unit, presence: true
+  validates :accounting_unit_quantity, presence: true
 
   enum category: {食材:1,弁当備品:2,厨房備品:3,弁当容器:4}
 
