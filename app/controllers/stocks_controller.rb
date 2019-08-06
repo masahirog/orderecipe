@@ -69,6 +69,7 @@ class StocksController < ApplicationController
     @storage_locations = StorageLocation.all
     update_stocks = []
     if params[:stock][:end_day_stock_accounting_unit] == ""
+      # 空欄だと何もしない
     else
       @stock_hash = {}
       @stock = Stock.new(stock_create_update)
@@ -102,9 +103,10 @@ class StocksController < ApplicationController
     @material = @stock.material
     end_day_stock_accounting_unit = params[:stock][:end_day_stock_accounting_unit].to_f
     new_end_day_stock = end_day_stock_accounting_unit*@stock.material.accounting_unit_quantity
+    new_start_day_stock = new_end_day_stock + @stock.delivery_amount + @stock.used_amount
     inventory_flag = params[:stock][:inventory_flag]
     respond_to do |format|
-      if @stock.update(end_day_stock:new_end_day_stock,inventory_flag:inventory_flag)
+      if @stock.update(end_day_stock:new_end_day_stock,inventory_flag:inventory_flag,start_day_stock:new_start_day_stock)
         Stock.change_stock(update_stocks,@material.id,@stock.date,new_end_day_stock)
         Stock.import update_stocks, on_duplicate_key_update:[:end_day_stock,:start_day_stock,:inventory_flag] if update_stocks.present?
         if params[:stock][:history_flag] == 'true'
