@@ -55,7 +55,7 @@ $(document).on('turbolinks:load', function() {
 
   $(".input_accounting_unit").on("change",function(){
     var accounting_unit = $(".input_accounting_unit").val();
-    $("#material_accounting_unit_quantity").val('');
+    $("#material_accounting_unit_quantity").val('').css('background-color','pink');
     check_accounting_unit(accounting_unit)
   });
 

@@ -71,12 +71,18 @@
       span style='padding:15px 0 0 15px;float:left;' 円
     .box26.clearfix
       span class="box-title" レシピ上の使用単位
-      = f.select :recipe_unit, ["ml","g","袋","本","枚","個"],{}, { class: "input_recipe_unit form-control",style:'float:left;width:150px;'}
+      - if action_name == 'edit'
+        div style='float:left;width:150px;border: 1px solid silver;border-radius:3px;padding:5px 10px;background-color:#EEEEEE' = f.object.recipe_unit
+      - else
+        = f.select :recipe_unit, ["ml","g","袋","本","枚","個"],{}, { class: "input_recipe_unit form-control",style:'float:left;width:150px;'}
       span.recipe_unit_quantity_label style='padding:13px 5px 0 50px;float:left;'
       span style='padding:15px 10px 0 0;float:left;'  あたり
       = f.text_field :recipe_unit_quantity, class:'form-control',style:'float:left;width:150px;'
       .recipe_unit_quantity_unit style='padding:13px 0 0 10px;float:left;'
-      span style='float:left;padding:15px 0 0 8px;' 入り、
+      - if action_name == 'edit'
+        span style='float:left;padding:15px 0 0 8px;font-weight:bold;font-size:16px;' ="#{f.object.recipe_unit} 入り、"
+      - else
+        span style='float:left;padding:15px 0 0 8px;' 入り、
       span.cost_unit_label style='float:left;padding:13px 0 0 0;'
       span style='float:left;padding:15px 10px 0 0;' あたり
       = f.text_field :cost_price, class:'form-control', readonly: 'readonly',style:'float:left;width:100px;'
@@ -88,7 +94,11 @@
       span.accounting_unit_quantity_label style='float:left;padding:13px 5px 0 50px;'
       span style='float:left;padding:15px 10px 0 0;' あたり
       = f.text_field :accounting_unit_quantity, class:'form-control',style:'float:left;width:150px;'
-      .recipe_unit_quantity_unit style='padding:15px 0 0 15px;float:left;'
+      - if action_name == 'edit'
+        .recipe_unit_quantity_unit style='padding:15px 0 0 15px;float:left;font-weight:bold;font-size:16px;'
+          = f.object.recipe_unit
+      - else
+        .recipe_unit_quantity_unit style='padding:15px 0 0 15px;float:left;'
 
   - if @material.allergy.nil?
     .col-md-12.form-group style="padding:0;"
