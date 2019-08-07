@@ -80,6 +80,8 @@ class OrdersController < ApplicationController
     end
   end
   def update
+    @prev_stocks = {}
+    @stock_hash = {}
     @materials = Material.where(unused_flag:false)
     @search_code_materials = Material.where(unused_flag:false).where.not(order_code:"")
     @order = Order.includes(:products,:order_products,:order_materials,{materials: [:vendor]}).find(params[:id])
@@ -253,6 +255,7 @@ class OrdersController < ApplicationController
     @code_materials = Material.where(unused_flag:false).where.not(order_code:"")
     @materials = Material.where(unused_flag:false)
     @vendors = @order.order_materials.map{|om|[om.material.vendor.company_name,om.material.vendor.id]}.uniq
+    @prev_stocks = {}
     if @order.save
       redirect_to "/orders/#{@order.id}"
     else
