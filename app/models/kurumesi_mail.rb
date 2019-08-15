@@ -101,6 +101,8 @@ class KurumesiMail < ApplicationRecord
     info_arr = arr[order_info_index..shohin_index-1]
     shohin_arr = arr[shohin_index+1..-1]
     order = {}
+    brand_name = body[0,body.index("｜")]
+    order[:brand_id] = Brand.find_by(name:brand_name).id
     info_arr.join('').gsub('[','$$$').split("$$$").reject(&:blank?).each do |line|
       order[:delivery_date] = line[5..14] if line[0..3] == "配達日時"
       order[:management_id] = line[5..-1].to_i if line[0..3] == "注文番号"
@@ -152,7 +154,7 @@ class KurumesiMail < ApplicationRecord
   def self.new_order(order_info_from_mail)
     @kurumesi_order = KurumesiOrder.new
     @kurumesi_order.start_time = order_info_from_mail[:delivery_date]
-    @kurumesi_order.brand_id = 11
+    @kurumesi_order.brand_id = order_info_from_mail[:brand_id]
     @kurumesi_order.management_id = order_info_from_mail[:management_id]
     @kurumesi_order.payment = order_info_from_mail[:pay]
     order_info_from_mail[:order_details].each do |od|

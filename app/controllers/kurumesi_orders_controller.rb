@@ -144,19 +144,19 @@ class KurumesiOrdersController < ApplicationController
     end
   end
   def new
-    @products = Product.where(brand_id:[11,21])
+    @products = Product.all
     @kurumesi_order = KurumesiOrder.new
     @kurumesi_order.kurumesi_order_details.build
     @brands = Brand.all
   end
 
   def edit
-    @products = Product.where(brand_id:11)
+    @products = Product.all
     @brands = Brand.all
   end
 
   def create
-    @products = Product.where(brand_id:11)
+    @products = Product.all
     if params['kurumesi_order']["pick_time(4i)"]==''||params['kurumesi_order']["pick_time(5i)"]==''
       @kurumesi_order = KurumesiOrder.new(kurumesi_order_picktimenone_params)
     else
