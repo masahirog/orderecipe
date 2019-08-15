@@ -87,7 +87,7 @@ class KurumesiOrdersController < ApplicationController
 
   def index
     @memo_orders = KurumesiOrder.where.not(memo:nil).where.not(memo:'').group('start_time').count
-    @products = Product.where(brand_id:11)
+    @products = Product.all
     @date_order_count = KurumesiOrder.where(canceled_flag:false).group('start_time').count
     @date_canceled_order_count = KurumesiOrder.where(canceled_flag:true).group('start_time').count
     @date_group = KurumesiOrderDetail.joins(:kurumesi_order,:product).where(:kurumesi_orders => {canceled_flag:false}).where(:products => {product_category:1}).group('kurumesi_orders.start_time').group('products.id').sum(:number)

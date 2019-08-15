@@ -15,6 +15,7 @@ h3 弁当別製造数
 table.table
   thead
     tr
+      th ブランド
       th 商品ID
       th 弁当名
       th 短名
@@ -24,6 +25,7 @@ table.table
     - @bentos_num_h.each do |product_num|
       - product = Product.find(product_num[0])
       tr
+        td = product.brand.name
         td = product.management_id
         td = product.name
         td = product.short_name
