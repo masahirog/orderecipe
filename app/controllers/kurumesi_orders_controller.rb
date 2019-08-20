@@ -1,35 +1,34 @@
 class KurumesiOrdersController < ApplicationController
   before_action :set_kurumesi_order, only: [ :edit, :update, :destroy]
 
-  def manufacturing_sheet
-    date = params[:date]
-    @kurumesi_orders = KurumesiOrder.includes(kurumesi_order_details:[:product]).where(start_time:date,canceled_flag:false).order(:pick_time)
-    # @bentos_num_h = @kurumesi_orders.joins(:kurumesi_order_details).group('kurumesi_order_details.product_id').sum('kurumesi_order_details.number')
-    @bentos_num_h = @kurumesi_orders.joins(kurumesi_order_details:[:product]).where(:products => {product_category:1}).group('kurumesi_order_details.product_id').sum('kurumesi_order_details.number')
-    @kurumesi_orders_num_h = @kurumesi_orders.joins(kurumesi_order_details:[:product]).where(:products => {product_category:1}).group('kurumesi_order_details.kurumesi_order_id').sum('kurumesi_order_details.number')
-    respond_to do |format|
-      format.html
-      format.pdf do
-        pdf = KurumesiOrderManufacturingSheetPdf.new(@bentos_num_h,date,@kurumesi_orders,@kurumesi_orders_num_h)
-        pdf.font "vendor/assets/fonts/ipaexm.ttf"
-        send_data pdf.render,
-        filename:    "#{date}.pdf",
-        type:        "application/pdf",
-        disposition: "inline"
-      end
-    end
-  end
+  # def manufacturing_sheet
+  #   date = params[:date]
+  #   @kurumesi_orders = KurumesiOrder.includes(kurumesi_order_details:[:product]).where(start_time:date,canceled_flag:false).order(:pick_time)
+  #   # @bentos_num_h = @kurumesi_orders.joins(:kurumesi_order_details).group('kurumesi_order_details.product_id').sum('kurumesi_order_details.number')
+  #   @bentos_num_h = @kurumesi_orders.joins(kurumesi_order_details:[:product]).where(:products => {product_category:1}).group('kurumesi_order_details.product_id').sum('kurumesi_order_details.number')
+  #   @kurumesi_orders_num_h = @kurumesi_orders.joins(kurumesi_order_details:[:product]).where(:products => {product_category:1}).group('kurumesi_order_details.kurumesi_order_id').sum('kurumesi_order_details.number')
+  #   respond_to do |format|
+  #     format.html
+  #     format.pdf do
+  #       pdf = KurumesiOrderManufacturingSheetPdf.new(@bentos_num_h,date,@kurumesi_orders,@kurumesi_orders_num_h)
+  #       pdf.font "vendor/assets/fonts/ipaexm.ttf"
+  #       send_data pdf.render,
+  #       filename:    "#{date}.pdf",
+  #       type:        "application/pdf",
+  #       disposition: "inline"
+  #     end
+  #   end
+  # end
   def loading_sheet
     date = params[:date]
-    @kurumesi_orders = KurumesiOrder.includes(kurumesi_order_details:[:product]).where(start_time:date,canceled_flag:false).order(:pick_time)
-    # @bentos_num_h = @kurumesi_orders.joins(kurumesi_order_details:[:product]).where(:products => {product_category:1}).group('kurumesi_order_details.product_id').sum('kurumesi_order_details.number')
+    @kurumesi_orders = KurumesiOrder.where(start_time:date,canceled_flag:false).order(:pick_time)
     @kurumesi_orders_num_h = @kurumesi_orders.joins(kurumesi_order_details:[:product]).where(:products => {product_category:1}).group('kurumesi_order_details.kurumesi_order_id').sum('kurumesi_order_details.number')
     @products_num_h = @kurumesi_orders.joins(kurumesi_order_details:[:product]).group('kurumesi_order_details.product_id').sum('kurumesi_order_details.number')
-    # @kurumesi_order_details = KurumesiOrderDetail.joins(kurumesi_order:[:product]).where(:kurumesi_orders => {id:@kurumesi_orders.ids}).order('product.product_category')
+    @brand_ids = @kurumesi_orders.map{|kurumesi_order|kurumesi_order.brand_id}.uniq
     respond_to do |format|
       format.html
       format.pdf do
-        pdf = KurumesiOrderLoadingSheetPdf.new(date,@kurumesi_orders,@kurumesi_orders_num_h,@products_num_h)
+        pdf = KurumesiOrderLoadingSheetPdf.new(date,@kurumesi_orders,@kurumesi_orders_num_h,@products_num_h,@brand_ids)
         pdf.font "vendor/assets/fonts/ipaexm.ttf"
         send_data pdf.render,
         filename:    "#{date}.pdf",

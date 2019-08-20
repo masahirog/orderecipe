@@ -1,20 +1,26 @@
 class KurumesiOrderLoadingSheetPdf < Prawn::Document
-  def initialize(date,kurumesi_orders,kurumesi_orders_num_h,products_num_h)
+  def initialize(date,kurumesi_orders,kurumesi_orders_num_h,products_num_h,brand_ids)
     super(
       page_size: 'A4',
       page_layout: :landscape,
       margin:10
     )
     font "vendor/assets/fonts/ipaexm.ttf"
-    kurumesi_orders_arr = kurumesi_orders.each_slice(7).to_a
-    kurumesi_orders_arr.each_with_index do |moa,i|
-      table_content(date,moa,kurumesi_orders_num_h,products_num_h)
-      start_new_page unless i + 1 == kurumesi_orders_arr.length
+    brand_ids.each_with_index do |brand_id,ii|
+      brand_kurumesi_orders = kurumesi_orders.where(brand_id:brand_id)
+      kurumesi_orders_arr = brand_kurumesi_orders.each_slice(7).to_a
+      kurumesi_orders_arr.each_with_index do |moa,i|
+        table_content(date,moa,kurumesi_orders_num_h,products_num_h,brand_id)
+        start_new_page unless i + 1 == kurumesi_orders_arr.length
+      end
+      start_new_page unless ii + 1 == brand_ids.length
     end
   end
 
-  def table_content(date,moa,kurumesi_orders_num_h,products_num_h)
+  def table_content(date,moa,kurumesi_orders_num_h,products_num_h,brand_id)
     bounding_box([0, 570], :width => 820) do
+      brand_name = Brand.find(brand_id).name
+      text brand_name
       text "発行時間：#{Time.now.strftime("%Y年 %m月 %d日　%H:%M")}",size:9,:align => :right
       move_down 5
       table line_item_rows2(date,moa,kurumesi_orders_num_h,products_num_h) do
@@ -38,6 +44,7 @@ class KurumesiOrderLoadingSheetPdf < Prawn::Document
     KurumesiOrderDetail.where(kurumesi_order_id:moa_ids).each do |mso|
       hash.store([mso.kurumesi_order_id,mso.product_id], mso.number)
     end
+
     hash2 = {}
     moa.each do |mo|
       if mo.payment == '請求書'
@@ -61,8 +68,8 @@ class KurumesiOrderLoadingSheetPdf < Prawn::Document
       end
     end
 
-    data = [["配達日： #{date}","オーダーID▶"].push(kurumesi_ids).flatten!]
-    arr2 = ['','ピックアップ時間']
+    data = [["配達日： #{date}",'',""].push(kurumesi_ids).flatten!]
+    arr2 = ['','ピックアップ時間','▼合計']
     moa.each do |kurumesi_order|
       if kurumesi_order.pick_time.present?
         arr2.push(kurumesi_order.pick_time.strftime("%R"))
@@ -71,19 +78,19 @@ class KurumesiOrderLoadingSheetPdf < Prawn::Document
       end
     end
     data << arr2
-    product_ids = products_num_h.keys
-    products = Product.where(id:product_ids).order('product_category ASC')
-
+    kurumesi_order_ids = moa.map{|ko|ko.id}
+    product_ids = KurumesiOrderDetail.joins(:kurumesi_order).order('kurumesi_orders.pick_time').where(kurumesi_order_id:kurumesi_order_ids).map{|kod|kod.product_id}.uniq
+    products = Product.where(id:product_ids).order('product_category ASC').order("field(id, #{product_ids.join(',')})")
     products.each do |product|
-      arr = [product.name.truncate(25),product.short_name]
+      arr = [product.name.truncate(25),product.short_name,products_num_h[product.id]]
       moa.each do |kurumesi_order|
         arr.push(hash[[kurumesi_order.id,product.id]])
       end
       data << arr.map {|e| e ? e : ''}
     end
 
-    [['おしぼり','オシボリ'],['お箸','オハシ'],['保冷剤','ホレイザイ'],['納品書','ノウヒンショ'],['請求書','セイキュウショ'],['領収書','リョウシュウショ']].each_with_index do |yoso,i|
-      arr = [yoso[0],yoso[1]]
+    [['おしぼり','オシボリ'],['お箸','オハシ'],['保冷剤','ホレイザイ'],['納品書','ノウヒンショ'],['請求書','セイキュウショ'],['領収書','リョウシュウショ']].each_with_index do |ar,i|
+      arr = [ar[0],ar[1],'']
       moa.each do |kurumesi_order|
         arr.push(hash2[kurumesi_order.id][i])
       end
