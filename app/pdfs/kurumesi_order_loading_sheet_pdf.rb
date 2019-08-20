@@ -8,22 +8,23 @@ class KurumesiOrderLoadingSheetPdf < Prawn::Document
     font "vendor/assets/fonts/ipaexm.ttf"
     brand_ids.each_with_index do |brand_id,ii|
       brand_kurumesi_orders = kurumesi_orders.where(brand_id:brand_id)
-      kurumesi_orders_arr = brand_kurumesi_orders.each_slice(7).to_a
+      brand_product_ids = KurumesiOrderDetail.joins(:kurumesi_order).order('kurumesi_orders.pick_time').where(kurumesi_order_id:brand_kurumesi_orders.ids).map{|kod|kod.product_id}.uniq
+      kurumesi_orders_arr = brand_kurumesi_orders.each_slice(6).to_a
       kurumesi_orders_arr.each_with_index do |moa,i|
-        table_content(date,moa,kurumesi_orders_num_h,products_num_h,brand_id)
+        table_content(date,moa,kurumesi_orders_num_h,products_num_h,brand_id,brand_product_ids)
         start_new_page unless i + 1 == kurumesi_orders_arr.length
       end
       start_new_page unless ii + 1 == brand_ids.length
     end
   end
 
-  def table_content(date,moa,kurumesi_orders_num_h,products_num_h,brand_id)
+  def table_content(date,moa,kurumesi_orders_num_h,products_num_h,brand_id,brand_product_ids)
     bounding_box([0, 570], :width => 820) do
       brand_name = Brand.find(brand_id).name
       text brand_name
       text "発行時間：#{Time.now.strftime("%Y年 %m月 %d日　%H:%M")}",size:9,:align => :right
       move_down 5
-      table line_item_rows2(date,moa,kurumesi_orders_num_h,products_num_h) do
+      table line_item_rows2(date,moa,kurumesi_orders_num_h,products_num_h,brand_product_ids) do
         row(0..1).background_color = 'f5f5f5'
         cells.padding = [8,6,8,6]
         cells.size = 9
@@ -34,11 +35,11 @@ class KurumesiOrderLoadingSheetPdf < Prawn::Document
         columns(2..-1).align = :center
         self.header = true
         columns = Array.new(moa.length){65}
-        self.column_widths = [230,100].push(columns).flatten!
+        self.column_widths = [230,100,65].push(columns).flatten!
       end
     end
   end
-  def line_item_rows2(date,moa,kurumesi_orders_num_h,products_num_h)
+  def line_item_rows2(date,moa,kurumesi_orders_num_h,products_num_h,brand_product_ids)
     moa_ids = moa.map{|mo|mo.id}
     hash = {}
     KurumesiOrderDetail.where(kurumesi_order_id:moa_ids).each do |mso|
@@ -69,7 +70,7 @@ class KurumesiOrderLoadingSheetPdf < Prawn::Document
     end
 
     data = [["配達日： #{date}",'',""].push(kurumesi_ids).flatten!]
-    arr2 = ['','ピックアップ時間','▼合計']
+    arr2 = ['','','▼合計']
     moa.each do |kurumesi_order|
       if kurumesi_order.pick_time.present?
         arr2.push(kurumesi_order.pick_time.strftime("%R"))
@@ -79,8 +80,7 @@ class KurumesiOrderLoadingSheetPdf < Prawn::Document
     end
     data << arr2
     kurumesi_order_ids = moa.map{|ko|ko.id}
-    product_ids = KurumesiOrderDetail.joins(:kurumesi_order).order('kurumesi_orders.pick_time').where(kurumesi_order_id:kurumesi_order_ids).map{|kod|kod.product_id}.uniq
-    products = Product.where(id:product_ids).order('product_category ASC').order("field(id, #{product_ids.join(',')})")
+    products = Product.where(id:brand_product_ids).order('product_category ASC').order("field(id, #{brand_product_ids.join(',')})")
     products.each do |product|
       arr = [product.name.truncate(25),product.short_name,products_num_h[product.id]]
       moa.each do |kurumesi_order|
