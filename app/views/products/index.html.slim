@@ -13,7 +13,7 @@ ol.breadcrumb
     .col-md-2
       = select_tag :cook_category, options_for_select(Product.cook_categories.keys.to_a,params[:cook_category]),include_blank:true, class: "form-control",style:"width:100%"
     .col-md-2
-      = select_tag :product_type, options_for_select(Product.product_types.keys.to_a,params[:product_type]),include_blank:true, class: "form-control",style:"width:100%"
+      = select_tag :brand_id, options_from_collection_for_select(Brand.all,:id,:name,params[:brand_id]),include_blank:true, class: "form-control",style:"width:100%"
     .col-md-2
       = select_tag :order,options_for_select([['原価高い順','cost_price DESC'],['原価低い順','cost_price ASC']],params[:order]), include_blank: true, class:"form-control",style:"width:150px;"
     .col-md-1

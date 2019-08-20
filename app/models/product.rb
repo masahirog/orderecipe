@@ -24,7 +24,7 @@ class Product < ApplicationRecord
   validates :product_type, presence: true
   validates :sell_price, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :cost_price, presence: true, numericality: true
-  validates :management_id, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, :uniqueness => true, :allow_nil => true
+  validates :management_id, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, :allow_nil => true
 
   enum product_type: {ノーマル:1,デラックス:2,ヘルシー:3,ボウル:4,新ヘルシー:5,W弁:6,プレミアム:7}
   enum cook_category: {その他:1,グリル:2,コンロ:3,フライヤー:4,グリルコンロ:5,スチコン:6,前日コンロ:7,グリルコンロ:8,前日グリル:9,フライヤー・コンロ:10,フライヤー・グリル:11}
@@ -39,7 +39,8 @@ class Product < ApplicationRecord
      data = data.tagged_with("#{params[:tag_name]}") if params["tag_name"].present?
      data = data.where(['management_id LIKE ?', "%#{params["management_id"]}%"]) if params["management_id"].present?
      data = data.where(cook_category: params["cook_category"]) if params["cook_category"].present?
-     data = data.where(product_type: params["product_type"]) if params["product_type"].present?
+     # data = data.where(product_type: params["product_type"]) if params["product_type"].present?
+     data = data.where(brand_id: params["brand_id"]) if params["brand_id"].present?
      data = data.where(['name LIKE ?', "%#{params["name"]}%"]) if params["name"].present?
      data = data.reorder(params['order']) if params["order"].present?
      data

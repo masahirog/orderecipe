@@ -102,7 +102,8 @@ class KurumesiMail < ApplicationRecord
     shohin_arr = arr[shohin_index+1..-1]
     order = {}
     brand_name = body[0,body.index("｜")]
-    order[:brand_id] = Brand.find_by(name:brand_name).id
+    brand_id = Brand.find_by(name:brand_name).id
+    order[:brand_id] = brand_id
     info_arr.join('').gsub('[','$$$').split("$$$").reject(&:blank?).each do |line|
       order[:delivery_date] = line[5..14] if line[0..3] == "配達日時"
       order[:management_id] = line[5..-1].to_i if line[0..3] == "注文番号"
@@ -119,27 +120,10 @@ class KurumesiMail < ApplicationRecord
     shohin_arr.join('').gsub('【','$$$').gsub('[請求金額]','$$$').split("$$$").reject(&:blank?).each do |line|
       product_name = ""
       num = ""
-      if line.index('】').present?
-        product_name_end_kakko = line.index('】') - 1
-        product_name = line[0..product_name_end_kakko]
-
-        # product_id = Product.find_by(name:product_name).id
-        product = Product.find_by(name:product_name)
-        if product.present?
-          product_id = product.id
-          num = line.match(/×(.+)食/)[1].to_i
-          order_details_arr << {product_id:product_id,num:num}
-          # 味噌有無
-          if line.include?('味噌汁付き')
-            order_details_arr << {product_id:3831,num:num}
-          end
-          # 茶の有無
-          if line.include?('ペット茶')
-            order_details_arr << {product_id:3791,num:num}
-          elsif line.include?('缶茶')
-            order_details_arr << {product_id:3801,num:num}
-          end
-        end
+      if brand_id == 11
+        Brand.masu_order_make(order_details_arr,line,product_name,num)
+      elsif brand_id == 21
+        Brand.hasisaji_order_make(order_details_arr,line,product_name,num)
       end
     end
     #重複はまとめる！
