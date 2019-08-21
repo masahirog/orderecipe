@@ -13,7 +13,6 @@ Rails.application.routes.draw do
 
   resources :kurumesi_orders do
     collection do
-      get :change_brands
       get :test
       get :date
       get :print_preparation

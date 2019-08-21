@@ -70,7 +70,7 @@ class KurumesiOrderLoadingSheetPdf < Prawn::Document
     end
 
     data = [["配達日： #{date}",'',""].push(kurumesi_ids).flatten!]
-    arr2 = ['','','▼合計']
+    arr2 = ['','','21']
     moa.each do |kurumesi_order|
       if kurumesi_order.pick_time.present?
         arr2.push(kurumesi_order.pick_time.strftime("%R"))

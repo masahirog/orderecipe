@@ -2,8 +2,23 @@ h1 くるめしオーダー一覧
 = month_calendar do |date|
   div.col-md-12 style='font-size:18px;padding:0 0 7px 0;'
     = date.strftime("%-m月%-d日")
-    = link_to new_kurumesi_order_path(start_time:date),style:'margin-left:5px;' do
-      span class="glyphicon glyphicon-plus-sign" aria-hidden="true"
+    / = link_to new_kurumesi_order_path(start_time:date),style:'margin-left:5px;' do
+    /   span class="glyphicon glyphicon-plus-sign" aria-hidden="true"
+    button type="button" class="glyphicon glyphicon-plus-sign" data-toggle="modal" data-target="#sampleModal"
+    #sampleModal.modal.fade tabindex="-1"
+      = form_tag(new_kurumesi_order_path,method: :get) do
+        .modal-dialog
+          .modal-content
+            .modal-header
+              h4.modal-title 新規作成
+            .modal-body
+              = date_field_tag 'date',date,class:'form-control'
+              = select_tag 'brand_id',options_from_collection_for_select(@brands,:id,:name), class:"form-control"
+            .modal-footer
+              button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
+              = submit_tag "作成する" ,class:"btn btn-primary"
+
+
   - if @date_order_count[date]
     .clearfix
       div style='float:left;'
@@ -36,3 +51,13 @@ h1 くるめしオーダー一覧
   - if @date_canceled_order_count[date]
     .clearfix
       = link_to "キャンセルオーダー：#{@date_canceled_order_count[date]}件",date_kurumesi_orders_path(date:date)
+
+
+style type="text/css"
+  | button{
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        outline: none;
+        padding: 0;
+        appearance: none;}

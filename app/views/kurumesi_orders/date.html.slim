@@ -1,8 +1,18 @@
 div.col-md-12 style='font-size:20px;padding:0 0 7px 0;'
   = "#{params[:date]}のくるめしオーダー一覧"
-  = link_to new_kurumesi_order_path(start_time:params[:date]),style:'margin-left:5px;' do
-    span class="glyphicon glyphicon-plus-sign" aria-hidden="true"
-
+  button type="button" class="glyphicon glyphicon-plus-sign" data-toggle="modal" data-target="#sampleModal"
+  #sampleModal.modal.fade tabindex="-1"
+    = form_tag(new_kurumesi_order_path,method: :get) do
+      .modal-dialog
+        .modal-content
+          .modal-header
+            h4.modal-title 新規作成
+          .modal-body
+            = date_field_tag 'date',params[:date],class:'form-control',readonly:true
+            = select_tag 'brand_id',options_from_collection_for_select(@brands,:id,:name), class:"form-control"
+          .modal-footer
+            button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
+            = submit_tag "作成する" ,class:"btn btn-primary"
 .form-group.col-md-12.clearfix
   = link_to "発注開始", new_order_path(kurumesi_order_date:params[:date]),class:'btn btn-success',style:'float:left;margin-left:20px;margin-top:10px;'
   = link_to "切出場仕込み",print_preparation_kurumesi_orders_path(date:params[:date],mochiba:'kiriba',format:'pdf'),class:"btn btn-primary",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
@@ -78,3 +88,11 @@ table.table
       - @canceled_kurumesi_orders.each do |canceled_kurumesi_order|
         tr
           td = link_to canceled_kurumesi_order.management_id,edit_kurumesi_order_path(canceled_kurumesi_order)
+style type="text/css"
+  | button{
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        outline: none;
+        padding: 0;
+        appearance: none;}

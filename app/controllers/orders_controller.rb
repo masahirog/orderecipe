@@ -251,6 +251,7 @@ class OrdersController < ApplicationController
   end
 
   def create
+    @stock_hash = {}
     @order = Order.create(order_create_update)
     @code_materials = Material.where(unused_flag:false).where.not(order_code:"")
     @materials = Material.where(unused_flag:false)

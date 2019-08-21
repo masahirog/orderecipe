@@ -94,6 +94,7 @@ class KurumesiOrdersController < ApplicationController
     @miso_num = KurumesiOrderDetail.joins(:kurumesi_order,:product).where(:kurumesi_orders => {canceled_flag:false}).where(:products => {id:3831}).group('kurumesi_orders.start_time').sum(:number)
     @cantea_num = KurumesiOrderDetail.joins(:kurumesi_order,:product).where(:kurumesi_orders => {canceled_flag:false}).where(:products => {id:3801}).group('kurumesi_orders.start_time').sum(:number)
     @pettea_num = KurumesiOrderDetail.joins(:kurumesi_order,:product).where(:kurumesi_orders => {canceled_flag:false}).where(:products => {id:3791}).group('kurumesi_orders.start_time').sum(:number)
+    @brands = Brand.all
   end
 
   def date
@@ -102,6 +103,7 @@ class KurumesiOrdersController < ApplicationController
     @canceled_kurumesi_orders = KurumesiOrder.includes(kurumesi_order_details:[:product]).where(start_time:date,canceled_flag:true).order(:pick_time)
     @bentos_num_h = @kurumesi_orders.joins(kurumesi_order_details:[:product]).where(:products => {product_category:1}).group('kurumesi_order_details.product_id').sum('kurumesi_order_details.number')
     @kurumesi_orders_num_h = @kurumesi_orders.joins(kurumesi_order_details:[:product]).where(:products => {product_category:1}).group('kurumesi_order_details.kurumesi_order_id').sum('kurumesi_order_details.number')
+    @brands = Brand.all
   end
   def show
     @kurumesi_order = KurumesiOrder.includes(kurumesi_order_details:[:product]).find(params[:id])
@@ -143,15 +145,16 @@ class KurumesiOrdersController < ApplicationController
     end
   end
   def new
-    @products = Product.all
-    @kurumesi_order = KurumesiOrder.new
+    @kurumesi_order = KurumesiOrder.new(brand_id:params[:brand_id],start_time:params[:date])
     @kurumesi_order.kurumesi_order_details.build
-    @brands = Brand.all
+    @brand_name = Brand.find(params[:brand_id]).name
+    @products = Product.where(brand_id:params[:brand_id])
   end
 
   def edit
     @products = Product.all
-    @brands = Brand.all
+    brand_id = @kurumesi_order.brand_id
+    @brand_name = Brand.find(brand_id).name
   end
 
   def create
@@ -191,11 +194,6 @@ class KurumesiOrdersController < ApplicationController
       format.html { redirect_to kurumesi_orders_url, notice: 'Masu order was successfully destroyed.' }
       format.json { head :no_content }
     end
-  end
-
-  def change_brands
-    brand_id = params[:brand_id]
-    @products = Product.where(brand_id:brand_id)
   end
 
   private
