@@ -50,13 +50,11 @@
       - @order.order_materials.where(un_order_flag:false).each do |om|
         li.index_vendor_list.list-group-item.col-md-12 style="padding:5px;"
           .material_name.col-md-3
-            = om.material.name
+            =  link_to om.material.name ,om.material,target:'_blank'
           .order_quantity.col-md-1.text-right
-            = om.order_quantity
-            = om.material.order_unit
+            = "#{((om.order_quantity.to_f/om.material.recipe_unit_quantity)*om.material.order_unit_quantity).round(1)} #{om.material.order_unit}"
           .material_unit.col-md-1.text-right
-            = om.calculated_quantity
-            = om.material.recipe_unit
+            = "#{om.calculated_quantity} #{om.material.recipe_unit}"
           .vendor_company_name.col-md-2
             = om.material.vendor.company_name
           .col-md-2

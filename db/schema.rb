@@ -190,8 +190,6 @@ ActiveRecord::Schema.define(version: 2019_07_26_070953) do
     t.string "order_material_memo"
     t.date "delivery_date"
     t.string "menu_name"
-    t.string "recipe_unit"
-    t.string "order_unit"
     t.boolean "un_order_flag", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

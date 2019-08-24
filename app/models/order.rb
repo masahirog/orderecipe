@@ -1,6 +1,5 @@
 class Order < ApplicationRecord
   paginates_per 20
-
   has_many :order_materials, dependent: :destroy
   has_many :materials, through: :order_materials
   accepts_nested_attributes_for :order_materials, reject_if: :reject_material_blank, allow_destroy: true
@@ -31,9 +30,9 @@ class Order < ApplicationRecord
       material_id = omg[0][1]
       material = Material.find(material_id)
       #レシピ単位で計上する!
-      delivery_amount = omg[1].to_f * material.recipe_unit_quantity
+      # delivery_amount = omg[1].to_f * material.recipe_unit_quantity
+      delivery_amount = omg[1].to_f
       stock = Stock.find_by(date:date,material_id:material_id)
-
       if stock
         stock.delivery_amount = delivery_amount
         end_day_stock = stock.start_day_stock - stock.used_amount + delivery_amount

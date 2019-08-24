@@ -162,12 +162,13 @@ $(document).on('turbolinks:load', function() {
 
       $(".aaaad").children().remove()
       $.each(data, function(i){
+        console.log(data);
         var li = '<tr class="products_li">'+
         '<td>'+
           data[i]['management_id']+
         '</td>'+
         '<td class="product_name">'+
-        '<a href=/products/'+data[i]['product_id']+'>'+data[i]['name']+'</a>'+
+        '<a href=/products/'+data[i]['id']+'>'+data[i]['name']+'</a>'+
         '</td>'+
         '<td>'+
          data[i]['brand']+

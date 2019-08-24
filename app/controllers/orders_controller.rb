@@ -20,6 +20,13 @@ class OrdersController < ApplicationController
     @materials = Material.where(unused_flag:false)
     @search_code_materials = Material.where(unused_flag:false).where.not(order_code:"")
     @order = Order.includes(:products,:order_products,:order_materials,{materials: [:vendor]}).find(params[:id])
+    @order.order_materials.each do |om|
+      om.order_unit = om.material.order_unit
+      om.recipe_unit = om.material.recipe_unit
+      om.order_quantity_order_unit = ((om.order_quantity.to_f / om.material.recipe_unit_quantity) * om.material.order_unit_quantity).round(1)
+      om.recipe_unit_quantity = om.material.recipe_unit_quantity
+      om.order_unit_quantity = om.material.order_unit_quantity
+    end
     @code_materials = Material.where(unused_flag:false).where.not(order_code:"")
     @vendors = @order.order_materials.map{|om|[om.material.vendor.company_name,om.material.vendor.id]}.uniq
     product_ids = @order.products.ids
@@ -87,7 +94,6 @@ class OrdersController < ApplicationController
     @order = Order.includes(:products,:order_products,:order_materials,{materials: [:vendor]}).find(params[:id])
     @code_materials = Material.where(unused_flag:false).where.not(order_code:"")
     @vendors = @order.order_materials.map{|om|[om.material.vendor.company_name,om.material.vendor.id]}.uniq
-    @order = Order.find(params[:id])
     if @order.update(order_create_update)
       redirect_to order_path
     else
@@ -205,16 +211,15 @@ class OrdersController < ApplicationController
           else
             i = 0
           end
-          order_quantity = BigDecimal((shortage_stock / value['recipe_unit_quantity'].to_f * value['order_unit_quantity'].to_f).to_s).ceil(i)
+          order_quantity_order_unit = BigDecimal((shortage_stock / value['recipe_unit_quantity'].to_f * value['order_unit_quantity'].to_f).to_s).ceil(i)
         else
           un_order_flag = true
-          order_quantity = 0
+          order_quantity_order_unit = 0
         end
       else
-        order_quantity = BigDecimal((calculated_quantity / value['recipe_unit_quantity'].to_f * value['order_unit_quantity'].to_f).to_s).ceil
-        un_order_flag = false
+        order_quantity_order_unit = BigDecimal((calculated_quantity / value['recipe_unit_quantity'].to_f * value['order_unit_quantity'].to_f).to_s).ceil
       end
-      @order.order_materials.build(material_id:key,order_quantity:order_quantity,calculated_quantity:calculated_quantity,menu_name:menu_name,recipe_unit:recipe_unit,order_unit:order_unit,order_material_memo:order_material_memo,delivery_date:delivery_date,un_order_flag:un_order_flag)
+      @order.order_materials.build(material_id:key,recipe_unit:recipe_unit,order_unit_quantity:value['order_unit_quantity'],recipe_unit_quantity:value['recipe_unit_quantity'],order_unit:order_unit,order_quantity_order_unit:order_quantity_order_unit,calculated_quantity:calculated_quantity,menu_name:menu_name,order_material_memo:order_material_memo,delivery_date:delivery_date,un_order_flag:un_order_flag)
       # 在庫が必要である日==前日
       date = sales_date - 1
       @stocks = Stock.includes(:material).where(material_id:key,date:(date - 10)..(date + 5)).order('date ASC')
@@ -252,7 +257,7 @@ class OrdersController < ApplicationController
 
   def create
     @stock_hash = {}
-    @order = Order.create(order_create_update)
+    @order = Order.new(order_create_update)
     @code_materials = Material.where(unused_flag:false).where.not(order_code:"")
     @materials = Material.where(unused_flag:false)
     @vendors = @order.order_materials.map{|om|[om.material.vendor.company_name,om.material.vendor.id]}.uniq
@@ -386,8 +391,15 @@ class OrdersController < ApplicationController
   end
   private
   def order_create_update
-    params.require(:order).permit(:fixed_flag,order_materials_attributes: [:id, :order_quantity,:calculated_quantity,
-      :menu_name, :order_id, :material_id,:order_material_memo,:delivery_date,:recipe_unit,:order_unit, :un_order_flag,:_destroy],
+    params[:order][:order_materials_attributes].each do |om|
+      if om[1]['order_quantity_order_unit'].to_f > 0
+        om[1]['order_quantity'] = (om[1]['order_quantity_order_unit'].to_f * om[1]['recipe_unit_quantity'].to_f)/ om[1]['order_unit_quantity'].to_f
+      else
+        om[1]['order_quantity'] = 0
+      end
+    end
+    params.require(:order).permit(:fixed_flag,order_materials_attributes: [:id,:calculated_quantity,:order_quantity_order_unit,:order_quantity,
+      :menu_name, :order_id, :material_id,:order_material_memo,:delivery_date, :un_order_flag,:_destroy],
       order_products_attributes: [:id,:make_date, :serving_for, :order_id, :product_id, :_destroy])
   end
 end

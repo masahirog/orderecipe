@@ -5,11 +5,12 @@ class CreateOrderMaterials < ActiveRecord::Migration[4.2][5.0]
       t.integer :material_id, null:false
       t.string :order_quantity, null:false,default:0
       t.float :calculated_quantity
+      #order_quantityもcalculated_quantityも単位はレシピ単位で保存している
       t.string :order_material_memo
       t.date :delivery_date
       t.string :menu_name
-      t.string :recipe_unit
-      t.string :order_unit
+      # t.string :recipe_unit
+      # t.string :order_unit
       t.boolean :un_order_flag,default:false,null:false
       t.timestamps
     end
