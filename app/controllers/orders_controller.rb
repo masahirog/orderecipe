@@ -262,7 +262,6 @@ class OrdersController < ApplicationController
     @materials = Material.where(unused_flag:false)
     @vendors = @order.order_materials.map{|om|[om.material.vendor.company_name,om.material.vendor.id]}.uniq
     @prev_stocks = {}
-    binding.pry
     if @order.save
       redirect_to "/orders/#{@order.id}"
     else
