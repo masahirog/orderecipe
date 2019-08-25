@@ -262,6 +262,7 @@ class OrdersController < ApplicationController
     @materials = Material.where(unused_flag:false)
     @vendors = @order.order_materials.map{|om|[om.material.vendor.company_name,om.material.vendor.id]}.uniq
     @prev_stocks = {}
+    binding.pry
     if @order.save
       redirect_to "/orders/#{@order.id}"
     else
@@ -393,7 +394,7 @@ class OrdersController < ApplicationController
   def order_create_update
     params[:order][:order_materials_attributes].each do |om|
       if om[1]['order_quantity_order_unit'].to_f > 0
-        om[1]['order_quantity'] = (om[1]['order_quantity_order_unit'].to_f * om[1]['recipe_unit_quantity'].to_f)/ om[1]['order_unit_quantity'].to_f
+        om[1]['order_quantity'] = ((om[1]['order_quantity_order_unit'].to_f * om[1]['recipe_unit_quantity'].to_f)/ om[1]['order_unit_quantity'].to_f).round(1)
       else
         om[1]['order_quantity'] = 0
       end
