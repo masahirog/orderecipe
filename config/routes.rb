@@ -60,6 +60,7 @@ Rails.application.routes.draw do
   end
   resources :orders do
     collection do
+      get :send_order_fax
       get :preparation_all
       get :monthly
       get :products_pdfs

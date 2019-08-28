@@ -323,6 +323,14 @@ class OrdersController < ApplicationController
     end
   end
 
+  def send_order_fax
+    vendor_ids = params['vendor_id'].keys
+    vendors = Vendor.where(id:vendor_ids)
+    order = Order.find(params[:order_id])
+    vendors.each do |vendor|
+      NotificationMailer.send_order(vendor).deliver
+    end
+  end
 
 
   def get_management_id

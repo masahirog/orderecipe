@@ -11,6 +11,7 @@ class CreateVendors < ActiveRecord::Migration[4.2][5.0]
       t.string :staff_phone
       t.string :staff_mail
       t.string :management_id
+      t.string :efax_address
       t.text :memo
       t.timestamps
     end

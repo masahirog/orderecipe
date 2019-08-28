@@ -36,6 +36,7 @@
     .col-md-2.text-left
       input.print_btn.btn.btn-primary type="button" onclick="submit();" value="◀1企業印刷"
   = link_to '全企業印刷',print_all_orders_path(id:@order.id,format: :pdf),target:'_blank',class:'btn btn-primary'
+  button type="button" class="btn-primary btn" data-toggle="modal" data-target="#sampleModal" FAX送信
 .col-md-12
   label 発注食材・資材一覧
   .orders_all.panel.panel-primary
@@ -61,3 +62,20 @@
             = om.order_material_memo
           .col-md-2
             = om.delivery_date
+
+#sampleModal.modal.fade tabindex="-1"
+  = form_tag(send_order_fax_orders_path,method: :get) do
+    = number_field_tag 'order_id',@order.id
+    .modal-dialog
+      .modal-content
+        .modal-header
+          h4.modal-title 送信する企業にチェックを付けて下さい
+        .modal-body
+          - @vendors.each_with_index do |vendor,i|
+            .col-12.clearfix style='padding:5px 0;'
+              = check_box_tag "vendor_id[#{vendor['vendor_id']}]",true,false,class:'form-control',style:'width:40px;float:left;'
+              label style='float:left;padding:10px 0px 0px 10px;'
+                = vendor['company_name']
+        .modal-footer
+          button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
+          = submit_tag "送信する" ,class:"btn btn-primary"
