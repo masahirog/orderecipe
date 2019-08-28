@@ -41,12 +41,14 @@ class Order < ApplicationRecord
         #未来の在庫を書き換えていく処理
         Stock.change_stock(update_stocks,material_id,date,end_day_stock)
       else
-        end_day_stock = delivery_amount
         prev_stock = Stock.where("date < ?", date).where(material_id:material_id).order("date DESC").first
         if prev_stock.present?
-          new_stocks << Stock.new(material_id:material_id,date:date,end_day_stock:end_day_stock,start_day_stock:prev_stock.end_day_stock)
+          start_day_stock = prev_stock.end_day_stock
+          end_day_stock = start_day_stock + delivery_amount
+          new_stocks << Stock.new(material_id:material_id,date:date,end_day_stock:end_day_stock,start_day_stock:start_day_stock,delivery_amount:delivery_amount)
         else
-          new_stocks << Stock.new(material_id:material_id,date:date,end_day_stock:end_day_stock)
+          end_day_stock = delivery_amount
+          new_stocks << Stock.new(material_id:material_id,date:date,end_day_stock:end_day_stock,delivery_amount:delivery_amount)
         end
         Stock.change_stock(update_stocks,material_id,date,end_day_stock)
       end

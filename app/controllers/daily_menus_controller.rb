@@ -1,6 +1,5 @@
 class DailyMenusController < ApplicationController
   before_action :set_daily_menu, only: [:show, :edit, :update, :destroy]
-
   def index
     @daily_menus = DailyMenu.includes(daily_menu_details:[:product]).all
   end

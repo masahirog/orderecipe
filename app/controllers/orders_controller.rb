@@ -34,7 +34,7 @@ class OrdersController < ApplicationController
     if @order.order_products.present?
       make_date = @order.order_products[0].make_date
       @order.order_materials.each do |om|
-        prev_stock = Stock.where("date <= ?", make_date).where(material_id:om.material_id).order("date DESC").first
+        prev_stock = Stock.where("date < ?", make_date).where(material_id:om.material_id).order("date DESC").first
         @prev_stocks[om.material_id] = prev_stock
       end
     end
