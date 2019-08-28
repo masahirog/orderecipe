@@ -84,9 +84,11 @@ html
                 ul.nav.navbar-nav
                   li.user_nav.grid-6
                     = link_to "ログイン", new_user_session_path, class: 'post'
-    - flash.each do |name, msg|
-      = content_tag :div, raw(msg), :id => name, :class => "alert"
     .all_body
+      - flash.each do |name, msg|
+        .col-md-12 class="alert alert-success" role="alert"
+          = content_tag :div, raw(msg), :id => name
+
       = yield
     .col-md-12.footer style="height:20px;"
 /

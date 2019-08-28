@@ -8,12 +8,10 @@ tr.order_materials_tr.nested-fields
       - if f.object.material.present?
         span = f.object.material.vendor.company_name
         span style='color:red;font-weight:bold;' = "【受注品】" if f.object.material.vendor_stock_flag == false
-  td.quantity
+  td class="quantity_#{f.object.material_id}"
     .clearfix.text-right
       div style="float:left;width:50%;"
         = f.text_field :order_quantity_order_unit,class:'order_quantity text-right form-control',style:"float:left;width:70%;"
-        = f.hidden_field :order_unit_quantity
-        = f.hidden_field :recipe_unit_quantity
         = f.text_field :order_unit, style:'float:left;width:20%;',class:'form-control order_material_unit',readonly:true
       div style="float:left;width:50%;"
         = f.text_field :calculated_quantity,class:'recipe_unit_quantity text-right form-control',style:"float:left;width:70%;",readonly:true

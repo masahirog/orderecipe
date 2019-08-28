@@ -1,1 +1,4 @@
-$(".stock_yoso_<%= @material.id %>").text("<%= (@prev_stock.end_day_stock/@material.accounting_unit_quantity).floor(1) %> <%= @material.accounting_unit %>（<%= @prev_stock.end_day_stock.floor.to_s(:delimited) %><%= @material.recipe_unit %>）");
+
+$(".stock_yoso_<%= @material.id %>").text("<%= (@prev_stock.end_day_stock/@material.accounting_unit_quantity).floor(1) %> <%= @material.accounting_unit %>");
+$(".quantity_<%= @material.id %>").find('.change_unit').text("<%= @material.order_unit_quantity %> <%= @material.order_unit %>：<%= @material.recipe_unit_quantity %> <%= @material.recipe_unit %>");
+$(".quantity_<%= @material.id %>").find('.order_material_unit').val("<%= @material.order_unit %>");

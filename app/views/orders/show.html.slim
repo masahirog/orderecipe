@@ -27,21 +27,16 @@
           .col-md-2
             = link_to "盛付用VIEW", serving_kana_products_path(id:op.product_id), class:"btn btn-default",:target=>"_blank"
 .col-md-12 style='padding-bottom:15px;'
-  .col-md-2 style='padding:0;'
-    = link_to '発注内容の編集',edit_order_path(@order),class: "btn btn-primary"
-
   = form_tag({:controller => "orders", :action => "order_print", format: "pdf"},{:target => "_blank"}) do
-    .col-md-2.col-md-offset-1
-      = select :vendor,:id, @vendors.map{|t| [t["company_name"], t["vendor_id"]]},{},class:"index_vendor_select form-control"
-    .col-md-2.text-left
-      input.print_btn.btn.btn-primary type="button" onclick="submit();" value="◀1企業印刷"
-  = link_to '全企業印刷',print_all_orders_path(id:@order.id,format: :pdf),target:'_blank',class:'btn btn-primary'
-  button type="button" class="btn-primary btn" data-toggle="modal" data-target="#sampleModal" FAX送信
+    = select :vendor,:id, @vendors.map{|t| [t["company_name"], t["vendor_id"]]},{},class:"index_vendor_select form-control",style:'float:left;width:200px;'
+    input.print_btn.btn.btn-primary type="button" onclick="submit();" style='float:left;margin-left:5px;' value="◀1企業印刷"
+  = link_to '全企業印刷',print_all_orders_path(id:@order.id,format: :pdf),target:'_blank',class:'btn btn-primary',style:'float:left;margin-left:5px;'
+  button type="button" class="btn-success btn" data-toggle="modal" data-target="#sampleModal" style='float:left;margin-left:5px;' FAX送信
+  = link_to '発注内容の編集',edit_order_path(@order),class:"btn btn-default",style:'margin-left:5px;float:left;'
 .col-md-12
-  label 発注食材・資材一覧
-  .orders_all.panel.panel-primary
+  .orders_all.panel.panel-primary style='margin-top:10px;'
     .panel-heading.col-md-12 style="padding:5px;"
-      label.panel-title.material_name.col-md-3 食材名
+      label.panel-title.material_name.col-md-3 発注食材・資材一覧
       label.panel-title.col-md-1 発注量
       label.panel-title.col-md-1 計算量
       label.panel-title.col-md-2 仕入先

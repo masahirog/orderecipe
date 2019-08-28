@@ -24,8 +24,6 @@ class OrdersController < ApplicationController
       om.order_unit = om.material.order_unit
       om.recipe_unit = om.material.recipe_unit
       om.order_quantity_order_unit = ((om.order_quantity.to_f / om.material.recipe_unit_quantity) * om.material.order_unit_quantity).round(1)
-      om.recipe_unit_quantity = om.material.recipe_unit_quantity
-      om.order_unit_quantity = om.material.order_unit_quantity
     end
     @code_materials = Material.where(unused_flag:false).where.not(order_code:"")
     @vendors = @order.order_materials.map{|om|[om.material.vendor.company_name,om.material.vendor.id]}.uniq
@@ -219,7 +217,7 @@ class OrdersController < ApplicationController
       else
         order_quantity_order_unit = BigDecimal((calculated_quantity / value['recipe_unit_quantity'].to_f * value['order_unit_quantity'].to_f).to_s).ceil
       end
-      @order.order_materials.build(material_id:key,recipe_unit:recipe_unit,order_unit_quantity:value['order_unit_quantity'],recipe_unit_quantity:value['recipe_unit_quantity'],order_unit:order_unit,order_quantity_order_unit:order_quantity_order_unit,calculated_quantity:calculated_quantity,menu_name:menu_name,order_material_memo:order_material_memo,delivery_date:delivery_date,un_order_flag:un_order_flag)
+      @order.order_materials.build(material_id:key,recipe_unit:recipe_unit,order_unit:order_unit,order_quantity_order_unit:order_quantity_order_unit,calculated_quantity:calculated_quantity,menu_name:menu_name,order_material_memo:order_material_memo,delivery_date:delivery_date,un_order_flag:un_order_flag)
       # 在庫が必要である日==前日
       date = sales_date - 1
       @stocks = Stock.includes(:material).where(material_id:key,date:(date - 10)..(date + 5)).order('date ASC')
@@ -270,15 +268,17 @@ class OrdersController < ApplicationController
   end
 
   def show
-    @order = Order.includes(:order_materials,[materials: :vendor],order_products:[:product]).find(params[:id])
+    @order = Order.includes(order_products:[:product]).find(params[:id])
     @vendors = Vendor.vendor_index(params)
   end
 
   def order_print
-    @order = Order.find(params[:id])
+    order_id = params[:id]
+    @order = Order.find(order_id)
     if params[:vendor][:id].present?
-      @vendor = Vendor.find(params[:vendor][:id])
-      @materials_this_vendor = Material.get_material_this_vendor(params)
+      vendor_id = params[:vendor][:id]
+      @vendor = Vendor.find(vendor_id)
+      @materials_this_vendor = Material.get_material_this_vendor(order_id,vendor_id)
       respond_to do |format|
        format.html
        format.pdf do
@@ -328,8 +328,9 @@ class OrdersController < ApplicationController
     vendors = Vendor.where(id:vendor_ids)
     order = Order.find(params[:order_id])
     vendors.each do |vendor|
-      NotificationMailer.send_order(vendor).deliver
+      NotificationMailer.send_order(order,vendor).deliver
     end
+    redirect_to order, notice: "#{vendors.length} 件のFAXを送信しました。しばらくたったあとにFAXが届いているか確認してください。"
   end
 
 
@@ -400,8 +401,11 @@ class OrdersController < ApplicationController
   private
   def order_create_update
     params[:order][:order_materials_attributes].each do |om|
+      material = Material.find(om[1]['material_id'])
+      recipe_unit_quantity = material.recipe_unit_quantity
+      order_unit_quantity = material.order_unit_quantity
       if om[1]['order_quantity_order_unit'].to_f > 0
-        om[1]['order_quantity'] = ((om[1]['order_quantity_order_unit'].to_f * om[1]['recipe_unit_quantity'].to_f)/ om[1]['order_unit_quantity'].to_f).round(1)
+        om[1]['order_quantity'] = ((om[1]['order_quantity_order_unit'].to_f * recipe_unit_quantity.to_f)/ order_unit_quantity.to_f).round(1)
       else
         om[1]['order_quantity'] = 0
       end

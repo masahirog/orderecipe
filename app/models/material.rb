@@ -77,14 +77,12 @@ class Material < ApplicationRecord
     return ar
   end
 
-  def self.get_material_this_vendor(params)
-    order = Order.includes(order_materials: :material).find(params[:id])
+  def self.get_material_this_vendor(order_id,vendor_id)
+    order = Order.includes(order_materials: :material).find(order_id)
     ordermaterials = order.order_materials.where(un_order_flag:false)
     materials_this_vendor = []
-    pvi = params[:vendor][:id].to_i
     ordermaterials.each do |om|
-      vendorid = om.material.vendor_id
-      if pvi == vendorid
+      if vendor_id.to_i == om.material.vendor_id
         materials_this_vendor << om
       end
     end
