@@ -60,7 +60,7 @@
 
 #sampleModal.modal.fade tabindex="-1"
   = form_tag(send_order_fax_orders_path,method: :get) do
-    = number_field_tag 'order_id',@order.id
+    = hidden_field_tag 'order_id',@order.id
     .modal-dialog
       .modal-content
         .modal-header
