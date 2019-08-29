@@ -282,7 +282,7 @@ class OrdersController < ApplicationController
       respond_to do |format|
        format.html
        format.pdf do
-         pdf = OrderPdf.new(@materials_this_vendor,@vendor)
+         pdf = OrderPdf.new(@materials_this_vendor,@vendor,@order)
          pdf.font "vendor/assets/fonts/ipaexm.ttf"
          send_data pdf.render,
            filename:    "#{@order.id}_#{@vendor.company_name}.pdf",

@@ -14,7 +14,7 @@ class OrderPrintAll < Prawn::Document
         oms.each do |om|
           arr << om if om.delivery_date == date
         end
-        header
+        header(order)
         header_lead(vendor)
         header_adress(vendor)
         header_hello
@@ -25,7 +25,8 @@ class OrderPrintAll < Prawn::Document
     end
   end
 
-  def header
+  def header(order)
+    text "オーダーID：#{order.id}",:align => :right
     bounding_box([200, 770], :width => 120, :height => 50) do
       text "発 注 書", size: 24
     end

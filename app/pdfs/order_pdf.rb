@@ -1,5 +1,5 @@
 class OrderPdf < Prawn::Document
-  def initialize(materials_this_vendor,vendor)
+  def initialize(materials_this_vendor,vendor,order)
     super(page_size: 'A4')
     uniq_date = materials_this_vendor.pluck(:delivery_date).uniq
     font "vendor/assets/fonts/ipaexm.ttf"
@@ -9,7 +9,7 @@ class OrderPdf < Prawn::Document
         arr << material if material.delivery_date == date
       end
       start_new_page unless i == 0
-      header
+      header(order)
       header_lead(vendor)
       header_adress(vendor)
       header_hello
@@ -17,7 +17,8 @@ class OrderPdf < Prawn::Document
     end
   end
 
-  def header
+  def header(order)
+    text "オーダーID：#{order.id}",:align => :right
     bounding_box([200, 770], :width => 120, :height => 50) do
       text "発 注 書", size: 24
     end
