@@ -18,6 +18,8 @@ class Vendor < ApplicationRecord
       hash={}
       hash.store("vendor_id", om.material.vendor_id)
       hash.store("company_name", om.material.vendor.company_name)
+      hash.store("company_fax", om.material.vendor.company_fax)
+      hash.store("efax_address", om.material.vendor.efax_address)
       hoge << hash
     end
     hoge.uniq!
