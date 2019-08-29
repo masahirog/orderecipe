@@ -9,7 +9,7 @@ class NotificationMailer < ActionMailer::Base
     mail(
       subject: "#{@vendor.company_name} 御中", #メールのタイトル
       to: @vendor.efax_address, #宛先
-      cc: "bento.jp.kitchen@gmail.com"
+      cc: "81359375432@efaxsend.com"
     ) do |format|
       format.text
     end
