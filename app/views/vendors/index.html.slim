@@ -7,6 +7,7 @@ table.table
       th 企業名
       th TEL
       th FAX
+      th eFAXメール
       th mail
       th 郵便番号
       th 住所
@@ -19,6 +20,7 @@ table.table
         td = link_to vendor.company_name,edit_vendor_path(vendor)
         td = vendor.company_phone
         td = vendor.company_fax
+        td = vendor.efax_address
         td = vendor.company_mail
         td = vendor.zip
         td = vendor.address

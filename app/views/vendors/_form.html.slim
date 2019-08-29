@@ -18,6 +18,9 @@
     = f.label :company_fax, "FAX番号"
     = f.text_field :company_fax, class:"form-control"
   .form-group
+    = f.label :efax_address, "eFAX送信用のメールアドレス「81 + fax番号(先頭の0無し) + @efaxsend.com」"
+    = f.text_field :efax_address, class:"form-control"
+  .form-group
     = f.label :company_mail, "メールアドレス"
     = f.text_field :company_mail, class:"form-control"
   .form-group
