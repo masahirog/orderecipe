@@ -6,7 +6,7 @@ li.form_li.col-md-12 style="padding-top:10px;"
     = text_field_tag :management_id, params[:management_id], class:"order_management_id_search form-control",style:"width:100%"
   .select.col-md-4
     p お弁当名▼
-    = select_tag(:id, options_from_collection_for_select(@products,:id,:name),include_blank: true,class:"input_select_product col-md-8 select2",name:"order[][product_id]")
+    = select_tag(:id, options_from_collection_for_select(@products,:id,:name),include_blank: true,class:"input_select_product col-md-8",name:"order[][product_id]")
   .cook_num.col-md-2
     p 食数▼
     = number_field :num,{}, name:"order[][num]",class:'input_cook_num form-control', placeholder:"食数を入力"

@@ -9,7 +9,7 @@ ol.breadcrumb
     .col-md-1
       = text_field_tag :management_id, params[:management_id], class:"id_search form-control",style:"width:100%",placeholder:'bentoID'
     .col-md-3
-      = select_tag :name,options_for_select(Product.pluck(:name)),include_blank: true, class:"name_search form-control select2"
+      = select_tag :name,options_for_select(Product.pluck(:name)),include_blank: true, class:"name_search form-control"
     .col-md-2
       = select_tag :cook_category, options_for_select(Product.cook_categories.keys.to_a,params[:cook_category]),include_blank:true, class: "form-control",style:"width:100%"
     .col-md-2

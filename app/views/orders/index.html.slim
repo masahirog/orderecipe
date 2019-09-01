@@ -13,7 +13,7 @@
   h4 style='margin-right:40px;float:left;' 過去の発注一覧
   = form_tag orders_path, :method => 'get' do
     .col-md-4
-      = select_tag :material_id, options_from_collection_for_select(@materials, :id, :name,params[:material_id]),include_blank: '食材を選択して過去オーダーを検索する', class: "form-control material_search select2"
+      = select_tag :material_id, options_from_collection_for_select(@materials, :id, :name,params[:material_id]),include_blank: '食材を選択して過去オーダーを検索する', class: "form-control material_search"
     .col-md-1
       = submit_tag "検索" ,class:"btn btn-primary"
 

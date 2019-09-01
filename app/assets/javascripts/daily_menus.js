@@ -6,7 +6,7 @@ $(document).on('turbolinks:load', function() {
   }});
   $('.add_menu_details').on('click',function(){
     setTimeout(function(){
-      $(".input_select_product.select2").select2();
+      $(".input_select_product").select2();
       reset_row_order();
     },1);
   });

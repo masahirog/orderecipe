@@ -33,7 +33,7 @@
         = f.select :product_type, options_for_select(Product.product_types.keys.to_a, @product.product_type), {include_blank:true}, class: 'form-control'
       .col-md-4
         = f.label :cook_category, "調理カテゴリー"
-        = f.select :cook_category, options_for_select(Product.cook_categories.keys.to_a,@product.cook_category), {}, class: 'cook_category_choice select2 form-control'
+        = f.select :cook_category, options_for_select(Product.cook_categories.keys.to_a,@product.cook_category), {}, class: 'cook_category_choice form-control'
 
     .col-md-12.form-group
       = f.label :obi_url, "くるめしの帯"

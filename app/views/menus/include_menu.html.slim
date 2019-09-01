@@ -6,7 +6,7 @@
 .col-md-12[style="padding:0 0 10px 0;"]
   |  ▼チェックの付いたメニューの食材を一括変更する
 .col-md-4[style="padding:0px;"]
-  = select :menu_id,:menu_id, Menu.pluck(:name, :id),{include_blank: true}, class:'all_select_menu select2'
+  = select :menu_id,:menu_id, Menu.pluck(:name, :id),{include_blank: true}, class:'all_select_menu'
 = form_tag(:controller => "menus", :action => "include_update") do
   = hidden_field_tag "menu_id",params[:id]
   .col-md-12
@@ -30,6 +30,6 @@
         .col-md-1[style="display:none;"]
           = text_field_tag :id, pm.id, name:"post[][pm_id]"
         .col-md-2.select_menu
-          = select_tag(:menu_id, options_from_collection_for_select(@menus,:id,:name, :selected => pm.menu_id),include_blank: true,class:"input_select_menu select2", name:"post[][menu_id]")
+          = select_tag(:menu_id, options_from_collection_for_select(@menus,:id,:name, :selected => pm.menu_id),include_blank: true,class:"input_select_menu", name:"post[][menu_id]")
 .col-md-12
   = paginate @product_menus

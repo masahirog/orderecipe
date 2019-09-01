@@ -43,9 +43,9 @@
   .used_additives.col-md-12 style="margin:20px 0;"
     = f.label :used_additives ,"使用食品添加物"
     - if f.object.used_additives.present?
-      = f.select :used_additives, grouped_options_for_select(@ar,f.object.used_additives),{ include_hidden: false},{class:"select_used_additives select2 col-md-12",multiple:true}
+      = f.select :used_additives, grouped_options_for_select(@ar,f.object.used_additives),{ include_hidden: false},{class:"select_used_additives col-md-12",multiple:true}
     - else
-      = f.select :used_additives, grouped_options_for_select(@ar),{include_hidden: false},{class:"select_used_additives col-md-12 select2",multiple:true}
+      = f.select :used_additives, grouped_options_for_select(@ar),{include_hidden: false},{class:"select_used_additives col-md-12",multiple:true}
   .col-md-12.form-group
     .col-md-3
       label

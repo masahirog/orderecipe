@@ -1,3 +1,4 @@
+
 $(document).on('turbolinks:load', function() {
   //materialの表示、原価計算
   $(".add_li_menu").each(function() {
@@ -5,14 +6,11 @@ $(document).on('turbolinks:load', function() {
   });
   reset_row_order();
 
-  $('.input_select_menu.select2').select2({
+  $('.input_select_menu').select2({
     width:"100%",
     placeholder: "メニューを選択してください",
   });
-  $('.cook_category_choice.select2').select2({
-    placeholder: "カテゴリ"
-  });
-  $('.name_search.select2').select2({
+  $('.name_search').select2({
     height:"40px",
     width:"100%",
   });
@@ -92,7 +90,6 @@ $(document).on('turbolinks:load', function() {
     setTimeout(function(){
       $('.add_li_menu').last().find('.cost_price').text("")
       $('.add_li_menu').last().find('.material_name').children().text("")
-      $(".input_select_menu").select2('destroy');
       $(".input_select_menu").select2({ width:"100%",placeholder: "メニューを選択してください" });
       reset_row_order();
     },1);

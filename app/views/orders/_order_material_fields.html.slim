@@ -1,9 +1,9 @@
 tr.order_materials_tr.nested-fields
   td.order_material_name
     - if f.object.material_id.present?
-      = f.collection_select :material_id, @materials, :id, :name,{include_blank: true}, class:'select_order_materials select2',style:"width:250px;"
+      = f.collection_select :material_id, @materials, :id, :name,{include_blank: true}, class:'select_order_materials',style:"width:250px;"
     - else
-      = f.collection_select :material_id, @materials, :id, :name,{include_blank: true}, class:'select_order_materials select2',style:"width:250px;"
+      = f.collection_select :material_id, @materials, :id, :name,{include_blank: true}, class:'select_order_materials',style:"width:250px;"
     .vendor_company_name style="padding-top:3px;color:#A9A9A9;"
       - if f.object.material.present?
         span = f.object.material.vendor.company_name

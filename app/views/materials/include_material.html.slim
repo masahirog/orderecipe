@@ -8,7 +8,7 @@
   .col-md-12 style="padding:0 0 10px 0;"
     |▼チェックの付いたメニューの食材を一括変更する
   .col-md-4 style="padding:0px;"
-    = select :material_id,:material_id, Material.where(unused_flag:false).pluck(:name, :id),{include_blank: true}, class:'all_select_material select2'
+    = select :material_id,:material_id, Material.where(unused_flag:false).pluck(:name, :id),{include_blank: true}, class:'all_select_material'
 = form_tag(:controller => "materials", :action => "include_update") do
   = hidden_field_tag "material_id",params[:id]
   .col-md-12
@@ -37,7 +37,7 @@
         .col-md-1 style="display:none;"
           = text_field_tag :id, mm.id, name:"post[][mm_id]"
         .col-md-2.select_material
-          = select_tag(:material_id, options_from_collection_for_select(@materials,:id,:name, :selected => mm.material_id), include_blank: true,class:"input_select_material select2", name:"post[][material_id]")
+          = select_tag(:material_id, options_from_collection_for_select(@materials,:id,:name, :selected => mm.material_id), include_blank: true,class:"input_select_material", name:"post[][material_id]")
       - i += 1
 .col-md-12
   = paginate @menu_materials

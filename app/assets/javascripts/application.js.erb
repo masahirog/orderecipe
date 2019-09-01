@@ -1,30 +1,38 @@
 //= require rails-ujs
 //= require jquery3
+//= require jquery.turbolinks
 //= require activestorage
+//= require select2
 //= require cocoon
 //= require turbolinks
-//= require jquery-ui
 //= require_tree .
 
 
-
-
-
 $(document).on("turbolinks:before-cache", function() {
-  if ($(".select2").length) {
-    $('.select2').select2('destroy');
-  }
+  $('.input_select_menu').select2('destroy');
+  $('.kurumesi_order_select_product').select2('destroy');
+  $('.input_select_product').select2('destroy');
+  $('.input_select_food_additive').select2('destroy');
+  $('.all_select_material').select2('destroy');
+  $('.select_used_additives').select2('destroy');
+  $('.all_select_menu').select2('destroy');
+  $('.input_select_material').select2('destroy');
+  $('.input_food_ingredient').select2('destroy');
+  $('.select_order_materials').select2('destroy');
+  $('.material_search').select2('destroy');
+  $('.name_search').select2('destroy');
+  $('.input-stock-materials-name').select2('destroy');
 });
 
 $(document).on('turbolinks:load', function() {
   var controller = $('body').data('controller');
   var action = $('body').data('action');
 
-  $('.kurumesi_order_select_product.select2').select2();
+  $('.kurumesi_order_select_product').select2();
   $('.add_kurumesi_order_detail').on('click',function(){
-    $('.kurumesi_order_select_product.select2').select2('destroy');
+    $('.kurumesi_order_select_product').select2('destroy');
     setTimeout(function(){
-      $('.kurumesi_order_select_product.select2').select2();
+      $('.kurumesi_order_select_product').select2();
     },5);
   });
 

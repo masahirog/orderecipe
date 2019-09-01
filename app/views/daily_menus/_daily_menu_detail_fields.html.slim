@@ -17,7 +17,7 @@
     td.col-md-2
       = text_field_tag :management_id, params[:management_id], class:"make_dailymenu_management_id_search form-control",style:"width:100%"
     td.col-md-3
-      = f.collection_select :product_id, @products, :id, :name, {include_blank:true},class:'form-control input_select_product select2'
+      = f.collection_select :product_id, @products, :id, :name, {include_blank:true},class:'form-control input_select_product'
     td.col-md-2
       = f.number_field :manufacturing_number, class: 'form-control manufacturing_number'
     td.col-md-4

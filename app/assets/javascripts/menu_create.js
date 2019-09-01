@@ -3,79 +3,16 @@ $(document).on('turbolinks:load', function() {
   reset_row_order();
   calculate_menu_nutrition();
 
-  $(".select_used_additives.select2").select2();
-  $(".all_select_menu.select2").select2();
-
-  $(".input_select_material.select2").select2({
-    ajax: {
-      url:'/materials/search.json',
-      dataType: 'json',
-      delay: 50,
-      data: function(params) {
-        return {　q: params.term　};
-      },
-      processResults: function (data, params) {
-        return { results: $.map(data, function(obj) {
-            return { id: obj.id, text: obj.name };
-          })
-        };
-      }
-    }
-  });
-  $(".input_food_ingredient.select2").select2({
-    ajax: {
-      url:'/menus/food_ingredient_search.json',
-      dataType: 'json',
-      delay: 50,
-      data: function(params) {
-        return {　q: params.term　};
-      },
-      processResults: function (data, params) {
-        return { results: $.map(data, function(obj) {
-            return { id: obj.id, text: obj.name };
-          })
-        };
-      }
-    }
-  });
+  $(".select_used_additives").select2();
+  $(".all_select_menu").select2();
+  $(".input_select_material").select2();
+  $(".input_food_ingredient").select2();
 
   $('.add_material_fields').on('click',function(){
     setTimeout(function(){
-      $(".input_select_material.select2").select2('destroy');
-      $(".input_food_ingredient.select2").select2('destroy');
       reset_row_order();
-      $(".input_select_material.select2").select2({
-        ajax: {
-          url:'/materials/search.json',
-          dataType: 'json',
-          delay: 50,
-          data: function(params) {
-            return {　q: params.term　};
-          },
-          processResults: function (data, params) {
-            return { results: $.map(data, function(obj) {
-                return { id: obj.id, text: obj.name };
-              })
-            };
-          }
-        }
-      });
-      $(".input_food_ingredient.select2").select2({
-        ajax: {
-          url:'/menus/food_ingredient_search.json',
-          dataType: 'json',
-          delay: 50,
-          data: function(params) {
-            return {　q: params.term　};
-          },
-          processResults: function (data, params) {
-            return { results: $.map(data, function(obj) {
-                return { id: obj.id, text: obj.name };
-              })
-            };
-          }
-        }
-      });
+      $(".input_select_material").select2();
+      $(".input_food_ingredient").select2();
     },5);
   });
 
@@ -356,8 +293,8 @@ $(document).on('turbolinks:load', function() {
   //addアクション、materialの追加
   function addInput(){
     var u = $(".add_li_material").length
-    $(".input_select_material.select2").select2('destroy');
-    $(".input_select_material.select2").select2({width:"270px",placeholder: "食材資材を選択してください"});
+    $(".input_select_material").select2('destroy');
+    $(".input_select_material").select2({width:"270px",placeholder: "食材資材を選択してください"});
     last_li.find(".input_row_order").val(u);
   };
 
@@ -382,9 +319,9 @@ $(document).on('turbolinks:load', function() {
       async: false
     })
     .done(function(data){
-      $(".select_used_additives.select2").select2('destroy');
+      $(".select_used_additives").select2('destroy');
       $(".select_used_additives optgroup").remove();
-      $(".select_used_additives.select2").select2({
+      $(".select_used_additives").select2({
         data: data
       });
     });
