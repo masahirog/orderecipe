@@ -28,7 +28,6 @@ table.table
     th 食材・資材名
     th 単価
     th 仕入先
-    th タグ
     th メモ
     th
     th
@@ -40,12 +39,6 @@ table.table
         = "#{material.cost_price} 円/#{material.recipe_unit}"
       td
         = material.vendor.company_name
-      td
-        - material.tag_list.each do |tag|
-          h4 style='float:left;margin:0 1px;'
-            span.label.label-primary style='font-weight:normal;'
-              = link_to tag, materials_path(tag_name: tag), class: "",style:'color:white;'
-
       td
         = material.memo
       td.unused_flag

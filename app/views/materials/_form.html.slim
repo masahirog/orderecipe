@@ -32,11 +32,6 @@
       = f.select :category, Material.categories.keys.to_a, {}, class: 'form-control'
   .col-md-12.form-group
     .col-md-5
-      = f.label :tag_list,"タグ"
-      ul#material-tags style='border-radius:0.25em;'
-
-  .col-md-12.form-group
-    .col-md-5
       = f.label :vegetable_flag, "野菜フラグ(Dailyの'野菜多め'の計算に使用する)"
       = f.check_box :vegetable_flag, class: "form-control"
   .col-md-12.form-group
@@ -161,7 +156,7 @@
       = f.fields_for :material_food_additives, @material.material_food_additives do |mm|
         li.add_li_food_additive.col-md-4.list-group-item style=""
           .select_food_additive.col-md-10 style="padding:3px;width:210px;float:left;"
-            = mm.collection_select :food_additive_id, FoodAdditive.all, :id, :name,{include_blank: true},class:'input_select_food_additive'
+            = mm.collection_select :food_additive_id, FoodAdditive.all, :id, :name,{include_blank: true},class:'input_select_food_additive select2'
           .text-right.remove_food_additive.col-md-2 style="padding-top:10px;"
             span.glyphicon.glyphicon-remove.remove_btn style="color:#d9534f;"
             = mm.check_box :_destroy,class:"destroy_food_additives check_box form-control", style: "display:none;"

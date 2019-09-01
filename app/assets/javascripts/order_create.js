@@ -1,24 +1,12 @@
-$(document).on("turbolinks:before-cache", function() {
-  if ($(".select_order_materials").length) {
-    $('.select_order_materials').select2('destroy');
-  }
-  if ($(".material_search_select2").length) {
-    $('.material_search_select2').select2('destroy');
-  }
-});
-
-
 $(document).on('turbolinks:load', function() {
   $('[data-toggle="tooltip"]').tooltip();
   $('[data-toggle="popover"]').popover();
   first_input_check();
-  $('.input_select_product').select2({
-  });
-  $('.select_order_materials').select2({
+  $('.input_select_product.select2').select2();
+  $('.select_order_materials.select2').select2({
     placeholder: "発注する食材を選択"
   });
-  $('.material_search_select2').select2({
-  });
+  $('.material_search.select2').select2();
 
   $('.fixed_flag').on('change',function(){
     var value = $(this).val();
@@ -163,14 +151,12 @@ $(document).on('turbolinks:load', function() {
     $(li).css('background-color', 'gray');
     // $(li).find(".select_order_materials").attr("disabled", "disabled");
     // $(li).find(".order_quantity").attr("disabled", "disabled");
-    // $(li).find(".input_order_code").attr("disabled", "disabled");
     // $(li).find(".order_material_memo").children().attr("disabled", "disabled");
     // $(li).find(".order_material_date").children().attr("disabled", "disabled");
   }
   function undestroy_color(li){
     $(li).find(".select_order_materials").removeAttr("disabled");
     $(li).find(".order_quantity").removeAttr("disabled");
-    $(li).find(".input_order_code").removeAttr("disabled");
     $(li).find(".order_material_memo").children().removeAttr("disabled");
     $(li).find(".order_material_date").children().removeAttr("disabled");
   }
@@ -234,30 +220,6 @@ $(document).on('turbolinks:load', function() {
       }
     });
 
-    // $(".add_fields").keypress(function (e) {
-    //   var code = e.which ? e.which : e.keyCode;
-    //   if (code == 13) {
-    //   var last_tr =$(".order_materials_tr").last()
-    //   last_tr.find(".select_order_materials").select2('open');
-    //   e.preventDefault();
-    //   }
-    // });
-
-    $('.add_order_material').on('click',function(){
-      setTimeout(function(){
-        $('.input_order_code:last').select2();
-        $('.select_order_materials:last').select2({
-          placeholder: "発注する食材を選択"
-        });
-      },5);
-      change_color();
-    });
-
-    //オーダーコードでの検索
-    $(".orders_all").on('change','.input_order_code', function(){
-      var id =  parseInt($(this).val());
-      $(this).parent().parent().find(".select_order_materials").val(id).change();
-    });
 
     $("#all_date_change").on("change", function(){
       var date = $(this).val()

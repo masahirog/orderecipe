@@ -1,5 +1,4 @@
 class Material < ApplicationRecord
-  acts_as_ordered_taggable_on :tags
   serialize :allergy
   has_many :menu_materials, dependent: :destroy
   has_many :menus, through: :menu_materials
@@ -36,7 +35,6 @@ class Material < ApplicationRecord
   def self.search(params)
    if params
      data = Material.order(id: "DESC").all
-     data = data.tagged_with("#{params[:tag_name]}") if params["tag_name"].present?
      data = data.where(['name LIKE ?', "%#{params["name"]}%"]) if params["name"].present?
      data = data.where(['order_name LIKE ?', "%#{params["order_name"]}%"]) if params["order_name"].present?
      data = data.where(vendor_id: params["vendor_id"]) if params["vendor_id"].present?

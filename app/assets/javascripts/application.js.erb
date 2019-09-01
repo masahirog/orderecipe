@@ -4,80 +4,27 @@
 //= require cocoon
 //= require turbolinks
 //= require jquery-ui
-//= require tag-it
 //= require_tree .
 
+
+
+
+
 $(document).on("turbolinks:before-cache", function() {
-  if ($(".input_select_product").length) {
-    $('.input_select_product').select2('destroy');
+  if ($(".select2").length) {
+    $('.select2').select2('destroy');
   }
-  $('#product-tags').tagit('destroy');
-  $('#menu-tags').tagit('destroy');
-  $('#material-tags').tagit('destroy');
 });
 
 $(document).on('turbolinks:load', function() {
   var controller = $('body').data('controller');
   var action = $('body').data('action');
-  if (controller=='products' && action == 'edit' || controller=='products' && action == 'new'|| controller=='products' && action == 'create'|| controller=='products' && action == 'update' ) {
-    $('#product-tags').tagit({
-      fieldName: 'product[tag_list]',
-      singleField: true,
-      availableTags: gon.available_tags
-      });
-      //編集時にたぐを表示出来る機能
-    var i, len, ref, results, tag;
-    if (gon.product_tags != null) {
-      ref = gon.product_tags;
-      results = [];
-      for (i = 0, len = ref.length; i < len; i++) {
-        tag = ref[i];
-        results.push($('#product-tags').tagit('createTag', tag));
-      }
-    }
-  }
-  if (controller=='menus' && action == 'edit' || controller=='menus' && action == 'new'|| controller=='menus' && action == 'create'|| controller=='menus' && action == 'update' ) {
-    $('#menu-tags').tagit({
-      fieldName: 'menu[tag_list]',
-      singleField: true,
-      availableTags: gon.available_tags
-      });
-      //編集時にたぐを表示出来る機能
-    var i, len, ref, results, tag;
-    if (gon.menu_tags != null) {
-      ref = gon.menu_tags;
-      results = [];
-      for (i = 0, len = ref.length; i < len; i++) {
-        tag = ref[i];
-        results.push($('#menu-tags').tagit('createTag', tag));
-      }
-    }
-  }
-  if (controller=='materials' && action == 'edit' || controller=='materials' && action == 'new'|| controller=='materials' && action == 'create' || controller=='materials' && action == 'update') {
-    $('#material-tags').tagit({
-      fieldName: 'material[tag_list]',
-      singleField: true,
-      availableTags: gon.available_tags
-      });
-      //編集時にたぐを表示出来る機能
-    var i, len, ref, results, tag;
-    if (gon.materials_tags != null) {
-      ref = gon.materials_tags;
-      results = [];
-      for (i = 0, len = ref.length; i < len; i++) {
-        tag = ref[i];
-        results.push($('#material-tags').tagit('createTag', tag));
-      }
-    }
-  }
 
-
-
-  $('.kurumesi_order_select_product').select2();
+  $('.kurumesi_order_select_product.select2').select2();
   $('.add_kurumesi_order_detail').on('click',function(){
-    $('.kurumesi_order_select_product').select2('destroy');
+    $('.kurumesi_order_select_product.select2').select2('destroy');
     setTimeout(function(){
-      $('.kurumesi_order_select_product').select2();
+      $('.kurumesi_order_select_product.select2').select2();
     },5);
   });
 

@@ -1,7 +1,7 @@
 class MaterialsController < ApplicationController
   protect_from_forgery :except => [:change_additives]
   def index
-    @search = Material.includes(:vendor,:taggings).search(params).page(params[:page]).per(30)
+    @search = Material.includes(:vendor).search(params).page(params[:page]).per(30)
   end
 
   def new
@@ -9,14 +9,11 @@ class MaterialsController < ApplicationController
     @material.material_food_additives.build
     @food_additive = FoodAdditive.new
     @storage_locations = StorageLocation.all
-    gon.available_tags = Material.tags_on(:tags).pluck(:name)
   end
 
   def create
     @material = Material.create(material_params)
     @storage_locations = StorageLocation.all
-    gon.material_tags = @material.tag_list
-    gon.available_tags = Material.tags_on(:tags).pluck(:name)
     if @material.save
      redirect_to @material, notice: "
      <div class='alert alert-success' role='alert' style='font-size:15px;'>「#{@material.name}」を作成しました：
@@ -40,8 +37,6 @@ class MaterialsController < ApplicationController
     @material.material_food_additives.build if @material.material_food_additives.length == 0
     @food_additive = FoodAdditive.new
     @storage_locations = StorageLocation.all
-    gon.material_tags = @material.tag_list
-    gon.available_tags = Material.tags_on(:tags).pluck(:name)
   end
 
   def update
@@ -66,8 +61,6 @@ class MaterialsController < ApplicationController
       else
         format.html { render :edit }
       end
-      gon.material_tags = @material.tag_list
-      gon.available_tags = Material.tags_on(:tags).pluck(:name)
     end
   end
 
@@ -101,7 +94,7 @@ class MaterialsController < ApplicationController
 
   private
   def material_params
-    params.require(:material).permit(:name, :order_name, :recipe_unit_quantity, :recipe_unit,:vegetable_flag,:vendor_stock_flag,:storage_location_id, :tag_list,
+    params.require(:material).permit(:name, :order_name, :recipe_unit_quantity, :recipe_unit,:vegetable_flag,:vendor_stock_flag,:storage_location_id,
      :recipe_unit_price, :cost_price, :category, :order_code, :order_unit, :memo, :unused_flag, :vendor_id,:order_unit_quantity,:delivery_deadline,:accounting_unit,:accounting_unit_quantity,
      {allergy:[]},material_food_additives_attributes:[:id,:material_id,:food_additive_id,:_destroy])
   end

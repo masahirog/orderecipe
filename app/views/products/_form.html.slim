@@ -33,14 +33,11 @@
         = f.select :product_type, options_for_select(Product.product_types.keys.to_a, @product.product_type), {include_blank:true}, class: 'form-control'
       .col-md-4
         = f.label :cook_category, "調理カテゴリー"
-        = f.select :cook_category, options_for_select(Product.cook_categories.keys.to_a,@product.cook_category), {}, class: 'cook_category_choice form-control'
+        = f.select :cook_category, options_for_select(Product.cook_categories.keys.to_a,@product.cook_category), {}, class: 'cook_category_choice select2 form-control'
 
     .col-md-12.form-group
       = f.label :obi_url, "くるめしの帯"
       = f.text_field :obi_url, class:"form-control"
-    .col-md-12.form-group.container
-      = f.label :tag_list,"タグ"
-      ul#product-tags style='border-radius:0.25em;'
     .col-md-12.form-group
       = f.label :description, "説明文"
       = f.text_area :description, class:"form-control", style:"height:7em;"

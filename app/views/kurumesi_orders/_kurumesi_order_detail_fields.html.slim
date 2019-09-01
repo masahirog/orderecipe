@@ -1,6 +1,6 @@
 tr.nested-fields.kurumesi_order_details_tr
     td.col-md-5
-      = f.collection_select :product_id, @products, :id, :view_name_and_id,{},class:'form-control product_select kurumesi_order_select_product'
+      = f.collection_select :product_id, @products, :id, :view_name_and_id,{},class:'form-control kurumesi_order_select_product select2'
     td.col-md-3
       = f.number_field :number, class: 'form-control kurumesi_order_details_product_number', onClick:"this.select();"
     td.col-md-2

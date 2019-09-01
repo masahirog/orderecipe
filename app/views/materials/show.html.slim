@@ -24,14 +24,6 @@ ol.breadcrumb
       th.col-md-4 カテゴリー
       td = @material.category
     tr
-      th.col-md-4 タグ
-      td
-        - @material.tag_list.each do |tag|
-          h4 style='float:left;margin:0 1px;'
-            span.label.label-primary
-              = link_to tag, materials_path(tag_name: tag), class: "",style:'color:white;'
-
-    tr
       th.col-md-4 野菜フラグ
       td = @material.vegetable_flag
     tr
@@ -61,7 +53,7 @@ ol.breadcrumb
     tr
       th.col-md-4 アレルギー
       td
-        - if @material.allergy.present? 
+        - if @material.allergy.present?
           = @material.allergy.reject{|e| e == '0'}.join("、 ")
     tr
       th.col-md-4 使用添加物

@@ -3,10 +3,10 @@ $(document).on('turbolinks:load', function() {
   reset_row_order();
   calculate_menu_nutrition();
 
-  $(".select_used_additives").select2();
-  $(".all_select_menu").select2();
+  $(".select_used_additives.select2").select2();
+  $(".all_select_menu.select2").select2();
 
-  $(".input_select_material").select2({
+  $(".input_select_material.select2").select2({
     ajax: {
       url:'/materials/search.json',
       dataType: 'json',
@@ -22,7 +22,7 @@ $(document).on('turbolinks:load', function() {
       }
     }
   });
-  $(".input_food_ingredient").select2({
+  $(".input_food_ingredient.select2").select2({
     ajax: {
       url:'/menus/food_ingredient_search.json',
       dataType: 'json',
@@ -41,10 +41,10 @@ $(document).on('turbolinks:load', function() {
 
   $('.add_material_fields').on('click',function(){
     setTimeout(function(){
-      $(".input_select_material").select2('destroy');
-      $(".input_food_ingredient").select2('destroy');
+      $(".input_select_material.select2").select2('destroy');
+      $(".input_food_ingredient.select2").select2('destroy');
       reset_row_order();
-      $(".input_select_material").select2({
+      $(".input_select_material.select2").select2({
         ajax: {
           url:'/materials/search.json',
           dataType: 'json',
@@ -60,7 +60,7 @@ $(document).on('turbolinks:load', function() {
           }
         }
       });
-      $(".input_food_ingredient").select2({
+      $(".input_food_ingredient.select2").select2({
         ajax: {
           url:'/menus/food_ingredient_search.json',
           dataType: 'json',
@@ -356,8 +356,8 @@ $(document).on('turbolinks:load', function() {
   //addアクション、materialの追加
   function addInput(){
     var u = $(".add_li_material").length
-    $(".input_select_material").select2('destroy');
-    $(".input_select_material").select2({width:"270px",placeholder: "食材資材を選択してください"});
+    $(".input_select_material.select2").select2('destroy');
+    $(".input_select_material.select2").select2({width:"270px",placeholder: "食材資材を選択してください"});
     last_li.find(".input_row_order").val(u);
   };
 
@@ -382,9 +382,9 @@ $(document).on('turbolinks:load', function() {
       async: false
     })
     .done(function(data){
-      $(".select_used_additives").select2('destroy');
+      $(".select_used_additives.select2").select2('destroy');
       $(".select_used_additives optgroup").remove();
-      $(".select_used_additives").select2({
+      $(".select_used_additives.select2").select2({
         data: data
       });
     });

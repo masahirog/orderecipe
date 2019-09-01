@@ -9,7 +9,7 @@ ol.breadcrumb
     .col-md-1
       = text_field_tag :management_id, params[:management_id], class:"id_search form-control",style:"width:100%",placeholder:'bentoID'
     .col-md-3
-      = select_tag :name,options_for_select(Product.pluck(:name)),include_blank: true, class:"name_search form-control"
+      = select_tag :name,options_for_select(Product.pluck(:name)),include_blank: true, class:"name_search form-control select2"
     .col-md-2
       = select_tag :cook_category, options_for_select(Product.cook_categories.keys.to_a,params[:cook_category]),include_blank:true, class: "form-control",style:"width:100%"
     .col-md-2
@@ -26,7 +26,6 @@ table.table
       th 管理ID
       th style='width:400px;' 弁当名
       th ブランド名
-      th タグ
       th 主調理工程
       th 弁当種類
       th.text-right 売価
@@ -42,12 +41,6 @@ table.table
         td = product.management_id
         td.product_name = link_to "#{product.name}", "/products/#{product.id}/"
         td = product.brand.name
-        td
-          - product.tag_list.each do |tag|
-            h4 style='float:left;margin:0 1px;'
-              span.label.label-primary style='font-weight:normal;'
-                = link_to tag, products_path(tag_name: tag), class: "",style:'color:white;'
-
         td = product.cook_category
         td = product.product_type
         td.text-right = "#{product.sell_price}円"

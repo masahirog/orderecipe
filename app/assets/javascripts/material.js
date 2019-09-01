@@ -1,6 +1,6 @@
 $(document).on('turbolinks:load', function() {
-  $('.input_select_food_additive').select2({
-  width:"200px"
+  $('.input_select_food_additive.select2').select2({
+    width:"200px"
   });
 
   $(".add_food_additive").on('click', function (){
@@ -18,13 +18,13 @@ $(document).on('turbolinks:load', function() {
     var code = e.which ? e.which : e.keyCode;
     if (code == 13) {
     var last_li =$(".add_li_food_additive").last()
-    last_li.find(".input_select_food_additive").select2('open');
+    last_li.find(".input_select_food_additive.select2").select2('open');
     e.preventDefault();
     }
   });
 
 
-  $('.all_select_material').select2({
+  $('.all_select_material.select2').select2({
     placeholder: "食材資材を選択してください"
   });
   var input_order_unit_quantity = $(".input_order_unit_quantity").val();
@@ -129,7 +129,7 @@ $(document).on('turbolinks:load', function() {
 
   function addInput(){
     var u = $(".add_li_food_additive").length
-    $(".input_select_food_additive").select2('destroy');
+    $(".input_select_food_additive.select2").select2('destroy');
     $(".add_li_food_additive").first().clone().appendTo(".food_additive_ul");
     var last_li =$(".add_li_food_additive").last()
     last_li.children(".select_food_additive").children().attr('name', "material[material_food_additives_attributes]["+u+"][food_additive_id]" );

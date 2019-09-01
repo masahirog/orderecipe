@@ -25,9 +25,15 @@ class ProductsController < ApplicationController
 
   def get_products
     @products = Product.where(['management_id LIKE ?', "%#{params["id"]}%"]).limit(10)
+    @product_hash = {}
+    @products.each_with_index do |product,i|
+      cost_rate = ((product.cost_price / product.sell_price)*100).round
+      @product_hash[i]= {name:product.name,product_id:product.id,management_id:product.management_id,brand:product.brand.name,image:product.image,
+        cook_category:product.cook_category,type:product.product_type,sell_price:product.sell_price,cost_price:product.cost_price,cost_rate:cost_rate}
+    end
     respond_to do |format|
       format.html
-      format.json { render 'index', json: @products }
+      format.json { render 'index', json: @product_hash }
     end
   end
   def input_name_get_products
@@ -46,7 +52,7 @@ class ProductsController < ApplicationController
   end
 
   def index
-    @search = Product.includes(:brand,:taggings).search(params).page(params[:page]).per(30)
+    @search = Product.includes(:brand).search(params).page(params[:page]).per(30)
   end
 
   def new
@@ -60,7 +66,6 @@ class ProductsController < ApplicationController
       @product = Product.new
       @product.product_menus.build(row_order: 0)
     end
-    gon.available_tags = Product.tags_on(:tags).pluck(:name)
 
   end
 
@@ -79,8 +84,6 @@ class ProductsController < ApplicationController
 
   def create
     @product = Product.new(product_create_update)
-    gon.product_tags = @product.tag_list
-    gon.available_tags = Product.tags_on(:tags).pluck(:name)
     if @product.save
       redirect_to products_path
     else
@@ -93,8 +96,6 @@ class ProductsController < ApplicationController
     @product = Product.includes(:product_menus,{menus: [:menu_materials,:materials]}).find(params[:id])
     @product.product_menus.build  if @product.menus.length == 0
     @allergies = Product.allergy_seiri(@product)
-    gon.product_tags = @product.tag_list
-    gon.available_tags = Product.tags_on(:tags).pluck(:name)
 
   end
 
@@ -105,8 +106,6 @@ class ProductsController < ApplicationController
     else
       render 'edit'
     end
-    gon.product_tags = @product.tag_list
-    gon.available_tags = Product.tags_on(:tags).pluck(:name)
   end
 
   def serving_kana
@@ -252,7 +251,7 @@ class ProductsController < ApplicationController
   private
     def product_create_update
       params.require(:product).permit(:name,:memo, :management_id, :cook_category,:short_name, :product_type, :sell_price, :description, :contents, :image,:brand_id,:product_category,
-                      :obi_url,:remove_image, :image_cache, :cost_price, :tag_list, product_menus_attributes: [:id, :product_id, :menu_id,:row_order, :_destroy,
+                      :obi_url,:remove_image, :image_cache, :cost_price, product_menus_attributes: [:id, :product_id, :menu_id,:row_order, :_destroy,
                       menu_attributes:[:name ]])
     end
 end

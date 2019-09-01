@@ -20,9 +20,6 @@
   .form-group.col-md-4
     = f.label :category ,'カテゴリー'
     = f.select :category, options_for_select(Menu.categories.keys.to_a,@menu.category),{include_blank: true}, { class: "form-control",style:"width:100%;"}
-  .col-md-12.form-group
-    = f.label :tag_list,"タグ"
-    ul#menu-tags style='border-radius:0.25em;'
 
   .col-md-4.form-group
     = f.label :recipe ,'調理メモ'

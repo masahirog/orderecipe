@@ -39,7 +39,6 @@ gem 'simple_calendar', '~> 2.0'
 gem 'business_time'
 gem 'romaji'
 gem 'mail'
-gem 'acts-as-taggable-on', '~> 6.0'
 gem "jquery-ui-rails"
 gem 'gon'
 group :development, :test do

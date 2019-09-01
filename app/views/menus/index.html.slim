@@ -22,7 +22,6 @@ table.table
     tr
       th オリジナルID
       th メニュー名
-      th タグ
       th カテゴリ
       th 画像
       th.text-right 原価(税込)
@@ -42,11 +41,6 @@ table.table
             = link_to menu.base_menu_id,menu_path(id:menu.base_menu_id)
         td
           = link_to "#{menu.name}", edit_menu_path(menu)
-        td
-          - menu.tag_list.each do |tag|
-            h4 style='float:left;margin:0 1px;'
-              span.label.label-primary style='font-weight:normal;'
-                = link_to tag, menus_path(tag_name: tag), class: "",style:'color:white;'
         td
           = menu.category
         td

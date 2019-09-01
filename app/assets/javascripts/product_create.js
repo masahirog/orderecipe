@@ -5,22 +5,18 @@ $(document).on('turbolinks:load', function() {
   });
   reset_row_order();
 
-  $('.input_select_menu').select2({
+  $('.input_select_menu.select2').select2({
     width:"100%",
     placeholder: "メニューを選択してください",
   });
-  $('.cook_category_choice').select2({
+  $('.cook_category_choice.select2').select2({
     placeholder: "カテゴリ"
   });
-  $('.name_search').select2({
+  $('.name_search.select2').select2({
     height:"40px",
     width:"100%",
   });
 
-  $('.input_select_product_en').select2({
-    width:"300px",
-    placeholder: "お弁当を選択してください"
-  });
 
   //並び替え時のrow_order更新
   $(".used_menu_ul.ul-sortable").sortable({
@@ -50,24 +46,24 @@ $(document).on('turbolinks:load', function() {
     });
   });
 
-  $(".input_select_product_en").on("change",function(){
-    var id = $(this).val();
-    var inp_bentoid = $(this).parent().parent().find(".management_id_search_en")
-    $.ajax({
-      url: "/orders/check_management_id",
-      data: { id : id },
-      dataType: "json",
-      async: false
-    })
-    .done(function(data){
-      if (data) {
-        var management_id = parseInt(data.management_id)
-        inp_bentoid.val(management_id);
-      }else{
-        inp_bentoid.val("");
-      }
-    });
-  });
+  // $(".input_select_product_en").on("change",function(){
+  //   var id = $(this).val();
+  //   var inp_bentoid = $(this).parent().parent().find(".management_id_search_en")
+  //   $.ajax({
+  //     url: "/orders/check_management_id",
+  //     data: { id : id },
+  //     dataType: "json",
+  //     async: false
+  //   })
+  //   .done(function(data){
+  //     if (data) {
+  //       var management_id = parseInt(data.management_id)
+  //       inp_bentoid.val(management_id);
+  //     }else{
+  //       inp_bentoid.val("");
+  //     }
+  //   });
+  // });
 
 
 
@@ -159,16 +155,14 @@ $(document).on('turbolinks:load', function() {
         async: false
     })
     .done(function(data) {
-
       $(".aaaad").children().remove()
       $.each(data, function(i){
-        console.log(data);
         var li = '<tr class="products_li">'+
         '<td>'+
           data[i]['management_id']+
         '</td>'+
         '<td class="product_name">'+
-        '<a href=/products/'+data[i]['id']+'>'+data[i]['name']+'</a>'+
+        '<a href=/products/'+data[i]['product_id']+'>'+data[i]['name']+'</a>'+
         '</td>'+
         '<td>'+
          data[i]['brand']+

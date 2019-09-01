@@ -4,7 +4,7 @@ li.add_li_menu.col-md-12.list-group-item.nested-fields.field[style="padding:5px 
   .category_select.col-md-1
     = select :category,:category, Menu.categories.keys.to_a, {}, class: 'input_category_select form-control'
   .select_menu.col-md-2
-    = f.select :menu_id, Menu.pluck(:name, :id),{include_blank: true}, class:'input_select_menu'
+    = f.select :menu_id, Menu.pluck(:name, :id),{include_blank: true}, class:'input_select_menu select2'
     div
       |  カロリー：
       span.product_make_menu_calorie
