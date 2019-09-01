@@ -126,7 +126,7 @@ class OrdersController < ApplicationController
       end
       sales_date = Date.parse(params[:kurumesi_order_date])
     else
-      order_products = params[:order]
+      order_products = []
       sales_date = Date.today
     end
     order_products.each do |po|
