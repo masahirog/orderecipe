@@ -107,7 +107,6 @@ $(document).on('turbolinks:load', function() {
   //メニュー変更時
   $(".menu-area").on('change','.input_select_menu', function(){
     var id = $(this).val();
-    console.log(id);
     var u = $(".add_li_menu").index($(this).parent().parent(".add_li_menu"));
     $.ajax({
         url: "/products/get_menu_cost_price",
@@ -134,7 +133,6 @@ $(document).on('turbolinks:load', function() {
     var class_name = ".name_search"
       inputaaaaa(class_name,path);
   });
-
 
   //indexで食品表示
   $(".hyoji-btn").on("click",function(){

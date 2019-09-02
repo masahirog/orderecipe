@@ -35,9 +35,7 @@ class MenusController < ApplicationController
     @menu = Menu.new(menu_create_update)
      if @menu.save
        redirect_to @menu,
-       notice: "
-       <div class='alert alert-success' role='alert' style='font-size:15px;'>「#{@menu.name}」を作成しました
-       　　続けてメニューを作成する：<a href='/menus/new'>新規作成</a></div>".html_safe
+       notice: "「#{@menu.name}」を作成しました。続けてメニューを作成する：<a href='/menus/new'>新規作成</a>".html_safe
      else
        @ar = Menu.used_additives(@menu.materials)
        render 'new'
@@ -51,12 +49,8 @@ class MenusController < ApplicationController
     end
     @menu = Menu.includes(:menu_materials,{materials:[:vendor,material_food_additives:[:food_additive]]}).find(params[:id])
     @base_menu = Menu.find(@menu.base_menu_id) unless @menu.base_menu_id == @menu.id
-    @materials = Material.where(id:@menu.menu_materials.pluck(:material_id))
-    if @menu.menu_materials.pluck(:food_ingredient_id).uniq[0].nil?
-      @food_ingredients=[]
-    else
-      @food_ingredients = FoodIngredient.where(id:@menu.menu_materials.pluck(:food_ingredient_id).uniq)
-    end
+    @materials = Material.where(unused_flag:false)
+    @food_ingredients = FoodIngredient.all
     @menu.menu_materials.build  if @menu.materials.length == 0
     @ar = Menu.used_additives(@menu.materials)
   end
@@ -66,13 +60,10 @@ class MenusController < ApplicationController
     @menu = Menu.includes(:menu_materials,{materials:[:vendor,:material_food_additives]}).find(params[:id])
     if @menu.update(menu_create_update)
       if params["menu"]["back_to"].blank?
-        redirect_to menu_path, notice: "
-        <div class='alert alert-success' role='alert' style='font-size:15px;'>「#{@menu.name}」を更新しました：
-        　　続けてメニューを作成する：<a href='/menus/new'>新規作成</a></div>".html_safe
+        redirect_to menu_path, notice: "「#{@menu.name}」を更新しました。続けてメニューを作成する：<a href='/menus/new'>新規作成</a>".html_safe
 
       else
-        redirect_to params["menu"]["back_to"], notice: "
-        <div class='alert alert-success' role='alert' style='font-size:15px;'>「#{@menu.name}」を更新しました：".html_safe
+        redirect_to params["menu"]["back_to"], notice: "「#{@menu.name}」を更新しました".html_safe
       end
     else
       @ar = Menu.used_additives(@menu.materials)

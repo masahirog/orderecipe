@@ -3,6 +3,13 @@ $(document).on('turbolinks:load', function() {
   reset_row_order();
   calculate_menu_nutrition();
 
+  u = 0
+  $(".add_li_material").each(function(){
+    var eos = $(this).children(".sales_check").text()
+    eos_check(eos,u);
+    u += 1
+  });
+
   $(".select_used_additives").select2();
   $(".all_select_menu").select2();
   $(".input_select_material").select2();
@@ -11,16 +18,10 @@ $(document).on('turbolinks:load', function() {
   $('.add_material_fields').on('click',function(){
     setTimeout(function(){
       reset_row_order();
+      console.log('aa');
       $(".input_select_material").select2();
       $(".input_food_ingredient").select2();
     },5);
-  });
-
-  u = 0
-  $(".add_li_material").each(function(){
-    var eos = $(this).children(".sales_check").text()
-    eos_check(eos,u);
-    u += 1
   });
 
 
