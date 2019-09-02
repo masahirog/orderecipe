@@ -15,9 +15,7 @@ class MaterialsController < ApplicationController
     @material = Material.create(material_params)
     @storage_locations = StorageLocation.all
     if @material.save
-     redirect_to @material, notice: "
-     <div class='alert alert-success' role='alert' style='font-size:15px;'>「#{@material.name}」を作成しました：
-     　　続けて食材を作成する：<a href='/materials/new'>新規作成</a></div>".html_safe
+     redirect_to @material, notice: "「#{@material.name}」を作成しました。続けて食材を作成する：<a href='/materials/new'>新規作成</a>".html_safe
     else
      render 'new'
     end
@@ -49,12 +47,9 @@ class MaterialsController < ApplicationController
       if @material.update(material_params)
         format.html {
           if params["material"]["back_to"].blank?
-            redirect_to material_path, notice: "
-            <div class='alert alert-success' role='alert' style='font-size:15px;'>「#{@material.name}」を更新しました：
-            　　続けてメニューを作成する：<a href='/materials/new'>新規作成</a></div>".html_safe
+            redirect_to material_path, notice: "「#{@material.name}」を更新しました。続けてメニューを作成する：<a href='/materials/new'>新規作成</a>".html_safe
           else
-            redirect_to params["material"]["back_to"], notice: "
-            <div class='alert alert-success' role='alert' style='font-size:15px;'>「#{@material.name}」を更新しました：".html_safe
+            redirect_to params["material"]["back_to"], notice: "「#{@material.name}」を更新しました：".html_safe
           end
         }
         format.js
@@ -83,12 +78,6 @@ class MaterialsController < ApplicationController
     respond_to do |format|
       format.html
       format.json{render :json => @ar}
-    end
-  end
-
-  def search
-    respond_to do |format|
-      format.json { render json: @materials = Material.mate_search(params[:q]) }
     end
   end
 

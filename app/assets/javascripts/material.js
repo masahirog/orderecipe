@@ -120,7 +120,6 @@ $(document).on('turbolinks:load', function() {
     $(".cost_unit_label").text("１"+recipe_unit).css('font-weight','bold').css('font-size','16px');
   };
   function check_accounting_unit(accounting_unit){
-    // $(".recipe_unit_quantity_unit").text(recipe_unit + " 入り");
     $(".accounting_unit_quantity_label").text("＊１"+accounting_unit).css('font-size','16px').css('font-weight','bold');
   };
 

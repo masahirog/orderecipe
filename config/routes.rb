@@ -55,7 +55,6 @@ Rails.application.routes.draw do
   resources :materials do
     collection do
       get :include_material
-      get :search
     end
   end
   resources :orders do

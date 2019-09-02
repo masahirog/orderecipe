@@ -1,12 +1,3 @@
-ol.breadcrumb
-  li
-    a[href="/"]
-      | ホーム
-  li
-    a[href="/products"]
-      | お弁当一覧
-  li.active
-    = @product.name
 .col-md-12.form-inline
   = link_to 'お弁当を編集',edit_product_path(@product),class: "btn btn-success",style:'margin:0 10px 0 0px;float:left;'
   = form_tag({:controller => "products", :action => "print", format: "pdf"},{:target => "_blank",style:'float:left;'}) do
