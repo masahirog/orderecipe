@@ -32,6 +32,8 @@
               = submit_tag "コピーを作成する" ,class:"btn btn-primary"
               button.btn.btn-default[type="button" data-dismiss="modal"]
                 | 閉じる
+  - if @delete_flag == true
+    = link_to "削除", @menu, method: :delete,class:'pull-right btn btn-danger',data: { confirm: "ほんまに削除してええの？" }
 
 .col-md-6
   table.table

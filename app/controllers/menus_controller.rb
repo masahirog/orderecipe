@@ -53,11 +53,6 @@ class MenusController < ApplicationController
     @food_ingredients = FoodIngredient.all
     @menu.menu_materials.build  if @menu.materials.length == 0
     @ar = Menu.used_additives(@menu.materials)
-    product_menus = @menu.product_menus
-    copy_menus = Menu.where(base_menu_id:@menu.id).where.not(id:@menu.id)
-    unless product_menus.present? || copy_menus.present?
-      @delete_flag = true
-    end
   end
   def update
     @food_ingredients = FoodIngredient.all
@@ -81,6 +76,12 @@ class MenusController < ApplicationController
     @food_additives = FoodAdditive.where(id:@menu.used_additives)
     @arr = Menu.allergy_seiri(@menu)
     @base_menu = Menu.find(@menu.base_menu_id) unless @menu.base_menu_id == @menu.id
+    product_menus = @menu.product_menus
+    copy_menus = Menu.where(base_menu_id:@menu.id).where.not(id:@menu.id)
+    unless product_menus.present? || copy_menus.present?
+      @delete_flag = true
+    end
+
     respond_to do |format|
       format.html
       format.csv do
