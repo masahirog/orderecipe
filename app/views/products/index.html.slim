@@ -28,6 +28,7 @@ table.table
       th.text-right 原価
       th.text-right 原価率
       th 画像
+      th
 
   tbody.aaaad
     - @search.each do |product|
@@ -49,6 +50,9 @@ table.table
           - else
             span style='color:red;' = "#{((product.cost_price/product.sell_price)*100).round(1)}%"
         td = image_tag product.image.thumb.url if product.image.present?
+        td
+          - unless product.order_products.present?||product.daily_menu_details.present?||product.kurumesi_order_details.present?
+            = link_to "削除", product, method: :delete,class:'btn btn-danger pull-right',data: { confirm: "ほんまに削除してええの？" },style:''
 
 - if @search.size == 0 then
   | 該当するお弁当が存在しません

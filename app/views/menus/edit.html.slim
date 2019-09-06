@@ -30,3 +30,5 @@
                 | 閉じる
 
 = render 'form', path: edit_menu_path
+- if @delete_flag == true
+  = link_to "削除", @menu, method: :delete,class:'btn btn-danger',data: { confirm: "ほんまに削除してええの？" }

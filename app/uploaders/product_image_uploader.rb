@@ -3,7 +3,14 @@ class ProductImageUploader < CarrierWave::Uploader::Base
   # Include RMagick or MiniMagick support:
   include CarrierWave::RMagick
   # include CarrierWave::MiniMagick
-
+  process :fix_rotate
+  def fix_rotate
+    manipulate! do |img|
+      img = img.auto_orient
+      img = yield(img) if block_given?
+      img
+    end
+  end
   # Choose what kind of storage to use for this uploader:
   # storage :file
   storage :fog

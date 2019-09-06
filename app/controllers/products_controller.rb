@@ -52,7 +52,7 @@ class ProductsController < ApplicationController
   end
 
   def index
-    @search = Product.includes(:brand).search(params).page(params[:page]).per(30)
+    @search = Product.includes(:brand,:order_products,:daily_menu_details,:kurumesi_order_details).search(params).page(params[:page]).per(30)
   end
 
   def new
@@ -73,6 +73,12 @@ class ProductsController < ApplicationController
     @product = Product.includes(:product_menus,{menus: [:menu_materials, :materials]}).find(params[:id])
     @allergies = Product.allergy_seiri(@product)
     @additives = Product.additive_seiri(@product)
+    order_products = @product.order_products
+    daily_menu_details = @product.daily_menu_details
+    kurumesi_order_details = @product.kurumesi_order_details
+    unless order_products.present?||daily_menu_details.present?||kurumesi_order_details.present?
+      @delete_flag = true
+    end
     respond_to do |format|
       format.html
       format.csv do
@@ -248,6 +254,16 @@ class ProductsController < ApplicationController
        end
     end
   end
+
+  def destroy
+    @product = Product.find(params[:id])
+    @product.destroy
+    respond_to do |format|
+      format.html { redirect_to products_path, notice: '1件弁当を削除しました。' }
+      format.json { head :no_content }
+    end
+  end
+
   private
     def product_create_update
       params.require(:product).permit(:name,:memo, :management_id, :cook_category,:short_name, :product_type, :sell_price, :description, :contents, :image,:brand_id,:product_category,

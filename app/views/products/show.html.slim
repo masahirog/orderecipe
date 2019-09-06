@@ -16,6 +16,10 @@
     = number_field(:volume,:num,class:"form-control text-right",id:"amount_number_input",placeholder:"食数を入力")
     input.btn.btn-primary[type="button" onclick="submit();" value="仕込表を表示" style="margin:0 0 0 10px;"]
 
+  - if @delete_flag == true
+    = link_to "削除", @product, method: :delete,class:'btn btn-danger pull-right',data: { confirm: "ほんまに削除してええの？" },style:''
+
+
 
 .amount_number.col-md-12
 .col-md-6

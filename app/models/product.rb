@@ -27,6 +27,9 @@ class Product < ApplicationRecord
   enum product_type: {ノーマル:1,デラックス:2,ヘルシー:3,ボウル:4,新ヘルシー:5,W弁:6,プレミアム:7}
   enum cook_category: {その他:1,グリル:2,コンロ:3,フライヤー:4,グリルコンロ:5,スチコン:6,前日コンロ:7,グリルコンロ:8,前日グリル:9,フライヤー・コンロ:10,フライヤー・グリル:11}
   enum product_category: {弁当:1,他:2}
+
+  before_destroy :clean_s3
+
   def view_name_and_id
     self.management_id.to_s + '｜' + self.name
   end
@@ -115,4 +118,14 @@ class Product < ApplicationRecord
       @katakana = @katakana.gsub('|||',"\n").split("^^", -1)
     end
   end
+
+  private
+  def clean_s3
+    image.remove!       #オリジナルの画像を削除
+    image.thumb.remove! #thumb画像を削除
+  rescue Excon::Errors::Error => error
+    puts "Something gone wrong"
+    false
+  end
+
 end

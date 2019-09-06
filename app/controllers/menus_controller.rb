@@ -53,6 +53,11 @@ class MenusController < ApplicationController
     @food_ingredients = FoodIngredient.all
     @menu.menu_materials.build  if @menu.materials.length == 0
     @ar = Menu.used_additives(@menu.materials)
+    product_menus = @menu.product_menus
+    copy_menus = Menu.where(base_menu_id:@menu.id).where.not(id:@menu.id)
+    unless product_menus.present? || copy_menus.present?
+      @delete_flag = true
+    end
   end
   def update
     @food_ingredients = FoodIngredient.all
@@ -125,6 +130,15 @@ class MenusController < ApplicationController
   def food_ingredient_search
     respond_to do |format|
       format.json { render json: @materials = FoodIngredient.food_ingredient_search(params[:q]) }
+    end
+  end
+
+  def destroy
+    @menu = Menu.find(params[:id])
+    @menu.destroy
+    respond_to do |format|
+      format.html { redirect_to menus_path, notice: '1件メニューを削除しました。' }
+      format.json { head :no_content }
     end
   end
 
