@@ -11,7 +11,7 @@
     .col-md-2
       = select_tag :brand_id, options_from_collection_for_select(Brand.all,:id,:name,params[:brand_id]),include_blank:true, class: "form-control",style:"width:100%"
     .col-md-2
-      = select_tag :order,options_for_select([['原価高い順','cost_price DESC'],['原価低い順','cost_price ASC']],params[:order]), include_blank: true, class:"form-control",style:"width:150px;"
+      = select_tag :order,options_for_select([['原価高い順','cost_price DESC'],['原価低い順','cost_price ASC'],['名前順','name ASC']],params[:order]), include_blank: true, class:"form-control",style:"width:150px;"
     .col-md-1
       = submit_tag "検索" ,class:"btn btn-primary"
 .col-md-12
