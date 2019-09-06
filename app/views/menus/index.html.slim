@@ -52,7 +52,7 @@ table.table
           = "#{menu.menu_materials.sum(:calorie).round(2)}kcal"
         td.text-right
           = link_to "#{menu.product_menus.length}件",include_menu_menus_path(id:menu.id),class:"btn btn-default btn-sm" if menu.product_menus.length > 0
-        td
+        td.text-center
           - unless product_menus.present? || copy_menus.present?
             = link_to "削除", menu, method: :delete,class:'btn btn-danger btn-sm',data: { confirm: "ホンマに削除するで？" }
 - if @search.size == 0 then
