@@ -79,6 +79,11 @@ class Menu < ApplicationRecord
   end
   def base_menu_id_check
     self.update_column(:base_menu_id, self.id) unless self.base_menu_id.present?
+    self.menu_materials.each do |mm|
+      unless mm.base_menu_material_id.present?
+        mm.update_column(:base_menu_material_id, mm.id)
+      end
+    end
   end
   def copy_menu_reflect
     self.menu_materials.each do |mm|
