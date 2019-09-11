@@ -19,9 +19,10 @@
 table.table
   thead
     tr
-      th 管理ID
-      th style='width:400px;' 弁当名
       th ブランド名
+      th 管理ID
+      th 短縮名
+      th style='width:400px;' 弁当名
       th 主調理工程
       th 弁当種類
       th.text-right 売価
@@ -33,11 +34,13 @@ table.table
   tbody.aaaad
     - @search.each do |product|
       tr.products_li
-        td.product_id[style="display:none;"]
+        td.product_id style="display:none;"
           = product.id
-        td = product.management_id
-        td.product_name = link_to "#{product.name}", "/products/#{product.id}/"
         td = product.brand.name
+        td = product.management_id
+        td = product.short_name
+        td.product_name = link_to "#{product.name}", "/products/#{product.id}/"
+
         td = product.cook_category
         td = product.product_type
         td.text-right = "#{product.sell_price}円"
