@@ -17,7 +17,7 @@ tr class="inventory_tr_#{stock.id}"
     - else
       span style='font-weight:bold;font-size:16px;color:blue;' = "+ #{(stock.delivery_amount/@material.accounting_unit_quantity).floor(1)} #{@unit}"
   td style='font-weight:bold;'
-    = form_with(model: stock, data: {remote: true}) do |f|
+    = form_with(model: stock, data: {remote: true}, loading:"$('.input_inventory_stock').disabled=true; $('.input_inventory_stock').value='在庫登録中...'") do |f|
       = f.hidden_field :history_flag,value:true
       = f.hidden_field :inventory_flag,value:true
       span.accounting_unit_span style='float:right;padding-top:10px;' = @material.accounting_unit
