@@ -8,8 +8,8 @@
   <% end %>
   $('.glyphicon-eye-open').tooltip({html: true})
 <% else %>
-  $("<%= @class_name %>").after("<%= escape_javascript(render partial: 'tr', locals: {material:@material}) %>");
   $("<%= @class_name %>").eq(0).remove();
+  $("<%= @class_name %>").after("<%= escape_javascript(render partial: 'tr', locals: {material:@material}) %>");
   $("<%= @class_name %>").find('.save_flag').children().show();
   $("<%= @class_name %>").find('.rireki_span').tooltip({html: true})
 <% end %>

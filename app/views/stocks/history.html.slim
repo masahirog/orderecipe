@@ -25,7 +25,7 @@ table.table
             td
             td.text-right
             td.text-right
-              = form_with(model: Stock.new, data: {remote: true}, loading:"$('.input_inventory_stock').disabled=true; $('.input_inventory_stock').value='在庫登録中...'" ) do |f|
+              = form_with(model: Stock.new, data: {remote: true}) do |f|
                 = f.hidden_field :history_flag,value:true
                 = f.hidden_field :material_id,value:@material.id
                 = f.hidden_field :date,value:date
