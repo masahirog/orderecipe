@@ -103,7 +103,7 @@ class StocksController < ApplicationController
     @material = @stock.material
     end_day_stock_accounting_unit = params[:stock][:end_day_stock_accounting_unit].to_f
     new_end_day_stock = end_day_stock_accounting_unit*@stock.material.accounting_unit_quantity
-    new_start_day_stock = new_end_day_stock + @stock.delivery_amount + @stock.used_amount
+    new_start_day_stock = new_end_day_stock - @stock.delivery_amount + @stock.used_amount
     inventory_flag = params[:stock][:inventory_flag]
     respond_to do |format|
       if @stock.update(end_day_stock:new_end_day_stock,inventory_flag:inventory_flag,start_day_stock:new_start_day_stock)

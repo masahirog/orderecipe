@@ -4,8 +4,8 @@ h1 くるめしオーダー一覧
     = date.strftime("%-m月%-d日")
     / = link_to new_kurumesi_order_path(start_time:date),style:'margin-left:5px;' do
     /   span class="glyphicon glyphicon-plus-sign" aria-hidden="true"
-    button type="button" class="glyphicon glyphicon-plus-sign" data-toggle="modal" data-target="#sampleModal"
-    #sampleModal.modal.fade tabindex="-1"
+    button type="button" class="glyphicon glyphicon-plus-sign" data-toggle="modal" data-target="#modal_#{date}"
+    div id="modal_#{date}" class="modal fade" tabindex="-1"
       = form_tag(new_kurumesi_order_path,method: :get) do
         .modal-dialog
           .modal-content
