@@ -1,6 +1,6 @@
 li.add_li_material.col-md-12.list-group-item.item.nested-fields.field
   = f.hidden_field :row_order, class:"input_row_order"
-  = f.number_field :base_menu_material_id
+  = f.hidden_field :base_menu_material_id
   .select_material.col-md-3[style="padding:3px;"]
     - if @base_menu.present?
       = f.object.material.name
