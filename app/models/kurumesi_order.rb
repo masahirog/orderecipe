@@ -3,7 +3,7 @@ class KurumesiOrder < ApplicationRecord
   has_many :kurumesi_order_details, dependent: :destroy
   accepts_nested_attributes_for :kurumesi_order_details, allow_destroy: true
 
-  validates :management_id, presence: true, uniqueness: true
+  validates :management_id, presence: true
 
   enum payment: {請求書:0, 現金:1, クレジットカード:2}
 

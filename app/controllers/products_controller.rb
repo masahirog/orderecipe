@@ -155,13 +155,13 @@ class ProductsController < ApplicationController
     @product = Product.find(params[:id])
     @menus = @product.menus.includes(:materials, :menu_materials)
     menu_names = ""
-    recipes = ""
+    cook_the_day_befores = ""
     material_names = ""
     posts = ""
     preparations = ""
     @menus.each do |menu|
       menu_names += menu.name + "^^"
-      recipes += menu.recipe + "^^"
+      cook_the_day_befores += menu.cook_the_day_before + "^^"
       menu.menu_materials.each do |mmm|
         material_names += mmm.material.name + "^^"
         posts += mmm.post + "^^"
@@ -170,14 +170,14 @@ class ProductsController < ApplicationController
     end
     @product.name = Romaji.kana2romaji Product.make_katakana(@product.name)[0]
     @menu_names = Product.make_katakana(menu_names)
-    @menu_recipes = Product.make_katakana(recipes)
+    @menu_cook_the_day_befores = Product.make_katakana(cook_the_day_befores)
     @material_names = Product.make_katakana(material_names)
     @posts = Product.make_katakana(posts)
     @preparations = Product.make_katakana(preparations)
     ii=0
     @menus.each_with_index do |menu,i|
       menu.name = Romaji.kana2romaji @menu_names[i]
-      menu.recipe = Romaji.kana2romaji @menu_recipes[i] if @menu_recipes[i]
+      menu.cook_the_day_before = Romaji.kana2romaji @menu_cook_the_day_befores[i] if @menu_cook_the_day_befores[i]
       menu.menu_materials.each do |mmm|
         mmm.material.name = Romaji.kana2romaji @material_names[ii]
         mmm.post = Romaji.kana2romaji @posts[ii] if @posts[ii]

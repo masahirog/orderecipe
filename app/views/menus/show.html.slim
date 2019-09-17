@@ -56,14 +56,14 @@
         - if @food_additives.present?
           = @food_additives.map{|fa|fa.name}.join('、')
     tr
-      th.active.col-md-4 調理メモ
-      td = simple_format(@menu.recipe)
+      th.active.col-md-4 前日調理
+      td = simple_format(@menu.cook_the_day_before)
+    tr
+      th.active.col-md-4 当日調理
+      td = simple_format(@menu.cook_on_the_day)
     tr
       th.active.col-md-4 盛り付けメモ
       td = simple_format(@menu.serving_memo)
-    tr
-      th.active.col-md-4 味・特徴の説明
-      td = simple_format(@menu.taste_description)
 .col-md-6
   = image_tag @menu.image.to_s ,class:"text-center img-responsive center-block",style:'max-height:450px;'
 div

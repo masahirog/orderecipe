@@ -22,14 +22,14 @@
     = f.select :category, options_for_select(Menu.categories.keys.to_a,@menu.category),{include_blank: true}, { class: "form-control",style:"width:100%;"}
 
   .col-md-4.form-group
-    = f.label :recipe ,'調理メモ'
-    = f.text_area :recipe, style:"height:10em;width:100%;", class:"form-control"
+    = f.label :cook_the_day_before ,'前日調理'
+    = f.text_area :cook_the_day_before, style:"height:10em;width:100%;", class:"form-control"
   .col-md-4.form-group
-    = f.label :serving_memo ,'盛付メモ'
+    = f.label :cook_on_the_day ,'当日調理'
+    = f.text_area :cook_on_the_day,style:"height:10em;width:100%;", class: "form-control"
+  .col-md-4.form-group
+    = f.label :serving_memo ,'盛付'
     = f.text_area :serving_memo,style:"height:10em;width:100%;", class: "form-control"
-  .col-md-4.form-group
-    = f.label :taste_description ,'味や特徴の説明'
-    = f.text_area :taste_description,style:"height:10em;width:100%;", class: "form-control"
   .col-md-12
     = f.label :image, "写真"
     = f.file_field :image

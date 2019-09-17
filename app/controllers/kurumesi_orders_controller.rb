@@ -148,12 +148,12 @@ class KurumesiOrdersController < ApplicationController
     @kurumesi_order = KurumesiOrder.new(brand_id:params[:brand_id],start_time:params[:date])
     @kurumesi_order.kurumesi_order_details.build
     @brand_name = Brand.find(params[:brand_id]).name
-    @products = Product.where(brand_id:params[:brand_id])
+    @products = Product.where(brand_id:[params[:brand_id],41])
   end
 
   def edit
-    @products = Product.all
     brand_id = @kurumesi_order.brand_id
+    @products = Product.where(brand_id:[brand_id,41])
     @brand_name = Brand.find(brand_id).name
   end
 

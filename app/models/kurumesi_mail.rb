@@ -38,7 +38,6 @@ class KurumesiMail < ApplicationRecord
       'FROM','info@kurumesi-bentou.com',
       'SINCE', (Date.today).strftime("%d-%b-%Y")
     ]
-
     imap.select('INBOX') # 対象のメールボックスを選択
     ids = imap.search(search_criterias) # 全てのメールを取得
     ids.each_slice(100).to_a.each do |id_block| # 100件ごとにメールをfetchする
@@ -53,8 +52,8 @@ class KurumesiMail < ApplicationRecord
             body = m.html_part.decoded
           end
         else
-          # body = m.body.decoded.encode("UTF-8", m.charset)
-          body = m.body.decoded.toutf8
+          body = m.body.decoded.encode("UTF-8", m.charset)
+          # body = m.body.decoded.toutf8
         end
         unless KurumesiMail.find_by(body:body,recieved_datetime:recieved_datetime).present?
           @kurumei_mail = KurumesiMail.new
@@ -65,7 +64,7 @@ class KurumesiMail < ApplicationRecord
           # kurumei_mailの作成
           if subject.include?("ご注文がありました")
             @kurumei_mail.summary = 1
-            @kurumei_mail.save
+            # @kurumei_mail.save
             order_info_from_mail = input_order(body)
             new_order(order_info_from_mail) unless KurumesiOrder.where(management_id:order_info_from_mail[:management_id]).present?
           elsif subject.include?("変更致しました")

@@ -52,20 +52,20 @@ class ProductPdf < Prawn::Document
     data= [["メニュー名","調理メモ","盛付メモ","食材・資材",{:content => "仕込み内容", :colspan => 2},"1人分","使用原価","","#{num}人分"]]
     menus.each do |menu|
       u = menu.materials.length
-      recipe_mozi = menu.recipe.length
-      if recipe_mozi<50
-        recipe_size = 9
-      elsif recipe_mozi<100
-        recipe_size = 8
-      elsif recipe_mozi<150
-        recipe_size = 7
+      cook_the_day_before_mozi = menu.cook_the_day_before.length
+      if cook_the_day_before_mozi<50
+        cook_the_day_before_size = 9
+      elsif cook_the_day_before_mozi<100
+        cook_the_day_before_size = 8
+      elsif cook_the_day_before_mozi<150
+        cook_the_day_before_size = 7
       else
-        recipe_size = 6
+        cook_the_day_before_size = 6
       end
       menu.menu_materials.each_with_index do |mm,i|
         if i == 0
           data << [{content: "#{menu.name}", rowspan: u,size: 9},
-            {content: "#{menu.recipe}", rowspan: u, size: recipe_size},
+            {content: "#{menu.cook_the_day_before}", rowspan: u, size: cook_the_day_before_size},
             {content: "#{menu.serving_memo}", rowspan: u, size: 9},{content:"#{mm.material.name}", size: 9},{content: "#{mm.post}", size: 9},{content:"#{mm.preparation}", size: 9},
             {content:"#{mm.amount_used} #{mm.material.recipe_unit}", size: 9},{content:"#{(mm.material.cost_price * mm.amount_used).round(1)}", size: 9},"",
             {content:"#{((mm.amount_used * num.to_i).round(1)).to_s(:delimited)} #{mm.material.recipe_unit}",size:9}]

@@ -97,15 +97,15 @@ class ShogunPreparationAll < Prawn::Document
     menus.each do |menu|
       unless menu.category == '容器'
         u = menu.materials.length
-        recipe_mozi = menu.recipe.length
-        if recipe_mozi<50
-          recipe_size = 10
-        elsif recipe_mozi<100
-          recipe_size = 9
-        elsif recipe_mozi<150
-          recipe_size = 8
+        cook_the_day_before_mozi = menu.cook_the_day_before.length
+        if cook_the_day_before_mozi<50
+          cook_the_day_before_size = 10
+        elsif cook_the_day_before_mozi<100
+          cook_the_day_before_size = 9
+        elsif cook_the_day_before_mozi<150
+          cook_the_day_before_size = 8
         else
-          recipe_size = 7
+          cook_the_day_before_size = 7
         end
         menu.menu_materials.each_with_index do |mm,i|
           if mm.post.present?
@@ -115,7 +115,7 @@ class ShogunPreparationAll < Prawn::Document
           end
           if i == 0
             data << [{content: "#{menu.name}", rowspan: u},
-              {content: "#{menu.recipe}", rowspan: u, size: recipe_size},"#{mm.material.name}",
+              {content: "#{menu.cook_the_day_before}", rowspan: u, size: cook_the_day_before_size},"#{mm.material.name}",
               "#{((mm.amount_used * num.to_i).round).to_s(:delimited)} #{mm.material.recipe_unit}",check,mm.post,mm.preparation]
           else
             data << [mm.material.name,{content:"#{((mm.amount_used * num.to_i).round).to_s(:delimited)} #{mm.material.recipe_unit}"},

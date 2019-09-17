@@ -36,5 +36,4 @@
       = f.fields_for :daily_menu_details do |dmd|
         = render 'daily_menu_detail_fields', f: dmd
   .actions.col-md-12
-    button type="button" onclick="submit();" class="col-md-2 col-md-offset-1 btn btn-primary"
-      |登録
+    = f.submit '登録する',class:'col-md-2 col-md-offset-1 btn btn-primary', data: {disable_with: '登録中...'}

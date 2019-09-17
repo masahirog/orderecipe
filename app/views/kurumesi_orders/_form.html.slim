@@ -7,35 +7,35 @@
           li = message
 
   .form-group.required.col-md-12
-    = f.label :brand_id,"対象ブランド", class: 'col-md-2 control-label text-right'
-    .col-md-10
+    = f.label :brand_id,"対象ブランド", class: 'col-md-3 control-label text-right'
+    .col-md-8
       = @brand_name
       = f.hidden_field :brand_id
   .form-group.required.col-md-12
-    = f.label :canceled_flag,"オーダー状況", class: 'col-md-2 control-label text-right'
-    .col-md-10
+    = f.label :canceled_flag,"オーダー状況", class: 'col-md-3 control-label text-right'
+    .col-md-8
       = f.select :canceled_flag,[['受注',false],['キャンセル',true]],{},class:'form-control',style:'width:440px;'
 
   .form-group.required.col-md-12
-    = f.label :start_time,"日付", class: 'col-md-2 control-label text-right'
-    .col-md-10
+    = f.label :start_time,"日付", class: 'col-md-3 control-label text-right'
+    .col-md-8
       = f.date_field :start_time, value:params['start_time'], class: 'col-md-10 form-control',readonly: true,style:'width:440px;'
   .form-group.required.col-md-12
-    = f.label :management_id,"くるめしオーダーID", class: 'col-md-2 control-label text-right'
-    .col-md-10
+    = f.label :management_id,"くるめしオーダーID（テストは0）", class: 'col-md-3 control-label text-right'
+    .col-md-8
       = f.number_field :management_id, class: 'col-md-10 form-control',style:'width:440px;'
   .form-group.required.col-md-12
-    = f.label :pick_time,"ピックアップ時間", class: 'col-md-2 control-label text-right'
-    .col-md-10
+    = f.label :pick_time,"ピックアップ時間", class: 'col-md-3 control-label text-right'
+    .col-md-8
       = f.time_select :pick_time,{time_separator:'', minute_step: 5,include_blank:true }, class: 'col-md-10 form-control',style:'display:inline-block;width:auto;width:100px;'
   .form-group.required.col-md-12
-    = f.label :memo,"メモ", class: 'col-md-2 control-label text-right'
+    = f.label :memo,"メモ", class: 'col-md-3 control-label text-right'
     .col-md-4
       = f.text_area :memo, class: 'col-md-10 form-control'
 
   .form-group.required.col-md-12
-    = f.label :payment,"支払い方法", class: 'col-md-2 control-label text-right'
-    .col-md-10
+    = f.label :payment,"支払い方法", class: 'col-md-3 control-label text-right'
+    .col-md-8
       label style='margin-right:30px;'
         |請求書　
         = f.radio_button :payment,:請求書

@@ -153,15 +153,15 @@ class KurumesiOrderPdf < Prawn::Document
   def line_item_rows(menu,arr_hon,menu_name)
     data = [["メニュー名","調理メモ","食材・資材","分量",'✓',{:content => "仕込み内容", :colspan => 2}]]
     u = menu.materials.length
-    recipe_mozi = menu.recipe.length
-    if recipe_mozi<50
-      recipe_size = 10
-    elsif recipe_mozi<100
-      recipe_size = 9
-    elsif recipe_mozi<150
-      recipe_size = 8
+    cook_the_day_before_mozi = menu.cook_the_day_before.length
+    if cook_the_day_before_mozi<50
+      cook_the_day_before_size = 10
+    elsif cook_the_day_before_mozi<100
+      cook_the_day_before_size = 9
+    elsif cook_the_day_before_mozi<150
+      cook_the_day_before_size = 8
     else
-      recipe_size = 7
+      cook_the_day_before_size = 7
     end
     menu.menu_materials.each_with_index do |mm,i|
       if mm.post.present?
@@ -171,7 +171,7 @@ class KurumesiOrderPdf < Prawn::Document
       end
       if i == 0
         data << [{content: "#{menu_name}", rowspan: u},
-          {content: "#{menu.recipe}", rowspan: u, size: recipe_size},"#{mm.material.name}",
+          {content: "#{menu.cook_the_day_before}", rowspan: u, size: cook_the_day_before_size},"#{mm.material.name}",
           "#{(arr_hon[i].round)} #{mm.material.recipe_unit}",check,mm.post,mm.preparation]
       else
         data << [mm.material.name,{content:"#{arr_hon[i]} #{mm.material.recipe_unit}"},

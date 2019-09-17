@@ -10,17 +10,6 @@ class MenuPdf < Prawn::Document
     header_table2(menu)
     table_content(menu_materials)
   end
-
-  # recipe_mozi = menu.recipe.length
-  # if recipe_mozi<50
-  #   recipe_size = 9
-  # elsif recipe_mozi<100
-  #   recipe_size = 8
-  # elsif recipe_mozi<150
-  #   recipe_size = 7
-  # else
-  #   recipe_size = 6
-  # end
   def header_table(menu)
     bounding_box([0, 750], :width => 520) do
       data = [["メニュー名","原価","カテゴリ"],["#{menu.name}","#{menu.cost_price}","#{menu.category}"]]
@@ -38,7 +27,7 @@ class MenuPdf < Prawn::Document
   end
   def header_table2(menu)
     bounding_box([0, 710], :width => 520) do
-      data=[["調理メモ","盛り付けメモ"],["#{menu.recipe}","#{menu.serving_memo}"]]
+      data=[["調理メモ","盛り付けメモ"],["#{menu.cook_the_day_before}","#{menu.serving_memo}"]]
       table data, cell_style: { size: 10 } do
         cells.padding = 2
         row(0).borders = [:bottom]

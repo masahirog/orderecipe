@@ -168,14 +168,14 @@ ActiveRecord::Schema.define(version: 2019_07_26_070953) do
 
   create_table "menus", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
-    t.text "recipe"
+    t.text "cook_the_day_before"
     t.integer "category"
     t.text "serving_memo"
     t.float "cost_price"
     t.string "food_label_name"
     t.string "used_additives", default: "", null: false
     t.boolean "confirm_flag", default: false, null: false
-    t.text "taste_description"
+    t.text "cook_on_the_day"
     t.string "image"
     t.integer "base_menu_id"
     t.datetime "created_at", null: false

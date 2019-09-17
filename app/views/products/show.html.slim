@@ -75,8 +75,8 @@
 .col-md-12.active[style="padding:10px;"]
   label.col-md-2 メニュー名
   label.col-md-1 税込原価
-  label.col-md-2 レシピ
-  label.col-md-2 盛り付けメモ
+  label.col-md-2 調理
+  label.col-md-2 盛付
   .col-md-5
     label.col-md-4 食材資材名
     label.col-md-2 使用量
@@ -92,7 +92,16 @@ ul.list-group[style="list-style-type:none;"]
       .col-md-1
         = pm.menu.cost_price
       .first_tr_td.col-md-2
-        = text_url_to_link(simple_format(h(pm.menu.recipe))).html_safe
+        - if pm.menu.cook_the_day_before.present?
+          .col-md-12
+            strong 前日
+            = text_url_to_link(simple_format(h(pm.menu.cook_the_day_before))).html_safe
+        - if pm.menu.cook_the_day_before.present? && pm.menu.cook_on_the_day.present?
+          .col-md-12 ーーーーーーーーーーーー
+        - if pm.menu.cook_on_the_day.present?
+          .col-md-12
+            strong 当日
+            = text_url_to_link(simple_format(h(pm.menu.cook_on_the_day))).html_safe
       .first_tr_td.col-md-2
         = simple_format(pm.menu.serving_memo)
       - i = 1
