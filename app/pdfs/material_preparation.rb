@@ -8,52 +8,79 @@ class MaterialPreparation < Prawn::Document
     )
     #日本語のフォント
     font "vendor/assets/fonts/ipaexm.ttf"
-
+    menus = []
     menu_materials_choriba_arr = []
     menu_materials_kiriba_arr = []
     products_arr = []
     hash = {}
+    arr_hon = []
     bentos_num_h.each do |prnm|
-      product = Product.includes(menus:[menu_materials:[:menu,material:[:storage_location]]]).find(prnm[0])
+      product = Product.find(prnm[0])
       num = prnm[1]
       products_arr << [product.name,prnm[1]]
       product.menus.each do |menu|
+        menus << [menu.base_menu_id,menu.id,num]
+      end
+    end
+    test_hash = {}
+    base_menu_hash = {}
+    menus.each do |menu|
+      if base_menu_hash[menu[0]]
+        if base_menu_hash[menu[0]][menu[1]]
+          base_menu_hash[menu[0]][menu[1]] += menu[2]
+        else
+          base_menu_hash[menu[0]][menu[1]] = menu[2]
+        end
+      else
+        base_menu_hash[menu[0]] = {menu[1]=>menu[2]}
+      end
+    end
+    base_menu_hash.each do |bnh|
+      bnh[1].each do |menu_num|
+        menu = Menu.includes(menu_materials:[:material]).find(menu_num[0])
+        num = menu_num[1]
         menu.menu_materials.each do |mm|
-          if hash[[mm.id,mm.material_id]]
-            hash[[mm.id,mm.material_id]] = [mm,num + hash[[mm.id,mm.material_id]][1],hash[[mm.id,mm.material_id]][2] +"/"+ "#{product.short_name}:#{num}個"]
-          else
-            hash[[mm.id,mm.material_id]] = [mm,num,"#{product.short_name}:#{num}個"]
+          if mm.material.vegetable_flag == true
+            base_menu_material_id = mm.base_menu_material_id
+            if test_hash[base_menu_material_id]
+              test_hash[base_menu_material_id][2] =(test_hash[base_menu_material_id][2] + mm.amount_used * num).round(1)
+              test_hash[base_menu_material_id][6] += "／／#{menu.name}"
+            else
+              test_hash[base_menu_material_id] = [mm.material_id,mm.material.name,(mm.amount_used*num).round(1),mm.material.recipe_unit,mm.post,mm.preparation,menu.name]
+            end
           end
         end
       end
     end
-    hash.each do |key, value|
-      menu_materials_choriba_arr << [value[0],value[1],value[2]] if value[0].post == '調理場' || value[0].post == '切出/調理'
-      menu_materials_kiriba_arr << [value[0],value[1],value[2]] if value[0].post == '切出し' || value[0].post == '切出/スチ' || value[0].post == '切出/調理'
+    test_hash.each do |key, value|
+      menu_materials_choriba_arr << value if value[4] == '調理場' || value[4] == '切出/調理'
+      menu_materials_kiriba_arr << value if value[4] == '切出し' || value[4] == '切出/スチ' || value[4] == '切出/調理'
     end
-    menu_materials_choriba_arr = menu_materials_choriba_arr.sort { |a, b| b[0].material_id <=> a[0].material_id }
-    menu_materials_kiriba_arr = menu_materials_kiriba_arr.sort { |a, b| b[0].material_id <=> a[0].material_id }
+    menu_materials_choriba_arr = menu_materials_choriba_arr.sort { |a, b| b[0] <=> a[0] }
+    menu_materials_kiriba_arr = menu_materials_kiriba_arr.sort { |a, b| b[0] <=> a[0] }
+    # if mochiba == 'choriba'
+    #   text "調理場  #{date}"
+    #   move_down 2
+    #   table_content(menu_materials_choriba_arr,'調理場')
+    # elsif mochiba == 'kiriba'
+    #   text "切出し  #{date}"
+    #   move_down 2
+    #   table_content(menu_materials_kiriba_arr,'切出し')
+    # else
+    #   text "調理場  #{date}"
+    #   move_down 2
+    #   table_content(menu_materials_choriba_arr,'調理場')
+    #
+    #   start_new_page
+    #
+    #   text "切出し  #{date}"
+    #   move_down 2
+    #   table_content(menu_materials_kiriba_arr,'切出し')
+    # end
+    text "くるめし仕込み：食材別シート  #{date}"
+    move_down 2
+    table_content(menu_materials_kiriba_arr,'切出し')
 
-    if mochiba == 'choriba'
-      text "調理場  #{date}"
-      move_down 2
-      table_content(menu_materials_choriba_arr,'調理場')
-    elsif mochiba == 'kiriba'
-      text "切出し  #{date}"
-      move_down 2
-      table_content(menu_materials_kiriba_arr,'切出し')
-    else
-      text "調理場  #{date}"
-      move_down 2
-      table_content(menu_materials_choriba_arr,'調理場')
-
-      start_new_page
-
-      text "切出し  #{date}"
-      move_down 2
-      table_content(menu_materials_kiriba_arr,'切出し')
-
-    end
   end
 
   def table_content(menu_materials_arr,mochiba)
@@ -64,19 +91,18 @@ class MaterialPreparation < Prawn::Document
       cells.size = 9
       cells.border_width = 0.1
       cells.valign = :center
-      column(2).align = :right
-      columns(7).size = 6
-      columns(6).size = 6
+      column(1).align = :right
+      columns(5).size = 6
       row(0).column(2).align = :left
       self.header = true
-      self.column_widths = [150,80,60,30,60,200,150,90]
+      self.column_widths = [220,60,30,60,300,150]
     end
   end
 
   def line_item_rows(menu_materials_arr)
-    data = [['食材名','保管場所',{:content => "分量", :colspan => 2},{:content => "仕込み", :colspan => 2},'メニュー名']]
+    data = [['食材名',{:content => "分量", :colspan => 2},{:content => "仕込み", :colspan => 2},'メニュー名']]
     menu_materials_arr.each do |mma|
-        data << [mma[0].material.name,mma[0].material.storage_location.name,(mma[0].amount_used * mma[1]).round(1),mma[0].material.recipe_unit,mma[0].post,mma[0].preparation,mma[0].menu.name,mma[2]]
+        data << [mma[1],mma[2],mma[3],mma[4],mma[5],mma[6]]
     end
     data
   end

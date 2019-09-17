@@ -8,7 +8,6 @@ class KurumesiOrderPdf < Prawn::Document
     )
     #日本語のフォント
     font "vendor/assets/fonts/ipaexm.ttf"
-
     menus = []
     products_arr = []
     bentos_num_h.each do |prnm|
@@ -67,6 +66,12 @@ class KurumesiOrderPdf < Prawn::Document
       move_down 1
       table_content(hash,'切出し')
     end
+    page_count.times do |i|
+      go_to_page(i+1)
+      bounding_box([bounds.right-50, bounds.bottom + 25], :width => 50) {
+        text "#{i+1} / #{page_count}"
+      }
+    end
   end
 
   def table_content(hash,mochiba)
@@ -83,12 +88,12 @@ class KurumesiOrderPdf < Prawn::Document
           menu_name_arr << "#{menu.name}（#{menu_num[1]}食）"
         end
         menu.menu_materials.each do |mm|
-          arr_kari_a << (mm.amount_used * menu_num[1]).round(1)
+          arr_kari_a << (mm.amount_used * menu_num[1])
         end
         arr_kari << arr_kari_a
       end
       menu_name = menu_name_arr.join("\n\n")
-      arr_hon = arr_kari.transpose.map{|a| a.inject(:+) }
+      arr_hon = arr_kari.transpose.map{|a| a.inject(:+).round(1) }
       unless base_menu.category == '容器'
         if mochiba == '調理場'
           post1 = '調理場'
@@ -167,9 +172,9 @@ class KurumesiOrderPdf < Prawn::Document
       if i == 0
         data << [{content: "#{menu_name}", rowspan: u},
           {content: "#{menu.recipe}", rowspan: u, size: recipe_size},"#{mm.material.name}",
-          "#{(arr_hon[i].round).to_s(:delimited)} #{mm.material.recipe_unit}",check,mm.post,mm.preparation]
+          "#{(arr_hon[i].round)} #{mm.material.recipe_unit}",check,mm.post,mm.preparation]
       else
-        data << [mm.material.name,{content:"#{arr_hon[i].to_s(:delimited)} #{mm.material.recipe_unit}"},
+        data << [mm.material.name,{content:"#{arr_hon[i]} #{mm.material.recipe_unit}"},
           check,mm.post,mm.preparation]
       end
     end
