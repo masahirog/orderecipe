@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  base_rice: 1
+  serving_amount: 1
+  sho_per_make_num: 1
+
+two:
+  name: MyString
+  base_rice: 1
+  serving_amount: 1
+  sho_per_make_num: 1

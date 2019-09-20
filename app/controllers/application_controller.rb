@@ -10,6 +10,7 @@ class ApplicationController < ActionController::Base
   render template: 'errors/error_500', status: 500
   end
 
+
   protected
     def revert_link
       view_context.link_to('取消', revert_version_path(@material.versions.last), :method => :post)

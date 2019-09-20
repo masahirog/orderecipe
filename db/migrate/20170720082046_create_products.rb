@@ -15,6 +15,7 @@ class CreateProducts < ActiveRecord::Migration[4.2]
       t.text :obi_url
       t.integer :brand_id
       t.integer :product_category,null:false,default:1
+      t.integer :cooking_rice_id,null:false
       t.timestamps null: false
     end
   end

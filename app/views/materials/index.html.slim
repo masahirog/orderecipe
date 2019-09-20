@@ -25,7 +25,8 @@ table.table
     th 仕入先
     th メモ
     th
-    th
+    th 使用メニュー
+    th 直近使用量確認
   - @search.each do |material|
     tr.materials_li
       td.material_name
@@ -40,6 +41,8 @@ table.table
         = "使用停止" if material.unused_flag == true
       td style="text-align:center;"
         = link_to '確認',include_material_materials_path(id:material.id),class:"btn btn-default btn-sm"
+      td
+        = link_to '1ヶ月',used_check_materials_path(id:material.id),class:"btn btn-default btn-sm"
 - if @search.size == 0 then
   p
     | 該当する食材・資材が存在しません

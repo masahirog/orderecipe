@@ -81,6 +81,24 @@ class MaterialsController < ApplicationController
     end
   end
 
+  def used_check
+    @month_total_used = 0
+    @today = Date.today
+    @month_ago = @today-30
+    @material = Material.find(params[:id])
+    material_id = @material.id
+    used_product_ids = Product.joins(product_menus:[menu:[:menu_materials]]).where(:product_menus => {:menus => {:menu_materials => {material_id:material_id}}}).ids
+    shogun_bentos = DailyMenuDetail.joins(:daily_menu,:product).where(:daily_menus => {start_time:@month_ago..@today,fixed_flag:true},:products => {id:used_product_ids}).group('product_id').sum(:manufacturing_number)
+    kurumesi_bentos = KurumesiOrderDetail.joins(:kurumesi_order,:product).where(:kurumesi_orders => {start_time:@month_ago..@today,canceled_flag:false},:products => {id:used_product_ids}).group('product_id').sum(:number)
+    month_bentos = shogun_bentos.merge(kurumesi_bentos)
+    month_bentos.each do |product_num|
+      product = Product.find(product_num[0])
+      menu_ids = product.menus.ids
+      used = MenuMaterial.where(menu_id:menu_ids,material_id:material_id).sum(:amount_used)
+      @month_total_used += (used * product_num[1])
+    end
+  end
+
   private
   def material_params
     params.require(:material).permit(:name, :order_name, :recipe_unit_quantity, :recipe_unit,:vegetable_flag,:vendor_stock_flag,:storage_location_id,

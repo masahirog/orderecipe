@@ -1,6 +1,5 @@
 Rails.application.routes.draw do
   devise_for :users
-
   root 'daily_menus#index'
   post 'orders/new' => 'orders#new'
   post'orders/order_print/:id' => 'orders#order_print'
@@ -55,6 +54,7 @@ Rails.application.routes.draw do
   resources :materials do
     collection do
       get :include_material
+      get :used_check
     end
   end
   resources :orders do
@@ -78,7 +78,7 @@ Rails.application.routes.draw do
       get :print_preparation
     end
   end
-
+  resources :cooking_rices
   resources :versions
   resources :food_additives
   resources :stocks do

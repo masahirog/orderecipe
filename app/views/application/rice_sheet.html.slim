@@ -1,0 +1,8 @@
+h2 炊飯シート
+= form_tag rice_sheet_path, method: :get do
+  .form-group
+    label 日付
+    = date_field_tag :date,Date.tomorrow, class:"form-control"
+
+  .form-group
+    input.btn.btn-success type="button" onclick="submit();" value="印刷" style='width:300px;'

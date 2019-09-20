@@ -1,0 +1,27 @@
+= form_for @cooking_rice do |f|
+  - if @cooking_rice.errors.any?
+    #error_explanation
+      h2 = "#{pluralize(@cooking_rice.errors.count, "error")} prohibited this cooking_rice from being saved:"
+      ul
+        - @cooking_rice.errors.full_messages.each do |message|
+          li = message
+  .form-group
+    = f.label :name, "ご飯名称"
+    = f.text_field :name, required: true, class:"form-control",style:'width:500px;'
+  .form-group
+    = f.radio_button(:base_rice, '1')
+    = f.label(:base_rice, "白米", value: "1",style:'margin-right:50px;')
+    = f.radio_button(:base_rice, '2')
+    = f.label(:base_rice, "マンナンブレンド", value: "2")
+  .form-group.clearfix
+    = f.label :serving_amount, "盛り付け量",class:'col-md-12',style:'padding:0;'
+    = f.number_field :serving_amount, required: true, class:"form-control",style:'width:450px;float:left;'
+    span style='float:left;margin:10px 0 0 10px;' g
+  .form-group.clearfix
+    = f.label :sho_per_make_num, "１升炊飯時の可能食数",class:'col-md-12',style:'padding:0;'
+    = f.number_field :sho_per_make_num, required: true, class:"form-control",style:'width:450px;float:left;'
+    span style='float:left;margin:10px 0 0 10px;' 食
+
+
+  .actions
+    = f.submit '登録',class:'btn btn-primary'
