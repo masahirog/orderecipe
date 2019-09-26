@@ -14,13 +14,13 @@ div.col-md-12 style='font-size:20px;padding:0 0 7px 0;'
             button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
             = submit_tag "作成する" ,class:"btn btn-primary"
 .form-group.col-md-12.clearfix
-  = link_to "発注開始", new_order_path(kurumesi_order_date:params[:date]),class:'btn btn-success',style:'float:left;margin-left:20px;margin-top:10px;'
+  = link_to "発注開始", new_order_path(kurumesi_order_date:params[:date]),class:'new_order btn btn-success',style:'float:left;margin-left:20px;margin-top:10px;'
   = link_to "切出場仕込み",print_preparation_kurumesi_orders_path(date:params[:date],mochiba:'kiriba',format:'pdf'),class:"btn btn-primary",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
   = link_to "調理場仕込み",print_preparation_kurumesi_orders_path(date:params[:date],mochiba:'choriba',format:'pdf'),class:"btn btn-primary",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
   = link_to "ALL仕込み",print_preparation_kurumesi_orders_path(date:params[:date],format:'pdf'),class:"btn btn-primary",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
-  / = link_to "製造表",manufacturing_sheet_kurumesi_orders_path(date:params[:date],format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
   = link_to "積載表",loading_sheet_kurumesi_orders_path(date:params[:date],format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
   = link_to "くるめし切り出し野菜",material_preparation_kurumesi_orders_path(date:params[:date],format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
+  = link_to "炊飯シート",rice_sheet_cooking_rices_path(date:params[:date],format: :pdf),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
 h3 弁当別製造数
 table.table
   thead
@@ -96,3 +96,10 @@ style type="text/css"
         outline: none;
         padding: 0;
         appearance: none;}
+javascript:
+  $(function() {
+    $('.new_order').on('click', function(){
+        $(this).attr('disabled', true);
+        $(this).text("計算してるから待ってね...");
+    });
+  });

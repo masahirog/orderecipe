@@ -4,10 +4,10 @@ one:
   name: MyString
   base_rice: 1
   serving_amount: 1
-  sho_per_make_num: 1
+  shoku_per_shou: 1
 
 two:
   name: MyString
   base_rice: 1
   serving_amount: 1
-  sho_per_make_num: 1
+  shoku_per_shou: 1

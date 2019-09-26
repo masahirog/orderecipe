@@ -78,7 +78,12 @@ Rails.application.routes.draw do
       get :print_preparation
     end
   end
-  resources :cooking_rices
+  resources :cooking_rices do
+    collection do
+      get :date
+      get :rice_sheet
+    end
+  end
   resources :versions
   resources :food_additives
   resources :stocks do

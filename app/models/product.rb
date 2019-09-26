@@ -15,6 +15,8 @@ class Product < ApplicationRecord
   has_many :order_products, dependent: :destroy
   has_many :orders, through: :order_products
 
+  belongs_to :cooking_rice
+
   mount_uploader :image, ProductImageUploader
 
   validates :name, presence: true, uniqueness: true, format: { with: /\A[^０-９ａ-ｚＡ-Ｚ]+\z/,message: "：全角英数字は使用出来ません。"}

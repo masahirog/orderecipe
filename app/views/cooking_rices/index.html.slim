@@ -1,14 +1,33 @@
+h2 炊飯シート
+= form_tag rice_sheet_cooking_rices_path(format: :pdf), method: :get,target:"_blank" do
+  .form-group
+    label 日付
+    = date_field_tag :date,Date.tomorrow, class:"form-control"
+  .form-group
+    input.btn.btn-success type="button" onclick="submit();" value="印刷" style='width:300px;'
+
 h3 炊飯表
 = link_to '新規作成', new_cooking_rice_path,class:'btn btn-primary'
+
 table.table
   thead
     tr
-      th
+      th 名前
+      th ベースの米
+      th.text-right 盛付グラム数
+      th.text-right 1食あたりの升
+      th.text-right 4升食数
       th
       th
   tbody
     - @cooking_rices.each do |cooking_rice|
       tr
-        td = link_to '詳細', cooking_rice,class:'btn btn-primary'
-        td = link_to '編集', edit_cooking_rice_path(cooking_rice),class:'btn btn-primary'
-        td = link_to '削除', cooking_rice, data: { confirm: 'Are you sure?' }, method: :delete,class:'btn btn-danger'
+        td = link_to cooking_rice.name, edit_cooking_rice_path(cooking_rice),class:''
+        td = cooking_rice.base_rice
+        td.text-right = cooking_rice.serving_amount
+        td.text-right = "#{cooking_rice.shoku_per_shou} 升"
+        td.text-right = "#{(4/cooking_rice.shoku_per_shou).floor} 食"
+        td
+        td
+          - unless cooking_rice.products.present?
+            = link_to '削除', cooking_rice, data: { confirm: 'Are you sure?' }, method: :delete,class:'btn btn-danger'

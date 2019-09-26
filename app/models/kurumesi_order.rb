@@ -7,12 +7,27 @@ class KurumesiOrder < ApplicationRecord
 
   enum payment: {請求書:0, 現金:1, クレジットカード:2}
 
+  # 在庫に関する部分が動いた時だけ、在庫の計算を行う
+  before_save :changed_check
   after_save :input_stock
 
   def input_stock
-    #saveされたdailymenuの日付を取得
-    date = self.start_time
-    previous_day = self.start_time - 1
-    Stock.calculate_stock(date,previous_day)
+    if @change_flag == true
+      #saveされたdailymenuの日付を取得
+      date = self.start_time
+      previous_day = self.start_time - 1
+      Stock.calculate_stock(date,previous_day)
+    end
+  end
+
+  def changed_check
+    @change_flag = false
+    if self.canceled_flag_changed? ||self.start_time_changed?
+      @change_flag = true
+    else
+      self.kurumesi_order_details.each do |kod|
+        @change_flag = true if kod.changed? || kod.marked_for_destruction?
+      end
+    end
   end
 end

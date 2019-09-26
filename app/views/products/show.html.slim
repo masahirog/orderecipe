@@ -40,6 +40,9 @@
       th.active.col-md-4 弁当種類
       td = @product.product_type
     tr
+      th.active.col-md-4 使用ライス
+      td = @product.cooking_rice.name
+    tr
       th.active.col-md-4 くるめし帯URL
       td = link_to @product.obi_url ,@product.obi_url,target:'_blank'
     tr

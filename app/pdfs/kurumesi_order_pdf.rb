@@ -4,7 +4,7 @@ class KurumesiOrderPdf < Prawn::Document
     super(
       page_size: 'A4',
       page_layout: :landscape,
-      margin:10
+      margin:15
     )
     #日本語のフォント
     font "vendor/assets/fonts/ipaexm.ttf"
@@ -106,13 +106,12 @@ class KurumesiOrderPdf < Prawn::Document
         if base_menu.menu_materials.map{|mm|mm.post}.include?(post1) || base_menu.menu_materials.map{|mm|mm.post}.include?(post2) || base_menu.menu_materials.map{|mm|mm.post}.include?(post3)
           move_down 10
           table line_item_rows(base_menu,arr_hon,menu_name) do
-            cells.padding = 3
+            # cells.padding = 3
+            cells.leading = 2
             cells.size = 9
             cells.borders = [:bottom]
             cells.border_width = 0.1
-
             column(3).align = :right
-            column(4).size = 9
             column(4).align = :center
             column(4).text_color = '808080'
             row(0).border_color = "000000"
@@ -170,8 +169,9 @@ class KurumesiOrderPdf < Prawn::Document
         check = ""
       end
       if i == 0
+        memo = "【 前日 】\n#{menu.cook_the_day_before}\n―・―・―・―・―・―・―・―・―・―\n【 当日 】\n#{menu.cook_on_the_day}"
         data << [{content: "#{menu_name}", rowspan: u},
-          {content: "#{menu.cook_the_day_before}", rowspan: u, size: cook_the_day_before_size},"#{mm.material.name}",
+          {content: memo, rowspan: u, size: cook_the_day_before_size},"#{mm.material.name}",
           "#{(arr_hon[i].round)} #{mm.material.recipe_unit}",check,mm.post,mm.preparation]
       else
         data << [mm.material.name,{content:"#{arr_hon[i]} #{mm.material.recipe_unit}"},

@@ -193,15 +193,15 @@ class ProductsController < ApplicationController
     @product = Product.find(params[:volume][:id])
     @menus = @product.menus.includes(:materials, :menu_materials)
     respond_to do |format|
-     format.html
-     format.pdf do
-       pdf = ProductPdf.new(@params,@product,@menus)
-       send_data pdf.render,
-         filename:    "#{@product.name}_#{params[:volume][:num]}shoku.pdf",
-         type:        "application/pdf",
-         disposition: "inline"
-     end
-   end
+      format.html
+      format.pdf do
+        pdf = ProductPdf.new(@params,@product,@menus)
+        send_data pdf.render,
+        filename:    "#{@product.name}_#{params[:volume][:num]}shoku.pdf",
+        type:        "application/pdf",
+        disposition: "inline"
+      end
+    end
   end
   def print_preparation
     @params = params
@@ -267,7 +267,7 @@ class ProductsController < ApplicationController
   private
     def product_create_update
       params.require(:product).permit(:name,:memo, :management_id, :cook_category,:short_name, :product_type, :sell_price, :description, :contents, :image,:brand_id,:product_category,
-                      :obi_url,:remove_image, :image_cache, :cost_price, product_menus_attributes: [:id, :product_id, :menu_id,:row_order, :_destroy,
+                      :obi_url,:remove_image, :image_cache, :cost_price,:cooking_rice_id, product_menus_attributes: [:id, :product_id, :menu_id,:row_order, :_destroy,
                       menu_attributes:[:name ]])
     end
 end

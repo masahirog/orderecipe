@@ -24,7 +24,7 @@
       = f.label :management_id, "管理ID（各ブランドの商品ID）"
       = f.number_field :management_id, class:"management_id form-control"
 
-    .col-md-12.form-group
+    .col-md-12.form-group style='padding:0;'
       .col-md-4
         = f.label :product_category, "商品カテゴリー"
         = f.select :product_category, options_for_select(Product.product_categories.keys.to_a,@product.product_category), {}, class: 'form-control'
@@ -34,6 +34,10 @@
       .col-md-4
         = f.label :cook_category, "調理カテゴリー"
         = f.select :cook_category, options_for_select(Product.cook_categories.keys.to_a,@product.cook_category), {}, class: 'cook_category_choice form-control'
+
+    .col-md-12.form-group
+      = f.label :cooking_rice_id, "使用ライス"
+      = f.collection_select :cooking_rice_id, CookingRice.all, :id, :name, {}, { class: "form-control"}
 
     .col-md-12.form-group
       = f.label :obi_url, "くるめしの帯"
