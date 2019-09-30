@@ -25,16 +25,6 @@ $(document).on('turbolinks:load', function() {
   });
 
 
-  $('.add_order_material').on('click',function(){
-    setTimeout(function(){
-      $('.select_order_materials:last').select2({
-        placeholder: "発注する食材を選択"
-      });
-    },5);
-    change_color();
-  });
-
-
 //並び替え時のrow_order更新
   $(".material_ul.ul-sortable").sortable({
     update: function(){

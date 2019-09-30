@@ -1,4 +1,5 @@
 $(document).on('turbolinks:load', function() {
+  change_color();
   $('[data-toggle="tooltip"]').tooltip();
   $('[data-toggle="popover"]').popover();
   first_input_check();
@@ -21,6 +22,32 @@ $(document).on('turbolinks:load', function() {
     }
 
   });
+
+
+  $(document).on('change','.order_quantity',function(){
+    var input = $(this).val();
+    if (isNumber(input)) {
+      $(this).css('background-color','white');
+    }else{
+      $(this).css('background-color','red');
+    }
+    function isNumber(val){
+      var regex = new RegExp(/^[0-9]+(\.[0-9]+)?$/);
+      return regex.test(val);
+    }
+  });
+
+
+  $('.add_order_material').on('click',function(){
+    setTimeout(function(){
+      $('.select_order_materials:last').select2({
+        placeholder: "発注する食材を選択"
+      });
+    },5);
+    change_color();
+  });
+
+
 
   $("#all_make_date_change").on("change", function(){
     var date = $(this).val()
@@ -255,6 +282,8 @@ $(document).on('turbolinks:load', function() {
           i = i + 1;
       });
     };
+
+
 
   //入力チェックと色付け
   function input_check(){

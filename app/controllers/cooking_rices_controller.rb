@@ -55,7 +55,7 @@ class CookingRicesController < ApplicationController
     man_kurikoshi = 0
     man_kurikosu = 0
     date = params[:date]
-    shogun_bentos = DailyMenuDetail.joins(:daily_menu,:product).where(:daily_menus => {start_time:date,fixed_flag:true},:products => {product_category:1}).group('product_id').sum(:manufacturing_number)
+    shogun_bentos = DailyMenuDetail.joins(:daily_menu,:product).where(:daily_menus => {start_time:date,fixed_flag:true},:products => {product_category:1}).order(:row_order).group('product_id').sum(:manufacturing_number)
     kurumesi_bentos = KurumesiOrderDetail.joins(:kurumesi_order,:product).where(:kurumesi_orders => {start_time:date,canceled_flag:false},:products => {product_category:1}).group('product_id').sum(:number)
     kurumesi_rice_hash = {}
     number = 0

@@ -74,17 +74,4 @@ javascript:
     $(document).on("keypress", "input:not(.allow_submit)", function(event) {
       return event.which !== 13;
     });
-    $('.order_quantity').on('change',function(){
-      var input = $(this).val();
-      if (isNumber(input)) {
-        $(this).css('background-color','white');
-      }else{
-        $(this).css('background-color','red');
-      }
-      function isNumber(val){
-        var regex = new RegExp(/^[0-9]+(\.[0-9]+)?$/);
-        return regex.test(val);
-      }
-    });
-
   });

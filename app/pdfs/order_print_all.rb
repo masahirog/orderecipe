@@ -8,19 +8,22 @@ class OrderPrintAll < Prawn::Document
     vendor_ids.each_with_index do |vendor_id,i|
       vendor = Vendor.find(vendor_id)
       oms = order_materials.joins(:material).where(:materials => {vendor_id:vendor_id})
-      uniq_date = oms.pluck(:delivery_date).uniq
-      uniq_date.each do |date|
-        arr=[]
-        oms.each do |om|
-          arr << om if om.delivery_date == date
+      hash = {}
+      oms.map do |om|
+        if hash[om.delivery_date].present?
+          hash[om.delivery_date] << om
+        else
+          hash[om.delivery_date] = [om]
         end
+      end
+      hash.each_with_index do |data,ii|
         header(order)
         header_lead(vendor)
         header_adress(vendor)
         header_hello
         move_down 20
-        table_content(arr,date)
-        start_new_page unless i + 1 == vendor_ids.length
+        table_content(data[1],data[0])
+        start_new_page unless ii == (hash.length - 1) && i == (vendor_ids.length - 1)
       end
     end
   end
