@@ -47,7 +47,6 @@ class RiceSheet < Prawn::Document
             n -= 1
           else
             data << [n,cooking_rice.name,"#{cooking_rice.serving_amount} g",amount[0],amount[1],'',"#{suihan[1][:product_name]} #{suihan[1][:make_num]}食"]
-            n += 1
           end
         elsif i == suihan[1][:amount].length - 1 && kurikosu > 0
           data << [n,cooking_rice.name,"#{cooking_rice.serving_amount} g",amount[0],amount[1],"#{(amount[0]-kurikosu).ceil(2)}升使用、#{kurikosu}升繰越し",'']

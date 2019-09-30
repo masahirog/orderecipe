@@ -147,6 +147,11 @@ class CookingRicesController < ApplicationController
           kurikoshi = kurikosu
           @hash[data[0]][:kurikoshi] = kurikoshi
           kurikosu = 0
+          if kurikoshi > 0
+            kurikoshi_shokusu = (kurikoshi / cooking_rice.shoku_per_shou).floor
+            @hash[data[0]][:amount]<<[kurikoshi,kurikoshi_shokusu]
+            num -= kurikoshi_shokusu
+          end
           while num > 0 do
             shokusu = (4 / cooking_rice.shoku_per_shou).floor
             if shokusu < num
