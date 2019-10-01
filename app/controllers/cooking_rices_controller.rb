@@ -19,10 +19,9 @@ class CookingRicesController < ApplicationController
 
   def create
     @cooking_rice = CookingRice.new(cooking_rice_params)
-
     respond_to do |format|
       if @cooking_rice.save
-        format.html { redirect_to @cooking_rice, notice: 'Cooking rice was successfully created.' }
+        format.html { redirect_to cooking_rices_path, notice: '新規登録OK！' }
         format.json { render :show, status: :created, location: @cooking_rice }
       else
         format.html { render :new }
@@ -34,7 +33,7 @@ class CookingRicesController < ApplicationController
   def update
     respond_to do |format|
       if @cooking_rice.update(cooking_rice_params)
-        format.html { redirect_to @cooking_rice, notice: 'Cooking rice was successfully updated.' }
+        format.html { redirect_to cooking_rices_path, notice: '更新OK！' }
         format.json { render :show, status: :ok, location: @cooking_rice }
       else
         format.html { render :edit }
