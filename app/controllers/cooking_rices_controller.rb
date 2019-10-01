@@ -45,7 +45,7 @@ class CookingRicesController < ApplicationController
   def destroy
     @cooking_rice.destroy
     respond_to do |format|
-      format.html { redirect_to _cooking_rices_url, notice: 'Cooking rice was successfully destroyed.' }
+      format.html { redirect_to cooking_rices_path, notice: '1件削除しやした' }
       format.json { head :no_content }
     end
   end
