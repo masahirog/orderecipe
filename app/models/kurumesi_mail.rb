@@ -29,15 +29,15 @@ class KurumesiMail < ApplicationRecord
     imap_passwd = ENV['GON_BENTO_PASS']
     imap.login(imap_user, imap_passwd)
     # テスト
-    # search_criterias = [
-    #   'FROM','gon@bento.jp',
-    #   'SINCE', (Date.today).strftime("%d-%b-%Y")
-    # ]
-    # 本番
     search_criterias = [
-      'FROM','info@kurumesi-bentou.com',
+      'FROM','gon@bento.jp',
       'SINCE', (Date.today).strftime("%d-%b-%Y")
     ]
+    # 本番
+    # search_criterias = [
+    #   'FROM','info@kurumesi-bentou.com',
+    #   'SINCE', (Date.today).strftime("%d-%b-%Y")
+    # ]
     imap.select('INBOX') # 対象のメールボックスを選択
     ids = imap.search(search_criterias) # 全てのメールを取得
     ids.each_slice(100).to_a.each do |id_block| # 100件ごとにメールをfetchする
@@ -123,6 +123,8 @@ class KurumesiMail < ApplicationRecord
         Brand.masu_order_make(order_details_arr,line,product_name,num)
       elsif brand_id == 21
         Brand.hasisaji_order_make(order_details_arr,line,product_name,num)
+      elsif brand_id == 31
+        Brand.donburi_order_make(order_details_arr,line,product_name,num)
       end
     end
     #重複はまとめる！

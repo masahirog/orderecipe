@@ -1,7 +1,7 @@
 class CookingRicesController < ApplicationController
   before_action :set_cooking_rice, only: [:show, :edit, :update, :destroy]
   def index
-    @cooking_rices = CookingRice.all
+    @cooking_rices = CookingRice.includes(:products).all
   end
 
   def show
