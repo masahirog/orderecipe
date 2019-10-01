@@ -18,7 +18,6 @@ $(document).on('turbolinks:load', function() {
   $('.add_material_fields').on('click',function(){
     setTimeout(function(){
       reset_row_order();
-      console.log('aa');
       $(".input_select_material").select2();
       $(".input_food_ingredient").select2();
     },5);
@@ -64,7 +63,8 @@ $(document).on('turbolinks:load', function() {
         calculate_menu_price();
         calculate_menu_nutrition();
       });
-  }});
+    }
+  });
 
   //amount_used変更でprice_used取得
   $(".material_ul").on('change','.amount_used', function(){
@@ -300,6 +300,7 @@ $(document).on('turbolinks:load', function() {
     last_li.find(".input_row_order").val(u);
   };
 
+  //米のやつにもつかってる
   function reset_row_order(){
     $(".add_li_material").each(function(i){
       $(this).find('.input_row_order').val(i)

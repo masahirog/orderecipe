@@ -9,9 +9,12 @@ class CookingRicesController < ApplicationController
 
   def new
     @cooking_rice = CookingRice.new
+    @cooking_rice.cooking_rice_materials.build()
+    @materials = Material.all
   end
 
   def edit
+    @materials = Material.all
   end
 
   def create
@@ -227,6 +230,6 @@ class CookingRicesController < ApplicationController
     end
 
     def cooking_rice_params
-      params.require(:cooking_rice).permit(:name,:base_rice,:serving_amount,:shoku_per_shou)
+      params.require(:cooking_rice).permit(:name,:base_rice,:serving_amount,:shoku_per_shou,cooking_rice_materials_attributes: [:id, :cooking_rice_id, :material_id,:used_amount,:_destroy])
     end
 end

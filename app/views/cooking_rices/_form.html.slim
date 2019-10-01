@@ -16,10 +16,60 @@
     = f.number_field :serving_amount, required: true, class:"form-control",style:'width:450px;float:left;'
     span style='float:left;margin:10px 0 0 10px;' g
   .form-group.clearfix
-    = f.label :shoku_per_shou, "１食あたりの升数（少数5位切り捨て）",class:'col-md-12',style:'padding:0;'
-    = f.number_field :shoku_per_shou, required: true, class:"form-control",style:'width:450px;float:left;'
+    label class='col-md-12' style='padding:0;' 1升からとれる食数
+    - if action_name == 'edit'
+      input class='shou_pre_shoku form-control' style='width:450px;float:left;' value="#{(1 / f.object.shoku_per_shou).floor(2)}"
+    - else
+      input class='shou_pre_shoku form-control' style='width:450px;float:left;'
     span style='float:left;margin:10px 0 0 10px;' 食
 
 
-  .actions
-    = f.submit '登録',class:'btn btn-primary'
+  .form-group.clearfix
+    = f.label :shoku_per_shou, "１食あたりの升数（少数4位切り捨て）",class:'col-md-12',style:'padding:0;'
+    = f.number_field :shoku_per_shou, required: true, class:"form-control",style:'width:450px;float:left;',:step => 0.0001,readonly:true
+    span style='float:left;margin:10px 0 0 10px;' 升
+
+  h3 軽量が必要な食材
+  table.table.table-list.cocoon_are
+    thead
+      tr
+        th.col-md-3 食材名
+        th.col-md-2 1食あたりの使用量
+        th.col-md-1
+        th.col-md-4
+    tbody#cooking_rice_materials_area
+      = f.fields_for :cooking_rice_materials do |crm|
+        = render 'cooking_rice_material_fields', f: crm
+  .col-md-12
+    = link_to_add_association '食材追加', f, :cooking_rice_materials,
+          class: 'btn btn-default add_material_fields',
+           data: {association_insertion_node: '#cooking_rice_materials_area',
+                  association_insertion_method: 'append' }
+
+  .col-md-12.text-center
+    = f.submit '　　登　録　　',class:'btn btn-primary'
+
+javascript:
+  $(function() {
+    $(document).on("change", ".input_select_material", function() {
+      var id = $(this).val();
+      var row = $(this).parents('tr').find('.input_row_order').val();
+      if (isNaN(id) == true) {} else{
+        $.ajax({
+          url: "/menus/get_cost_price/",
+          data: { id : id },
+          dataType: "json",
+          async: false
+        })
+        .done(function(data){
+          var unit = data["material"]['recipe_unit'];
+          $('.add_li_material').eq(row).find('.unit').text(unit);
+        });
+      }
+    });
+    $(".shou_pre_shoku").on('change',function(){
+      var shoku = $(this).val();
+      var shoku_per_shou = Math.floor((1 / shoku)*10000)/10000;
+      $("#cooking_rice_shoku_per_shou").val(shoku_per_shou);
+    });
+  });
