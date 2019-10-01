@@ -9,11 +9,12 @@ h2 炊飯シート
 h3 炊飯表
 = link_to '新規作成', new_cooking_rice_path,class:'btn btn-primary'
 
-table.table
+table.table.table-striped
   thead
     tr
       th 名前
       th ベースの米
+      th 混ぜ系食材
       th.text-right 盛付グラム数
       th.text-right 1食あたりの升
       th.text-right 4升食数
@@ -24,10 +25,11 @@ table.table
       tr
         td = link_to cooking_rice.name, edit_cooking_rice_path(cooking_rice),class:''
         td = cooking_rice.base_rice
+        td = cooking_rice.cooking_rice_materials.map{|crm|"#{crm.material.name}：#{crm.used_amount} #{crm.material.recipe_unit}"}.join('、')
         td.text-right = cooking_rice.serving_amount
         td.text-right = "#{cooking_rice.shoku_per_shou} 升"
         td.text-right = "#{(4/cooking_rice.shoku_per_shou).floor} 食"
         td
         td
           - unless cooking_rice.products.present?
-            = link_to '削除', cooking_rice, data: { confirm: 'Are you sure?' }, method: :delete,class:'btn btn-danger'
+            = link_to '削除', cooking_rice, data: { confirm: 'Are you sure?' }, method: :delete,class:'btn btn-danger btn-sm'

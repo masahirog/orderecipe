@@ -1,6 +1,7 @@
 class Material < ApplicationRecord
   serialize :allergy
   has_many :cooking_rice_materials
+  has_many :cooking_rices, through: :cooking_rice_materials
   has_many :menu_materials, dependent: :destroy
   has_many :menus, through: :menu_materials
 
