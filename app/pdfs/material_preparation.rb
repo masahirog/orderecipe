@@ -44,9 +44,9 @@ class MaterialPreparation < Prawn::Document
             base_menu_material_id = mm.base_menu_material_id
             if test_hash[base_menu_material_id]
               test_hash[base_menu_material_id][2] =(test_hash[base_menu_material_id][2] + mm.amount_used * num).round(1)
-              test_hash[base_menu_material_id][6] += "／／#{menu.name}"
+              test_hash[base_menu_material_id][6] += "、#{menu.name}（#{num}）"
             else
-              test_hash[base_menu_material_id] = [mm.material_id,mm.material.name,(mm.amount_used*num).round(1),mm.material.recipe_unit,mm.post,mm.preparation,menu.name]
+              test_hash[base_menu_material_id] = [mm.material_id,mm.material.name,(mm.amount_used*num).round(1),mm.material.recipe_unit,mm.post,mm.preparation,"#{menu.name} (#{num})"]
             end
           end
         end
@@ -58,44 +58,26 @@ class MaterialPreparation < Prawn::Document
     end
     menu_materials_choriba_arr = menu_materials_choriba_arr.sort { |a, b| b[0] <=> a[0] }
     menu_materials_kiriba_arr = menu_materials_kiriba_arr.sort { |a, b| b[0] <=> a[0] }
-    # if mochiba == 'choriba'
-    #   text "調理場  #{date}"
-    #   move_down 2
-    #   table_content(menu_materials_choriba_arr,'調理場')
-    # elsif mochiba == 'kiriba'
-    #   text "切出し  #{date}"
-    #   move_down 2
-    #   table_content(menu_materials_kiriba_arr,'切出し')
-    # else
-    #   text "調理場  #{date}"
-    #   move_down 2
-    #   table_content(menu_materials_choriba_arr,'調理場')
-    #
-    #   start_new_page
-    #
-    #   text "切出し  #{date}"
-    #   move_down 2
-    #   table_content(menu_materials_kiriba_arr,'切出し')
-    # end
     text "くるめし仕込み：食材別シート  #{date}"
     move_down 2
     table_content(menu_materials_kiriba_arr,'切出し')
-
+    # table_content(menu_materials_choriba_arr,'調理場')
   end
 
   def table_content(menu_materials_arr,mochiba)
     move_down 10
     table line_item_rows(menu_materials_arr) do
-      row(0).background_color = 'f5f5f5'
+      self.row_colors = ["f5f5f5", "FFFFFF"]
       cells.padding = 6
-      cells.size = 9
+      cells.size = 8
       cells.border_width = 0.1
       cells.valign = :center
       column(1).align = :right
+      columns(4).size = 7
       columns(5).size = 6
       row(0).column(2).align = :left
       self.header = true
-      self.column_widths = [220,60,30,60,300,150]
+      self.column_widths = [160,60,30,60,250,260]
     end
   end
 

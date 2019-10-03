@@ -19,7 +19,8 @@ div.col-md-12 style='font-size:20px;padding:0 0 7px 0;'
   = link_to "調理場仕込み",print_preparation_kurumesi_orders_path(date:params[:date],mochiba:'choriba',format:'pdf'),class:"btn btn-primary",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
   = link_to "ALL仕込み",print_preparation_kurumesi_orders_path(date:params[:date],format:'pdf'),class:"btn btn-primary",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
   = link_to "積載表",loading_sheet_kurumesi_orders_path(date:params[:date],format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
-  = link_to "くるめし切り出し野菜",material_preparation_kurumesi_orders_path(date:params[:date],format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
+  = link_to "切出し",material_preparation_kurumesi_orders_path(date:params[:date],mochiba:"切出し",format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
+  = link_to "調理場",material_preparation_kurumesi_orders_path(date:params[:date],mochiba:"調理場",format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
   = link_to "炊飯シート",rice_sheet_cooking_rices_path(date:params[:date],format: :pdf),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
 h3 弁当別製造数
 table.table
@@ -37,7 +38,7 @@ table.table
       tr
         td = product.brand.name
         td = product.management_id
-        td = product.name
+        td = link_to product.name,product,target:'_blank'
         td = product.short_name
         td = product_num[1]
         td = link_to "帯PDF",Product.find(product_num[0]).obi_url,class:'btn btn-default',:target=>"_blank" if Product.find(product_num[0]).obi_url.present?

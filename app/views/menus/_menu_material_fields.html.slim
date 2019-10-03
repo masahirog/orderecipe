@@ -53,9 +53,12 @@ li.add_li_material.col-md-12.list-group-item.item.nested-fields.field
               = f.number_field :gram_quantity,class:'form-control input_gram_quantity',style:'background-color: #ffa2a2;'
         span[style="padding-top:10px;"]
           | g/ml
-      .col-md-4.input_nutritions[style="padding:0;"]
+      .col-md-3.input_nutritions style="padding:0;"
         span.view_food_ingredient
           = "カロリー:#{f.object.calorie}kcal" if f.object.calorie
+      .col-md-2.clearfix style="padding:0;"
+        = f.label :source_flag,'タレ',style:'float:left;padding-top:8px;'
+        = f.check_box :source_flag,class:'form-control',style:'float:left;width:30px;margin-left:20px;'
         = f.hidden_field :calorie, class:'input_calorie'
         = f.hidden_field :protein, class:'input_protein'
         = f.hidden_field :lipid, class:'input_lipid'
