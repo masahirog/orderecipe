@@ -179,7 +179,6 @@ ActiveRecord::Schema.define(version: 2019_10_01_011536) do
     t.float "folic_acid"
     t.float "vitamin_d"
     t.integer "base_menu_material_id"
-    t.boolean "source_flag", default: false, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
