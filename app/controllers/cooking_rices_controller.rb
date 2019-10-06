@@ -186,7 +186,7 @@ class CookingRicesController < ApplicationController
           kurikoshi = kurikosu
           kurikoshi_kg = kurikosu_kg
           @hash[data[0]][:kurikoshi] = kurikoshi
-          @hash[data[0]][:kurikoshi_kg]=kurikoshi_kg
+          @hash[data[0]][:kurikoshi_kg]= kurikoshi_kg
           kurikosu = 0
           kurikosu_kg = 0
           # kurikoshiから何食とれる？
@@ -216,13 +216,17 @@ class CookingRicesController < ApplicationController
               suihan = (shou / cooking_rice.shoku_per_shou).floor
               @hash[data[0]][:amount]<<[shou,num]
               kurikosu = (shou - need_shou).floor(2)
+              kurikosu_kg = (((suihan - num) * cooking_rice.serving_amount)/1000.to_f).round(2)
               @hash[data[0]][:kurikosu] = kurikosu
+              @hash[data[0]][:kurikosu_kg] = kurikosu_kg
               num = 0
             else
               suihan = (2 / cooking_rice.shoku_per_shou).floor
               @hash[data[0]][:amount]<<[2,num]
               kurikosu = (2 - need_shou).floor(2)
+              kurikosu_kg = (((suihan - num) * cooking_rice.serving_amount)/1000.to_f).round(2)
               @hash[data[0]][:kurikosu] = kurikosu
+              @hash[data[0]][:kurikosu_kg] = kurikosu_kg
               num = 0
             end
           end

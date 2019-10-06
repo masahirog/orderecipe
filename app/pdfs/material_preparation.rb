@@ -61,6 +61,12 @@ class MaterialPreparation < Prawn::Document
     text "くるめし仕込み：食材別シート  #{date}"
     move_down 2
     table_content(menu_materials_arr,mochiba)
+    page_count.times do |i|
+      go_to_page(i+1)
+      bounding_box([bounds.right-50, bounds.top - 5], :width => 50) {
+        text "#{i+1} / #{page_count}"
+      }
+    end
   end
 
   def table_content(menu_materials_arr,mochiba)
