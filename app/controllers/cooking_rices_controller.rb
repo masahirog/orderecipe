@@ -56,6 +56,7 @@ class CookingRicesController < ApplicationController
     kurikosu = 0
     man_kurikoshi = 0
     man_kurikosu = 0
+    kurikosu_kg =  0
     date = params[:date]
     shogun_bentos = DailyMenuDetail.joins(:daily_menu,:product).where(:daily_menus => {start_time:date,fixed_flag:true},:products => {product_category:1}).order(:row_order).group('product_id').sum(:manufacturing_number)
     kurumesi_bentos = KurumesiOrderDetail.joins(:kurumesi_order,:product).where(:kurumesi_orders => {start_time:date,canceled_flag:false},:products => {product_category:1}).group('product_id').sum(:number)
@@ -95,7 +96,7 @@ class CookingRicesController < ApplicationController
       num = data[1][:num]
       cooking_rice = data[1][:cooking_rice]
       need_shou = (num * cooking_rice.shoku_per_shou).ceil(2)
-      @hash[data[0]] = {:amount =>[],:kurikosu => 0,:mannan => false,:kurikoshi => 0,:cooking_rice => cooking_rice,:product_name => data[1][:product_name],make_num:num}
+      @hash[data[0]] = {:amount =>[],:kurikosu => 0,:mannan => false,:kurikoshi => 0,:cooking_rice => cooking_rice,:product_name => data[1][:product_name],make_num:num,:kurikosu_kg => 0,:kurikoshi_kg =>0}
       if  base_rice_hash[cooking_rice.base_rice].to_i > 6
         kurikoshi_able_flag = true
       else
@@ -147,12 +148,25 @@ class CookingRicesController < ApplicationController
       else
         if kurikoshi_able_flag == true
           kurikoshi = kurikosu
+          kurikoshi_kg = kurikosu_kg
           @hash[data[0]][:kurikoshi] = kurikoshi
+          @hash[data[0]][:kurikoshi_kg]=kurikoshi_kg
           kurikosu = 0
+          kurikosu_kg = 0
           if kurikoshi > 0
             kurikoshi_shokusu = (kurikoshi / cooking_rice.shoku_per_shou).floor
-            @hash[data[0]][:amount]<<[kurikoshi,kurikoshi_shokusu]
-            num -= kurikoshi_shokusu
+            if num > kurikoshi_shokusu
+              @hash[data[0]][:amount]<<[kurikoshi,kurikoshi_shokusu]
+              num -= kurikoshi_shokusu
+            else
+              used_shou = (num * cooking_rice.shoku_per_shou).floor(2)
+              @hash[data[0]][:amount]<<[used_shou,num]
+              kurikosu = (kurikoshi - used_shou).floor(2)
+              kurikosu_kg = (((kurikoshi_shokusu - num) * cooking_rice.serving_amount)/1000.to_f).round(2)
+              @hash[data[0]][:kurikosu] = kurikosu
+              @hash[data[0]][:kurikosu_kg] = kurikosu_kg
+              num = 0
+            end
           end
           while num > 0 do
             shokusu = (4 / cooking_rice.shoku_per_shou).floor
@@ -161,15 +175,20 @@ class CookingRicesController < ApplicationController
               @hash[data[0]][:amount] << [4.0,shokusu]
             else
               kurikosu = ((shokusu - num) * cooking_rice.shoku_per_shou).floor(2)
+              kurikosu_kg = (((shokusu - num) * cooking_rice.serving_amount)/1000.to_f).round(2)
               @hash[data[0]][:amount] << [4.0,num]
               @hash[data[0]][:kurikosu] = kurikosu
+              @hash[data[0]][:kurikosu_kg] = kurikosu_kg
               num = 0
             end
           end
         else
           kurikoshi = kurikosu
+          kurikoshi_kg = kurikosu_kg
           @hash[data[0]][:kurikoshi] = kurikoshi
+          @hash[data[0]][:kurikoshi_kg]=kurikoshi_kg
           kurikosu = 0
+          kurikosu_kg = 0
           # kurikoshiから何食とれる？
           kurikoshi_shokusu = (kurikoshi / cooking_rice.shoku_per_shou).floor
           @hash[data[0]][:amount]<<[kurikoshi,kurikoshi_shokusu]

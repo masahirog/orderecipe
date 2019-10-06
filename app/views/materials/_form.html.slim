@@ -28,7 +28,7 @@
 
   .col-md-12.form-group
     .col-md-5
-      = f.label :category, "カテゴリー"
+      = f.label :category, "分類"
       = f.select :category, Material.categories.keys.to_a, {}, class: 'form-control'
   .col-md-12.form-group
     .col-md-5

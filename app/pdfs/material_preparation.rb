@@ -1,5 +1,5 @@
 class MaterialPreparation < Prawn::Document
-  def initialize(bentos_num_h,date,mochiba)
+  def initialize(bentos_num_h,date,mochiba,categories)
     # 初期設定。ここでは用紙のサイズを指定している。
     super(
       page_size: 'A4',
@@ -9,8 +9,7 @@ class MaterialPreparation < Prawn::Document
     #日本語のフォント
     font "vendor/assets/fonts/ipaexm.ttf"
     menus = []
-    menu_materials_choriba_arr = []
-    menu_materials_kiriba_arr = []
+    menu_materials_arr = []
     products_arr = []
     hash = {}
     arr_hon = []
@@ -37,31 +36,31 @@ class MaterialPreparation < Prawn::Document
     end
     base_menu_hash.each do |bnh|
       bnh[1].each do |menu_num|
-        menu = Menu.includes(menu_materials:[:material]).find(menu_num[0])
+        menu = Menu.find(menu_num[0])
         num = menu_num[1]
-        menu.menu_materials.each do |mm|
-          if mm.material.vegetable_flag == true
-            base_menu_material_id = mm.base_menu_material_id
-            if test_hash[base_menu_material_id]
-              test_hash[base_menu_material_id][2] =(test_hash[base_menu_material_id][2] + mm.amount_used * num).round(1)
-              test_hash[base_menu_material_id][6] += "、#{menu.name}（#{num}）"
-            else
-              test_hash[base_menu_material_id] = [mm.material_id,mm.material.name,(mm.amount_used*num).round(1),mm.material.recipe_unit,mm.post,mm.preparation,"#{menu.name} (#{num})"]
-            end
+        menu.menu_materials.includes(:material).joins(:material).where(:materials => {category:categories}).each do |mm|
+          base_menu_material_id = mm.base_menu_material_id
+          if test_hash[base_menu_material_id]
+            test_hash[base_menu_material_id][2] =(test_hash[base_menu_material_id][2] + mm.amount_used * num).round(1)
+            test_hash[base_menu_material_id][6] += "、#{menu.name}（#{num}）"
+          else
+            test_hash[base_menu_material_id] = ["#{mm.material.category_before_type_cast}-#{mm.material.name}",mm.material.name,(mm.amount_used*num).round(1),mm.material.recipe_unit,mm.post,mm.preparation,"#{menu.name} (#{num})"]
           end
         end
       end
     end
     test_hash.each do |key, value|
-      menu_materials_choriba_arr << value if value[4] == '調理場' || value[4] == '切出/調理'
-      menu_materials_kiriba_arr << value if value[4] == '切出し' || value[4] == '切出/スチ' || value[4] == '切出/調理'
+      if mochiba == "調理場"
+        menu_materials_arr << value if value[4] == '調理場' || value[4] == '切出/調理'
+      else
+        menu_materials_arr << value if value[4] == '切出し' || value[4] == '切出/スチ' || value[4] == '切出/調理'
+      end
     end
-    menu_materials_choriba_arr = menu_materials_choriba_arr.sort { |a, b| b[0] <=> a[0] }
-    menu_materials_kiriba_arr = menu_materials_kiriba_arr.sort { |a, b| b[0] <=> a[0] }
+    menu_materials_arr = menu_materials_arr.sort { |a, b| a[0] <=> b[0]}
+
     text "くるめし仕込み：食材別シート  #{date}"
     move_down 2
-    table_content(menu_materials_kiriba_arr,'切出し')
-    # table_content(menu_materials_choriba_arr,'調理場')
+    table_content(menu_materials_arr,mochiba)
   end
 
   def table_content(menu_materials_arr,mochiba)

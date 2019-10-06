@@ -35,21 +35,27 @@ class RiceSheet < Prawn::Document
   def line_item_rows(hash)
     ar = []
     n = 1
-    data= [['No.','名前','盛りグラム','炊飯升','人前','備考','弁当名']]
+    data= [['No.','名前','盛りグラム','炊飯升','食数','備考','弁当名']]
     hash.each do |suihan|
       cooking_rice = suihan[1][:cooking_rice]
       kurikoshi = suihan[1][:kurikoshi]
       kurikosu = suihan[1][:kurikosu]
+      kurikosu_kg = suihan[1][:kurikosu_kg]
+      kurikoshi_kg = suihan[1][:kurikoshi_kg]
       suihan[1][:amount].each_with_index do |amount,i|
         if i == 0
           if kurikoshi > 0
-            data << [">>",cooking_rice.name,"#{cooking_rice.serving_amount} g",amount[0],amount[1],"#{kurikoshi}升繰越し分の使用","#{suihan[1][:product_name]}  #{suihan[1][:make_num]}食"]
+            if suihan[1][:amount].length > 1
+              data << [">>",cooking_rice.name,"#{cooking_rice.serving_amount} g",amount[0],amount[1],"繰越し#{kurikoshi_kg}kg使用","#{suihan[1][:product_name]}  #{suihan[1][:make_num]}食"]
+            else
+              data << [">>",cooking_rice.name,"#{cooking_rice.serving_amount} g",amount[0],amount[1],"繰越しの#{(kurikoshi_kg - kurikosu_kg).floor(1)}kg使用、#{kurikosu_kg}kg繰越し","#{suihan[1][:product_name]}  #{suihan[1][:make_num]}食"]
+            end
             n -= 1
           else
             data << [n,cooking_rice.name,"#{cooking_rice.serving_amount} g",amount[0],amount[1],'',"#{suihan[1][:product_name]} #{suihan[1][:make_num]}食"]
           end
         elsif i == suihan[1][:amount].length - 1 && kurikosu > 0
-          data << [n,cooking_rice.name,"#{cooking_rice.serving_amount} g",amount[0],amount[1],"#{(amount[0]-kurikosu).ceil(2)}升使用、#{kurikosu}升繰越し",'']
+          data << [n,cooking_rice.name,"#{cooking_rice.serving_amount} g",amount[0],amount[1],"#{kurikosu_kg}kg繰越し",'']
         else
           data << [n,cooking_rice.name,"#{cooking_rice.serving_amount} g",amount[0],amount[1],'','']
         end
