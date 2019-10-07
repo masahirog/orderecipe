@@ -15,6 +15,7 @@ Rails.application.routes.draw do
       get :test
       get :date
       get :print_preparation
+      get :print_preparation_roma
       get :receipt
       post :print_receipt
       get :invoice

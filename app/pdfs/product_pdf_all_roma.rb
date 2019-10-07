@@ -88,7 +88,7 @@ class ProductPdfAllRoma < Prawn::Document
           end
           if i == 0
             data << [{content: "#{menu.name}", rowspan: u},
-              {content: "#{menu.cook_the_day_before}", rowspan: u, size: cook_the_day_before_size},"#{mm.material.name}",
+              {content: "【zenzitsu】\n#{menu.cook_the_day_before}\n‐・‐・‐・‐・‐・‐・‐\n【touzitsu】\n#{menu.cook_on_the_day}", rowspan: u, size: cook_the_day_before_size},"#{mm.material.name}",
               "#{((mm.amount_used * num.to_i).round).to_s(:delimited)} #{mm.material.recipe_unit}",check,mm.post,mm.preparation]
           else
             data << [mm.material.name,{content:"#{((mm.amount_used * num.to_i).round).to_s(:delimited)} #{mm.material.recipe_unit}"},
@@ -103,6 +103,7 @@ class ProductPdfAllRoma < Prawn::Document
 
   def kanji(product,menus,num)
     kana_cook_the_day_befores = ""
+    kana_cook_on_the_days = ""
     kana_posts = ""
     kana_preparations = ""
     kana_product_name = ""
@@ -110,12 +111,14 @@ class ProductPdfAllRoma < Prawn::Document
     kana_material_names = ""
     menu_names = ""
     cook_the_day_befores = ""
+    cook_on_the_days = ""
     material_names = ""
     posts = ""
     preparations = ""
     menus.each do |menu|
       menu_names += menu.name + "^^"
       cook_the_day_befores += menu.cook_the_day_before + "^^"
+      cook_on_the_days += menu.cook_on_the_day + "^^"
       menu.menu_materials.each do |mmm|
         material_names += mmm.material.name + "^^"
         posts += mmm.post + "^^"
@@ -126,6 +129,7 @@ class ProductPdfAllRoma < Prawn::Document
     kana_menu_names = Product.make_katakana(menu_names)
     kana_material_names = Product.make_katakana(material_names)
     kana_cook_the_day_befores = Product.make_katakana(cook_the_day_befores)
+    kana_cook_on_the_days = Product.make_katakana(cook_on_the_days)
     kana_posts = Product.make_katakana(posts)
     kana_preparations = Product.make_katakana(preparations)
     product.name = Romaji.kana2romaji kana_product_name
@@ -133,6 +137,7 @@ class ProductPdfAllRoma < Prawn::Document
     menus.each_with_index do |menu,i|
       menu.name = Romaji.kana2romaji kana_menu_names[i]
       menu.cook_the_day_before = Romaji.kana2romaji kana_cook_the_day_befores[i]
+      menu.cook_on_the_day = Romaji.kana2romaji kana_cook_on_the_days[i]
       menu.menu_materials.each do |mmm|
         mmm.material.name = Romaji.kana2romaji kana_material_names[ii]
         mmm.post = Romaji.kana2romaji kana_posts[ii]

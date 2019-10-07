@@ -116,6 +116,7 @@ ActiveRecord::Schema.define(version: 2019_10_01_011536) do
     t.integer "billed_amount", default: 0, null: false
     t.text "memo"
     t.integer "brand_id", null: false
+    t.boolean "confirm_flag", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

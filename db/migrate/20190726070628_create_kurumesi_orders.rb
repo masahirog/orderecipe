@@ -9,6 +9,7 @@ class CreateKurumesiOrders < ActiveRecord::Migration[5.2]
       t.integer :billed_amount,default:0,null:false
       t.text :memo
       t.integer :brand_id,null:false
+      t.boolean :confirm_flag,default:false,null:false
       t.timestamps
     end
   end

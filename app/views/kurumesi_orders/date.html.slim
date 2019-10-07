@@ -18,6 +18,7 @@ div.col-md-12 style='font-size:20px;padding:0 0 7px 0;'
   = link_to "切出場仕込み",print_preparation_kurumesi_orders_path(date:params[:date],mochiba:'kiriba',format:'pdf'),class:"btn btn-primary",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
   = link_to "調理場仕込み",print_preparation_kurumesi_orders_path(date:params[:date],mochiba:'choriba',format:'pdf'),class:"btn btn-primary",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
   = link_to "ALL仕込み",print_preparation_kurumesi_orders_path(date:params[:date],format:'pdf'),class:"btn btn-primary",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
+  = link_to "ローマ字",print_preparation_roma_kurumesi_orders_path(date:params[:date],mochiba:'choriba',format:'pdf'),class:"btn btn-primary",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
   = link_to "積載表",loading_sheet_kurumesi_orders_path(date:params[:date],format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
   button type="button" class="btn btn-default" data-toggle="modal" data-target="#rice_sheet_modal" style='float:left;margin-left:20px;margin-top:10px;'
     |食材別シート
@@ -59,15 +60,15 @@ table.table
       th 個数
       th 帯URL
   tbody
-    - @bentos_num_h.each do |product_num|
-      - product = Product.find(product_num[0])
+    - @bentos_num_h.each do |brand_product_num|
+      - product = Product.find(brand_product_num[0][1])
       tr
         td = product.brand.name
         td = product.management_id
         td = link_to product.name,product,target:'_blank'
         td = product.short_name
-        td = product_num[1]
-        td = link_to "帯PDF",Product.find(product_num[0]).obi_url,class:'btn btn-default',:target=>"_blank" if Product.find(product_num[0]).obi_url.present?
+        td = brand_product_num[1]
+        td = link_to "帯PDF",product.obi_url,class:'btn btn-default',:target=>"_blank" if product.obi_url.present?
 
 h3 オーダー別製造数
 table.table
@@ -80,8 +81,8 @@ table.table
       th.col-md-1 支払い方法
       th オーダー内容
   tbody
-    - @kurumesi_orders.each do |kurumesi_order|
-      tr
+    - @kurumesi_orders.includes(kurumesi_order_details:[:product]).each do |kurumesi_order|
+      tr class="tr_#{kurumesi_order.id}"
         td style='height:38px;' = link_to kurumesi_order.management_id,edit_kurumesi_order_path(kurumesi_order)
         td = link_to 'メール',kurumesi_mails_path(kurumesi_order_id:kurumesi_order.id)
         td = kurumesi_order.pick_time.strftime("%R") if kurumesi_order.pick_time
@@ -98,8 +99,14 @@ table.table
                 .col-md-7 style='font-size:13px;'
                   = link_to "#{mod.product.management_id}｜#{mod.product.name}",mod.product
       tr
-        td colspan='5' style='border:0;'
+        td colspan='3' style='border:0;'
           = "作成日時間：#{kurumesi_order.created_at.strftime("%Y年 %m月 %d日　%H:%M")}"
+        td colspan='2' style='border:0;' class='clearfix'
+
+          = form_for(kurumesi_order, data: { remote: true }) do |f|
+            = f.hidden_field :id,class:'kurumesi_order_id'
+            = label :confirm_flag ,"くるめし照合確認",style:'float:left;padding:10px 10px 0 0;'
+            = f.check_box :confirm_flag,class:'form-control confirm_flag_check_box',style:'width:30px;float:left;'
       tr
         td colspan='5' style='border:0;color:red;'
           - if kurumesi_order.memo.present?
@@ -128,5 +135,9 @@ javascript:
     $('.new_order').on('click', function(){
         $(this).attr('disabled', true);
         $(this).text("計算してるから待ってね...");
+    });
+    $(".confirm_flag_check_box").on('click',function(){
+      var id = $(this).parent().find(".kurumesi_order_id").val();
+      $("#edit_kurumesi_order_"+id).submit();
     });
   });

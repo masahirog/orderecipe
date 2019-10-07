@@ -52,6 +52,7 @@ class CookingRicesController < ApplicationController
 
   def rice_sheet
     @arr = []
+    @make_products = {}
     kurikoshi = 0
     kurikosu = 0
     man_kurikoshi = 0
@@ -63,7 +64,9 @@ class CookingRicesController < ApplicationController
     kurumesi_rice_hash = {}
     number = 0
     kurumesi_bentos.each do |data|
-      cooking_rice_id = Product.find(data[0]).cooking_rice_id
+      product = Product.find(data[0])
+      @make_products[product]=data[1]
+      cooking_rice_id = product.cooking_rice_id
       if kurumesi_rice_hash[cooking_rice_id]
          kurumesi_rice_hash[cooking_rice_id] += data[1]
       else
@@ -73,6 +76,7 @@ class CookingRicesController < ApplicationController
     test_hash = {}
     shogun_bentos.each do |pro_num|
       product = Product.find(pro_num[0])
+      @make_products[product]=pro_num[1]
       cooking_rice = product.cooking_rice
       test_hash[number] = {product_name:product.name,num:pro_num[1],cooking_rice:cooking_rice}
       number += 1
@@ -234,10 +238,50 @@ class CookingRicesController < ApplicationController
       end
       @hash
     end
+    # 将軍とそれ以外で分岐
+    @shogun_mazekomi= {}
+    @kurumesi_mazekomi= {}
+    @make_products.each do |key,value|
+      product = key
+      if product.brand_id == 1
+        @shogun_mazekomi[product.id] = []
+        product.menus.includes(menu_materials:[:material]).where(category:1).each do |menu|
+          menu.menu_materials.each do |mm|
+            unless mm.material_id == 3491 || mm.material_id == 15941
+              @shogun_mazekomi[product.id] << [mm.material.name,value,(product.cooking_rice.serving_amount*value),mm.amount_used,(mm.amount_used * value).round,mm.material.recipe_unit]
+            end
+          end
+        end
+      else
+        @kurumesi_mazekomi[product.brand_id] = {}
+        product.menus.includes(menu_materials:[:material]).where(category:1).each do |menu|
+          menu.menu_materials.each do |mm|
+            unless mm.material_id == 3491 || mm.material_id == 15941
+              if @kurumesi_mazekomi[product.brand_id][mm.material_id].present?
+                @kurumesi_mazekomi[product.brand_id][mm.material_id][1] += value
+                @kurumesi_mazekomi[product.brand_id][mm.material_id][2] += (product.cooking_rice.serving_amount*value)
+                @kurumesi_mazekomi[product.brand_id][mm.material_id][4] += (mm.amount_used * value).round
+              else
+                @kurumesi_mazekomi[product.brand_id][mm.material_id] = [mm.material.name,value,(product.cooking_rice.serving_amount*value),mm.amount_used,(mm.amount_used * value).round,mm.material.recipe_unit]
+              end
+            end
+          end
+        end
+      end
+    end
+    # @hash.each do |key,value|
+    #   cooking_rice = value[:cooking_rice]
+    #   if cooking_rice.cooking_rice_materials.present?
+    #     @mazekomi[key]=[]
+    #     cooking_rice.cooking_rice_materials.each do |crm|
+    #       @mazekomi[key] << [value[:product_name],value[:make_num],crm.material.name,crm.material.recipe_unit,crm.used_amount,(crm.used_amount*value[:make_num])]
+    #     end
+    #   end
+    # end
     respond_to do |format|
      format.html
      format.pdf do
-       pdf = RiceSheet.new(@hash,date,)
+       pdf = RiceSheet.new(@hash,date,@shogun_mazekomi,@kurumesi_mazekomi)
        send_data pdf.render,
         filename:    "#{date}_rice.pdf",
         type:        "application/pdf",
@@ -248,7 +292,7 @@ class CookingRicesController < ApplicationController
 
   private
     def set_cooking_rice
-      @cooking_rice = CookingRice.find(params[:id])
+      @cooking_rice = CookingRice.includes(cooking_rice_materials:[:material]).find(params[:id])
     end
 
     def cooking_rice_params

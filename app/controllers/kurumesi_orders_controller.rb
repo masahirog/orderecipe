@@ -99,9 +99,9 @@ class KurumesiOrdersController < ApplicationController
 
   def date
     date = params[:date]
-    @kurumesi_orders = KurumesiOrder.includes(kurumesi_order_details:[:product]).where(start_time:date,canceled_flag:false).order(:pick_time,:created_at)
-    @canceled_kurumesi_orders = KurumesiOrder.includes(kurumesi_order_details:[:product]).where(start_time:date,canceled_flag:true).order(:pick_time)
-    @bentos_num_h = @kurumesi_orders.joins(kurumesi_order_details:[:product]).where(:products => {product_category:1}).group('kurumesi_order_details.product_id').sum('kurumesi_order_details.number')
+    @kurumesi_orders = KurumesiOrder.where(start_time:date,canceled_flag:false).order(:pick_time,:created_at)
+    @canceled_kurumesi_orders = KurumesiOrder.where(start_time:date,canceled_flag:true).order(:pick_time)
+    @bentos_num_h = @kurumesi_orders.joins(kurumesi_order_details:[:product]).where(:products => {product_category:1}).group('products.brand_id').group('kurumesi_order_details.product_id').sum('kurumesi_order_details.number').sort {|(k1, v1), (k2, v2)| k1[0] <=> k2[0] }
     @kurumesi_orders_num_h = @kurumesi_orders.joins(kurumesi_order_details:[:product]).where(:products => {product_category:1}).group('kurumesi_order_details.kurumesi_order_id').sum('kurumesi_order_details.number')
     @brands = Brand.all
   end
@@ -110,6 +110,24 @@ class KurumesiOrdersController < ApplicationController
   end
 
   def print_preparation
+    mochiba = params[:mochiba]
+    date = params[:date]
+    kurumesi_orders = KurumesiOrder.includes(kurumesi_order_details:[:product]).where(start_time:date,canceled_flag:false).order(:pick_time)
+    @bentos_num_h = kurumesi_orders.joins(kurumesi_order_details:[:product]).where(:products => {product_category:1}).group('kurumesi_order_details.product_id').sum('kurumesi_order_details.number')
+    respond_to do |format|
+      format.html
+      format.pdf do
+        pdf = KurumesiOrderPdf.new(@bentos_num_h,date,mochiba)
+        pdf.font "vendor/assets/fonts/ipaexm.ttf"
+        send_data pdf.render,
+        filename:    "#{date}.pdf",
+        type:        "application/pdf",
+        disposition: "inline"
+      end
+    end
+  end
+
+  def print_preparation_roma
     mochiba = params[:mochiba]
     date = params[:date]
     kurumesi_orders = KurumesiOrder.includes(kurumesi_order_details:[:product]).where(start_time:date,canceled_flag:false).order(:pick_time)
@@ -180,13 +198,13 @@ class KurumesiOrdersController < ApplicationController
     @products = Product.where(brand_id:11)
     if params['kurumesi_order']["pick_time(4i)"]==''||params['kurumesi_order']["pick_time(5i)"]==''
       if @kurumesi_order.update(kurumesi_order_picktimenone_params)
-        redirect_to date_kurumesi_orders_path(date:@kurumesi_order.start_time), notice: 'Masu order was successfully updated.'
+        redirect_to date_kurumesi_orders_path(date:@kurumesi_order.start_time), notice: '情報を更新しました'
       else
         render :edit
       end
     else
       if @kurumesi_order.update(kurumesi_order_params)
-        redirect_to date_kurumesi_orders_path(date:@kurumesi_order.start_time), notice: 'Masu order was successfully updated.'
+        redirect_to date_kurumesi_orders_path(date:@kurumesi_order.start_time), notice: '情報を更新しました'
       else
         render :edit
       end
@@ -207,12 +225,12 @@ class KurumesiOrdersController < ApplicationController
     end
 
     def kurumesi_order_picktimenone_params
-      params.require(:kurumesi_order).permit(:start_time,:management_id,:canceled_flag,:payment,:memo,:brand_id,
+      params.require(:kurumesi_order).permit(:start_time,:management_id,:canceled_flag,:payment,:memo,:brand_id,:confirm_flag,
         kurumesi_order_details_attributes: [:id,:kurumesi_order_id,:product_id,:number,:_destroy])
     end
 
     def kurumesi_order_params
-      params.require(:kurumesi_order).permit(:start_time,:management_id,:pick_time,:canceled_flag,:payment,:brand_id,
+      params.require(:kurumesi_order).permit(:start_time,:management_id,:pick_time,:canceled_flag,:payment,:brand_id,:confirm_flag,
         :memo,kurumesi_order_details_attributes: [:id,:kurumesi_order_id,:product_id,:number,:_destroy])
     end
 end
