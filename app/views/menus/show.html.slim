@@ -70,7 +70,8 @@ div
   .col-md-12 style="padding:10px"
     label.col-md-2 食材
     label.col-md-1 原価
-    label.col-md-2 仕入先
+    label.col-md-1 仕入先
+    label.col-md-1 混ぜ込み
     label.col-md-1 分量
     label.col-md-1 使用価格
     label.col-md-2 仕込み内容
@@ -82,8 +83,11 @@ div
           = link_to mm.material.name, edit_material_path(mm.material)
         .col-md-1
           = "#{mm.material.cost_price}円"
-        .col-md-2
+        .col-md-1
           = mm.material.vendor.company_name
+        .col-md-1
+          - if mm.rice_mixed_flag == true
+            |◯
         .col-md-1
           = mm.amount_used
           = mm.material.recipe_unit
