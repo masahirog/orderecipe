@@ -1,24 +1,5 @@
 class KurumesiOrdersController < ApplicationController
   before_action :set_kurumesi_order, only: [ :edit, :update, :destroy]
-
-  # def manufacturing_sheet
-  #   date = params[:date]
-  #   @kurumesi_orders = KurumesiOrder.includes(kurumesi_order_details:[:product]).where(start_time:date,canceled_flag:false).order(:pick_time)
-  #   # @bentos_num_h = @kurumesi_orders.joins(:kurumesi_order_details).group('kurumesi_order_details.product_id').sum('kurumesi_order_details.number')
-  #   @bentos_num_h = @kurumesi_orders.joins(kurumesi_order_details:[:product]).where(:products => {product_category:1}).group('kurumesi_order_details.product_id').sum('kurumesi_order_details.number')
-  #   @kurumesi_orders_num_h = @kurumesi_orders.joins(kurumesi_order_details:[:product]).where(:products => {product_category:1}).group('kurumesi_order_details.kurumesi_order_id').sum('kurumesi_order_details.number')
-  #   respond_to do |format|
-  #     format.html
-  #     format.pdf do
-  #       pdf = KurumesiOrderManufacturingSheetPdf.new(@bentos_num_h,date,@kurumesi_orders,@kurumesi_orders_num_h)
-  #       pdf.font "vendor/assets/fonts/ipaexm.ttf"
-  #       send_data pdf.render,
-  #       filename:    "#{date}.pdf",
-  #       type:        "application/pdf",
-  #       disposition: "inline"
-  #     end
-  #   end
-  # end
   def loading_sheet
     date = params[:date]
     @kurumesi_orders = KurumesiOrder.where(start_time:date,canceled_flag:false).order(:pick_time)
@@ -197,16 +178,16 @@ class KurumesiOrdersController < ApplicationController
   def update
     @products = Product.where(brand_id:11)
     if params['kurumesi_order']["pick_time(4i)"]==''||params['kurumesi_order']["pick_time(5i)"]==''
-      if @kurumesi_order.update(kurumesi_order_picktimenone_params)
-        redirect_to date_kurumesi_orders_path(date:@kurumesi_order.start_time), notice: '情報を更新しました'
-      else
-        render :edit
+      @kurumesi_order.update(kurumesi_order_picktimenone_params)
+      respond_to do |format|
+        format.html { redirect_to date_kurumesi_orders_path(date:@kurumesi_order.start_time), notice: '更新しました！' }
+        format.js
       end
     else
-      if @kurumesi_order.update(kurumesi_order_params)
-        redirect_to date_kurumesi_orders_path(date:@kurumesi_order.start_time), notice: '情報を更新しました'
-      else
-        render :edit
+      @kurumesi_order.update(kurumesi_order_params)
+      respond_to do |format|
+        format.html { redirect_to date_kurumesi_orders_path(date:@kurumesi_order.start_time), notice: '更新しました！' }
+        format.js
       end
     end
   end

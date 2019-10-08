@@ -71,46 +71,49 @@ table.table
         td = link_to "帯PDF",product.obi_url,class:'btn btn-default',:target=>"_blank" if product.obi_url.present?
 
 h3 オーダー別製造数
-table.table
-  thead
-    tr
-      th.col-md-1 くるめしID
-      th.col-md-1 メール確認
-      th.col-md-1 ピック時間
-      th.col-md-1 弁当個数
-      th.col-md-1 支払い方法
-      th オーダー内容
-  tbody
-    - @kurumesi_orders.includes(kurumesi_order_details:[:product]).each do |kurumesi_order|
-      tr class="tr_#{kurumesi_order.id}"
-        td style='height:38px;' = link_to kurumesi_order.management_id,edit_kurumesi_order_path(kurumesi_order)
-        td = link_to 'メール',kurumesi_mails_path(kurumesi_order_id:kurumesi_order.id)
-        td = kurumesi_order.pick_time.strftime("%R") if kurumesi_order.pick_time
-        td = "#{@kurumesi_orders_num_h[kurumesi_order.id]} 個"
-        td = kurumesi_order.payment
-        td rowspan='3'
-          ul.list-group
-            - kurumesi_order.kurumesi_order_details.each do |mod|
-              li.list-group-item.col-md-12
-                .col-md-2
-                  = "#{mod.number} 食"
-                .col-md-3 style='font-weight:bold;'
-                  = mod.product.short_name
-                .col-md-7 style='font-size:13px;'
-                  = link_to "#{mod.product.management_id}｜#{mod.product.name}",mod.product
-      tr
-        td colspan='3' style='border:0;'
-          = "作成日時間：#{kurumesi_order.created_at.strftime("%Y年 %m月 %d日　%H:%M")}"
-        td colspan='2' style='border:0;' class='clearfix'
-
-          = form_for(kurumesi_order, data: { remote: true }) do |f|
-            = f.hidden_field :id,class:'kurumesi_order_id'
-            = label :confirm_flag ,"くるめし照合確認",style:'float:left;padding:10px 10px 0 0;'
-            = f.check_box :confirm_flag,class:'form-control confirm_flag_check_box',style:'width:30px;float:left;'
-      tr
-        td colspan='5' style='border:0;color:red;'
+ul.list-group.col-md-12 style='padding:0;'
+  li.list-group-item.col-md-12
+    .col-md-6 style='padding:0;'
+      .col-md-12 style='padding:0;'
+        .col-md-2 style='padding:0;' くるめしID
+        .col-md-2 style='padding:0;' メール確認
+        .col-md-2 style='padding:0;' ピック時間
+        .col-md-2 style='padding:0;' 弁当個数
+        .col-md-2 style='padding:0;' 支払い方法
+    .col-md-6 style='padding:0;'
+      .col-md-12 style='padding:0;'
+        |オーダー内容
+  - @kurumesi_orders.includes(kurumesi_order_details:[:product]).each do |kurumesi_order|
+    li.col-md-12.list-group-item class="kurumesi_order_li li_#{kurumesi_order.id}"
+      .col-md-6 style='padding:0;'
+        .col-md-12 style='padding:0;'
+          .col-md-2 style='padding:0;height:38px;' = link_to kurumesi_order.management_id,edit_kurumesi_order_path(kurumesi_order)
+          .col-md-2 style='padding:0;' = link_to 'メール',kurumesi_mails_path(kurumesi_order_id:kurumesi_order.id)
+          .col-md-2 style='padding:0;' = kurumesi_order.pick_time.strftime("%R") if kurumesi_order.pick_time
+          .col-md-2 style='padding:0;' = "#{@kurumesi_orders_num_h[kurumesi_order.id]} 個"
+          .col-md-2 style='padding:0;' = kurumesi_order.payment
+        .col-md-12 style='padding:0;'
+          .col-md-6
+            = "作成日時間：#{kurumesi_order.created_at.strftime("%Y年 %m月 %d日　%H:%M")}"
+          .col-md-3.clearfix.kurumesi_confirm_div
+            = render partial: "kurumesi_confirm", locals: { kurumesi_order:kurumesi_order }
+          .col-md-3.update_at_div style='padding-top:10px;'
+            span
+              -if kurumesi_order.confirm_flag == true
+                = kurumesi_order.updated_at.strftime('%Y-%m-%d %H:%M:%S')
+        .col-md-12 style='border:0;color:red;'
           - if kurumesi_order.memo.present?
             = "メモ：#{kurumesi_order.memo}"
+      .col-md-6 style='padding:0;'
+        ul.list-group.col-md-12 style='padding:0;margin:0;'
+          - kurumesi_order.kurumesi_order_details.each do |mod|
+            li.list-group-item.col-md-12
+              .col-md-2 style='padding:0;'
+                = "#{mod.number} 食"
+              .col-md-3 style='font-weight:bold;padding:0;'
+                = mod.product.short_name
+              .col-md-7 style='font-size:13px;padding:0;'
+                = link_to "#{mod.product.management_id}｜#{mod.product.name}",mod.product
 
 - if @canceled_kurumesi_orders.present?
   h3 キャンセルオーダー
@@ -136,8 +139,17 @@ javascript:
         $(this).attr('disabled', true);
         $(this).text("計算してるから待ってね...");
     });
-    $(".confirm_flag_check_box").on('click',function(){
+    $(document).on("click", ".confirm_flag_check_box", function () {
       var id = $(this).parent().find(".kurumesi_order_id").val();
-      $("#edit_kurumesi_order_"+id).submit();
+      // $("#edit_kurumesi_order_"+id).submit();
+      Rails.fire($("#edit_kurumesi_order_"+id)[0], 'submit');
+    });
+
+    $('.kurumesi_order_li').each(function(){
+      if ($(this).find(".confirm_flag_check_box").prop('checked')) {
+      }else{
+        $(this).css('background-color','#ffe5f2');
+        $(this).find('.list-group-item').css('background-color','#ffe5f2');
+      }
     });
   });

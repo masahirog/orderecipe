@@ -247,7 +247,7 @@ class CookingRicesController < ApplicationController
         @shogun_mazekomi[product.id] = []
         product.menus.includes(menu_materials:[:material]).where(category:1).each do |menu|
           menu.menu_materials.each do |mm|
-            unless mm.material_id == 3491 || mm.material_id == 15941
+            if mm.rice_mixed_flag == true
               @shogun_mazekomi[product.id] << [mm.material.name,value,(product.cooking_rice.serving_amount*value),mm.amount_used,(mm.amount_used * value).round,mm.material.recipe_unit]
             end
           end
@@ -255,7 +255,7 @@ class CookingRicesController < ApplicationController
       else
         product.menus.includes(menu_materials:[:material]).where(category:1).each do |menu|
           menu.menu_materials.each do |mm|
-            unless mm.material_id == 3491 || mm.material_id == 15941
+            if mm.rice_mixed_flag == true
               if @kurumesi_mazekomi[product.brand_id][mm.material_id].present?
                 @kurumesi_mazekomi[product.brand_id][mm.material_id][1] += value
                 @kurumesi_mazekomi[product.brand_id][mm.material_id][2] += (product.cooking_rice.serving_amount*value)
