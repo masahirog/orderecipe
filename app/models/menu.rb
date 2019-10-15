@@ -2,7 +2,7 @@ class Menu < ApplicationRecord
   mount_uploader :image, ImageUploader
   serialize :used_additives
   has_paper_trail
-  has_many :menu_materials,->{order("menu_materials.row_order asc") }, dependent: :destroy
+  has_many :menu_materials,->{order("row_order asc") }, dependent: :destroy
   has_many :materials, through: :menu_materials
   accepts_nested_attributes_for :menu_materials, allow_destroy: true
   has_many :product_menus, dependent: :destroy

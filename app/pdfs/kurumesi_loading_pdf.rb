@@ -1,4 +1,4 @@
-class KurumesiOrderLoadingSheetPdf < Prawn::Document
+class KurumesiLoadingPdf < Prawn::Document
   def initialize(date,kurumesi_orders,kurumesi_orders_num_h,products_num_h,brand_ids)
     super(
       page_size: 'A4',

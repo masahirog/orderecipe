@@ -1,4 +1,4 @@
-class KurumesiOrderPdf < Prawn::Document
+class KurumesiPreperationPdf < Prawn::Document
   def initialize(bentos_num_h,date,mochiba)
     # 初期設定。ここでは用紙のサイズを指定している。
     super(
@@ -34,7 +34,6 @@ class KurumesiOrderPdf < Prawn::Document
     products_arr.each do |product_num|
       arr << ["#{product_num[0]}","#{product_num[1]} 食"]
     end
-
     if mochiba == 'choriba'
       text "調理場  #{date}"
       move_down 2
@@ -92,8 +91,11 @@ class KurumesiOrderPdf < Prawn::Document
         end
         arr_kari << arr_kari_a
       end
+
       menu_name = menu_name_arr.join("\n\n")
+
       arr_hon = arr_kari.transpose.map{|a| a.inject(:+).round(1) }
+
       unless base_menu.category == '容器'
         if mochiba == '調理場'
           post1 = '調理場'

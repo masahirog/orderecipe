@@ -9,7 +9,7 @@ class KurumesiOrdersController < ApplicationController
     respond_to do |format|
       format.html
       format.pdf do
-        pdf = KurumesiOrderLoadingSheetPdf.new(date,@kurumesi_orders,@kurumesi_orders_num_h,@products_num_h,@brand_ids)
+        pdf = KurumesiLoadingPdf.new(date,@kurumesi_orders,@kurumesi_orders_num_h,@products_num_h,@brand_ids)
         pdf.font "vendor/assets/fonts/ipaexm.ttf"
         send_data pdf.render,
         filename:    "#{date}.pdf",
@@ -31,7 +31,7 @@ class KurumesiOrdersController < ApplicationController
     respond_to do |format|
       format.html
       format.pdf do
-        pdf = KurumesiOrderReceiptPdf.new(data)
+        pdf = ReceiptPdf.new(data)
         pdf.font "vendor/assets/fonts/ipaexm.ttf"
         send_data pdf.render,
         filename:    "#{date}.pdf",
@@ -54,7 +54,7 @@ class KurumesiOrdersController < ApplicationController
     respond_to do |format|
       format.html
       format.pdf do
-        pdf = KurumesiOrderReceiptPdf.new(data)
+        pdf = ReceiptPdf.new(data)
         pdf.font "vendor/assets/fonts/ipaexm.ttf"
         send_data pdf.render,
         filename:    "#{date}.pdf",
@@ -98,7 +98,7 @@ class KurumesiOrdersController < ApplicationController
     respond_to do |format|
       format.html
       format.pdf do
-        pdf = KurumesiOrderPdf.new(@bentos_num_h,date,mochiba)
+        pdf = KurumesiPreperationPdf.new(@bentos_num_h,date,mochiba)
         pdf.font "vendor/assets/fonts/ipaexm.ttf"
         send_data pdf.render,
         filename:    "#{date}.pdf",

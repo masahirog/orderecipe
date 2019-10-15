@@ -93,11 +93,18 @@
       label.col-md-2 仕込み内容
       label.col-md-1 持ち場
       label.col-md-1
-    ul#detail-association-insertion-point.material_ul.list-group.ul-sortable style="list-style-type:none;cursor:move;"
-      - i=0
-      = f.fields_for :menu_materials do |m|
-        = render 'menu_material_fields',{f: m}
-        - i += 1
+    - i=0
+    / コピーメニューは順番をいじれないように調整
+    - if @base_menu.present?
+      ul#detail-association-insertion-point.material_ul.list-group style="list-style-type:none;"
+        = f.fields_for :menu_materials do |m|
+          = render 'menu_material_fields',{f: m}
+          - i += 1
+    - else
+      ul#detail-association-insertion-point.material_ul.list-group.ul-sortable style="list-style-type:none;cursor:move;"
+        = f.fields_for :menu_materials do |m|
+          = render 'menu_material_fields',{f: m}
+          - i += 1
   - unless @base_menu.present?
     .col-md-12.form-group style="margin-top:20px;"
       = link_to_add_association '材料追加', f, :menu_materials,class: 'btn btn-primary add_material_fields',data: {association_insertion_node: '#detail-association-insertion-point',association_insertion_method: 'append' }
