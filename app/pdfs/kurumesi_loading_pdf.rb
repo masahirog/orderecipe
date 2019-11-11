@@ -24,7 +24,7 @@ class KurumesiLoadingPdf < Prawn::Document
       text brand_name
       text "発行時間：#{Time.now.strftime("%Y年 %m月 %d日　%H:%M")}",size:9,:align => :right
       move_down 5
-      table line_item_rows2(date,moa,kurumesi_orders_num_h,products_num_h,brand_product_ids) do
+      table line_item_rows2(date,moa,kurumesi_orders_num_h,products_num_h,brand_product_ids,brand_id) do
         row(0..1).background_color = 'f5f5f5'
         cells.padding = [8,6,8,6]
         cells.size = 9
@@ -39,7 +39,7 @@ class KurumesiLoadingPdf < Prawn::Document
       end
     end
   end
-  def line_item_rows2(date,moa,kurumesi_orders_num_h,products_num_h,brand_product_ids)
+  def line_item_rows2(date,moa,kurumesi_orders_num_h,products_num_h,brand_product_ids,brand_id)
     moa_ids = moa.map{|mo|mo.id}
     hash = {}
     KurumesiOrderDetail.where(kurumesi_order_id:moa_ids).each do |mso|
@@ -58,7 +58,11 @@ class KurumesiLoadingPdf < Prawn::Document
         seikyusho = ""
         ryoshusho = ""
       end
-      hash2.store(mo.id,[kurumesi_orders_num_h[mo.id]+1,kurumesi_orders_num_h[mo.id]+1,'◯','◯',seikyusho,ryoshusho])
+      if brand_id == 21
+        hash2.store(mo.id,[kurumesi_orders_num_h[mo.id]+1,kurumesi_orders_num_h[mo.id]+1,kurumesi_orders_num_h[mo.id]+1,'◯','◯',seikyusho,ryoshusho])
+      else
+        hash2.store(mo.id,[kurumesi_orders_num_h[mo.id]+1,kurumesi_orders_num_h[mo.id]+1,'◯','◯',seikyusho,ryoshusho])
+      end
     end
 
     kurumesi_ids = moa.map do |kurumesi_order|
@@ -70,7 +74,7 @@ class KurumesiLoadingPdf < Prawn::Document
     end
 
     data = [["配達日： #{date}",'',""].push(kurumesi_ids).flatten!]
-    arr2 = ['','','21']
+    arr2 = ['','','']
     moa.each do |kurumesi_order|
       if kurumesi_order.pick_time.present?
         arr2.push(kurumesi_order.pick_time.strftime("%R"))
@@ -88,8 +92,12 @@ class KurumesiLoadingPdf < Prawn::Document
       end
       data << arr.map {|e| e ? e : ''}
     end
-
-    [['おしぼり','オシボリ'],['お箸','オハシ'],['保冷剤','ホレイザイ'],['納品書','ノウヒンショ'],['請求書','セイキュウショ'],['領収書','リョウシュウショ']].each_with_index do |ar,i|
+    if brand_id == 21
+      koumoku = [['おしぼり','オシボリ'],['お箸','オハシ'],['スプーン','スプーン'],['保冷剤','ホレイザイ'],['納品書','ノウヒンショ'],['請求書','セイキュウショ'],['領収書','リョウシュウショ']]
+    else
+      koumoku = [['おしぼり','オシボリ'],['お箸','オハシ'],['保冷剤','ホレイザイ'],['納品書','ノウヒンショ'],['請求書','セイキュウショ'],['領収書','リョウシュウショ']]
+    end
+    koumoku.each_with_index do |ar,i|
       arr = [ar[0],ar[1],'']
       moa.each do |kurumesi_order|
         arr.push(hash2[kurumesi_order.id][i])

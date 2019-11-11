@@ -26,9 +26,9 @@ ExceptionNotification.configure do |config|
   :webhook_url => "https://hooks.slack.com/services/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",
   :channel => "orderecipe"
   }
-  
+
   config.ignore_if do |exception, options|
-  not Rails.env.production?
+    not Rails.env.production?
   end
 
   # Campfire notifier sends notifications to your Campfire room. Requires 'tinder' gem.

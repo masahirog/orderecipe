@@ -6,8 +6,8 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   def render_500(e)
-  ExceptionNotifier.notify_exception(e, :env => request.env, :data => {:message => "your error message"})
-  render template: 'errors/error_500', status: 500
+    ExceptionNotifier.notify_exception(e, :env => request.env, :data => {:message => "your error message"})
+    render template: 'errors/error_500', status: 500
   end
 
 
