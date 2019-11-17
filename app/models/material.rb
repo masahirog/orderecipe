@@ -32,7 +32,7 @@ class Material < ApplicationRecord
   validates :accounting_unit, presence: true
   validates :accounting_unit_quantity, presence: true
 
-  enum category: {"食材(肉・魚)":1,"食材(野菜)":2,"出来合いの惣菜・加工品":3,"調味料・タレのベース":4,"弁当の付属品":5,"包材":6,"備品":7}
+  enum category: {"食材（肉・魚）":1,"食材（野菜）":2,"食材（その他）":3,"包材・弁当備品":4,"その他備品・消耗品":5}
 
   def self.search(params)
    if params

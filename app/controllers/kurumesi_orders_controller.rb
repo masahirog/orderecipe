@@ -133,13 +133,12 @@ class KurumesiOrdersController < ApplicationController
       mochiba = '調理場'
     end
     date = params[:date]
-    categories = params[:categories]
     kurumesi_orders = KurumesiOrder.includes(kurumesi_order_details:[:product]).where(start_time:date,canceled_flag:false).order(:pick_time)
     @bentos_num_h = kurumesi_orders.joins(kurumesi_order_details:[:product]).where(:products => {product_category:1}).group('kurumesi_order_details.product_id').sum('kurumesi_order_details.number')
     respond_to do |format|
       format.html
       format.pdf do
-        pdf = MaterialPreparation.new(@bentos_num_h,date,mochiba,categories)
+        pdf = MaterialPreparation.new(@bentos_num_h,date,mochiba)
         pdf.font "vendor/assets/fonts/ipaexm.ttf"
         send_data pdf.render,
         filename:    "#{date}.pdf",

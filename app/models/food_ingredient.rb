@@ -46,7 +46,7 @@ class FoodIngredient < ApplicationRecord
   def self.cehck_nutrition(product)
     menu_materials = MenuMaterial.where(menu_id:product.menus.ids )
     material_ids = MenuMaterial.where(menu_id:product.menus.ids ).map(&:material_id).uniq
-    vegetable_ids = Material.where(id:material_ids,vegetable_flag:1).map(&:id)
+    vegetable_ids = Material.where(id:material_ids,category:2).map(&:id)
     vegetable = MenuMaterial.where(material_id:vegetable_ids ).sum(:gram_quantity).round(2)
     calorie = menu_materials.sum(:calorie).round(2)
     protein = menu_materials.sum(:protein).round(2)
@@ -99,7 +99,7 @@ class FoodIngredient < ApplicationRecord
   def self.make_obi_nutrition(menus)
     menu_materials = MenuMaterial.where(menu_id:menus )
     material_ids = MenuMaterial.where(menu_id:menus ).map(&:material_id).uniq
-    vegetable_ids = Material.where(id:material_ids,vegetable_flag:1).map(&:id)
+    vegetable_ids = Material.where(id:material_ids,category:2).map(&:id)
     vegetable = MenuMaterial.where(material_id:vegetable_ids ).sum(:gram_quantity).round(2)
     calorie = menu_materials.sum(:calorie).round(2)
     protein = menu_materials.sum(:protein).round(2)

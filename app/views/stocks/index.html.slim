@@ -5,9 +5,8 @@ table.table
       th.text-right 品目数
       th.text-right 合計金額
       th.text-right 食材
-      th.text-right 弁当備品
-      th.text-right 弁当容器
-      th.text-right 厨房備品
+      th.text-right 包材・弁当備品
+      th.text-right その他備品・消耗品
   tbody
     - @dates.each do |date|
       tr
@@ -20,8 +19,6 @@ table.table
         td.text-right
           = link_to "#{@month_total_amount[date][2].to_s(:delimited)} 円",monthly_inventory_stocks_path(date:date,category:'食材')
         td.text-right
-          = link_to "#{@month_total_amount[date][3].to_s(:delimited)} 円",monthly_inventory_stocks_path(date:date,category:'弁当備品')
+          = link_to "#{@month_total_amount[date][3].to_s(:delimited)} 円",monthly_inventory_stocks_path(date:date,category:'包材・弁当備品')
         td.text-right
-          = link_to "#{@month_total_amount[date][4].to_s(:delimited)} 円",monthly_inventory_stocks_path(date:date,category:'弁当容器')
-        td.text-right
-          = link_to "#{@month_total_amount[date][5].to_s(:delimited)} 円",monthly_inventory_stocks_path(date:date,category:'厨房備品')
+          = link_to "#{@month_total_amount[date][4].to_s(:delimited)} 円",monthly_inventory_stocks_path(date:date,category:'その他備品・消耗品')

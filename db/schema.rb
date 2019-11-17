@@ -143,7 +143,6 @@ ActiveRecord::Schema.define(version: 2019_10_01_011536) do
     t.string "order_unit"
     t.float "order_unit_quantity"
     t.text "allergy"
-    t.boolean "vegetable_flag", default: false, null: false
     t.boolean "vendor_stock_flag", default: true, null: false
     t.integer "delivery_deadline", default: 1, null: false
     t.integer "storage_location_id", null: false
@@ -151,6 +150,7 @@ ActiveRecord::Schema.define(version: 2019_10_01_011536) do
     t.datetime "updated_at", null: false
     t.string "accounting_unit", null: false
     t.integer "accounting_unit_quantity", null: false
+    t.boolean "measurement_flag", default: false, null: false
   end
 
   create_table "menu_materials", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

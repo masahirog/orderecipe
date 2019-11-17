@@ -58,10 +58,16 @@ class KurumesiLoadingPdf < Prawn::Document
         seikyusho = ""
         ryoshusho = ""
       end
+      num = kurumesi_orders_num_h[mo.id]
+      bihin = kurumesi_orders_num_h[mo.id]+1
+      hashi = (4.2 * bihin).ceil(1)
+      oshibori = (3.97 * bihin).ceil(1)
+
       if brand_id == 21
-        hash2.store(mo.id,[kurumesi_orders_num_h[mo.id]+1,kurumesi_orders_num_h[mo.id]+1,kurumesi_orders_num_h[mo.id]+1,'◯','◯',seikyusho,ryoshusho])
+        spoon = (2.2 * bihin).ceil(1)
+        hash2.store(mo.id,["#{bihin}\n(#{oshibori}g)","#{bihin}\n(#{hashi}g)","#{bihin}\n(#{spoon}g)",'◯','◯',seikyusho,ryoshusho])
       else
-        hash2.store(mo.id,[kurumesi_orders_num_h[mo.id]+1,kurumesi_orders_num_h[mo.id]+1,'◯','◯',seikyusho,ryoshusho])
+        hash2.store(mo.id,["#{bihin}\n(#{oshibori}g)","#{bihin}\n(#{hashi}g)",'◯','◯',seikyusho,ryoshusho])
       end
     end
 
@@ -86,16 +92,16 @@ class KurumesiLoadingPdf < Prawn::Document
     kurumesi_order_ids = moa.map{|ko|ko.id}
     products = Product.where(id:brand_product_ids).order('product_category ASC').order("field(id, #{brand_product_ids.join(',')})")
     products.each do |product|
-      arr = [product.name.truncate(25),product.short_name,products_num_h[product.id]]
+      arr = [product.name.truncate(24),product.short_name,products_num_h[product.id]]
       moa.each do |kurumesi_order|
         arr.push(hash[[kurumesi_order.id,product.id]])
       end
       data << arr.map {|e| e ? e : ''}
     end
     if brand_id == 21
-      koumoku = [['おしぼり','オシボリ'],['お箸','オハシ'],['スプーン','スプーン'],['保冷剤','ホレイザイ'],['納品書','ノウヒンショ'],['請求書','セイキュウショ'],['領収書','リョウシュウショ']]
+      koumoku = [['おしぼり（3.97g）','オシボリ'],['お箸（4.2g）','オハシ'],['スプーン（2.2g）','スプーン'],['保冷剤','ホレイザイ'],['納品書','ノウヒンショ'],['請求書','セイキュウショ'],['領収書','リョウシュウショ']]
     else
-      koumoku = [['おしぼり','オシボリ'],['お箸','オハシ'],['保冷剤','ホレイザイ'],['納品書','ノウヒンショ'],['請求書','セイキュウショ'],['領収書','リョウシュウショ']]
+      koumoku = [['おしぼり（3.97g）','オシボリ'],['お箸（4.2g）','オハシ'],['保冷剤','ホレイザイ'],['納品書','ノウヒンショ'],['請求書','セイキュウショ'],['領収書','リョウシュウショ']]
     end
     koumoku.each_with_index do |ar,i|
       arr = [ar[0],ar[1],'']

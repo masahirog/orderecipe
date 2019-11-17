@@ -15,22 +15,19 @@ class StocksController < ApplicationController
       price = 0
       shokuzai_price = 0
       bento_bihin_price = 0
-      youki = 0
       kitchen_bihin_price = 0
       stocks.each do |stock|
         material_price = (stock.end_day_stock * stock.material.cost_price)
         price += material_price
-        if stock.material.category == '食材'
+        if stock.material.category == '食材（肉・魚）'||stock.material.category == '食材（野菜）'||stock.material.category == '食材（その他）'
           shokuzai_price += material_price
-        elsif stock.material.category == '弁当備品'
+        elsif stock.material.category == '包材・弁当備品'
           bento_bihin_price += material_price
-        elsif stock.material.category == '弁当容器'
-          youki += material_price
-        elsif stock.material.category == '厨房備品'
+        elsif stock.material.category == 'その他備品・消耗品'
           kitchen_bihin_price += material_price
         end
       end
-      @month_total_amount[date] = [price.round,stocks.length,shokuzai_price.round,bento_bihin_price.round,youki.round,kitchen_bihin_price.round]
+      @month_total_amount[date] = [price.round,stocks.length,shokuzai_price.round,bento_bihin_price.round,kitchen_bihin_price.round]
     end
   end
   def new
@@ -284,7 +281,11 @@ class StocksController < ApplicationController
 
   def monthly_inventory
     date = params[:date]
-    category = params[:category]
+    if params[:category] == '食材'
+      category = ['食材（肉・魚）','食材（野菜）','食材（その他）']
+    else
+      category = params[:category]
+    end
     ids = Material.where(category:category).ids
     stocks = Stock.where(material_id:ids).where("date <= ?", date).order(date: :desc).uniq(&:material_id)
     stocks = stocks.each{|stock|stock.end_day_stock = 0 if stock.end_day_stock < 0}

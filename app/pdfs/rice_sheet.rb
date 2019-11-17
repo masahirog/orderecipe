@@ -89,7 +89,7 @@ class RiceSheet < Prawn::Document
     shogun_mazekomi.each do |sm|
       product = Product.find(sm[0])
       sm[1].each do |m|
-        data << [product.name,m[1],m[0],"#{m[3]}#{m[5]}","#{m[4]}#{m[5]}"]
+        data << [product.name,m[1],m[0],"#{m[4]}#{m[5]}"]
       end
     end
     kurumesi_mazekomi.each do |km|

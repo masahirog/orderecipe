@@ -1,5 +1,5 @@
 class MaterialPreparation < Prawn::Document
-  def initialize(bentos_num_h,date,mochiba,categories)
+  def initialize(bentos_num_h,date,mochiba)
     # 初期設定。ここでは用紙のサイズを指定している。
     super(
       page_size: 'A4',
@@ -38,7 +38,7 @@ class MaterialPreparation < Prawn::Document
       bnh[1].each do |menu_num|
         menu = Menu.find(menu_num[0])
         num = menu_num[1]
-        menu.menu_materials.includes(:material).joins(:material).where(:materials => {category:categories}).each do |mm|
+        menu.menu_materials.includes(:material).order('materials.category').where(:materials => {measurement_flag:true}).each do |mm|
           base_menu_material_id = mm.base_menu_material_id
           if test_hash[base_menu_material_id]
             test_hash[base_menu_material_id][2] =(test_hash[base_menu_material_id][2] + mm.amount_used * num).round(1)
