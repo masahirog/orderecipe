@@ -32,7 +32,7 @@
       = f.select :category, Material.categories.keys.to_a, {}, class: 'form-control'
   .col-md-12.form-group
     .col-md-5
-      = f.label :measurement_flag, "計量フラグ"
+      = f.label :measurement_flag, "仕込みの食材別シートに表示する"
       = f.check_box :measurement_flag, class: "form-control"
   .col-md-12.form-group
     .col-md-5
