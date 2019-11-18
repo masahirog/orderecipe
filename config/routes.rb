@@ -23,6 +23,7 @@ Rails.application.routes.draw do
       get :manufacturing_sheet
       get :loading_sheet
       get :material_preparation
+      get :today_check
     end
   end
   resources :menus do

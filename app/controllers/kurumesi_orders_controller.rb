@@ -199,6 +199,23 @@ class KurumesiOrdersController < ApplicationController
     end
   end
 
+  def today_check
+    date = params[:date]
+    kurumesi_orders = KurumesiOrder.includes(kurumesi_order_details:[:product]).where(start_time:date,canceled_flag:false).order(:pick_time)
+    @bentos_num_h = kurumesi_orders.joins(kurumesi_order_details:[:product]).where(:products => {product_category:1}).group('kurumesi_order_details.product_id').sum('kurumesi_order_details.number')
+    respond_to do |format|
+      format.html
+      format.pdf do
+        pdf = KurumesiPreperationTodayCheck.new(@bentos_num_h,date)
+        pdf.font "vendor/assets/fonts/ipaexm.ttf"
+        send_data pdf.render,
+        filename:    "#{date}.pdf",
+        type:        "application/pdf",
+        disposition: "inline"
+      end
+    end
+  end
+
   private
     def set_kurumesi_order
       @kurumesi_order = KurumesiOrder.find(params[:id])
