@@ -78,4 +78,24 @@ class Brand < ApplicationRecord
       end
     end
   end
+
+  # 涼風
+  def self.suzukaze_order_make(order_details_arr,line,product_name,num)
+    if line.index('】').present?
+      product_name_end_kakko = line.index('】') - 1
+      product_name = line[0..product_name_end_kakko]
+      product = Product.find_by(name:product_name)
+      if product.present?
+        product_id = product.id
+        num = line.match(/×(.+)食/)[1].to_i
+        order_details_arr << {product_id:product_id,num:num}
+        # 茶の有無
+        if line.include?('ペット茶')
+          order_details_arr << {product_id:3791,num:num}
+        elsif line.include?('缶茶')
+          order_details_arr << {product_id:3801,num:num}
+        end
+      end
+    end
+  end
 end
