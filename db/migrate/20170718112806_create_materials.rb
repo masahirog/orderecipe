@@ -3,6 +3,7 @@ class CreateMaterials < ActiveRecord::Migration[4.2]
     create_table :materials do |t|
       t.string :name, unique: true
       t.string :order_name, unique: true
+      t.string :roma_name, unique: true
       t.float :recipe_unit_quantity
       t.string :recipe_unit
       t.float :recipe_unit_price

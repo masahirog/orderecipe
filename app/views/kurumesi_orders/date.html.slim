@@ -18,14 +18,9 @@ div.col-md-12 style='font-size:20px;padding:0 0 7px 0;'
   = link_to "切出場仕込み",print_preparation_kurumesi_orders_path(date:params[:date],mochiba:'kiriba',format:'pdf'),class:"btn btn-primary",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
   = link_to "調理場仕込み",print_preparation_kurumesi_orders_path(date:params[:date],mochiba:'choriba',format:'pdf'),class:"btn btn-primary",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
   = link_to "ALL仕込み",print_preparation_kurumesi_orders_path(date:params[:date],format:'pdf'),class:"btn btn-primary",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
-  = link_to "ローマ字",print_preparation_roma_kurumesi_orders_path(date:params[:date],mochiba:'choriba',format:'pdf'),class:"btn btn-primary",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
   = link_to "積載表",loading_sheet_kurumesi_orders_path(date:params[:date],format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
   button type="button" class="btn btn-default" data-toggle="modal" data-target="#rice_sheet_modal" style='float:left;margin-left:20px;margin-top:10px;'
     |食材別シート
-  / = link_to "切出し",material_preparation_kurumesi_orders_path(date:params[:date],mochiba:"切出し",format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
-  / = link_to "調理場",material_preparation_kurumesi_orders_path(date:params[:date],mochiba:"調理場",format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
-  = link_to "炊飯シート",rice_sheet_cooking_rices_path(date:params[:date],format: :pdf),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
-  = link_to "当日調理",today_check_kurumesi_orders_path(date:params[:date],format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
   .modal.fade id="rice_sheet_modal" tabindex=-1
     = form_tag(material_preparation_kurumesi_orders_path(format: :pdf),method: :get,target:'_blank') do
       = hidden_field_tag 'date',params[:date]
@@ -34,15 +29,48 @@ div.col-md-12 style='font-size:20px;padding:0 0 7px 0;'
           .modal-body.clearfix
             h4 表示する方を選択してください
             .col-md-12 style='margin-bottom:20px;'
-              .col-md-3
-                = radio_button_tag("mochiba", "1",{:checked => true})
-                = label_tag("mochiba_1", "切出し",style:'margin-left:10px;')
-              .col-md-3
-                = radio_button_tag("mochiba", "2")
-                = label_tag("mochiba_2", "調理場",style:'margin-left:10px;')
+              .col-md-12.form-group
+                .col-md-3 ポジション
+                .col-md-3
+                  = radio_button_tag("mochiba", "1",{:checked => true})
+                  = label_tag("mochiba_1", "切出し",style:'margin-left:10px;')
+                .col-md-3
+                  = radio_button_tag("mochiba", "2")
+                  = label_tag("mochiba_2", "調理場",style:'margin-left:10px;')
+              .col-md-12
+                .col-md-3 言語
+                .col-md-3
+                  = radio_button_tag("lang", "1",{:checked => true})
+                  = label_tag("lang_1", "日本語",style:'margin-left:10px;')
+                .col-md-3
+                  = radio_button_tag("lang", "2")
+                  = label_tag("lang_2", "ローマ字",style:'margin-left:10px;')
           .modal-footer
             button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
             = submit_tag "表示する" ,class:"btn btn-primary"
+  = link_to "炊飯シート",rice_sheet_cooking_rices_path(date:params[:date],format: :pdf),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
+  / = link_to "当日調理",today_check_kurumesi_orders_path(date:params[:date],format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
+  button type="button" class="btn btn-default" data-toggle="modal" data-target="#today_sheet_modal" style='float:left;margin-left:20px;margin-top:10px;'
+    |当日調理
+  .modal.fade id="today_sheet_modal" tabindex=-1
+    = form_tag(today_check_kurumesi_orders_path(format: :pdf),method: :get,target:'_blank') do
+      = hidden_field_tag 'date',params[:date]
+      .modal-dialog
+        .modal-content
+          .modal-body.clearfix
+            h4 表示する方を選択してください
+            .col-md-12
+              .col-md-3 言語
+              .col-md-3
+                = radio_button_tag("lang", "1",{:checked => true})
+                = label_tag("lang_1", "日本語",style:'margin-left:10px;')
+              .col-md-3
+                = radio_button_tag("lang", "2")
+                = label_tag("lang_2", "ローマ字",style:'margin-left:10px;')
+          .modal-footer
+            button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
+            = submit_tag "表示する" ,class:"btn btn-primary"
+
 h3 弁当別製造数
 table.table
   thead

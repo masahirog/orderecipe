@@ -131,6 +131,7 @@ ActiveRecord::Schema.define(version: 2019_10_01_011536) do
   create_table "materials", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
     t.string "order_name"
+    t.string "roma_name"
     t.float "recipe_unit_quantity"
     t.string "recipe_unit"
     t.float "recipe_unit_price"
@@ -187,6 +188,7 @@ ActiveRecord::Schema.define(version: 2019_10_01_011536) do
 
   create_table "menus", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
+    t.string "roma_name"
     t.text "cook_the_day_before"
     t.integer "category"
     t.text "serving_memo"

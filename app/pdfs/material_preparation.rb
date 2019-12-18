@@ -1,5 +1,5 @@
 class MaterialPreparation < Prawn::Document
-  def initialize(bentos_num_h,date,mochiba)
+  def initialize(bentos_num_h,date,mochiba,lang)
     # 初期設定。ここでは用紙のサイズを指定している。
     super(
       page_size: 'A4',
@@ -42,9 +42,17 @@ class MaterialPreparation < Prawn::Document
           base_menu_material_id = mm.base_menu_material_id
           if test_hash[base_menu_material_id]
             test_hash[base_menu_material_id][2] =(test_hash[base_menu_material_id][2] + mm.amount_used * num).round(1)
-            test_hash[base_menu_material_id][6] += "、#{menu.name}（#{num}）"
+            if lang == "日本語"
+              test_hash[base_menu_material_id][6] += "、#{menu.name}（#{num}）"
+            else
+              test_hash[base_menu_material_id][6] += "、#{menu.roma_name}（#{num}）"
+            end
           else
-            test_hash[base_menu_material_id] = ["#{mm.material.category_before_type_cast}-#{mm.material.name}",mm.material.name,(mm.amount_used*num).round(1),mm.material.recipe_unit,mm.post,mm.preparation,"#{menu.name} (#{num})"]
+            if lang == "日本語"
+              test_hash[base_menu_material_id] = ["#{mm.material.category_before_type_cast}-#{mm.material.name}",mm.material.name,(mm.amount_used*num).round(1),mm.material.recipe_unit,mm.post,mm.preparation,"#{menu.name} (#{num})"]
+            else
+              test_hash[base_menu_material_id] = ["#{mm.material.category_before_type_cast}-#{mm.material.name}",mm.material.roma_name,(mm.amount_used*num).round(1),mm.material.recipe_unit,mm.post,mm.preparation,"#{menu.roma_name} (#{num})"]
+            end
           end
         end
       end

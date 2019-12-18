@@ -132,13 +132,19 @@ class KurumesiOrdersController < ApplicationController
     else
       mochiba = '調理場'
     end
+
+    if params[:lang] == "1"
+      lang = '日本語'
+    else
+      lang = 'ローマ字'
+    end
     date = params[:date]
     kurumesi_orders = KurumesiOrder.includes(kurumesi_order_details:[:product]).where(start_time:date,canceled_flag:false).order(:pick_time)
     @bentos_num_h = kurumesi_orders.joins(kurumesi_order_details:[:product]).where(:products => {product_category:1}).group('kurumesi_order_details.product_id').sum('kurumesi_order_details.number')
     respond_to do |format|
       format.html
       format.pdf do
-        pdf = MaterialPreparation.new(@bentos_num_h,date,mochiba)
+        pdf = MaterialPreparation.new(@bentos_num_h,date,mochiba,lang)
         pdf.font "vendor/assets/fonts/ipaexm.ttf"
         send_data pdf.render,
         filename:    "#{date}.pdf",
@@ -201,12 +207,17 @@ class KurumesiOrdersController < ApplicationController
 
   def today_check
     date = params[:date]
+    if params[:lang] == "1"
+      lang = '日本語'
+    else
+      lang = 'ローマ字'
+    end
     kurumesi_orders = KurumesiOrder.includes(kurumesi_order_details:[:product]).where(start_time:date,canceled_flag:false).order(:pick_time)
     @bentos_num_h = kurumesi_orders.joins(kurumesi_order_details:[:product]).where(:products => {product_category:1}).group('kurumesi_order_details.product_id').sum('kurumesi_order_details.number')
     respond_to do |format|
       format.html
       format.pdf do
-        pdf = KurumesiPreperationTodayCheck.new(@bentos_num_h,date)
+        pdf = KurumesiPreperationTodayCheck.new(@bentos_num_h,date,lang)
         pdf.font "vendor/assets/fonts/ipaexm.ttf"
         send_data pdf.render,
         filename:    "#{date}.pdf",
