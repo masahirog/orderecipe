@@ -10,8 +10,13 @@
             = message
   .col-md-12.form-group
     .col-md-5
-      = f.label :name, "食材・資材名"
+      = f.label :name, "食材・資材名（余分な情報はメモへお願いします）"
       = f.text_field :name, class:'form-control'
+  .col-md-12.form-group
+    .col-md-5
+      = f.label :roma_name, "ローマ字名"
+      = f.text_field :roma_name, class:'form-control'
+
   .col-md-12.form-group
     .col-md-5
       = f.label :order_name, "発注書記載名"

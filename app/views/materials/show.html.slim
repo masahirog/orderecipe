@@ -11,6 +11,10 @@
       th.col-md-4 発注書名
       td = @material.order_name
     tr
+      th.col-md-4 ローマ字名
+      td = @material.roma_name
+
+    tr
       th.col-md-4 使用状況
       td = '使用終了' if @material.unused_flag == true
     tr
