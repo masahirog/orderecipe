@@ -43,6 +43,8 @@ gem 'romaji'
 gem 'mail'
 gem "jquery-ui-rails"
 gem 'gon'
+gem 'chart-js-rails', '~> 0.1.4'
+
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'pry-rails'

@@ -52,6 +52,14 @@ Rails.application.routes.draw do
     end
   end
   resources :tops
+  resources :kurumesi_admin_datas do
+    collection do
+      get :monthly
+      get :daily
+      get :analize
+    end
+  end
+
   resources :vendors
   resources :materials do
     collection do

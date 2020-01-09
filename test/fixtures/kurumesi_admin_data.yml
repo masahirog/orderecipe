@@ -1,0 +1,47 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  store_name: MyString
+  delivery_date: 2019-12-19
+  pick_time: 2019-12-19 20:33:41
+  delivery_time: MyString
+  delivery_address: MyString
+  products: MyText
+  order_price: MyString
+  total_price: MyString
+  delivery_company: MyString
+  delivery_name: MyString
+  payment: MyString
+  order_date: 2019-12-19 20:33:41
+  status: MyString
+  order_id: 1
+  member_id: 1
+  orderer_name: MyString
+  orderer_company: MyString
+  orderer_mail: MyString
+  orderer_tell: MyString
+  ordered_site: MyString
+  ordered_type: MyString
+
+two:
+  store_name: MyString
+  delivery_date: 2019-12-19
+  pick_time: 2019-12-19 20:33:41
+  delivery_time: MyString
+  delivery_address: MyString
+  products: MyText
+  order_price: MyString
+  total_price: MyString
+  delivery_company: MyString
+  delivery_name: MyString
+  payment: MyString
+  order_date: 2019-12-19 20:33:41
+  status: MyString
+  order_id: 1
+  member_id: 1
+  orderer_name: MyString
+  orderer_company: MyString
+  orderer_mail: MyString
+  orderer_tell: MyString
+  ordered_site: MyString
+  ordered_type: MyString

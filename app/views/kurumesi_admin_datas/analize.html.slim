@@ -1,0 +1,185 @@
+.col-md-12.form-group
+  = form_tag kurumesi_admin_datas_path, :method => 'get' do
+    .col-md-2
+      = text_field_tag :store_name, params[:store_name], class:"form-control"
+    .col-md-1
+      label 　
+      = submit_tag "検索" ,class:"btn btn-primary"
+
+h3 枡々
+canvas#myChart
+table.table
+  tbody
+    tr
+      th 総オーダー数
+      td = @analitical_data[:total_order_count]
+    tr
+      th 受注成立件数
+      td = @analitical_data[:success_order_count]
+    tr
+      th キャンセル件数
+      td = @analitical_data[:cancel_order_count]
+    tr
+      th 回収件数
+      td = @analitical_data[:repick_order_count]
+
+    / tr
+    /   th ピック時間
+    /   td = @kurumesi_admin_data.pick_time.strftime('%H:%M')
+    / tr
+    /   th 納品時間
+    /   td = @kurumesi_admin_data.delivery_time
+    / tr
+    /   th 納品先住所
+    /   td = @kurumesi_admin_data.delivery_address
+
+
+javascript:
+  var date = []
+  $.each(#{@date}, function(index, value) {
+    var day = new Date( value * 1000 );
+    var y = day.getFullYear();
+    var m = (day.getMonth()+1);
+    var d = day.getDate();
+    var result = m + "/" + d;
+    date.push(result)
+  })
+
+  var ctx = document.getElementById("myChart").getContext('2d');
+  ctx.canvas.height = 100;
+  var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: date,
+      datasets: [{
+        label: "サンプル",
+        data: gon.count_data,
+        backgroundColor: 'rgba(255, 99, 132, 1.0)',
+        borderColor: 'rgba(255, 50, 132, 1.0)',
+        fill: false,
+        stacked: false,
+        yAxisID: "y-axis-1"
+      },{
+        label: "サンプル",
+        data: gon.all_count_data,
+        backgroundColor: 'blue',
+        borderColor: 'blue',
+        fill: false,
+        stack: "aa",
+        yAxisID: "y-axis-2"
+      }]
+    },
+    options: {
+      scales: {
+        xAxes: [{
+          stacked: true,
+          scaleLabel: {
+            display: true,
+            fontSize: 16
+          }
+        }],
+        yAxes: [{
+          id: "y-axis-1",
+          type: "linear",
+          position: "left",
+          stacked: true,
+          scaleLabel: {
+            display: true,
+            labelString: '個数',
+            fontSize: 12
+          },
+          ticks: {
+            min: 0
+          }
+        },{
+          id: "y-axis-2",
+          type: "linear",
+          position: "right",
+          stacked: false,
+          scaleLabel: {
+            display: true,
+            labelString: '個数',
+            fontSize: 12
+          },
+          ticks: {
+            min: 0
+          }
+        }]
+      }
+    }
+  });
+
+  //
+  // var route_sales = new Chart(ctx, {
+  //   type: 'bar',
+  //   data: {
+  //     labels: date,
+  //     datasets: [{
+  //       type: 'line',
+  //       label: "目標(40個)",
+  //       data: #{@route_per_sales_mokuhyo},
+  //       backgroundColor: 'red',
+  //       borderColor: 'red',
+  //       fill: false,
+  //       yAxisID: "y-axis-1",
+  //       pointRadius: 0
+  //     },{
+  //       type: 'line',
+  //       label: "直近5日間平均",
+  //       data: ido,
+  //       backgroundColor: 'blue',
+  //       borderColor: 'blue',
+  //       fill: false,
+  //       stacked: false,
+  //       yAxisID: "y-axis-1"
+  //     },{
+  //       label: "全体",
+  //       data: #{@route_per_sell_num},
+  //       backgroundColor: 'rgba(225, 109, 25, 0.5)',
+  //       borderColor: 'rgba(225, 109, 25, 0.5)',
+  //       stack: "aa",
+  //       fill: false,
+  //       yAxisID: "y-axis-1"
+  //     },{
+  //       label: "渋谷",
+  //       data: #{@shibuya_route_per_sell_num},
+  //       backgroundColor: 'rgba(0, 128, 0, 0.5)',
+  //       borderColor: 'rgba(0, 128, 0, 0.5)',
+  //       stack: "bb",
+  //       fill: false,
+  //       yAxisID: "y-axis-1"
+  //     },{
+  //       label: "六本木",
+  //       data: #{@roppongi_route_per_sell_num},
+  //       backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  //       borderColor: 'rgba(0, 0, 0, 0.5)',
+  //       stack: "cc",
+  //       fill: false,
+  //       yAxisID: "y-axis-1"
+  //     },{
+  //       label: "日本橋",
+  //       data: #{@nihonbashi_route_per_sell_num},
+  //       backgroundColor: 'rgba(255, 0, 0, 0.5)',
+  //       borderColor: 'rgba(255, 0, 0, 0.5)',
+  //       stack: "dd",
+  //       fill: false,
+  //       yAxisID: "y-axis-1"
+  //     }]
+  //   },
+  //   options: {
+  //     scales: {
+  //       xAxes: [{
+  //         stacked: true,
+  //         scaleLabel: {
+  //          display: true,
+  //          fontSize: 16
+  //         },
+  //       }],
+  //       yAxes: [{
+  //         stacked: false,
+  //         id: "y-axis-1",
+  //         type: "linear",
+  //         position: "left"
+  //       }]
+  //   }}
+  // });

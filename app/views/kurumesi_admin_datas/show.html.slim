@@ -1,0 +1,20 @@
+table.table
+  tbody
+    tr
+      th 店舗名
+      td = @kurumesi_admin_data.store_name
+    tr
+      th 受注日
+      td = @kurumesi_admin_data.order_date
+    tr
+      th 納品日
+      td = @kurumesi_admin_data.delivery_date
+    tr
+      th ピック時間
+      td = @kurumesi_admin_data.pick_time.strftime('%H:%M')
+    tr
+      th 納品時間
+      td = @kurumesi_admin_data.delivery_time
+    tr
+      th 納品先住所
+      td = @kurumesi_admin_data.delivery_address
