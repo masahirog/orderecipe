@@ -98,18 +98,35 @@ class KurumesiMail < ApplicationRecord
     brand_name = body[0,body.index("｜")]
     brand_id = Brand.find_by(name:brand_name).id
     order[:brand_id] = brand_id
-    info_arr.join('').gsub('[','$$$').split("$$$").reject(&:blank?).each do |line|
-      order[:delivery_date] = line[5..14] if line[0..3] == "配達日時"
-      order[:management_id] = line[5..-1].to_i if line[0..3] == "注文番号"
-      if line[0..3]== "支払方法"
-        if line[5..7] == '請求書'
+    s = shohin_arr.join.index("[請求金額]") + 6
+    e = shohin_arr.join.index("円",s) - 1
+    order[:total_price] = shohin_arr.join[s..e].delete(",").to_i
+    info_arr.each do |line|
+      order[:company_name] = line[5..-1] if line[1..3] == "会社名"
+      if line[1..4] == "配達日時"
+        order[:delivery_date] = line[6..15]
+        order[:delivery_time] = line[19..23]
+      elsif line[1..4] == "担当者様"
+        order[:staff_name] = line[6..-2]
+      elsif line[1..4] == "お届け先"
+        order[:delivery_address] = line[6..-1]
+      elsif line[1..4] == "注文番号"
+        order[:management_id] = line[6..-1].to_i
+      elsif line[1..4] == "宛名指定"
+        order[:reciept_name] = line[6..-1]
+      elsif line[1..4]== "支払方法"
+        if line[6..8] == '請求書'
           order[:pay] = 0
-        elsif line[5..7] == "現金"
+        elsif line[6..8] == "現金"
           order[:pay] = 1
         else
           order[:pay] = 2
         end
       end
+      if line[1..2] == "但書"
+        order[:proviso] = line[4..-1]
+      end
+      order[:proviso] = line[7..-1] if line[1..5] == "領収書但書"
     end
     shohin_arr.join('').gsub('【','$$$').gsub('[請求金額]','$$$').split("$$$").reject(&:blank?).each do |line|
       product_name = ""
@@ -136,9 +153,16 @@ class KurumesiMail < ApplicationRecord
   def self.new_order(order_info_from_mail)
     @kurumesi_order = KurumesiOrder.new
     @kurumesi_order.start_time = order_info_from_mail[:delivery_date]
+    @kurumesi_order.delivery_time = order_info_from_mail[:delivery_time]
     @kurumesi_order.brand_id = order_info_from_mail[:brand_id]
     @kurumesi_order.management_id = order_info_from_mail[:management_id]
     @kurumesi_order.payment = order_info_from_mail[:pay]
+    @kurumesi_order.total_price = order_info_from_mail[:total_price]
+    @kurumesi_order.company_name = order_info_from_mail[:company_name]
+    @kurumesi_order.staff_name = order_info_from_mail[:staff_name]
+    @kurumesi_order.delivery_address = order_info_from_mail[:delivery_address]
+    @kurumesi_order.reciept_name = order_info_from_mail[:reciept_name]
+    @kurumesi_order.proviso = order_info_from_mail[:proviso]
     order_info_from_mail[:order_details].each do |od|
       @kurumesi_order.kurumesi_order_details.build(product_id:od[:product_id],number:od[:num])
     end
@@ -153,8 +177,14 @@ class KurumesiMail < ApplicationRecord
     else
       @kurumesi_order = KurumesiOrder.new
     end
-    @kurumesi_order.start_time = order_info_from_mail[:delivery_date]
+    @kurumesi_order.delivery_time = order_info_from_mail[:delivery_time]
     @kurumesi_order.payment = order_info_from_mail[:pay]
+    @kurumesi_order.total_price = order_info_from_mail[:total_price]
+    @kurumesi_order.company_name = order_info_from_mail[:company_name]
+    @kurumesi_order.staff_name = order_info_from_mail[:staff_name]
+    @kurumesi_order.delivery_address = order_info_from_mail[:delivery_address]
+    @kurumesi_order.reciept_name = order_info_from_mail[:reciept_name]
+    @kurumesi_order.proviso = order_info_from_mail[:proviso]
     order_info_from_mail[:order_details].each do |od|
       @kurumesi_order.kurumesi_order_details.build(product_id:od[:product_id],number:od[:num])
     end

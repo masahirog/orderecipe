@@ -15,12 +15,33 @@ div.col-md-12 style='font-size:20px;padding:0 0 7px 0;'
             = submit_tag "作成する" ,class:"btn btn-primary"
 .form-group.col-md-12.clearfix
   = link_to "発注開始", new_order_path(kurumesi_order_date:params[:date]),class:'new_order btn btn-success',:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
-  = link_to "切出場仕込み",print_preparation_kurumesi_orders_path(date:params[:date],mochiba:'kiriba',format:'pdf'),class:"btn btn-primary",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
-  = link_to "調理場仕込み",print_preparation_kurumesi_orders_path(date:params[:date],mochiba:'choriba',format:'pdf'),class:"btn btn-primary",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
-  = link_to "ALL仕込み",print_preparation_kurumesi_orders_path(date:params[:date],format:'pdf'),class:"btn btn-primary",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
-  = link_to "積載表",loading_sheet_kurumesi_orders_path(date:params[:date],format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
+  button type="button" class="btn btn-default" data-toggle="modal" data-target="#preparation_sheets" style='float:left;margin-left:20px;margin-top:10px;'
+    |仕込み表
   button type="button" class="btn btn-default" data-toggle="modal" data-target="#rice_sheet_modal" style='float:left;margin-left:20px;margin-top:10px;'
     |食材別シート
+  .modal.fade id="preparation_sheets" tabindex=-1
+    = form_tag(print_preparation_kurumesi_orders_path(format: :pdf),method: :get,target:'_blank') do
+      = hidden_field_tag 'date',params[:date]
+      .modal-dialog
+        .modal-content
+          .modal-body.clearfix
+            h4 印刷する持ち場を選択してください
+            .col-md-12
+              .col-md-3
+                = radio_button_tag("mochiba", "",{:checked => true})
+                = label_tag("mochiba_", "両方",style:'margin-left:10px;')
+              .col-md-3
+                = radio_button_tag("mochiba", "kiriba")
+                = label_tag("mochiba_kiriba", "切り出し",style:'margin-left:10px;')
+              .col-md-3
+                = radio_button_tag("mochiba", "choriba")
+                = label_tag("mochiba_choriba", "調理場",style:'margin-left:10px;')
+
+          .modal-footer
+            button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
+            = submit_tag "表示する" ,class:"btn btn-primary"
+
+
   .modal.fade id="rice_sheet_modal" tabindex=-1
     = form_tag(material_preparation_kurumesi_orders_path(format: :pdf),method: :get,target:'_blank') do
       = hidden_field_tag 'date',params[:date]
@@ -70,7 +91,9 @@ div.col-md-12 style='font-size:20px;padding:0 0 7px 0;'
           .modal-footer
             button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
             = submit_tag "表示する" ,class:"btn btn-primary"
-
+  = link_to "積載表",loading_sheet_kurumesi_orders_path(date:params[:date],format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
+  = link_to "納品書・請求書印刷",paper_print_kurumesi_orders_path(date:params[:date]),class:"btn btn-default",style:'float:left;margin-left:20px;margin-top:10px;'
+  = link_to "領収書印刷",print_receipts_kurumesi_orders_path(date:params[:date],format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
 h3 弁当別製造数
 table.table
   thead

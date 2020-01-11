@@ -10,6 +10,13 @@ class CreateKurumesiOrders < ActiveRecord::Migration[5.2]
       t.text :memo
       t.integer :brand_id,null:false
       t.boolean :confirm_flag,default:false,null:false
+      t.time :delivery_time
+      t.string :company_name
+      t.string :staff_name
+      t.string :delivery_address
+      t.string :reciept_name
+      t.string :proviso
+      t.integer :total_price,default:0
       t.timestamps
     end
   end

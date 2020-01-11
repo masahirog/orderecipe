@@ -44,6 +44,8 @@ gem 'mail'
 gem "jquery-ui-rails"
 gem 'gon'
 gem 'chart-js-rails', '~> 0.1.4'
+gem 'selenium-webdriver'
+gem 'webdrivers', '~> 3.0'
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
@@ -62,8 +64,6 @@ end
 
 group :test do
   gem 'capybara', '>= 2.15', '< 4.0'
-  gem 'selenium-webdriver'
-  gem 'chromedriver-helper'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

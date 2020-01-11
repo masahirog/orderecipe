@@ -18,6 +18,38 @@ class KurumesiOrdersController < ApplicationController
       end
     end
   end
+  def paper_print
+    KurumesiOrder.paper_print
+    date = params[:date]
+    redirect_to date_kurumesi_orders_path(date:date)
+  end
+  def print_receipts
+    date = params[:date]
+    data_arr = []
+    kurumesi_orders = KurumesiOrder.where(start_time:date,payment:[1,2])
+    kurumesi_orders.each do |ko|
+      to = ko.reciept_name
+      keisho = "御中"
+      total = ko.total_price
+      tadashi = ko.proviso
+      uchiwake = ''
+      data = [date,to,keisho,total,tadashi,uchiwake]
+      data_arr << data
+    end
+    respond_to do |format|
+      format.html
+      format.pdf do
+        pdf = ReceiptsPdf.new(data_arr)
+        pdf.font "vendor/assets/fonts/ipaexm.ttf"
+        send_data pdf.render,
+        filename:    "#{date}_receipt.pdf",
+        type:        "application/pdf",
+        disposition: "inline"
+      end
+    end
+  end
+
+
   def receipt
   end
   def print_receipt
@@ -234,11 +266,13 @@ class KurumesiOrdersController < ApplicationController
 
     def kurumesi_order_picktimenone_params
       params.require(:kurumesi_order).permit(:start_time,:management_id,:canceled_flag,:payment,:memo,:brand_id,:confirm_flag,
+        :delivery_time,:company_name,:staff_name,:delivery_address,:reciept_name,:proviso,:total_price,
         kurumesi_order_details_attributes: [:id,:kurumesi_order_id,:product_id,:number,:_destroy])
     end
 
     def kurumesi_order_params
       params.require(:kurumesi_order).permit(:start_time,:management_id,:pick_time,:canceled_flag,:payment,:brand_id,:confirm_flag,
+        :delivery_time,:company_name,:staff_name,:delivery_address,:reciept_name,:proviso,:total_price,
         :memo,kurumesi_order_details_attributes: [:id,:kurumesi_order_id,:product_id,:number,:_destroy])
     end
 end

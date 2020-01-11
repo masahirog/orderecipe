@@ -5,7 +5,10 @@
       ul
         - kurumesi_order.errors.full_messages.each do |message|
           li = message
-
+  .form-group.required.col-md-12
+    = f.label :management_id,"くるめしオーダーID（テストは0）", class: 'col-md-3 control-label text-right'
+    .col-md-8
+      = f.number_field :management_id, class: 'col-md-10 form-control',style:'width:440px;'
   .form-group.required.col-md-12
     = f.label :brand_id,"対象ブランド", class: 'col-md-3 control-label text-right'
     .col-md-8
@@ -17,13 +20,13 @@
       = f.select :canceled_flag,[['受注',false],['キャンセル',true]],{},class:'form-control',style:'width:440px;'
 
   .form-group.required.col-md-12
-    = f.label :start_time,"日付", class: 'col-md-3 control-label text-right'
+    = f.label :start_time,"納品日", class: 'col-md-3 control-label text-right'
     .col-md-8
       = f.date_field :start_time, value:params['start_time'], class: 'col-md-10 form-control',readonly: true,style:'width:440px;'
   .form-group.required.col-md-12
-    = f.label :management_id,"くるめしオーダーID（テストは0）", class: 'col-md-3 control-label text-right'
+    = f.label :delivery_time,"納品時間", class: 'col-md-3 control-label text-right'
     .col-md-8
-      = f.number_field :management_id, class: 'col-md-10 form-control',style:'width:440px;'
+      = f.time_field :delivery_time, class: 'col-md-10 form-control',readonly: true,style:'width:440px;'
   .form-group.required.col-md-12
     = f.label :pick_time,"ピックアップ時間", class: 'col-md-3 control-label text-right'
     .col-md-8
@@ -32,6 +35,24 @@
     = f.label :memo,"メモ", class: 'col-md-3 control-label text-right'
     .col-md-4
       = f.text_area :memo, class: 'col-md-10 form-control'
+
+
+  .form-group.required.col-md-12
+    = f.label :staff_name,"担当者名", class: 'col-md-3 control-label text-right'
+    .col-md-8
+      = f.text_field :staff_name, class: 'col-md-10 form-control',style:'width:440px;'
+  .form-group.required.col-md-12
+    = f.label :company_name,"会社名", class: 'col-md-3 control-label text-right'
+    .col-md-8
+      = f.text_field :company_name, class: 'col-md-10 form-control',style:'width:440px;'
+  .form-group.required.col-md-12
+    = f.label :delivery_address,"納品先住所", class: 'col-md-3 control-label text-right'
+    .col-md-8
+      = f.text_field :delivery_address, class: 'col-md-10 form-control',style:'width:440px;'
+  .form-group.required.col-md-12
+    = f.label :total_price,"請求金額", class: 'col-md-3 control-label text-right'
+    .col-md-8
+      = f.number_field :total_price, class: 'col-md-10 form-control',style:'width:440px;'
 
   .form-group.required.col-md-12
     = f.label :payment,"支払い方法", class: 'col-md-3 control-label text-right'
@@ -45,6 +66,15 @@
       label
         |クレカ　
         = f.radio_button :payment,:クレジットカード
+
+  .form-group.required.col-md-12
+    = f.label :reciept_name,"領収書宛名", class: 'col-md-3 control-label text-right'
+    .col-md-8
+      = f.text_field :reciept_name, class: 'col-md-10 form-control',style:'width:440px;'
+  .form-group.required.col-md-12
+    = f.label :proviso,"但し書き", class: 'col-md-3 control-label text-right'
+    .col-md-8
+      = f.text_field :proviso, class: 'col-md-10 form-control',style:'width:440px;'
 
   table.table.table-list.cocoon_are
     thead

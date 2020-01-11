@@ -143,6 +143,13 @@ ActiveRecord::Schema.define(version: 2019_12_19_113341) do
     t.text "memo"
     t.integer "brand_id", null: false
     t.boolean "confirm_flag", default: false, null: false
+    t.time "delivery_time"
+    t.string "company_name"
+    t.string "staff_name"
+    t.string "delivery_address"
+    t.string "reciept_name"
+    t.string "proviso"
+    t.integer "total_price", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
