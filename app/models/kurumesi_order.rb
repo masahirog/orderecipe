@@ -67,13 +67,7 @@ class KurumesiOrder < ApplicationRecord
     user_agent = webdriver.execute_script('return navigator.userAgent')
     options.add_argument("--user-agent=#{user_agent}")
 
-    begin
-      driver = Selenium::WebDriver.for(:chrome, options: options)
-    rescue => e
-      # Selenium::WebDriver::Error::SessionNotCreatedError: session not created from tab crashed
-      puts e
-      next
-    end
+    driver = Selenium::WebDriver.for(:chrome, options: options)
 
 
 
