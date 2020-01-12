@@ -34,8 +34,12 @@ class KurumesiOrder < ApplicationRecord
   end
 
   def self.paper_print
+    options = Selenium::WebDriver::Chrome::Options.new
+    options.binary = ENV.fetch("GOOGLE_CHROME_SHIM")
+    options.add_argument('headless')
+    options.add_argument('disable-gpu')
+    driver = Selenium::WebDriver.for :chrome, options: options
     url = "http://admin.kurumesi-bentou.com/admin_shop/"
-    driver = Selenium::WebDriver.for :chrome
     driver.get url
     driver.find_element(:class, 'inputId').send_keys "759"
     driver.find_element(:class, 'password').send_keys "bchimBS9"
