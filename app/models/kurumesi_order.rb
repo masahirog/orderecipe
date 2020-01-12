@@ -35,6 +35,7 @@ class KurumesiOrder < ApplicationRecord
   def self.paper_print
     url = "http://admin.kurumesi-bentou.com/admin_shop/"
     options = Selenium::WebDriver::Chrome::Options.new
+    options.add_argument('window-size=1000,1000')
     options.binary = '/app/.apt/usr/bin/google-chrome' if Rails.env.production?
     driver = Selenium::WebDriver.for :chrome, options: options
     driver.navigate.to url
