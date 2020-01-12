@@ -35,7 +35,7 @@ class KurumesiOrder < ApplicationRecord
   def self.paper_print
     url = "http://admin.kurumesi-bentou.com/admin_shop/"
     options = Selenium::WebDriver::Chrome::Options.new
-    options.add_argument('window-size=1000,1000')
+    options.add_argument('window-size=500,500')
     options.binary = '/app/.apt/usr/bin/google-chrome' if Rails.env.production?
     driver = Selenium::WebDriver.for :chrome, options: options
     driver.navigate.to url
@@ -51,14 +51,14 @@ class KurumesiOrder < ApplicationRecord
     select = Selenium::WebDriver::Support::Select.new(driver.find_element(:id, 'delivery_mm_s'))
     select.select_by(:value, '01')
     select = Selenium::WebDriver::Support::Select.new(driver.find_element(:id, 'delivery_dd_s'))
-    select.select_by(:value, '10')
+    select.select_by(:value, '29')
 
     select = Selenium::WebDriver::Support::Select.new(driver.find_element(:id, 'delivery_yy_e'))
     select.select_by(:value, '2020')
     select = Selenium::WebDriver::Support::Select.new(driver.find_element(:id, 'delivery_mm_e'))
     select.select_by(:value, '01')
     select = Selenium::WebDriver::Support::Select.new(driver.find_element(:id, 'delivery_dd_e'))
-    select.select_by(:value, '10')
+    select.select_by(:value, '29')
 
     driver.find_elements(:name,'order_status').each do |element|
       element.click if element.attribute('value') == '1'
