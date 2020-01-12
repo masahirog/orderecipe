@@ -34,11 +34,22 @@ class KurumesiOrder < ApplicationRecord
   end
 
   def self.paper_print
-    options = Selenium::WebDriver::Chrome::Options.new
-    options.binary = ENV.fetch("GOOGLE_CHROME_SHIM")
-    options.add_argument('headless')
-    options.add_argument('disable-gpu')
+
+    Selenium::WebDriver::Chrome.path = ENV.fetch('GOOGLE_CHROME_BIN', nil)
+
+    options = Selenium::WebDriver::Chrome::Options.new(
+      prefs: { 'profile.default_content_setting_values.notifications': 2 },
+      binary: ENV.fetch('GOOGLE_CHROME_SHIM', nil)
+    )
+
     driver = Selenium::WebDriver.for :chrome, options: options
+
+
+    # options = Selenium::WebDriver::Chrome::Options.new
+    # options.binary = ENV.fetch("GOOGLE_CHROME_SHIM")
+    # options.add_argument('headless')
+    # options.add_argument('disable-gpu')
+    # driver = Selenium::WebDriver.for :chrome, options: options
     url = "http://admin.kurumesi-bentou.com/admin_shop/"
     driver.get url
     driver.find_element(:class, 'inputId').send_keys "759"
