@@ -34,15 +34,14 @@ class KurumesiOrder < ApplicationRecord
   end
 
   def self.paper_print
+    Selenium::WebDriver::Chrome.path = ENV.fetch('GOOGLE_CHROME_BIN', nil)
 
-    # Selenium::WebDriver::Chrome.path = ENV.fetch('GOOGLE_CHROME_BIN', nil)
-    #
-    # options = Selenium::WebDriver::Chrome::Options.new(
-    #   prefs: { 'profile.default_content_setting_values.notifications': 2 },
-    #   binary: ENV.fetch('GOOGLE_CHROME_SHIM', nil)
-    # )
-    #
-    # driver = Selenium::WebDriver.for :chrome, options: options
+    options = Selenium::WebDriver::Chrome::Options.new(
+      prefs: { 'profile.default_content_setting_values.notifications': 2 },
+      binary: ENV.fetch('GOOGLE_CHROME_SHIM', nil)
+    )
+
+    driver = Selenium::WebDriver.for :chrome, options: options
 
 
     # options = Selenium::WebDriver::Chrome::Options.new
@@ -55,23 +54,23 @@ class KurumesiOrder < ApplicationRecord
     # caps = Selenium::WebDriver::Remote::Capabilities.chrome("chromeOptions" => {binary: "/app/.apt/usr/bin/google-chrome", args: ["--headless"]})
     # driver = Selenium::WebDriver.for :chrome, desired_capabilities: caps
 
-    require 'selenium-webdriver'
+    # require 'selenium-webdriver'
 
     # selenium headlessモードでchromeを立ち上げる
-    options = Selenium::WebDriver::Chrome::Options.new
-    options.add_argument('--headless')
-    options.add_argument('--disable-gpu')
+    # options = Selenium::WebDriver::Chrome::Options.new
+    # options.add_argument('--headless')
+    # options.add_argument('--disable-gpu')
 
-    # userAgentの設定
-    webdriver = Webdriver::UserAgent.driver(browser: :chrome, agent: :random, orientation: :landscape)
-    user_agent = webdriver.execute_script('return navigator.userAgent')
-    options.add_argument("--user-agent=#{user_agent}")
+    # # userAgentの設定
+    # webdriver = Webdriver::UserAgent.driver(browser: :chrome, agent: :random, orientation: :landscape)
+    # user_agent = webdriver.execute_script('return navigator.userAgent')
+    # options.add_argument("--user-agent=#{user_agent}")
 
-    driver = Selenium::WebDriver.for(:chrome, options: options)
-
+    # driver = Selenium::WebDriver.for(:chrome, options: options)
 
 
     url = "http://admin.kurumesi-bentou.com/admin_shop/"
+    # driver = Selenium::WebDriver.for :chrome
     driver.get url
     driver.find_element(:class, 'inputId').send_keys "759"
     driver.find_element(:class, 'password').send_keys "bchimBS9"
