@@ -34,14 +34,14 @@ class KurumesiOrder < ApplicationRecord
   end
 
   def self.paper_print
-    Selenium::WebDriver::Chrome.path = ENV.fetch('GOOGLE_CHROME_BIN', nil)
-
-    options = Selenium::WebDriver::Chrome::Options.new(
-      prefs: { 'profile.default_content_setting_values.notifications': 2 },
-      binary: ENV.fetch('GOOGLE_CHROME_SHIM', nil)
-    )
-
-    driver = Selenium::WebDriver.for :chrome, options: options
+    # Selenium::WebDriver::Chrome.path = ENV.fetch('GOOGLE_CHROME_BIN', nil)
+    #
+    # options = Selenium::WebDriver::Chrome::Options.new(
+    #   prefs: { 'profile.default_content_setting_values.notifications': 2 },
+    #   binary: ENV.fetch('GOOGLE_CHROME_SHIM', nil)
+    # )
+    #
+    # driver = Selenium::WebDriver.for :chrome, options: options
 
 
     # options = Selenium::WebDriver::Chrome::Options.new
@@ -67,6 +67,12 @@ class KurumesiOrder < ApplicationRecord
     # options.add_argument("--user-agent=#{user_agent}")
 
     # driver = Selenium::WebDriver.for(:chrome, options: options)
+
+    require 'selenium-webdriver'
+
+    caps = Selenium::WebDriver::Remote::Capabilities.chrome("chromeOptions" => {binary: "/app/.apt/usr/bin/google-chrome"})
+    driver = Selenium::WebDriver.for :chrome, desired_capabilities: caps
+
 
 
     url = "http://admin.kurumesi-bentou.com/admin_shop/"
