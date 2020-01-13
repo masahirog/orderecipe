@@ -70,7 +70,6 @@ div.col-md-12 style='font-size:20px;padding:0 0 7px 0;'
             button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
             = submit_tag "表示する" ,class:"btn btn-primary"
   = link_to "炊飯シート",rice_sheet_cooking_rices_path(date:params[:date],format: :pdf),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
-  / = link_to "当日調理",today_check_kurumesi_orders_path(date:params[:date],format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
   button type="button" class="btn btn-default" data-toggle="modal" data-target="#today_sheet_modal" style='float:left;margin-left:20px;margin-top:10px;'
     |当日調理
   .modal.fade id="today_sheet_modal" tabindex=-1
@@ -92,8 +91,9 @@ div.col-md-12 style='font-size:20px;padding:0 0 7px 0;'
             button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
             = submit_tag "表示する" ,class:"btn btn-primary"
   = link_to "積載表",loading_sheet_kurumesi_orders_path(date:params[:date],format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
-  = link_to "納品書・請求書印刷",paper_print_kurumesi_orders_path(date:params[:date]),class:"btn btn-default",style:'float:left;margin-left:20px;margin-top:10px;'
-  = link_to "領収書印刷",print_receipts_kurumesi_orders_path(date:params[:date],format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
+  button.all_open.btn.btn-default style="float:left;margin-left:20px;margin-top:10px;" 納品書一括表示
+
+  = link_to "領収書一括印刷",print_receipts_kurumesi_orders_path(date:params[:date],format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
 h3 弁当別製造数
 table.table
   thead
@@ -122,9 +122,10 @@ ul.list-group.col-md-12 style='padding:0;'
       .col-md-12 style='padding:0;'
         .col-md-2 style='padding:0;' くるめしID
         .col-md-2 style='padding:0;' メール確認
-        .col-md-2 style='padding:0;' ピック時間
+        .col-md-2 style='padding:0;' デリバリ
         .col-md-2 style='padding:0;' 弁当個数
         .col-md-2 style='padding:0;' 支払い方法
+        .col-md-2 style='padding:0;' ピック
     .col-md-6 style='padding:0;'
       .col-md-12 style='padding:0;'
         |オーダー内容
@@ -134,18 +135,15 @@ ul.list-group.col-md-12 style='padding:0;'
         .col-md-12 style='padding:0;'
           .col-md-2 style='padding:0;height:38px;' = link_to kurumesi_order.management_id,edit_kurumesi_order_path(kurumesi_order)
           .col-md-2 style='padding:0;' = link_to 'メール',kurumesi_mails_path(kurumesi_order_id:kurumesi_order.id)
-          .col-md-2 style='padding:0;' = kurumesi_order.pick_time.strftime("%R") if kurumesi_order.pick_time
+          .col-md-2 style='padding:0;' = kurumesi_order.delivery_time.strftime("%R") if kurumesi_order.delivery_time
           .col-md-2 style='padding:0;' = "#{@kurumesi_orders_num_h[kurumesi_order.id]} 個"
           .col-md-2 style='padding:0;' = kurumesi_order.payment
+          .col-md-2 style='padding:0;' = kurumesi_order.pick_time.strftime("%R") if kurumesi_order.pick_time
         .col-md-12 style='padding:0;'
-          .col-md-6
-            = "作成日時間：#{kurumesi_order.created_at.strftime("%Y年 %m月 %d日　%H:%M")}"
+          .col-md-3
+            = "作成：#{kurumesi_order.created_at.strftime("%-m/%-d　%H:%M")}"
           .col-md-3.clearfix.kurumesi_confirm_div
             = render partial: "kurumesi_confirm", locals: { kurumesi_order:kurumesi_order }
-          .col-md-3.update_at_div style='padding-top:10px;'
-            span
-              -if kurumesi_order.confirm_flag == true
-                = kurumesi_order.updated_at.strftime('%Y-%m-%d %H:%M:%S')
         .col-md-12 style='border:0;color:red;'
           - if kurumesi_order.memo.present?
             = "メモ：#{kurumesi_order.memo}"
@@ -184,6 +182,31 @@ javascript:
         $(this).attr('disabled', true);
         $(this).text("計算してるから待ってね...");
     });
+    $('.all_open').on('click', function(){
+      act();
+    });
+    function act() {
+      // パラメータが無くなっていれば終了
+      if(gon.order_arr.length==0) return;
+      // 配列の先頭を使う
+      arr = gon.order_arr[0];
+      window.open("http://admin.kurumesi-bentou.com/admin_shop/delivery_note/?shop_no="+arr[0]+"&order_no="+arr[1], '_blank');
+      // if (arr[2]=="請求書(持参)") {
+      //   // window.open("http://admin.kurumesi-bentou.com/admin_shop/bill/data?shop_no="+arr[0]+"&order_no="+arr[1], '_blank');
+      //   var form = document.createElement('form');
+      //   document.body.appendChild(form);
+      //   form.setAttribute('action', "http://admin.kurumesi-bentou.com/admin_shop/bill/?shop_no="+arr[0]+"&order_no="+arr[1]);
+      //   form.setAttribute('method','POST');
+      //   form.submit();
+      // }
+      gon.order_arr.shift();
+      // 次の回の実行予約
+      setTimeout(function(){
+        act();
+      }, 500);
+    }
+
+
     $(document).on("click", ".confirm_flag_check_box", function () {
       var id = $(this).parent().find(".kurumesi_order_id").val();
       // $("#edit_kurumesi_order_"+id).submit();

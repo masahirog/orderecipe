@@ -31,7 +31,7 @@ html
                 li.menu_li
                   = link_to "将軍献立",daily_menus_path
                 li.menu_li
-                  = link_to "くるめしオーダー",kurumesi_orders_path
+                  = link_to "くるめしオーダー",kurumesi_orders_path(start_date:Date.today)
                 li.dropdown
                   a.dropdown-toggle href="#" data-toggle="dropdown" role="button"
                     |発注

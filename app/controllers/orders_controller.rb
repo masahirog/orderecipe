@@ -190,6 +190,7 @@ class OrdersController < ApplicationController
     @prev_stocks = {}
     @stock_hash = {}
     @b_hash.each do |key,value|
+      material = Material.find(key)
       recipe_unit = value['recipe_unit']
       order_unit = value['order_unit']
       a = []
@@ -201,7 +202,7 @@ class OrdersController < ApplicationController
       prev_stock = Stock.where("date < ?", sales_date).where(material_id:key).order("date DESC").first
       @prev_stocks[key] = prev_stock
       calculated_quantity = value['calculated_order_amount'].round(1)
-      if prev_stock.present?
+      if prev_stock.present? && material.stock_management_flag == true
         if prev_stock.end_day_stock < 0
           shortage_stock = (-1 * prev_stock.end_day_stock).round(1)
           if value['order_unit_quantity'].to_f < 1

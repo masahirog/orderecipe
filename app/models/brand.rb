@@ -1,5 +1,6 @@
 class Brand < ApplicationRecord
   has_many :products
+  has_many :kurumesi_orders
 
   # 枡々
   def self.masu_order_make(order_details_arr,line,product_name,num)

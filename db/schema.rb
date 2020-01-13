@@ -14,6 +14,7 @@ ActiveRecord::Schema.define(version: 2019_12_19_113341) do
 
   create_table "brands", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name", null: false
+    t.integer "store_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -185,6 +186,7 @@ ActiveRecord::Schema.define(version: 2019_12_19_113341) do
     t.string "accounting_unit", null: false
     t.integer "accounting_unit_quantity", null: false
     t.boolean "measurement_flag", default: false, null: false
+    t.boolean "stock_management_flag", default: true, null: false
   end
 
   create_table "menu_materials", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -232,6 +234,7 @@ ActiveRecord::Schema.define(version: 2019_12_19_113341) do
     t.text "cook_on_the_day"
     t.string "image"
     t.integer "base_menu_id"
+    t.integer "serving_cost", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

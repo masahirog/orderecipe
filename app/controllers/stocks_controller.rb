@@ -175,14 +175,14 @@ class StocksController < ApplicationController
     @storage_locations = StorageLocation.all
     if params[:inventory_flag] == 'true'
       inventory_material_ids = Stock.where(date:date,inventory_flag:true).map{|stock|stock.material_id}
-      @materials = Material.where(id:inventory_material_ids).order('vendor_id').search(params).where(unused_flag:false).includes(:vendor,:storage_location).page(params[:page]).per(100)
+      @materials = Material.where(id:inventory_material_ids,stock_management_flag:true).order('vendor_id').search(params).where(unused_flag:false).includes(:vendor,:storage_location).page(params[:page]).per(100)
     elsif params[:alert_date].present?
       all_material_ids = Stock.pluck("material_id").uniq
       inventory_ok_material_ids = Stock.where('date >= ?',params[:alert_date]).where(inventory_flag:true).pluck('material_id').uniq
       need_inventory_material_ids = all_material_ids - inventory_ok_material_ids
-      @materials = Material.order('vendor_id').search(params).where(id:need_inventory_material_ids).includes(:vendor,:storage_location).page(params[:page]).per(100)
+      @materials = Material.order('vendor_id').search(params).where(id:need_inventory_material_ids,stock_management_flag:true).includes(:vendor,:storage_location).page(params[:page]).per(100)
     else
-      @materials = Material.order('vendor_id').search(params).where(unused_flag:false).includes(:vendor,:storage_location).page(params[:page]).per(100)
+      @materials = Material.order('vendor_id').search(params).where(unused_flag:false,stock_management_flag:true).includes(:vendor,:storage_location).page(params[:page]).per(100)
     end
     @stocks_info_hash = {}
     if @materials.present?

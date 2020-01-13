@@ -11,18 +11,23 @@
             = message
   nav.alert.alert-danger.eos-alert.navbar-fixed-top style="display:none;"
     |  終売の食材を選択しています。食材を変更してください(((；ﾟДﾟ)))
-  .form-group.col-md-3
-    = f.label :name ,'メニュー名'
-    = f.text_field :name, class: "form-control", id: "material_name",style:"width:100%;"
-  .form-group.col-md-3
-    = f.label :roma_name ,'ローマ字名'
-    = f.text_field :roma_name, class: "form-control", id: "material_name",style:"width:100%;"
-  .form-group.col-md-3
-    = f.label :food_label_name ,'食品表示名'
-    = f.text_field :food_label_name, class: "form-control", id: "food_label_name",style:"width:100%;"
-  .form-group.col-md-2
-    = f.label :category ,'カテゴリー'
-    = f.select :category, options_for_select(Menu.categories.keys.to_a,@menu.category),{include_blank: true}, { class: "form-control",style:"width:100%;"}
+  .form-group.col-md-12
+    .col-md-4
+      = f.label :name ,'メニュー名'
+      = f.text_field :name, class: "form-control", id: "material_name",style:"width:100%;"
+    .col-md-4
+      = f.label :roma_name ,'ローマ字名'
+      = f.text_field :roma_name, class: "form-control", id: "material_name",style:"width:100%;"
+    .col-md-4
+      = f.label :food_label_name ,'食品表示名'
+      = f.text_field :food_label_name, class: "form-control", id: "food_label_name",style:"width:100%;"
+  .form-group.col-md-12
+    .col-md-3
+      = f.label :category ,'カテゴリー'
+      = f.select :category, options_for_select(Menu.categories.keys.to_a,@menu.category),{include_blank: true}, { class: "form-control",style:"width:100%;"}
+    .col-md-2
+      = f.label :serving_cost ,'盛り付け工数'
+      = f.number_field :serving_cost, class: "form-control"
 
   .col-md-4.form-group
     = f.label :cook_the_day_before ,'前日調理'

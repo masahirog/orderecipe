@@ -29,13 +29,17 @@ tr.order_materials_tr.nested-fields
             span style='color:red;margin-left:10px;' class="glyphicon glyphicon-tags original-tooltip" aria-hidden="true"  data-toggle="tooltip" data-placement="top" title="#{f.object.material.memo}"
       .text-right style="float:left;width:50%;"
         span class="stock_yoso_#{f.object.material_id} text-right"
-          - if @prev_stocks[f.object.material_id]
-            - if @prev_stocks[f.object.material_id].end_day_stock < 0
-              span style='color:red;' = "#{(@prev_stocks[f.object.material_id].end_day_stock/f.object.material.accounting_unit_quantity).floor(1)} #{f.object.material.accounting_unit}：不足"
+          - if f.object.material_id.present?
+            - if f.object.material.stock_management_flag == true
+              - if @prev_stocks[f.object.material_id]
+                - if @prev_stocks[f.object.material_id].end_day_stock < 0
+                  span style='color:red;' = "#{(@prev_stocks[f.object.material_id].end_day_stock/f.object.material.accounting_unit_quantity).floor(1)} #{f.object.material.accounting_unit}：不足"
+                - else
+                  span style='color:lime;' = "残り：#{(@prev_stocks[f.object.material_id].end_day_stock/f.object.material.accounting_unit_quantity).floor(1)} #{f.object.material.accounting_unit} "
+              - else
+                |0
             - else
-              span style='color:lime;' = "残り：#{(@prev_stocks[f.object.material_id].end_day_stock/f.object.material.accounting_unit_quantity).floor(1)} #{f.object.material.accounting_unit} "
-          - else
-            |0
+              |ー
         - if f.object.material_id.present?
           - if @stock_hash[f.object.material_id].present?
             = link_to history_stocks_path(material_id:f.object.material_id),target:'_blank',class:'stock-tooltip' do

@@ -28,9 +28,9 @@ class KurumesiMail < ApplicationRecord
     imap_user = 'd@bento.jp'
     imap_passwd = ENV['D_BENTO_PASS']
     imap.login(imap_user, imap_passwd)
-
+    # 'FROM','info@kurumesi-bentou.com',
     search_criterias = [
-      'FROM','info@kurumesi-bentou.com',
+      'FROM','gon@taberu.co.jp',
       'SINCE', (Date.today).strftime("%d-%b-%Y")
     ]
     imap.select('INBOX') # 対象のメールボックスを選択
@@ -115,9 +115,7 @@ class KurumesiMail < ApplicationRecord
       elsif line[1..4] == "宛名指定"
         order[:reciept_name] = line[6..-1]
       elsif line[1..4]== "支払方法"
-        if line[6..8] == '請求書'
-          order[:pay] = 0
-        elsif line[6..8] == "現金"
+        if line[6..8] == "現金"
           order[:pay] = 1
         else
           order[:pay] = 2
@@ -125,6 +123,12 @@ class KurumesiMail < ApplicationRecord
       end
       if line[1..2] == "但書"
         order[:proviso] = line[4..-1]
+      elsif line[1..2] == "受渡"
+        if line[4..-1] == "当日請求書持参"
+          order[:pay] = 0
+        else
+          order[:pay] = 3
+        end
       end
       order[:proviso] = line[7..-1] if line[1..5] == "領収書但書"
     end
@@ -185,6 +189,7 @@ class KurumesiMail < ApplicationRecord
     @kurumesi_order.delivery_address = order_info_from_mail[:delivery_address]
     @kurumesi_order.reciept_name = order_info_from_mail[:reciept_name]
     @kurumesi_order.proviso = order_info_from_mail[:proviso]
+    @kurumesi_order.confirm_flag = false
     order_info_from_mail[:order_details].each do |od|
       @kurumesi_order.kurumesi_order_details.build(product_id:od[:product_id],number:od[:num])
     end
@@ -194,6 +199,7 @@ class KurumesiMail < ApplicationRecord
   def self.cancel_order(order_info_from_mail)
     @kurumesi_order = KurumesiOrder.find_by(management_id:order_info_from_mail[:management_id])
     @kurumesi_order.canceled_flag = true
+    @kurumesi_order.confirm_flag = false
     reflect_check()
   end
 

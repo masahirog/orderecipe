@@ -1,7 +1,7 @@
 h1 くるめしオーダー一覧
 = month_calendar do |date|
   div.col-md-12 style='font-size:18px;padding:0 0 7px 0;'
-    = date.strftime("%-m月%-d日")
+    = link_to date.strftime("%-m月%-d日"), date_kurumesi_orders_path(date:date)
     / = link_to new_kurumesi_order_path(start_time:date),style:'margin-left:5px;' do
     /   span class="glyphicon glyphicon-plus-sign" aria-hidden="true"
     button type="button" class="glyphicon glyphicon-plus-sign" data-toggle="modal" data-target="#modal_#{date}"
@@ -18,39 +18,47 @@ h1 くるめしオーダー一覧
               button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
               = submit_tag "作成する" ,class:"btn btn-primary"
 
+  table.table style= 'margin-bottom:5px;font-size:14px;'
+    tr
+      td オーダー
+      td.text-right = "#{@date_order_count[date]}件"
+    tr
+      td ┗ 未確定
+      td.text-right style = "color:red;" = "#{@unconfirmed_order_count[date]}件"
+    tr
+      td colspan="2"
+        span style='font-size:18px;' = @brands_count[date]
+        span style='font-size:12px;'  屋号、
+        span style='font-size:18px;' = @products_count[date]
+        span style='font-size:12px;'  商品、
+        span style='font-size:18px;color:blue;' = @date_sum[date]
+        span style='font-size:12px;'  食
 
-  - if @date_order_count[date]
-    .clearfix
-      div style='float:left;'
-        - if @memo_orders[date].present?
-          = link_to "オーダー：#{@date_order_count[date]}件",date_kurumesi_orders_path(date:date)
-          span style='color:red;'  メモあり
-        - else
-          = link_to "オーダー：#{@date_order_count[date]}件",date_kurumesi_orders_path(date:date)
-      div style='float:right;'
-        = "計：#{@date_sum[date]}食"
-
-  table.table
-    tr style='font-size:11px;'
+    tr
+      td ┗ AM 納品
+      td.text-right
+        span style='font-size:16px;' = @am_sum[date]
+        span style='font-size:11px;'  食
+    tr
+      td ┗ PM 納品
+      td.text-right
+        span style='font-size:16px;' = @pm_sum[date]
+        span style='font-size:11px;'  食
+    tr
       td 味噌
       td.text-right = @miso_num[date]
-    tr style='font-size:11px;'
+    tr
       td PET
       td.text-right = @pettea_num[date]
-    tr style='font-size:11px;'
+    tr
       td CAN
       td.text-right = @cantea_num[date]
+    tr
+      td キャンセル
+      td.text-right
+        - if @date_canceled_order_count[date]
+          = link_to "#{@date_canceled_order_count[date]}件",date_kurumesi_orders_path(date:date)
 
-    - @products.each do |product|
-      - if @date_group[[date,product.id]]
-        tr
-          td style='font-size:11px;'
-            = link_to product.short_name,product
-          td.text-right style='font-size:11px;'
-            = @date_group[[date,product.id]]
-  - if @date_canceled_order_count[date]
-    .clearfix
-      = link_to "キャンセルオーダー：#{@date_canceled_order_count[date]}件",date_kurumesi_orders_path(date:date)
 
 
 style type="text/css"

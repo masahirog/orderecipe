@@ -13,6 +13,7 @@ class CreateMenus < ActiveRecord::Migration[4.2]
       t.text :cook_on_the_day
       t.string :image
       t.integer :base_menu_id
+      t.integer :serving_cost, null: false, default: 0
       t.timestamps null: false
     end
   end

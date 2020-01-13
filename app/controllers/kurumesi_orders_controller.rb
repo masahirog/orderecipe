@@ -19,14 +19,13 @@ class KurumesiOrdersController < ApplicationController
     end
   end
   def paper_print
-    KurumesiOrder.paper_print
-    date = params[:date]
-    redirect_to date_kurumesi_orders_path(date:date)
+
+    # redirect_to date_kurumesi_orders_path(date:date)
   end
   def print_receipts
     date = params[:date]
     data_arr = []
-    kurumesi_orders = KurumesiOrder.where(start_time:date,payment:[1,2])
+    kurumesi_orders = KurumesiOrder.where(start_time:date,payment:[1,2]).where.not(management_id:0)
     kurumesi_orders.each do |ko|
       to = ko.reciept_name
       keisho = "御中"
@@ -98,15 +97,22 @@ class KurumesiOrdersController < ApplicationController
 
 
   def index
-    @memo_orders = KurumesiOrder.where.not(memo:nil).where.not(memo:'').group('start_time').count
+    date = params[:start_date]
+    kurumesi_order_details = KurumesiOrderDetail.joins(:kurumesi_order,:product).where(:kurumesi_orders => {canceled_flag:false,start_time: date.in_time_zone.all_month})
+    @memo_orders = KurumesiOrder.where.not(memo:nil,start_time: date.in_time_zone.all_month).where.not(memo:'').group('start_time').count
     @products = Product.all
-    @date_order_count = KurumesiOrder.where(canceled_flag:false).group('start_time').count
-    @date_canceled_order_count = KurumesiOrder.where(canceled_flag:true).group('start_time').count
-    @date_group = KurumesiOrderDetail.joins(:kurumesi_order,:product).where(:kurumesi_orders => {canceled_flag:false}).where(:products => {product_category:1}).group('kurumesi_orders.start_time').group('products.id').sum(:number)
-    @date_sum = KurumesiOrderDetail.joins(:kurumesi_order,:product).where(:kurumesi_orders => {canceled_flag:false}).where(:products => {product_category:1}).group('kurumesi_orders.start_time').sum(:number)
-    @miso_num = KurumesiOrderDetail.joins(:kurumesi_order,:product).where(:kurumesi_orders => {canceled_flag:false}).where(:products => {id:3831}).group('kurumesi_orders.start_time').sum(:number)
-    @cantea_num = KurumesiOrderDetail.joins(:kurumesi_order,:product).where(:kurumesi_orders => {canceled_flag:false}).where(:products => {id:3801}).group('kurumesi_orders.start_time').sum(:number)
-    @pettea_num = KurumesiOrderDetail.joins(:kurumesi_order,:product).where(:kurumesi_orders => {canceled_flag:false}).where(:products => {id:3791}).group('kurumesi_orders.start_time').sum(:number)
+    @date_order_count = KurumesiOrder.where(canceled_flag:false,start_time: date.in_time_zone.all_month).group('start_time').count
+    @date_canceled_order_count = KurumesiOrder.where(canceled_flag:true,start_time: date.in_time_zone.all_month).group('start_time').count
+    @unconfirmed_order_count = KurumesiOrder.where(canceled_flag:false,start_time: date.in_time_zone.all_month,confirm_flag:false).group('start_time').count
+    @brands_count = KurumesiOrder.where(canceled_flag:false,start_time: date.in_time_zone.all_month).group('start_time').count('DISTINCT brand_id')
+    @products_count = kurumesi_order_details.where(:products => {product_category:1}).group('kurumesi_orders.start_time').count('DISTINCT product_id')
+    @date_group = kurumesi_order_details.where(:products => {product_category:1}).group('kurumesi_orders.start_time').group('products.id').sum(:number)
+    @date_sum = kurumesi_order_details.where(:products => {product_category:1}).group('kurumesi_orders.start_time').sum(:number)
+    @am_sum = kurumesi_order_details.where(:kurumesi_orders => {delivery_time:'00:00:00'..'11:59:00'}).where(:products => {product_category:1}).group('kurumesi_orders.start_time').sum(:number)
+    @pm_sum = kurumesi_order_details.where(:kurumesi_orders => {delivery_time:'12:00:00'..'23:59:00'}).where(:products => {product_category:1}).group('kurumesi_orders.start_time').sum(:number)
+    @miso_num = kurumesi_order_details.where(:products => {id:3831}).group('kurumesi_orders.start_time').sum(:number)
+    @cantea_num = kurumesi_order_details.where(:products => {id:3801}).group('kurumesi_orders.start_time').sum(:number)
+    @pettea_num = kurumesi_order_details.where(:products => {id:3791}).group('kurumesi_orders.start_time').sum(:number)
     @brands = Brand.all
   end
 
@@ -117,6 +123,11 @@ class KurumesiOrdersController < ApplicationController
     @bentos_num_h = @kurumesi_orders.joins(kurumesi_order_details:[:product]).where(:products => {product_category:1}).group('products.brand_id').group('kurumesi_order_details.product_id').sum('kurumesi_order_details.number').sort {|(k1, v1), (k2, v2)| k1[0] <=> k2[0] }
     @kurumesi_orders_num_h = @kurumesi_orders.joins(kurumesi_order_details:[:product]).where(:products => {product_category:1}).group('kurumesi_order_details.kurumesi_order_id').sum('kurumesi_order_details.number')
     @brands = Brand.all
+    arr = []
+    @kurumesi_orders.includes(:brand).where.not(management_id:0).each do |ko|
+      arr << [ko.brand.store_id,ko.management_id,ko.payment]
+    end
+    gon.order_arr = arr
   end
   def show
     @kurumesi_order = KurumesiOrder.includes(kurumesi_order_details:[:product]).find(params[:id])

@@ -23,6 +23,12 @@
       = f.text_field :order_name, class:'form-control'
   .col-md-12.form-group
     .col-md-5
+      = f.label :stock_management_flag, "在庫を管理する（チェックを外すと日常の在庫管理は行いません）"
+      = f.check_box :stock_management_flag, class: "form-control"
+
+
+  .col-md-12.form-group
+    .col-md-5
       = f.label :storage_location_id, "ストック場所"
       = f.collection_select :storage_location_id, @storage_locations, :id, :name, {}, { class: "form-control"}
 
@@ -53,7 +59,7 @@
       .col-md-12
         = f.label :delivery_deadline, "納品"
       .col-md-8
-        = f.select :delivery_deadline,options_for_select(0..5,f.object.delivery_deadline),{}, class: "form-control"
+        = f.select :delivery_deadline,options_for_select(0..10,f.object.delivery_deadline),{}, class: "form-control"
       .col-md-4 style="margin-top:10px;padding:0;"
         | 営業日前
 

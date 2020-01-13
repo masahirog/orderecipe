@@ -1,5 +1,5 @@
 $(".li_<%= @kurumesi_order.id %>").find('.kurumesi_confirm_div').html("<%= escape_javascript(render partial: 'kurumesi_confirm', locals: {kurumesi_order:@kurumesi_order}) %>");
-$(".li_<%= @kurumesi_order.id %>").find('.update_at_div > span').text("<%= @kurumesi_order.updated_at.strftime('%Y-%m-%d %H:%M:%S') %>");
+
 if ($(".li_<%= @kurumesi_order.id %>").find('.confirm_flag_check_box').prop('checked')) {
   $(".li_<%= @kurumesi_order.id %>").css('background-color','white');
   $(".li_<%= @kurumesi_order.id %>").find('.list-group-item').css('background-color','white');

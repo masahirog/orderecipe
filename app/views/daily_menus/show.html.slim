@@ -32,7 +32,7 @@ table.table.table-list
     -@daily_menu_details.each do |dmd|
       tr
         td
-          = link_to dmd.product.name,edit_product_path(dmd.product)
+          = link_to dmd.product.name,product_path(dmd.product)
         td
           = dmd.cost_price_per_product
         td
