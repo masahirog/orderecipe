@@ -30,7 +30,7 @@ class KurumesiMail < ApplicationRecord
     imap.login(imap_user, imap_passwd)
     # 'FROM','info@kurumesi-bentou.com',
     search_criterias = [
-      'FROM','gon@taberu.co.jp',
+      'FROM','info@kurumesi-bentou.com',
       'SINCE', (Date.today).strftime("%d-%b-%Y")
     ]
     imap.select('INBOX') # 対象のメールボックスを選択
