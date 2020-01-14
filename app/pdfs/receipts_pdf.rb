@@ -5,9 +5,13 @@ class ReceiptsPdf < Prawn::Document
       :top_margin    => 0 )
     #日本語のフォント
     font "vendor/assets/fonts/ipaexm.ttf"
+    n=1
     data_arr.each do |data|
       body(data)
-      start_new_page
+      if n < data_arr.length
+        start_new_page
+        n += 1
+      end
     end
 
   end

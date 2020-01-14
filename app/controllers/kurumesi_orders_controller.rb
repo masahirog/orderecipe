@@ -29,7 +29,7 @@ class KurumesiOrdersController < ApplicationController
     kurumesi_orders.each do |ko|
       to = ko.reciept_name
       keisho = "御中"
-      total = ko.total_price
+      total = ko.total_price.to_i.to_s(:delimited)
       tadashi = ko.proviso
       uchiwake = ''
       data = [date,to,keisho,total,tadashi,uchiwake]
