@@ -21,12 +21,13 @@ h1 くるめしオーダー一覧
   table.table style= 'margin-bottom:5px;font-size:14px;'
     tr
       td オーダー
-      td.text-right = "#{@date_order_count[date]}件"
+      td.text-right
+        span style = 'font-size:16px;' = "#{@date_order_count[date]} "
+        - if @unconfirmed_order_count[date].present?
+          span style= "color:red;font-size:13px;" = "( #{@unconfirmed_order_count[date]} ) "
+        span 件
     tr
-      td ┗ 未確定
-      td.text-right style = "color:red;" = "#{@unconfirmed_order_count[date]}件"
-    tr
-      td colspan="2"
+      td colspan="2" style ='text-align:right;'
         span style='font-size:18px;' = @brands_count[date]
         span style='font-size:12px;'  屋号、
         span style='font-size:18px;' = @products_count[date]
@@ -35,25 +36,25 @@ h1 くるめしオーダー一覧
         span style='font-size:12px;'  食
 
     tr
-      td ┗ AM 納品
+      td AM
       td.text-right
         span style='font-size:16px;' = @am_sum[date]
         span style='font-size:11px;'  食
     tr
-      td ┗ PM 納品
+      td PM
       td.text-right
         span style='font-size:16px;' = @pm_sum[date]
         span style='font-size:11px;'  食
-    tr
+    tr style= 'font-size:13px;'
       td 味噌
       td.text-right = @miso_num[date]
-    tr
+    tr style= 'font-size:13px;'
       td PET
       td.text-right = @pettea_num[date]
-    tr
+    tr style= 'font-size:13px;'
       td CAN
       td.text-right = @cantea_num[date]
-    tr
+    tr style= 'font-size:13px;'
       td キャンセル
       td.text-right
         - if @date_canceled_order_count[date]

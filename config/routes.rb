@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   post "versions/:id/revert" => "versions#revert", :as => "revert_version"
   post'menus/include_update' => 'menus#include_update'
   post 'materials/change_additives' => 'materials#change_additives'
+  get '/kpi' => 'application#kpi'
 
   resources :kurumesi_orders do
     collection do
