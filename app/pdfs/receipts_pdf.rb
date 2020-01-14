@@ -23,13 +23,26 @@ class ReceiptsPdf < Prawn::Document
       text "領　収　書", size: 20, :align => :center,styles: :bold
       move_down 10
       text "発行日：#{data[0]}　　", size:11, :align => :right
-      text "　　#{data[1]} #{data[2]}", size: 16,styles: :bold
+      if data[1].present?
+        if data[1].length > 20
+          text "　　#{data[1]} #{data[2]}", size: 12,styles: :bold
+        else
+          text "　　#{data[1]} #{data[2]}", size: 16,styles: :bold
+        end
+      else
+        text "　　　　　　　　　　　　　　　　　　　　 #{data[2]}", size: 16,styles: :bold
+      end
+
       move_down 10
       text "￥　#{data[3]} -", size: 16,styles: :bold, :align => :center
       line [140, 110], [400, 110]
       stroke
       move_down 15
-      text "但し、#{data[4]}、上記正に領収いたしました。", size: 11, :align => :center
+      if data[4].present?
+        text "但し、#{data[4]}、上記正に領収いたしました。", size: 11, :align => :center
+      else
+        text "但し、お弁当代として、上記正に領収いたしました。", size: 11, :align => :center
+      end
 
       move_down 15
       text "　　内　　訳", size: 12
