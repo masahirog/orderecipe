@@ -7,7 +7,7 @@ class ShogunPreparation < Prawn::Document
       margin:10
     )
     #日本語のフォント
-    font "vendor/assets/fonts/ipaexm.ttf"
+    font "vendor/assets/fonts/ipaexg.ttf"
     num = params[:volume][:num]
     product = product
     menus = menus

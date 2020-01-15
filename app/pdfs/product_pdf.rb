@@ -5,7 +5,7 @@ class ProductPdf < Prawn::Document
       page_size: 'A4',
       page_layout: :landscape)
     #日本語のフォント
-    font "vendor/assets/fonts/ipaexm.ttf"
+    font "vendor/assets/fonts/ipaexg.ttf"
     num = params[:volume][:num]
     product = product
     menus = menus

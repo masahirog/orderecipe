@@ -5,7 +5,7 @@ class ProductPdfAllRoma < Prawn::Document
       page_layout: :landscape,
       margin:10
     )
-    font "vendor/assets/fonts/ipaexm.ttf"
+    font "vendor/assets/fonts/ipaexg.ttf"
     daily_menu = DailyMenu.find(id)
     max_i = daily_menu.daily_menu_details.length
     date = daily_menu.start_time

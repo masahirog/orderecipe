@@ -34,6 +34,10 @@
       th.active.col-md-4 bentoID
       td = @product.management_id
     tr
+      th.active.col-md-4 商品状況
+      td = @product.status
+
+    tr
       th.active.col-md-4 調理カテゴリー
       td = @product.cook_category
     tr
@@ -42,9 +46,6 @@
     tr
       th.active.col-md-4 使用ライス
       td = @product.cooking_rice.name
-    tr
-      th.active.col-md-4 くるめし帯URL
-      td = link_to @product.obi_url ,@product.obi_url,target:'_blank'
     tr
       th.active.col-md-4 販売価格
       td = "#{@product.sell_price} 円"

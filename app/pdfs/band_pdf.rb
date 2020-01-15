@@ -6,7 +6,7 @@ class BandPdf < Prawn::Document
       page_layout: :landscape,
       :top_margin    => 0 )
     #日本語のフォント
-    font "vendor/assets/fonts/ipaexm.ttf"
+    font "vendor/assets/fonts/ipaexg.ttf"
     header(product,17)
     header(product,22)
 

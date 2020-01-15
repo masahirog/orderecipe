@@ -4,7 +4,7 @@ class ReceiptsPdf < Prawn::Document
       page_size: 'A4',
       :top_margin    => 0 )
     #日本語のフォント
-    font "vendor/assets/fonts/ipaexm.ttf"
+    font "vendor/assets/fonts/ipaexg.ttf"
     n=1
     data_arr.each do |data|
       body(data)

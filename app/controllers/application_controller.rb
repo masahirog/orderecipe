@@ -12,6 +12,7 @@ class ApplicationController < ActionController::Base
 
   def kpi
     @dates = []
+    @date_sum_py = []
     gon.date_sum = []
     gon.mokuhyo = []
     gon.idoheikin = []
@@ -50,6 +51,7 @@ class ApplicationController < ActionController::Base
     (from..@to).each do |date|
       if kurumesi_make_num[date].present?
         gon.date_sum << kurumesi_make_num[date]
+        @date_sum_py << kurumesi_make_num[date]
         if masu_make_num[date].present?
           gon.masu_date_sum << masu_make_num[date]
         else
@@ -70,11 +72,6 @@ class ApplicationController < ActionController::Base
         else
           gon.suzu_date_sum << 0
         end
-
-
-
-
-
         @dates << Time.parse(date.to_s).to_i
         gon.mokuhyo << 850
         gon.masu_mokuhyo << 300
@@ -98,7 +95,11 @@ class ApplicationController < ActionController::Base
     end
 
     latest_heikin = gon.idoheikin.last
-    @tasseiritsu = (latest_heikin.to_f / 850).round(3)*100
+    @tasseiritsu = ((latest_heikin.to_f / 850)*100).round(1)
+  end
+
+  def product_report
+    
   end
 
   protected

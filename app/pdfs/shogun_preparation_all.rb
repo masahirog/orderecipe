@@ -5,7 +5,7 @@ class ShogunPreparationAll < Prawn::Document
       page_layout: :landscape,
       margin:10
     )
-    font "vendor/assets/fonts/ipaexm.ttf"
+    font "vendor/assets/fonts/ipaexg.ttf"
     max_i = daily_menu.daily_menu_details.length
     date = daily_menu.start_time
     daily_menu.daily_menu_details.each_with_index do |dmd,i|

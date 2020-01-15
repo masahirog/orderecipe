@@ -7,7 +7,7 @@ class MaterialPreparation < Prawn::Document
       margin:10
     )
     #日本語のフォント
-    font "vendor/assets/fonts/ipaexm.ttf"
+    font "vendor/assets/fonts/ipaexg.ttf"
     menus = []
     menu_materials_arr = []
     products_arr = []

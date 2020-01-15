@@ -103,7 +103,6 @@ table.table
       th 弁当名
       th 短名
       th 個数
-      th 帯URL
   tbody
     - @bentos_num_h.each do |brand_product_num|
       - product = Product.find(brand_product_num[0][1])
@@ -113,7 +112,6 @@ table.table
         td = link_to product.name,product,target:'_blank'
         td = product.short_name
         td = brand_product_num[1]
-        td = link_to "帯PDF",product.obi_url,class:'btn btn-default',:target=>"_blank" if product.obi_url.present?
 
 h3 オーダー別製造数
 ul.list-group.col-md-12 style='padding:0;'

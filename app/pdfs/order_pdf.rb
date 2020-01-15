@@ -2,7 +2,7 @@ class OrderPdf < Prawn::Document
   def initialize(materials_this_vendor,vendor,order)
     super(page_size: 'A4')
     uniq_date = materials_this_vendor.pluck(:delivery_date).uniq
-    font "vendor/assets/fonts/ipaexm.ttf"
+    font "vendor/assets/fonts/ipaexg.ttf"
     uniq_date.each_with_index do |date,i|
       arr=[]
       materials_this_vendor.each do |material|

@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   post'menus/include_update' => 'menus#include_update'
   post 'materials/change_additives' => 'materials#change_additives'
   get '/kpi' => 'application#kpi'
+  get '/product_report' => 'application#product_report'
 
   resources :kurumesi_orders do
     collection do

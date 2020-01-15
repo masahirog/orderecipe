@@ -10,7 +10,7 @@ class KurumesiOrdersController < ApplicationController
       format.html
       format.pdf do
         pdf = KurumesiLoadingPdf.new(date,@kurumesi_orders,@kurumesi_orders_num_h,@products_num_h,@brand_ids)
-        pdf.font "vendor/assets/fonts/ipaexm.ttf"
+
         send_data pdf.render,
         filename:    "#{date}.pdf",
         type:        "application/pdf",
@@ -39,7 +39,7 @@ class KurumesiOrdersController < ApplicationController
       format.html
       format.pdf do
         pdf = ReceiptsPdf.new(data_arr)
-        pdf.font "vendor/assets/fonts/ipaexm.ttf"
+
         send_data pdf.render,
         filename:    "#{date}_receipt.pdf",
         type:        "application/pdf",
@@ -63,7 +63,7 @@ class KurumesiOrdersController < ApplicationController
       format.html
       format.pdf do
         pdf = ReceiptPdf.new(data)
-        pdf.font "vendor/assets/fonts/ipaexm.ttf"
+
         send_data pdf.render,
         filename:    "#{date}.pdf",
         type:        "application/pdf",
@@ -86,7 +86,7 @@ class KurumesiOrdersController < ApplicationController
       format.html
       format.pdf do
         pdf = ReceiptPdf.new(data)
-        pdf.font "vendor/assets/fonts/ipaexm.ttf"
+
         send_data pdf.render,
         filename:    "#{date}.pdf",
         type:        "application/pdf",
@@ -142,7 +142,7 @@ class KurumesiOrdersController < ApplicationController
       format.html
       format.pdf do
         pdf = KurumesiPreperationPdf.new(@bentos_num_h,date,mochiba)
-        pdf.font "vendor/assets/fonts/ipaexm.ttf"
+
         send_data pdf.render,
         filename:    "#{date}.pdf",
         type:        "application/pdf",
@@ -160,7 +160,7 @@ class KurumesiOrdersController < ApplicationController
       format.html
       format.pdf do
         pdf = KurumesiOrderPdf.new(@bentos_num_h,date,mochiba)
-        pdf.font "vendor/assets/fonts/ipaexm.ttf"
+
         send_data pdf.render,
         filename:    "#{date}.pdf",
         type:        "application/pdf",
@@ -188,7 +188,7 @@ class KurumesiOrdersController < ApplicationController
       format.html
       format.pdf do
         pdf = MaterialPreparation.new(@bentos_num_h,date,mochiba,lang)
-        pdf.font "vendor/assets/fonts/ipaexm.ttf"
+
         send_data pdf.render,
         filename:    "#{date}.pdf",
         type:        "application/pdf",
@@ -261,7 +261,7 @@ class KurumesiOrdersController < ApplicationController
       format.html
       format.pdf do
         pdf = KurumesiPreperationTodayCheck.new(@bentos_num_h,date,lang)
-        pdf.font "vendor/assets/fonts/ipaexm.ttf"
+
         send_data pdf.render,
         filename:    "#{date}.pdf",
         type:        "application/pdf",

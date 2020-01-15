@@ -6,7 +6,7 @@ class HyojiPdf < Prawn::Document
       page_size: 'A4',
       page_layout: :portrait)
     #日本語のフォント
-    font "vendor/assets/fonts/ipaexm.ttf"
+    font "vendor/assets/fonts/ipaexg.ttf"
     table_content(product,shomi_kigen,allergies,additives)
 
   end

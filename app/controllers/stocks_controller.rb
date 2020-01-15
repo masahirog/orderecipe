@@ -270,7 +270,7 @@ class StocksController < ApplicationController
       format.html
       format.pdf do
         pdf = InventorySheetPdf.new(@material_stock,storage_location)
-        pdf.font "vendor/assets/fonts/ipaexm.ttf"
+        
         send_data pdf.render,
         filename:    "#{date}.pdf",
         type:        "application/pdf",

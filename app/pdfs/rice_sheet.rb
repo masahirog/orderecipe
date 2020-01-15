@@ -5,7 +5,7 @@ class RiceSheet < Prawn::Document
       page_size: 'A4',
       page_layout: :landscape)
     #日本語のフォント
-    font "vendor/assets/fonts/ipaexm.ttf"
+    font "vendor/assets/fonts/ipaexg.ttf"
     text "#{DateTime.parse(date).strftime("%m月 %d日")}の炊飯シート",size:12
     text "発行時間：#{Time.now.strftime("%m月 %d日　%H:%M")}",size:10,:align=>:right
     table_content_a(hash)

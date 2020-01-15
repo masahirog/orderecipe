@@ -5,7 +5,7 @@ class KurumesiLoadingPdf < Prawn::Document
       page_layout: :landscape,
       margin:10
     )
-    font "vendor/assets/fonts/ipaexm.ttf"
+    font "vendor/assets/fonts/ipaexg.ttf"
     brand_ids.each_with_index do |brand_id,ii|
       brand_kurumesi_orders = kurumesi_orders.where(brand_id:brand_id)
       brand_product_ids = KurumesiOrderDetail.joins(:kurumesi_order).order('kurumesi_orders.pick_time').where(kurumesi_order_id:brand_kurumesi_orders.ids).map{|kod|kod.product_id}.uniq

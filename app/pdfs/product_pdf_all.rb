@@ -7,7 +7,7 @@ class ProductPdfAll < Prawn::Document
       page_size: 'A4',
       page_layout: :landscape)
     #日本語のフォント
-    font "vendor/assets/fonts/ipaexm.ttf"
+    font "vendor/assets/fonts/ipaexg.ttf"
     if controller == 'daily_menus'
       daily_menu = DailyMenu.find(id)
 

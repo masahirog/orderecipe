@@ -287,7 +287,7 @@ ActiveRecord::Schema.define(version: 2019_12_19_113341) do
     t.integer "management_id"
     t.text "memo"
     t.string "short_name"
-    t.text "obi_url"
+    t.integer "status", default: 1, null: false
     t.integer "brand_id"
     t.integer "product_category", default: 1, null: false
     t.integer "cooking_rice_id", null: false

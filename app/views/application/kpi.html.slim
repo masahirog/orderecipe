@@ -13,6 +13,10 @@ canvas#chart4
 h4 涼風
 canvas#chart5
 
+
+canvas#chartp
+
+
 javascript:
   var date = []
   gon.idoheikin.unshift(NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN,NaN);
@@ -29,6 +33,20 @@ javascript:
     var result = m + "/" + d;
     date.push(result)
   })
+
+
+  var ctxp = document.getElementById("chartp").getContext('2d');
+  ctxp.canvas.height = 50;
+  var myChart = new Chart(ctxp, {
+    type: 'pie',
+    data: {
+      labels: ["M", "T", "W", "T", "F", "S", "S"],
+      datasets: [{
+        data: gon.date_sum
+      }]
+    }
+  });
+
   var ctx = document.getElementById("chart1").getContext('2d');
   ctx.canvas.height = 80;
   var chart1 = new Chart(ctx, {
@@ -99,16 +117,6 @@ javascript:
         stacked: false,
         yAxisID: "y-axis-1"
       },{
-        type: 'line',
-        label: "目標(300個)",
-        data: gon.masu_mokuhyo,
-        backgroundColor: 'red',
-        borderColor: 'red',
-        fill: false,
-        stacked: false,
-        yAxisID: "y-axis-1",
-        pointRadius: 0
-      },{
         label: "枡々",
         data: gon.masu_date_sum,
         backgroundColor: 'rgba(192,192,192,0.9)',
@@ -131,7 +139,12 @@ javascript:
           stacked: false,
           id: "y-axis-1",
           type: "linear",
-          position: "left"
+          position: "left",
+          ticks: {
+            beginAtZero: true,
+            min: 0,
+            max: 300
+          }
         }]
       }
     }
@@ -152,16 +165,6 @@ javascript:
         fill: false,
         stacked: false,
         yAxisID: "y-axis-1"
-      },{
-        type: 'line',
-        label: "目標(850個)",
-        data: gon.hasi_mokuhyo,
-        backgroundColor: 'red',
-        borderColor: 'red',
-        fill: false,
-        stacked: false,
-        yAxisID: "y-axis-1",
-        pointRadius: 0
       },{
         label: "製造数",
         data: gon.hasi_date_sum,
@@ -185,7 +188,12 @@ javascript:
           stacked: false,
           id: "y-axis-1",
           type: "linear",
-          position: "left"
+          position: "left",
+          ticks: {
+            beginAtZero: true,
+            min: 0,
+            max: 300
+          }
         }]
       }
     }
@@ -206,16 +214,6 @@ javascript:
         fill: false,
         stacked: false,
         yAxisID: "y-axis-1"
-      },{
-        type: 'line',
-        label: "目標(850個)",
-        data: gon.masu_mokuhyo,
-        backgroundColor: 'red',
-        borderColor: 'red',
-        fill: false,
-        stacked: false,
-        yAxisID: "y-axis-1",
-        pointRadius: 0
       },{
         label: "製造数",
         data: gon.don_date_sum,
@@ -239,7 +237,12 @@ javascript:
           stacked: false,
           id: "y-axis-1",
           type: "linear",
-          position: "left"
+          position: "left",
+          ticks: {
+            beginAtZero: true,
+            min: 0,
+            max: 300
+          }
         }]
       }
     }
@@ -260,16 +263,6 @@ javascript:
         fill: false,
         stacked: false,
         yAxisID: "y-axis-1"
-      },{
-        type: 'line',
-        label: "目標(850個)",
-        data: gon.masu_mokuhyo,
-        backgroundColor: 'red',
-        borderColor: 'red',
-        fill: false,
-        stacked: false,
-        yAxisID: "y-axis-1",
-        pointRadius: 0
       },{
         label: "製造数",
         data: gon.suzu_date_sum,
@@ -293,7 +286,12 @@ javascript:
           stacked: false,
           id: "y-axis-1",
           type: "linear",
-          position: "left"
+          position: "left",
+          ticks: {
+            beginAtZero: true,
+            min: 0,
+            max: 300
+          }
         }]
       }
     }

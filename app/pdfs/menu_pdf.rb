@@ -5,7 +5,7 @@ class MenuPdf < Prawn::Document
       page_size: 'A4',
       page_layout: :portrait)
     #日本語のフォント
-    font "vendor/assets/fonts/ipaexm.ttf"
+    font "vendor/assets/fonts/ipaexg.ttf"
     header_table(menu)
     header_table2(menu)
     table_content(menu_materials)

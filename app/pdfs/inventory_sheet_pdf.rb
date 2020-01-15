@@ -5,7 +5,7 @@ class InventorySheetPdf < Prawn::Document
       margin:10
     )
     #日本語のフォント
-    font "vendor/assets/fonts/ipaexm.ttf"
+    font "vendor/assets/fonts/ipaexg.ttf"
     table_content(material_stock,storage_location)
   end
 

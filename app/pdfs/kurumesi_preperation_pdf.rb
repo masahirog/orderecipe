@@ -7,7 +7,7 @@ class KurumesiPreperationPdf < Prawn::Document
       margin:15
     )
     #日本語のフォント
-    font "vendor/assets/fonts/ipaexm.ttf"
+    font "vendor/assets/fonts/ipaexg.ttf"
     menus = []
     products_arr = []
     bentos_num_h.each do |prnm|

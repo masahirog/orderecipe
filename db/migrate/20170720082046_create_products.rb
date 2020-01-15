@@ -12,7 +12,7 @@ class CreateProducts < ActiveRecord::Migration[4.2]
       t.integer :management_id
       t.text :memo
       t.string :short_name, unique: true
-      t.text :obi_url
+      t.integer :status,default:1,null:false
       t.integer :brand_id
       t.integer :product_category,null:false,default:1
       t.integer :cooking_rice_id,null:false

@@ -1,7 +1,7 @@
 class OrderPrintAll < Prawn::Document
   def initialize(order)
     super(page_size: 'A4')
-    font "vendor/assets/fonts/ipaexm.ttf"
+    font "vendor/assets/fonts/ipaexg.ttf"
     order_materials = order.order_materials.where(un_order_flag:false)
     vendor_ids = order_materials.map{|om|om.material.vendor_id}.uniq
 
