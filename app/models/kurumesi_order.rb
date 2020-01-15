@@ -1,4 +1,3 @@
-require 'selenium-webdriver'
 class KurumesiOrder < ApplicationRecord
   has_many :kurumei_mails
   has_many :kurumesi_order_details, dependent: :destroy
