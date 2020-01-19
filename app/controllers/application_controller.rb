@@ -9,6 +9,32 @@ class ApplicationController < ActionController::Base
     ExceptionNotifier.notify_exception(e, :env => request.env, :data => {:message => "your error message"})
     render template: 'errors/error_500', status: 500
   end
+  def sell_reports
+    today = Date.today
+    if params[:from]
+      from = params[:from]
+    else
+      from = today - 30
+    end
+    if params[:to]
+      to = params[:to]
+    else
+      to = today + 30
+    end
+    kurumesi_orders = KurumesiOrder.where(start_time:from..to,canceled_flag:false).where('management_id > ?',0).order(start_time:"DESC")
+    kurumesi_order_details = KurumesiOrderDetail.joins(:kurumesi_order,:product).where(:kurumesi_orders => {id:kurumesi_orders.ids})
+    @date_counts = kurumesi_orders.group(:start_time).count
+    @date_numbers = kurumesi_order_details.where(:products => {product_category:1}).group('kurumesi_orders.start_time').sum(:number)
+    @date_brand_counts = kurumesi_order_details.where(:products => {product_category:1}).group('kurumesi_orders.start_time').group('kurumesi_orders.brand_id').count
+    @date_brand_sums = kurumesi_order_details.where(:products => {product_category:1}).group('kurumesi_orders.start_time').group('kurumesi_orders.brand_id').sum(:number)
+    respond_to do |format|
+      format.html
+      format.csv do
+        send_data render_to_string, filename: "#{Time.now.strftime('%Y%m%d')}_kurumesi_data.csv", type: :csv
+      end
+    end
+  end
+
 
   def kpi
     @dates = []
@@ -99,7 +125,7 @@ class ApplicationController < ActionController::Base
   end
 
   def product_report
-    
+
   end
 
   protected

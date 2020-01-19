@@ -97,7 +97,11 @@ class KurumesiOrdersController < ApplicationController
 
 
   def index
-    date = params[:start_date]
+    if params[:date].present?
+      date = params[:start_date]
+    else
+      date = Date.today
+    end
     kurumesi_order_details = KurumesiOrderDetail.joins(:kurumesi_order,:product).where(:kurumesi_orders => {canceled_flag:false,start_time: date.in_time_zone.all_month})
     @memo_orders = KurumesiOrder.where.not(memo:nil,start_time: date.in_time_zone.all_month).where.not(memo:'').group('start_time').count
     @products = Product.all

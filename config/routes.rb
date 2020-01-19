@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   devise_for :users
-  root 'daily_menus#index'
+  root 'kurumesi_orders#index'
   post 'orders/new' => 'orders#new'
   post'orders/order_print/:id' => 'orders#order_print'
   post 'products/hyoji' => 'products#hyoji'
@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   post'menus/include_update' => 'menus#include_update'
   post 'materials/change_additives' => 'materials#change_additives'
   get '/kpi' => 'application#kpi'
+  get '/sell_reports' => 'application#sell_reports'
   get '/product_report' => 'application#product_report'
 
   resources :kurumesi_orders do
