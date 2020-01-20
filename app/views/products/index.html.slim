@@ -19,11 +19,11 @@
 table.table
   thead
     tr
+      th ステータス
       th ブランド名
       th 管理ID
       th 短縮名
       th style='width:400px;' 弁当名
-      th 主調理工程
       th 弁当種類
       th.text-right 売価
       th.text-right 原価
@@ -33,29 +33,12 @@ table.table
 
   tbody.aaaad
     - @search.each do |product|
-      tr.products_li
-        td.product_id style="display:none;"
-          = product.id
-        td = product.brand.name
-        td = product.management_id
-        td = product.short_name
-        td.product_name = link_to "#{product.name}", "/products/#{product.id}/"
-
-        td = product.cook_category
-        td = product.product_type
-        td.text-right = "#{product.sell_price}円"
-        td.price.text-right = "#{product.cost_price}円"
-        td.text-right
-          - if product.cost_price/product.sell_price < 0.36
-            span style='color:blue;' = "#{((product.cost_price/product.sell_price)*100).round(1)}%"
-          - elsif product.cost_price/product.sell_price < 0.39
-            span style='color:purple;' = "#{((product.cost_price/product.sell_price)*100).round(1)}%"
-          - else
-            span style='color:red;' = "#{((product.cost_price/product.sell_price)*100).round(1)}%"
-        td.text-center = image_tag product.image.thumb.url if product.image.present?
-        td.text-center
-          - unless product.order_products.present?||product.daily_menu_details.present?||product.kurumesi_order_details.present?
-            = link_to "削除", product, method: :delete,class:'btn btn-danger pull-right btn-sm',data: { confirm: "ほんまに削除してええの？" },style:''
+      - if product.status == "販売中"
+        tr.products_li
+          = render 'index_tr', product:product
+      - else
+        tr.products_li style='background-color:gainsboro;'
+          = render 'index_tr', product:product
 
 - if @search.size == 0 then
   | 該当するお弁当が存在しません

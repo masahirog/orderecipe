@@ -97,11 +97,7 @@ class KurumesiOrdersController < ApplicationController
 
 
   def index
-    if params[:date].present?
-      date = params[:start_date]
-    else
-      date = Date.today
-    end
+    date = params[:start_date]
     kurumesi_order_details = KurumesiOrderDetail.joins(:kurumesi_order,:product).where(:kurumesi_orders => {canceled_flag:false,start_time: date.in_time_zone.all_month})
     @memo_orders = KurumesiOrder.where.not(memo:nil,start_time: date.in_time_zone.all_month).where.not(memo:'').group('start_time').count
     @products = Product.all
@@ -204,12 +200,13 @@ class KurumesiOrdersController < ApplicationController
     @kurumesi_order = KurumesiOrder.new(brand_id:params[:brand_id],start_time:params[:date])
     @kurumesi_order.kurumesi_order_details.build
     @brand_name = Brand.find(params[:brand_id]).name
-    @products = Product.where(brand_id:[params[:brand_id],41])
+    @products = Product.where(brand_id:[params[:brand_id],41],status:"販売中")
+
   end
 
   def edit
     brand_id = @kurumesi_order.brand_id
-    @products = Product.where(brand_id:[brand_id,41])
+    @products = Product.where(brand_id:[brand_id,41],status:"販売中")
     @brand_name = Brand.find(brand_id).name
   end
 
