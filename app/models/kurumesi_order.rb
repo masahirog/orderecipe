@@ -7,7 +7,7 @@ class KurumesiOrder < ApplicationRecord
 
   validates :management_id, presence: true
 
-  enum payment: {"請求書(持参)":0, "現金":1, "クレジットカード":2,"請求書（郵送）":3}
+  enum payment: {請求書（持参）:0, 現金:1, クレジットカード:2,請求書（郵送）:3}
 
   # 在庫に関する部分が動いた時だけ、在庫の計算を行う
   before_save :changed_check
