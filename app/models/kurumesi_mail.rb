@@ -31,7 +31,7 @@ class KurumesiMail < ApplicationRecord
     # 'FROM','info@kurumesi-bentou.com',
     search_criterias = [
       'FROM','info@kurumesi-bentou.com',
-      'SINCE', (Date.today-3).strftime("%d-%b-%Y")
+      'SINCE', (Date.today).strftime("%d-%b-%Y")
     ]
     imap.select('INBOX') # 対象のメールボックスを選択
     ids = imap.search(search_criterias) # 全てのメールを取得
