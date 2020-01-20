@@ -31,7 +31,7 @@ class KurumesiMail < ApplicationRecord
     # 'FROM','info@kurumesi-bentou.com',
     search_criterias = [
       'FROM','info@kurumesi-bentou.com',
-      'SINCE', (Date.today).strftime("%d-%b-%Y")
+      'SINCE', (Date.today-3).strftime("%d-%b-%Y")
     ]
     imap.select('INBOX') # 対象のメールボックスを選択
     ids = imap.search(search_criterias) # 全てのメールを取得
@@ -47,8 +47,13 @@ class KurumesiMail < ApplicationRecord
             body = m.html_part.decoded
           end
         else
-          body = m.body.decoded.encode("UTF-8", m.charset)
-          # body = m.body.decoded.toutf8
+          begin
+          # 例外が起こるかも知れないコード
+            body = m.body.decoded.encode("UTF-8", m.charset)
+          rescue => error # 変数(例外オブジェクトの代入)
+          # 例外が発生した時のコード
+            next
+          end
         end
         unless KurumesiMail.find_by(body:body,recieved_datetime:recieved_datetime).present?
           @kurumei_mail = KurumesiMail.new
