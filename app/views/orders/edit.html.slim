@@ -64,7 +64,78 @@
             - position = 'top'
           - else
             - position = 'bottom'
-          = render 'order_material_fields', f: m,date:m.object.delivery_date,position:position
+          tr.order_materials_tr.nested-fields
+            td.order_material_name
+              - if m.object.material_id.present?
+                span style='font-size:16px;font-weight:bold;' = m.object.material.name
+              - else
+                = m.collection_select :material_id, @materials, :id, :name,{include_blank: true}, class:'select_order_materials',style:"width:250px;"
+              .vendor_company_name style="padding-top:3px;color:#A9A9A9;"
+                - if m.object.material.present?
+                  / span = m.object.material.vendor.company_name
+                  span = @vendor_name[m.object.material_id]
+                  span style='color:red;font-weight:bold;' = "【受注品】" if m.object.material.vendor_stock_flag == false
+            td class="quantity_#{m.object.material_id}"
+              .clearfix.text-right
+                div style="float:left;width:50%;"
+                  = m.text_field :order_quantity_order_unit,class:'order_quantity text-right form-control',style:"float:left;width:70%;"
+                  = m.text_field :order_unit, style:'float:left;width:20%;',class:'form-control order_material_unit',readonly:true
+                div style="float:left;width:50%;"
+                  = m.text_field :calculated_quantity,class:'recipe_unit_quantity text-right form-control',style:"float:left;width:70%;",readonly:true
+                  = m.text_field :recipe_unit, style:'float:left;width:20%;',class:'form-control calculated_material_unit',readonly:true
+              .clearfix style="color:#A9A9A9;padding:1px 0 0 10px;"
+                .text-right.change_unit.memo-tooltip style="float:left;width:50%;padding-right:5px;"
+                  - if m.object.material_id.present?
+                    = m.object.material.order_unit_quantity
+                    = m.object.material.order_unit
+                    |  ：
+                    = m.object.material.recipe_unit_quantity.to_i.to_s(:delimited)
+                    = m.object.material.recipe_unit
+                  - if m.object.material.present?
+                    - if m.object.material.memo.present?
+                      span style='color:red;margin-left:10px;' class="glyphicon glyphicon-tags original-tooltip" aria-hidden="true"  data-toggle="tooltip" data-placement="top" title="#{m.object.material.memo}"
+                .text-right style="float:left;width:50%;"
+                  span class="stock_yoso_#{m.object.material_id} text-right"
+                    - if m.object.material_id.present?
+                      - if m.object.material.stock_management_flag == true
+                        - if @prev_stocks[m.object.material_id]
+                          - if @prev_stocks[m.object.material_id].end_day_stock < 0
+                            span style='color:red;' = "#{(@prev_stocks[m.object.material_id].end_day_stock/m.object.material.accounting_unit_quantity).floor(1)} #{m.object.material.accounting_unit}：不足"
+                          - else
+                            span style='color:lime;' = "残り：#{(@prev_stocks[m.object.material_id].end_day_stock/m.object.material.accounting_unit_quantity).floor(1)} #{m.object.material.accounting_unit} "
+                        - else
+                          |0
+                      - else
+                        |ー
+                  - if m.object.material_id.present?
+                    - if @stock_hash[m.object.material_id].present?
+                      = link_to history_stocks_path(material_id:m.object.material_id),target:'_blank',class:'stock-tooltip' do
+                        span data-html="true" style='color:blue;margin-left:10px;' class="glyphicon glyphicon-eye-open" aria-hidden="true"  data-toggle="tooltip" data-placement="#{position}" title="<table class='table tooltip-table'><thead><tr><th style='text-align: center'>日付</th><th style='text-align: center'>納品</th><th style='text-align: center'>使用</th><th style='text-align: center'>在庫</th><th></th></tr></thead><tbody>#{@stock_hash[m.object.material_id].flatten.join('')}</tbody></table>"
+                      = link_to edit_material_path(m.object.material),target:'_blank',class:'stock-tooltip' do
+                        span style='color:green;margin-left:10px;' class="glyphicon glyphicon-pencil" aria-hidden="true"  data-toggle="tooltip" data-placement="#{position}" title="食材の編集"
+                      = link_to material_reload_orders_path(material_id:m.object.material_id,date:@prev_stocks.first[1].date), method: :post, remote: true
+                        span style='color:red;margin-left:10px;' class="glyphicon glyphicon-refresh" aria-hidden="true"
+
+            td.order_material_memo
+              = m.text_field :order_material_memo,class:'form-control'
+              div style="padding:3px 0 0 8px;color:gray;font-size:10px;"
+                - if controller.action_name == "new"
+                  = m.object.menu_name
+                  = m.hidden_field :menu_name
+                - else
+                  = m.object.menu_name
+            td.delivery_date
+              - if m.object.delivery_date
+                = m.date_field(:delivery_date,value:m.object.delivery_date,class:"form-control input_delivery_date")
+              - else
+                = m.date_field(:delivery_date,value:m.object.delivery_date,class:"form-control input_delivery_date")
+              - if m.object.material_id.present?
+                span.delivery_deadline_span style='color:red;font-weight:bold;' = "#{m.object.material.delivery_deadline} 営業日前に必要！" if m.object.material.delivery_deadline > 1
+              - else
+                span.delivery_deadline_span style='color:red;font-weight:bold;'
+
+            td.destroy_order_material.text-center
+              = m.check_box :un_order_flag,class:"form-control destroy_order_materials check_box",style:" height:50px;margin:0;"
           - i += 1
   = link_to_add_association '発注食材追加',f, :order_materials,class:'btn btn-primary add_order_material',
   data: {association_insertion_node: '#order_materials_table',association_insertion_method: 'append'}, render_options: {locals: { date: date }}
@@ -75,3 +146,25 @@ javascript:
       return event.which !== 13;
     });
   });
+sass:
+  .stock-tooltip
+    .tooltip
+      width: 600px
+      font-size: 14px
+  .memo-tooltip
+    .tooltip
+      width: 300px
+      font-size: 14px
+
+  .tooltip-inner
+    max-width: 1000px
+
+  .tooltip .tooltip-inner
+    background-color: white
+    opacity: 1.0
+    border: 2px solid black
+    color: black
+    filter: alpha(opacity=100)
+  .tooltip.in
+    opacity: 1 !important
+    filter: alpha(opacity=100)

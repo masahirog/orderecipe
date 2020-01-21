@@ -14,26 +14,37 @@ class OrdersController < ApplicationController
 
   def edit
     today = Date.today
+    vendor_name = {}
+    all_materials = Material.includes(:vendor).where(unused_flag:false)
+    @vendor_name =all_materials.map{|material|[material.id,material.vendor.company_name]}.to_h
     @stock_hash ={}
     @hash = {}
     @prev_stocks = {}
     @materials = Material.where(unused_flag:false)
     @search_code_materials = Material.where(unused_flag:false).where.not(order_code:"")
-    @order = Order.includes(:products,:order_products,:order_materials,{materials: [:vendor]}).find(params[:id])
+    @order = Order.includes(:products,:order_products,order_materials:[:material]).find(params[:id])
     @order.order_materials.each do |om|
       om.order_unit = om.material.order_unit
       om.recipe_unit = om.material.recipe_unit
       om.order_quantity_order_unit = ((om.order_quantity.to_f / om.material.recipe_unit_quantity) * om.material.order_unit_quantity).round(1)
     end
     @code_materials = Material.where(unused_flag:false).where.not(order_code:"")
-    @vendors = @order.order_materials.map{|om|[om.material.vendor.company_name,om.material.vendor.id]}.uniq
+    @vendors = @order.order_materials.includes(material:[:vendor]).map{|om|[om.material.vendor.company_name,om.material.vendor.id]}.uniq
     product_ids = @order.products.ids
     materials = Product.includes(:product_menus,[menus: [menu_materials: :material]]).where(id:product_ids).map{|product| product.menus.map{|pm| pm.menu_materials.map{|mm|[mm.material.id, product.name]}}}.flatten(2)
     if @order.order_products.present?
       make_date = @order.order_products[0].make_date
+      stocks_hash = Stock.where("date < ?", make_date).order("date ASC").map{|stock|[stock.material_id,stock]}.to_h
       @order.order_materials.each do |om|
-        prev_stock = Stock.where("date < ?", make_date).where(material_id:om.material_id).order("date DESC").first
-        @prev_stocks[om.material_id] = prev_stock
+        @prev_stocks[om.material_id] = stocks_hash[om.material_id]
+      end
+    end
+    stock_hash = {}
+    @stocks = Stock.includes(:material).where(date:(today - 5)..(today + 10)).order('date ASC').map do |stock|
+      if stock_hash[stock.material_id].present?
+        stock_hash[stock.material_id] << stock
+      else
+        stock_hash[stock.material_id] = [stock]
       end
     end
     materials.each do |material|
@@ -42,32 +53,34 @@ class OrdersController < ApplicationController
       else
         @hash.store(material[0],material[1])
       end
-      @stocks = Stock.where(material_id:material[0],date:(today - 5)..(today + 10)).order('date ASC')
-      @stock_hash[material[0]] = @stocks.map do |stock|
-        if stock.used_amount == 0
-          used_amount = "<td style='color:silver;'>0</td>"
-        else
-          used_amount = "<td style='color:red;'>- #{(stock.used_amount/stock.material.accounting_unit_quantity).ceil(1)}#{stock.material.accounting_unit}</td>"
-        end
-        if stock.delivery_amount == 0
-          delivery_amount = "<td style='color:silver;'>0</td>"
-        else
-          delivery_amount = "<td style='color:blue;'>+ #{(stock.delivery_amount/stock.material.accounting_unit_quantity).floor(1)}#{stock.material.accounting_unit}</td>"
-        end
-        if stock.end_day_stock == 0
-          end_day_stock = "<td style='color:silver;'>0</td>"
-        else
-          end_day_stock = "<td style=''>#{(stock.end_day_stock/stock.material.accounting_unit_quantity).floor(1)}#{stock.material.accounting_unit}</td>"
-        end
-        if stock.inventory_flag == true
-          inventory = "<td><span class='label label-success'>棚卸し</span></td>"
-        else
-          inventory = "<td></td>"
-        end
-        if stock.date >= today
-          ["<tr style='background-color:#ffebcd;'><td>#{stock.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[stock.date.wday]})")}</td>#{delivery_amount}#{used_amount}#{end_day_stock}#{inventory}</tr>"]
-        else
-          ["<tr><td>#{stock.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[stock.date.wday]})")}</td>#{delivery_amount}#{used_amount}#{end_day_stock}#{inventory}</tr>"]
+      material_stock_hash = stock_hash[material[0]]
+      if material_stock_hash.present?
+        @stock_hash[material[0]] = material_stock_hash.map do |stock|
+          if stock.used_amount == 0
+            used_amount = "<td style='color:silver;'>0</td>"
+          else
+            used_amount = "<td style='color:red;'>- #{(stock.used_amount/stock.material.accounting_unit_quantity).ceil(1)}#{stock.material.accounting_unit}</td>"
+          end
+          if stock.delivery_amount == 0
+            delivery_amount = "<td style='color:silver;'>0</td>"
+          else
+            delivery_amount = "<td style='color:blue;'>+ #{(stock.delivery_amount/stock.material.accounting_unit_quantity).floor(1)}#{stock.material.accounting_unit}</td>"
+          end
+          if stock.end_day_stock == 0
+            end_day_stock = "<td style='color:silver;'>0</td>"
+          else
+            end_day_stock = "<td style=''>#{(stock.end_day_stock/stock.material.accounting_unit_quantity).floor(1)}#{stock.material.accounting_unit}</td>"
+          end
+          if stock.inventory_flag == true
+            inventory = "<td><span class='label label-success'>棚卸し</span></td>"
+          else
+            inventory = "<td></td>"
+          end
+          if stock.date >= today
+            ["<tr style='background-color:#ffebcd;'><td>#{stock.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[stock.date.wday]})")}</td>#{delivery_amount}#{used_amount}#{end_day_stock}#{inventory}</tr>"]
+          else
+            ["<tr><td>#{stock.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[stock.date.wday]})")}</td>#{delivery_amount}#{used_amount}#{end_day_stock}#{inventory}</tr>"]
+          end
         end
       end
     end
@@ -100,8 +113,12 @@ class OrdersController < ApplicationController
   end
 
   def new
+    @product_hash = {}
     @arr = []
     @order = Order.new
+    # all_materials = Material.includes(:vendor).where(unused_flag:false)
+    # @vendor_name = all_materials.map{|material|[material.id,material.vendor.company_name]}.to_h
+
     if params[:daily_menu_id]
       order_products = []
       daily_menu = DailyMenu.find(params[:daily_menu_id])
@@ -112,7 +129,7 @@ class OrdersController < ApplicationController
         hash[:make_date] = daily_menu.start_time
         order_products << hash
       end
-      sales_date = DailyMenu.find(params[:daily_menu_id]).start_time
+      make_date = DailyMenu.find(params[:daily_menu_id]).start_time
     elsif params[:kurumesi_order_date]
       order_products = []
       kurumesi_orders = KurumesiOrder.where(start_time:params[:kurumesi_order_date],canceled_flag:false)
@@ -124,14 +141,17 @@ class OrdersController < ApplicationController
         hash[:make_date] = params[:kurumesi_order_date]
         order_products << hash
       end
-      sales_date = Date.parse(params[:kurumesi_order_date])
+      make_date = Date.parse(params[:kurumesi_order_date])
     else
       order_products = []
-      sales_date = Date.today
+      make_date = Date.today
     end
+    product_ids = order_products.map{|op|op[:product_id]}
+    product_hash = Product.includes(:product_menus,[menus: [menu_materials: [material:[:vendor]]]]).where(id:product_ids).map{|product|[product.id,product]}.to_h
     order_products.each do |po|
       if po[:product_id].present?
-        product = Product.includes(:product_menus,[menus: [menu_materials: :material]]).find(po[:product_id])
+        product = product_hash[po[:product_id]]
+        @product_hash[po[:product_id]] = product.name
         if po[:make_date].present?
           @order.order_products.build(product_id:po[:product_id],serving_for:po[:num],make_date:po[:make_date])
         else
@@ -140,6 +160,7 @@ class OrdersController < ApplicationController
         product.menus.each do |menu|
           menu.menu_materials.each do |menu_material|
             hash = {}
+            hash['material'] = menu_material.material
             hash['make_num'] = po[:num]
             hash['product_id'] = [product.id]
             hash['menu_num'] = {menu.name => po[:num]}
@@ -148,6 +169,7 @@ class OrdersController < ApplicationController
             hash["recipe_unit_quantity"] = menu_material.material.recipe_unit_quantity
             hash["order_unit_quantity"] = menu_material.material.order_unit_quantity
             hash["vendor_id"] = menu_material.material.vendor_id
+            hash["vendor_name"] = menu_material.material.vendor.company_name
             hash['recipe_unit'] = menu_material.material.recipe_unit
             hash['order_unit'] = menu_material.material.order_unit
             hash['delivery_deadline'] = menu_material.material.delivery_deadline
@@ -187,10 +209,22 @@ class OrdersController < ApplicationController
         @b_hash[info['material_id']] = info
       end
     end
+
     @prev_stocks = {}
     @stock_hash = {}
+    stocks_hash = {}
+    stocks_hash = Stock.where("date < ?", make_date).order("date ASC").map{|stock|[stock.material_id,stock]}.to_h
+    date = make_date - 1
+    stock_hash = {}
+    @stocks = Stock.includes(:material).where(date:(date - 5)..(date + 10)).order('date ASC').map do |stock|
+      if stock_hash[stock.material_id].present?
+        stock_hash[stock.material_id] << stock
+      else
+        stock_hash[stock.material_id] = [stock]
+      end
+    end
     @b_hash.each do |key,value|
-      material = Material.find(key)
+      material = value['material']
       recipe_unit = value['recipe_unit']
       order_unit = value['order_unit']
       a = []
@@ -198,13 +232,14 @@ class OrdersController < ApplicationController
       menu_name = a.join(',')
       order_material_memo = value['order_material_memo']
       dead_line = value['delivery_deadline']
-      delivery_date = dead_line.business_days.before(sales_date)
-      prev_stock = Stock.where("date < ?", sales_date).where(material_id:key).order("date DESC").first
-      @prev_stocks[key] = prev_stock
+      delivery_date = dead_line.business_days.before(make_date)
+      # prev_stock = Stock.where("date < ?", make_date).where(material_id:key).order("date DESC").first
+      # @prev_stocks[key] = prev_stock
+      @prev_stocks[key] = stocks_hash[key]
       calculated_quantity = value['calculated_order_amount'].round(1)
-      if prev_stock.present? && material.stock_management_flag == true
-        if prev_stock.end_day_stock < 0
-          shortage_stock = (-1 * prev_stock.end_day_stock).round(1)
+      if stocks_hash[key].present? && material.stock_management_flag == true
+        if stocks_hash[key].end_day_stock < 0
+          shortage_stock = (-1 * stocks_hash[key].end_day_stock).round(1)
           if value['order_unit_quantity'].to_f < 1
             i = 1
           else
@@ -219,39 +254,40 @@ class OrdersController < ApplicationController
         order_quantity_order_unit = BigDecimal((calculated_quantity / value['recipe_unit_quantity'].to_f * value['order_unit_quantity'].to_f).to_s).ceil
       end
       @order.order_materials.build(material_id:key,recipe_unit:recipe_unit,order_unit:order_unit,order_quantity_order_unit:order_quantity_order_unit,calculated_quantity:calculated_quantity,menu_name:menu_name,order_material_memo:order_material_memo,delivery_date:delivery_date,un_order_flag:un_order_flag)
-      # 在庫が必要である日==前日
-      date = sales_date - 1
-      @stocks = Stock.includes(:material).where(material_id:key,date:(date - 10)..(date + 5)).order('date ASC')
-      @stock_hash[key] = @stocks.map do |stock|
-        if stock.used_amount == 0
-          used_amount = "<td style='color:silver;'>0</td>"
-        else
-          used_amount = "<td style='color:red;'>- #{(stock.used_amount/stock.material.accounting_unit_quantity).ceil(1)}#{stock.material.accounting_unit}</td>"
-        end
-        if stock.delivery_amount == 0
-          delivery_amount = "<td style='color:silver;'>0</td>"
-        else
-          delivery_amount = "<td style='color:blue;'>+ #{(stock.delivery_amount/stock.material.accounting_unit_quantity).floor(1)}#{stock.material.accounting_unit}</td>"
-        end
-        if stock.end_day_stock == 0
-          end_day_stock = "<td style='color:silver;'>0</td>"
-        else
-          end_day_stock = "<td style=''>#{(stock.end_day_stock/stock.material.accounting_unit_quantity).floor(1)}#{stock.material.accounting_unit}</td>"
-        end
-        if stock.inventory_flag == true
-          inventory = "<td><span class='label label-success'>棚卸し</span></td>"
-        else
-          inventory = "<td></td>"
-        end
-        if stock.date == date
-          ["<tr style='background-color:#ffebcd;'><td>#{stock.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[stock.date.wday]})")}</td>#{delivery_amount}#{used_amount}#{end_day_stock}#{inventory}</tr>"]
-        else
-          ["<tr><td>#{stock.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[stock.date.wday]})")}</td>#{delivery_amount}#{used_amount}#{end_day_stock}#{inventory}</tr>"]
+      material_stock_hash = stock_hash[key]
+      if material_stock_hash.present?
+        # @stocks = Stock.includes(:material).where(material_id:key,date:(date - 10)..(date + 5)).order('date ASC')
+        @stock_hash[key] = material_stock_hash.map do |stock|
+          if stock.used_amount == 0
+            used_amount = "<td style='color:silver;'>0</td>"
+          else
+            used_amount = "<td style='color:red;'>- #{(stock.used_amount/stock.material.accounting_unit_quantity).ceil(1)}#{stock.material.accounting_unit}</td>"
+          end
+          if stock.delivery_amount == 0
+            delivery_amount = "<td style='color:silver;'>0</td>"
+          else
+            delivery_amount = "<td style='color:blue;'>+ #{(stock.delivery_amount/stock.material.accounting_unit_quantity).floor(1)}#{stock.material.accounting_unit}</td>"
+          end
+          if stock.end_day_stock == 0
+            end_day_stock = "<td style='color:silver;'>0</td>"
+          else
+            end_day_stock = "<td style=''>#{(stock.end_day_stock/stock.material.accounting_unit_quantity).floor(1)}#{stock.material.accounting_unit}</td>"
+          end
+          if stock.inventory_flag == true
+            inventory = "<td><span class='label label-success'>棚卸し</span></td>"
+          else
+            inventory = "<td></td>"
+          end
+          if stock.date == date
+            ["<tr style='background-color:#ffebcd;'><td>#{stock.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[stock.date.wday]})")}</td>#{delivery_amount}#{used_amount}#{end_day_stock}#{inventory}</tr>"]
+          else
+            ["<tr><td>#{stock.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[stock.date.wday]})")}</td>#{delivery_amount}#{used_amount}#{end_day_stock}#{inventory}</tr>"]
+          end
         end
       end
     end
     @materials = Material.where(unused_flag:false)
-    @vendors = @order.order_materials.map{|om|[om.material.vendor.company_name,om.material.vendor.id]}.uniq
+    @vendors = Vendor.all.map{|vendor|[vendor.company_name,vendor.id]}
   end
 
   def create
@@ -284,7 +320,7 @@ class OrdersController < ApplicationController
        format.html
        format.pdf do
          pdf = OrderPdf.new(@materials_this_vendor,@vendor,@order)
-         
+
          send_data pdf.render,
            filename:    "#{@order.id}_#{@vendor.company_name}.pdf",
            type:        "application/pdf",

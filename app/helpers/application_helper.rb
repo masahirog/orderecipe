@@ -11,4 +11,5 @@ module ApplicationHelper
 
     return text
   end
+
 end

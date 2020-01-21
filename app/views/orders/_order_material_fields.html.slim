@@ -1,12 +1,11 @@
 tr.order_materials_tr.nested-fields
   td.order_material_name
     - if f.object.material_id.present?
-      = f.collection_select :material_id, @materials, :id, :name,{include_blank: true}, class:'select_order_materials',style:"width:250px;"
+      span style='font-size:16px;font-weight:bold;' = f.object.material.name
     - else
       = f.collection_select :material_id, @materials, :id, :name,{include_blank: true}, class:'select_order_materials',style:"width:250px;"
     .vendor_company_name style="padding-top:3px;color:#A9A9A9;"
       - if f.object.material.present?
-        span = f.object.material.vendor.company_name
         span style='color:red;font-weight:bold;' = "【受注品】" if f.object.material.vendor_stock_flag == false
   td class="quantity_#{f.object.material_id}"
     .clearfix.text-right
@@ -69,26 +68,3 @@ tr.order_materials_tr.nested-fields
 
   td.destroy_order_material.text-center
     = f.check_box :un_order_flag,class:"form-control destroy_order_materials check_box",style:" height:50px;margin:0;"
-
-sass:
-  .stock-tooltip
-    .tooltip
-      width: 600px
-      font-size: 14px
-  .memo-tooltip
-    .tooltip
-      width: 300px
-      font-size: 14px
-
-  .tooltip-inner
-    max-width: 1000px
-
-  .tooltip .tooltip-inner
-    background-color: white
-    opacity: 1.0
-    border: 2px solid black
-    color: black
-    filter: alpha(opacity=100)
-  .tooltip.in
-    opacity: 1 !important
-    filter: alpha(opacity=100)

@@ -246,7 +246,7 @@ ActiveRecord::Schema.define(version: 2019_12_19_113341) do
     t.float "calculated_quantity"
     t.string "order_material_memo"
     t.date "delivery_date"
-    t.string "menu_name"
+    t.text "menu_name"
     t.boolean "un_order_flag", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
