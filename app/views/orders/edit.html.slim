@@ -68,6 +68,7 @@
             td.order_material_name
               - if m.object.material_id.present?
                 span style='font-size:16px;font-weight:bold;' = m.object.material.name
+                = m.hidden_field :material_id
               - else
                 = m.collection_select :material_id, @materials, :id, :name,{include_blank: true}, class:'select_order_materials',style:"width:250px;"
               .vendor_company_name style="padding-top:3px;color:#A9A9A9;"
