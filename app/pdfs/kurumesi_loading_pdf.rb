@@ -61,7 +61,7 @@ class KurumesiLoadingPdf < Prawn::Document
       num = kurumesi_orders_num_h[mo.id]
       bihin = kurumesi_orders_num_h[mo.id]+1
       hashi = (4.2 * bihin).ceil(1)
-      oshibori = (3.97 * bihin).ceil(1)
+      oshibori = (5.38 * bihin).ceil(1)
 
       if brand_id == 21
         spoon = (2.2 * bihin).ceil(1)
