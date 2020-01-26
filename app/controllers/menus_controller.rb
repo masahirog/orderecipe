@@ -8,7 +8,7 @@ class MenusController < ApplicationController
   end
 
   def index
-    @search = Menu.search(params).page(params[:page]).per(20)
+    @search = Menu.includes(:product_menus).search(params).page(params[:page]).per(20)
   end
 
   def new

@@ -2,7 +2,7 @@
   = link_to '食材編集', edit_material_path(@material),class: "btn btn-primary",style:'margin-right:20px;'
   = link_to '使用確認',include_material_materials_path(id:@material.id),class:"btn btn-default",style:'margin-right:20px;'
   - if @material.stock_management_flag == true
-    = link_to '棚卸し',history_stocks_path(material_id:@material.id),target:'_blank',class:'btn btn-default'
+    = link_to '1ヶ月使用量',used_check_materials_path(id:material.id),class:"btn btn-default btn-sm"
 .col-md-6
   table.table
     tr

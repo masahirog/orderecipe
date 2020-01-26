@@ -1,0 +1,27 @@
+.col-md-12
+  = form_tag deliveried_list_orders_path, method: :get do
+    .form-group.col-md-2
+      = date_field_tag :date,@date, class:"form-control"
+    .form-group.col-md-2
+      input.btn.btn-success type="button" onclick="submit();" value="検索"
+h4 納品商品リスト
+table.table
+  thead
+    tr
+      th 業者名
+      th 商品名
+      th.text-right 納品量　　
+      th メモ
+
+  tbody
+    - @order_materials.each do |om|
+      tr
+        td = om.material.vendor.company_name
+        td = om.material.name
+        td.text-right
+          - order_amount = (om.order_quantity.to_f / om.material.recipe_unit_quantity)
+          - if order_amount == order_amount.to_i
+            = "#{order_amount.to_i} #{om.material.order_unit}　　"
+          - else
+            = "#{order_amount} #{om.material.order_unit}　　"
+        td = om.order_material_memo

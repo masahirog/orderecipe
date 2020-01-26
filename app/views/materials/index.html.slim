@@ -26,7 +26,7 @@ table.table
     th メモ
     th
     th 使用メニュー
-    th 直近使用量確認
+    th 棚卸し
   - @search.each do |material|
     tr.materials_li
       td.material_name
@@ -42,7 +42,7 @@ table.table
       td style="text-align:center;"
         = link_to '確認',include_material_materials_path(id:material.id),class:"btn btn-default btn-sm"
       td
-        = link_to '1ヶ月',used_check_materials_path(id:material.id),class:"btn btn-default btn-sm"
+        = link_to '棚卸し',history_stocks_path(material_id:material.id),target:'_blank',class:'btn btn-default'
 - if @search.size == 0 then
   p
     | 該当する食材・資材が存在しません

@@ -12,6 +12,16 @@ class OrdersController < ApplicationController
     end
   end
 
+  def deliveried_list
+    if params[:date]
+      @date = params[:date]
+    else
+      @date = Date.today
+    end
+    @order_materials = OrderMaterial.includes(material:[:vendor]).where(delivery_date:@date,un_order_flag:false).order("vendors.id")
+
+  end
+
   def edit
     today = Date.today
     vendor_name = {}

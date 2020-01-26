@@ -54,6 +54,7 @@ html
                     span.caret
                   ul.dropdown-menu role="menu"
                     li = link_to "発注",orders_path
+                    li = link_to "納品確認",deliveried_list_orders_path
                     li = link_to "くるめし備品手配","https://docs.google.com/spreadsheets/d/1KivYZ3IIo7ySJBZklBwWRuxZqtFDs-cVQ2fTcBjShM0/edit#gid=104376609",target:'_blank'
                     li = link_to "棚卸し",inventory_stocks_path(date:Date.today)
                     li = link_to "商品保管場所",storage_locations_path
