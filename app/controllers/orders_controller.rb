@@ -225,7 +225,7 @@ class OrdersController < ApplicationController
     stocks_hash = Stock.where("date < ?", make_date).order("date ASC").map{|stock|[stock.material_id,stock]}.to_h
     date = make_date - 1
     stock_hash = {}
-    @stocks = Stock.includes(:material).where(date:(date - 5)..(date + 10)).order('date ASC').map do |stock|
+    @stocks = Stock.includes(:material).where(material_id:@b_hash.keys,date:(date - 10)..(date + 10)).order('date ASC').map do |stock|
       if stock_hash[stock.material_id].present?
         stock_hash[stock.material_id] << stock
       else

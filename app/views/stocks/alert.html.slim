@@ -12,8 +12,12 @@ table.table
       th
       th
   tbody
-    - @materials.each do |material|
-      = render partial: "tr", locals: { material:material }
+    - @materials.each_with_index do |material,i|
+      - if i > 4
+        - position = 'top'
+      - else
+        - position = 'bottom'
+      = render partial: "tr", locals: { material:material,position:position }
 .col-md-12
   = paginate @materials
 sass:

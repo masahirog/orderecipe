@@ -2,10 +2,10 @@ class StocksController < ApplicationController
   def alert
     @date = Date.today
     @materials = Material.includes(:vendor).where(need_inventory_flag:true).order(:vendor_id).page(params[:page]).per(30)
-    material_ids = @materials.ids
+    material_ids = @materials.map{|material|material.id}
     stocks = Stock.where(material_id:material_ids).where('date <= ?',@date).order("date")
     if @materials.present?
-      @stocks_hash = Stock.where(date:@date,material_id:@materials.ids).map{|stock|[stock.material_id,stock]}.to_h
+      @stocks_hash = Stock.where(date:@date,material_id:material_ids).map{|stock|[stock.material_id,stock]}.to_h
       @stock_hash ={}
       @materials.each do |material|
         stocks_arr = stocks.where(material_id:material.id).last(5)
