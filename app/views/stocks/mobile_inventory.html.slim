@@ -56,8 +56,6 @@ html
                     span.caret
                   ul.dropdown-menu role="menu"
                     li = link_to "棚卸し",inventory_stocks_path(date:Date.today)
-                    li = link_to "保管場所",storage_locations_path
-                    li = link_to "保管場所（図）",'https://docs.google.com/presentation/d/1ELHD2Ky1qMtVCj0pIEkQZ_mMwSrxEoRF2u7iXb7nVJA/edit?usp=sharing',target:'_blank'
 
                 li.menu_li
                   = link_to "くるめしメール",kurumesi_mails_path
@@ -75,7 +73,6 @@ html
       = form_tag inventory_stocks_path, :method => 'get' do
         .col-sm-12.form-group
           = date_field_tag :date,params[:date], class: "form-control",style:'float:left;width:50%;'
-          = select_tag :storage_location_id, options_from_collection_for_select(@storage_locations, :id, :name,params[:storage_location_id]), class: "form-control",style:'float:left;width:50%;',include_blank:true
         .col-sm-12.form-group
           = text_field_tag :name, params[:name], class:"form-control",placeholder:'食材・資材名',style:'float:left;margin-right:20px;'
         .col-sm-12.form-group

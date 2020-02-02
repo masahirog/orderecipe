@@ -26,12 +26,6 @@
       = f.label :stock_management_flag, "在庫を管理する（チェックを外すと日常の在庫管理は行いません）"
       = f.check_box :stock_management_flag, class: "form-control"
 
-
-  .col-md-12.form-group
-    .col-md-5
-      = f.label :storage_location_id, "ストック場所"
-      = f.collection_select :storage_location_id, @storage_locations, :id, :name, {}, { class: "form-control"}
-
   .col-md-12.form-group
     .col-md-5
       = f.label :unused_flag, "販売ステータス"

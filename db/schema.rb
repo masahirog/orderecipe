@@ -187,6 +187,8 @@ ActiveRecord::Schema.define(version: 2019_12_19_113341) do
     t.integer "accounting_unit_quantity", null: false
     t.boolean "measurement_flag", default: false, null: false
     t.boolean "stock_management_flag", default: true, null: false
+    t.date "last_inventory_date"
+    t.boolean "need_inventory_flag", default: false, null: false
   end
 
   create_table "menu_materials", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -306,12 +308,6 @@ ActiveRecord::Schema.define(version: 2019_12_19_113341) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["date", "material_id"], name: "index_stocks_on_date_and_material_id", unique: true
-  end
-
-  create_table "storage_locations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.string "name", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "users", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

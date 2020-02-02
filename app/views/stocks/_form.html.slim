@@ -16,7 +16,6 @@
   table.table
     thead
       tr
-        th 保管
         th 食材名
         th 業者名
         th 使用量
@@ -26,8 +25,6 @@
         th 在庫（日終時）
     tbody
       tr
-        td
-          = @stock.material.storage_location.name
         td
           = @stock.material.name
         td

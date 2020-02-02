@@ -1,4 +1,20 @@
 class StocksController < ApplicationController
+  def alert
+    @date = Date.today
+    @materials = Material.includes(:vendor).where(need_inventory_flag:true).order(:vendor_id).page(params[:page]).per(30)
+    material_ids = @materials.ids
+    stocks = Stock.where(material_id:material_ids).where('date <= ?',@date).order("date")
+    if @materials.present?
+      @stocks_hash = Stock.where(date:@date,material_id:@materials.ids).map{|stock|[stock.material_id,stock]}.to_h
+      @stock_hash ={}
+      @materials.each do |material|
+        stocks_arr = stocks.where(material_id:material.id).last(5)
+        aaa(material,@date,stocks_arr)
+      end
+    else
+      @stocks_hash = []
+    end
+  end
   def index
     today = Date.today
     end_month_date = today.end_of_month
@@ -63,7 +79,7 @@ class StocksController < ApplicationController
   end
 
   def create
-    @storage_locations = StorageLocation.all
+    today = Date.today
     update_stocks = []
     if params[:stock][:end_day_stock_accounting_unit] == ""
       # 空欄だと何もしない
@@ -74,6 +90,7 @@ class StocksController < ApplicationController
       @stock.end_day_stock = params[:stock][:end_day_stock_accounting_unit].to_f*@material.accounting_unit_quantity
       respond_to do |format|
         if @stock.save
+          material_update(today)
           Stock.change_stock(update_stocks,@material.id,@stock.date,@stock.end_day_stock)
           Stock.import update_stocks, on_duplicate_key_update:[:end_day_stock,:start_day_stock,:inventory_flag] if update_stocks.present?
           if params[:stock][:history_flag] == 'true'
@@ -93,7 +110,7 @@ class StocksController < ApplicationController
 
 
   def update
-    @storage_locations = StorageLocation.all
+    today = Date.today
     update_stocks = []
     @stock_hash = {}
     @stock = Stock.find(params[:id])
@@ -104,6 +121,7 @@ class StocksController < ApplicationController
     inventory_flag = params[:stock][:inventory_flag]
     respond_to do |format|
       if @stock.update(end_day_stock:new_end_day_stock,inventory_flag:inventory_flag,start_day_stock:new_start_day_stock)
+        material_update(today)
         Stock.change_stock(update_stocks,@material.id,@stock.date,new_end_day_stock)
         Stock.import update_stocks, on_duplicate_key_update:[:end_day_stock,:start_day_stock,:inventory_flag] if update_stocks.present?
         if params[:stock][:history_flag] == 'true'
@@ -123,19 +141,17 @@ class StocksController < ApplicationController
 
   def mobile_inventory
     date = Date.parse(params[:date])
-    storage_location_id = params[:storage_location_id]
     vendor_id = params[:vendor_id]
-    @storage_locations = StorageLocation.all
     if params[:inventory_flag] == 'true'
       inventory_material_ids = Stock.where(date:date,inventory_flag:true).map{|stock|stock.material_id}
-      @materials = Material.where(id:inventory_material_ids).order('vendor_id').search(params).where(unused_flag:false).includes(:vendor,:storage_location).page(params[:page]).per(100)
+      @materials = Material.where(id:inventory_material_ids).order('vendor_id').search(params).where(unused_flag:false).includes(:vendor).page(params[:page]).per(100)
     elsif params[:alert_date].present?
       all_material_ids = Stock.pluck("material_id").uniq
       inventory_ok_material_ids = Stock.where('date >= ?',params[:alert_date]).where(inventory_flag:true).pluck('material_id').uniq
       need_inventory_material_ids = all_material_ids - inventory_ok_material_ids
-      @materials = Material.order('vendor_id').search(params).where(id:need_inventory_material_ids).includes(:vendor,:storage_location).page(params[:page]).per(100)
+      @materials = Material.order('vendor_id').search(params).where(id:need_inventory_material_ids).includes(:vendor).page(params[:page]).per(100)
     else
-      @materials = Material.order('vendor_id').search(params).where(unused_flag:false).includes(:vendor,:storage_location).page(params[:page]).per(100)
+      @materials = Material.order('vendor_id').search(params).where(unused_flag:false).includes(:vendor).page(params[:page]).per(100)
     end
     @stocks_info_hash = {}
     if @materials.present?
@@ -158,7 +174,6 @@ class StocksController < ApplicationController
       end
       @stocks_hash = Stock.where(date:date,material_id:@materials.ids).map{|stock|[stock.material_id,stock]}.to_h
       @stock_hash ={}
-      @hash = {}
       @materials.each do |material|
         aaa(material,date)
       end
@@ -170,48 +185,47 @@ class StocksController < ApplicationController
 
   def inventory
     date = Date.parse(params[:date])
-    storage_location_id = params[:storage_location_id]
     vendor_id = params[:vendor_id]
-    @storage_locations = StorageLocation.all
     if params[:inventory_flag] == 'true'
       inventory_material_ids = Stock.where(date:date,inventory_flag:true).map{|stock|stock.material_id}
-      @materials = Material.where(id:inventory_material_ids,stock_management_flag:true).order('vendor_id').search(params).where(unused_flag:false).includes(:vendor,:storage_location).page(params[:page]).per(100)
+      @materials = Material.where(id:inventory_material_ids,stock_management_flag:true).order('vendor_id').search(params).where(unused_flag:false).includes(:vendor).page(params[:page]).per(100)
     elsif params[:alert_date].present?
       all_material_ids = Stock.pluck("material_id").uniq
       inventory_ok_material_ids = Stock.where('date >= ?',params[:alert_date]).where(inventory_flag:true).pluck('material_id').uniq
       need_inventory_material_ids = all_material_ids - inventory_ok_material_ids
-      @materials = Material.order('vendor_id').search(params).where(id:need_inventory_material_ids,stock_management_flag:true).includes(:vendor,:storage_location).page(params[:page]).per(100)
+      @materials = Material.order('vendor_id').search(params).where(id:need_inventory_material_ids,stock_management_flag:true).includes(:vendor).page(params[:page]).per(100)
     else
-      @materials = Material.order('vendor_id').search(params).where(unused_flag:false,stock_management_flag:true).includes(:vendor,:storage_location).page(params[:page]).per(100)
+      @materials = Material.order('vendor_id').search(params).where(unused_flag:false,stock_management_flag:true).includes(:vendor).page(params[:page]).per(100)
     end
-    @stocks_info_hash = {}
     if @materials.present?
       inventory_date_hash = Stock.where(material_id:@materials.ids,inventory_flag:true).order("date ASC").map{|stock|[stock.material_id, stock.date]}.to_h
       stocks = Stock.where('date <= ?',params[:date]).where(material_id:@materials.ids).order("date ASC").map{|stock|[stock.material_id, [stock.end_day_stock,stock.date]]}.to_h
-      @materials.each do |material|
-        if inventory_date_hash[material.id].present?
-          last_inventory_date = inventory_date_hash[material.id].strftime("%-m月%-d日")
-        else
-          last_inventory_date = ''
-        end
-        if stocks[material.id].present?
-          last_stock = stocks[material.id][0]
-          last_stock_date = stocks[material.id][1].strftime("%-m月%-d日")
-        else
-          last_stock = ''
-          last_stock_date = ''
-        end
-        @stocks_info_hash[material.id] = [last_inventory_date,last_stock,last_stock_date]
-      end
       @stocks_hash = Stock.where(date:date,material_id:@materials.ids).map{|stock|[stock.material_id,stock]}.to_h
       @stock_hash ={}
-      @hash = {}
       @materials.each do |material|
-        aaa(material,date)
+        stocks_arr = stocks.where(material_id:material.id).last(5)
+        aaa(material,date,stocks_arr)
       end
     else
       @stocks_hash = []
     end
+
+    date = Date.today
+    @materials = Material.includes(:vendor).where(need_inventory_flag:true).order(:vendor_id)
+    material_ids = @materials.ids
+    stocks = Stock.where(material_id:material_ids).where('date <= ?',date).order("date")
+    if @materials.present?
+      @stocks_hash = Stock.where(date:date,material_id:@materials.ids).map{|stock|[stock.material_id,stock]}.to_h
+      @stock_hash ={}
+      @materials.each do |material|
+        stocks_arr = stocks.where(material_id:material.id).last(5)
+        aaa(material,date,stocks_arr)
+      end
+    else
+      @stocks_hash = []
+    end
+
+
   end
 
   def inventory_update
@@ -243,21 +257,15 @@ class StocksController < ApplicationController
     Stock.import new_stocks if new_stocks.present?
     Stock.import update_stocks, on_duplicate_key_update:[:end_day_stock,:start_day_stock,:inventory_flag] if update_stocks.present?
 
-    redirect_to inventory_stocks_path(date:date,page:params[:page],storage_location_id:params[:storage_location_id],vendor_id:params[:vendor_id]),
+    redirect_to inventory_stocks_path(date:date,page:params[:page],vendor_id:params[:vendor_id]),
     notice: "<div class='alert alert-success' role='alert' style='font-size:15px;'>在庫を保存しました！</div>".html_safe
   end
 
   def inventory_sheet
     date = params[:date]
-    storage_location_id = params[:storage_location_id]
-    if storage_location_id.present?
-      storage_location = StorageLocation.find(storage_location_id)
-    else
-      storage_location = '全体'
-    end
     vendor_id = params[:vendor_id]
     @material_stock = {}
-    @materials = Material.order('storage_location_id').order('vendor_id').search(params).where(unused_flag:false).includes(:vendor,:storage_location)
+    @materials = Material.order('vendor_id').search(params).where(unused_flag:false).includes(:vendor)
     @materials.each do |material|
       prev_stock = material.stocks.where("date <= ?", date).order("date DESC").first
       if prev_stock
@@ -269,8 +277,8 @@ class StocksController < ApplicationController
     respond_to do |format|
       format.html
       format.pdf do
-        pdf = InventorySheetPdf.new(@material_stock,storage_location)
-        
+        pdf = InventorySheetPdf.new(@material_stock)
+
         send_data pdf.render,
         filename:    "#{date}.pdf",
         type:        "application/pdf",
@@ -349,15 +357,17 @@ class StocksController < ApplicationController
     Stock.import update_stocks, on_duplicate_key_update:[:end_day_stock,:start_day_stock] if update_stocks.present?
     @material = stock.material
     date = stock.date
-    aaa(@material,date)
+    stocks = Stock.where(material_id:@material.id).where('date <= ?',date).order("date")
+    stocks_arr = stocks.where(material_id:@material.id).last(5)
+
+    aaa(@material,date,stocks_arr)
     @class_name = ".inventory_tr_#{@material.id}"
     @stocks_hash = {@material.id => stock}
     @stocks_info_hash[@material.id] = [stock.date,stock.end_day_stock,stock.date]
   end
 
-  def aaa(material,date)
-    stocks = Stock.includes(:material).where(material_id:material.id,date:(date - 5)..(date + 10)).order('date ASC')
-    @stock_hash[material.id] = stocks.map do |stock|
+  def aaa(material,date,stocks_arr)
+    @stock_hash[material.id] = stocks_arr.map do |stock|
       if stock.used_amount == 0
         used_amount = "<td style='color:silver;'>0</td>"
       else
@@ -388,5 +398,18 @@ class StocksController < ApplicationController
 
   def history_test
 
+  end
+
+  def material_update(today)
+    if @stock.inventory_flag == true
+      date = @stock.date
+      if @material.last_inventory_date.nil? || @material.last_inventory_date < date
+        if today - 30 < date
+          @material.update_attributes(need_inventory_flag:false,last_inventory_date:date)
+        else
+          @material.update_attributes(need_inventory_flag:true,last_inventory_date:date)
+        end
+      end
+    end
   end
 end

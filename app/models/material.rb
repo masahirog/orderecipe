@@ -16,7 +16,6 @@ class Material < ApplicationRecord
   scope :mate_search, lambda { |query|  where(unused_flag:false).where('name LIKE ?', "%#{query}%").limit(100)}
   has_many :stocks
 
-  belongs_to :storage_location
 
   # after_save :update_cache
   validates :name, presence: true, uniqueness: true, format: { with:/\A[^０-９ａ-ｚＡ-Ｚ]+\z/,
@@ -42,8 +41,6 @@ class Material < ApplicationRecord
      data = data.where(vendor_id: params["vendor_id"]) if params["vendor_id"].present?
      data = data.where(['order_code LIKE ?', "%#{params["order_code"]}%"]) if params["order_code"].present?
      data = data.where(unused_flag:params["unused_flag"]) if params["unused_flag"].present?
-
-     data = data.where(storage_location_id:params[:storage_location_id]) if params[:storage_location_id].present?
      data
    else
      Material.order(id: "DESC").all

@@ -111,9 +111,9 @@ Rails.application.routes.draw do
       get :inventory
       put :inventory_update
       get :inventory_sheet
+      get :alert
     end
   end
-  resources :storage_locations
   resources :kurumesi_mails
   resources :brands
 end

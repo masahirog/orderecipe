@@ -52,13 +52,16 @@ html
                   a.dropdown-toggle href="#" data-toggle="dropdown" role="button"
                     |発注・棚卸
                     span.caret
-                  ul.dropdown-menu role="menu"
+                  ul.dropdown-menu role="menu" style='width:250px;'
                     li = link_to "発注",orders_path
                     li = link_to "納品確認",deliveried_list_orders_path
                     li = link_to "くるめし備品手配","https://docs.google.com/spreadsheets/d/1KivYZ3IIo7ySJBZklBwWRuxZqtFDs-cVQ2fTcBjShM0/edit#gid=104376609",target:'_blank'
                     li = link_to "棚卸し",inventory_stocks_path(date:Date.today)
-                    li = link_to "商品保管場所",storage_locations_path
-                    li = link_to "商品保管場所（図）",'https://docs.google.com/presentation/d/1ELHD2Ky1qMtVCj0pIEkQZ_mMwSrxEoRF2u7iXb7nVJA/edit?usp=sharing',target:'_blank'
+                    li
+                      a.clearfix href="/stocks/alert"
+                        span style='float:left;' 棚卸しアラート　
+                        span class="badge badge-danger" style='background-color:red;float:left;'
+                          = @stock_alert_materials
                     li = link_to "月次棚卸し在庫",stocks_path()
 
                 li.menu_li

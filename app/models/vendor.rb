@@ -12,8 +12,8 @@ class Vendor < ApplicationRecord
 
   def self.vendor_index(params)
     hoge = []
-    order = Order.includes(order_materials:[:material]).find(params[:id])
-    order_materials = order.order_materials.where(un_order_flag:false)
+    order = Order.find(params[:id])
+    order_materials = OrderMaterial.includes(material:[:vendor]).where(order_id:order.id,un_order_flag:false)
     order_materials.each do |om|
       hash={}
       hash.store("vendor_id", om.material.vendor_id)

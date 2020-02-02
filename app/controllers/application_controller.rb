@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   before_action :authenticate_user!
   protect_from_forgery with: :exception
+  before_action :stock_alert_materials
 
   def render_500(e)
     ExceptionNotifier.notify_exception(e, :env => request.env, :data => {:message => "your error message"})
@@ -137,5 +138,8 @@ class ApplicationController < ActionController::Base
     end
     def revert_link_menu
       view_context.link_to('取消', revert_version_path(@menu.versions.last), :method => :post)
+    end
+    def stock_alert_materials
+      @stock_alert_materials = Material.where(need_inventory_flag:true).count
     end
 end

@@ -1,15 +1,15 @@
 class InventorySheetPdf < Prawn::Document
-  def initialize(material_stock,storage_location)
+  def initialize(material_stock)
     super(
       page_size: 'A4',
       margin:10
     )
     #日本語のフォント
     font "vendor/assets/fonts/ipaexg.ttf"
-    table_content(material_stock,storage_location)
+    table_content(material_stock)
   end
 
-  def table_content(material_stock,storage_location)
+  def table_content(material_stock)
     bounding_box([10, 800], :width => 560) do
       text "発行時間：#{Time.now.strftime("%Y年 %m月 %d日　%H:%M")}",size:10,:align => :right
       move_down 10
@@ -33,7 +33,7 @@ class InventorySheetPdf < Prawn::Document
   end
 
   def line_item_rows2(material_stock)
-    data = [['食材名','仕入先','保管場所','在庫予想','実在庫','計上単位','変換']]
+    data = [['食材名','仕入先','在庫予想','実在庫','計上単位','変換']]
     material_stock.each do |ms|
       henkan = ""
       material = ms[1][0]
@@ -44,7 +44,7 @@ class InventorySheetPdf < Prawn::Document
         recent_stock_accounting_unit = "#{(ms[1][1]/material.accounting_unit_quantity).floor(1)}#{material.accounting_unit}"
       end
       henkan = "1#{material.accounting_unit}あたり#{material.accounting_unit_quantity}#{material.recipe_unit}"
-      data << [material.name,material.vendor.company_name,material.storage_location.name,recent_stock_accounting_unit,'',material.accounting_unit,henkan]
+      data << [material.name,material.vendor.company_name,recent_stock_accounting_unit,'',material.accounting_unit,henkan]
     end
     data
   end

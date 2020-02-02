@@ -3,11 +3,12 @@
     .form-group.col-md-2
       = date_field_tag :date,@date, class:"form-control"
     .form-group.col-md-2
-      input.btn.btn-success type="button" onclick="submit();" value="検索"
+      = submit_tag "検索" ,class:"btn btn-primary"
 h4 納品商品リスト
 table.table
   thead
     tr
+      th
       th 業者名
       th 商品名
       th.text-right 納品量　　
@@ -16,8 +17,9 @@ table.table
   tbody
     - @order_materials.each do |om|
       tr
+        td = link_to 'オーダー',om.order,target:'_blank'
         td = om.material.vendor.company_name
-        td = om.material.name
+        td = link_to om.material.name,om.material,target:'_blank'
         td.text-right
           - order_amount = (om.order_quantity.to_f / om.material.recipe_unit_quantity)
           - if order_amount == order_amount.to_i

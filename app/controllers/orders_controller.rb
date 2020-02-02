@@ -18,8 +18,7 @@ class OrdersController < ApplicationController
     else
       @date = Date.today
     end
-    @order_materials = OrderMaterial.includes(material:[:vendor]).where(delivery_date:@date,un_order_flag:false).order("vendors.id")
-
+    @order_materials = OrderMaterial.includes(:order,material:[:vendor]).where(delivery_date:@date,un_order_flag:false).order("vendors.id")
   end
 
   def edit
@@ -316,7 +315,9 @@ class OrdersController < ApplicationController
 
   def show
     @order = Order.includes(order_products:[:product]).find(params[:id])
+    @order_materials = OrderMaterial.includes(material:[:vendor]).where(order_id:@order.id,un_order_flag:false)
     @vendors = Vendor.vendor_index(params)
+
   end
 
   def order_print

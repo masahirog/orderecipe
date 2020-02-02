@@ -81,4 +81,36 @@ class Stock < ApplicationRecord
       end
     end
   end
+
+  def self.stock_status_check
+    materials_arr = []
+    today = Date.today
+    all_material_ids = Stock.where('date <= ?',today).pluck("material_id").uniq
+    materials = Material.where(id:all_material_ids)
+    stocks = Stock.order("date DESC").where('date <= ?',today)
+    materials.each do |material|
+      latest_stock = stocks.find_by(material_id:material.id)
+      last_inventory = stocks.find_by(material_id:material.id,inventory_flag:true)
+      if material.stock_management_flag == true
+        if last_inventory.present?
+          material.last_inventory_date = last_inventory.date
+          if latest_stock.inventory_flag == true && latest_stock.end_day_stock == 0
+            material.need_inventory_flag = false
+          else
+            if today - last_inventory.date < 30
+              material.need_inventory_flag = false
+            else
+              material.need_inventory_flag = true
+            end
+          end
+        else
+          material.need_inventory_flag = true
+        end
+      else
+        material.need_inventory_flag = false
+      end
+      materials_arr << material
+    end
+    Material.import materials_arr, on_duplicate_key_update: [:last_inventory_date,:need_inventory_flag]
+  end
 end
