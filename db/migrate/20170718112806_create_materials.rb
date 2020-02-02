@@ -18,7 +18,6 @@ class CreateMaterials < ActiveRecord::Migration[4.2]
       t.text :allergy, array: true
       t.boolean :vendor_stock_flag, :null => false, :default => true
       t.integer :delivery_deadline, :null => false, :default => 1
-      t.integer :storage_location_id,null:false
       t.timestamps null: false
       t.string :accounting_unit,null:false
       t.integer :accounting_unit_quantity,null:false

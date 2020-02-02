@@ -180,7 +180,6 @@ ActiveRecord::Schema.define(version: 2019_12_19_113341) do
     t.text "allergy"
     t.boolean "vendor_stock_flag", default: true, null: false
     t.integer "delivery_deadline", default: 1, null: false
-    t.integer "storage_location_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "accounting_unit", null: false
