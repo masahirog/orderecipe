@@ -1,6 +1,4 @@
 class MenuMaterial < ApplicationRecord
-  has_paper_trail
-
   belongs_to :menu, optional: true
   belongs_to :material
   belongs_to :food_ingredient, optional: true
