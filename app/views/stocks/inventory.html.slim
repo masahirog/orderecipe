@@ -3,8 +3,6 @@
   = text_field_tag :name, params[:name], class:"form-control",placeholder:'食材・資材名',style:'width:200px;float:left;margin-right:20px;'
   = select_tag :vendor_id, options_from_collection_for_select(Vendor.all, :id, :company_name,params[:vendor_id]),include_blank: true, class: "form-control",style:'width:200px;float:left;margin-right:20px;'
   = submit_tag "検索" ,class:"btn btn-primary",style:'float:left;margin-right:20px;'
-= link_to '棚卸シート印刷',inventory_sheet_stocks_path(date:params[:date],vendor_id:params[:vendor_id],format:'pdf'),class:'btn btn-default',target:'_blank',style:'float:left;margin-right:20px;'
-= link_to 'アラート食材',inventory_stocks_path(date:Date.today,alert_date:Date.today.months_ago(2)),class:'btn btn-danger'
 table.table
   thead
     tr

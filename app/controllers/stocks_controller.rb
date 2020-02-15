@@ -185,47 +185,18 @@ class StocksController < ApplicationController
 
   def inventory
     date = Date.parse(params[:date])
-    vendor_id = params[:vendor_id]
-    if params[:inventory_flag] == 'true'
-      inventory_material_ids = Stock.where(date:date,inventory_flag:true).map{|stock|stock.material_id}
-      @materials = Material.where(id:inventory_material_ids,stock_management_flag:true).order('vendor_id').search(params).where(unused_flag:false).includes(:vendor).page(params[:page]).per(100)
-    elsif params[:alert_date].present?
-      all_material_ids = Stock.pluck("material_id").uniq
-      inventory_ok_material_ids = Stock.where('date >= ?',params[:alert_date]).where(inventory_flag:true).pluck('material_id').uniq
-      need_inventory_material_ids = all_material_ids - inventory_ok_material_ids
-      @materials = Material.order('vendor_id').search(params).where(id:need_inventory_material_ids,stock_management_flag:true).includes(:vendor).page(params[:page]).per(100)
-    else
-      @materials = Material.order('vendor_id').search(params).where(unused_flag:false,stock_management_flag:true).includes(:vendor).page(params[:page]).per(100)
-    end
+    @materials = Material.order('vendor_id').search(params).where(unused_flag:false,stock_management_flag:true).includes(:vendor).page(params[:page]).per(100)
+    stocks = Stock.where(material_id:@material_ids).where('date <= ?',date).order("date")
     if @materials.present?
-      inventory_date_hash = Stock.where(material_id:@materials.ids,inventory_flag:true).order("date ASC").map{|stock|[stock.material_id, stock.date]}.to_h
-      stocks = Stock.where('date <= ?',params[:date]).where(material_id:@materials.ids).order("date ASC").map{|stock|[stock.material_id, [stock.end_day_stock,stock.date]]}.to_h
-      @stocks_hash = Stock.where(date:date,material_id:@materials.ids).map{|stock|[stock.material_id,stock]}.to_h
+      @stocks_hash = Stock.where(date:@date,material_id:@material_ids).map{|stock|[stock.material_id,stock]}.to_h
       @stock_hash ={}
       @materials.each do |material|
         stocks_arr = stocks.where(material_id:material.id).last(5)
-        aaa(material,date,stocks_arr)
+        aaa(material,@date,stocks_arr)
       end
     else
       @stocks_hash = []
     end
-
-    date = Date.today
-    @materials = Material.includes(:vendor).where(need_inventory_flag:true).order(:vendor_id)
-    material_ids = @materials.ids
-    stocks = Stock.where(material_id:material_ids).where('date <= ?',date).order("date")
-    if @materials.present?
-      @stocks_hash = Stock.where(date:date,material_id:@materials.ids).map{|stock|[stock.material_id,stock]}.to_h
-      @stock_hash ={}
-      @materials.each do |material|
-        stocks_arr = stocks.where(material_id:material.id).last(5)
-        aaa(material,date,stocks_arr)
-      end
-    else
-      @stocks_hash = []
-    end
-
-
   end
 
   def inventory_update
