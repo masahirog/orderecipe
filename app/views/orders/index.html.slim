@@ -11,28 +11,44 @@ table.table
   thead
     tr
       th
+      th.text-center style="width:100px;" ステータス
+      th style="width:130px;" 商品製造日
+      th style="width:100px;"
       th
-      th 商品製造日
-      th 発注商品
   tbody
     - @orders.each do |order|
-      tr
+      - if order.fixed_flag == true
+        - color = "white"
+      - else
+        - color = "silver"
+      end
+      tr style="background-color:#{color};"
         td
           = link_to "発注詳細", order_path(order),class:"order btn btn-default",style:"margin:3px;"
-        td
+        td.text-center
           - if order.fixed_flag == true
-            h4
-              span class="label label-success" 確定
+            span 確定
+          - else
+            span 未確定
         td
           - if order.order_products.present?
-            = order.order_products[0].make_date
+            = order.order_products[0].make_date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[order.order_products[0].make_date.wday]})")
           - else
-            h4
-              span class="label label-danger" 単品発注
         td.clearfix
-          - order.order_products.each do |op|
-            div style="padding:5px 10px;font-size:11px;width:25%;float:left;"
-              = "#{op.serving_for}食"
-              = op.product.name
-
+          - if order.products.present?
+            - if order.products[0].brand_id == 1
+              span 弁当将軍
+            - else
+              span くるめし
+          - else
+            span 単品
+        td.clearfix
+          - ids = order.order_materials.where(un_order_flag:false).map{|om|om.material.vendor_id}.uniq
+          - ids.each do |id|
+            .col-md-3 style='float:left;'
+              span = "#{Vendor.find(id).company_name}（#{@vendors_hash[order.id][id][0]}）"
+              - if @vendors_hash[order.id][id][1] == true
+                span style='float:right;margin-left:5px;' class="label label-success" OK
+              - else
+                span style='float:right;margin-left:5px;' class="label label-danger" NG
 = paginate @orders

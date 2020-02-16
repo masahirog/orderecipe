@@ -1,0 +1,2 @@
+class FaxMail < ApplicationRecord
+end

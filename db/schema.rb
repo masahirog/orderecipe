@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_19_113341) do
+ActiveRecord::Schema.define(version: 2020_02_16_121318) do
 
   create_table "brands", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name", null: false
@@ -51,6 +51,16 @@ ActiveRecord::Schema.define(version: 2019_12_19_113341) do
     t.date "start_time", null: false
     t.integer "total_manufacturing_number", default: 0, null: false
     t.boolean "fixed_flag", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "fax_mails", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "order_id"
+    t.integer "vendor_id"
+    t.integer "status", default: 0
+    t.string "subject"
+    t.datetime "recieved"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -249,6 +259,7 @@ ActiveRecord::Schema.define(version: 2019_12_19_113341) do
     t.date "delivery_date"
     t.text "menu_name"
     t.boolean "un_order_flag", default: false, null: false
+    t.boolean "fax_sended_flag", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

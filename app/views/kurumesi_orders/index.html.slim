@@ -1,4 +1,8 @@
-h1 くるめしオーダー一覧
+.clearfix
+  div style='font-size:20px;float:left;font-weight:bold;' くるめしオーダー一覧
+  div.text-center style='float:right'
+    div = link_to '新着確認',mail_check_kurumesi_orders_path,class:'btn btn-default'
+    div = "last：#{current_user.last_mail_check.strftime("%-m / %-d　%H:%M")}"
 = month_calendar do |date|
   div.col-md-12 style='font-size:18px;padding:0 0 7px 0;'
     = link_to date.strftime("%-m月%-d日"), date_kurumesi_orders_path(date:date)

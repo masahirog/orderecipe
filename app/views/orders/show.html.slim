@@ -1,62 +1,60 @@
-.col-md-12
-  .col-md-3
-    label 発注に使用した弁当
-.col-md-12
-  .panel.panel-primary
-    .panel-heading.col-md-12 style="padding:5px;"
-      span.panel-title.col-md-4 弁当名
-      span.col-md-2.panel-title 食数
-      span.col-md-2.panel-title 製造日
-      .col-md-2
-        = link_to "レシピ印刷",products_pdfs_orders_path(order_id:@order.id, :format => :pdf),class:"btn btn-default",:target=>"_blank",style:"font-size:8px;"
-      .col-md-2
-    ul.list-group.panel-body style="list-style:none;"
-      - @order.order_products.each do |op|
-        li.col-md-12.list-group-item
-          .col-md-4
-            =  link_to op.product.name,product_path(op.product)
-          .col-md-2
-            = "#{op.serving_for}食"
-          .col-md-2
-            = "#{op.make_date.strftime("%Y年%-m月%-d日(#{%w(日 月 火 水 木 金 土)[op.make_date.wday]})")}"
-          .col-md-2
-            = form_tag({:controller => "products", :action => "print", format: "pdf"},{:target => "_blank"}) do
-              = number_field(:volume,:id,value:op.product_id,style:"display:none;")
-              = number_field(:volume,:num,value:op.serving_for,id:"amount_number_input",style:"display:none;")
-              input.btn.btn-default type="button" onclick="submit();" value="印刷ページ"
-          .col-md-2
-            = link_to "盛付用VIEW", serving_kana_products_path(id:op.product_id), class:"btn btn-default",:target=>"_blank"
-.col-md-12 style='padding-bottom:15px;'
-  = form_tag({:controller => "orders", :action => "order_print", format: "pdf"},{:target => "_blank"}) do
-    = select :vendor,:id, @vendors.map{|t| [t["company_name"], t["vendor_id"]]},{},class:"index_vendor_select form-control",style:'float:left;width:200px;'
-    input.print_btn.btn.btn-primary type="button" onclick="submit();" style='float:left;margin-left:5px;' value="◀1企業印刷"
-  = link_to '全企業印刷',print_all_orders_path(id:@order.id,format: :pdf),target:'_blank',class:'btn btn-primary',style:'float:left;margin-left:5px;'
-  button type="button" class="btn-success btn" data-toggle="modal" data-target="#sampleModal" style='float:left;margin-left:5px;' FAX送信
-  = link_to '発注内容の編集',edit_order_path(@order),class:"btn btn-default",style:'margin-left:5px;float:left;'
-.col-md-12
-  .orders_all.panel.panel-primary style='margin-top:10px;'
-    .panel-heading.col-md-12 style="padding:5px;"
-      label.panel-title.material_name.col-md-3 発注食材・資材一覧
-      label.panel-title.col-md-1 発注量
-      label.panel-title.col-md-1 計算量
-      label.panel-title.col-md-2 仕入先
-      label.panel-title.col-md-2 備考
-      label.panel-title.col-md-2 納品日
-    ul.order_materials_ul.list-group.panel-body
-      - @order_materials.each do |om|
-        li.index_vendor_list.list-group-item.col-md-12 style="padding:5px;"
-          .material_name.col-md-3
-            =  link_to om.material.name ,om.material,target:'_blank'
-          .order_quantity.col-md-1.text-right
-            = "#{((om.order_quantity.to_f/om.material.recipe_unit_quantity)*om.material.order_unit_quantity).round(1)} #{om.material.order_unit}"
-          .material_unit.col-md-1.text-right
-            = "#{om.calculated_quantity} #{om.material.recipe_unit}"
-          .vendor_company_name.col-md-2
-            = om.material.vendor.company_name
-          .col-md-2
-            = om.order_material_memo
-          .col-md-2
-            = om.delivery_date
+h4 = "製造日：#{@order.order_products[0].make_date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@order.order_products[0].make_date.wday]})")}"
+ul.list-group.col-md-12.form-group
+  - @order.order_products.each_slice(3) do |op1,op2,op3|
+    li.list-group-item.col-md-12 style='padding:5px 15px;'
+      .col-md-4
+        - if op1.present?
+          span.col-md-10 =  link_to op1.product.name,product_path(op1.product)
+          span.col-md-2.text-right =" #{op1.serving_for}食"
+      .col-md-4
+        - if op2.present?
+          span.col-md-10 =  link_to op2.product.name,product_path(op2.product)
+          span.col-md-2.text-right =" #{op2.serving_for}食"
+      .col-md-4
+        - if op3.present?
+          span.col-md-10 =  link_to op3.product.name,product_path(op3.product)
+          span.col-md-2.text-right =" #{op3.serving_for}食"
+
+.col-md-12.clearfix style='padding-bottom:15px;'
+  .clearfix style='float:left;'
+    = link_to '発注内容の編集',edit_order_path(@order),class:"btn btn-primary",style:'float:left;margin-right:15px;'
+    button type="button" class="btn-success btn" data-toggle="modal" data-target="#sampleModal" style='float:left;' FAX送信
+  .clearfix style='float:right;width:500px;'
+    = link_to '全企業印刷',print_all_orders_path(id:@order.id,format: :pdf),target:'_blank',class:'btn btn-primary',style:'float:right;margin-left:5px;'
+    = form_tag({:controller => "orders", :action => "order_print", format: "pdf"},{:target => "_blank"}) do
+      input.print_btn.btn.btn-primary type="button" onclick="submit();" style='float:right;margin-left:5px;' value="◀1企業印刷"
+      = select :vendor,:id, @vendors.map{|t| [t["company_name"], t["vendor_id"]]},{},class:"index_vendor_select form-control",style:'float:right;width:200px;'
+
+table.table
+  thead
+    tr
+      th 発注食材・資材一覧
+      th 発注量
+      th 計算量
+      th 仕入先
+      th 備考
+      th 納品日
+      th FAX
+  tbody
+    - @order_materials.each do |om|
+      tr
+        td
+          =  link_to om.material.name ,om.material,target:'_blank'
+        td
+          = "#{((om.order_quantity.to_f/om.material.recipe_unit_quantity)*om.material.order_unit_quantity).round(1)} #{om.material.order_unit}"
+        td
+          = "#{om.calculated_quantity} #{om.material.recipe_unit}"
+        td
+          = om.material.vendor.company_name
+        td
+          = om.order_material_memo
+        td
+          = om.delivery_date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[om.delivery_date.wday]})")
+        td
+          - if om.fax_sended_flag == true
+            span class="label label-success" OK
+          - else
+            span class="label label-danger" NG
 
 #sampleModal.modal.fade tabindex="-1"
   = form_tag(send_order_fax_orders_path,method: :get) do

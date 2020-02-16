@@ -19,6 +19,7 @@ end
 #10分毎に実行
 task :kurumesi_order_mail_check => :environment do
   KurumesiMail.routine_check
+  Order.fax_send_check
 end
 
 # 毎日の0:00にheroku_schedulerをセット

@@ -1,6 +1,8 @@
-h3 くるめしメール
-span
-  = "直近確認日時：#{current_user.last_mail_check.strftime("%Y年 %m月 %d日　%H:%M")}"
+.clearfix
+  div style='font-size:20px;float:left;font-weight:bold;' くるめしメール
+  div.text-center style='float:right'
+    div = link_to '新着確認',mail_check_kurumesi_orders_path,class:'btn btn-default'
+    div = "last：#{current_user.last_mail_check.strftime("%-m / %-d　%H:%M")}"
 table.table
   thead
     tr

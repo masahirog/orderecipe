@@ -12,6 +12,7 @@ class CreateOrderMaterials < ActiveRecord::Migration[4.2][5.0]
       # t.string :recipe_unit
       # t.string :order_unit
       t.boolean :un_order_flag,default:false,null:false
+      t.boolean :fax_sended_flag,default:false,null:false
       t.timestamps
     end
   end

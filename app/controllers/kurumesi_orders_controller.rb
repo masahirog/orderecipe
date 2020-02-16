@@ -25,7 +25,7 @@ class KurumesiOrdersController < ApplicationController
   def print_receipts
     date = params[:date]
     data_arr = []
-    kurumesi_orders = KurumesiOrder.where(start_time:date,payment:[1,2]).where.not(management_id:0)
+    kurumesi_orders = KurumesiOrder.where(start_time:date,payment:[1,2],canceled_flag:false).where.not(management_id:0)
     kurumesi_orders.each do |ko|
       to = ko.reciept_name
       keisho = "御中"
@@ -47,7 +47,10 @@ class KurumesiOrdersController < ApplicationController
       end
     end
   end
-
+  def mail_check
+    KurumesiMail.routine_check
+    redirect_to kurumesi_orders_path, notice: 'くるめしのメールを確認しました。'
+  end
 
   def receipt
   end

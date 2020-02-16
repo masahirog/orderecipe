@@ -15,6 +15,7 @@ Rails.application.routes.draw do
 
   resources :kurumesi_orders do
     collection do
+      get :mail_check
       get :test
       get :date
       get :print_preparation
