@@ -97,7 +97,7 @@ class MaterialsController < ApplicationController
 
   private
   def material_params
-    params.require(:material).permit(:name, :order_name,:roma_name, :recipe_unit_quantity, :recipe_unit,:vendor_stock_flag,:stock_management_flag,
+    params.require(:material).permit(:name, :order_name,:roma_name, :recipe_unit_quantity, :recipe_unit,:vendor_stock_flag,:stock_management_flag,:image,:image_cache,:remove_image,
      :recipe_unit_price, :cost_price, :category, :order_code, :order_unit, :memo, :unused_flag, :vendor_id,:order_unit_quantity,:delivery_deadline,:accounting_unit,:accounting_unit_quantity,:measurement_flag,
      {allergy:[]},material_food_additives_attributes:[:id,:material_id,:food_additive_id,:_destroy])
   end

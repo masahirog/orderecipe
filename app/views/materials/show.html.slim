@@ -63,3 +63,5 @@
     tr
       th.col-md-4 メモ
       td = @material.memo
+.col-md-6
+  = image_tag @material.image.to_s ,class:"text-center img-responsive center-block",style:'max-height:450px;'

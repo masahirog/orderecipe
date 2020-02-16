@@ -15,7 +15,7 @@ class Material < ApplicationRecord
   belongs_to :vendor
   scope :mate_search, lambda { |query|  where(unused_flag:false).where('name LIKE ?', "%#{query}%").limit(100)}
   has_many :stocks
-
+  mount_uploader :image, MaterialImageUploader
 
   # after_save :update_cache
   validates :name, presence: true, uniqueness: true, format: { with:/\A[^０-９ａ-ｚＡ-Ｚ]+\z/,

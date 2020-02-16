@@ -198,6 +198,7 @@ ActiveRecord::Schema.define(version: 2020_02_16_121318) do
     t.boolean "stock_management_flag", default: true, null: false
     t.date "last_inventory_date"
     t.boolean "need_inventory_flag", default: false, null: false
+    t.string "image"
   end
 
   create_table "menu_materials", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

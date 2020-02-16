@@ -8,59 +8,57 @@
         - @material.errors.full_messages.each do |message|
           li
             = message
-  .col-md-12.form-group
-    .col-md-5
-      = f.label :name, "食材・資材名（余分な情報はメモへお願いします）"
-      = f.text_field :name, class:'form-control name_ja'
-  .col-md-12.form-group
-    .col-md-5
-      = f.label :roma_name, "ローマ字名"
-      = f.text_field :roma_name, class:'form-control roma_name'
+  .col-md-12
+    .col-md-6
+      .col-md-12.form-group
+        = f.label :name, "食材・資材名（余分な情報はメモへお願いします）"
+        = f.text_field :name, class:'form-control name_ja'
+      .col-md-12.form-group
+        = f.label :roma_name, "ローマ字名"
+        = f.text_field :roma_name, class:'form-control roma_name'
+      .col-md-12.form-group
+        = f.label :order_name, "発注書記載名"
+        = f.text_field :order_name, class:'form-control'
+      .col-md-12.form-group
+        = f.label :stock_management_flag, "在庫を管理する（チェックを外すと日常の在庫管理は行いません）"
+        = f.check_box :stock_management_flag, class: "form-control"
+      .col-md-12.form-group
+        = f.label :unused_flag, "販売ステータス"
+        = f.select :unused_flag,[['使用中',false],['使用停止',true]],{selected:@material.unused_flag}, class:"form-control"
+      .col-md-12.form-group
+        = f.label :category, "分類"
+        = f.select :category, Material.categories.keys.to_a, {}, class: 'form-control'
+      .col-md-12.form-group
+        = f.label :measurement_flag, "仕込みの食材別シートに表示する"
+        = f.check_box :measurement_flag, class: "form-control"
+      .col-md-12.form-group
+        = f.label :vendor_id, "仕入先企業名"
+        = f.collection_select :vendor_id, Vendor.all, :id, :company_name, {include_blank: true}, { class: "form-control"}
+      .col-md-12.form-group
+        = f.label :vendor_stock_flag, "メーカー在庫品・受注品"
+        = f.select :vendor_stock_flag, [["在庫品", true], ["受注品", false]],{}, class: "form-control"
 
-  .col-md-12.form-group
-    .col-md-5
-      = f.label :order_name, "発注書記載名"
-      = f.text_field :order_name, class:'form-control'
-  .col-md-12.form-group
-    .col-md-5
-      = f.label :stock_management_flag, "在庫を管理する（チェックを外すと日常の在庫管理は行いません）"
-      = f.check_box :stock_management_flag, class: "form-control"
+      .col-md-12.form-group style="padding:0;"
+        .col-md-12
+          = f.label :delivery_deadline, "納品"
+        .col-md-8
+          = f.select :delivery_deadline,options_for_select(0..10,f.object.delivery_deadline),{}, class: "form-control"
+        .col-md-4 style="margin-top:10px;padding:0;"
+          | 営業日前
+      .col-md-12.form-group
+        = f.label :order_code, "業者管理コード"
+        = f.text_field :order_code, class:'form-control'
+    .col-md-6
+      = f.label :image, "写真"
+      = f.file_field :image
+      = f.hidden_field :image_cache
+      .form-group
+        - if @material.image?
+          = image_tag @material.image.to_s,class:"img-responsive",style:'max-height:450px;'
+          div
+            = f.label :remove_image,"削除する"
+            = f.check_box :remove_image
 
-  .col-md-12.form-group
-    .col-md-5
-      = f.label :unused_flag, "販売ステータス"
-      = f.select :unused_flag,[['使用中',false],['使用停止',true]],{selected:@material.unused_flag}, class:"form-control"
-
-  .col-md-12.form-group
-    .col-md-5
-      = f.label :category, "分類"
-      = f.select :category, Material.categories.keys.to_a, {}, class: 'form-control'
-  .col-md-12.form-group
-    .col-md-5
-      = f.label :measurement_flag, "仕込みの食材別シートに表示する"
-      = f.check_box :measurement_flag, class: "form-control"
-  .col-md-12.form-group
-    .col-md-5
-      = f.label :vendor_id, "仕入先企業名"
-      = f.collection_select :vendor_id, Vendor.all, :id, :company_name, {include_blank: true}, { class: "form-control"}
-  .col-md-12.form-group
-    .col-md-5
-      = f.label :vendor_stock_flag, "メーカー在庫品・受注品"
-      = f.select :vendor_stock_flag, [["在庫品", true], ["受注品", false]],{}, class: "form-control"
-
-  .col-md-12.form-group style="padding:0;"
-    .col-md-5
-      .col-md-12
-        = f.label :delivery_deadline, "納品"
-      .col-md-8
-        = f.select :delivery_deadline,options_for_select(0..10,f.object.delivery_deadline),{}, class: "form-control"
-      .col-md-4 style="margin-top:10px;padding:0;"
-        | 営業日前
-
-  .col-md-12.form-group
-    .col-md-5
-      = f.label :order_code, "業者管理コード"
-      = f.text_field :order_code, class:'form-control'
   .col-md-12
     .box26.clearfix
       span class="box-title" 発注最小ロット、単位と価格

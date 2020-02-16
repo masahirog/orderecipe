@@ -25,6 +25,7 @@ class CreateMaterials < ActiveRecord::Migration[4.2]
       t.boolean :stock_management_flag,:null => false,:default => true
       t.date :last_inventory_date
       t.boolean :need_inventory_flag,:null => false,:default => false
+      t.string :image
     end
   end
 end
