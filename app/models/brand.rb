@@ -7,8 +7,6 @@ class Brand < ApplicationRecord
     if line.index('】').present?
       product_name_end_kakko = line.index('】') - 1
       product_name = line[0..product_name_end_kakko]
-
-      # product_id = Product.find_by(name:product_name).id
       product = Product.find_by(name:product_name)
       if product.present?
         product_id = product.id

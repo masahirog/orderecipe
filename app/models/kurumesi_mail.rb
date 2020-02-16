@@ -55,6 +55,17 @@ class KurumesiMail < ApplicationRecord
             next
           end
         end
+        #波ダッシュなどの置換
+        mappings = {
+          "\u{00A2}" => "\u{FFE0}",
+          "\u{00A3}" => "\u{FFE1}",
+          "\u{00AC}" => "\u{FFE2}",
+          "\u{2016}" => "\u{2225}",
+          "\u{2012}" => "\u{FF0D}",
+          "\u{301C}" => "\u{FF5E}"
+        }
+        mappings.each{|before, after| body = body.gsub(before, after) }
+        body = body.encode(Encoding::Windows_31J, undef: :replace).encode(Encoding::UTF_8)
         unless KurumesiMail.find_by(body:body,recieved_datetime:recieved_datetime).present?
           @kurumei_mail = KurumesiMail.new
           @kurumei_mail.subject = subject
@@ -137,6 +148,7 @@ class KurumesiMail < ApplicationRecord
       end
       order[:proviso] = line[7..-1] if line[1..5] == "領収書但書"
     end
+
     shohin_arr.join('').gsub('【','$$$').gsub('[請求金額]','$$$').split("$$$").reject(&:blank?).each do |line|
       product_name = ""
       num = ""

@@ -30,7 +30,7 @@ class Product < ApplicationRecord
   enum cook_category: {その他:1,グリル:2,コンロ:3,フライヤー:4,グリルコンロ:5,スチコン:6,前日コンロ:7,グリルコンロ:8,前日グリル:9,フライヤー・コンロ:10,フライヤー・グリル:11}
   enum product_category: {弁当:1,他:2}
   enum status: {販売中:1,販売停止:2,試作中:3}
-
+  before_save :name_code
   before_destroy :clean_s3
 
   def view_name_and_id
@@ -122,12 +122,26 @@ class Product < ApplicationRecord
   end
 
   private
-  def clean_s3
-    image.remove!       #オリジナルの画像を削除
-    image.thumb.remove! #thumb画像を削除
-  rescue Excon::Errors::Error => error
-    puts "Something gone wrong"
-    false
-  end
+    def name_code
+      #波ダッシュなどの置換
+      mappings = {
+        "\u{00A2}" => "\u{FFE0}",
+        "\u{00A3}" => "\u{FFE1}",
+        "\u{00AC}" => "\u{FFE2}",
+        "\u{2016}" => "\u{2225}",
+        "\u{2012}" => "\u{FF0D}",
+        "\u{301C}" => "\u{FF5E}"
+      }
+      mappings.each{|before, after| self.name = self.name.gsub(before, after) }
+      self.name = self.name.encode(Encoding::Windows_31J, undef: :replace).encode(Encoding::UTF_8)
+    end
+
+    def clean_s3
+      image.remove!       #オリジナルの画像を削除
+      image.thumb.remove! #thumb画像を削除
+    rescue Excon::Errors::Error => error
+      puts "Something gone wrong"
+      false
+    end
 
 end
