@@ -1,4 +1,7 @@
-h4 = "製造日：#{@order.order_products[0].make_date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@order.order_products[0].make_date.wday]})")}"
+- if @order.order_products[0].present?
+  h4 = "製造日：#{@order.order_products[0].make_date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@order.order_products[0].make_date.wday]})")}"
+- else
+  h4 単品発注
 ul.list-group.col-md-12.form-group
   - @order.order_products.each_slice(3) do |op1,op2,op3|
     li.list-group-item.col-md-12 style='padding:5px 15px;'
@@ -18,12 +21,14 @@ ul.list-group.col-md-12.form-group
 .col-md-12.clearfix style='padding-bottom:15px;'
   .clearfix style='float:left;'
     = link_to '発注内容の編集',edit_order_path(@order),class:"btn btn-primary",style:'float:left;margin-right:15px;'
-    button type="button" class="btn-success btn" data-toggle="modal" data-target="#sampleModal" style='float:left;' FAX送信
-  .clearfix style='float:right;width:500px;'
-    = link_to '全企業印刷',print_all_orders_path(id:@order.id,format: :pdf),target:'_blank',class:'btn btn-primary',style:'float:right;margin-left:5px;'
-    = form_tag({:controller => "orders", :action => "order_print", format: "pdf"},{:target => "_blank"}) do
-      input.print_btn.btn.btn-primary type="button" onclick="submit();" style='float:right;margin-left:5px;' value="◀1企業印刷"
-      = select :vendor,:id, @vendors.map{|t| [t["company_name"], t["vendor_id"]]},{},class:"index_vendor_select form-control",style:'float:right;width:200px;'
+    - if @order.fixed_flag == true
+      button type="button" class="btn-success btn" data-toggle="modal" data-target="#sampleModal" style='float:left;' FAX送信
+  - if @order.fixed_flag == true
+    .clearfix style='float:right;width:500px;'
+      = link_to '全企業印刷',print_all_orders_path(id:@order.id,format: :pdf),target:'_blank',class:'btn btn-primary',style:'float:right;margin-left:5px;'
+      = form_tag({:controller => "orders", :action => "order_print", format: "pdf"},{:target => "_blank"}) do
+        input.print_btn.btn.btn-primary type="button" onclick="submit();" style='float:right;margin-left:5px;' value="◀1企業印刷"
+        = select :vendor,:id, @vendors.map{|t| [t["company_name"], t["vendor_id"]]},{},class:"index_vendor_select form-control",style:'float:right;width:200px;'
 
 table.table
   thead

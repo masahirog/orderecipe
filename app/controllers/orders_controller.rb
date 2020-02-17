@@ -99,13 +99,13 @@ class OrdersController < ApplicationController
     @materials = Material.all
     if params[:material_id]
       material_id = params[:material_id]
-      @orders = Order.includes(:products,order_products:[:product],).joins(:order_materials).where(:order_materials => {material_id:material_id,un_order_flag:false}).order("id DESC").page(params[:page]).per(30)
+      @orders = Order.includes(:products,order_products:[:product]).joins(:order_materials).where(:order_materials => {material_id:material_id,un_order_flag:false}).order("id DESC").page(params[:page]).per(20)
     else
-      @orders = Order.includes(:products,order_products:[:product]).order("id DESC").page(params[:page]).per(30)
+      @orders = Order.includes(:products,order_products:[:product]).order("id DESC").page(params[:page]).per(20)
     end
     @vendors_hash = Hash.new { |h,k| h[k] = {} }
     @orders.each do |order|
-      order.order_materials.includes(:material).where(un_order_flag:false).each do |om|
+      order.order_materials.includes(material:[:vendor]).where(un_order_flag:false).each do |om|
         if @vendors_hash[order.id][om.material.vendor_id].present?
           @vendors_hash[order.id][om.material.vendor_id][0] += 1
           if om.fax_sended_flag == true
@@ -120,7 +120,7 @@ class OrdersController < ApplicationController
           else
             sended = false
           end
-          @vendors_hash[order.id][om.material.vendor_id] = [1,sended]
+          @vendors_hash[order.id][om.material.vendor_id] = [1,sended,om.material.vendor.company_name]
         end
       end
     end
@@ -336,7 +336,6 @@ class OrdersController < ApplicationController
     @order = Order.includes(order_products:[:product]).find(params[:id])
     @order_materials = OrderMaterial.includes(material:[:vendor]).where(order_id:@order.id,un_order_flag:false)
     @vendors = Vendor.vendor_index(params)
-
   end
 
   def order_print

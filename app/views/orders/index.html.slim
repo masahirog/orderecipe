@@ -43,10 +43,9 @@ table.table
           - else
             span 単品
         td.clearfix
-          - ids = order.order_materials.where(un_order_flag:false).map{|om|om.material.vendor_id}.uniq
-          - ids.each do |id|
+          - @vendors_hash[order.id].keys.each do |id|
             .col-md-3 style='float:left;'
-              span = "#{Vendor.find(id).company_name}（#{@vendors_hash[order.id][id][0]}）"
+              span = "#{@vendors_hash[order.id][id][2]}（#{@vendors_hash[order.id][id][0]}）"
               - if @vendors_hash[order.id][id][1] == true
                 span style='float:right;margin-left:5px;' class="label label-success" OK
               - else
