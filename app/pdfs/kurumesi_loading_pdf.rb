@@ -9,7 +9,7 @@ class KurumesiLoadingPdf < Prawn::Document
     brand_ids.each_with_index do |brand_id,ii|
       brand_kurumesi_orders = kurumesi_orders.where(brand_id:brand_id)
       brand_product_ids = KurumesiOrderDetail.joins(:kurumesi_order).order('kurumesi_orders.pick_time').where(kurumesi_order_id:brand_kurumesi_orders.ids).map{|kod|kod.product_id}.uniq
-      kurumesi_orders_arr = brand_kurumesi_orders.each_slice(6).to_a
+      kurumesi_orders_arr = brand_kurumesi_orders.each_slice(8).to_a
       kurumesi_orders_arr.each_with_index do |moa,i|
         table_content(date,moa,kurumesi_orders_num_h,products_num_h,brand_id,brand_product_ids)
         start_new_page unless i + 1 == kurumesi_orders_arr.length
@@ -30,12 +30,10 @@ class KurumesiLoadingPdf < Prawn::Document
         cells.size = 9
         cells.border_width = 0.1
         cells.valign = :center
-        columns(1).size = 10
-        row(0..1).columns(0).size = 10
         columns(2..-1).align = :center
         self.header = true
-        columns = Array.new(moa.length){65}
-        self.column_widths = [230,100,65].push(columns).flatten!
+        columns = Array.new(moa.length){55}
+        self.column_widths = [230,100,40].push(columns).flatten!
       end
     end
   end
@@ -60,12 +58,8 @@ class KurumesiLoadingPdf < Prawn::Document
       end
       num = kurumesi_orders_num_h[mo.id]
       bihin = kurumesi_orders_num_h[mo.id]+1
-      hashi = (4.2 * bihin).ceil(1)
-      oshibori = (5.38 * bihin).ceil(1)
-
       if brand_id == 21
-        spoon = (2.2 * bihin).ceil(1)
-        hash2.store(mo.id,[bihin,"#{bihin}\n(#{spoon}g)",seikyusho,ryoshusho])
+        hash2.store(mo.id,[bihin,bihin,seikyusho,ryoshusho])
       else
         hash2.store(mo.id,[bihin,seikyusho,ryoshusho])
       end
@@ -73,9 +67,9 @@ class KurumesiLoadingPdf < Prawn::Document
 
     kurumesi_ids = moa.map do |kurumesi_order|
       if kurumesi_order.memo.present?
-        "#{kurumesi_order.management_id} ★memo★"
+        "#{kurumesi_order.management_id.to_s[-4..-1]} ★★★"
       else
-        kurumesi_order.management_id
+        kurumesi_order.management_id.to_s[-4..-1]
       end
     end
 
