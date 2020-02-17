@@ -1,4 +1,4 @@
-class KurumesiLoadingPdf < Prawn::Document
+class KurumesiMakeOrderPdf < Prawn::Document
   def initialize(date,kurumesi_orders,kurumesi_orders_num_h,products_num_h,brand_ids)
     super(
       page_size: 'A4',
@@ -9,7 +9,7 @@ class KurumesiLoadingPdf < Prawn::Document
     brand_ids.each_with_index do |brand_id,ii|
       brand_kurumesi_orders = kurumesi_orders.where(brand_id:brand_id)
       brand_product_ids = KurumesiOrderDetail.joins(:kurumesi_order).order('kurumesi_orders.pick_time').where(kurumesi_order_id:brand_kurumesi_orders.ids).map{|kod|kod.product_id}.uniq
-      kurumesi_orders_arr = brand_kurumesi_orders.each_slice(6).to_a
+      kurumesi_orders_arr = brand_kurumesi_orders.each_slice(10).to_a
       kurumesi_orders_arr.each_with_index do |moa,i|
         table_content(date,moa,kurumesi_orders_num_h,products_num_h,brand_id,brand_product_ids)
         start_new_page unless i + 1 == kurumesi_orders_arr.length
@@ -34,8 +34,8 @@ class KurumesiLoadingPdf < Prawn::Document
         row(0..1).columns(0).size = 10
         columns(2..-1).align = :center
         self.header = true
-        columns = Array.new(moa.length){65}
-        self.column_widths = [230,100,65].push(columns).flatten!
+        columns = Array.new(moa.length){50}
+        self.column_widths = [190,80,45].push(columns).flatten!
       end
     end
   end
@@ -46,36 +46,11 @@ class KurumesiLoadingPdf < Prawn::Document
       hash.store([mso.kurumesi_order_id,mso.product_id], mso.number)
     end
 
-    hash2 = {}
-    moa.each do |mo|
-      if mo.payment == '請求書（持参）'
-        seikyusho = "◯"
-        ryoshusho = ""
-      elsif mo.payment == '現金'||mo.payment == 'クレジットカード'
-        seikyusho = ""
-        ryoshusho = "◯"
-      else
-        seikyusho = ""
-        ryoshusho = ""
-      end
-      num = kurumesi_orders_num_h[mo.id]
-      bihin = kurumesi_orders_num_h[mo.id]+1
-      hashi = (4.2 * bihin).ceil(1)
-      oshibori = (5.38 * bihin).ceil(1)
-
-      if brand_id == 21
-        spoon = (2.2 * bihin).ceil(1)
-        hash2.store(mo.id,[bihin,"#{bihin}\n(#{spoon}g)",seikyusho,ryoshusho])
-      else
-        hash2.store(mo.id,[bihin,seikyusho,ryoshusho])
-      end
-    end
-
     kurumesi_ids = moa.map do |kurumesi_order|
       if kurumesi_order.memo.present?
-        "#{kurumesi_order.management_id} ★memo★"
+        "#{kurumesi_order.management_id.to_s[-4..-1]} ★★★"
       else
-        kurumesi_order.management_id
+        kurumesi_order.management_id.to_s[-4..-1]
       end
     end
 
@@ -90,25 +65,13 @@ class KurumesiLoadingPdf < Prawn::Document
     end
     data << arr2
     kurumesi_order_ids = moa.map{|ko|ko.id}
-    products = Product.where(id:brand_product_ids).order('product_category ASC').order("field(id, #{brand_product_ids.join(',')})")
+    products = Product.where(product_category:1,id:brand_product_ids).order('product_category ASC').order("field(id, #{brand_product_ids.join(',')})")
     products.each do |product|
       arr = [product.name.truncate(24),product.short_name,products_num_h[product.id]]
       moa.each do |kurumesi_order|
         arr.push(hash[[kurumesi_order.id,product.id]])
       end
       data << arr.map {|e| e ? e : ''}
-    end
-    if brand_id == 21
-      koumoku = [['はし&おしぼり','ハシ&ボリ'],['スプーン（2.2g）','スプーン'],['請求書','セイキュウショ'],['領収書','リョウシュウショ']]
-    else
-      koumoku = [['はし&おしぼり','ハシ&ボリ'],['請求書','セイキュウショ'],['領収書','リョウシュウショ']]
-    end
-    koumoku.each_with_index do |ar,i|
-      arr = [ar[0],ar[1],'']
-      moa.each do |kurumesi_order|
-        arr.push(hash2[kurumesi_order.id][i])
-      end
-      data << arr
     end
     data
   end

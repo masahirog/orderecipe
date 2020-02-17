@@ -104,24 +104,23 @@ class OrdersController < ApplicationController
       @orders = Order.includes(:products,order_products:[:product]).order("id DESC").page(params[:page]).per(20)
     end
     @vendors_hash = Hash.new { |h,k| h[k] = {} }
-    @orders.each do |order|
-      order.order_materials.includes(material:[:vendor]).where(un_order_flag:false).each do |om|
-        if @vendors_hash[order.id][om.material.vendor_id].present?
-          @vendors_hash[order.id][om.material.vendor_id][0] += 1
-          if om.fax_sended_flag == true
-            sended = true
-          else
-            sended = false
-          end
-          @vendors_hash[order.id][om.material.vendor_id][1] = sended
+    order_ids = @orders.map{|order|order.id}
+    OrderMaterial.includes(material:[:vendor]).where(order_id:order_ids,un_order_flag:false).each do |om|
+      if @vendors_hash[om.order_id][om.material.vendor_id].present?
+        @vendors_hash[om.order_id][om.material.vendor_id][0] += 1
+        if om.fax_sended_flag == true
+          sended = true
         else
-          if om.fax_sended_flag == true
-            sended = true
-          else
-            sended = false
-          end
-          @vendors_hash[order.id][om.material.vendor_id] = [1,sended,om.material.vendor.company_name]
+          sended = false
         end
+        @vendors_hash[om.order_id][om.material.vendor_id][1] = sended
+      else
+        if om.fax_sended_flag == true
+          sended = true
+        else
+          sended = false
+        end
+        @vendors_hash[om.order_id][om.material.vendor_id] = [1,sended,om.material.vendor.company_name]
       end
     end
   end

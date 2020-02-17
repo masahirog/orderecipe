@@ -18,6 +18,42 @@ class KurumesiOrdersController < ApplicationController
       end
     end
   end
+  def make_order
+    date = params[:date]
+    @kurumesi_orders = KurumesiOrder.where(start_time:date,canceled_flag:false).order(:pick_time)
+    @kurumesi_orders_num_h = @kurumesi_orders.joins(kurumesi_order_details:[:product]).where(:products => {product_category:1}).group('kurumesi_order_details.kurumesi_order_id').sum('kurumesi_order_details.number')
+    @products_num_h = @kurumesi_orders.joins(kurumesi_order_details:[:product]).group('kurumesi_order_details.product_id').sum('kurumesi_order_details.number')
+    @brand_ids = @kurumesi_orders.map{|kurumesi_order|kurumesi_order.brand_id}.uniq
+    respond_to do |format|
+      format.html
+      format.pdf do
+        pdf = KurumesiMakeOrderPdf.new(date,@kurumesi_orders,@kurumesi_orders_num_h,@products_num_h,@brand_ids)
+
+        send_data pdf.render,
+        filename:    "#{date}.pdf",
+        type:        "application/pdf",
+        disposition: "inline"
+      end
+    end
+  end
+  def equipment
+    date = params[:date]
+    @kurumesi_orders = KurumesiOrder.where(start_time:date,canceled_flag:false).order(:pick_time)
+    @kurumesi_orders_num_h = @kurumesi_orders.joins(kurumesi_order_details:[:product]).where(:products => {product_category:1}).group('kurumesi_order_details.kurumesi_order_id').sum('kurumesi_order_details.number')
+    @products_num_h = @kurumesi_orders.joins(kurumesi_order_details:[:product]).group('kurumesi_order_details.product_id').sum('kurumesi_order_details.number')
+    @brand_ids = @kurumesi_orders.map{|kurumesi_order|kurumesi_order.brand_id}.uniq
+    respond_to do |format|
+      format.html
+      format.pdf do
+        pdf = KurumesiEquipmentPdf.new(date,@kurumesi_orders,@kurumesi_orders_num_h,@products_num_h,@brand_ids)
+
+        send_data pdf.render,
+        filename:    "#{date}.pdf",
+        type:        "application/pdf",
+        disposition: "inline"
+      end
+    end
+  end
   def paper_print
 
     # redirect_to date_kurumesi_orders_path(date:date)

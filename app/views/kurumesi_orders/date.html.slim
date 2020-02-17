@@ -90,9 +90,11 @@ div.col-md-12 style='font-size:20px;padding:0 0 7px 0;'
           .modal-footer
             button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
             = submit_tag "表示する" ,class:"btn btn-primary"
-  = link_to "積載表",loading_sheet_kurumesi_orders_path(date:params[:date],format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
   button.all_open.btn.btn-default style="float:left;margin-left:20px;margin-top:10px;" 納品書一括表示
   = link_to "領収書一括印刷",print_receipts_kurumesi_orders_path(date:params[:date],format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
+  = link_to "積載表",loading_sheet_kurumesi_orders_path(date:params[:date],format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
+  = link_to "製造順",make_order_kurumesi_orders_path(date:params[:date],format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
+  = link_to "備品用意",equipment_kurumesi_orders_path(date:params[:date],format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
 h3 弁当別製造数
 table.table
   thead

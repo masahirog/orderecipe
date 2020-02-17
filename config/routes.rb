@@ -30,6 +30,8 @@ Rails.application.routes.draw do
       get :today_check
       get :paper_print
       get :print_receipts
+      get :equipment
+      get :make_order
     end
   end
   resources :menus do
