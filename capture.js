@@ -47,9 +47,20 @@ const SAVE_BUCKET_NAME = 'kurumesi-check';
       });
     });
 
-    const browser = await puppeteer.launch({ // ブラウザを開く
-        headless: true, // ブラウザを表示するか (デバッグの時は false にしたほうが画面が見えてわかりやすいです)
-    });
+    // const browser = await puppeteer.launch({ // ブラウザを開く
+    //     headless: true, // ブラウザを表示するか (デバッグの時は false にしたほうが画面が見えてわかりやすいです)
+    // });
+
+    const browser = await puppeteer.launch({
+      headless: true, // ブラウザを表示するか (デバッグの時は false にしたほうが画面が見えてわかりやすいです)
+      args: [
+        '--enable-font-antialiasing',
+        '--no-sandbox',
+        '--disable-setuid-sandbox'
+      ]
+    })
+
+
     const page = await browser.newPage(); // 新規ページ
     await page.setViewport({ width: 800, height: 1000 }); // ビューポート (ウィンドウサイズ)
     await page.setExtraHTTPHeaders({ // 必要な場合、HTTPヘッダを追加
