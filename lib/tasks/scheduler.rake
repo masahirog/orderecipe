@@ -26,7 +26,3 @@ end
 task :update_need_inventory_flag => :environment do
   Stock.need_inventory_check
 end
-
-task :capturee => :environment do
-  node capture.js bbbb
-end
