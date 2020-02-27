@@ -1,0 +1,1 @@
+$(".om_tr_<%= @order_material.id %>").find('.om_fax_td').html("<%= escape_javascript(render partial: 'orders/edit_faxsended', locals: {order_material:@order_material}) %>");

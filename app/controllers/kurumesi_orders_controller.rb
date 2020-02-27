@@ -1,3 +1,5 @@
+require 'aws-sdk-s3'
+
 class KurumesiOrdersController < ApplicationController
   before_action :set_kurumesi_order, only: [ :edit, :update, :destroy]
   def loading_sheet
@@ -160,6 +162,16 @@ class KurumesiOrdersController < ApplicationController
   end
 
   def date
+    s3 = Aws::S3::Resource.new(
+      region: 'ap-northeast-1',
+      credentials: Aws::Credentials.new(
+        'AKIAJXNMDGSLXI5VMVKQ', # 2. プログラムからアクセスできるユーザのアクセスキー
+        '3pjxQIMcm6mR307GTUNEu1Xgbi8UzwJ5K+TGaZGB' # 3. プログラムからアクセスできるユーザのシークレットキー
+      )
+    )
+    signer = Aws::S3::Presigner.new(client: s3.client)
+    @presigned_url = {}
+
     date = params[:date]
     @kurumesi_orders = KurumesiOrder.where(start_time:date,canceled_flag:false).order(:pick_time,:created_at)
     @canceled_kurumesi_orders = KurumesiOrder.where(start_time:date,canceled_flag:true).order(:pick_time)
@@ -169,6 +181,7 @@ class KurumesiOrdersController < ApplicationController
     arr = []
     @kurumesi_orders.includes(:brand).where.not(management_id:0).each do |ko|
       arr << [ko.brand.store_id,ko.management_id,ko.payment]
+      @presigned_url[ko.id] = signer.presigned_url(:get_object,bucket: 'kurumesi-check', key: "#{ko.management_id}.jpg", expires_in: 60)
     end
     gon.order_arr = arr
   end

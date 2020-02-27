@@ -1,4 +1,4 @@
-= form_for(kurumesi_order, data: { remote: true }) do |f|
+= form_for(kurumesi_order, data: { remote: true } ) do |f|
   = f.hidden_field :id,class:'kurumesi_order_id'
-  = label :confirm_flag ,"くるめし照合確認",style:'float:left;padding:10px 10px 0 0;'
+  a style="float:left;padding:10px 20px 0 0;cursor:pointer;font-weight:bold;" data-toggle="modal" data-target="#kurumesi_capture_#{kurumesi_order.id}" くるめし照合確認
   = f.check_box :confirm_flag,class:'form-control confirm_flag_check_box',style:'width:30px;float:left;'

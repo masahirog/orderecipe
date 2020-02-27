@@ -67,7 +67,7 @@ Rails.application.routes.draw do
       get :analize
     end
   end
-
+  resources :order_materials
   resources :vendors
   resources :materials do
     collection do

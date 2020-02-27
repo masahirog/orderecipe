@@ -141,21 +141,29 @@ ul.list-group.col-md-12 style='padding:0;'
         .col-md-12 style='padding:0;'
           .col-md-3
             = "作成：#{kurumesi_order.created_at.strftime("%-m/%-d　%H:%M")}"
-          .col-md-3.clearfix.kurumesi_confirm_div
+          .clearfix.kurumesi_confirm_div.pull-right style='text-align:right;padding:0 20px 0 0;'
             = render partial: "kurumesi_confirm", locals: { kurumesi_order:kurumesi_order }
+
         .col-md-12 style='border:0;color:red;'
           - if kurumesi_order.memo.present?
             = "メモ：#{kurumesi_order.memo}"
       .col-md-6 style='padding:0;'
         ul.list-group.col-md-12 style='padding:0;margin:0;'
           - kurumesi_order.kurumesi_order_details.each do |mod|
-            li.list-group-item.col-md-12
-              .col-md-2 style='padding:0;'
-                = "#{mod.number} 食"
-              .col-md-3 style='font-weight:bold;padding:0;'
-                = mod.product.short_name
-              .col-md-7 style='font-size:13px;padding:0;'
-                = link_to "#{mod.product.management_id}｜#{mod.product.name}",mod.product
+            li.list-group-item.col-md-12.clearfix
+              div style='padding:0;float:left;width:70px;text-align:right;font-weight:bold;'
+                = "#{mod.number}"
+              div style='padding:0 0 0 20px;float:left'
+                = link_to "#{mod.product.name}",mod.product
+      .modal.fade id="kurumesi_capture_#{kurumesi_order.id}" tabindex="-1" role="dialog" aria-labelledby="kurumesi_captureTitle" aria-hidden="true" data-backdrop='false'
+        .modal-dialog.modal-dialog-scrollable role="document" style='margin-left:0px;margin-top:100px;width:48%;'
+          .modal-content
+            .modal-header style='text-align:right;'
+              button type="button" class="btn btn-default btn-sm" data-dismiss="modal" 閉じる
+            .modal-body
+              = image_tag(@presigned_url[kurumesi_order.id],width:'100%')
+            .modal-footer
+              button type="button" class="btn btn-default btn-sm" data-dismiss="modal" 閉じる
 
 - if @canceled_kurumesi_orders.present?
   h3 キャンセルオーダー
@@ -167,14 +175,15 @@ ul.list-group.col-md-12 style='padding:0;'
       - @canceled_kurumesi_orders.each do |canceled_kurumesi_order|
         tr
           td = link_to canceled_kurumesi_order.management_id,edit_kurumesi_order_path(canceled_kurumesi_order)
-style type="text/css"
-  | button{
-        background-color: transparent;
-        border: none;
-        cursor: pointer;
-        outline: none;
-        padding: 0;
-        appearance: none;}
+css:
+  button{
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    outline: none;
+    padding: 0;
+    appearance: none;
+  }
 javascript:
   $(function() {
     $('.new_order').on('click', function(){
@@ -218,5 +227,12 @@ javascript:
         $(this).css('background-color','#ffe5f2');
         $(this).find('.list-group-item').css('background-color','#ffe5f2');
       }
+    });
+
+    $('.modal').on('show.bs.modal', function (event) {
+      $(this).parent('li').css({"border": "solid 3px #00ff00"});
+    });
+    $('.modal').on('hide.bs.modal', function () {
+      $(this).parent('li').css({"border": "solid 1px rgb(221, 221, 221)"});
     });
   });

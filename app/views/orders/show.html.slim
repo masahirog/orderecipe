@@ -42,7 +42,7 @@ table.table
       th FAX
   tbody
     - @order_materials.each do |om|
-      tr
+      tr class="om_tr_#{om.id}"
         td
           =  link_to om.material.name ,om.material,target:'_blank'
         td
@@ -55,12 +55,8 @@ table.table
           = om.order_material_memo
         td
           = om.delivery_date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[om.delivery_date.wday]})")
-        td
-          - if om.fax_sended_flag == true
-            span class="label label-success" OK
-          - else
-            span class="label label-danger" NG
-
+        td.om_fax_td
+          = render partial: "edit_faxsended", locals: { order_material:om }
 #sampleModal.modal.fade tabindex="-1"
   = form_tag(send_order_fax_orders_path,method: :get) do
     = hidden_field_tag 'order_id',@order.id
@@ -77,3 +73,27 @@ table.table
         .modal-footer
           button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
           = submit_tag "送信する" ,class:"btn btn-primary", data: { confirm: "ほんまに送信するで？"}
+
+css:
+  select::-ms-expand {
+    display: none;
+  }
+  select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding: 4px 8px;
+    font-size: 11px;
+    border-radius: 5px;
+    border: none;
+    color:white;
+  }
+
+javascript:
+  $(function() {
+    $(document).on("change", ".fax_status", function(event) {
+      var om_id = $(this).parent().find('.order_material_id').val();
+      console.log(om_id)
+      Rails.fire($('#edit_order_material_' + om_id)[0], 'submit');
+    });
+  });
