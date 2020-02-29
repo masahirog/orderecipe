@@ -161,6 +161,7 @@ ActiveRecord::Schema.define(version: 2020_02_16_121318) do
     t.string "reciept_name"
     t.string "proviso"
     t.integer "total_price", default: 0
+    t.boolean "capture_done", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
