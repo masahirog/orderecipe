@@ -22,7 +22,7 @@ gem "select2-rails"
 gem 'cocoon'
 gem 'carrierwave'
 gem 'rmagick'
-gem 'fog'
+# gem 'fog'
 gem "activerecord-import"
 gem 'prawn'
 gem 'prawn-table'
