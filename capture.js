@@ -20,8 +20,8 @@ const SAVE_BUCKET_NAME = process.env.KURUMESI_ORDER_BUCKET_NAME;
    var y = dt.getFullYear();
    var m = ("00" + (dt.getMonth()+1)).slice(-2);
    var d = ("00" + dt.getDate()).slice(-2);
-   // var result = y + "-" + m + "-" + d;
-   var result = '2020-02-28';
+   var result = y + "-" + m + "-" + d;
+   // var result = '2020-02-28';
    return result;
  }
 
@@ -38,15 +38,22 @@ const SAVE_BUCKET_NAME = process.env.KURUMESI_ORDER_BUCKET_NAME;
         database: process.env.MYSQL_DATABASE
     });
     pool.getConnection(function(err, connection){
-      connection.query('SELECT * from kurumesi_orders WHERE start_time = "'+ date +'" AND canceled_flag = "false"', function (err, rows, fields) {
+      connection.query('SELECT * from kurumesi_orders WHERE start_time >= "'+ date +'" AND canceled_flag = "false" AND capture_done = 0', function (err, rows, fields) {
         if (err) { console.log('err: ' + err); }
-        rows.forEach(function( value ) {
+        rows.map(function( value ) {
           management_ids.push( value.management_id );
         });
-        connection.release();
+        console.log(management_ids);
+      });
+
+      connection.query('UPDATE kurumesi_orders SET capture_done = 1 WHERE start_time >= "'+ date +'" AND canceled_flag = "false" AND capture_done = 0', function(error, response) {
+        if (err) { console.log('err: ' + err); }
+        console.log(response);
+        // connection.release();
+        connection.destroy();
       });
     });
-    console.log(management_ids)
+
     const browser = await puppeteer.launch({
       headless: true, // ブラウザを表示するか (デバッグの時は false にしたほうが画面が見えてわかりやすいです)
       args: [
@@ -75,6 +82,7 @@ const SAVE_BUCKET_NAME = process.env.KURUMESI_ORDER_BUCKET_NAME;
     const targetElementSelector = '#order > div > article > section:nth-child(1)'
     await page.waitFor(targetElementSelector)
     // ログイン後の画面に移動
+    console.log(management_ids)
     for(let i of management_ids) {
       var id = String(i)
       console.log(process.env.KURUMESI_MANAGE_ORDERDETAIL_URL+ id +'/');

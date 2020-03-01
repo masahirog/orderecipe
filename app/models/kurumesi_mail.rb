@@ -207,6 +207,7 @@ class KurumesiMail < ApplicationRecord
     @kurumesi_order.reciept_name = order_info_from_mail[:reciept_name]
     @kurumesi_order.proviso = order_info_from_mail[:proviso]
     @kurumesi_order.confirm_flag = false
+    @kurumesi_order.capture_done = false
     order_info_from_mail[:order_details].each do |od|
       @kurumesi_order.kurumesi_order_details.build(product_id:od[:product_id],number:od[:num])
     end
