@@ -163,8 +163,8 @@ class KurumesiOrdersController < ApplicationController
     s3 = Aws::S3::Resource.new(
       region: 'ap-northeast-1',
       credentials: Aws::Credentials.new(
-        'AKIAJXNMDGSLXI5VMVKQ', # 2. プログラムからアクセスできるユーザのアクセスキー
-        '3pjxQIMcm6mR307GTUNEu1Xgbi8UzwJ5K+TGaZGB' # 3. プログラムからアクセスできるユーザのシークレットキー
+        ENV['ACCESS_KEY_ID'],
+        ENV['SECRET_ACCESS_KEY']
       )
     )
     signer = Aws::S3::Presigner.new(client: s3.client)
@@ -177,7 +177,7 @@ class KurumesiOrdersController < ApplicationController
     @kurumesi_orders_num_h = @kurumesi_orders.joins(kurumesi_order_details:[:product]).where(:products => {product_category:1}).group('kurumesi_order_details.kurumesi_order_id').sum('kurumesi_order_details.number')
     @brands = Brand.all
     arr = []
-    @kurumesi_orders.includes(:brand).where.not(management_id:0).each do |ko|
+    @kurumesi_orders.includes(:brand).each do |ko|
       arr << [ko.brand.store_id,ko.management_id,ko.payment]
       @presigned_url[ko.id] = signer.presigned_url(:get_object,bucket: 'kurumesi-check', key: "#{ko.management_id}.jpg", expires_in: 60)
     end
