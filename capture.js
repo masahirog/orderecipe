@@ -14,7 +14,6 @@ const LOGIN_PASS_SELECTOR = '#login > article > form > ul > li:nth-child(2) > in
 const LOGIN_SUBMIT_SELECTOR = '#login > article > form > p > input[type=submit]';
 const SAVE_BUCKET_NAME = process.env.KURUMESI_ORDER_BUCKET_NAME;
 
-
  function getNowYMD(){
    var dt = new Date();
    var y = dt.getFullYear();
@@ -53,7 +52,6 @@ const SAVE_BUCKET_NAME = process.env.KURUMESI_ORDER_BUCKET_NAME;
         connection.destroy();
       });
     });
-
     const browser = await puppeteer.launch({
       headless: true, // ブラウザを表示するか (デバッグの時は false にしたほうが画面が見えてわかりやすいです)
       args: [
@@ -90,12 +88,10 @@ const SAVE_BUCKET_NAME = process.env.KURUMESI_ORDER_BUCKET_NAME;
       const filename = id
       const clip = await page.evaluate(s => {
         const el = document.querySelector(s)
-
         // エレメントの高さと位置を取得
         const { width, height, top: y, left: x } = el.getBoundingClientRect()
         return { width, height, x, y }
       }, targetElementSelector)
-
       const jpgBuf = await page.screenshot({ clip, type: 'jpeg'  })
       AWS.config.loadFromPath('rootkey.json');
       const s3 = new AWS.S3();

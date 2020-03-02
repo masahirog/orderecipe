@@ -301,6 +301,7 @@ ActiveRecord::Schema.define(version: 2020_02_16_121318) do
     t.integer "management_id"
     t.text "memo"
     t.string "short_name"
+    t.string "symbol"
     t.integer "status", default: 1, null: false
     t.integer "brand_id"
     t.integer "product_category", default: 1, null: false

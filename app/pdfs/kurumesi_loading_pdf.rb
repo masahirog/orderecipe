@@ -33,7 +33,7 @@ class KurumesiLoadingPdf < Prawn::Document
         columns(2..-1).align = :center
         self.header = true
         columns = Array.new(moa.length){55}
-        self.column_widths = [230,100,40].push(columns).flatten!
+        self.column_widths = [230,60,40].push(columns).flatten!
       end
     end
   end
@@ -86,16 +86,16 @@ class KurumesiLoadingPdf < Prawn::Document
     kurumesi_order_ids = moa.map{|ko|ko.id}
     products = Product.where(id:brand_product_ids).order('product_category ASC').order("field(id, #{brand_product_ids.join(',')})")
     products.each do |product|
-      arr = [product.name.truncate(24),product.short_name,products_num_h[product.id]]
+      arr = [product.name.truncate(24),"#{product.short_name}#{product.symbol}",products_num_h[product.id]]
       moa.each do |kurumesi_order|
         arr.push(hash[[kurumesi_order.id,product.id]])
       end
       data << arr.map {|e| e ? e : ''}
     end
     if brand_id == 21
-      koumoku = [['はし&おしぼり','ハシ&ボリ'],['スプーン（2.2g）','スプーン'],['請求書','セイキュウショ'],['領収書','リョウシュウショ']]
+      koumoku = [['はし&おしぼり','ハシ&ボリ'],['スプーン（2.2g）','スプーン'],['請求書','セイキュウ'],['領収書','リョウシュ']]
     else
-      koumoku = [['はし&おしぼり','ハシ&ボリ'],['請求書','セイキュウショ'],['領収書','リョウシュウショ']]
+      koumoku = [['はし&おしぼり','ハシ&ボリ'],['請求書','セイキュウ'],['領収書','リョウシュ']]
     end
     koumoku.each_with_index do |ar,i|
       arr = [ar[0],ar[1],'']

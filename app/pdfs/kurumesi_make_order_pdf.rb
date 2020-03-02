@@ -67,7 +67,7 @@ class KurumesiMakeOrderPdf < Prawn::Document
     kurumesi_order_ids = moa.map{|ko|ko.id}
     products = Product.where(product_category:1,id:brand_product_ids).order('product_category ASC').order("field(id, #{brand_product_ids.join(',')})")
     products.each do |product|
-      arr = [product.name.truncate(24),product.short_name,products_num_h[product.id]]
+      arr = [product.name.truncate(24),"#{product.short_name}#{product.symbol}",products_num_h[product.id]]
       moa.each do |kurumesi_order|
         arr.push(hash[[kurumesi_order.id,product.id]])
       end
