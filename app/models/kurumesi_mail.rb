@@ -130,11 +130,16 @@ class KurumesiMail < ApplicationRecord
         order[:management_id] = line[6..-1].to_i
       elsif line[1..4] == "宛名指定"
         order[:reciept_name] = line[6..-1]
+      elsif line[1..4] == "連絡事項"
+        memo = true
       elsif line[1..4]== "支払方法"
         if line[6..8] == "現金"
           order[:pay] = 1
         else
           order[:pay] = 2
+        end
+        if memo == true
+          binding.pry
         end
       end
       if line[1..2] == "但書"

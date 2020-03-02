@@ -325,8 +325,17 @@ class KurumesiOrdersController < ApplicationController
     else
       lang = 'ローマ字'
     end
-    kurumesi_orders = KurumesiOrder.includes(kurumesi_order_details:[:product]).where(start_time:date,canceled_flag:false).order(:pick_time)
-    @bentos_num_h = kurumesi_orders.joins(kurumesi_order_details:[:product]).where(:products => {product_category:1}).group('kurumesi_order_details.product_id').sum('kurumesi_order_details.number')
+    kurumesi_orders = KurumesiOrder.order(:pick_time).includes(:kurumesi_order_details).where(start_time:date,canceled_flag:false)
+    @bentos_num_h = {}
+    kurumesi_orders.each do |ko|
+      ko.kurumesi_order_details.each do |kod|
+        if @bentos_num_h[kod.product_id].present?
+          @bentos_num_h[kod.product_id] += kod.number
+        else
+          @bentos_num_h[kod.product_id] = kod.number
+        end
+      end
+    end
     respond_to do |format|
       format.html
       format.pdf do
