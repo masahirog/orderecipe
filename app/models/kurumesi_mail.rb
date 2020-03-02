@@ -139,7 +139,6 @@ class KurumesiMail < ApplicationRecord
           order[:pay] = 2
         end
         if memo == true
-          binding.pry
         end
       end
       if line[1..2] == "但書"
