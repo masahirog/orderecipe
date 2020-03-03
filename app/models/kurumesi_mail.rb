@@ -104,6 +104,7 @@ class KurumesiMail < ApplicationRecord
   def self.input_order(body)
     arr = []
     order_details_arr = []
+    memo_start = 0
     body.gsub(" ", "").gsub("　","").each_line{|string| arr << string.strip}
     arr = arr.compact.reject(&:empty?)
     order_info_index = arr.index("┏▼ご注文情報━━━━━━━━━━━━━━━━━━━━━━━━━━━┓")
@@ -131,14 +132,16 @@ class KurumesiMail < ApplicationRecord
       elsif line[1..4] == "宛名指定"
         order[:reciept_name] = line[6..-1]
       elsif line[1..4] == "連絡事項"
-        memo = true
+        memo_start = info_arr.index(line) + 1
       elsif line[1..4]== "支払方法"
         if line[6..8] == "現金"
           order[:pay] = 1
         else
           order[:pay] = 2
         end
-        if memo == true
+        if memo_start > 0
+          memo_fin = info_arr.index(line) - 1
+          order[:memo] = info_arr[memo_start..memo_fin].join
         end
       end
       if line[1..2] == "但書"
@@ -182,6 +185,7 @@ class KurumesiMail < ApplicationRecord
     @kurumesi_order.brand_id = order_info_from_mail[:brand_id]
     @kurumesi_order.management_id = order_info_from_mail[:management_id]
     @kurumesi_order.payment = order_info_from_mail[:pay]
+    @kurumesi_order.memo = order_info_from_mail[:memo]
     @kurumesi_order.total_price = order_info_from_mail[:total_price]
     @kurumesi_order.company_name = order_info_from_mail[:company_name]
     @kurumesi_order.staff_name = order_info_from_mail[:staff_name]
@@ -210,6 +214,7 @@ class KurumesiMail < ApplicationRecord
     @kurumesi_order.delivery_address = order_info_from_mail[:delivery_address]
     @kurumesi_order.reciept_name = order_info_from_mail[:reciept_name]
     @kurumesi_order.proviso = order_info_from_mail[:proviso]
+    @kurumesi_order.memo = order_info_from_mail[:memo]
     @kurumesi_order.confirm_flag = false
     @kurumesi_order.capture_done = false
     order_info_from_mail[:order_details].each do |od|
