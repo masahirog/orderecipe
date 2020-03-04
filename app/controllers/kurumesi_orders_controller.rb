@@ -186,6 +186,9 @@ class KurumesiOrdersController < ApplicationController
     @presigned_url = {}
 
     date = params[:date]
+    @year = date[0..3]
+    @month = date[5..6]
+    @day = date[8..9]
     @kurumesi_orders = KurumesiOrder.where(start_time:date,canceled_flag:false).order(:pick_time,:created_at)
     @canceled_kurumesi_orders = KurumesiOrder.where(start_time:date,canceled_flag:true).order(:pick_time)
     @bentos_num_h = @kurumesi_orders.joins(kurumesi_order_details:[:product]).where(:products => {product_category:1}).group('products.brand_id').group('kurumesi_order_details.product_id').sum('kurumesi_order_details.number').sort {|(k1, v1), (k2, v2)| k1[0] <=> k2[0] }
