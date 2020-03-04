@@ -142,8 +142,7 @@ ul.list-group.col-md-12 style='padding:0;'
           .col-md-2 style='padding:0;' = kurumesi_order.delivery_time.strftime("%R") if kurumesi_order.delivery_time
           .col-md-2 style='padding:0;' = "#{@kurumesi_orders_num_h[kurumesi_order.id]} 個"
           .col-md-2 style='padding:0;' = kurumesi_order.payment
-          / .col-md-2 style='padding:0;' = kurumesi_order.pick_time.strftime("%R") if kurumesi_order.pick_time
-          .col-md-2 style='padding:0;' = kurumesi_order.total_price
+          .col-md-2 style='padding:0;' = kurumesi_order.pick_time.strftime("%R") if kurumesi_order.pick_time
         .col-md-12 style='padding:0;'
           .col-md-3
             = "作成：#{kurumesi_order.created_at.strftime("%-m/%-d　%H:%M")}"
