@@ -50,7 +50,7 @@ class MenusController < ApplicationController
     @menu = Menu.includes(:menu_materials,{materials:[:vendor,material_food_additives:[:food_additive]]}).find(params[:id])
     @base_menu = Menu.find(@menu.base_menu_id) unless @menu.base_menu_id == @menu.id
     @materials = Material.where(unused_flag:false)
-    @food_ingredients = FoodIngredient.all
+    @food_ingredients = FoodIngredient.first(2)
     @menu.menu_materials.build  if @menu.materials.length == 0
     @ar = Menu.used_additives(@menu.materials)
   end
