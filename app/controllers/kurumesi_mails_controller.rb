@@ -3,7 +3,6 @@ class KurumesiMailsController < ApplicationController
 
   def index
     @kurumesi_mails = KurumesiMail.includes(:kurumesi_order).search(params).order('recieved_datetime DESC').page(params[:page]).per(20)
-
   end
 
   def show

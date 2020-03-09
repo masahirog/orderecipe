@@ -189,7 +189,7 @@ class KurumesiOrdersController < ApplicationController
     @year = date[0..3]
     @month = date[5..6]
     @day = date[8..9]
-    @kurumesi_orders = KurumesiOrder.where(start_time:date,canceled_flag:false).order(:pick_time,:created_at)
+    @kurumesi_orders = KurumesiOrder.includes(:kurumesi_order_details).where(start_time:date,canceled_flag:false).order(:pick_time,:created_at)
     @canceled_kurumesi_orders = KurumesiOrder.where(start_time:date,canceled_flag:true).order(:pick_time)
     @bentos_num_h = @kurumesi_orders.joins(kurumesi_order_details:[:product]).where(:products => {product_category:1}).group('products.brand_id').group('kurumesi_order_details.product_id').sum('kurumesi_order_details.number').sort {|(k1, v1), (k2, v2)| k1[0] <=> k2[0] }
     @kurumesi_orders_num_h = @kurumesi_orders.joins(kurumesi_order_details:[:product]).where(:products => {product_category:1}).group('kurumesi_order_details.kurumesi_order_id').sum('kurumesi_order_details.number')
@@ -197,7 +197,12 @@ class KurumesiOrdersController < ApplicationController
     arr = []
     @kurumesi_orders.includes(:brand).each do |ko|
       arr << [ko.brand.store_id,ko.management_id,ko.payment]
-      @presigned_url[ko.id] = signer.presigned_url(:get_object,bucket: 'kurumesi-check', key: "#{ko.management_id}.jpg", expires_in: 60)
+      if s3.bucket('kurumesi-check').object("#{ko.management_id}.jpg").exists?
+        @presigned_url[ko.id] = signer.presigned_url(:get_object,bucket: 'kurumesi-check', key: "#{ko.management_id}.jpg", expires_in: 60)
+      else
+        @presigned_url[ko.id] = ""
+        ko.update_attribute(:capture_done,false)
+      end
     end
     gon.order_arr = arr
   end
