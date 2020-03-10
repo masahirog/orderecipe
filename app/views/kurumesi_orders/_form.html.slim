@@ -39,10 +39,17 @@
 
 
   .form-group.required.col-md-12
-    = f.label :memo,"メモ", class: 'col-md-3 control-label text-right'
+    = f.label :memo,"くるめしオーダーの連絡事項", class: 'col-md-3 control-label text-right'
     .col-md-3
-      = f.text_area :memo, class: 'col-md-10 form-control'
-
+      = f.text_area :memo, class: 'col-md-10 form-control', size: "20x5",readonly:true
+  .form-group.required.col-md-12
+    = f.label :kitchen_memo,"キッチンメモ", class: 'col-md-3 control-label text-right'
+    .col-md-3
+      = f.text_area :kitchen_memo, class: 'col-md-10 form-control', size: "20x5"
+  .form-group.required.col-md-12
+    = f.label :special_response_flag,"特別対応（食材変更等）", class: 'col-md-3 control-label text-right'
+    .col-md-8
+      = f.check_box :special_response_flag, class: 'form-control',style:'width:200px;'
 
   .form-group.required.col-md-12
     = f.label :staff_name,"担当者名", class: 'col-md-3 control-label text-right'

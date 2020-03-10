@@ -175,6 +175,7 @@ class KurumesiOrdersController < ApplicationController
   end
 
   def date
+    # Dotenv.overload
     s3 = Aws::S3::Resource.new(
       region: 'ap-northeast-1',
       credentials: Aws::Credentials.new(
@@ -184,7 +185,6 @@ class KurumesiOrdersController < ApplicationController
     )
     signer = Aws::S3::Presigner.new(client: s3.client)
     @presigned_url = {}
-
     date = params[:date]
     @year = date[0..3]
     @month = date[5..6]
@@ -197,12 +197,7 @@ class KurumesiOrdersController < ApplicationController
     arr = []
     @kurumesi_orders.includes(:brand).each do |ko|
       arr << [ko.brand.store_id,ko.management_id,ko.payment]
-      if s3.bucket('kurumesi-check').object("#{ko.management_id}.jpg").exists?
-        @presigned_url[ko.id] = signer.presigned_url(:get_object,bucket: 'kurumesi-check', key: "#{ko.management_id}.jpg", expires_in: 60)
-      else
-        @presigned_url[ko.id] = ""
-        ko.update_attribute(:capture_done,false)
-      end
+      @presigned_url[ko.id] = signer.presigned_url(:get_object,bucket: 'kurumesi-check', key: "#{ko.management_id}.jpg", expires_in: 60)
     end
     gon.order_arr = arr
   end
@@ -364,13 +359,13 @@ class KurumesiOrdersController < ApplicationController
 
     def kurumesi_order_picktimenone_params
       params.require(:kurumesi_order).permit(:start_time,:management_id,:canceled_flag,:payment,:memo,:brand_id,:confirm_flag,
-        :delivery_time,:company_name,:staff_name,:delivery_address,:reciept_name,:proviso,:total_price,
+        :delivery_time,:company_name,:staff_name,:delivery_address,:reciept_name,:proviso,:total_price,:kitchen_memo,:special_response_flag,
         kurumesi_order_details_attributes: [:id,:kurumesi_order_id,:product_id,:number,:_destroy])
     end
 
     def kurumesi_order_params
       params.require(:kurumesi_order).permit(:start_time,:management_id,:pick_time,:canceled_flag,:payment,:brand_id,:confirm_flag,
-        :delivery_time,:company_name,:staff_name,:delivery_address,:reciept_name,:proviso,:total_price,
+        :delivery_time,:company_name,:staff_name,:delivery_address,:reciept_name,:proviso,:total_price,:kitchen_memo,:special_response_flag,
         :memo,kurumesi_order_details_attributes: [:id,:kurumesi_order_id,:product_id,:number,:_destroy])
     end
 end

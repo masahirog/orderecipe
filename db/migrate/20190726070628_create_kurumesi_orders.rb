@@ -19,6 +19,8 @@ class CreateKurumesiOrders < ActiveRecord::Migration[5.2]
       t.integer :total_price,default:0
       t.boolean :capture_done,default:false,null:false
       t.timestamps
+      t.text :kitchen_memo
+      t.boolean :special_response_flag,default:false,null:false
     end
   end
 end
