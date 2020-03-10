@@ -126,7 +126,7 @@ ul.list-group.col-md-12 style='padding:0;'
       .col-md-12 style='padding:0;'
         .col-md-2 style='padding:0;' くるめしID
         .col-md-2 style='padding:0;' メール確認
-        .col-md-2 style='padding:0;' デリバリ
+        .col-md-2 style='padding:0;' 特殊対応
         .col-md-2 style='padding:0;' 弁当個数
         .col-md-2 style='padding:0;' 支払い方法
         .col-md-2 style='padding:0;' ピック
@@ -139,19 +139,29 @@ ul.list-group.col-md-12 style='padding:0;'
         .col-md-12 style='padding:0;'
           .col-md-2 style='padding:0;height:38px;' = link_to kurumesi_order.management_id,edit_kurumesi_order_path(kurumesi_order)
           .col-md-2 style='padding:0;' = link_to 'メール',kurumesi_mails_path(kurumesi_order_id:kurumesi_order.id)
-          .col-md-2 style='padding:0;' = kurumesi_order.delivery_time.strftime("%R") if kurumesi_order.delivery_time
+          .col-md-2 style='padding:0;'
+            - if kurumesi_order.special_response_flag == true
+              span style='color:red;' ★★特別対応★★
           .col-md-2 style='padding:0;' = "#{@kurumesi_orders_num_h[kurumesi_order.id]} 個"
           .col-md-2 style='padding:0;' = kurumesi_order.payment
-          .col-md-2 style='padding:0;' = kurumesi_order.pick_time.strftime("%R") if kurumesi_order.pick_time
+          .col-md-2 style='padding:0;'
+            .col-md-12
+              = "P：#{kurumesi_order.pick_time.strftime("%R")}"
+            .col-md-12
+              = "D：#{kurumesi_order.delivery_time.strftime("%R")}"
         .col-md-12 style='padding:0;'
           .col-md-3
             = "作成：#{kurumesi_order.created_at.strftime("%-m/%-d　%H:%M")}"
           .clearfix.kurumesi_confirm_div.pull-right style='text-align:right;padding:0 20px 0 0;'
             = render partial: "kurumesi_confirm", locals: { kurumesi_order:kurumesi_order }
 
-        .col-md-12 style='border:0;color:red;'
+        .col-md-12 style='border:0;margin:5px 0;'
           - if kurumesi_order.memo.present?
-            = "メモ：#{kurumesi_order.memo}"
+            = "くるめし連絡事項：#{kurumesi_order.memo}"
+        .col-md-12 style='border:0;color:blue;'
+          - if kurumesi_order.kitchen_memo.present?
+            = "キッチンメモ：#{kurumesi_order.kitchen_memo}"
+
       .col-md-6 style='padding:0;'
         ul.list-group.col-md-12 style='padding:0;margin:0;'
           - kurumesi_order.kurumesi_order_details.each do |mod|
