@@ -66,8 +66,8 @@ class KurumesiLoadingPdf < Prawn::Document
     end
 
     kurumesi_ids = moa.map do |kurumesi_order|
-      if kurumesi_order.memo.present?
-        "#{kurumesi_order.management_id.to_s[-4..-1]} ★★★"
+      if kurumesi_order.special_response_flag == true
+        "#{kurumesi_order.management_id.to_s[-4..-1]} SPECIAL"
       else
         kurumesi_order.management_id.to_s[-4..-1]
       end
