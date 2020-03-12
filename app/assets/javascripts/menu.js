@@ -13,19 +13,56 @@ $(document).on('turbolinks:load', function() {
 
   $(".select_used_additives").select2();
   $(".all_select_menu").select2();
-  $(".input_select_material").select2();
-  $(".input_food_ingredient").select2();
+  material_select2();
+  food_ingredient_select2();
 
   $('.add_material_fields').on('click',function(){
     setTimeout(function(){
       menu_category_check();
       reset_row_order();
-      $(".input_select_material").select2();
-      $(".input_food_ingredient").select2();
+      material_select2();
+      food_ingredient_select2();
     },5);
   });
 
 
+  function food_ingredient_select2(){
+    $(".input_food_ingredient").select2({
+      ajax: {
+        url: "/menus/food_ingredient_search/",
+        dataType: 'json',
+        delay: 50,
+        data: function(params) {
+          return {　q: params.term　};
+        },
+        processResults: function (data, params) {
+          return { results: $.map(data, function(obj) {
+              return { id: obj.id, text: obj.name };
+            })
+          };
+        }
+      }
+    });
+  };
+
+  function material_select2(){
+    $(".input_select_material").select2({
+      ajax: {
+        url: "/menus/get_material/",
+        dataType: 'json',
+        delay: 50,
+        data: function(params) {
+          return {　q: params.term　};
+        },
+        processResults: function (data, params) {
+          return { results: $.map(data, function(obj) {
+              return { id: obj.id, text: obj.name };
+            })
+          };
+        }
+      }
+    });
+  };
 //並び替え時のrow_order更新
   $(".material_ul.ul-sortable").sortable({
     update: function(){

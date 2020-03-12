@@ -6,7 +6,9 @@ li.add_li_material.col-md-12.list-group-item.item.nested-fields.field
       = f.object.material.name
       = f.hidden_field :material_id
     - else
+      / = f.collection_select :material_id, @materials, :id, :name, {include_blank: true}, { class: "input_select_material col-md-12"}
       = f.collection_select :material_id, @materials, :id, :name, {include_blank: true}, { class: "input_select_material col-md-12"}
+
   .sales_check[style="display:none;"]
     = f.object.material.unused_flag if f.object.material.present?
   .amount_used.col-md-2[style="display:inline-flex"]

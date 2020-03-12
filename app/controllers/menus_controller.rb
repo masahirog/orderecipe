@@ -6,14 +6,28 @@ class MenusController < ApplicationController
       format.json
     end
   end
+  def get_material
+    @materials = Material.where("name LIKE ?", "%#{params[:q]}%").first(10)
+    respond_to do |format|
+      format.json { render json: @materials }
+    end
+  end
+  # def get_food_ingredient
+  #   @materials = Material.where("name LIKE ?", "%#{params[:q]}%").first(10)
+  #   respond_to do |format|
+  #     format.json { render json: @materials }
+  #   end
+  # end
+
 
   def index
     @search = Menu.includes(:product_menus).search(params).page(params[:page]).per(20)
   end
 
   def new
-    @food_ingredients = FoodIngredient.all
-    @materials = Material.where(unused_flag:false)
+    # @food_ingredients = FoodIngredient.all
+    @food_ingredients = []
+    @materials = []
     if params[:copy_flag]=='true'
       original_menu = Menu.includes(:menu_materials,{materials:[material_food_additives:[:food_additive]]}).find(params[:menu_id])
       original_menu.menu_materials = original_menu.menu_materials.each{|menu_material|menu_material.amount_used = (menu_material.amount_used * params[:used_rate].to_f).round(2)}
@@ -49,8 +63,8 @@ class MenusController < ApplicationController
     end
     @menu = Menu.includes(:menu_materials,{materials:[:vendor,material_food_additives:[:food_additive]]}).find(params[:id])
     @base_menu = Menu.find(@menu.base_menu_id) unless @menu.base_menu_id == @menu.id
-    @materials = Material.where(unused_flag:false)
-    @food_ingredients = FoodIngredient.first(2)
+    @materials = @menu.materials
+    @food_ingredients = []
     @menu.menu_materials.build  if @menu.materials.length == 0
     @ar = Menu.used_additives(@menu.materials)
   end

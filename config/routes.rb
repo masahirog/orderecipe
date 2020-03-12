@@ -39,6 +39,7 @@ Rails.application.routes.draw do
     put :sort
     collection do
       get :print
+      get :get_material
       get :get_food_ingredient
       get :include_menu
       get :get_cost_price
