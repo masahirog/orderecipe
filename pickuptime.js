@@ -1,8 +1,6 @@
 require('dotenv').config();
 
 const puppeteer = require('puppeteer');
-const AWS = require('aws-sdk');
-const BUCKET_REGION = 'ap-northeast-1';
 var mysql = require('mysql');
 
 // 定数 (後述)
@@ -12,45 +10,60 @@ const LOGIN_PASS = process.env.KURUMESI_LOGIN_PASS;
 const LOGIN_USER_SELECTOR = '#login > article > form > ul > li:nth-child(1) > input';
 const LOGIN_PASS_SELECTOR = '#login > article > form > ul > li:nth-child(2) > input';
 const LOGIN_SUBMIT_SELECTOR = '#login > article > form > p > input[type=submit]';
-const SAVE_BUCKET_NAME = process.env.KURUMESI_ORDER_BUCKET_NAME;
 
 function getNowYMD(){
   var dt = new Date();
-  var y = dt.getFullYear();
-  var m = ("00" + (dt.getMonth()+1)).slice(-2);
-  var d = ("00" + dt.getDate()).slice(-2);
-  var result = y + "-" + m + "-" + d;
-  // var result = '2020-02-28';
-  return result;
+  dt.setDate(dt.getDate() + 1);
+  return dt
+}
+
+
+function dbconect(connection,hour,minute,management_id,u,err,len){
+  connection.query('UPDATE kurumesi_orders SET pick_time = "'+hour+':'+minute+':'+'00" WHERE management_id = "'+ management_id +'"', function(error, response) {
+    if (err) { console.log('err: ' + err); }
+    console.log(response);
+    console.log(u);
+    if (u == len) {
+      connection.destroy();
+    }
+  });
 }
 
 /**
  * メイン処理です。
  */
 (async () => {
-    var date = getNowYMD();
+    var dt = getNowYMD();
+    var y = dt.getFullYear();
+    var m = ("00" + (dt.getMonth()+1)).slice(-2);
+    var d = ("00" + dt.getDate()).slice(-2);
+    var date = y + "-" + m + "-" + d;
+    console.log(date);
     var management_ids = [];
+    var arr = [];
     var pool = mysql.createPool({
         host: process.env.MYSQL_HOST,
         user: process.env.MYSQL_USER,
         password: process.env.MYSQL_PASS,
         database: process.env.MYSQL_DATABASE
     });
+    // var pool = mysql.createPool({
+    //     host     : 'localhost',
+    //     user     : 'root',
+    //     password : '',
+    //     database : 'orderecipe_development'
+    // });
+
     pool.getConnection(function(err, connection){
-      connection.query('SELECT * from kurumesi_orders WHERE start_time >= "'+ date +'" AND canceled_flag = "false" AND capture_done = 0', function (err, rows, fields) {
+      connection.query('SELECT * from kurumesi_orders WHERE start_time = "'+ date +'" AND canceled_flag = "false"', function (err, rows, fields) {
         if (err) { console.log('err: ' + err); }
         rows.map(function( value ) {
           management_ids.push( value.management_id );
         });
         console.log(management_ids);
-      });
-
-      connection.query('UPDATE kurumesi_orders SET capture_done = 1 WHERE start_time >= "'+ date +'" AND canceled_flag = "false" AND capture_done = 0', function(error, response) {
-        if (err) { console.log('err: ' + err); }
-        console.log(response);
-        // connection.release();
         connection.destroy();
       });
+
     });
     const browser = await puppeteer.launch({
       headless: true, // ブラウザを表示するか (デバッグの時は false にしたほうが画面が見えてわかりやすいです)
@@ -77,33 +90,33 @@ function getNowYMD(){
         page.click(LOGIN_SUBMIT_SELECTOR),
     ]);
 
-    const targetElementSelector = '#order > div > article > section:nth-child(1)'
-    await page.waitFor(targetElementSelector)
     // ログイン後の画面に移動
-    // console.log(management_ids)
-    for(let i of management_ids) {
-      var id = String(i)
-      // console.log(process.env.KURUMESI_MANAGE_ORDERDETAIL_URL+ id +'/');
-      await page.goto(process.env.KURUMESI_MANAGE_ORDERDETAIL_URL+ id +'/');
-      const filename = id
-      const clip = await page.evaluate(s => {
-        const el = document.querySelector(s)
-        // エレメントの高さと位置を取得
-        const { width, height, top: y, left: x } = el.getBoundingClientRect()
-        return { width, height, x, y }
-      }, targetElementSelector)
-      const jpgBuf = await page.screenshot({ clip, type: 'jpeg'  })
-      AWS.config.loadFromPath('rootkey.json');
-      const s3 = new AWS.S3();
-      let s3Param = {
-          Bucket: SAVE_BUCKET_NAME,
-          Key: null,
-          Body: null
+    for(var i = 1;i<5;i++) {
+      await page.goto("http://admin.kurumesi-bentou.com/admin_shop/order/?action=SearchOrder&delivery_yy_s="+y+"&delivery_mm_s="+m+"&delivery_dd_s="+d+"&delivery_yy_e="+y+"&delivery_mm_e="+m+"&delivery_dd_e="+d+"&order_status=1&page="+String(i));
+      var orders = await page.$$('.detail');
+      if (await page.$('.detail').then(res => !!res)) {
+        for (let i = 0; i < orders.length; i++) {
+          var management_id = await orders[i].$eval('input[name="pickup_order_no"]', el => el.value);
+          var hour = await orders[i].$eval('select[name="pickup_time_hh"]', el => el.value);
+          var minute = await orders[i].$eval('select[name="pickup_time_ii"]', el => el.value);
+          console.log([management_id,hour,minute]);
+          arr.push( [management_id,hour,minute] );
+        }
+      }else{
+        console.log('out');
+        break;
       };
-      s3Param.Key = filename + '.jpg';
-      s3Param.Body =  jpgBuf;
-      await s3.putObject(s3Param).promise();
-    };
-    // ブラウザを閉じる
+    }
     await browser.close();
+    var u = 0;
+    pool.getConnection(function(err, connection){
+      arr.map(function( i ) {
+        u += 1
+        var management_id = i[0];
+        var hour = i[1];
+        var minute = i[2];
+        dbconect(connection,hour,minute,management_id,u,err,arr.length);
+      });
+    });
+
 })();
