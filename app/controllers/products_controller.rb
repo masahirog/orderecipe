@@ -2,17 +2,13 @@ class ProductsController < ApplicationController
   require 'net/https'
   require 'json'
 
-  def get_by_category
-    if params[:category].present?
-      @menu = Menu.where(category:params["category"])
-      respond_to do |format|
-        format.html
-        format.json
-      end
-    else
-      @menu = Menu.all
+  def get_menu
+    @menus = Menu.where("name LIKE ?", "%#{params[:q]}%").first(10)
+    respond_to do |format|
+      format.json { render json: @menus }
     end
   end
+
 
   def get_menu_cost_price
     @menu = Menu.includes(:menu_materials,:materials).find(params[:id])
@@ -66,7 +62,7 @@ class ProductsController < ApplicationController
       @product = Product.new
       @product.product_menus.build(row_order: 0)
     end
-
+    @menus = []
   end
 
   def show
@@ -100,6 +96,7 @@ class ProductsController < ApplicationController
   def edit
     @management_id = Product.bentoid()
     @product = Product.includes(:product_menus,{menus: [:menu_materials,:materials]}).find(params[:id])
+    @menus = @product.menus
     @product.product_menus.build  if @product.menus.length == 0
     @allergies = Product.allergy_seiri(@product)
 

@@ -56,9 +56,9 @@ Rails.application.routes.draw do
       get :recipe_romaji
       get :get_products
       get :input_name_get_products
-      get :get_by_category
       post :print_preparation
       get :new_band
+      get :get_menu
     end
   end
   resources :tops

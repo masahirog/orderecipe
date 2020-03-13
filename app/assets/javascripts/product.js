@@ -5,15 +5,45 @@ $(document).on('turbolinks:load', function() {
     calculate_product_price();
   });
   reset_row_order();
+  menu_select2();
 
-  $('.input_select_menu').select2({
-    width:"100%",
-    placeholder: "メニューを選択してください",
-  });
   $('.name_search').select2({
     height:"40px",
-    width:"100%",
+    width:"100%"
   });
+
+  //addアクション、menuの追加
+  $('.add_menu_fields').on('click',function(){
+    setTimeout(function(){
+      $('.add_li_menu').last().find('.cost_price').text("")
+      $('.add_li_menu').last().find('.material_name').children().text("")
+      menu_select2();
+      reset_row_order();
+    },1);
+  });
+
+
+  function menu_select2(){
+    $(".input_select_menu").select2({
+      ajax: {
+        url: "/products/get_menu/",
+        dataType: 'json',
+        delay: 50,
+        data: function(params) {
+          return {　q: params.term　};
+        },
+        processResults: function (data, params) {
+          return { results: $.map(data, function(obj) {
+              return { id: obj.id, text: obj.name };
+            })
+          };
+        }
+      },width:"100%"
+    });
+  };
+
+
+
 
 
   //並び替え時のrow_order更新
@@ -44,56 +74,8 @@ $(document).on('turbolinks:load', function() {
     });
   });
 
-  // $(".input_select_product_en").on("change",function(){
-  //   var id = $(this).val();
-  //   var inp_bentoid = $(this).parent().parent().find(".management_id_search_en")
-  //   $.ajax({
-  //     url: "/orders/check_management_id",
-  //     data: { id : id },
-  //     dataType: "json",
-  //     async: false
-  //   })
-  //   .done(function(data){
-  //     if (data) {
-  //       var management_id = parseInt(data.management_id)
-  //       inp_bentoid.val(management_id);
-  //     }else{
-  //       inp_bentoid.val("");
-  //     }
-  //   });
-  // });
 
 
-
-  //bentoIDの発行
-  // $(".registration").on("change",function(){
-  //   var prop = $('.registration').prop('checked');
-  //   var management_id = $('#management_id_hidden').val();
-  //   if (prop) {
-  //     $(".management_id").val(management_id);
-  //   }else {
-  //     $(".management_id").val("");
-  //     };
-  //   });
-
-
-
-  //カテゴリーを変更時に、メニューを絞る機能
-  $(".menu-area").on('change','.input_category_select', function(){
-    var u = $(".add_li_menu").index($(this).parent().parent(".add_li_menu"));
-    category = $(this).val();
-    select_option_change(u,category)
-  });
-
-  //addアクション、menuの追加
-  $('.add_menu_fields').on('click',function(){
-    setTimeout(function(){
-      $('.add_li_menu').last().find('.cost_price').text("")
-      $('.add_li_menu').last().find('.material_name').children().text("")
-      $(".input_select_menu").select2({ width:"100%",placeholder: "メニューを選択してください" });
-      reset_row_order();
-    },1);
-  });
 
   //menuのdestroyのチェックtrueとtrのhide、原価再計算
   $(".menu-area").on('click','.remove_menu_btn', function(){
@@ -237,24 +219,7 @@ $(document).on('turbolinks:load', function() {
 
     });
   };
- //メニューセレクトのoptionを変更する
-  function select_option_change(u,category){
-    $.ajax({
-      url: "/products/get_by_category/",
-      data: { category: category },
-      dataType: "json",
-      async: false
-    })
-    .done(function(data) {
-      $(".add_li_menu").eq(u).find(".input_select_menu option").remove();
-      first = $('<option>').text("").attr('value',"");
-      $(".add_li_menu").eq(u).children(".select_menu").children(".input_select_menu").append(first);
-      $.each(data.product, function(index,value){
-        option = $('<option>').text(this.name).attr('value',this.id)
-        $(".add_li_menu").eq(u).children(".select_menu").children(".input_select_menu").append(option);
-      });
-    });
-  };
+
 //並び替え
   function reset_row_order(){
     var u = 0
