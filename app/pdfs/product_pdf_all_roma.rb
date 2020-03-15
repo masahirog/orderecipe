@@ -24,8 +24,8 @@ class ProductPdfAllRoma < Prawn::Document
 
   def header_table(product,num,date)
     bounding_box([0, 570], :width => 830) do
-      data = [["date","management_id","BentoMei","Kategori","Genka","Seizosu"],
-              [date,"#{product.management_id}","#{product.name}","#{product.cook_category}","#{product.cost_price} en","#{num}ninbun"]]
+      data = [["date","management_id","BentoMei","Genka","Seizosu"],
+              [date,"#{product.management_id}","#{product.name}","#{product.cost_price} en","#{num}ninbun"]]
       table data, cell_style: { size: 9 } do
         cells.padding = 2
         row(0).background_color = 'dcdcdc'

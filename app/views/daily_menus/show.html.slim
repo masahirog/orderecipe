@@ -40,8 +40,7 @@ table.table.table-list
         td
           = dmd.total_cost_price
         td
-          - if dmd.product.product_type == "新ヘルシー"
-            = link_to "帯作成", new_band_products_path(id:dmd.product.id,format:'pdf'), class:"btn btn-default",:target=>"_blank"
+          = link_to "帯作成", new_band_products_path(id:dmd.product.id,format:'pdf'), class:"btn btn-default",:target=>"_blank"
         td
           = link_to "漢字", serving_products_path(id:dmd.product.id), class:"btn btn-default",:target=>"_blank", style:"margin:0 0 0 10px;float:left;"
         td

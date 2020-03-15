@@ -7,8 +7,6 @@
     .col-md-3
       = select_tag :name,options_for_select(Product.pluck(:name)),include_blank: true, class:"name_search form-control"
     .col-md-2
-      = select_tag :cook_category, options_for_select(Product.cook_categories.keys.to_a,params[:cook_category]),include_blank:true, class: "form-control",style:"width:100%"
-    .col-md-2
       = select_tag :brand_id, options_from_collection_for_select(Brand.all,:id,:name,params[:brand_id]),include_blank:true, class: "form-control",style:"width:100%"
     .col-md-2
       = select_tag :order,options_for_select([['原価高い順','cost_price DESC'],['原価低い順','cost_price ASC'],['名前順','name ASC']],params[:order]), include_blank: true, class:"form-control",style:"width:150px;"
@@ -24,7 +22,6 @@ table.table
       th 管理ID
       th 短縮名
       th style='width:400px;' 弁当名
-      th 弁当種類
       th.text-right 売価
       th.text-right 原価
       th.text-right 原価率
@@ -33,12 +30,33 @@ table.table
 
   tbody.aaaad
     - @search.each do |product|
-      - if product.status == "販売中"
-        tr.products_li
-          = render 'index_tr', product:product
-      - else
-        tr.products_li style='background-color:gainsboro;'
-          = render 'index_tr', product:product
+      - color = "silver" unless product.status == '販売中'
+      tr.products_li style="background-color:#{color}"
+        td
+          - if product.status == "販売中"
+            span style='color:blue;'
+              = product.status
+          -else
+            span = product.status
+        td.product_id style="display:none;"
+          = product.id
+        td = product.brand.name
+        td = product.management_id
+        td = "#{product.short_name}#{product.symbol}"
+        td.product_name = link_to "#{product.name}", "/products/#{product.id}/"
+        td.text-right = "#{product.sell_price}円"
+        td.price.text-right = "#{product.cost_price}円"
+        td.text-right
+          - if product.cost_price/product.sell_price < 0.36
+            span style='color:blue;' = "#{((product.cost_price/product.sell_price)*100).round(1)}%"
+          - elsif product.cost_price/product.sell_price < 0.39
+            span style='color:purple;' = "#{((product.cost_price/product.sell_price)*100).round(1)}%"
+          - else
+            span style='color:red;' = "#{((product.cost_price/product.sell_price)*100).round(1)}%"
+        td.text-center = image_tag product.image.thumb.url if product.image.present?
+        td.text-center
+          - unless product.order_products.present?||product.daily_menu_details.present?||product.kurumesi_order_details.present?
+            = link_to "削除", product, method: :delete,class:'btn btn-danger pull-right btn-sm',data: { confirm: "ほんまに削除してええの？" },style:''
 
 - if @search.size == 0 then
   | 該当するお弁当が存在しません

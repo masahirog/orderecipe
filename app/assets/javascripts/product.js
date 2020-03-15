@@ -146,12 +146,6 @@ $(document).on('turbolinks:load', function() {
         '</td>'+
         '<td>'+
         '</td>'+
-        '<td>'+
-         data[i]['cook_category']+
-        '</td>'+
-        '<td>'+
-         data[i]['type']+
-        '</td>'+
         '<td class="text-right">'+
          data[i]['sell_price']+'円'+
         '</td>'+

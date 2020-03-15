@@ -6,12 +6,6 @@
     p お弁当名▼
     = select_tag :name, options_for_select(Product.pluck(:name).reject(&:blank?)),include_blank: true, class:"name_search form-control"
   .kensaku.col-md-2
-    p 調理カテゴリー▼
-    = select_tag :cook_category, Product.cook_categories.keys.to_a, {}, include_blank: true, class: "form-control",style:"width:100%"
-  .kensaku.col-md-2
-    p お弁当タイプ▼
-    = select_tag :product_type, Product.product_types.keys.to_a, include_blank: true, class: "form-control",style:"width:100%"
-  .kensaku.col-md-2
     p 並び替え▼
     = select_tag :order,options_for_select([['原価高い順','cost_price DESC'],['原価低い順','cost_price ASC']],params[:order]), include_blank: true, class:"form-control",style:"width:150px;"
   .kensaku.col-md-2

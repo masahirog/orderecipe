@@ -28,7 +28,8 @@ table.table
     th 使用メニュー
     th 棚卸し
   - @search.each do |material|
-    tr.materials_li
+    - color = 'silver' if material.unused_flag == true
+    tr.materials_li style="background-color:#{color}"
       td.material_name
         = link_to material.name, edit_material_path(material)
       td

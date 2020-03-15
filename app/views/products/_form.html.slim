@@ -32,16 +32,6 @@
       .col-md-3
         = f.label :status, "状況"
         = f.select :status, options_for_select(Product.statuses.keys.to_a,@product.status), {}, class: 'form-control'
-      .col-md-3
-        = f.label :product_category, "商品カテゴリー"
-        = f.select :product_category, options_for_select(Product.product_categories.keys.to_a,@product.product_category), {}, class: 'form-control'
-      .col-md-3
-        = f.label :product_type, "弁当種類"
-        = f.select :product_type, options_for_select(Product.product_types.keys.to_a, @product.product_type), {include_blank:true}, class: 'form-control'
-      .col-md-3
-        = f.label :cook_category, "調理カテゴリー"
-        = f.select :cook_category, options_for_select(Product.cook_categories.keys.to_a,@product.cook_category), {}, class: 'cook_category_choice form-control'
-
     .col-md-12.form-group
       = f.label :cooking_rice_id, "使用ライス"
       = f.collection_select :cooking_rice_id, CookingRice.all, :id, :name, {}, { class: "form-control"}

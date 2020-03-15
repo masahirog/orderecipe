@@ -7,17 +7,11 @@ class MenusController < ApplicationController
     end
   end
   def get_material
-    @materials = Material.where("name LIKE ?", "%#{params[:q]}%").first(10)
+    @materials = Material.where(unused_flag:false).where("name LIKE ?", "%#{params[:q]}%").first(10)
     respond_to do |format|
       format.json { render json: @materials }
     end
   end
-  # def get_food_ingredient
-  #   @materials = Material.where("name LIKE ?", "%#{params[:q]}%").first(10)
-  #   respond_to do |format|
-  #     format.json { render json: @materials }
-  #   end
-  # end
 
 
   def index
