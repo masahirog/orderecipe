@@ -4,9 +4,10 @@ $(document).on('turbolinks:load', function() {
   $('[data-toggle="popover"]').popover();
   first_input_check();
   $('.input_select_product').select2();
-  $('.select_order_materials').select2({
-    placeholder: "発注する食材を選択"
-  });
+  // $('.select_order_materials').select2({
+  //   placeholder: "発注する食材を選択"
+  // });
+  material_select2();
   $('.material_search').select2();
 
   $('.fixed_flag').on('change',function(){
@@ -24,6 +25,26 @@ $(document).on('turbolinks:load', function() {
   });
 
 
+
+  function material_select2(){
+    $(".select_order_materials").select2({
+      ajax: {
+        url: "/menus/get_material/",
+        dataType: 'json',
+        delay: 50,
+        data: function(params) {
+          return {　q: params.term　};
+        },
+        processResults: function (data, params) {
+          return { results: $.map(data, function(obj) {
+              return { id: obj.id, text: obj.name };
+            })
+          };
+        }
+      }
+    });
+  };
+
   $(document).on('change','.order_quantity',function(){
     var input = $(this).val();
     if (isNumber(input)) {
@@ -40,9 +61,7 @@ $(document).on('turbolinks:load', function() {
 
   $('.add_order_material').on('click',function(){
     setTimeout(function(){
-      $('.select_order_materials:last').select2({
-        placeholder: "発注する食材を選択"
-      });
+      material_select2();
     },5);
     change_color();
   });
@@ -227,14 +246,20 @@ $(document).on('turbolinks:load', function() {
     //発注しないチェックがはいっていた場合は、inputの検証をスルーする
       destroy_check = 0
       $('.order_materials_tr').each(function(){
-        var material_id = $(this).find(".select_order_materials").val()
-        var order_quantity = $(this).find(".order_quantity").val()
+        var material_id = $(this).find(".select_order_materials").val();
+        var order_quantity = $(this).find(".order_quantity").val();
+        var destroy_flag = $(this).find(".destroy_order_materials").prop('checked');
+        console.log(destroy_flag);
         if (material_id=="" || order_quantity== ""){
           destroy_check = 1
           alert("入力が不完全です");
           return false;
-      }else {};
-    });
+        }else if (order_quantity== 0 && destroy_flag == false ) {
+          destroy_check = 1
+          alert("発注量が0の商品があります！");
+          return false;
+        };
+      });
       if (destroy_check == 1){
         return false;
       }else{

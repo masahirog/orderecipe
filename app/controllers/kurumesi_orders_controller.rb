@@ -273,7 +273,6 @@ class KurumesiOrdersController < ApplicationController
     @kurumesi_order.kurumesi_order_details.build
     @brand_name = Brand.find(params[:brand_id]).name
     @products = Product.where(brand_id:[params[:brand_id],41],status:"販売中")
-
   end
 
   def edit

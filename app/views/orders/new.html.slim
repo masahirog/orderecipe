@@ -34,9 +34,9 @@
       = f.select :fixed_flag, options_for_select([['確定：在庫が変動します', true], ['未確定：在庫に影響しません', false]], f.object.fixed_flag),{},class:'form-control fixed_flag'
     .col-md-2 style="padding-top:25px;"
       - if f.object.fixed_flag == true
-        = f.submit '確定で保存する',class:'btn btn-success pull-right save-btn', data: {disable_with: '保存中'}
+        = f.submit '確定で保存する',class:'btn btn-success pull-right save-btn order_submit', data: {disable_with: '保存中'}
       -else
-        = f.submit '未確定で保存する',class:'btn btn-danger pull-right save-btn', data: {disable_with: '保存中'}
+        = f.submit '未確定で保存する',class:'btn btn-danger pull-right save-btn order_submit', data: {disable_with: '保存中'}
 
   table.table
     thead.order_materials_thead
