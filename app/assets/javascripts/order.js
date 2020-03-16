@@ -163,7 +163,7 @@ $(document).on('turbolinks:load', function() {
     });
 
   //削除チェックを監視
-  $('.orders_all').on('change','.check_box', function(){
+  $('#order_materials_table').on('change','.check_box', function(){
   	if ($(this).is(':checked')) {
       var tr = $(this).parent().parent("tr")
       destroy_color(tr);
@@ -175,11 +175,7 @@ $(document).on('turbolinks:load', function() {
   });
 
   function destroy_color(li){
-    $(li).css('background-color', 'gray');
-    // $(li).find(".select_order_materials").attr("disabled", "disabled");
-    // $(li).find(".order_quantity").attr("disabled", "disabled");
-    // $(li).find(".order_material_memo").children().attr("disabled", "disabled");
-    // $(li).find(".order_material_date").children().attr("disabled", "disabled");
+    $(li).css('background-color', 'darkgray');
   }
   function undestroy_color(li){
     $(li).find(".select_order_materials").removeAttr("disabled");
@@ -188,12 +184,12 @@ $(document).on('turbolinks:load', function() {
     $(li).find(".order_material_date").children().removeAttr("disabled");
   }
 
-  $(".orders_all").on('change','.order_quantity', function(){
+  $("#order_materials_table").on('change','.order_quantity', function(){
     input_check()
   });
 
   // input内のチェックと各カラムへの代入、materialデータベースに無ければ空欄にする
-  $(".orders_all").on('change','.select_order_materials', function(){
+  $("#order_materials_table").on('change','.select_order_materials', function(){
     input_check()
     var index = $(this).parent().parent("tr")
     var u = $('tr.order_materials_tr').index(index);
@@ -256,7 +252,7 @@ $(document).on('turbolinks:load', function() {
       change_color();
     });
 
-    $(".orders_all").on("change",".input_delivery_date",function(){
+    $("#order_materials_table").on("change",".input_delivery_date",function(){
       change_color();
     });
 

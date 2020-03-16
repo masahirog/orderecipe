@@ -29,7 +29,7 @@ class OrdersController < ApplicationController
     @stock_hash ={}
     @hash = {}
     @prev_stocks = {}
-    @materials = Material.where(unused_flag:false)
+    @materials = []
     @search_code_materials = Material.where(unused_flag:false).where.not(order_code:"")
     @order = Order.includes(:products,:order_products,order_materials:[:material]).find(params[:id])
     @order.order_materials.each do |om|
@@ -143,8 +143,6 @@ class OrdersController < ApplicationController
     @product_hash = {}
     @arr = []
     @order = Order.new
-    # all_materials = Material.includes(:vendor).where(unused_flag:false)
-    # @vendor_name = all_materials.map{|material|[material.id,material.vendor.company_name]}.to_h
 
     if params[:daily_menu_id]
       order_products = []
@@ -200,11 +198,7 @@ class OrdersController < ApplicationController
             hash['recipe_unit'] = menu_material.material.recipe_unit
             hash['order_unit'] = menu_material.material.order_unit
             hash['delivery_deadline'] = menu_material.material.delivery_deadline
-            if hash['vendor_id'] == 141 || hash['vendor_id'] == 11 || hash['vendor_id'] == 161
-              hash['order_material_memo'] = "#{menu_material.material.order_unit_quantity} #{menu_material.material.order_unit}：#{menu_material.material.recipe_unit_quantity} #{menu_material.material.recipe_unit}"
-            else
-              hash['order_material_memo'] =''
-            end
+            hash['order_material_memo'] =''
             @arr << hash
           end
         end
@@ -264,21 +258,21 @@ class OrdersController < ApplicationController
       # @prev_stocks[key] = prev_stock
       @prev_stocks[key] = stocks_hash[key]
       calculated_quantity = value['calculated_order_amount'].round(1)
+      if value['order_unit_quantity'].to_f < 1
+        i = 1
+      else
+        i = 0
+      end
       if stocks_hash[key].present? && material.stock_management_flag == true
         if stocks_hash[key].end_day_stock < 0
           shortage_stock = (-1 * stocks_hash[key].end_day_stock).round(1)
-          if value['order_unit_quantity'].to_f < 1
-            i = 1
-          else
-            i = 0
-          end
-          order_quantity_order_unit = BigDecimal((shortage_stock / value['recipe_unit_quantity'].to_f * value['order_unit_quantity'].to_f).to_s).ceil(i)
+          order_quantity_order_unit = ((shortage_stock / value['recipe_unit_quantity'].to_f) * value['order_unit_quantity'].to_f).ceil(i)
         else
           un_order_flag = true
           order_quantity_order_unit = 0
         end
       else
-        order_quantity_order_unit = BigDecimal((calculated_quantity / value['recipe_unit_quantity'].to_f * value['order_unit_quantity'].to_f).to_s).ceil
+        order_quantity_order_unit = (calculated_quantity / value['recipe_unit_quantity'].to_f * value['order_unit_quantity'].to_f).ceil(i)
       end
       @order.order_materials.build(material_id:key,recipe_unit:recipe_unit,order_unit:order_unit,order_quantity_order_unit:order_quantity_order_unit,calculated_quantity:calculated_quantity,menu_name:menu_name,order_material_memo:order_material_memo,delivery_date:delivery_date,un_order_flag:un_order_flag)
       material_stock_hash = stock_hash[key]
@@ -313,7 +307,7 @@ class OrdersController < ApplicationController
         end
       end
     end
-    @materials = Material.where(unused_flag:false)
+    @materials = []
     @vendors = Vendor.all.map{|vendor|[vendor.company_name,vendor.id]}
   end
 

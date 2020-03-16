@@ -21,6 +21,7 @@
 table.table
   tr style="padding:10px;"
     th 食材・資材名
+    th 仕入れ値
     th 単価
     th 仕入先
     th メモ
@@ -32,6 +33,8 @@ table.table
     tr.materials_li style="background-color:#{color}"
       td.material_name
         = link_to material.name, edit_material_path(material)
+      td
+        = "1#{material.accounting_unit} #{((material.recipe_unit_price/material.recipe_unit_quantity) * material.accounting_unit_quantity).ceil(1).to_s(:delimited)} 円"
       td
         = "#{material.cost_price} 円/#{material.recipe_unit}"
       td

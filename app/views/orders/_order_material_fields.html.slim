@@ -1,5 +1,5 @@
 tr.order_materials_tr.nested-fields
-  td.order_material_name
+  td.order_material_name style="min-width:350px;"
     - if f.object.material_id.present?
       span style='font-size:16px;font-weight:bold;' = f.object.material.name
     - else
@@ -7,7 +7,20 @@ tr.order_materials_tr.nested-fields
     .vendor_company_name style="padding-top:3px;color:#A9A9A9;"
       - if f.object.material.present?
         span style='color:red;font-weight:bold;' = "【受注品】" if f.object.material.vendor_stock_flag == false
-  td class="quantity_#{f.object.material_id}"
+  td.delivery_date style="min-width:186px;"
+    - if f.object.delivery_date
+      = f.date_field(:delivery_date,value:date,class:"form-control input_delivery_date")
+    - else
+      = f.date_field(:delivery_date,value:date,class:"form-control input_delivery_date")
+    - if f.object.material_id.present?
+      span.delivery_deadline_span style='color:red;font-weight:bold;' = "#{f.object.material.delivery_deadline} 営業日前に必要！" if f.object.material.delivery_deadline > 1
+    - else
+      span.delivery_deadline_span style='color:red;font-weight:bold;'
+
+  td.destroy_order_material.text-center style="min-width:50px;"
+    = f.check_box :un_order_flag,class:"form-control destroy_order_materials check_box",style:" height:50px;margin:0;"
+
+  td class="quantity_#{f.object.material_id}" style="min-width:500px;"
     .clearfix.text-right
       div style="float:left;width:50%;"
         = f.text_field :order_quantity_order_unit,class:'order_quantity text-right form-control',style:"float:left;width:70%;"
@@ -16,7 +29,7 @@ tr.order_materials_tr.nested-fields
         = f.text_field :calculated_quantity,class:'recipe_unit_quantity text-right form-control',style:"float:left;width:70%;",readonly:true
         = f.text_field :recipe_unit, style:'float:left;width:20%;',class:'form-control calculated_material_unit',readonly:true
     .clearfix style="color:#A9A9A9;padding:1px 0 0 10px;"
-      .text-right.change_unit.memo-tooltip style="float:left;width:50%;padding-right:5px;"
+      .text-right.change_unit.memo-tooltip style="float:left;width:50%;padding-right:5px;color:gray;"
         - if f.object.material_id.present?
           = f.object.material.order_unit_quantity
           = f.object.material.order_unit
@@ -48,7 +61,7 @@ tr.order_materials_tr.nested-fields
             = link_to material_reload_orders_path(material_id:f.object.material_id,date:@prev_stocks.first[1].date), method: :post, remote: true
               span style='color:red;margin-left:10px;' class="glyphicon glyphicon-refresh" aria-hidden="true"
 
-  td.order_material_memo
+  td.order_material_memo style='width:999px;'
     = f.text_field :order_material_memo,class:'form-control'
     div style="padding:3px 0 0 8px;color:gray;font-size:10px;"
       - if controller.action_name == "new"
@@ -56,15 +69,3 @@ tr.order_materials_tr.nested-fields
         = f.hidden_field :menu_name
       - else
         = f.object.menu_name
-  td.delivery_date
-    - if f.object.delivery_date
-      = f.date_field(:delivery_date,value:date,class:"form-control input_delivery_date")
-    - else
-      = f.date_field(:delivery_date,value:date,class:"form-control input_delivery_date")
-    - if f.object.material_id.present?
-      span.delivery_deadline_span style='color:red;font-weight:bold;' = "#{f.object.material.delivery_deadline} 営業日前に必要！" if f.object.material.delivery_deadline > 1
-    - else
-      span.delivery_deadline_span style='color:red;font-weight:bold;'
-
-  td.destroy_order_material.text-center
-    = f.check_box :un_order_flag,class:"form-control destroy_order_materials check_box",style:" height:50px;margin:0;"

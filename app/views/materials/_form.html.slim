@@ -40,7 +40,7 @@
 
       .col-md-12.form-group style="padding:0;"
         .col-md-12
-          = f.label :delivery_deadline, "納品"
+          = f.label :delivery_deadline, "発注締め切り"
         .col-md-8
           = f.select :delivery_deadline,options_for_select(0..10,f.object.delivery_deadline),{}, class: "form-control"
         .col-md-4 style="margin-top:10px;padding:0;"
@@ -70,7 +70,7 @@
     .box26.clearfix
       span class="box-title" レシピ上の使用単位
       - if action_name == 'edit'
-        div style='float:left;width:150px;border: 1px solid silver;border-radius:3px;padding:5px 10px;background-color:#EEEEEE' = f.object.recipe_unit
+        div.edit_recipe_unit style='float:left;width:150px;border: 1px solid silver;border-radius:3px;padding:5px 10px;background-color:#EEEEEE' = f.object.recipe_unit
       - else
         = f.select :recipe_unit, ["ml","g","袋","本","枚","個"],{}, { class: "input_recipe_unit form-control",style:'float:left;width:150px;'}
       span.recipe_unit_quantity_label style='padding:13px 5px 0 50px;float:left;'
@@ -81,7 +81,8 @@
         span style='float:left;padding:15px 0 0 8px;font-weight:bold;font-size:16px;' ="#{f.object.recipe_unit} 入り、"
       - else
         span style='float:left;padding:15px 0 0 8px;' 入り、
-      span.cost_unit_label style='float:left;padding:13px 0 0 0;'
+      span.cost_unit_label style='float:left;padding:13px 0 0 0;font-weight:bold;font-size:16px;'
+        = "1#{f.object.recipe_unit}" if action_name == 'edit'
       span style='float:left;padding:15px 10px 0 0;' あたり
       = f.text_field :cost_price, class:'form-control', readonly: 'readonly',style:'float:left;width:100px;'
       span style='float:left;padding:15px 0 0 10px;' 円
