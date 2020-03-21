@@ -96,7 +96,7 @@ class KurumesiOrder < ApplicationRecord
   end
 
   def self.capacity_notify(date,num)
-    line_notify = LineNotify.new('i061vPP7Fqs02DnIxMMEVoYRXV04N61k62ohDP7rRPw')
+    line_notify = LineNotify.new('HphDLztqtfKtGvUv918Q2cOxZaeW513ujIEK1l3wL6a')
     options = {
       message: "\n#{date}の製造数が#{num}個になりました！"
     }
