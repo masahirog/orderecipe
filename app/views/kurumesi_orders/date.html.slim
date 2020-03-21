@@ -125,7 +125,7 @@ ul.list-group.col-md-12 style='padding:0;'
     .col-md-6 style='padding:0;'
       .col-md-12 style='padding:0;'
         .col-md-2 style='padding:0;' くるめしID
-        .col-md-2 style='padding:0;' メール確認
+        .col-md-2 style='padding:0;'
         .col-md-2 style='padding:0;' 特殊対応
         .col-md-2 style='padding:0;' 弁当個数
         .col-md-2 style='padding:0;' 支払い方法
@@ -138,10 +138,10 @@ ul.list-group.col-md-12 style='padding:0;'
       .col-md-6 style='padding:0;'
         .col-md-12 style='padding:0;'
           .col-md-2 style='padding:0;height:38px;' = link_to kurumesi_order.management_id,edit_kurumesi_order_path(kurumesi_order)
-          .col-md-2 style='padding:0;' = link_to 'メール',kurumesi_mails_path(kurumesi_order_id:kurumesi_order.id)
+          .col-md-2 style='padding:0;' = link_to '管理サイト',"http://admin.kurumesi-bentou.com/admin_shop/order_detail/#{kurumesi_order.management_id}/",target:'_blank'
           .col-md-2.kurumesi_special_response_div style='padding:0;'
             / = render partial: "special_response", locals: { kurumesi_order:kurumesi_order }
-            
+
 
           .col-md-2 style='padding:0;' = "#{@kurumesi_orders_num_h[kurumesi_order.id]} 個"
           .col-md-2 style='padding:0;' = kurumesi_order.payment
