@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  date: 2020-03-21
+  num: 1
+  notify_flag: false
+
+two:
+  date: 2020-03-21
+  num: 1
+  notify_flag: false

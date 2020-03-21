@@ -54,4 +54,52 @@ class KurumesiOrder < ApplicationRecord
     end
     KurumesiOrder.import arr, on_duplicate_key_update:[:capture_done] if arr.present?
   end
+
+
+  def self.capacity_check
+    new_arr = []
+    update_arr = []
+    kurumesi_orders = KurumesiOrder.where('start_time >= ?',Date.today).where(canceled_flag:false)
+    kurumesi_order_details = KurumesiOrderDetail.joins(:kurumesi_order,:product).where(:kurumesi_orders => {id:kurumesi_orders.ids})
+    date_numbers = kurumesi_order_details.where(:products => {product_category:1}).group('kurumesi_orders.start_time').sum(:number)
+    date_manufacture_numbers = DateManufactureNumber.where('date >= ?',Date.today)
+    dmf_hash = date_manufacture_numbers.map{|dmf|[dmf.date,dmf]}.to_h
+    date_numbers.each do |date,num|
+      dmf = dmf_hash[date]
+      if dmf.present?
+        if num == dmf.num
+        else
+          if num > 400
+            if dmf.notified_flag == true
+              dmf.num = num
+            else
+              dmf.num = num
+              dmf.notified_flag = true
+              capacity_notify(date,num)
+            end
+          else
+            dmf.num = num
+          end
+          update_arr << dmf
+        end
+      else
+        if num > 400
+          new_arr << DateManufactureNumber.new(date:date,num:num,notified_flag:true)
+          capacity_notify(date,num)
+        else
+          new_arr << DateManufactureNumber.new(date:date,num:num)
+        end
+      end
+    end
+    DateManufactureNumber.import new_arr if new_arr.present?
+    DateManufactureNumber.import update_arr, on_duplicate_key_update:[:num,:notified_flag] if update_arr.present?
+  end
+
+  def self.capacity_notify(date,num)
+    line_notify = LineNotify.new('i061vPP7Fqs02DnIxMMEVoYRXV04N61k62ohDP7rRPw')
+    options = {
+      message: "\n#{date}の製造数が#{num}個になりました！"
+    }
+    line_notify.ping(options)
+  end
 end

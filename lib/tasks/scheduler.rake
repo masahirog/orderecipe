@@ -31,3 +31,7 @@ end
 task :review_notify => :environment do
   Review.send_line
 end
+
+task :capa_check => :environment do
+  KurumesiOrder.capacity_check
+end
