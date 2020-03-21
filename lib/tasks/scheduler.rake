@@ -27,3 +27,7 @@ end
 task :update_need_inventory_flag => :environment do
   Stock.need_inventory_check
 end
+
+task :review_notify => :environment do
+  Review.send_line
+end

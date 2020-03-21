@@ -10,11 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_16_121318) do
+ActiveRecord::Schema.define(version: 2020_03_19_233420) do
 
   create_table "brands", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name", null: false
     t.integer "store_id", null: false
+    t.boolean "kurumesi_flag", null: false
+    t.string "store_path"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -306,6 +308,20 @@ ActiveRecord::Schema.define(version: 2020_02_16_121318) do
     t.integer "brand_id"
     t.integer "product_category", default: 1, null: false
     t.integer "cooking_rice_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "reviews", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "brand_id"
+    t.date "delivery_date"
+    t.string "delivery_area"
+    t.string "title"
+    t.text "post"
+    t.string "use_scene"
+    t.string "age"
+    t.string "score"
+    t.boolean "line_sended", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

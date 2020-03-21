@@ -1,0 +1,34 @@
+h1 口コミ一覧
+table.table
+  thead
+    tr
+      th style='width:100px;' 配達日
+      th style='width:100px;' エリア
+      th style='width:100px;' 利用シーン
+      th style='width:100px;' 年齢
+      th
+      th style='width:60px;' スコア
+      th style='width:200px;' タイトル
+      th 本文
+
+  tbody
+    - @reviews.each do |review|
+      tr
+        td = review.delivery_date
+        td = review.delivery_area
+        td = review.use_scene
+        td = review.age
+        td
+          button.btn.btn-default type="button" data-toggle="modal" data-target="#review_#{review.id}" サイト
+          .modal.fade id="review_#{review.id}" tabindex="-1"
+            .modal-dialog style='width:70%;'
+              .modal-content
+                .modal-header style='text-align:right;'
+                  button type="button" class="btn btn-default btn-sm" data-dismiss="modal" 閉じる
+                .modal-body
+                  = image_tag(@presigned_url[review.id],width:'100%')
+                .modal-footer
+                  button type="button" class="btn btn-default btn-sm" data-dismiss="modal" 閉じる
+        td style='font-weight:bold;' = review.score
+        td = review.title
+        td = review.post

@@ -79,16 +79,13 @@ function getNowYMD(){
 
     const targetElementSelector = '#order > div > article > section:nth-child(1)'
     await page.waitFor(targetElementSelector)
-    // ログイン後の画面に移動
-    // console.log(management_ids)
+
     for(let i of management_ids) {
       var id = String(i)
-      // console.log(process.env.KURUMESI_MANAGE_ORDERDETAIL_URL+ id +'/');
       await page.goto(process.env.KURUMESI_MANAGE_ORDERDETAIL_URL+ id +'/');
       const filename = id
       const clip = await page.evaluate(s => {
         const el = document.querySelector(s)
-        // エレメントの高さと位置を取得
         const { width, height, top: y, left: x } = el.getBoundingClientRect()
         return { width, height, x, y }
       }, targetElementSelector)

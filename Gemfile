@@ -43,6 +43,7 @@ gem 'gon'
 gem 'chart-js-rails', '~> 0.1.4'
 gem 'aws-sdk'
 gem 'aws-sdk-s3'
+gem 'line_notify'
 
 
 group :development, :test do

@@ -5,9 +5,11 @@ table.table
     tr
       th ブランド名
       th
+      th くるめし口コミ
 
   tbody
     - @brands.each do |brand|
       tr
         td = brand.name
         td = link_to '編集', edit_brand_path(brand)
+        td = link_to brand.reviews.length,kurumesi_review_brands_path(brand_id:brand.id)

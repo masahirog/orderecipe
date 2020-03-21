@@ -2,7 +2,26 @@ class BrandsController < ApplicationController
   before_action :set_brand, only: [:show, :edit, :update, :destroy]
 
   def index
-    @brands = Brand.all
+    @brands = Brand.includes(:reviews).all
+  end
+
+  def kurumesi_review
+    Dotenv.overload
+    s3 = Aws::S3::Resource.new(
+      region: 'ap-northeast-1',
+      credentials: Aws::Credentials.new(
+        ENV['ACCESS_KEY_ID'],
+        ENV['SECRET_ACCESS_KEY']
+      )
+    )
+    signer = Aws::S3::Presigner.new(client: s3.client)
+    @presigned_url = {}
+    brand_id = params[:brand_id]
+    @reviews = Review.where(brand_id:brand_id)
+    @reviews.each do |review|
+      file_name = "#{brand_id}_#{review.delivery_date.to_s.gsub(/-/, '')}_#{review.delivery_area}"
+      @presigned_url[review.id] = signer.presigned_url(:get_object,bucket: 'review-captures', key: "#{file_name}.jpg", expires_in: 60)
+    end
   end
 
   def show

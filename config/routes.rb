@@ -120,5 +120,10 @@ Rails.application.routes.draw do
     end
   end
   resources :kurumesi_mails
-  resources :brands
+  resources :brands do
+    collection do
+      get :kurumesi_review
+    end
+  end
+
 end
