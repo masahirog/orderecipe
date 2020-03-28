@@ -174,6 +174,35 @@ class KurumesiOrdersController < ApplicationController
     @brands = Brand.all
   end
 
+  def accounting_copy
+    Dotenv.overload
+    s3 = Aws::S3::Resource.new(
+      region: 'ap-northeast-1',
+      credentials: Aws::Credentials.new(
+        ENV['ACCESS_KEY_ID'],
+        ENV['SECRET_ACCESS_KEY']
+      )
+    )
+    signer = Aws::S3::Presigner.new(client: s3.client)
+    @presigned_url = {}
+    date = params[:date]
+    kurumesi_orders = KurumesiOrder.where(start_time:date,payment:0,canceled_flag:false).where.not(management_id:0)
+    kurumesi_orders.each do |ko|
+      @presigned_url[ko.id] = signer.presigned_url(:get_object,bucket: 'accounting-screenshot', key: "#{ko.management_id}.png", expires_in: 60)
+    end
+    respond_to do |format|
+      format.html
+      format.pdf do
+        pdf = AccountingsPdf.new(@presigned_url)
+        send_data pdf.render,
+        filename:    "#{date}.pdf",
+        type:        "application/pdf",
+        disposition: "inline"
+      end
+    end
+  end
+
+
   def date
     # Dotenv.overload
     s3 = Aws::S3::Resource.new(
@@ -185,6 +214,7 @@ class KurumesiOrdersController < ApplicationController
     )
     signer = Aws::S3::Presigner.new(client: s3.client)
     @presigned_url = {}
+    @accounting_url = {}
     date = params[:date]
     @year = date[0..3]
     @month = date[5..6]
@@ -198,6 +228,7 @@ class KurumesiOrdersController < ApplicationController
     @kurumesi_orders.includes(:brand).each do |ko|
       arr << [ko.brand.store_id,ko.management_id,ko.payment]
       @presigned_url[ko.id] = signer.presigned_url(:get_object,bucket: 'kurumesi-check', key: "#{ko.management_id}.jpg", expires_in: 60)
+      @accounting_url[ko.id] = signer.presigned_url(:get_object,bucket: 'accounting-screenshot', key: "#{ko.management_id}.pdf", expires_in: 60)
     end
     gon.order_arr = arr
   end

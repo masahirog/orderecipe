@@ -40,7 +40,11 @@ function getNowYMD(){
       connection.query('SELECT * from kurumesi_orders WHERE start_time >= "'+ date +'" AND canceled_flag = "false" AND capture_done = 0', function (err, rows, fields) {
         if (err) { console.log('err: ' + err); }
         rows.map(function( value ) {
-          management_ids.push( value.management_id );
+          if (value.payment == 0) {
+            management_ids.push([value.management_id,0]);
+          }else{
+            management_ids.push([value.management_id,1]);
+          }
         });
         console.log(management_ids);
       });
@@ -62,7 +66,7 @@ function getNowYMD(){
     })
 
     const page = await browser.newPage(); // 新規ページ
-    await page.setViewport({ width: 800, height: 1000 }); // ビューポート (ウィンドウサイズ)
+    await page.setViewport({ width: 800, height: 9999 }); // ビューポート (ウィンドウサイズ)
     await page.setExtraHTTPHeaders({ // 必要な場合、HTTPヘッダを追加
         'Accept-Language': 'ja'
     });
@@ -72,16 +76,16 @@ function getNowYMD(){
     await page.type(LOGIN_USER_SELECTOR, LOGIN_USER); // ユーザー名入力
     await page.type(LOGIN_PASS_SELECTOR, LOGIN_PASS); // パスワード入力
     await Promise.all([ // ログインボタンクリック
-        // クリック後ページ遷移後通信が完了するまで待つ (ページによっては 'domcontentloaded' 等でも可)
-        page.waitForNavigation({ waitUntil: 'networkidle0' }),
-        page.click(LOGIN_SUBMIT_SELECTOR),
+      // クリック後ページ遷移後通信が完了するまで待つ (ページによっては 'domcontentloaded' 等でも可)
+      page.waitForNavigation({ waitUntil: 'networkidle0' }),
+      page.click(LOGIN_SUBMIT_SELECTOR),
     ]);
 
     const targetElementSelector = '#order > div > article > section:nth-child(1)'
     await page.waitFor(targetElementSelector)
 
     for(let i of management_ids) {
-      var id = String(i)
+      var id = String(i[0])
       await page.goto(process.env.KURUMESI_MANAGE_ORDERDETAIL_URL+ id +'/');
       const filename = id
       const clip = await page.evaluate(s => {
@@ -100,6 +104,27 @@ function getNowYMD(){
       s3Param.Key = filename + '.jpg';
       s3Param.Body =  jpgBuf;
       await s3.putObject(s3Param).promise();
+      if (i[1]==0) {
+        const [newPage] = await Promise.all([
+          browser.waitForTarget(t => t.opener() === page.target()).then(t => t.page()),
+          page.click('#order > div > article > section:nth-child(1) > div > ul > li:nth-child(1) > form > input[type=submit]:nth-child(1)')
+        ]);
+        await newPage.setViewport({ width: 900, height: 1000 }); // ビューポート (ウィンドウサイズ)
+        await newPage.waitForSelector('#main > div', {visible: true});
+        const jpgBuf_2 = await newPage.screenshot({ type: 'png'  })
+        AWS.config.loadFromPath('rootkey.json');
+        const s3_2 = new AWS.S3();
+        let s3_2Param = {
+            Bucket: 'accounting-screenshot',
+            Key: null,
+            Body: null
+        };
+        s3_2Param.Key = filename + '.png';
+        s3_2Param.Body =  jpgBuf_2;
+        await s3_2.putObject(s3_2Param).promise();
+        console.log('保存');
+        await newPage.close();
+      };
     };
     // ブラウザを閉じる
     await browser.close();

@@ -23,6 +23,7 @@ Rails.application.routes.draw do
       get :print_preparation_roma
       get :receipt
       post :print_receipt
+      get :accounting_copy
       get :invoice
       post :print_invoice
       get :manufacturing_sheet

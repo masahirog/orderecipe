@@ -22,7 +22,7 @@ gem "select2-rails"
 gem 'cocoon'
 gem 'carrierwave'
 gem 'rmagick'
-gem 'fog'
+gem 'fog-aws'
 gem "activerecord-import"
 gem 'prawn'
 gem 'prawn-table'
@@ -44,7 +44,7 @@ gem 'chart-js-rails', '~> 0.1.4'
 gem 'aws-sdk'
 gem 'aws-sdk-s3'
 gem 'line_notify'
-
+gem 'combine_pdf'
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
