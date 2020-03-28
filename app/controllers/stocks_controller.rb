@@ -15,36 +15,33 @@ class StocksController < ApplicationController
       @stocks_hash = []
     end
   end
-  def index
-    today = Date.today
-    end_month_date = today.end_of_month
-    @dates = []
-    i = 0
-    while i < 11 do
-      @dates << end_month_date - i.months
-      i += 1
-    end
+  def update_monthly_stocks
+    date = params[:date]
     @month_total_amount = {}
-    @dates.each do |date|
-      stocks = Stock.order(date: :desc).includes(:material).where("date <= ?", date).each{|stock|stock.end_day_stock = 0 if stock.end_day_stock < 0}
-      stocks = stocks.uniq(&:material_id)
-      price = 0
-      shokuzai_price = 0
-      bento_bihin_price = 0
-      kitchen_bihin_price = 0
-      stocks.each do |stock|
-        material_price = (stock.end_day_stock * stock.material.cost_price)
-        price += material_price
-        if stock.material.category == '食材（肉・魚）'||stock.material.category == '食材（野菜）'||stock.material.category == '食材（その他）'
-          shokuzai_price += material_price
-        elsif stock.material.category == '包材・弁当備品'
-          bento_bihin_price += material_price
-        elsif stock.material.category == 'その他備品・消耗品'
-          kitchen_bihin_price += material_price
-        end
+    stocks = Stock.where("date <= ?", date).order(date: :desc).uniq(&:material_id)
+    stocks = stocks.each{|stock|stock.end_day_stock = 0 if stock.end_day_stock < 0}
+    total_amount = 0
+    foods_amount = 0
+    equipments_amount = 0
+    expendables_amount = 0
+    stocks.each do |stock|
+      material_price = (stock.end_day_stock * stock.material.cost_price)
+      total_amount += material_price
+      if stock.material.category == '食材（肉・魚）'||stock.material.category == '食材（野菜）'||stock.material.category == '食材（その他）'
+        foods_amount += material_price
+      elsif stock.material.category == '包材・弁当備品'
+        equipments_amount += material_price
+      elsif stock.material.category == 'その他備品・消耗品'
+        expendables_amount += material_price
       end
-      @month_total_amount[date] = [price.round,stocks.length,shokuzai_price.round,bento_bihin_price.round,kitchen_bihin_price.round]
     end
+    item_number = stocks.length
+    monthly_stock = MonthlyStock.find_by(date:date)
+    monthly_stock.update_attributes(item_number:item_number,total_amount:total_amount.round,foods_amount:foods_amount.round,equipments_amount:equipments_amount.round,expendables_amount:expendables_amount.round)
+    redirect_to stocks_path,notice:"#{monthly_stock.date.month}月の棚卸しを更新しました。"
+  end
+  def index
+    @monthly_stocks = MonthlyStock.order('date DESC')
   end
   def new
     @stock = Stock.new

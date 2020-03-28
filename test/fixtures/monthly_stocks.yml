@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  date: 2020-03-28
+  item_number: 1
+  total_amount: 1
+  food_amount: 1
+  equipment_amount: 1
+  expendables_amount: 1
+
+two:
+  date: 2020-03-28
+  item_number: 1
+  total_amount: 1
+  food_amount: 1
+  equipment_amount: 1
+  expendables_amount: 1

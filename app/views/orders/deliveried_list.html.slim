@@ -21,7 +21,7 @@ table.table
         td = om.material.vendor.company_name
         td = link_to om.material.name,om.material,target:'_blank'
         td.text-right
-          - order_amount = (om.order_quantity.to_f / om.material.recipe_unit_quantity)
+          - order_amount = (om.order_quantity.to_f*om.material.order_unit_quantity / om.material.recipe_unit_quantity)
           - if order_amount == order_amount.to_i
             = "#{order_amount.to_i} #{om.material.order_unit}　　"
           - else

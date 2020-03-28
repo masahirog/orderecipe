@@ -118,6 +118,7 @@ Rails.application.routes.draw do
       put :inventory_update
       get :inventory_sheet
       get :alert
+      post :update_monthly_stocks
     end
   end
   resources :kurumesi_mails

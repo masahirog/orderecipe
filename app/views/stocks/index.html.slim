@@ -1,6 +1,8 @@
+h3 更新はめちゃ負担かかるから、行う時はゴンに教えて下さい。
 table.table
   thead
     tr
+      th
       th 日付け
       th.text-right 品目数
       th.text-right 合計金額
@@ -8,17 +10,22 @@ table.table
       th.text-right 包材・弁当備品
       th.text-right その他備品・消耗品
   tbody
-    - @dates.each do |date|
+    - @monthly_stocks.each do |ms|
       tr
         td
-          = date
+          = link_to "更新", {controller: "stocks", action: "update_monthly_stocks", date: ms.date}, method: :post, data: { confirm: 'ほんとに更新しちゃう？やばいよ？' }
+        td
+          -if Date.today < ms.date
+           = "#{ms.date}（予想）"
+          - else
+            = ms.date
         td.text-right
-          = @month_total_amount[date][1]
+          = ms.item_number
         td.text-right
-          = "#{@month_total_amount[date][0].to_s(:delimited)} 円"
+          = "#{ms.total_amount.to_s(:delimited)} 円"
         td.text-right
-          = link_to "#{@month_total_amount[date][2].to_s(:delimited)} 円",monthly_inventory_stocks_path(date:date,category:'食材')
+          = link_to "#{ms.foods_amount.to_s(:delimited)} 円",monthly_inventory_stocks_path(date:ms.date,category:'食材')
         td.text-right
-          = link_to "#{@month_total_amount[date][3].to_s(:delimited)} 円",monthly_inventory_stocks_path(date:date,category:'包材・弁当備品')
+          = link_to "#{ms.equipments_amount.to_s(:delimited)} 円",monthly_inventory_stocks_path(date:ms.date,category:'包材・弁当備品')
         td.text-right
-          = link_to "#{@month_total_amount[date][4].to_s(:delimited)} 円",monthly_inventory_stocks_path(date:date,category:'その他備品・消耗品')
+          = link_to "#{ms.expendables_amount.to_s(:delimited)} 円",monthly_inventory_stocks_path(date:ms.date,category:'その他備品・消耗品')
