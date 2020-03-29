@@ -1,6 +1,5 @@
 $(".li_<%= @kurumesi_order.id %>").find('.kurumesi_confirm_div').html("<%= escape_javascript(render partial: 'kurumesi_confirm', locals: {kurumesi_order:@kurumesi_order}) %>");
-// $(".li_<%= @kurumesi_order.id %>").find('.kurumesi_special_response_div').html("<%= escape_javascript(render partial: 'special_response', locals: {kurumesi_order:@kurumesi_order}) %>");
-
+$(".kitchen_memo_div_<%= @kurumesi_order.id %>").html("<%= @kurumesi_order.kitchen_memo %>");
 
 if ($(".li_<%= @kurumesi_order.id %>").find('.confirm_flag_check_box').prop('checked')) {
   $(".li_<%= @kurumesi_order.id %>").css('background-color','white');
