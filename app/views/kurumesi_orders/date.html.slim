@@ -1,6 +1,6 @@
 div.col-md-12 style='font-size:20px;padding:0 0 7px 0;'
-  = "#{Date.parse(params[:date]).strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[Date.parse(params[:date]).wday]})")}のくるめしオーダー一覧"
-  button type="button" class="glyphicon glyphicon-plus-sign" data-toggle="modal" data-target="#sampleModal"
+  = "#{Date.parse(params[:date]).strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[Date.parse(params[:date]).wday]})")}のくるめしオーダー一覧 "
+  button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#sampleModal" 新規オーダー
   #sampleModal.modal.fade tabindex="-1"
     = form_tag(new_kurumesi_order_path,method: :get) do
       .modal-dialog
@@ -13,6 +13,8 @@ div.col-md-12 style='font-size:20px;padding:0 0 7px 0;'
           .modal-footer
             button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
             = submit_tag "作成する" ,class:"btn btn-primary"
+  = link_to "#{Date.parse(params[:date])-1}",date_kurumesi_orders_path(date:Date.parse(params[:date])-1),style:'margin-left:10px;',class:'btn btn-default btn-sm'
+  = link_to "#{Date.parse(params[:date])+1}",date_kurumesi_orders_path(date:Date.parse(params[:date])+1),style:'margin-left:10px;',class:'btn btn-default btn-sm'
 .col-md-12
   span style='font-size:18px;' = "受注：#{@kurumesi_orders.length}件　売り上げ：#{@kurumesi_orders.sum(:total_price).to_s(:delimited)}円　キャンセル：#{@canceled_kurumesi_orders.length}件"
 .col-md-12
@@ -94,10 +96,9 @@ div.col-md-12 style='font-size:20px;padding:0 0 7px 0;'
           .modal-footer
             button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
             = submit_tag "表示する" ,class:"btn btn-primary"
-  button.all_open.btn.btn-default style="float:left;margin-left:20px;margin-top:10px;" 納品書一括表示
-  = link_to "照合シート",collation_sheet_kurumesi_orders_path(date:params[:date],format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
-  = link_to "領収書一括",print_receipts_kurumesi_orders_path(date:params[:date],format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
-  = link_to "請求書一括",accounting_copy_kurumesi_orders_path(date:params[:date],format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
+  / button.all_open.btn.btn-default style="float:left;margin-left:20px;margin-top:10px;" 納品書一括表示
+  = link_to "納品書セット",collation_sheet_kurumesi_orders_path(date:params[:date],format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
+  = link_to "領収書・請求書",print_receipts_kurumesi_orders_path(date:params[:date],format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
   = link_to "積載表",loading_sheet_kurumesi_orders_path(date:params[:date],format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
   = link_to "製造順",make_order_kurumesi_orders_path(date:params[:date],format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
   = link_to "備品用意",equipment_kurumesi_orders_path(date:params[:date],format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'

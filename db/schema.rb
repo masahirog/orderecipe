@@ -175,7 +175,6 @@ ActiveRecord::Schema.define(version: 2020_03_28_092428) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "kitchen_memo"
-    t.boolean "special_response_flag", default: false, null: false
   end
 
   create_table "material_food_additives", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

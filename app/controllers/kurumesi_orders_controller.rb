@@ -2,11 +2,23 @@ class KurumesiOrdersController < ApplicationController
   before_action :set_kurumesi_order, only: [ :edit, :update, :destroy]
   def collation_sheet
     date = params[:date]
-    @kurumesi_orders = KurumesiOrder.includes(:brand).where(start_time:date,canceled_flag:false).order(:pick_time)
+    Dotenv.overload
+    s3 = Aws::S3::Resource.new(
+      region: 'ap-northeast-1',
+      credentials: Aws::Credentials.new(
+        ENV['ACCESS_KEY_ID'],
+        ENV['SECRET_ACCESS_KEY']
+      )
+    )
+    signer = Aws::S3::Presigner.new(client: s3.client)
+    kurumesi_orders = {}
+    KurumesiOrder.includes(:brand).where(start_time:date,canceled_flag:false).order(:pick_time).each do |ko|
+      kurumesi_orders[ko.management_id] = [ko,signer.presigned_url(:get_object,bucket: 'kurumesi-delivery-note', key: "#{ko.management_id}.png", expires_in: 60)]
+    end
     respond_to do |format|
       format.html
       format.pdf do
-        pdf = KurumesiCollation.new(date,@kurumesi_orders)
+        pdf = KurumesiCollation.new(date,kurumesi_orders)
         send_data pdf.render,
         filename:    "#{date}.pdf",
         type:        "application/pdf",
@@ -73,31 +85,7 @@ class KurumesiOrdersController < ApplicationController
 
     # redirect_to date_kurumesi_orders_path(date:date)
   end
-  def print_receipts
-    date = params[:date]
-    data_arr = []
-    kurumesi_orders = KurumesiOrder.where(start_time:date,payment:[1,2],canceled_flag:false).where.not(management_id:0)
-    kurumesi_orders.each do |ko|
-      to = ko.reciept_name
-      keisho = "御中"
-      total = ko.total_price.to_i.to_s(:delimited)
-      tadashi = ko.proviso
-      uchiwake = ''
-      data = [date,to,keisho,total,tadashi,uchiwake]
-      data_arr << data
-    end
-    respond_to do |format|
-      format.html
-      format.pdf do
-        pdf = ReceiptsPdf.new(data_arr)
 
-        send_data pdf.render,
-        filename:    "#{date}_receipt.pdf",
-        type:        "application/pdf",
-        disposition: "inline"
-      end
-    end
-  end
   def mail_check
     KurumesiMail.routine_check
     redirect_to kurumesi_orders_path, notice: 'くるめしのメールを確認しました。'
@@ -174,7 +162,8 @@ class KurumesiOrdersController < ApplicationController
     @brands = Brand.all
   end
 
-  def accounting_copy
+
+  def print_receipts
     Dotenv.overload
     s3 = Aws::S3::Resource.new(
       region: 'ap-northeast-1',
@@ -184,18 +173,27 @@ class KurumesiOrdersController < ApplicationController
       )
     )
     signer = Aws::S3::Presigner.new(client: s3.client)
-    @presigned_url = {}
     date = params[:date]
-    kurumesi_orders = KurumesiOrder.where(start_time:date,payment:0,canceled_flag:false).where.not(management_id:0)
+    data = {}
+    kurumesi_orders = KurumesiOrder.where(start_time:date,canceled_flag:false).where.not(management_id:0)
     kurumesi_orders.each do |ko|
-      @presigned_url[ko.id] = signer.presigned_url(:get_object,bucket: 'accounting-screenshot', key: "#{ko.management_id}.png", expires_in: 60)
+      if ko.payment == '請求書（持参）'
+        data[ko.management_id] = [0,signer.presigned_url(:get_object,bucket: 'accounting-screenshot', key: "#{ko.management_id}.png", expires_in: 60)]
+      elsif ko.payment == "現金" || ko.payment == "クレジットカード"
+        to = ko.reciept_name
+        keisho = "御中"
+        total = ko.total_price.to_i.to_s(:delimited)
+        tadashi = ko.proviso
+        uchiwake = ''
+        data[ko.management_id] = [1,date,to,keisho,total,tadashi,uchiwake]
+      end
     end
     respond_to do |format|
       format.html
       format.pdf do
-        pdf = AccountingsPdf.new(@presigned_url)
+        pdf = ReceiptsPdf.new(data)
         send_data pdf.render,
-        filename:    "#{date}.pdf",
+        filename:    "#{date}_receipt.pdf",
         type:        "application/pdf",
         disposition: "inline"
       end
@@ -389,13 +387,13 @@ class KurumesiOrdersController < ApplicationController
 
     def kurumesi_order_picktimenone_params
       params.require(:kurumesi_order).permit(:start_time,:management_id,:canceled_flag,:payment,:memo,:brand_id,:confirm_flag,
-        :delivery_time,:company_name,:staff_name,:delivery_address,:reciept_name,:proviso,:total_price,:kitchen_memo,:special_response_flag,
+        :delivery_time,:company_name,:staff_name,:delivery_address,:reciept_name,:proviso,:total_price,:kitchen_memo,
         kurumesi_order_details_attributes: [:id,:kurumesi_order_id,:product_id,:number,:_destroy])
     end
 
     def kurumesi_order_params
       params.require(:kurumesi_order).permit(:start_time,:management_id,:pick_time,:canceled_flag,:payment,:brand_id,:confirm_flag,
-        :delivery_time,:company_name,:staff_name,:delivery_address,:reciept_name,:proviso,:total_price,:kitchen_memo,:special_response_flag,
+        :delivery_time,:company_name,:staff_name,:delivery_address,:reciept_name,:proviso,:total_price,:kitchen_memo,
         :memo,kurumesi_order_details_attributes: [:id,:kurumesi_order_id,:product_id,:number,:_destroy])
     end
 end

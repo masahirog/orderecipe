@@ -6,10 +6,18 @@ class KurumesiCollation < Prawn::Document
       margin:10
     )
     font "vendor/assets/fonts/ipaexg.ttf"
-    kurumesi_orders.each_with_index do |ko,i|
-      table_content(date,ko)
-      start_new_page unless i + 1 == kurumesi_orders.length
+    i = 0
+    kurumesi_orders.each do |management_id,arr|
+      i += 1
+      delivery_note(arr[1])
+      start_new_page
+      table_content(date,arr[0])
+      start_new_page unless i == kurumesi_orders.length
     end
+  end
+  def delivery_note(url)
+    move_down 10
+    image open(url), at: [-20, 780], width: 620
   end
 
   def table_content(date,ko)

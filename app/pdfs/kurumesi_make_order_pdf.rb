@@ -16,6 +16,20 @@ class KurumesiMakeOrderPdf < Prawn::Document
       end
       start_new_page unless ii + 1 == brand_ids.length
     end
+    if kurumesi_orders.where.not(kitchen_memo: [nil, '']).present?
+      start_new_page
+      memo(kurumesi_orders)
+    end
+  end
+  def memo(kurumesi_orders)
+    bounding_box([30, 550], :width => 820) do
+      text 'MEMOしょうさい'
+      move_down 5
+      kurumesi_orders.where.not(kitchen_memo: [nil, '']).each do |ko|
+        move_down 5
+        text "#{ko.management_id}：#{ko.kitchen_memo}"
+      end
+    end
   end
 
   def table_content(date,moa,kurumesi_orders_num_h,products_num_h,brand_id,brand_product_ids)
@@ -47,8 +61,8 @@ class KurumesiMakeOrderPdf < Prawn::Document
     end
 
     kurumesi_ids = moa.map do |kurumesi_order|
-      if kurumesi_order.memo.present?
-        "#{kurumesi_order.management_id.to_s[-4..-1]} ★★★"
+      if kurumesi_order.kitchen_memo.present?
+        "#{kurumesi_order.management_id.to_s[-4..-1]} MEMO"
       else
         kurumesi_order.management_id.to_s[-4..-1]
       end
