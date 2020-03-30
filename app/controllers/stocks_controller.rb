@@ -1,7 +1,17 @@
 class StocksController < ApplicationController
   def material_search
-    @materials = Material.includes(:vendor).where(['name LIKE ?', "%#{params["name"]}%"]).limit(20) if params["name"].present?
-    @date = Date.today
+    @materials = Material.includes(:vendor).all
+    if params["name"].present?
+      @materials = @materials.includes(:vendor).where(['name LIKE ?', "%#{params["name"]}%"]).limit(20)
+    else
+      @materials = @materials.limit(20)
+    end
+    if params[:date].present?
+      @date = params[:date]
+    else
+      @date = Date.today
+    end
+
     stocks = Stock.where(material_id:@material_ids).where('date <= ?',@date).order("date")
     if @materials.present?
       @stocks_hash = Stock.where(date:@date,material_id:@materials.ids).map{|stock|[stock.material_id,stock]}.to_h
@@ -197,7 +207,7 @@ class StocksController < ApplicationController
 
   def inventory
     @date = Date.parse(params[:date])
-    @materials = Material.order('vendor_id').search(params).where(unused_flag:false,stock_management_flag:true).includes(:vendor).page(params[:page]).per(100)
+    @materials = Material.order('vendor_id').search(params).where(unused_flag:false,stock_management_flag:true).includes(:vendor).page(params[:page]).per(20)
     stocks = Stock.where(material_id:@materials.ids).where('date <= ?',@date).order("date")
     if @materials.present?
       @stocks_hash = Stock.where(date:@date,material_id:@materials.ids).map{|stock|[stock.material_id,stock]}.to_h
