@@ -1,6 +1,6 @@
 $(document).on('turbolinks:load', function() {
   calculate_tax();
-  
+
   $('.input_select_food_additive').select2({
     width:"200px"
   });

@@ -8,7 +8,7 @@ tr class="inventory_tr_#{material.id}"
   td.rireki
     - if @stock_hash[material.id].present?
       = link_to history_stocks_path(material_id:material.id),target:'_blank',class:'stock-tooltip not_alert' do
-        span.rireki_span data-html="true" style='color:blue;margin-left:10px;' class="glyphicon glyphicon-new-window" aria-hidden="true"  data-toggle="tooltip" data-placement=position title="<table class='table tooltip-table'><thead><tr><th style='text-align: center'>日付</th><th style='text-align: center'>納品</th><th style='text-align: center'>使用</th><th style='text-align: center'>在庫</th><th></th></tr></thead><tbody>#{@stock_hash[material.id].flatten.join('')}</tbody></table>"
+        span.rireki_span data-html="true" style='color:blue;margin-left:10px;' class="glyphicon glyphicon-new-window" aria-hidden="true"  data-toggle="tooltip" title="<table class='table tooltip-table'><thead><tr><th style='text-align: center'>日付</th><th style='text-align: center'>納品</th><th style='text-align: center'>使用</th><th style='text-align: center'>在庫</th><th></th></tr></thead><tbody>#{@stock_hash[material.id].flatten.join('')}</tbody></table>"
 
   - if @stocks_hash[material.id]
     td.start_day_stock_td = "#{(@stocks_hash[material.id].start_day_stock/material.accounting_unit_quantity).floor(1)} #{material.accounting_unit}"

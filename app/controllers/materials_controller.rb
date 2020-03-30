@@ -2,6 +2,10 @@ class MaterialsController < ApplicationController
   protect_from_forgery :except => [:change_additives]
   def index
     @search = Material.includes(:vendor).search(params).page(params[:page]).per(30)
+    respond_to do |format|
+      format.html
+      format.json{render :json => @search}
+    end
   end
 
   def new

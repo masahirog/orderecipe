@@ -1,4 +1,19 @@
 class StocksController < ApplicationController
+  def material_search
+    @materials = Material.includes(:vendor).where(['name LIKE ?', "%#{params["name"]}%"]).limit(20) if params["name"].present?
+    @date = Date.today
+    stocks = Stock.where(material_id:@material_ids).where('date <= ?',@date).order("date")
+    if @materials.present?
+      @stocks_hash = Stock.where(date:@date,material_id:@materials.ids).map{|stock|[stock.material_id,stock]}.to_h
+      @stock_hash ={}
+      @materials.each do |material|
+        stocks_arr = stocks.where(material_id:material.id).last(5)
+        aaa(material,@date,stocks_arr)
+      end
+    else
+      @stocks_hash = []
+    end
+  end
   def alert
     @date = Date.today
     @materials = Material.includes(:vendor).where(need_inventory_flag:true).order(:vendor_id).page(params[:page]).per(30)
@@ -181,11 +196,11 @@ class StocksController < ApplicationController
   end
 
   def inventory
-    date = Date.parse(params[:date])
+    @date = Date.parse(params[:date])
     @materials = Material.order('vendor_id').search(params).where(unused_flag:false,stock_management_flag:true).includes(:vendor).page(params[:page]).per(100)
-    stocks = Stock.where(material_id:@material_ids).where('date <= ?',date).order("date")
+    stocks = Stock.where(material_id:@materials.ids).where('date <= ?',@date).order("date")
     if @materials.present?
-      @stocks_hash = Stock.where(date:@date,material_id:@material_ids).map{|stock|[stock.material_id,stock]}.to_h
+      @stocks_hash = Stock.where(date:@date,material_id:@materials.ids).map{|stock|[stock.material_id,stock]}.to_h
       @stock_hash ={}
       @materials.each do |material|
         stocks_arr = stocks.where(material_id:material.id).last(5)
