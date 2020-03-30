@@ -86,46 +86,46 @@ function getNowYMD(){
       var id = String(i)
       await page.goto(process.env.KURUMESI_MANAGE_ORDERDETAIL_URL+ id +'/');
       const filename = id
-      // const clip = await page.evaluate(s => {
-      //   const el = document.querySelector(s)
-      //   const { width, height, top: y, left: x } = el.getBoundingClientRect()
-      //   return { width, height, x, y }
-      // }, targetElementSelector)
-      // const jpgBuf = await page.screenshot({ clip, type: 'jpeg'  })
-      // AWS.config.loadFromPath('rootkey.json');
-      // const s3 = new AWS.S3();
-      // let s3Param = {
-      //     Bucket: SAVE_BUCKET_NAME,
-      //     Key: null,
-      //     Body: null
-      // };
-      // s3Param.Key = filename + '.jpg';
-      // s3Param.Body =  jpgBuf;
-      // await s3.putObject(s3Param).promise();
-      //
-      // // 請求書のスクショ
-      // const accounting_checked = await page.$('form[name="form1"]').then(res => !!res);
-      // if (accounting_checked) {
-      //   const [newPage] = await Promise.all([
-      //     browser.waitForTarget(t => t.opener() === page.target()).then(t => t.page()),
-      //     page.click('form[name="form1"] > input[type=submit]:nth-child(1)')
-      //   ]);
-      //   await newPage.setViewport({ width: 900, height: 1500 }); // ビューポート (ウィンドウサイズ)
-      //   await newPage.waitForSelector('#main > div > p.delivery_notes', {visible: true});
-      //   const jpgBuf_2 = await newPage.screenshot({ type: 'png'  })
-      //   AWS.config.loadFromPath('rootkey.json');
-      //   const s3_2 = new AWS.S3();
-      //   let s3_2Param = {
-      //       Bucket: 'accounting-screenshot',
-      //       Key: null,
-      //       Body: null
-      //   };
-      //   s3_2Param.Key = filename + '.png';
-      //   s3_2Param.Body =  jpgBuf_2;
-      //   await s3_2.putObject(s3_2Param).promise();
-      //   console.log('請求書保存');
-      //   await newPage.close();
-      // };
+      const clip = await page.evaluate(s => {
+        const el = document.querySelector(s)
+        const { width, height, top: y, left: x } = el.getBoundingClientRect()
+        return { width, height, x, y }
+      }, targetElementSelector)
+      const jpgBuf = await page.screenshot({ clip, type: 'jpeg'  })
+      AWS.config.loadFromPath('rootkey.json');
+      const s3 = new AWS.S3();
+      let s3Param = {
+          Bucket: SAVE_BUCKET_NAME,
+          Key: null,
+          Body: null
+      };
+      s3Param.Key = filename + '.jpg';
+      s3Param.Body =  jpgBuf;
+      await s3.putObject(s3Param).promise();
+
+      // 請求書のスクショ
+      const accounting_checked = await page.$('form[name="form1"]').then(res => !!res);
+      if (accounting_checked) {
+        const [newPage] = await Promise.all([
+          browser.waitForTarget(t => t.opener() === page.target()).then(t => t.page()),
+          page.click('form[name="form1"] > input[type=submit]:nth-child(1)')
+        ]);
+        await newPage.setViewport({ width: 900, height: 1500 }); // ビューポート (ウィンドウサイズ)
+        await newPage.waitForSelector('#main > div > p.delivery_notes', {visible: true});
+        const jpgBuf_2 = await newPage.screenshot({ type: 'png'  })
+        AWS.config.loadFromPath('rootkey.json');
+        const s3_2 = new AWS.S3();
+        let s3_2Param = {
+            Bucket: 'accounting-screenshot',
+            Key: null,
+            Body: null
+        };
+        s3_2Param.Key = filename + '.png';
+        s3_2Param.Body =  jpgBuf_2;
+        await s3_2.putObject(s3_2Param).promise();
+        console.log('請求書保存');
+        await newPage.close();
+      };
       // 納品書のスクショ
       const deli_checked = await page.$('form[name="form2"]').then(res => !!res);
       if (deli_checked) {
