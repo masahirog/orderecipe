@@ -7,17 +7,26 @@ class KurumesiCollation < Prawn::Document
     )
     font "vendor/assets/fonts/ipaexg.ttf"
     i = 0
+    contents = []
+    threads = kurumesi_orders.map{ |management_id,arr|
+      Thread.new{
+        contents << URI.open(arr[1])
+      }
+    }
+    threads.each{ |thread|
+      thread.join
+    }
     kurumesi_orders.each do |management_id,arr|
-      i += 1
-      delivery_note(arr[1])
+      delivery_note(contents[i])
       start_new_page
       table_content(date,arr[0])
+      i += 1
       start_new_page unless i == kurumesi_orders.length
     end
   end
-  def delivery_note(url)
+  def delivery_note(content)
     move_down 10
-    image open(url), at: [-20, 780], width: 620
+    image content, at: [-20, 780], width: 620
   end
 
   def table_content(date,ko)
