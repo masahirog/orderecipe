@@ -9,15 +9,17 @@ class KurumesiCollation < Prawn::Document
     i = 0
     contents = []
     threads = kurumesi_orders.map{ |management_id,arr|
+      i += 1
       Thread.new{
-        contents << URI.open(arr[1])
+        contents << [management_id,URI.open(arr[1])]
       }
     }
     threads.each{ |thread|
       thread.join
     }
+    contents_hash = contents.to_h
     kurumesi_orders.each do |management_id,arr|
-      delivery_note(contents[i])
+      delivery_note(contents_hash[management_id])
       start_new_page
       table_content(date,arr[0])
       i += 1
