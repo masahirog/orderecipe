@@ -7,12 +7,11 @@ class StocksController < ApplicationController
       @materials = @materials.limit(20)
     end
     if params[:date].present?
-      @date = params[:date]
+      @date = Date.parse(params[:date])
     else
       @date = Date.today
     end
-
-    stocks = Stock.where(material_id:@material_ids).where('date <= ?',@date).order("date")
+    stocks = Stock.where(material_id:@materials.ids).where('date <= ?',@date).order("date")
     if @materials.present?
       @stocks_hash = Stock.where(date:@date,material_id:@materials.ids).map{|stock|[stock.material_id,stock]}.to_h
       @stock_hash ={}
