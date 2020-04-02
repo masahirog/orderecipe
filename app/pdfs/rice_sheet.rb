@@ -3,66 +3,42 @@ class RiceSheet < Prawn::Document
     # 初期設定。ここでは用紙のサイズを指定している。
     super(
       page_size: 'A4',
-      page_layout: :landscape)
+      page_layout: :portrait)
     #日本語のフォント
     font "vendor/assets/fonts/ipaexg.ttf"
-    text "#{DateTime.parse(date).strftime("%m月 %d日")}の炊飯シート",size:12
-    text "発行時間：#{Time.now.strftime("%m月 %d日　%H:%M")}",size:10,:align=>:right
+    text "#{DateTime.parse(date).strftime("%m月 %d日")}の炊飯シート　　　　　　 　　　　　　　　　　　　　　　　#{Time.now.strftime("%m月 %d日　%H:%M")}"
+    move_down 5
     table_content_a(hash)
-    start_new_page
-    text "#{DateTime.parse(date).strftime("%m月 %d日")} 混ぜ込み系",size:12
-    text "発行時間：#{Time.now.strftime("%m月 %d日　%H:%M")}",size:10,:align=>:right
+    move_down 10
     table_content_b(shogun_mazekomi,kurumesi_mazekomi)
   end
   def table_content_a(hash)
-    bounding_box([0, 500], :width => 780) do
-      table line_item_rows_a(hash) do
-        grayout = []
-        cells.size = 10
-        cells.padding = 3
-        cells.borders = [:bottom]
-        cells.border_width = 0.2
-        row(0).border_width = 1
-        self.header = true
-        self.column_widths = [40,150,80,60,60,220,170]
-        values = cells.columns(-1).rows(1..-1)
-        values.each do |cell|
-          grayout << cell.row unless cell.content == ""
-        end
-        grayout.map{|num|row(num).column(0..-1).background_color = "dcdcdc"}
-        columns(3..4).size = 13
-        columns(-1).size = 8
-        row(0).size = 10
-      end
+    table line_item_rows_a(hash) do
+      cells.size = 10
+      cells.padding = 3
+      cells.borders = [:bottom]
+      cells.border_width = 0.2
+      self.header = true
+      self.column_widths = [40,70,100,300]
     end
   end
   def line_item_rows_a(hash)
     ar = []
     n = 1
-    data= [['No.','名前','盛りグラム','炊飯升','食数','備考','弁当名']]
+    data= [['No.','名前','炊飯升(SHO)','備考(MEMO)']]
     hash.each do |suihan|
       name = suihan[1][:name]
-      mori = suihan[1][:mori]
       kurikoshi = suihan[1][:kurikoshi]
       kurikosu = suihan[1][:kurikosu]
       kurikosu_kg = suihan[1][:kurikosu_kg]
       kurikoshi_kg = suihan[1][:kurikoshi_kg]
       suihan[1][:amount].each_with_index do |amount,i|
         if i == 0
-          if kurikoshi > 0
-            if suihan[1][:amount].length > 1
-              data << [">>",name,mori,amount[0],amount[1],"繰越し#{kurikoshi_kg}kg使用","#{suihan[1][:product_name]}  #{suihan[1][:make_num]}"]
-            else
-              data << [">>",name,mori,amount[0],amount[1],"繰越しの#{(kurikoshi_kg - kurikosu_kg).floor(1)}kg使用、#{kurikosu_kg}kg繰越し","#{suihan[1][:product_name]}  #{suihan[1][:make_num]}"]
-            end
-            n -= 1
-          else
-            data << [n,name,mori,amount[0],amount[1],'',"#{suihan[1][:product_name]} #{suihan[1][:make_num]}"]
-          end
+          data << [n,name,amount[0],"#{suihan[1][:product_name]} #{suihan[1][:make_num]}"]
         elsif i == suihan[1][:amount].length - 1 && kurikosu > 0
-          data << [n,name,mori,amount[0],amount[1],"#{kurikosu_kg}kg繰越し",'']
+          data << [n,name,amount[0],"#{kurikosu_kg}kg Amari"]
         else
-          data << [n,name,mori,amount[0],amount[1],'','']
+          data << [n,name,amount[0],'']
         end
         n += 1
       end
@@ -76,10 +52,9 @@ class RiceSheet < Prawn::Document
       cells.padding = 3
       cells.borders = [:bottom]
       cells.border_width = 0.2
-      columns(-1).size = 17
       columns(-1).align = :right
       self.header = true
-      self.column_widths = [280,50,180,150]
+      self.column_widths = [140,50,180,140]
     end
   end
   def line_item_rows_b(shogun_mazekomi,kurumesi_mazekomi)
@@ -95,7 +70,7 @@ class RiceSheet < Prawn::Document
     kurumesi_mazekomi.each do |km|
       materials=[]
       menu = Menu.find(km[0])
-      name = menu.name
+      name = "#{menu.name}\n#{menu.roma_name}"
       km[1].each_with_index do |m,i|
         if i == 0
           data << [{:content => name, :rowspan => km[1].length },{:content => km[1].values[0][1].to_s, :rowspan => km[1].length },m[1][0],"#{m[1][2].to_s(:delimited)}#{m[1][3]}"]
