@@ -90,6 +90,9 @@ class ProductsController < ApplicationController
     if @product.save
       redirect_to products_path
     else
+      menu_ids = []
+      params["product"]["product_menus_attributes"].each{|key,value|menu_ids << value['menu_id']}
+      @menus = Menu.where(id:menu_ids)
       render 'new'
     end
   end
@@ -108,6 +111,9 @@ class ProductsController < ApplicationController
     if @product.update(product_create_update)
       redirect_to product_path
     else
+      menu_ids = []
+      params["product"]["product_menus_attributes"].each{|key,value|menu_ids << value['menu_id']}
+      @menus = Menu.where(id:menu_ids)
       render 'edit'
     end
   end
