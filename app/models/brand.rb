@@ -111,7 +111,6 @@ class Brand < ApplicationRecord
         product_name = base_product_name +"（" + option + "）"
         tea_flag = false
       else
-        #お茶とかはカレーが入らないため
         product_name = base_product_name
         tea_flag = true
       end
