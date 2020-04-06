@@ -174,6 +174,7 @@ class KurumesiOrdersController < ApplicationController
     )
     signer = Aws::S3::Presigner.new(client: s3.client)
     date = params[:date]
+    stamp = params[:stamp]
     data = {}
     kurumesi_orders = KurumesiOrder.where(start_time:date,canceled_flag:false).where.not(management_id:0)
     kurumesi_orders.each do |ko|
@@ -191,7 +192,7 @@ class KurumesiOrdersController < ApplicationController
     respond_to do |format|
       format.html
       format.pdf do
-        pdf = ReceiptsPdf.new(data)
+        pdf = ReceiptsPdf.new(data,stamp)
         send_data pdf.render,
         filename:    "#{date}_receipt.pdf",
         type:        "application/pdf",

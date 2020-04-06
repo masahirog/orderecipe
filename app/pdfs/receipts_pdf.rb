@@ -1,5 +1,5 @@
 class ReceiptsPdf < Prawn::Document
-  def initialize(data)
+  def initialize(data,stamp)
     super(
       page_size: 'A4',
       :top_margin    => 0 )
@@ -7,7 +7,7 @@ class ReceiptsPdf < Prawn::Document
     font "vendor/assets/fonts/ipaexg.ttf"
     n=1
     data.each do |id,arr|
-      body(id,arr)
+      body(id,arr,stamp)
       if n < data.length
         start_new_page
         n += 1
@@ -16,11 +16,11 @@ class ReceiptsPdf < Prawn::Document
 
   end
 
-  def body(id,arr)
+  def body(id,arr,stamp)
     if arr[0]==0
       move_down 10
       image open(arr[1]), at: [-50, 750], width: 620
-      image 'app/assets/images/taberu_stamp.png', at: [440, 630], width: 60
+      image 'app/assets/images/taberu_stamp.png', at: [440, 630], width: 60 if stamp == "true"
     else
       bounding_box([0, 740], :width => 520, :height => 225) do
         stroke_bounds
@@ -64,7 +64,7 @@ class ReceiptsPdf < Prawn::Document
         line [75, 16], [200, 16]
         stroke
       end
-      image 'app/assets/images/taberu_stamp.png', at: [440, 585], width: 60
+      image 'app/assets/images/taberu_stamp.png', at: [440, 585], width: 60 if stamp == "true"
       bounding_box([330, 595], :width => 200, :height => 70) do
         move_down 10
         text "タベル株式会社", size: 11
