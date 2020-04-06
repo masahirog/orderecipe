@@ -1,7 +1,7 @@
 class CookingRicesController < ApplicationController
   before_action :set_cooking_rice, only: [:show, :edit, :update, :destroy]
   def index
-    @cooking_rices = CookingRice.includes(:products,cooking_rice_materials:[:material]).all
+    @cooking_rices = CookingRice.includes(:products).all
   end
 
   def show
@@ -9,8 +9,6 @@ class CookingRicesController < ApplicationController
 
   def new
     @cooking_rice = CookingRice.new
-    @cooking_rice.cooking_rice_materials.build()
-    @materials = Material.all
   end
 
   def edit
@@ -189,10 +187,10 @@ class CookingRicesController < ApplicationController
 
   private
     def set_cooking_rice
-      @cooking_rice = CookingRice.includes(cooking_rice_materials:[:material]).find(params[:id])
+      @cooking_rice = CookingRice.find(params[:id])
     end
 
     def cooking_rice_params
-      params.require(:cooking_rice).permit(:name,:base_rice,:serving_amount,:shoku_per_shou,cooking_rice_materials_attributes: [:id, :cooking_rice_id, :material_id,:used_amount,:_destroy])
+      params.require(:cooking_rice).permit(:name,:base_rice,:serving_amount,:shoku_per_shou)
     end
 end

@@ -2,8 +2,6 @@ class Material < ApplicationRecord
   # 単価は税抜ですべて保存する、表示時に税追加
 
   serialize :allergy
-  has_many :cooking_rice_materials
-  has_many :cooking_rices, through: :cooking_rice_materials
   has_many :menu_materials, dependent: :destroy
   has_many :menus, through: :menu_materials
 

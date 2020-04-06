@@ -21,14 +21,6 @@ ActiveRecord::Schema.define(version: 2020_03_28_092428) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "cooking_rice_materials", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "cooking_rice_id", null: false
-    t.integer "material_id", null: false
-    t.float "used_amount", default: 0.0, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "cooking_rices", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name", null: false
     t.integer "base_rice", null: false

@@ -14,7 +14,6 @@ table.table.table-striped
     tr
       th 名前
       th ベースの米
-      th 混ぜ系食材
       th.text-right 盛付グラム数
       th.text-right 1食あたりの升
       th.text-right 4升食数
@@ -25,7 +24,6 @@ table.table.table-striped
       tr
         td = link_to cooking_rice.name, edit_cooking_rice_path(cooking_rice),class:''
         td = cooking_rice.base_rice
-        td = cooking_rice.cooking_rice_materials.map{|crm|"#{crm.material.name}：#{crm.used_amount} #{crm.material.recipe_unit}"}.join('、')
         td.text-right = cooking_rice.serving_amount
         td.text-right = "#{cooking_rice.shoku_per_shou} 升"
         td.text-right = "#{(4/cooking_rice.shoku_per_shou).floor} 食"
