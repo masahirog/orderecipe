@@ -7,29 +7,22 @@ class KurumesiLoadingPdf < Prawn::Document
     )
     font "vendor/assets/fonts/ipaexg.ttf"
     brand_ids.each_with_index do |brand_id,ii|
+      memo = ""
       brand_kurumesi_orders = kurumesi_orders.where(brand_id:brand_id)
       brand_product_ids = KurumesiOrderDetail.joins(:kurumesi_order).order('kurumesi_orders.pick_time').where(kurumesi_order_id:brand_kurumesi_orders.ids).map{|kod|kod.product_id}.uniq
       kurumesi_orders_arr = brand_kurumesi_orders.each_slice(8).to_a
       kurumesi_orders_arr.each_with_index do |moa,i|
         table_content(date,moa,kurumesi_orders_num_h,products_num_h,brand_id,brand_product_ids)
+        if brand_kurumesi_orders.where.not(kitchen_memo: [nil, '']).present?
+          brand_kurumesi_orders.where.not(kitchen_memo: [nil, '']).each do |ko|
+             memo += "［　#{ko.management_id}：#{ko.kitchen_memo}　］"
+          end
+          move_down 3
+          text memo
+        end
         start_new_page unless i + 1 == kurumesi_orders_arr.length
       end
       start_new_page unless ii + 1 == brand_ids.length
-    end
-    if kurumesi_orders.where.not(kitchen_memo: [nil, '']).present?
-      start_new_page
-      memo(kurumesi_orders)
-    end
-  end
-
-  def memo(kurumesi_orders)
-    bounding_box([30, 550], :width => 820) do
-      text 'MEMOしょうさい'
-      move_down 5
-      kurumesi_orders.where.not(kitchen_memo: [nil, '']).each do |ko|
-        move_down 5
-        text "#{ko.management_id}：#{ko.kitchen_memo}"
-      end
     end
   end
 

@@ -1,5 +1,5 @@
 class CookingRice < ApplicationRecord
-  enum base_rice: {白米:1, マンナン:2}
+  enum base_rice: {白米:1, マンナン:2,ひとめぼれ:3}
   has_many :products
   has_many :cooking_rice_materials, dependent: :destroy
   has_many :materials, through: :cooking_rice_materials

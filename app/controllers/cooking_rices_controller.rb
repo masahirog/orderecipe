@@ -80,37 +80,57 @@ class CookingRicesController < ApplicationController
         aa[cooking_rice.base_rice] = {need_shou:need_shou,num:num}
       end
     end
+    aa = aa.sort.to_h
     aa.each do |kurumesi_rice|
       test_hash[number] = {product_name:"#{kurumesi_rice[0]}",num:kurumesi_rice[1][:num],kurumesi_flag:true,need_shou:kurumesi_rice[1][:need_shou].ceil(2)}
       number += 1
     end
     @hash = {}
+    kurikosu = 0
+    kurikosu_kg = 0
     test_hash.each_with_index do |data|
       test_hash.shift
       @hash[data[0]] = {:name => data[1][:product_name],:mori =>"",:amount =>[],:kurikosu => 0,:mannan => false,:kurikoshi => 0,:product_name => data[1][:product_name],make_num:"#{data[1][:num]}食（#{data[1][:need_shou]}升）",:kurikosu_kg => 0,:kurikoshi_kg =>0}
       need_shou = data[1][:need_shou]
+      if kurikosu > 0
+        @hash[data[0]][:kurikoshi] = kurikosu
+        @hash[data[0]][:kurikoshi_kg] = kurikosu_kg
+        need_shou -= kurikosu
+        @hash[data[0]][:amount] << [kurikosu,""]
+        kurikosu = 0
+        kurikosu_kg = 0
+      end
       while need_shou > 0
-        if need_shou < 2
+        if need_shou <= 1
+          @hash[data[0]][:amount] << [1,""]
+          need_shou -= 1
+        elsif need_shou <= 1.5
+          @hash[data[0]][:amount] << [1.5,""]
+          need_shou -= 1.5
+        elsif need_shou <= 2
           @hash[data[0]][:amount] << [2,""]
           need_shou -= 2
-        elsif need_shou < 2.5
+        elsif need_shou <= 2.5
           @hash[data[0]][:amount] << [2.5,""]
           need_shou -= 2.5
-        elsif need_shou < 3
+        elsif need_shou <= 3
           @hash[data[0]][:amount] << [3,""]
           need_shou -= 3
-        elsif need_shou < 4
+        elsif need_shou <= 3.5
+          @hash[data[0]][:amount] << [3.5,""]
+          need_shou -= 3.5
+        elsif need_shou <= 4
           @hash[data[0]][:amount] << [4,""]
           need_shou -= 4
-        elsif need_shou < 4.5
+        elsif need_shou <= 4.5
           @hash[data[0]][:amount] << [2.5,""]
           @hash[data[0]][:amount] << [2,""]
           need_shou -= 4.5
-        elsif need_shou < 5
+        elsif need_shou <= 5
           @hash[data[0]][:amount] << [2.5,""]
           @hash[data[0]][:amount] << [2.5,""]
           need_shou -= 5.0
-        elsif need_shou < 5.5
+        elsif need_shou <= 5.5
           @hash[data[0]][:amount] << [3,""]
           @hash[data[0]][:amount] << [2.5,""]
           need_shou -= 5.5
@@ -119,13 +139,14 @@ class CookingRicesController < ApplicationController
           need_shou -= 4.0
         end
         if need_shou < 0
-          @hash[data[0]][:kurikosu] = -1 * need_shou
-          @hash[data[0]][:kurikosu_kg] = (3000.0 * (-1 * need_shou)/1000).ceil(2)
+          @hash[data[0]][:kurikosu] = (-1 * need_shou).floor(2)
+          kurikosu = (-1 * need_shou).floor(2)
+          kurikosu_kg = (3000.0 * (-1 * need_shou)/1000).ceil(2)
+          @hash[data[0]][:kurikosu_kg] = kurikosu_kg
         end
       end
       @hash
     end
-    @shogun_mazekomi= {}
     @kurumesi_mazekomi = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @make_products.each do |key,value|
       product = key
@@ -157,7 +178,7 @@ class CookingRicesController < ApplicationController
     respond_to do |format|
      format.html
      format.pdf do
-       pdf = RiceSheet.new(@hash,date,@shogun_mazekomi,@kurumesi_mazekomi)
+       pdf = RiceSheet.new(@hash,date,@kurumesi_mazekomi)
        send_data pdf.render,
         filename:    "#{date}_rice.pdf",
         type:        "application/pdf",
