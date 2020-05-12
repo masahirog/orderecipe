@@ -69,7 +69,7 @@ class KurumesiOrder < ApplicationRecord
       if dmf.present?
         if num == dmf.num
         else
-          if num > 400
+          if num > 100
             if dmf.notified_flag == true
               dmf.num = num
             else
@@ -83,7 +83,7 @@ class KurumesiOrder < ApplicationRecord
           update_arr << dmf
         end
       else
-        if num > 400
+        if num > 100
           new_arr << DateManufactureNumber.new(date:date,num:num,notified_flag:true)
           capacity_notify(date,num)
         else
