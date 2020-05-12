@@ -9,7 +9,7 @@ class DailyMenusController < ApplicationController
   end
 
   def new
-    @products = Product.all
+    @products = Product.where(brand_id:81)
     date = params['start_time']
     if DailyMenu.where(start_time:date).present?
       id = DailyMenu.find_by(start_time:date).id
@@ -20,11 +20,11 @@ class DailyMenusController < ApplicationController
   end
 
   def edit
-    @products = Product.all
+    @products = Product.where(brand_id:81)
   end
 
   def create
-    @products = Product.all
+    @products = Product.where(brand_id:81)
     @daily_menu = DailyMenu.new(daily_menu_params)
     respond_to do |format|
       if @daily_menu.save
@@ -38,7 +38,7 @@ class DailyMenusController < ApplicationController
   end
 
   def update
-    @products = Product.all
+    @products = Product.where(brand_id:81)
     respond_to do |format|
       if @daily_menu.update(daily_menu_params)
         format.html { redirect_to @daily_menu, notice: 'Daily menu was successfully updated.' }
