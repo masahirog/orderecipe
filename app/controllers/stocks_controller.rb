@@ -50,13 +50,15 @@ class StocksController < ApplicationController
     expendables_amount = 0
     stocks.each do |stock|
       material_price = (stock.end_day_stock * stock.material.cost_price)
-      total_amount += material_price
-      if stock.material.category == '食材（肉・魚）'||stock.material.category == '食材（野菜）'||stock.material.category == '食材（その他）'
+      if stock.material.category == '食材（肉・魚）'||stock.material.category == '食材（その他）'
         foods_amount += material_price
+        total_amount += material_price
       elsif stock.material.category == '包材・弁当備品'
         equipments_amount += material_price
+        total_amount += material_price
       elsif stock.material.category == 'その他備品・消耗品'
         expendables_amount += material_price
+        total_amount += material_price
       end
     end
     item_number = stocks.length
@@ -282,7 +284,7 @@ class StocksController < ApplicationController
   def monthly_inventory
     date = params[:date]
     if params[:category] == '食材'
-      category = ['食材（肉・魚）','食材（野菜）','食材（その他）']
+      category = ['食材（肉・魚）','食材（その他）']
     else
       category = params[:category]
     end
