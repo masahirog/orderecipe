@@ -26,6 +26,20 @@ class KurumesiOrdersController < ApplicationController
       end
     end
   end
+  def delivery_note
+    date = params[:date]
+    kurumesi_orders = KurumesiOrder.includes(:brand).where(start_time:date,canceled_flag:false).order(:pick_time)
+    respond_to do |format|
+      format.html
+      format.pdf do
+        pdf = CollationOnly.new(date,kurumesi_orders)
+        send_data pdf.render,
+        filename:    "#{date}.pdf",
+        type:        "application/pdf",
+        disposition: "inline"
+      end
+    end
+  end
 
   def loading_sheet
     date = params[:date]

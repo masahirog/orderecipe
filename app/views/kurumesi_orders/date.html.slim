@@ -97,6 +97,7 @@ div.col-md-12 style='font-size:20px;padding:0 0 7px 0;'
             button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
             = submit_tag "表示する" ,class:"btn btn-primary"
   = link_to "納品書セット",collation_sheet_kurumesi_orders_path(date:params[:date],format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
+  = link_to "納品書だけ",delivery_note_kurumesi_orders_path(date:params[:date],format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
   button type="button" class="btn btn-default" data-toggle="modal" data-target="#accounting_note" style='float:left;margin-left:20px;margin-top:10px;'
     |領収書・請求書
   .modal.fade id="accounting_note" tabindex=-1
