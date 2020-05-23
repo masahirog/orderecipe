@@ -20,7 +20,29 @@ div.col-md-12 style='font-size:20px;padding:0 0 7px 0;'
 .col-md-12
   = link_to 'くるめしの管理画面と件数、売上が一致するか確認してください',"http://admin.kurumesi-bentou.com/admin_shop/order/?action=SearchOrder&delivery_yy_s=#{@year}&delivery_mm_s=#{@month}&delivery_dd_s=#{@day}&delivery_yy_e=#{@year}&delivery_mm_e=#{@month}&delivery_dd_e=#{@day}&order_status=1",target:'_blank'
 .form-group.col-md-12.clearfix
-  = link_to "発注開始", new_order_path(kurumesi_order_date:params[:date]),class:'new_order btn btn-success',:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
+  / = link_to "発注開始", new_order_path(kurumesi_order_date:params[:date]),class:'new_order btn btn-success',:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
+  button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#newOrder" style='float:left;margin-left:20px;margin-top:10px;' 発注開始
+  #newOrder.modal.fade tabindex="-1"
+    = form_tag(new_order_path,method: :get) do
+      = date_field_tag 'kurumesi_order_date',params[:date],style:'display:none;'
+      .modal-dialog style='width:1000px;'
+        .modal-content
+          .modal-header
+            h4.modal-title 以下内容で発注する
+          table.table
+            - @bentos_num_h.each_with_index do |brand_product_num,i|
+              - product = Product.find(brand_product_num[0][1])
+              tr
+                td.col-md-7
+                  = product.name
+                  = text_field_tag "products[#{i}][id]",product.id,readonly:true,class:'form-control',style:'display:none;'
+                td.col-md-3
+                  = number_field_tag "products[#{i}][num]",brand_product_num[1],class:'form-control',min:0
+          .modal-footer
+            button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
+            = submit_tag "発注する" ,class:"btn btn-primary"
+
+
   button type="button" class="btn btn-default" data-toggle="modal" data-target="#preparation_sheets" style='float:left;margin-left:20px;margin-top:10px;'
     |仕込み表
   button type="button" class="btn btn-default" data-toggle="modal" data-target="#rice_sheet_modal" style='float:left;margin-left:20px;margin-top:10px;'
