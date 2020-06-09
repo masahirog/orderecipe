@@ -14,8 +14,8 @@ ActiveRecord::Schema.define(version: 2020_03_28_092428) do
 
   create_table "brands", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name", null: false
-    t.integer "store_id", null: false
-    t.boolean "kurumesi_flag", null: false
+    t.integer "store_id", default: 0, null: false
+    t.boolean "kurumesi_flag", default: false, null: false
     t.string "store_path"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

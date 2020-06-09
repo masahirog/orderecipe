@@ -36,7 +36,6 @@ class BrandsController < ApplicationController
 
   def create
     @brand = Brand.new(brand_params)
-
     respond_to do |format|
       if @brand.save
         format.html { redirect_to @brand, notice: 'Brand was successfully created.' }
