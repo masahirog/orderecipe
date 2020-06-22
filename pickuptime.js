@@ -13,12 +13,13 @@ const LOGIN_SUBMIT_SELECTOR = '#login > article > form > p > input[type=submit]'
 
 function getNowYMD(){
   var dt = new Date();
-  // dt.setDate(dt.getDate() + 1);
+  dt.setDate(dt.getDate() + 1);
   return dt
 }
 
 
 function dbconect(connection,hour,minute,management_id,u,err,len){
+  console.log(hour+":"+minute+":00");
   connection.query('UPDATE kurumesi_orders SET pick_time = "'+hour+':'+minute+':'+'00" WHERE management_id = "'+ management_id +'"', function(error, response) {
     if (err) { console.log('err: ' + err); }
     console.log(response);
