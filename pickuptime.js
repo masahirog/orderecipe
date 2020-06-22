@@ -13,7 +13,7 @@ const LOGIN_SUBMIT_SELECTOR = '#login > article > form > p > input[type=submit]'
 
 function getNowYMD(){
   var dt = new Date();
-  dt.setDate(dt.getDate() + 1);
+  // dt.setDate(dt.getDate() + 1);
   return dt
 }
 
