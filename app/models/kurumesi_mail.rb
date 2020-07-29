@@ -26,7 +26,7 @@ class KurumesiMail < ApplicationRecord
     imap = Net::IMAP.new(imap_host, imap_port, imap_usessl)
     # imapにログイン
     imap_user = 'masahiro11g@gmail.com'
-    imap_passwd = 'mshr0316'
+    imap_passwd = ENV['GMAIL_PASS']
     imap.login(imap_user, imap_passwd)
     # 'FROM','info@kurumesi-bentou.com',
     search_criterias = [
