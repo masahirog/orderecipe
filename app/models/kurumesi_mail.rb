@@ -30,7 +30,7 @@ class KurumesiMail < ApplicationRecord
     imap.login(imap_user, imap_passwd)
     # 'FROM','info@kurumesi-bentou.com',
     search_criterias = [
-      'FROM','masahiro11g@gmail.com',
+      'FROM','info@kurumesi-bentou.com',
       'SINCE', (Date.today-1).strftime("%d-%b-%Y")
       # 'SINCE', (Date.today).strftime("%d-%b-%Y") テスト環境
     ]
