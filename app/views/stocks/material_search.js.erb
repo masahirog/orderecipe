@@ -1,4 +1,0 @@
-$(".materials_tbody").children().remove();
-<% @materials.each do |material| %>
-  $(".materials_tbody").append("<%= escape_javascript(render partial: 'tr', locals: {material:material}) %>");
-<% end %>

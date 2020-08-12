@@ -3,6 +3,7 @@ $(document).on('turbolinks:load', function() {
     width:"100%",
     placeholder: "選択してください",
   });
+  $('[data-toggle="tooltip"]').tooltip();
 
   // $(".stocks-all").on("keypress",".input-amount", function (e) {
   //   var code = e.which ? e.which : e.keyCode;
