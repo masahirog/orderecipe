@@ -8,7 +8,6 @@ class CreateProducts < ActiveRecord::Migration[4.2]
       t.float :cost_price
       t.string :image
       t.integer :management_id
-      t.text :memo
       t.string :short_name
       t.string :symbol
       t.integer :status,default:1,null:false

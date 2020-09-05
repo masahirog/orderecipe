@@ -57,9 +57,6 @@
       th.active.col-md-4 内容物
       td =simple_format( @product.contents)
     tr
-      th.active.col-md-4 メモ（変更履歴等）
-      td = simple_format(@product.memo)
-    tr
       th.active.col-md-4 アレルギー
       td = @allergies.join('、')
     tr
