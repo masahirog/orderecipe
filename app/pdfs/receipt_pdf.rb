@@ -37,7 +37,6 @@ class ReceiptPdf < Prawn::Document
       line [75, 16], [200, 16]
       stroke
     end
-    image 'app/assets/images/taberu_stamp.png', at: [440, 600], width: 60
     bounding_box([330, 610], :width => 200, :height => 70) do
       move_down 10
       text "タベル株式会社", size: 11
