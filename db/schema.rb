@@ -311,27 +311,12 @@ ActiveRecord::Schema.define(version: 2020_03_28_092428) do
     t.float "cost_price"
     t.string "image"
     t.integer "management_id"
-    t.text "memo"
     t.string "short_name"
     t.string "symbol"
     t.integer "status", default: 1, null: false
     t.integer "brand_id"
     t.integer "product_category", default: 1, null: false
     t.integer "cooking_rice_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "reviews", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "brand_id"
-    t.date "delivery_date"
-    t.string "delivery_area"
-    t.string "title"
-    t.text "post"
-    t.string "use_scene"
-    t.string "age"
-    t.string "score"
-    t.boolean "line_sended", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
