@@ -235,7 +235,7 @@ class KurumesiOrdersController < ApplicationController
     @kurumesi_orders = KurumesiOrder.where(start_time:date,canceled_flag:false).order(:pick_time,:created_at)
     @canceled_kurumesi_orders = KurumesiOrder.where(start_time:date,canceled_flag:true).order(:pick_time)
     @bentos_num_h = @kurumesi_orders.joins(kurumesi_order_details:[:product]).group('products.brand_id').group('kurumesi_order_details.product_id').sum('kurumesi_order_details.number').sort {|(k1, v1), (k2, v2)| k1[0] <=> k2[0] }
-    @kurumesi_orders_num_h = @kurumesi_orders.joins(kurumesi_order_details:[:product]).group('kurumesi_order_details.kurumesi_order_id').sum('kurumesi_order_details.number')
+    @kurumesi_orders_num_h = @kurumesi_orders.where(:products => {product_category:1}).joins(kurumesi_order_details:[:product]).group('kurumesi_order_details.kurumesi_order_id').sum('kurumesi_order_details.number')
     @brands = Brand.all
     arr = []
     @kurumesi_orders.includes(:brand).each do |ko|
