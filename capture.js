@@ -42,9 +42,7 @@ function getNowYMD(){
         rows.map(function( value ) {
           management_ids.push(value.management_id);
         });
-        console.log(management_ids);
       });
-
       connection.query('UPDATE kurumesi_orders SET capture_done = 1 WHERE start_time >= "'+ date +'" AND canceled_flag = "false" AND capture_done = 0', function(error, response) {
         if (err) { console.log('err: ' + err); }
         console.log(response);
@@ -105,6 +103,7 @@ function getNowYMD(){
 
       // 請求書のスクショ
       const accounting_checked = await page.$('form[name="form1"]').then(res => !!res);
+      console.log(accounting_checked);
       if (accounting_checked) {
         const [newPage] = await Promise.all([
           browser.waitForTarget(t => t.opener() === page.target()).then(t => t.page()),
@@ -134,7 +133,7 @@ function getNowYMD(){
           page.click('form[name="form2"] > input[type=submit]:nth-child(1)')
         ]);
         await newPage3.setViewport({ width: 900, height: 1500 }); // ビューポート (ウィンドウサイズ)
-        await newPage3.waitForSelector('#main > div > table:nth-child(9)', {visible: true});
+        await newPage3.waitForSelector('#main > div > p.delivery_notes', {visible: true});
         const jpgBuf_3 = await newPage3.screenshot({ type: 'png'  })
         AWS.config.loadFromPath('rootkey.json');
         const s3_3 = new AWS.S3();
