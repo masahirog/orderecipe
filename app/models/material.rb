@@ -36,7 +36,7 @@ class Material < ApplicationRecord
   def self.search(params)
    if params
      if params['order_quantity_order'] == 'true'
-       ids = OrderMaterial.where(delivery_date:(Date.today - 31)..Date.today).group(:material_id).sum(:order_quantity).transform_values(&:to_f).sort {|a,b| b[1]<=>a[1]}.to_h.keys
+       ids = OrderMaterial.joins(:order).where(orders:{fixed_flag:1}).where(delivery_date:(Date.today - 31)..Date.today).group(:material_id).sum(:order_quantity).transform_values(&:to_f).sort {|a,b| b[1]<=>a[1]}.to_h.keys
        data = Material.where(id:ids)
      else
       data = Material.order(id: "DESC").all
