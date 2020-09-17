@@ -45,7 +45,7 @@ gem 'aws-sdk'
 gem 'aws-sdk-s3'
 gem 'line_notify'
 gem 'combine_pdf'
-
+gem 'google_drive'
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'pry-rails'

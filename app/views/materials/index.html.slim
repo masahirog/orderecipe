@@ -40,7 +40,7 @@ table.table
       td
         = material.vendor.company_name
       td
-        = material.memo
+        = material.memo.truncate(24, separator: '.')
       td.text-center = image_tag material.image.thumb.url if material.image.present?
       td style="text-align:center;"
         = link_to '確認',include_material_materials_path(id:material.id),class:"btn btn-default btn-sm"

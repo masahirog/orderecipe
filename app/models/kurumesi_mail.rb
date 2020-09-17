@@ -114,7 +114,11 @@ class KurumesiMail < ApplicationRecord
     shohin_arr = arr[shohin_index+1..-1]
     order = {}
     brand_name = body[0,body.index("｜")]
-    brand_id = Brand.find_by(name:brand_name).id
+    if Brand.find_by(name:brand_name).present?
+      brand_id = Brand.find_by(name:brand_name).id
+    else
+      brand_id = 51
+    end
     order[:brand_id] = brand_id
     s = shohin_arr.join.index("[請求金額]") + 6
     e = shohin_arr.join.index("円",s) - 1
