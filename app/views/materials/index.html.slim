@@ -5,13 +5,11 @@
     .col-md-2
       = text_field_tag :name, params[:name], class:"form-control",placeholder:'食材・資材名'
     .col-md-2
-      = text_field_tag :order_name, params[:order_name], class:"form-control",placeholder:'発注名'
-    .col-md-2
       = select_tag :vendor_id, options_from_collection_for_select(Vendor.all, :id, :company_name,params[:vendor_id]),include_blank: true, class: "form-control"
-    .col-md-2
-      = text_field_tag :order_code, params[:order_code], class:"form-control",placeholder:'管理コード'
     .col-md-1
       = select_tag :unused_flag, options_for_select([["使用中", false], ["使用停止", true]],params[:unused_flag]), include_blank: true, class:"form-control"
+    .col-md-1
+      = select_tag :order_quantity_order, options_for_select([["1ヶ月発注量", true]],params[:order_quantity_order]), include_blank: true, class:"form-control"
 
     .kensaku.col-md-1
       label 　
@@ -21,9 +19,10 @@
 table.table
   tr style="padding:10px;"
     th 食材・資材名
-    th 仕入れ値（税込）
-    th 単価（税込）
+    th 仕入れ値（税別）
+    th 単価（税別）
     th 仕入先
+    th 直近1月
     th メモ
     th
     th 使用メニュー
@@ -34,11 +33,15 @@ table.table
       td.material_name
         = link_to material.name, edit_material_path(material)
       td
-        = "1#{material.accounting_unit} #{((material.recipe_unit_price*1.08/material.recipe_unit_quantity) * material.accounting_unit_quantity).round(1).to_s(:delimited)} 円"
+        = "1#{material.accounting_unit} #{((material.recipe_unit_price/material.recipe_unit_quantity) * material.accounting_unit_quantity).round(2).to_s(:delimited)} 円"
       td
-        = "#{(material.cost_price*1.08).round(1)} 円/#{material.recipe_unit}"
+        = "#{(material.cost_price).round(2)} 円/#{material.recipe_unit}"
       td
         = material.vendor.company_name
+      td
+        - if @materials_order_quantity[material.id].present?
+          = "#{(@materials_order_quantity[material.id].to_f / material.accounting_unit_quantity).round(1).to_s(:delimited)} #{material.accounting_unit}｜"
+          = "#{(@materials_order_quantity[material.id].to_f * material.cost_price).round.to_s(:delimited)} 円"
       td
         = material.memo.truncate(24, separator: '.')
       td.text-center = image_tag material.image.thumb.url if material.image.present?

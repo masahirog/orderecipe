@@ -51,17 +51,12 @@
             .form-group
               |  円
       .col-md-5
-        = f.label :cost_price, "商品原価（税込み）"
+        = f.label :cost_price, "商品原価"
         .form-inline
           .form-group
             = f.number_field :cost_price, :readonly => 'readonly', class:"product_cost_price form-control text-right"
           .form-group
             |  円
-      .col-md-2
-        label
-          | カロリ
-        .total_calorie
-          = "#{MenuMaterial.where(menu_id:@product.menus.ids).sum(:calorie).round(2)} kcal"
   .col-md-5
     = f.label :image, "写真"
     = f.file_field :image

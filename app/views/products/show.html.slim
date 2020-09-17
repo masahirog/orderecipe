@@ -34,9 +34,9 @@
       th.active.col-md-4 記号
       td = @product.symbol
 
-    tr
-      th.active.col-md-4 bentoID
-      td = @product.management_id
+    / tr
+    /   th.active.col-md-4 bentoID
+    /   td = @product.management_id
     tr
       th.active.col-md-4 商品状況
       td = @product.status
@@ -48,7 +48,7 @@
       th.active.col-md-4 販売価格
       td = "#{@product.sell_price} 円"
     tr
-      th.active.col-md-4 原価価格（税込み）
+      th.active.col-md-4 原価価格
       td = "#{@product.cost_price} 円"
     tr
       th.active.col-md-4 説明文
@@ -56,18 +56,15 @@
     tr
       th.active.col-md-4 内容物
       td =simple_format( @product.contents)
-    tr
-      th.active.col-md-4 アレルギー
-      td = @allergies.join('、')
-    tr
-      th.active.col-md-4 食品添加物
-      td = @additives.join('、')
-    tr
-      th.active.col-md-4 カロリー
-      td = "#{MenuMaterial.where(menu_id:@product.menus.ids).sum(:calorie).round(2)} kcal"
-    tr
-      th.active.col-md-4 帯表示
-      td = FoodIngredient.cehck_nutrition(@product)
+    / tr
+    /   th.active.col-md-4 アレルギー
+    /   td = @allergies.join('、')
+    / tr
+    /   th.active.col-md-4 食品添加物
+    /   td = @additives.join('、')
+    / tr
+    /   th.active.col-md-4 カロリー
+    /   td = "#{MenuMaterial.where(menu_id:@product.menus.ids).sum(:calorie).round(2)} kcal"
 
 .col-md-4.text-center
   = image_tag @product.image.to_s ,class:"text-center img-responsive center-block",style:'max-height:450px;'

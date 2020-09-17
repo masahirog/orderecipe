@@ -2,7 +2,7 @@
 task :update_menu_cost_price => :environment do
   menus = Menu.all
   menus.each do |menu|
-    menu.cost_price = (menu.menu_materials.map{|mm| mm.amount_used * mm.material.cost_price}.sum * 1.08).round(2)
+    menu.cost_price = (menu.menu_materials.map{|mm| mm.amount_used * mm.material.cost_price}.sum).round(2)
   end
   Menu.import menus.to_a, :on_duplicate_key_update => [:cost_price]
 end

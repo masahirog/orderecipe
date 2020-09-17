@@ -35,11 +35,14 @@ class Material < ApplicationRecord
 
   def self.search(params)
    if params
-     data = Material.order(id: "DESC").all
+     if params['order_quantity_order'] == 'true'
+       ids = OrderMaterial.where(delivery_date:(Date.today - 31)..Date.today).group(:material_id).sum(:order_quantity).transform_values(&:to_f).sort {|a,b| b[1]<=>a[1]}.to_h.keys
+       data = Material.where(id:ids)
+     else
+      data = Material.order(id: "DESC").all
+     end
      data = data.where(['name LIKE ?', "%#{params["name"]}%"]) if params["name"].present?
-     data = data.where(['order_name LIKE ?', "%#{params["order_name"]}%"]) if params["order_name"].present?
      data = data.where(vendor_id: params["vendor_id"]) if params["vendor_id"].present?
-     data = data.where(['order_code LIKE ?', "%#{params["order_code"]}%"]) if params["order_code"].present?
      data = data.where(unused_flag:params["unused_flag"]) if params["unused_flag"].present?
      data
    else

@@ -1,5 +1,4 @@
 $(document).on('turbolinks:load', function() {
-  calculate_tax();
 
   $('.input_select_food_additive').select2({
     width:"200px"
@@ -17,13 +16,6 @@ $(document).on('turbolinks:load', function() {
     $(this).parent().parent(".add_li_food_additive").hide();
   });
 
-  $("#material_recipe_unit_price").on('keyup',function(){
-    calculate_tax();
-  });
-  function calculate_tax(){
-    var result = $("#material_recipe_unit_price").val()*1.08
-    $('.tax_contain_recipe_unit_price').val(Math.round(result*10)/10);
-  }
 
   //追加ボタン時のカーソル移動
   $(".add_food_additive").keypress(function (e) {

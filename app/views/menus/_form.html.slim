@@ -22,12 +22,19 @@
       = f.label :food_label_name ,'食品表示名'
       = f.text_field :food_label_name, class: "form-control", id: "food_label_name",style:"width:100%;"
   .form-group.col-md-12
-    .col-md-3
+    .col-md-2
       = f.label :category ,'カテゴリー'
       = f.select :category, options_for_select(Menu.categories.keys.to_a,@menu.category),{include_blank: true}, { class: "form-control",style:"width:100%;"}
     .col-md-2
       = f.label :serving_cost ,'盛り付け工数'
       = f.number_field :serving_cost, class: "form-control"
+    .col-md-2
+      = f.label :cost_price, "メニュー原価"
+      .form-inline
+        .form-group
+          = f.number_field :cost_price, :readonly => 'readonly',class: "menu_cost_price form-control"
+          .form-group
+            |  円
 
   .col-md-4.form-group
     = f.label :cook_the_day_before ,'前日調理'
@@ -38,6 +45,7 @@
   .col-md-4.form-group
     = f.label :serving_memo ,'盛付'
     = f.text_area :serving_memo,style:"height:10em;width:100%;", class: "form-control"
+
   .col-md-12
     = f.label :image, "写真"
     = f.file_field :image
@@ -54,22 +62,6 @@
       = f.select :used_additives, grouped_options_for_select(@ar,f.object.used_additives),{ include_hidden: false},{class:"select_used_additives col-md-12",multiple:true}
     - else
       = f.select :used_additives, grouped_options_for_select(@ar),{include_hidden: false},{class:"select_used_additives col-md-12",multiple:true}
-  .col-md-12.form-group
-    .col-md-3
-      label
-        | 食材原価小計
-      input.form-control.sum_material_cost[name="a" type="text" disabled="disabled" style="width:100%"]
-    .col-md-3
-      label
-        | 税(8%)
-      input.form-control.sum_material_cost_tax[name="a" type="text" disabled="disabled" style="width:100%"]
-    .col-md-4
-      = f.label :cost_price, "メニュー原価（税込み）"
-      .form-inline
-        .form-group
-          = f.number_field :cost_price, :readonly => 'readonly',class: "menu_cost_price form-control"
-          .form-group
-            |  円
   table.col-md-12.table
     thead
       th カロリー(kcal)
