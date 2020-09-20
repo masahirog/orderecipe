@@ -123,9 +123,11 @@ class Product < ApplicationRecord
       id = sheet[i, 11]
       if id.present?
         product = Product.find(id)
-        sheet[i, 8] = product.contents
-        sheet[i, 9] = product.sell_price
-        sheet[i, 10] = product.cost_price
+        if product.present?
+          sheet[i, 8] = product.contents
+          sheet[i, 9] = product.sell_price
+          sheet[i, 10] = product.cost_price
+        end
       end
     end
     sheet.save
