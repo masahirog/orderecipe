@@ -28,10 +28,10 @@ task :update_need_inventory_flag => :environment do
   Stock.need_inventory_check
 end
 
-task :review_notify => :environment do
-  Review.send_line
-end
-
 task :capa_check => :environment do
   KurumesiOrder.capacity_check
+end
+
+task :input_gss => :environment do
+  Product.input_spreadsheet
 end

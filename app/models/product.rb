@@ -115,6 +115,22 @@ class Product < ApplicationRecord
     end
   end
 
+  def self.input_spreadsheet
+    session = GoogleDrive::Session.from_config("config.json")
+    sheet = session.spreadsheet_by_key("12o48iD-G2C_PHr9AkPvTeb0PF6o5rHRCYZcDAAp-7vg").worksheet_by_title("list のコピー")
+    last_row = sheet.num_rows
+    for i in 6..last_row do
+      id = sheet[i, 11]
+      if id.present?
+        product = Product.find(id)
+        sheet[i, 8] = product.contents
+        sheet[i, 9] = product.sell_price
+        sheet[i, 10] = product.cost_price
+      end
+    end
+    sheet.save
+  end
+
   private
     def name_code
       #波ダッシュなどの置換
