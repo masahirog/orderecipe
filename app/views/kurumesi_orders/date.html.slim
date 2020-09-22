@@ -81,7 +81,11 @@ div.col-md-12 style='font-size:20px;padding:0 0 7px 0;'
               .col-md-12.form-group
                 .col-md-3 ポジション
                 .col-md-3
-                  = radio_button_tag("mochiba", "1",{:checked => true})
+                  = radio_button_tag("mochiba", "0",{:checked => true})
+                  = label_tag("mochiba_0", "両方",style:'margin-left:10px;')
+
+                .col-md-3
+                  = radio_button_tag("mochiba", "1")
                   = label_tag("mochiba_1", "切出し",style:'margin-left:10px;')
                 .col-md-3
                   = radio_button_tag("mochiba", "2")

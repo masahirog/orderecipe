@@ -95,6 +95,7 @@ Rails.application.routes.draw do
   end
   resources :daily_menus do
     collection do
+      get :material_preparation
       get :preparation_all
       get :products_pdfs
       get :recipes_roma

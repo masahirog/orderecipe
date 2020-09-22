@@ -98,7 +98,23 @@ class DailyMenusController < ApplicationController
       end
     end
   end
+  def material_preparation
+    mochiba = params[:mochiba]
+    lang = params[:lang]
+    date = params[:date]
+    @bentos_num_h = DailyMenuDetail.where(daily_menu_id:params[:daily_menu_id]).group(:product_id).sum(:manufacturing_number)
+    respond_to do |format|
+      format.html
+      format.pdf do
+        pdf = MaterialPreparation.new(@bentos_num_h,date,mochiba,lang)
 
+        send_data pdf.render,
+        filename:    "#{date}.pdf",
+        type:        "application/pdf",
+        disposition: "inline"
+      end
+    end
+  end
   private
     def set_daily_menu
       @daily_menu = DailyMenu.find(params[:id])

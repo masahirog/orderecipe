@@ -17,6 +17,39 @@
   = link_to "調理仕込み",print_preparation_daily_menus_path(daily_menu_id:@daily_menu.id,mochiba:'choriba',format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
   = link_to "ALL仕込み",print_preparation_daily_menus_path(daily_menu_id:@daily_menu.id,format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
   = link_to "炊飯シート",rice_sheet_cooking_rices_path(date:@daily_menu.start_time,format: :pdf),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
+  button type="button" class="btn btn-default" data-toggle="modal" data-target="#rice_sheet_modal" style='float:left;margin-left:20px;margin-top:10px;'
+    |食材別シート
+  .modal.fade id="rice_sheet_modal" tabindex=-1
+    = form_tag(material_preparation_daily_menus_path(format: :pdf),method: :get,target:'_blank') do
+      = hidden_field_tag 'daily_menu_id',@daily_menu.id
+      .modal-dialog
+        .modal-content
+          .modal-body.clearfix
+            h4 表示する方を選択してください
+            .col-md-12 style='margin-bottom:20px;'
+              .col-md-12.form-group
+                .col-md-3 ポジション
+                .col-md-3
+                  = radio_button_tag("mochiba", "0",{:checked => true})
+                  = label_tag("mochiba_0", "両方",style:'margin-left:10px;')
+
+                .col-md-3
+                  = radio_button_tag("mochiba", "1")
+                  = label_tag("mochiba_1", "切出し",style:'margin-left:10px;')
+                .col-md-3
+                  = radio_button_tag("mochiba", "2")
+                  = label_tag("mochiba_2", "調理場",style:'margin-left:10px;')
+              .col-md-12
+                .col-md-3 言語
+                .col-md-3
+                  = radio_button_tag("lang", "1",{:checked => true})
+                  = label_tag("lang_1", "日本語",style:'margin-left:10px;')
+                .col-md-3
+                  = radio_button_tag("lang", "2")
+                  = label_tag("lang_2", "ローマ字",style:'margin-left:10px;')
+          .modal-footer
+            button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
+            = submit_tag "表示する" ,class:"btn btn-primary"
 
 table.table.table-list
   thead

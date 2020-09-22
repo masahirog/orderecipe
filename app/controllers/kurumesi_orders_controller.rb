@@ -286,17 +286,8 @@ class KurumesiOrdersController < ApplicationController
   end
 
   def material_preparation
-    if params[:mochiba] == "1"
-      mochiba = '切出し'
-    else
-      mochiba = '調理場'
-    end
-
-    if params[:lang] == "1"
-      lang = '日本語'
-    else
-      lang = 'ローマ字'
-    end
+    mochiba = params[:mochiba]
+    lang = params[:lang]
     date = params[:date]
     kurumesi_orders = KurumesiOrder.includes(kurumesi_order_details:[:product]).where(start_time:date,canceled_flag:false).order(:pick_time)
     @bentos_num_h = kurumesi_orders.joins(kurumesi_order_details:[:product]).where(:products => {product_category:1}).group('kurumesi_order_details.product_id').sum('kurumesi_order_details.number')
