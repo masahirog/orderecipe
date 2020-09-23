@@ -60,10 +60,15 @@ class MaterialPreparation < Prawn::Document
     end
 
     test_hash.each do |key, value|
-      if value[4] == '調理場' || value[4] == '切出/調理'
-        menu_materials_arr_cook << value
-      elsif value[4] == '切出し' || value[4] == '切出/スチ' || value[4] == '切出/調理'
-        menu_materials_arr_cut << value
+      unless value[4] == ""
+        if value[4] == '調理場'
+          menu_materials_arr_cook << value
+        elsif value[4] == '切出し'
+          menu_materials_arr_cut << value
+        else
+          menu_materials_arr_cook << value
+          menu_materials_arr_cut << value
+        end
       end
     end
     menu_materials_arr_cut = menu_materials_arr_cut.sort { |a, b| a[0] <=> b[0]}

@@ -101,8 +101,9 @@ class DailyMenusController < ApplicationController
   def material_preparation
     mochiba = params[:mochiba]
     lang = params[:lang]
-    date = params[:date]
-    @bentos_num_h = DailyMenuDetail.where(daily_menu_id:params[:daily_menu_id]).group(:product_id).sum(:manufacturing_number)
+    daily_menu = DailyMenu.find(params[:daily_menu_id])
+    date = daily_menu.start_time
+    @bentos_num_h = daily_menu.daily_menu_details.group(:product_id).sum(:manufacturing_number)
     respond_to do |format|
       format.html
       format.pdf do
