@@ -8,7 +8,6 @@
     = @daily_menu.total_manufacturing_number
 
 .form-group.col-md-12.clearfix
-  h3 style='float:left;' 献立
   = link_to "編集する", edit_daily_menu_path(@daily_menu),class:'btn btn-primary',style:'float:left;margin-left:20px;margin-top:10px;'
   = link_to "発注開始", new_order_path(daily_menu_id:@daily_menu.id),class:'btn btn-success',style:'float:left;margin-left:20px;margin-top:10px;'
   = link_to "レシピ印刷",products_pdfs_daily_menus_path(daily_menu_id:@daily_menu.id, :format => :pdf),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
@@ -16,7 +15,6 @@
   = link_to "切出仕込み",print_preparation_daily_menus_path(daily_menu_id:@daily_menu.id,mochiba:'kiriba',format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
   = link_to "調理仕込み",print_preparation_daily_menus_path(daily_menu_id:@daily_menu.id,mochiba:'choriba',format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
   = link_to "ALL仕込み",print_preparation_daily_menus_path(daily_menu_id:@daily_menu.id,format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
-  = link_to "炊飯シート",rice_sheet_cooking_rices_path(date:@daily_menu.start_time,format: :pdf),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
   button type="button" class="btn btn-default" data-toggle="modal" data-target="#rice_sheet_modal" style='float:left;margin-left:20px;margin-top:10px;'
     |食材別シート
   .modal.fade id="rice_sheet_modal" tabindex=-1
@@ -58,9 +56,6 @@ table.table.table-list
       th 原価
       th 製造数
       th 総原価
-      th 帯
-      th 盛り付け
-      th 盛り付け
   tbody
     -@daily_menu_details.each do |dmd|
       tr
@@ -72,9 +67,3 @@ table.table.table-list
           = dmd.manufacturing_number
         td
           = dmd.total_cost_price
-        td
-          = link_to "帯作成", new_band_products_path(id:dmd.product.id,format:'pdf'), class:"btn btn-default",:target=>"_blank"
-        td
-          = link_to "漢字", serving_products_path(id:dmd.product.id), class:"btn btn-default",:target=>"_blank", style:"margin:0 0 0 10px;float:left;"
-        td
-          = link_to "カナ", serving_kana_products_path(id:dmd.product.id), class:"btn btn-default",:target=>"_blank", style:"margin:0 0 0 10px;float:left;"

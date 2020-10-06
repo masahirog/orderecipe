@@ -5,12 +5,14 @@ class DailyMenusController < ApplicationController
   end
 
   def show
+    @date = @daily_menu.start_time
     @daily_menu_details = @daily_menu.daily_menu_details.includes(:product)
   end
 
   def new
     @products = Product.where(brand_id:111)
     date = params['start_time']
+    @date = Date.parse(date)
     if DailyMenu.where(start_time:date).present?
       id = DailyMenu.find_by(start_time:date).id
       redirect_to "/daily_menus/#{id}/edit"
@@ -20,6 +22,7 @@ class DailyMenusController < ApplicationController
   end
 
   def edit
+    @date = @daily_menu.start_time
     @products = Product.where(brand_id:111)
   end
 
@@ -115,6 +118,11 @@ class DailyMenusController < ApplicationController
         disposition: "inline"
       end
     end
+  end
+
+  def copy
+    binding.pry
+    date = params[:date]
   end
   private
     def set_daily_menu

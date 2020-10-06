@@ -39,10 +39,10 @@ html
                     li = link_to "くるめしオーダー",kurumesi_orders_path(start_date:Date.today)
                     li = link_to "領収書発行",receipt_kurumesi_orders_path,target:'_blank'
                     li = link_to "請求書発行",'https://docs.google.com/spreadsheets/d/1BBs1RL8ojynO-MW14mH49ejwaTP7pWeHuvfjs-aX_4Y/edit#gid=737319184',target:'_blank'
-                    li = link_to "KPI",kpi_path
-                    li = link_to "個数データ",sell_reports_path(from:Date.today-30,to:Date.today+30)
+                    / li = link_to "KPI",kpi_path
+                    / li = link_to "個数データ",sell_reports_path(from:Date.today-30,to:Date.today+30)
                     / li = link_to "くるめしメール",kurumesi_mails_path
-                    li = link_to "みんなの食堂",'https://docs.google.com/spreadsheets/d/1TcFPDuy4b_5uUlXuBP6XiAp0hqokiAkj9aBzpuWSR0g/edit#gid=699428028',target:'_blank'
+                    li = link_to "みんなの食堂",'https://docs.google.com/spreadsheets/d/1rNP1ZTGXQAZZ6fWsTb9rbbZTdtZQCVx1EDpQa1IhKWA/edit#gid=1176718077',target:'_blank'
 
 
                 li.dropdown
@@ -61,7 +61,7 @@ html
                     li = link_to "月次棚卸し在庫",stocks_path()
 
                 li.menu_li
-                  = link_to "お弁当一覧",products_path
+                  = link_to "商品一覧",products_path
                 li.menu_li
                   = link_to "メニュー",menus_path
                 li.menu_li
