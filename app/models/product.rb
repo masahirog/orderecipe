@@ -117,16 +117,14 @@ class Product < ApplicationRecord
 
   def self.input_spreadsheet
     session = GoogleDrive::Session.from_config("config.json")
-    sheet = session.spreadsheet_by_key("12o48iD-G2C_PHr9AkPvTeb0PF6o5rHRCYZcDAAp-7vg").worksheet_by_title("list")
+    sheet = session.spreadsheet_by_key("12o48iD-G2C_PHr9AkPvTeb0PF6o5rHRCYZcDAAp-7vg").worksheet_by_title("原価OR連携")
     last_row = sheet.num_rows
-    for i in 6..last_row do
-      id = sheet[i, 11]
+    for i in 2..last_row do
+      id = sheet[i, 1]
       if id.present?
-        product = Product.find(id)
+        product = Product.find_by_id(id)
         if product.present?
-          sheet[i, 8] = product.contents
-          sheet[i, 9] = product.sell_price
-          sheet[i, 10] = product.cost_price
+          sheet[i, 2] = product.cost_price
         end
       end
     end

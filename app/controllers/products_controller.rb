@@ -267,6 +267,11 @@ class ProductsController < ApplicationController
       format.json { head :no_content }
     end
   end
+  def bejihan_ss_cost_sync
+    Product.input_spreadsheet
+    redirect_to products_path, notice: 'スプレッドシートに連携しました！'
+  end
+
 
   private
     def product_create_update
