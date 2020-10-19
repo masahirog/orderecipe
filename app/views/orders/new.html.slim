@@ -124,8 +124,9 @@
                       span data-html="true" style='color:blue;margin-left:10px;' class="glyphicon glyphicon-eye-open" aria-hidden="true"  data-toggle="tooltip" data-placement="#{position}" title="<table class='table tooltip-table'><thead><tr><th style='text-align: center'>日付</th><th style='text-align: center'>納品</th><th style='text-align: center'>使用</th><th style='text-align: center'>在庫</th><th></th></tr></thead><tbody>#{@stock_hash[m.object.material_id].flatten.join('')}</tbody></table>"
                     = link_to edit_material_path(material),target:'_blank',class:'stock-tooltip' do
                       span style='color:green;margin-left:10px;' class="glyphicon glyphicon-pencil" aria-hidden="true"  data-toggle="tooltip" data-placement="#{position}" title="食材の編集"
-                    = link_to material_reload_orders_path(material_id:m.object.material_id,date:@prev_stocks.first[1].date), method: :post, remote: true
-                      span style='color:red;margin-left:10px;' class="glyphicon glyphicon-refresh" aria-hidden="true"
+                    -if @prev_stocks.first[1].present?
+                      = link_to material_reload_orders_path(material_id:m.object.material_id,date:@prev_stocks.first[1].date), method: :post, remote: true
+                        span style='color:red;margin-left:10px;' class="glyphicon glyphicon-refresh" aria-hidden="true"
 
           td.order_material_memo style='width:999px;'
             = m.text_field :order_material_memo,class:'form-control'

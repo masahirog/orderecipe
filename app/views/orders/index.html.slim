@@ -6,7 +6,7 @@
     .col-md-1
       = submit_tag "検索" ,class:"btn btn-primary btn-sm"
 = link_to "新規発注開始", new_order_path(),class:"order btn btn-primary",style:"margin:3px;"
-
+= link_to "折兼発注", new_order_path(vendor_id:171),class:"order btn btn-primary",style:"margin:3px;"
 table.table
   thead
     tr

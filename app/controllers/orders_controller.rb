@@ -139,6 +139,7 @@ class OrdersController < ApplicationController
     end
   end
 
+
   def new
     @product_hash = {}
     @arr = []
@@ -170,6 +171,27 @@ class OrdersController < ApplicationController
     else
       order_products = []
       make_date = Date.today
+      if params[:vendor_id].present?
+        materials = Material.where(vendor_id:params[:vendor_id],unused_flag:0)
+        materials.each do |material|
+          hash = {}
+          hash['material'] = material
+          hash['make_num'] = 0
+          hash['product_id'] = ''
+          hash['menu_num'] = {'なし' => 0}
+          hash['material_id'] = material.id
+          hash['calculated_order_amount'] = 0
+          hash["recipe_unit_quantity"] = material.recipe_unit_quantity
+          hash["order_unit_quantity"] = material.order_unit_quantity
+          hash["vendor_id"] = material.vendor_id
+          hash["vendor_name"] = material.vendor.company_name
+          hash['recipe_unit'] = material.recipe_unit
+          hash['order_unit'] = material.order_unit
+          hash['delivery_deadline'] = material.delivery_deadline
+          hash['order_material_memo'] =''
+          @arr << hash
+        end
+      end
     end
     product_ids = order_products.map{|op|op[:product_id]}
     product_hash = Product.includes(:product_menus,[menus: [menu_materials: [material:[:vendor]]]]).where(id:product_ids).map{|product|[product.id,product]}.to_h
