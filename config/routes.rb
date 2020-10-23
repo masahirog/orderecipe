@@ -128,5 +128,6 @@ Rails.application.routes.draw do
   end
   resources :kurumesi_mails
   resources :brands
-
+  resources :place_showcases
+  resources :serving_plates
 end

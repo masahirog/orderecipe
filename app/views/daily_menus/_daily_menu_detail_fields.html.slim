@@ -1,20 +1,16 @@
-- if f.object.id.present?
-  tr.nested-fields.item.daily_menu_detail_tr
-    td.col-md-1.row_order
-      = f.number_field :row_order, class: 'form-control',readonly:true
-    td.col-md-3
+tr.nested-fields.item.daily_menu_detail_tr
+  td.row_order
+    = f.number_field :row_order, class: 'form-control',readonly:true
+  td
+    - if f.object.id.present?
       = Product.find(f.object.product_id).name
-    td.col-md-2
-      = f.number_field :manufacturing_number, class: 'form-control manufacturing_number'
-    td.col-md-4
-      = link_to_remove_association '削除', f, class: 'btn btn-default'
-- else
-  tr.nested-fields.item.daily_menu_detail_tr
-    td.col-md-1.row_order
-      = f.number_field :row_order, class: 'form-control',readonly:true
-    td.col-md-3
+    - else
       = f.collection_select :product_id, @products, :id, :name, {include_blank:true},class:'form-control input_select_product'
-    td.col-md-2
-      = f.number_field :manufacturing_number, class: 'form-control manufacturing_number'
-    td.col-md-4
-      = link_to_remove_association '削除', f, class: 'btn btn-default'
+  td
+    = f.number_field :manufacturing_number, class: 'form-control manufacturing_number'
+  td
+    = f.collection_select :serving_plate_id,ServingPlate.all, :id, :name,{include_blank:true},class:'form-control'
+  td
+    = f.collection_select :place_showcase_id,PlaceShowcase.all, :id, :name,{include_blank:true},class:'form-control'
+  td
+    = link_to_remove_association '削除', f, class: 'btn btn-default'

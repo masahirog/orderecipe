@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_28_092428) do
+ActiveRecord::Schema.define(version: 2020_10_23_010322) do
 
   create_table "brands", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name", null: false
@@ -37,6 +37,11 @@ ActiveRecord::Schema.define(version: 2020_03_28_092428) do
     t.float "cost_price_per_product", default: 0.0, null: false
     t.integer "total_cost_price", default: 0, null: false
     t.integer "row_order", default: 0, null: false
+    t.integer "serving_plate_id"
+    t.integer "place_showcase_id"
+    t.boolean "signboard_flag", default: false, null: false
+    t.boolean "window_pop_flag", default: false, null: false
+    t.time "sold_outed"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -45,6 +50,9 @@ ActiveRecord::Schema.define(version: 2020_03_28_092428) do
     t.date "start_time", null: false
     t.integer "total_manufacturing_number", default: 0, null: false
     t.boolean "fixed_flag", default: false, null: false
+    t.integer "weather"
+    t.float "max_temperature"
+    t.float "min_temperature"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -295,6 +303,12 @@ ActiveRecord::Schema.define(version: 2020_03_28_092428) do
     t.boolean "fixed_flag", default: false, null: false
   end
 
+  create_table "place_showcases", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "product_menus", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "product_id", null: false
     t.integer "menu_id", null: false
@@ -317,6 +331,16 @@ ActiveRecord::Schema.define(version: 2020_03_28_092428) do
     t.integer "brand_id"
     t.integer "product_category", default: 1, null: false
     t.integer "cooking_rice_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "serving_plates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "name"
+    t.string "image"
+    t.integer "color"
+    t.integer "shape"
+    t.integer "genre"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

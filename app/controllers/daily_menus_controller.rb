@@ -121,7 +121,6 @@ class DailyMenusController < ApplicationController
   end
 
   def copy
-    binding.pry
     date = params[:date]
   end
   private
@@ -131,6 +130,8 @@ class DailyMenusController < ApplicationController
 
     def daily_menu_params
       params.require(:daily_menu).permit(:start_time,:total_manufacturing_number,:fixed_flag,
-        daily_menu_details_attributes: [:id,:daily_menu_id,:product_id,:manufacturing_number,:row_order,:_destroy])
+        :weather,:max_temperature,:min_temperature,
+        daily_menu_details_attributes: [:id,:daily_menu_id,:product_id,:manufacturing_number,:row_order,:_destroy,
+          :serving_plate_id,:place_showcase_id,:signboard_flag,:window_pop_flag,:sold_outed])
     end
 end

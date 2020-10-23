@@ -1,6 +1,8 @@
 class DailyMenuDetail < ApplicationRecord
   belongs_to :daily_menu,optional:true
   belongs_to :product
+  belongs_to :place_showcase
+  belongs_to :serving_plate
 
   before_create :calculate_cost_price
   before_update :calculate_total_cost_price

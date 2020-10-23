@@ -3,6 +3,7 @@ class DailyMenu < ApplicationRecord
   accepts_nested_attributes_for :daily_menu_details, allow_destroy: true
   validates :start_time, presence: true, uniqueness: true
   after_save :input_stock
+  enum weather: {sunny:1, cloud:2,rain:3,strong_rain:4,taihoon:5,snow:6}
   #納品量の追加
 
   def input_stock

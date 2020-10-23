@@ -1,0 +1,9 @@
+= form_for @place_showcase do |f|
+  - if @place_showcase.errors.any?
+    #error_explanation
+      h2 = "#{pluralize(@place_showcase.errors.count, "error")} prohibited this place_showcase from being saved:"
+      ul
+        - @place_showcase.errors.full_messages.each do |message|
+          li = message
+
+  .actions = f.submit

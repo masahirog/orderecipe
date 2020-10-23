@@ -1,0 +1,19 @@
+h3 盛り付け皿設定
+= link_to '皿追加', new_serving_plate_path,class:'btn btn-primary'
+table.table
+  thead
+    tr
+      th 皿名
+      th ジャンル
+      th 色
+      th 形
+      th
+
+  tbody
+    - @serving_plates.each do |serving_plate|
+      tr
+        td = serving_plate.name
+        td = serving_plate.genre
+        td = serving_plate.color
+        td = serving_plate.shape
+        td = link_to '編集', edit_serving_plate_path(serving_plate),class:'btn btn-default'

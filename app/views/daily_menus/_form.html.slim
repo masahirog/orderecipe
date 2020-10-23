@@ -1,3 +1,11 @@
+/
+/ .form-group.required.col-md-12
+/   label.col-md-2 別日にコピーする
+/   .col-md-10
+/     = form_tag copy_daily_menus_path, method: :get do
+/       = date_field_tag :date,@date, class:"form-control"
+/       input.btn.btn-success type="button" onclick="submit();" value="印刷" style='width:300px;'
+
 = form_with(model: daily_menu, local: true) do |f|
   - if daily_menu.errors.any?
     #error_explanation
@@ -17,6 +25,18 @@
     = f.label :fixed_flag,"確定ステータス", class: 'col-md-2 control-label text-right'
     .col-md-10
       = f.select :fixed_flag,[["編集中",false],["確定",true]],{}, class: 'col-md-10 form-control'
+  .form-group.required.col-md-12
+    = f.label :weather,"天気", class: 'col-md-2 control-label text-right'
+    .col-md-10
+      = f.select :weather, DailyMenu.weathers.keys.to_a, {include_blank:true}, class: 'col-md-10 form-control'
+  .form-group.required.col-md-12
+    = f.label :max_temperature,"最高気温", class: 'col-md-2 control-label text-right'
+    .col-md-10
+      = f.number_field :max_temperature, class: 'col-md-10 form-control'
+  .form-group.required.col-md-12
+    = f.label :min_temperature,"最低気温", class: 'col-md-2 control-label text-right'
+    .col-md-10
+      = f.number_field :min_temperature, class: 'col-md-10 form-control'
 
   h3 販売商品
   .text-right
@@ -27,11 +47,12 @@
   table.table.table-list.cocoon_are
     thead
       tr
-        th.col-md-1 No.
-        th.col-md-2 management_id
-        th.col-md-3 メニュー名
-        th.col-md-2 製造数
-        th.col-md-4
+        th No.
+        th メニュー名
+        th 製造数
+        th 盛付皿
+        th 配置
+        th
     tbody#daily_menu_details_area
       = f.fields_for :daily_menu_details do |dmd|
         = render 'daily_menu_detail_fields', f: dmd

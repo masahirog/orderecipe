@@ -28,8 +28,14 @@ html
           #navbarEexample.collapse.navbar-collapse
             - if user_signed_in?
               ul.nav.navbar-nav
-                li.menu_li
-                  = link_to "べじはん",daily_menus_path
+                li.dropdown
+                  a.dropdown-toggle href="#" data-toggle="dropdown" role="button"
+                    |べじはん
+                    span.caret
+                  ul.dropdown-menu role="menu" style='width:250px;'
+                    li = link_to "献立",daily_menus_path
+                    li = link_to "ショーケース配置設定",place_showcases_path
+                    li = link_to "盛り付け皿設定",serving_plates_path
 
                 li.dropdown
                   a.dropdown-toggle href="#" data-toggle="dropdown" role="button"

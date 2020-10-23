@@ -1,0 +1,9 @@
+= form_for @serving_plate do |f|
+  - if @serving_plate.errors.any?
+    #error_explanation
+      h2 = "#{pluralize(@serving_plate.errors.count, "error")} prohibited this serving_plate from being saved:"
+      ul
+        - @serving_plate.errors.full_messages.each do |message|
+          li = message
+
+  .actions = f.submit
