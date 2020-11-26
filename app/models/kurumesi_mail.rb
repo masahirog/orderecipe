@@ -165,15 +165,15 @@ class KurumesiMail < ApplicationRecord
       product_name = ""
       num = ""
       if brand_id == 11
-        Brand.masu_order_make(order_details_arr,line,product_name,num)
+        Brand.masu_order_make(order_details_arr,line,product_name,num,brand_id)
       elsif brand_id == 21
-        Brand.hasisaji_order_make(order_details_arr,line,product_name,num)
+        Brand.hasisaji_order_make(order_details_arr,line,product_name,num,brand_id)
       elsif brand_id == 31
-        Brand.donburi_order_make(order_details_arr,line,product_name,num)
+        Brand.donburi_order_make(order_details_arr,line,product_name,num,brand_id)
       elsif brand_id == 51
-        Brand.suzukaze_order_make(order_details_arr,line,product_name,num)
+        Brand.suzukaze_order_make(order_details_arr,line,product_name,num,brand_id)
       elsif brand_id == 61
-        Brand.taikai_order_make(order_details_arr,line,product_name,num)
+        Brand.taikai_order_make(order_details_arr,line,product_name,num,brand_id)
       end
     end
     #重複はまとめる！

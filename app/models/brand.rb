@@ -4,11 +4,11 @@ class Brand < ApplicationRecord
   has_many :reviews
 
   # 枡々
-  def self.masu_order_make(order_details_arr,line,product_name,num)
+  def self.masu_order_make(order_details_arr,line,product_name,num,brand_id)
     if line.index('】').present?
       product_name_end_kakko = line.index('】') - 1
       product_name = line[0..product_name_end_kakko]
-      product = Product.find_by(name:product_name)
+      product = Product.find_by(name:product_name,brand_id:brand_id)
       if product.present?
         product_id = product.id
         num = line.match(/×(.+)食/)[1].to_i
@@ -28,7 +28,7 @@ class Brand < ApplicationRecord
   end
 
   # HASI TO SAJI
-  def self.hasisaji_order_make(order_details_arr,line,product_name,num)
+  def self.hasisaji_order_make(order_details_arr,line,product_name,num,brand_id)
     if line.index('】').present?
       base_product_name_end_kakko = line.index('】') - 1
       base_product_name = line[0..base_product_name_end_kakko]
@@ -43,7 +43,7 @@ class Brand < ApplicationRecord
         product_name = base_product_name
         tea_flag = true
       end
-      product = Product.find_by(name:product_name)
+      product = Product.find_by(name:product_name,brand_id:brand_id)
       if product.present?
         product_id = product.id
         num = line.match(/×(.+)食/)[1].to_i
@@ -60,11 +60,11 @@ class Brand < ApplicationRecord
     end
   end
   # DONBURI TOKYO
-  def self.donburi_order_make(order_details_arr,line,product_name,num)
+  def self.donburi_order_make(order_details_arr,line,product_name,num,brand_id)
     if line.index('】').present?
       product_name_end_kakko = line.index('】') - 1
       product_name = line[0..product_name_end_kakko]
-      product = Product.find_by(name:product_name)
+      product = Product.find_by(name:product_name,brand_id:brand_id)
       if product.present?
         product_id = product.id
         num = line.match(/×(.+)食/)[1].to_i
@@ -80,11 +80,11 @@ class Brand < ApplicationRecord
   end
 
   # 涼風
-  def self.suzukaze_order_make(order_details_arr,line,product_name,num)
+  def self.suzukaze_order_make(order_details_arr,line,product_name,num,brand_id)
     if line.index('】').present?
       product_name_end_kakko = line.index('】') - 1
       product_name = line[0..product_name_end_kakko]
-      product = Product.find_by(name:product_name)
+      product = Product.find_by(name:product_name,brand_id:brand_id)
       if product.present?
         product_id = product.id
         num = line.match(/×(.+)食/)[1].to_i
@@ -100,7 +100,7 @@ class Brand < ApplicationRecord
   end
 
   #大海
-  def self.taikai_order_make(order_details_arr,line,product_name,num)
+  def self.taikai_order_make(order_details_arr,line,product_name,num,brand_id)
     if line.index('】').present?
       base_product_name_end_kakko = line.index('】') - 1
       base_product_name = line[0..base_product_name_end_kakko]
@@ -114,7 +114,7 @@ class Brand < ApplicationRecord
         product_name = base_product_name
         tea_flag = true
       end
-      product = Product.find_by(name:product_name)
+      product = Product.find_by(name:product_name,brand_id:brand_id)
       if product.present?
         product_id = product.id
         num = line.match(/×(.+)食/)[1].to_i
