@@ -52,7 +52,7 @@
       td = "#{@product.cost_price} 円"
     tr
       th.active.col-md-4 説明文
-      td = simple_format(@product.description)
+      td = text_url_to_link(simple_format(h(@product.description))).html_safe
     tr
       th.active.col-md-4 内容物
       td =simple_format( @product.contents)
