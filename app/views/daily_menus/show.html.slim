@@ -11,6 +11,7 @@
   = link_to "編集する", edit_daily_menu_path(@daily_menu),class:'btn btn-primary',style:'float:left;margin-left:20px;margin-top:10px;'
   = link_to "発注開始", new_order_path(daily_menu_id:@daily_menu.id),class:'btn btn-success',style:'float:left;margin-left:20px;margin-top:10px;'
   = link_to "レシピ印刷",products_pdfs_daily_menus_path(daily_menu_id:@daily_menu.id, :format => :pdf),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
+  = link_to "タレレシピ",sources_pdfs_daily_menus_path(daily_menu_id:@daily_menu.id, :format => :pdf),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
   / = link_to "ラムさん",recipes_roma_daily_menus_path(daily_menu_id:@daily_menu.id, :format => :pdf),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
   / = link_to "切出仕込み",print_preparation_daily_menus_path(daily_menu_id:@daily_menu.id,mochiba:'kiriba',format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
   / = link_to "調理仕込み",print_preparation_daily_menus_path(daily_menu_id:@daily_menu.id,mochiba:'choriba',format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'

@@ -74,6 +74,20 @@ class DailyMenusController < ApplicationController
       end
     end
   end
+
+  def sources_pdfs
+    daily_menu = DailyMenu.includes(daily_menu_details:[product:[menus:[:materials]]]).find(params[:daily_menu_id])
+    respond_to do |format|
+      format.html
+      format.pdf do
+        pdf = SourcesPdf.new(daily_menu.id,'daily_menus')
+        send_data pdf.render,
+        filename:    "#{daily_menu.id}.pdf",
+        type:        "application/pdf",
+        disposition: "inline"
+      end
+    end
+  end
   # def recipes_roma
   #   daily_menu = DailyMenu.includes(daily_menu_details:[product:[menus:[:materials]]]).find(params[:daily_menu_id])
   #   respond_to do |format|
