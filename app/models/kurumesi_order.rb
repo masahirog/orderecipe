@@ -1,3 +1,6 @@
+require 'nokogiri'
+require 'mechanize'
+
 class KurumesiOrder < ApplicationRecord
   has_many :kurumei_mails
   has_many :kurumesi_order_details, dependent: :destroy
@@ -33,6 +36,52 @@ class KurumesiOrder < ApplicationRecord
     end
   end
 
+
+  def self.pick_time_scraping
+    date = Date.tomorrow
+    year = date.year
+    month = date.month
+    day = date.day
+    agent = Mechanize.new
+    agent.user_agent_alias = 'Mac Safari 4'
+    agent.get('http://admin.kurumesi-bentou.com/admin_shop/') do |page|
+      mypage = page.form_with(name:'form1') do |form|
+        # ログインに必要な入力項目を設定していく
+        # formオブジェクトが持っている変数名は入力項目(inputタグ)のname属性
+        form.shop_id = '897'
+        form.shop_pass = 'csuxFJRT'
+      end.submit
+      taget_url = "http://admin.kurumesi-bentou.com/admin_shop/order/?action=SearchOrder&delivery_yy_s=#{year}&delivery_mm_s=#{month}&delivery_dd_s=#{day}&delivery_yy_e=#{year}&delivery_mm_e=#{month}&delivery_dd_e=#{day}&order_status=1"
+      html = agent.get(taget_url).content.toutf8
+      contents = Nokogiri::HTML(html, nil, 'utf-8')
+      kurumesi_orders_arr = []
+      contents.search(".detail").each do |content|
+        hour = ""
+        minute = ""
+        pick_time = ""
+        kurumesi_order_id = content.at(".boxTtl h2").inner_text[4..11]
+        kurumesi_order = KurumesiOrder.find_by(management_id:kurumesi_order_id)
+        if kurumesi_order.present?
+          content.search("//*[@id='form_#{kurumesi_order_id}']/select[2]/option").to_a.each do |aa|
+            if aa.to_a[1].present?
+              hour = aa.to_h['value']
+              content.search("//*[@id='form_#{kurumesi_order_id}']/select[3]/option").to_a.each do |aa|
+                if aa.to_a[1].present?
+                  minute = aa.to_h['value']
+                  pick_time = hour + ":" + minute
+                  break
+                end
+              end
+              break
+            end
+          end
+          kurumesi_order.pick_time = pick_time
+          kurumesi_orders_arr << kurumesi_order
+        end
+      end
+      KurumesiOrder.import kurumesi_orders_arr, on_duplicate_key_update: [:pick_time]
+    end
+  end
   # def self.capture_check
   #   # Dotenv.overload
   #   s3 = Aws::S3::Resource.new(

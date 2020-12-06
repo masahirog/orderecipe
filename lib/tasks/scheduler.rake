@@ -35,3 +35,7 @@ end
 task :input_gss => :environment do
   Product.input_spreadsheet
 end
+
+task :pick_time_get => :environment do
+  KurumesiOrder.pick_time_scraping
+end

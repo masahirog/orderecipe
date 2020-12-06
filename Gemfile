@@ -13,7 +13,7 @@ gem 'turbolinks', '~> 5'
 gem 'jbuilder', '~> 2.5'
 gem "jquery-rails"
 gem 'jquery-turbolinks'
-
+gem 'mechanize'
 gem 'bootsnap', '>= 1.1.0', require: false
 gem 'slim-rails', '3.1.3'
 gem 'devise'
