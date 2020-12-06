@@ -33,27 +33,27 @@ class KurumesiOrder < ApplicationRecord
     end
   end
 
-  def self.capture_check
-    # Dotenv.overload
-    s3 = Aws::S3::Resource.new(
-      region: 'ap-northeast-1',
-      credentials: Aws::Credentials.new(
-        ENV['ACCESS_KEY_ID'],
-        ENV['SECRET_ACCESS_KEY']
-      )
-    )
-    date = Date.today
-    kurumesi_orders = KurumesiOrder.where("start_time >= ?",date).where(canceled_flag:false)
-    arr = []
-    kurumesi_orders.each_with_index do |ko,i|
-      p i
-      unless s3.bucket('kurumesi-check').object("#{ko.management_id}.jpg").exists?
-        ko.capture_done = false
-        arr << ko
-      end
-    end
-    KurumesiOrder.import arr, on_duplicate_key_update:[:capture_done] if arr.present?
-  end
+  # def self.capture_check
+  #   # Dotenv.overload
+  #   s3 = Aws::S3::Resource.new(
+  #     region: 'ap-northeast-1',
+  #     credentials: Aws::Credentials.new(
+  #       ENV['ACCESS_KEY_ID'],
+  #       ENV['SECRET_ACCESS_KEY']
+  #     )
+  #   )
+  #   date = Date.today
+  #   kurumesi_orders = KurumesiOrder.where("start_time >= ?",date).where(canceled_flag:false)
+  #   arr = []
+  #   kurumesi_orders.each_with_index do |ko,i|
+  #     p i
+  #     unless s3.bucket('kurumesi-check').object("#{ko.management_id}.jpg").exists?
+  #       ko.capture_done = false
+  #       arr << ko
+  #     end
+  #   end
+  #   KurumesiOrder.import arr, on_duplicate_key_update:[:capture_done] if arr.present?
+  # end
 
 
   def self.capacity_check

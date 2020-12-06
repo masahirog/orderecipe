@@ -1,31 +1,31 @@
 class KurumesiOrdersController < ApplicationController
   before_action :set_kurumesi_order, only: [ :edit, :update, :destroy]
-  def collation_sheet
-    date = params[:date]
-    Dotenv.overload
-    s3 = Aws::S3::Resource.new(
-      region: 'ap-northeast-1',
-      credentials: Aws::Credentials.new(
-        ENV['ACCESS_KEY_ID'],
-        ENV['SECRET_ACCESS_KEY']
-      )
-    )
-    signer = Aws::S3::Presigner.new(client: s3.client)
-    kurumesi_orders = {}
-    KurumesiOrder.includes(:brand).where(start_time:date,canceled_flag:false).order(:pick_time).each do |ko|
-      kurumesi_orders[ko.management_id] = [ko,signer.presigned_url(:get_object,bucket: 'kurumesi-delivery-note', key: "#{ko.management_id}.png", expires_in: 60)]
-    end
-    respond_to do |format|
-      format.html
-      format.pdf do
-        pdf = KurumesiCollation.new(date,kurumesi_orders)
-        send_data pdf.render,
-        filename:    "#{date}.pdf",
-        type:        "application/pdf",
-        disposition: "inline"
-      end
-    end
-  end
+  # def collation_sheet
+  #   date = params[:date]
+  #   Dotenv.overload
+  #   s3 = Aws::S3::Resource.new(
+  #     region: 'ap-northeast-1',
+  #     credentials: Aws::Credentials.new(
+  #       ENV['ACCESS_KEY_ID'],
+  #       ENV['SECRET_ACCESS_KEY']
+  #     )
+  #   )
+  #   signer = Aws::S3::Presigner.new(client: s3.client)
+  #   kurumesi_orders = {}
+  #   KurumesiOrder.includes(:brand).where(start_time:date,canceled_flag:false).order(:pick_time).each do |ko|
+  #     kurumesi_orders[ko.management_id] = [ko,signer.presigned_url(:get_object,bucket: 'kurumesi-delivery-note', key: "#{ko.management_id}.png", expires_in: 60)]
+  #   end
+  #   respond_to do |format|
+  #     format.html
+  #     format.pdf do
+  #       pdf = KurumesiCollation.new(date,kurumesi_orders)
+  #       send_data pdf.render,
+  #       filename:    "#{date}.pdf",
+  #       type:        "application/pdf",
+  #       disposition: "inline"
+  #     end
+  #   end
+  # end
   def delivery_note
     date = params[:date]
     kurumesi_orders = KurumesiOrder.includes(:brand).where(start_time:date,canceled_flag:false).order(:pick_time)
@@ -218,16 +218,16 @@ class KurumesiOrdersController < ApplicationController
 
   def date
     # Dotenv.overload
-    s3 = Aws::S3::Resource.new(
-      region: 'ap-northeast-1',
-      credentials: Aws::Credentials.new(
-        ENV['ACCESS_KEY_ID'],
-        ENV['SECRET_ACCESS_KEY']
-      )
-    )
-    signer = Aws::S3::Presigner.new(client: s3.client)
-    @presigned_url = {}
-    @accounting_url = {}
+    # s3 = Aws::S3::Resource.new(
+    #   region: 'ap-northeast-1',
+    #   credentials: Aws::Credentials.new(
+    #     ENV['ACCESS_KEY_ID'],
+    #     ENV['SECRET_ACCESS_KEY']
+    #   )
+    # )
+    # signer = Aws::S3::Presigner.new(client: s3.client)
+    # @presigned_url = {}
+    # @accounting_url = {}
     date = params[:date]
     @year = date[0..3]
     @month = date[5..6]
@@ -237,13 +237,13 @@ class KurumesiOrdersController < ApplicationController
     @bentos_num_h = @kurumesi_orders.joins(kurumesi_order_details:[:product]).group('products.brand_id').group('kurumesi_order_details.product_id').sum('kurumesi_order_details.number').sort {|(k1, v1), (k2, v2)| k1[0] <=> k2[0] }
     @kurumesi_orders_num_h = @kurumesi_orders.where(:products => {product_category:1}).joins(kurumesi_order_details:[:product]).group('kurumesi_order_details.kurumesi_order_id').sum('kurumesi_order_details.number')
     @brands = Brand.all
-    arr = []
-    @kurumesi_orders.includes(:brand).each do |ko|
-      arr << [ko.brand.store_id,ko.management_id,ko.payment]
-      @presigned_url[ko.id] = signer.presigned_url(:get_object,bucket: 'kurumesi-check', key: "#{ko.management_id}.jpg", expires_in: 60)
-      @accounting_url[ko.id] = signer.presigned_url(:get_object,bucket: 'accounting-screenshot', key: "#{ko.management_id}.pdf", expires_in: 60)
-    end
-    gon.order_arr = arr
+    # arr = []
+    # @kurumesi_orders.includes(:brand).each do |ko|
+    #   arr << [ko.brand.store_id,ko.management_id,ko.payment]
+    #   @presigned_url[ko.id] = signer.presigned_url(:get_object,bucket: 'kurumesi-check', key: "#{ko.management_id}.jpg", expires_in: 60)
+    #   @accounting_url[ko.id] = signer.presigned_url(:get_object,bucket: 'accounting-screenshot', key: "#{ko.management_id}.pdf", expires_in: 60)
+    # end
+    # gon.order_arr = arr
   end
   def show
     @kurumesi_order = KurumesiOrder.includes(kurumesi_order_details:[:product]).find(params[:id])
@@ -266,7 +266,7 @@ class KurumesiOrdersController < ApplicationController
       end
     end
   end
-  # 
+  #
   # def print_preparation_roma
   #   mochiba = params[:mochiba]
   #   date = params[:date]

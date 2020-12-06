@@ -161,11 +161,11 @@ ul.list-group.col-md-12 style='padding:0;'
     .col-md-6 style='padding:0;'
       .col-md-12 style='padding:0;'
         .col-md-2 style='padding:0;' くるめしID
-        .col-md-2 style='padding:0;'
         .col-md-1 style='padding:0;' 個数
         .col-md-2 style='padding:0;' 支払い方法
         .col-md-2 style='padding:0;' 時間
-        .col-md-3 style='padding:0;'
+        .col-md-2 style='padding:0;'
+        .col-md-1 style='padding:0;'
     .col-md-6 style='padding:0;'
       .col-md-12 style='padding:0;'
         |オーダー内容
@@ -174,7 +174,6 @@ ul.list-group.col-md-12 style='padding:0;'
       .col-md-6 style='padding:0;'
         .col-md-12 style='padding:0;'
           .col-md-2 style='padding:0;height:38px;' = link_to kurumesi_order.management_id,edit_kurumesi_order_path(kurumesi_order)
-          .col-md-2 style='padding:0;' = link_to 'くるめし',"http://admin.kurumesi-bentou.com/admin_shop/order_detail/#{kurumesi_order.management_id}/",target:'_blank'
           .col-md-1 style='padding:0;' = "#{@kurumesi_orders_num_h[kurumesi_order.id]} 個"
           .col-md-2 style='padding:0;' = kurumesi_order.payment
           .col-md-2 style='padding:0;'
@@ -183,7 +182,8 @@ ul.list-group.col-md-12 style='padding:0;'
                 = "P：#{kurumesi_order.pick_time.strftime("%-R")}"
             .col-md-12 style= 'color:#AAAAAA;padding:0;'
               = "D：#{kurumesi_order.delivery_time.strftime("%-R")}"
-          .col-md-3 style='padding:0;'
+          .col-md-2 style='padding:0;' = link_to 'くるめし',"http://admin.kurumesi-bentou.com/admin_shop/order_detail/#{kurumesi_order.management_id}/",target:'_blank'
+          .col-md-1 style='padding:0;'
             .clearfix.kurumesi_confirm_div.pull-right style='text-align:right;padding:0 20px 0 0;'
               = render partial: "kurumesi_confirm", locals: { kurumesi_order:kurumesi_order }
 
@@ -211,13 +211,13 @@ ul.list-group.col-md-12 style='padding:0;'
                 = "#{mod.number}"
               div style='padding:0 0 0 20px;float:left'
                 = link_to "#{mod.product.name}",mod.product
-      .modal.fade id="kurumesi_capture_#{kurumesi_order.id}" tabindex="-1" role="dialog" aria-labelledby="kurumesi_captureTitle" aria-hidden="true" data-backdrop='false'
+      / .modal.fade id="kurumesi_capture_#{kurumesi_order.id}" tabindex="-1" role="dialog" aria-labelledby="kurumesi_captureTitle" aria-hidden="true" data-backdrop='false'
         .modal-dialog.modal-dialog-scrollable role="document" style='margin-left:0px;margin-top:100px;width:48%;'
           .modal-content
             .modal-header style='text-align:right;'
               button type="button" class="btn btn-default btn-sm" data-dismiss="modal" 閉じる
             .modal-body
-              = image_tag(@presigned_url[kurumesi_order.id],width:'100%')
+              / = image_tag(@presigned_url[kurumesi_order.id],width:'100%')
             .modal-footer
               button type="button" class="btn btn-default btn-sm" data-dismiss="modal" 閉じる
 

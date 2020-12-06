@@ -20,7 +20,7 @@ end
 task :kurumesi_order_mail_check => :environment do
   KurumesiMail.routine_check
   Order.fax_send_check
-  KurumesiOrder.capture_check
+  # KurumesiOrder.capture_check
 end
 
 # 毎日の0:00にheroku_schedulerをセット
