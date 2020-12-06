@@ -8,7 +8,7 @@ class Brand < ApplicationRecord
     if line.index('】').present?
       product_name_end_kakko = line.index('】') - 1
       product_name = line[0..product_name_end_kakko]
-      product = Product.find_by(name:product_name,brand_id:brand_id)
+      product = Product.where(brand_id:[brand_id,41]).find_by(name:product_name)
       if product.present?
         product_id = product.id
         num = line.match(/×(.+)食/)[1].to_i
@@ -43,7 +43,7 @@ class Brand < ApplicationRecord
         product_name = base_product_name
         tea_flag = true
       end
-      product = Product.find_by(name:product_name,brand_id:brand_id)
+      product = Product.where(brand_id:[brand_id,41]).find_by(name:product_name)
       if product.present?
         product_id = product.id
         num = line.match(/×(.+)食/)[1].to_i
@@ -64,7 +64,7 @@ class Brand < ApplicationRecord
     if line.index('】').present?
       product_name_end_kakko = line.index('】') - 1
       product_name = line[0..product_name_end_kakko]
-      product = Product.find_by(name:product_name,brand_id:brand_id)
+      product = Product.where(brand_id:[brand_id,41]).find_by(name:product_name)
       if product.present?
         product_id = product.id
         num = line.match(/×(.+)食/)[1].to_i
@@ -84,7 +84,7 @@ class Brand < ApplicationRecord
     if line.index('】').present?
       product_name_end_kakko = line.index('】') - 1
       product_name = line[0..product_name_end_kakko]
-      product = Product.find_by(name:product_name,brand_id:brand_id)
+      product = Product.where(brand_id:[brand_id,41]).find_by(name:product_name)
       if product.present?
         product_id = product.id
         num = line.match(/×(.+)食/)[1].to_i
@@ -114,7 +114,7 @@ class Brand < ApplicationRecord
         product_name = base_product_name
         tea_flag = true
       end
-      product = Product.find_by(name:product_name,brand_id:brand_id)
+      product = Product.where(brand_id:[brand_id,41]).find_by(name:product_name)
       if product.present?
         product_id = product.id
         num = line.match(/×(.+)食/)[1].to_i

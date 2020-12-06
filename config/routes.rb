@@ -9,8 +9,8 @@ Rails.application.routes.draw do
   post "versions/:id/revert" => "versions#revert", :as => "revert_version"
   post'menus/include_update' => 'menus#include_update'
   post 'materials/change_additives' => 'materials#change_additives'
-  get '/kpi' => 'application#kpi'
-  get '/sell_reports' => 'application#sell_reports'
+  # get '/kpi' => 'application#kpi'
+  # get '/sell_reports' => 'application#sell_reports'
   get '/product_report' => 'application#product_report'
 
   resources :kurumesi_orders do
@@ -56,7 +56,7 @@ Rails.application.routes.draw do
       get :get_menu_cost_price
       get :serving_kana
       get :serving
-      get :recipe_romaji
+      # get :recipe_romaji
       get :get_products
       get :input_name_get_products
       post :print_preparation

@@ -5,16 +5,16 @@
     = number_field(:volume,:num,class:"form-control text-right",id:"amount_number_input",placeholder:"食数を入力")
     input.btn.btn-primary[type="button" onclick="submit();" value="印刷ページ" style="margin:0 0 0 10px;"]
 
-  = link_to "ラム", recipe_romaji_products_path(id:@product.id), class:"btn btn-default",:target=>"_blank",style:'margin:0 0 0 10px;float:left;'
+  / = link_to "ラム", recipe_romaji_products_path(id:@product.id), class:"btn btn-default",:target=>"_blank",style:'margin:0 0 0 10px;float:left;'
   = link_to "CSV", product_path(@product,format:'csv'), class: "btn btn-default",style:'margin:0 0 0 10px;float:left;'
 
-  = link_to "盛付日本語", serving_products_path(id:@product.id), class:"btn btn-default",:target=>"_blank", style:"margin:0 0 0 10px;float:left;"
-  = link_to "盛付カナ", serving_kana_products_path(id:@product.id), class:"btn btn-default",:target=>"_blank", style:"margin:0 0 0 10px;float:left;"
+  / = link_to "盛付日本語", serving_products_path(id:@product.id), class:"btn btn-default",:target=>"_blank", style:"margin:0 0 0 10px;float:left;"
+  / = link_to "盛付カナ", serving_kana_products_path(id:@product.id), class:"btn btn-default",:target=>"_blank", style:"margin:0 0 0 10px;float:left;"
   = link_to 'コピー', new_product_path(product_id:@product.id,copy_flag:true) , class:"btn btn-default",:target=>"_blank", style:"margin:0 0 0 10px;float:left;"
-  = form_tag({:controller => "products", :action => "print_preparation", format: "pdf"},{:target => "_blank",style:'float:left;margin:0 0 0 10px;'}) do
-    = number_field(:volume,:id,value:params[:id],style:"display:none;")
-    = number_field(:volume,:num,class:"form-control text-right",id:"amount_number_input",placeholder:"食数を入力")
-    input.btn.btn-primary[type="button" onclick="submit();" value="仕込表を表示" style="margin:0 0 0 10px;"]
+  / = form_tag({:controller => "products", :action => "print_preparation", format: "pdf"},{:target => "_blank",style:'float:left;margin:0 0 0 10px;'}) do
+  /   = number_field(:volume,:id,value:params[:id],style:"display:none;")
+  /   = number_field(:volume,:num,class:"form-control text-right",id:"amount_number_input",placeholder:"食数を入力")
+  /   input.btn.btn-primary[type="button" onclick="submit();" value="仕込表を表示" style="margin:0 0 0 10px;"]
 
   - if @delete_flag == true
     = link_to "削除", @product, method: :delete,class:'btn btn-danger pull-right',data: { confirm: "ほんまに削除してええの？" },style:''

@@ -34,54 +34,54 @@ $(document).on('turbolinks:load', function() {
       };
     });
   //変換ボタンのプッシュ
-  $(".henkanbtn").on("click",function(){
-    $(this).attr("disabled","disabled");
-    var kanji0='';
-    var kanji='';
-    var kanji1='';
-    $('.product_menus').each(function(i){
-      if (i==0) {
-        kanji0 += $(this).children(".menu_name").text()
-        kanji1 += $(this).children(".recipe").text()
-        $(this).children(".menu_name").text("")
-        $(this).children(".recipe").text("")
-      }else{
-        kanji0 += (" ^^ " + $(this).children(".menu_name").text())
-        kanji1 += (" ^^ " + $(this).children(".recipe").text())
-        $(this).children(".menu_name").text("")
-        $(this).children(".recipe").text("")
-      }
-    });
-    $(".menu_materials_li").each(function(i){
-      if (i==0) {
-        kanji += $(this).children(".menu_materials_name").text()
-        $(this).children(".menu_materials_name").text("")
-      }else{
-        kanji += (" ^^ " + $(this).children(".menu_materials_name").text())
-        $(this).children(".menu_materials_name").text("")
-      }
-    });
-    $.ajax({
-        url: "/products/henkan",
-        type:'POST',
-        data: { kanji : kanji,kanji0:kanji0,kanji1:kanji1},
-        dataType: "json",
-        async: false
-    })
-    .done(function(data) {
-      var data = data.top.data
-      $.each(data,function(i,data_arr){
-        $.each(data_arr, function(index, elem){
-          if (i==0) {
-            $('.menu_materials_li').eq(index).children(".menu_materials_name").text(elem);
-          }else if (i==1) {
-            $('.product_menus').eq(index).children(".menu_name").text(elem);
-          }else if (i==2) {
-            console.log(index);
-            $('.product_menus').eq(index).children(".recipe").text(elem);
-          }
-        })
-      });
-    });
-  });
+  // $(".henkanbtn").on("click",function(){
+  //   $(this).attr("disabled","disabled");
+  //   var kanji0='';
+  //   var kanji='';
+  //   var kanji1='';
+  //   $('.product_menus').each(function(i){
+  //     if (i==0) {
+  //       kanji0 += $(this).children(".menu_name").text()
+  //       kanji1 += $(this).children(".recipe").text()
+  //       $(this).children(".menu_name").text("")
+  //       $(this).children(".recipe").text("")
+  //     }else{
+  //       kanji0 += (" ^^ " + $(this).children(".menu_name").text())
+  //       kanji1 += (" ^^ " + $(this).children(".recipe").text())
+  //       $(this).children(".menu_name").text("")
+  //       $(this).children(".recipe").text("")
+  //     }
+  //   });
+  //   $(".menu_materials_li").each(function(i){
+  //     if (i==0) {
+  //       kanji += $(this).children(".menu_materials_name").text()
+  //       $(this).children(".menu_materials_name").text("")
+  //     }else{
+  //       kanji += (" ^^ " + $(this).children(".menu_materials_name").text())
+  //       $(this).children(".menu_materials_name").text("")
+  //     }
+  //   });
+  //   $.ajax({
+  //       url: "/products/henkan",
+  //       type:'POST',
+  //       data: { kanji : kanji,kanji0:kanji0,kanji1:kanji1},
+  //       dataType: "json",
+  //       async: false
+  //   })
+  //   .done(function(data) {
+  //     var data = data.top.data
+  //     $.each(data,function(i,data_arr){
+  //       $.each(data_arr, function(index, elem){
+  //         if (i==0) {
+  //           $('.menu_materials_li').eq(index).children(".menu_materials_name").text(elem);
+  //         }else if (i==1) {
+  //           $('.product_menus').eq(index).children(".menu_name").text(elem);
+  //         }else if (i==2) {
+  //           console.log(index);
+  //           $('.product_menus').eq(index).children(".recipe").text(elem);
+  //         }
+  //       })
+  //     });
+  //   });
+  // });
 });
