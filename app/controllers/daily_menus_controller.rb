@@ -80,7 +80,7 @@ class DailyMenusController < ApplicationController
     respond_to do |format|
       format.html
       format.pdf do
-        pdf = SourcesPdf.new(daily_menu.id,'daily_menus')
+        pdf = SourcesPdf.new(daily_menu.start_time,'daily_menus')
         send_data pdf.render,
         filename:    "#{daily_menu.id}.pdf",
         type:        "application/pdf",

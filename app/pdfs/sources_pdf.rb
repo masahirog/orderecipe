@@ -1,5 +1,5 @@
 class SourcesPdf < Prawn::Document
-  def initialize(id,controller)
+  def initialize(date,controller)
 
     # 初期設定。ここでは用紙のサイズを指定している。
     super(
@@ -7,31 +7,16 @@ class SourcesPdf < Prawn::Document
       page_layout: :landscape)
     #日本語のフォント
     font "vendor/assets/fonts/ipaexg.ttf"
-    if controller == 'daily_menus'
-      daily_menu = DailyMenu.find(id)
-
-      max_i = daily_menu.daily_menu_details.length
-      daily_menu.daily_menu_details.each_with_index do |dmd,i|
-        product = dmd.product
-        menus = product.menus
-        num = dmd.manufacturing_number
-        header_date(daily_menu.start_time)
-        header_table(product,num)
-        table_content(menus,num)
-        start_new_page if i<max_i-1
-      end
-    else
-      order = Order.find(id)
-      max_i = order.order_products.length
-      order.order_products.each_with_index do |op,i|
-        product = op.product
-        menus = product.menus
-        num = op.serving_for
-        header_date(op.make_date)
-        header_table(product,num)
-        table_content(menus,num)
-        start_new_page if i<max_i-1
-      end
+    daily_menu = DailyMenu.find_by(start_time:date)
+    max_i = daily_menu.daily_menu_details.length
+    daily_menu.daily_menu_details.each_with_index do |dmd,i|
+      product = dmd.product
+      menus = product.menus
+      num = dmd.manufacturing_number
+      header_date(daily_menu.start_time)
+      header_table(product,num)
+      table_content(menus,num)
+      start_new_page if i<max_i-1
     end
   end
 

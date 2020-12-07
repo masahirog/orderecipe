@@ -178,15 +178,15 @@ class KurumesiOrdersController < ApplicationController
 
 
   def print_receipts
-    Dotenv.overload
-    s3 = Aws::S3::Resource.new(
-      region: 'ap-northeast-1',
-      credentials: Aws::Credentials.new(
-        ENV['ACCESS_KEY_ID'],
-        ENV['SECRET_ACCESS_KEY']
-      )
-    )
-    signer = Aws::S3::Presigner.new(client: s3.client)
+    # Dotenv.overload
+    # s3 = Aws::S3::Resource.new(
+    #   region: 'ap-northeast-1',
+    #   credentials: Aws::Credentials.new(
+    #     ENV['ACCESS_KEY_ID'],
+    #     ENV['SECRET_ACCESS_KEY']
+    #   )
+    # )
+    # signer = Aws::S3::Presigner.new(client: s3.client)
     date = params[:date]
     stamp = params[:stamp]
     data = {}
@@ -385,7 +385,7 @@ class KurumesiOrdersController < ApplicationController
       end
     end
   end
-
+  
   private
     def set_kurumesi_order
       @kurumesi_order = KurumesiOrder.find(params[:id])

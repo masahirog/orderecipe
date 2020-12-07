@@ -26,9 +26,6 @@
       = f.label :category ,'カテゴリー'
       = f.select :category, options_for_select(Menu.categories.keys.to_a,@menu.category),{include_blank: true}, { class: "form-control",style:"width:100%;"}
     .col-md-2
-      = f.label :serving_cost ,'盛り付け工数'
-      = f.number_field :serving_cost, class: "form-control"
-    .col-md-2
       = f.label :cost_price, "メニュー原価"
       .form-inline
         .form-group
