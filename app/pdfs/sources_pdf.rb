@@ -51,23 +51,31 @@ class SourcesPdf < Prawn::Document
   def table_content(menus,num)
     bounding_box([0, 485], :width => 780) do
       table line_item_rows(menus,num) do
-      cells.padding = 2
-      cells.leading = 2
-      cells.borders = [:bottom]
-      cells.border_width = 0.2
-      column(-1).align = :right
-      column(3).align = :right
-      column(4).align = :center
-      row(0).border_width = 1
-      row(0).size = 9
-      columns(3).size = 11
-      self.header = true
-      self.column_widths = [100,200,150,55,50,150,60]
+        cells.padding = 2
+        cells.leading = 2
+        cells.borders = [:bottom]
+        cells.border_width = 0.2
+        column(-1).align = :right
+        column(4).align = :right
+        column(2).align = :center
+        column(5).align = :center
+        row(0).border_width = 1
+        row(0).size = 9
+        columns(4).size = 11
+        self.header = true
+        self.column_widths = [100,180,30,140,60,30,150,60]
+        grayout = []
+        menuline = []
+        values = cells.columns(2).rows(1..-1)
+        values.each do |cell|
+          grayout << cell.row unless cell.content == '◯'
+        end
+        grayout.map{|num|row(num).column(2..-1).background_color = "dcdcdc"}
       end
     end
   end
   def line_item_rows(menus,num)
-    data= [["メニュー名","調理メモ","食材・資材","#{num}人分",'チェック',"仕込み内容","1人分"]]
+    data= [["メニュー名","調理メモ",'タレ',"食材・資材","#{num}人分",'',"仕込み内容","1人分"]]
     menus.each do |menu|
       u = menu.materials.length
       cook_the_day_before_mozi = menu.cook_the_day_before.length
@@ -86,15 +94,21 @@ class SourcesPdf < Prawn::Document
         else
           cook_memo = ''
         end
+        if mm.source_flag == true
+          source_flag = '◯'
+        else
+          source_flag = ''
+        end
         if i == 0
           data << [{:content => "#{menu.name}", :rowspan => u, size: cook_the_day_before_size},{:content => "#{cook_memo}", :rowspan => u, size: cook_the_day_before_size},
+            source_flag ,
             {:content => "#{mm.material.name}", size: cook_the_day_before_size },
             {:content => "#{((mm.amount_used * num.to_i).round(1)).to_s(:delimited)} #{mm.material.recipe_unit}", size: cook_the_day_before_size },
             '□',
             {:content => "#{mm.preparation}", size: cook_the_day_before_size },
             {:content => "#{mm.amount_used} #{mm.material.recipe_unit}", size: cook_the_day_before_size }]
         else
-          data << [{:content => "#{mm.material.name}", size: cook_the_day_before_size },
+          data << [source_flag ,{:content => "#{mm.material.name}", size: cook_the_day_before_size },
             {:content => "#{((mm.amount_used * num.to_i).round(1)).to_s(:delimited)} #{mm.material.recipe_unit}", size: cook_the_day_before_size },
             '□',
             {:content => "#{mm.preparation}", size: cook_the_day_before_size },

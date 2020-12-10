@@ -21,7 +21,7 @@ li.add_li_material.col-md-12.list-group-item.item.nested-fields.field
   .vendor.col-md-1
     = f.object.material.vendor.company_name if f.object.material.present?
   .price_used.col-md-1
-    = (f.object.material.cost_price * f.object.amount_used).round(2) if f.object.material.present?
+    = (f.object.material.cost_price * f.object.amount_used).round(2) if f.object.material.present? && f.object.amount_used.present?
   .preparation.col-md-2[style="padding:0;"]
     = f.text_field :preparation, class:'preparation_input form-control',autocomplete:"on", list:"unit_list"
     datalist#unit_list
@@ -55,11 +55,11 @@ li.add_li_material.col-md-12.list-group-item.item.nested-fields.field
               = f.number_field :gram_quantity,class:'form-control input_gram_quantity',style:'background-color: #ffa2a2;'
         span[style="padding-top:10px;"]
           | g/ml
-      .col-md-2.input_nutritions style="padding:0;"
+      .col-md-3.input_nutritions style="padding:0;"
         span.view_food_ingredient
           = "カロリー:#{f.object.calorie}kcal" if f.object.calorie
-      .col-md-2.rice_mixed_area.clearfix style="padding:0;display:none;"
-        = f.label :source_flag,'米にまぜこむ食材',style:'float:left;padding:10px 10px 0 0;'
+      .col-md-2.rice_mixed_area.clearfix style="padding:0;"
+        = f.label :source_flag,'タレ',style:'float:left;padding:10px 10px 0 0;'
         = f.check_box :source_flag,class:'form-control input_source_flag',style:'float:left;width:20px;'
       .col-md-1.clearfix style="padding:0;"
         = f.hidden_field :calorie, class:'input_calorie'

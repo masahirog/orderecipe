@@ -2,7 +2,7 @@ $(document).on('turbolinks:load', function() {
   calculate_menu_price();
   reset_row_order();
   calculate_menu_nutrition();
-  menu_category_check();
+  // menu_category_check();
 
   u = 0
   $(".add_li_material").each(function(){
@@ -18,7 +18,7 @@ $(document).on('turbolinks:load', function() {
 
   $('.add_material_fields').on('click',function(){
     setTimeout(function(){
-      menu_category_check();
+      // menu_category_check();
       reset_row_order();
       material_select2();
       food_ingredient_select2();
@@ -79,9 +79,9 @@ $(document).on('turbolinks:load', function() {
   });
 
 
-  $("#menu_category").on('change',function(){
-    menu_category_check();
-  });
+  // $("#menu_category").on('change',function(){
+  //   menu_category_check();
+  // });
 
 // input内のチェックと各カラムへの代入、materialデータベースに無ければ空欄にする
   $(".material_ul").on('change','.input_select_material', function(){
@@ -369,13 +369,13 @@ $(document).on('turbolinks:load', function() {
     });
   }
 
-  function menu_category_check(){
-    var val = $("#menu_category").val();
-    if (val=='主食') {
-      $(".rice_mixed_area").show();
-    }else{
-      $(".input_source_flag").prop('checked', false);
-      $(".rice_mixed_area").hide();
-    }
-  }
+  // function menu_category_check(){
+  //   var val = $("#menu_category").val();
+  //   if (val=='主食') {
+  //     $(".rice_mixed_area").show();
+  //   }else{
+  //     $(".input_source_flag").prop('checked', false);
+  //     $(".rice_mixed_area").hide();
+  //   }
+  // }
 });

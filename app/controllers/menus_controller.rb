@@ -39,8 +39,10 @@ class MenusController < ApplicationController
 
   def create
     @food_ingredients = FoodIngredient.all
-    @materials = Material.where(unused_flag:false)
+    # @materials = Material.where(unused_flag:false)
     @menu = Menu.new(menu_create_update)
+    @materials = Material.where(id:@menu.menu_materials.map{|mm|mm.material_id})
+    # @materials = @menu.materials
      if @menu.save
        redirect_to @menu,
        notice: "「#{@menu.name}」を作成しました。続けてメニューを作成する：<a href='/menus/new'>新規作成</a>".html_safe
@@ -64,8 +66,8 @@ class MenusController < ApplicationController
   end
   def update
     @food_ingredients = FoodIngredient.all
-    @materials = Material.where(unused_flag:false)
     @menu = Menu.includes(:menu_materials,{materials:[:vendor,:material_food_additives]}).find(params[:id])
+    @materials = @menu.materials
     if @menu.update(menu_create_update)
       if params["menu"]["back_to"].blank?
         redirect_to menu_path, notice: "「#{@menu.name}」を更新しました。続けてメニューを作成する：<a href='/menus/new'>新規作成</a>".html_safe
