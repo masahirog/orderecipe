@@ -374,7 +374,7 @@ $(document).on('turbolinks:load', function() {
     if (val=='主食') {
       $(".rice_mixed_area").show();
     }else{
-      $(".input_rice_mixed_flag").prop('checked', false);
+      $(".input_source_flag").prop('checked', false);
       $(".rice_mixed_area").hide();
     }
   }

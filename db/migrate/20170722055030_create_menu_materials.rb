@@ -27,7 +27,7 @@ class CreateMenuMaterials < ActiveRecord::Migration[4.2]
       t.float :folic_acid
       t.float :vitamin_d
       t.integer :base_menu_material_id
-      t.boolean :rice_mixed_flag,default:false,null:false
+      t.boolean :source_flag,default:false,null:false
       t.timestamps
     end
   end

@@ -59,8 +59,8 @@ li.add_li_material.col-md-12.list-group-item.item.nested-fields.field
         span.view_food_ingredient
           = "カロリー:#{f.object.calorie}kcal" if f.object.calorie
       .col-md-2.rice_mixed_area.clearfix style="padding:0;display:none;"
-        = f.label :rice_mixed_flag,'米にまぜこむ食材',style:'float:left;padding:10px 10px 0 0;'
-        = f.check_box :rice_mixed_flag,class:'form-control input_rice_mixed_flag',style:'float:left;width:20px;'
+        = f.label :source_flag,'米にまぜこむ食材',style:'float:left;padding:10px 10px 0 0;'
+        = f.check_box :source_flag,class:'form-control input_source_flag',style:'float:left;width:20px;'
       .col-md-1.clearfix style="padding:0;"
         = f.hidden_field :calorie, class:'input_calorie'
         = f.hidden_field :protein, class:'input_protein'

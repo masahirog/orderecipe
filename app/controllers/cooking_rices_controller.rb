@@ -150,15 +150,15 @@ class CookingRicesController < ApplicationController
       product = key
       product.menus.includes(menu_materials:[:material]).where(category:1).each do |menu|
         menu.menu_materials.each do |mm|
-          if mm.material_id == 3491 && menu.menu_materials.where(rice_mixed_flag:true).exists?
+          if mm.material_id == 3491 && menu.menu_materials.where(source_flag:true).exists?
             if @kurumesi_mazekomi[menu.base_menu_id][mm.material_id].present?
               @kurumesi_mazekomi[menu.base_menu_id][3491][1] += value
               @kurumesi_mazekomi[menu.base_menu_id][3491][2] += (mm.amount_used * value * 2.17).round
             else
-              @kurumesi_mazekomi[menu.base_menu_id][3491] = ['ご飯 Rice',value,(mm.amount_used * value * 2.17).round,'g'] if menu.menu_materials.where(rice_mixed_flag:true).exists?
+              @kurumesi_mazekomi[menu.base_menu_id][3491] = ['ご飯 Rice',value,(mm.amount_used * value * 2.17).round,'g'] if menu.menu_materials.where(source_flag:true).exists?
             end
           end
-          if mm.rice_mixed_flag == true
+          if mm.source_flag == true
             if @kurumesi_mazekomi[menu.base_menu_id].present?
               if @kurumesi_mazekomi[menu.base_menu_id][mm.material_id].present?
                 @kurumesi_mazekomi[menu.base_menu_id][mm.material_id][1] += value

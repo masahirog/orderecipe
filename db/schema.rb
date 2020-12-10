@@ -240,7 +240,7 @@ ActiveRecord::Schema.define(version: 2020_10_23_010322) do
     t.float "folic_acid"
     t.float "vitamin_d"
     t.integer "base_menu_material_id"
-    t.boolean "rice_mixed_flag", default: false, null: false
+    t.boolean "source_flag", default: false, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
