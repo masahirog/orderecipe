@@ -102,7 +102,7 @@ $(document).on('turbolinks:load', function() {
    });
   });
 
-  //indexでの商品名でのリアルタイム検索
+  //indexでの弁当名でのリアルタイム検索
   $(".id_search").on("input", function(){
     $("#select2-name-container").text("")
     var path = "get_products"

@@ -2,7 +2,7 @@
   h4
     | メニュー名「
     =link_to "#{Menu.find(params[:id]).name}", "/menus/#{params[:id]}", method: :get
-    |  」を含む商品一覧
+    |  」を含むお弁当一覧
 .col-md-12[style="padding:0 0 10px 0;"]
   |  ▼チェックの付いたメニューの食材を一括変更する
 .col-md-4[style="padding:0px;"]
@@ -17,7 +17,7 @@
         | all
       input.all_box[type="checkbox"]
     .col-md-3
-      |  　商品名
+      |  　弁当名
     .col-md-2
       |  変更後のメニュー
   ul.col-md-12.list-group[style="list-style:none;"]

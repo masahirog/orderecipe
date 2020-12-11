@@ -77,7 +77,7 @@ class RiceSheet < Prawn::Document
   def line_item_rows_b(kurumesi_mazekomi)
     ar = []
     n = 1
-    data = [['商品名','食数','食材名','製造数分量']]
+    data = [['弁当名','食数','食材名','製造数分量']]
     kurumesi_mazekomi.each do |km|
       materials=[]
       menu = Menu.find(km[0])

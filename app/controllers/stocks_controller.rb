@@ -67,7 +67,7 @@ class StocksController < ApplicationController
       if stock.material.category == '食材（肉・魚）'||stock.material.category == '食材（その他）'
         foods_amount += material_price
         total_amount += material_price
-      elsif stock.material.category == '包材・商品備品'
+      elsif stock.material.category == '包材・弁当備品'
         equipments_amount += material_price
         total_amount += material_price
       elsif stock.material.category == 'その他備品・消耗品'

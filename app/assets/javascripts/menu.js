@@ -172,7 +172,7 @@ $(document).on('turbolinks:load', function() {
 //メニュー更新ボタンを押した後、仕込みが両方埋まっているかチェック
   $('#menu_submit_btn').click(function(){
     var i = 0
-    if(!confirm('更新すると商品全てに反映されますが、よろしいですか？')){
+    if(!confirm('更新するとお弁当全てに反映されますが、よろしいですか？')){
       /* キャンセルの時の処理 */
       return false;
     }else{

@@ -23,7 +23,7 @@ class ShogunPreparation < Prawn::Document
 
   def header_table(product,num,mochiba)
     bounding_box([0, 570], :width => 830) do
-      data = [["持ち場","商品名","management_id","原価","製造数"],
+      data = [["持ち場","お弁当名","management_id","原価","製造数"],
               [mochiba,"#{product.name}","#{product.management_id}","#{product.cost_price} 円","#{num}人分"]]
       table data, cell_style: { size: 9 } do
       cells.padding = 2
