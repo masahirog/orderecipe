@@ -263,7 +263,7 @@ class ProductsController < ApplicationController
     @product = Product.find(params[:id])
     @product.destroy
     respond_to do |format|
-      format.html { redirect_to products_path, notice: '1件弁当を削除しました。' }
+      format.html { redirect_to products_path, notice: '商品を削除しました。' }
       format.json { head :no_content }
     end
   end

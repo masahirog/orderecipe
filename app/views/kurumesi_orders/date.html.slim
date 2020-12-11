@@ -134,13 +134,13 @@ div.col-md-12 style='font-size:20px;padding:0 0 7px 0;'
   = link_to "積載表",loading_sheet_kurumesi_orders_path(date:params[:date],format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
   = link_to "製造順",make_order_kurumesi_orders_path(date:params[:date],format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
   = link_to "備品用意",equipment_kurumesi_orders_path(date:params[:date],format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
-h3 弁当別製造数
+h3 商品別製造数
 table.table
   thead
     tr
       th ブランド
       th 商品ID
-      th 弁当名
+      th 商品名
       th 短名
       th 個数
   tbody
