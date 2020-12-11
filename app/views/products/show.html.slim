@@ -1,5 +1,5 @@
 .col-md-12.form-inline
-  = link_to 'お弁当を編集',edit_product_path(@product),class: "btn btn-success",style:'margin:0 10px 0 0px;float:left;'
+  = link_to '商品を編集',edit_product_path(@product),class: "btn btn-success",style:'margin:0 10px 0 0px;float:left;'
   = form_tag({:controller => "products", :action => "print", format: "pdf"},{:target => "_blank",style:'float:left;'}) do
     = number_field(:volume,:id,value:params[:id],style:"display:none;")
     = number_field(:volume,:num,class:"form-control text-right",id:"amount_number_input",placeholder:"食数を入力")
@@ -25,7 +25,7 @@
 .col-md-6
   table.table
     tr
-      th.active.col-md-4 弁当名
+      th.active.col-md-4 商品名
       td = @product.name
     tr
       th.active.col-md-4 短縮名
@@ -74,11 +74,11 @@
   label.col-md-2 調理
   label.col-md-2 盛付
   .col-md-5
+    label.col-md-2 タレ
     label.col-md-4 食材資材名
     label.col-md-2 使用量
     label.col-md-1 style="padding-left:0" 原価
     label.col-md-3 style="padding-left:0px;" 仕込み
-    label.col-md-2 仕込場
 ul.list-group[style="list-style-type:none;"]
   - @product.product_menus.each do |pm|
     li.first_tr.table_tr.col-md-12.list-group-item[style="padding:5px;"]
@@ -106,6 +106,8 @@ ul.list-group[style="list-style-type:none;"]
         ul.col-md-12[style="list-style-type: none;padding:0;"]
           - pm.menu.menu_materials.each do |mm|
             li.menu_materials.col-md-12
+              .col-md-2
+                = "◯" if mm.source_flag == true
               .col-md-4[style="padding:0;"]
                 = link_to mm.material.name, edit_material_path(mm.material)
               .original_amount_used.text-right.col-md-2
@@ -115,5 +117,3 @@ ul.list-group[style="list-style-type:none;"]
                 = (mm.amount_used * mm.material.cost_price).round(1)
               .col-md-3[style="padding:0;"]
                 = mm.preparation
-              .col-md-2
-                = mm.post

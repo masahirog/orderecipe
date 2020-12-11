@@ -48,7 +48,7 @@ class ReceiptsPdf < Prawn::Document
         if arr[5].present?
           text "但し、#{arr[5]}、上記正に領収いたしました。", size: 11, :align => :center
         else
-          text "但し、お弁当代として、上記正に領収いたしました。", size: 11, :align => :center
+          text "但し、商品代として、上記正に領収いたしました。", size: 11, :align => :center
         end
 
         move_down 15

@@ -10,7 +10,7 @@
 .col-md-12 style="margin-bottom:20px;"
   = link_to 'メニュー編集', edit_menu_path(@menu),class: "btn btn-primary", style:"margin:0 10px 0 0px;"
   = link_to "印刷する",print_menus_path(id:@menu.id,:format => :pdf), class:"btn btn-default",:target=>"_blank", style:"margin:0 10px 0 10px;"
-  = link_to '使用弁当',include_menu_menus_path(id:@menu.id),class:"btn btn-default", style:"margin:0 10px 0 10px;"
+  = link_to '使用商品',include_menu_menus_path(id:@menu.id),class:"btn btn-default", style:"margin:0 10px 0 10px;"
   - unless @base_menu.present?
     - copy = Menu.where(base_menu_id:@menu.base_menu_id).length - 1
     - if copy > 0
