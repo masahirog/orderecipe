@@ -89,7 +89,7 @@ div.col-md-12 style='font-size:20px;padding:0 0 7px 0;'
                 .col-md-3
                   = radio_button_tag("mochiba", "2")
                   = label_tag("mochiba_2", "調理場",style:'margin-left:10px;')
-              .col-md-12
+              .col-md-12.form-group
                 .col-md-3 言語
                 .col-md-3
                   = radio_button_tag("lang", "1",{:checked => true})
@@ -97,6 +97,15 @@ div.col-md-12 style='font-size:20px;padding:0 0 7px 0;'
                 .col-md-3
                   = radio_button_tag("lang", "2")
                   = label_tag("lang_2", "ローマ字",style:'margin-left:10px;')
+              .col-md-12
+                .col-md-3 並び
+                .col-md-3
+                  = radio_button_tag("sort", "1",{:checked => true})
+                  = label_tag("sort_1", "食材名順",style:'margin-left:10px;')
+                .col-md-3
+                  = radio_button_tag("sort", "2")
+                  = label_tag("sort_2", "メニュー順",style:'margin-left:10px;')
+
           .modal-footer
             button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
             = submit_tag "表示する" ,class:"btn btn-primary"

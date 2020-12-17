@@ -1,5 +1,5 @@
 class MaterialPreparation < Prawn::Document
-  def initialize(bentos_num_h,date,mochiba,lang)
+  def initialize(bentos_num_h,date,mochiba,lang,sort)
     # 初期設定。ここでは用紙のサイズを指定している。
     super(
       page_size: 'A4',
@@ -71,8 +71,13 @@ class MaterialPreparation < Prawn::Document
         end
       end
     end
-    menu_materials_arr_cut = menu_materials_arr_cut.sort { |a, b| a[0] <=> b[0]}
-    menu_materials_arr_cook = menu_materials_arr_cook.sort { |a, b| a[0] <=> b[0]}
+    if sort == 1
+      i = 0
+    else
+      i = 6
+    end
+    menu_materials_arr_cut = menu_materials_arr_cut.sort { |a, b| a[i] <=> b[i]}
+    menu_materials_arr_cook = menu_materials_arr_cook.sort { |a, b| a[i] <=> b[i]}
     start_page_count = 0
     if mochiba == "0"
       text "切り出し  #{date}"

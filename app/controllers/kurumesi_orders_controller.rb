@@ -289,12 +289,13 @@ class KurumesiOrdersController < ApplicationController
     mochiba = params[:mochiba]
     lang = params[:lang]
     date = params[:date]
+    sort = params[:sort].to_i
     kurumesi_orders = KurumesiOrder.includes(kurumesi_order_details:[:product]).where(start_time:date,canceled_flag:false).order(:pick_time)
     @bentos_num_h = kurumesi_orders.joins(kurumesi_order_details:[:product]).where(:products => {product_category:1}).group('kurumesi_order_details.product_id').sum('kurumesi_order_details.number')
     respond_to do |format|
       format.html
       format.pdf do
-        pdf = MaterialPreparation.new(@bentos_num_h,date,mochiba,lang)
+        pdf = MaterialPreparation.new(@bentos_num_h,date,mochiba,lang,sort)
 
         send_data pdf.render,
         filename:    "#{date}.pdf",
@@ -385,7 +386,7 @@ class KurumesiOrdersController < ApplicationController
       end
     end
   end
-  
+
   private
     def set_kurumesi_order
       @kurumesi_order = KurumesiOrder.find(params[:id])

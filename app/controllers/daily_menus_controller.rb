@@ -120,11 +120,12 @@ class DailyMenusController < ApplicationController
     lang = params[:lang]
     daily_menu = DailyMenu.find(params[:daily_menu_id])
     date = daily_menu.start_time
+    sort = params[:sort].to_i
     @bentos_num_h = daily_menu.daily_menu_details.group(:product_id).sum(:manufacturing_number)
     respond_to do |format|
       format.html
       format.pdf do
-        pdf = MaterialPreparation.new(@bentos_num_h,date,mochiba,lang)
+        pdf = MaterialPreparation.new(@bentos_num_h,date,mochiba,lang,sort)
 
         send_data pdf.render,
         filename:    "#{date}.pdf",
