@@ -57,7 +57,9 @@ class StocksController < ApplicationController
     date = params[:date]
     @month_total_amount = {}
     stocks = Stock.where("date <= ?", date).order(date: :desc).uniq(&:material_id)
-    stocks = stocks.each{|stock|stock.end_day_stock = 0 if stock.end_day_stock < 0}
+    stocks.delete_if do |stock|
+      stock.end_day_stock == 0
+    end
     total_amount = 0
     foods_amount = 0
     equipments_amount = 0
