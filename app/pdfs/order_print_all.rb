@@ -51,7 +51,7 @@ class OrderPrintAll < Prawn::Document
       text "No：#{vendor.management_id}", :leading => 3 if vendor.management_id.present?
       text "〒164-0003 東京都中野区東中野1-35-1", :leading => 3
       text "TEL：03-5937-5431", :leading => 3
-      text "FAX：03-5937-5432", :leading => 3
+      text "FAX：03-36700-9848", :leading => 3
     end
   end
 
