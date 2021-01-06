@@ -1,8 +1,22 @@
 class VendorsController < ApplicationController
   def index
     @vendors = Vendor.all
-    @vendor = Vendor.new
-
+    if params[:month_used_price] == 'true'
+      if params[:year] && params[:month]
+        @year = params[:year].to_i
+        @month = params[:month].to_i
+        from = Date.new(@year,@month,1)
+        to = Date.new(@year,@month,-1)
+        @hash = {}
+        OrderMaterial.joins(:order).includes(:material).where(un_order_flag:false,orders:{fixed_flag:1}).where(delivery_date:from..to).each do |om|
+          if @hash[om.material.vendor_id].present?
+            @hash[om.material.vendor_id] += om.order_quantity.to_f * om.material.cost_price
+          else
+            @hash[om.material.vendor_id] = om.order_quantity.to_f * om.material.cost_price
+          end
+        end
+      end
+    end
   end
 
   def new

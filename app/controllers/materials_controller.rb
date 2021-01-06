@@ -2,7 +2,7 @@ class MaterialsController < ApplicationController
   protect_from_forgery :except => [:change_additives]
   def index
     @search = Material.includes(:vendor).search(params).page(params[:page]).per(50)
-    @materials_order_quantity = OrderMaterial.joins(:order).where(orders:{fixed_flag:1}).where(delivery_date:(Date.today - 31)..Date.today,material_id:@search.ids).group(:material_id).sum(:order_quantity)
+    @materials_order_quantity = OrderMaterial.joins(:order).where(un_order_flag:false,orders:{fixed_flag:1}).where(delivery_date:(Date.today - 31)..Date.today,material_id:@search.ids).group(:material_id).sum(:order_quantity)
     respond_to do |format|
       format.html
       format.json{render :json => @search}
