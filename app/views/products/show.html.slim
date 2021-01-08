@@ -70,7 +70,7 @@
   = image_tag @product.image.to_s ,class:"text-center img-responsive center-block",style:'max-height:450px;'
 .col-md-12.active[style="padding:10px;"]
   label.col-md-2 メニュー名
-  label.col-md-1 税込原価
+  label.col-md-1 原価
   label.col-md-2 調理
   label.col-md-2 盛付
   .col-md-5
@@ -84,7 +84,8 @@ ul.list-group[style="list-style-type:none;"]
     li.first_tr.table_tr.col-md-12.list-group-item[style="padding:5px;"]
       .first_tr_td.col-md-2
         div = link_to pm.menu.name, edit_menu_path(pm.menu)
-        div = "#{pm.menu.menu_materials.sum(:calorie).round(2)}kcal"
+        / div = "#{pm.menu.menu_materials.sum(:calorie).round(2)}kcal"
+        div = image_tag pm.menu.image.to_s ,class:"text-center img-responsive center-block",style:'max-height:450px;'
       .col-md-1
         = pm.menu.cost_price
       .first_tr_td.col-md-2

@@ -30,6 +30,12 @@ class MenusController < ApplicationController
       @menu.base_menu_id = original_menu.id
       @base_menu = original_menu
       @ar = Menu.used_additives(original_menu.materials)
+    elsif params[:original_menu_id].present?
+      origin_menu = Menu.find(params[:original_menu_id])
+      @menu = origin_menu.deep_clone(include: [:menu_materials])
+      @menu.base_menu_id = nil
+      @ar = Menu.used_additives(@menu.materials)
+      @materials = origin_menu.materials
     else
       @menu = Menu.new
       @menu.menu_materials.build(row_order: 0)

@@ -11,25 +11,27 @@
   = link_to 'メニュー編集', edit_menu_path(@menu),class: "btn btn-primary", style:"margin:0 10px 0 0px;"
   = link_to "印刷する",print_menus_path(id:@menu.id,:format => :pdf), class:"btn btn-default",:target=>"_blank", style:"margin:0 10px 0 10px;"
   = link_to '使用商品',include_menu_menus_path(id:@menu.id),class:"btn btn-default", style:"margin:0 10px 0 10px;"
+  = link_to '参照作成', new_menu_path(original_menu_id:@menu.id),class: "btn btn-default", style:"margin:0 10px 0 0px;"
+
   - unless @base_menu.present?
     - copy = Menu.where(base_menu_id:@menu.base_menu_id).length - 1
     - if copy > 0
-      = link_to "コピー利用：#{copy}件",menus_path(base_menu_id:@menu.base_menu_id),class:"btn btn-default", style:"margin:0 10px 0 10px;"
+      = link_to "分量違いメニュー：#{copy}件",menus_path(base_menu_id:@menu.base_menu_id),class:"btn btn-default", style:"margin:0 10px 0 10px;"
   - unless @base_menu.present?
-    button.btn.btn-default type="button" data-toggle="modal" data-target="#sampleModal" style="margin:0 10px 0 10px;" コピーする
+    button.btn.btn-default type="button" data-toggle="modal" data-target="#sampleModal" style="margin:0 10px 0 10px;" 分量違いメニュー作成
     #sampleModal.modal.fade[tabindex="-1"]
       = form_tag(new_menu_path,method: :get) do
         .modal-dialog
           .modal-content.col-md-12
             .modal-header.col-md-12
               h4.modal-title
-                | オリジナルメニューの何％（各食材の使用量）でコピーしますか？
+                | オリジナルメニューの何％（各食材の使用量）で作成しますか？
             .modal-body.col-md-12
               = hidden_field_tag "copy_flag",true
               = hidden_field_tag 'menu_id',@menu.id
               = select_tag :used_rate,options_for_select([["100%",1],["90%",0.9],["80%",0.8],["70%",0.7],["60%",0.6],["50%",0.5],["40%",0.4],["30%",0.3],["20%",0.2],["10%",0.1]]), class:"form-control"
             .modal-footer.col-md-12
-              = submit_tag "コピーを作成する" ,class:"btn btn-primary"
+              = submit_tag "分量違いメニューを作成する" ,class:"btn btn-primary"
               button.btn.btn-default[type="button" data-dismiss="modal"]
                 | 閉じる
   - if @delete_flag == true
