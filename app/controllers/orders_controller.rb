@@ -169,6 +169,7 @@ class OrdersController < ApplicationController
       end
       make_date = Date.parse(date)
     else
+      # 折兼の発注機能
       order_products = []
       make_date = Date.today
       if params[:vendor_id].present?
@@ -210,7 +211,7 @@ class OrdersController < ApplicationController
             hash['material'] = menu_material.material
             hash['make_num'] = po[:num]
             hash['product_id'] = [product.id]
-            hash['menu_num'] = {menu.name => po[:num]}
+            hash['menu_num'] = {menu.name => po[:num].to_i}
             hash['material_id'] = menu_material.material_id
             hash['calculated_order_amount'] = (po[:num].to_f * menu_material.amount_used)
             hash["recipe_unit_quantity"] = menu_material.material.recipe_unit_quantity
@@ -232,19 +233,19 @@ class OrdersController < ApplicationController
         if @b_hash[info['material_id']]['product_id'].include?(info['product_id'])
           if @b_hash[info['material_id']]['menu_num'][info["menu_num"].keys[0]].present?
             @b_hash[info['material_id']]['calculated_order_amount'] += info['calculated_order_amount']
-            @b_hash[info['material_id']]['menu_num'][info["menu_num"].keys[0]] += info['menu_num'].values[0]
+            @b_hash[info['material_id']]['menu_num'][info["menu_num"].keys[0]] += info['menu_num'].values[0].to_i
           else
             @b_hash[info['material_id']]['calculated_order_amount'] += info['calculated_order_amount']
-            @b_hash[info['material_id']]['menu_num'][info["menu_num"].keys[0]] = info['menu_num'].values[0]
+            @b_hash[info['material_id']]['menu_num'][info["menu_num"].keys[0]] = info['menu_num'].values[0].to_i
           end
         else
           if @b_hash[info['material_id']]['menu_num'][info["menu_num"].keys[0]].present?
             @b_hash[info['material_id']]['calculated_order_amount'] += info['calculated_order_amount']
-            @b_hash[info['material_id']]['menu_num'][info["menu_num"].keys[0]] += info['menu_num'].values[0]
+            @b_hash[info['material_id']]['menu_num'][info["menu_num"].keys[0]] += info['menu_num'].values[0].to_i
             @b_hash[info['material_id']]['product_id'] << info['product_id'][0]
           else
             @b_hash[info['material_id']]['calculated_order_amount'] += info['calculated_order_amount']
-            @b_hash[info['material_id']]['menu_num'][info["menu_num"].keys[0]] = info['menu_num'].values[0]
+            @b_hash[info['material_id']]['menu_num'][info["menu_num"].keys[0]] = info['menu_num'].values[0].to_i
             @b_hash[info['material_id']]['product_id'] << info['product_id'][0]
           end
         end
@@ -259,8 +260,8 @@ class OrdersController < ApplicationController
     stocks_hash = Stock.where("date < ?", make_date).order("date ASC").map{|stock|[stock.material_id,stock]}.to_h
     date = make_date - 1
     stock_hash = {}
-    @stocks = Stock.includes(:material).where(material_id:@b_hash.keys,date:(date - 10)..(date + 10)).order('date ASC').map do |stock|
-      if stock_hash[stock.material_id].present?
+    Stock.includes(:material).where(material_id:@b_hash.keys,date:(date - 10)..(date + 10)).order('date ASC').map do |stock|
+      if stock_hash[stock.material_id].present? && stock_hash[stock.material_id].length < 11
         stock_hash[stock.material_id] << stock
       else
         stock_hash[stock.material_id] = [stock]
@@ -285,6 +286,7 @@ class OrdersController < ApplicationController
       else
         i = 0
       end
+      # 直近の在庫から発注量を計算
       if stocks_hash[key].present? && material.stock_management_flag == true
         if stocks_hash[key].end_day_stock < 0
           shortage_stock = (-1 * stocks_hash[key].end_day_stock).round(1)
@@ -296,37 +298,74 @@ class OrdersController < ApplicationController
       else
         order_quantity_order_unit = (calculated_quantity / value['recipe_unit_quantity'].to_f * value['order_unit_quantity'].to_f).ceil(i)
       end
+
       @order.order_materials.build(material_id:key,recipe_unit:recipe_unit,order_unit:order_unit,order_quantity_order_unit:order_quantity_order_unit,calculated_quantity:calculated_quantity,menu_name:menu_name,order_material_memo:order_material_memo,delivery_date:delivery_date,un_order_flag:un_order_flag)
-      material_stock_hash = stock_hash[key]
-      if material_stock_hash.present?
-        # @stocks = Stock.includes(:material).where(material_id:key,date:(date - 10)..(date + 5)).order('date ASC')
-        @stock_hash[key] = material_stock_hash.map do |stock|
-          if stock.used_amount == 0
-            used_amount = "<td style='color:silver;'>0</td>"
+
+      if stock_hash[key].present?
+        material_stock_hash = stock_hash[key].map{|data|[data.date,data]}.to_h
+        @thead = ["<th>日付</th>"]
+        @tr0 = ["<td>始在庫</td>"]
+        @tr1 = ["<td>納品</td>"]
+        @tr2 = ["<td>使用</td>"]
+        @tr3 = ["<td>終在庫</td>"]
+        @tr4 = ["<td>棚卸</td>"]
+
+        (date-10..date+10).each do |day|
+          if material_stock_hash[day].present?
+            stock = material_stock_hash[day]
+            if stock.used_amount == 0
+              used_amount = "<td style='color:silver;'>0</td>"
+            else
+              used_amount = "<td style='color:darkorange;'>- #{(stock.used_amount/stock.material.accounting_unit_quantity).ceil(1)}#{stock.material.accounting_unit}</td>"
+            end
+            if stock.delivery_amount == 0
+              delivery_amount = "<td style='color:silver;'>0</td>"
+            else
+              delivery_amount = "<td style='color:blue;'>+ #{(stock.delivery_amount/stock.material.accounting_unit_quantity).floor(1)}#{stock.material.accounting_unit}</td>"
+            end
+            if stock.end_day_stock == 0
+              end_day_stock = "<td style='color:silver;'>0</td>"
+            elsif stock.end_day_stock < 0
+              end_day_stock = "<td style='color:red;'>#{(stock.end_day_stock/stock.material.accounting_unit_quantity).floor(1)}#{stock.material.accounting_unit}</td>"
+            else
+              end_day_stock = "<td style=''>#{(stock.end_day_stock/stock.material.accounting_unit_quantity).floor(1)}#{stock.material.accounting_unit}</td>"
+            end
+            if stock.start_day_stock == 0
+              start_day_stock = "<td style='color:silver;'>0</td>"
+            else
+              start_day_stock = "<td style=''>#{(stock.start_day_stock/stock.material.accounting_unit_quantity).floor(1)}#{stock.material.accounting_unit}</td>"
+            end
+
+            if stock.inventory_flag == true
+              inventory = "<td><span class='label label-success'>棚卸し</span></td>"
+            else
+              inventory = "<td></td>"
+            end
+            if stock.date == date
+              @thead << "<th style='text-align:center;background-color:#ffebcd;'>#{day.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[stock.date.wday]})")}</th>"
+              @tr0 << start_day_stock
+              @tr1 << delivery_amount
+              @tr2 << used_amount
+              @tr3 << end_day_stock
+              @tr4 << inventory
+            else
+              @thead << "<th style='text-align:center;'>#{day.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[day.wday]})")}</th>"
+              @tr0 << start_day_stock
+              @tr1 << delivery_amount
+              @tr2 << used_amount
+              @tr3 << end_day_stock
+              @tr4 << inventory
+            end
           else
-            used_amount = "<td style='color:red;'>- #{(stock.used_amount/stock.material.accounting_unit_quantity).ceil(1)}#{stock.material.accounting_unit}</td>"
-          end
-          if stock.delivery_amount == 0
-            delivery_amount = "<td style='color:silver;'>0</td>"
-          else
-            delivery_amount = "<td style='color:blue;'>+ #{(stock.delivery_amount/stock.material.accounting_unit_quantity).floor(1)}#{stock.material.accounting_unit}</td>"
-          end
-          if stock.end_day_stock == 0
-            end_day_stock = "<td style='color:silver;'>0</td>"
-          else
-            end_day_stock = "<td style=''>#{(stock.end_day_stock/stock.material.accounting_unit_quantity).floor(1)}#{stock.material.accounting_unit}</td>"
-          end
-          if stock.inventory_flag == true
-            inventory = "<td><span class='label label-success'>棚卸し</span></td>"
-          else
-            inventory = "<td></td>"
-          end
-          if stock.date == date
-            ["<tr style='background-color:#ffebcd;'><td>#{stock.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[stock.date.wday]})")}</td>#{delivery_amount}#{used_amount}#{end_day_stock}#{inventory}</tr>"]
-          else
-            ["<tr><td>#{stock.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[stock.date.wday]})")}</td>#{delivery_amount}#{used_amount}#{end_day_stock}#{inventory}</tr>"]
+            @thead << "<th style='text-align:center;'>#{day.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[day.wday]})")}</th>"
+            @tr0 << "<td></td>"
+            @tr1 << "<td></td>"
+            @tr2 << "<td></td>"
+            @tr3 << "<td></td>"
+            @tr4 << "<td></td>"
           end
         end
+        @stock_hash[key] = ["<thead><tr>#{@thead.join('')}</tr></thead><tbody><tr>#{@tr0.join('')}</tr><tr>#{@tr1.join('')}</tr><tr>#{@tr2.join('')}</tr><tr>#{@tr3.join('')}</tr><tr>#{@tr4.join('')}</tr><tbody>"]
       end
     end
     @materials = []

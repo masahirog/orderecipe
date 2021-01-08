@@ -54,13 +54,8 @@
         th style='min-width:250px;' 備考欄
 
     tbody#order_materials_table
-      - i = 0
       = f.fields_for :order_materials do |m|
         - material = @b_hash[m.object.material_id]['material']
-        - if i > 4
-          - position = 'top'
-        - else
-          - position = 'bottom'
         //編集時はcocoonのパーシャルも変える！パフォーマンスが低下するので、あえてレンダリングは外している
 
         tr.order_materials_tr.nested-fields
@@ -120,10 +115,12 @@
                       |ー
                 - if m.object.material_id.present?
                   - if @stock_hash[m.object.material_id].present?
+                    / = link_to history_stocks_path(material_id:m.object.material_id),target:'_blank',class:'stock-tooltip' do
+                      span data-html="true" style='color:blue;margin-left:10px;' class="glyphicon glyphicon-eye-open" aria-hidden="true"  data-toggle="tooltip" data-placement="bottom" title="<table class='table tooltip-table'><thead><tr><th style='text-align: center'>日付</th><th style='text-align: center'>納品</th><th style='text-align: center'>使用</th><th style='text-align: center'>在庫</th><th></th></tr></thead><tbody>#{@stock_hash[m.object.material_id].flatten.join('')}</tbody></table>"
                     = link_to history_stocks_path(material_id:m.object.material_id),target:'_blank',class:'stock-tooltip' do
-                      span data-html="true" style='color:blue;margin-left:10px;' class="glyphicon glyphicon-eye-open" aria-hidden="true"  data-toggle="tooltip" data-placement="#{position}" title="<table class='table tooltip-table'><thead><tr><th style='text-align: center'>日付</th><th style='text-align: center'>納品</th><th style='text-align: center'>使用</th><th style='text-align: center'>在庫</th><th></th></tr></thead><tbody>#{@stock_hash[m.object.material_id].flatten.join('')}</tbody></table>"
+                      span data-html="true" style='color:blue;margin-left:10px;' class="glyphicon glyphicon-eye-open" aria-hidden="true"  data-toggle="tooltip" data-placement="bottom" title="<table class='table tooltip-table'>#{@stock_hash[m.object.material_id].flatten.join('')}</table>"
                     = link_to edit_material_path(material),target:'_blank',class:'stock-tooltip' do
-                      span style='color:green;margin-left:10px;' class="glyphicon glyphicon-pencil" aria-hidden="true"  data-toggle="tooltip" data-placement="#{position}" title="食材の編集"
+                      span style='color:green;margin-left:10px;' class="glyphicon glyphicon-pencil" aria-hidden="true"  data-toggle="tooltip" data-placement="bottom" title="食材の編集"
                     -if @prev_stocks.first[1].present?
                       = link_to material_reload_orders_path(material_id:m.object.material_id,date:@prev_stocks.first[1].date), method: :post, remote: true
                         span style='color:red;margin-left:10px;' class="glyphicon glyphicon-refresh" aria-hidden="true"
@@ -136,7 +133,6 @@
                 = m.hidden_field :menu_name
               - else
                 = m.object.menu_name
-        - i += 1
   = link_to_add_association '発注食材追加',f, :order_materials,class:'btn btn-primary add_order_material',
     data: {association_insertion_node: '#order_materials_table',association_insertion_method: 'append'}, render_options: {locals: { date: Date.today }}
 
@@ -153,7 +149,7 @@ sass:
 
   .stock-tooltip
     .tooltip
-      width: 600px
+      width: 100%
       font-size: 14px
   .memo-tooltip
     .tooltip
@@ -161,7 +157,7 @@ sass:
       font-size: 14px
 
   .tooltip-inner
-    max-width: 1000px
+    max-width: 100%
 
   .tooltip .tooltip-inner
     background-color: white
