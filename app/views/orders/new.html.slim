@@ -115,10 +115,8 @@
                       |ー
                 - if m.object.material_id.present?
                   - if @stock_hash[m.object.material_id].present?
-                    / = link_to history_stocks_path(material_id:m.object.material_id),target:'_blank',class:'stock-tooltip' do
-                      span data-html="true" style='color:blue;margin-left:10px;' class="glyphicon glyphicon-eye-open" aria-hidden="true"  data-toggle="tooltip" data-placement="bottom" title="<table class='table tooltip-table'><thead><tr><th style='text-align: center'>日付</th><th style='text-align: center'>納品</th><th style='text-align: center'>使用</th><th style='text-align: center'>在庫</th><th></th></tr></thead><tbody>#{@stock_hash[m.object.material_id].flatten.join('')}</tbody></table>"
                     = link_to history_stocks_path(material_id:m.object.material_id),target:'_blank',class:'stock-tooltip' do
-                      span data-html="true" style='color:blue;margin-left:10px;' class="glyphicon glyphicon-eye-open" aria-hidden="true"  data-toggle="tooltip" data-placement="bottom" title="<table class='table tooltip-table'>#{@stock_hash[m.object.material_id].flatten.join('')}</table>"
+                      span data-html="true" style='color:blue;margin-left:10px;' class="glyphicon glyphicon-eye-open" aria-hidden="true"  data-toggle="tooltip" data-placement="bottom" title="<div style='padding:10px;'><span style='font-size:16px;'>直近10日間の使用量合計は：#{(@latest_material_used_amount[material.id]/material.accounting_unit_quantity).floor(1) if @latest_material_used_amount[material.id] > 0} #{material.accounting_unit}です</span></div><table class='table tooltip-table'>#{@stock_hash[m.object.material_id].flatten.join('')}</table>"
                     = link_to edit_material_path(material),target:'_blank',class:'stock-tooltip' do
                       span style='color:green;margin-left:10px;' class="glyphicon glyphicon-pencil" aria-hidden="true"  data-toggle="tooltip" data-placement="bottom" title="食材の編集"
                     -if @prev_stocks.first[1].present?
@@ -133,9 +131,8 @@
                 = m.hidden_field :menu_name
               - else
                 = m.object.menu_name
-  = link_to_add_association '発注食材追加',f, :order_materials,class:'btn btn-primary add_order_material',
+  = link_to_add_association '発注食材追加',f, :order_materials,class:'btn btn-primary add_order_material',style:'margin-bottom:200px;',
     data: {association_insertion_node: '#order_materials_table',association_insertion_method: 'append'}, render_options: {locals: { date: Date.today }}
-
 javascript:
   $(function() {
     $(document).on("keypress", "input:not(.allow_submit)", function(event) {

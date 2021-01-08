@@ -260,12 +260,15 @@ class OrdersController < ApplicationController
     stocks_hash = Stock.where("date < ?", make_date).order("date ASC").map{|stock|[stock.material_id,stock]}.to_h
     date = make_date - 1
     stock_hash = {}
+    @latest_material_used_amount = {}
     Stock.includes(:material).where(material_id:@b_hash.keys,date:(date - 10)..(date + 10)).order('date ASC').map do |stock|
-      if stock_hash[stock.material_id].present? && stock_hash[stock.material_id].length < 11
+      @latest_material_used_amount[stock.material_id] = 0 unless @latest_material_used_amount[stock.material_id].present?
+      if stock_hash[stock.material_id].present?
         stock_hash[stock.material_id] << stock
       else
         stock_hash[stock.material_id] = [stock]
       end
+      @latest_material_used_amount[stock.material_id] += stock.used_amount if date > stock.date
     end
     @b_hash.each do |key,value|
       material = value['material']
