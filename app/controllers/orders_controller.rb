@@ -229,11 +229,35 @@ class OrdersController < ApplicationController
     end
     @b_hash = Hash.new { |h,k| h[k] = {} }
     @arr.sort_by! { |a| a['vendor_id'] }.each do |info|
-      @b_hash[info['material_id']] = info unless @b_hash[info['material_id']].present?
-      @b_hash[info['material_id']]['calculated_order_amount'] += info['calculated_order_amount']
-      @b_hash[info['material_id']]['menu_num'][info["menu_num"].keys[0]] = 0 unless @b_hash[info['material_id']]['menu_num'][info["menu_num"].keys[0]].present?
-      @b_hash[info['material_id']]['menu_num'][info["menu_num"].keys[0]] += info['menu_num'].values[0].to_i
-      @b_hash[info['material_id']]['product_id'] << info['product_id'][0] unless @b_hash[info['material_id']]['product_id'].include?(info['product_id'])
+      if @b_hash[info['material_id']].present?
+        if @b_hash[info['material_id']]['product_id'].include?(info['product_id'])
+          if @b_hash[info['material_id']]['menu_num'][info["menu_num"].keys[0]].present?
+            @b_hash[info['material_id']]['calculated_order_amount'] += info['calculated_order_amount']
+            @b_hash[info['material_id']]['menu_num'][info["menu_num"].keys[0]] += info['menu_num'].values[0].to_i
+          else
+            @b_hash[info['material_id']]['calculated_order_amount'] += info['calculated_order_amount']
+            @b_hash[info['material_id']]['menu_num'][info["menu_num"].keys[0]] = info['menu_num'].values[0].to_i
+          end
+        else
+          if @b_hash[info['material_id']]['menu_num'][info["menu_num"].keys[0]].present?
+            @b_hash[info['material_id']]['calculated_order_amount'] += info['calculated_order_amount']
+            @b_hash[info['material_id']]['menu_num'][info["menu_num"].keys[0]] += info['menu_num'].values[0].to_i
+            @b_hash[info['material_id']]['product_id'] << info['product_id'][0]
+          else
+            @b_hash[info['material_id']]['calculated_order_amount'] += info['calculated_order_amount']
+            @b_hash[info['material_id']]['menu_num'][info["menu_num"].keys[0]] = info['menu_num'].values[0].to_i
+            @b_hash[info['material_id']]['product_id'] << info['product_id'][0]
+          end
+        end
+      else
+        @b_hash[info['material_id']] = info
+      end
+
+      # @b_hash[info['material_id']] = info unless @b_hash[info['material_id']].present?
+      # @b_hash[info['material_id']]['calculated_order_amount'] += info['calculated_order_amount']
+      # @b_hash[info['material_id']]['menu_num'][info["menu_num"].keys[0]] = 0 unless @b_hash[info['material_id']]['menu_num'][info["menu_num"].keys[0]].present?
+      # @b_hash[info['material_id']]['menu_num'][info["menu_num"].keys[0]] += info['menu_num'].values[0].to_i
+      # @b_hash[info['material_id']]['product_id'] << info['product_id'][0] unless @b_hash[info['material_id']]['product_id'].include?(info['product_id'])
     end
     @prev_stocks = {}
     @stock_hash = {}
