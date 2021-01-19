@@ -89,8 +89,8 @@
               div style="float:left;width:50%;"
                 = m.text_field :calculated_quantity,class:'recipe_unit_quantity text-right form-control',style:"float:left;width:70%;",readonly:true
                 = m.text_field :recipe_unit, style:'float:left;width:20%;',class:'form-control calculated_material_unit',readonly:true
-            .clearfix style="color:#A9A9A9;padding:1px 0 0 10px;"
-              .text-right.change_unit.memo-tooltip style="float:left;width:50%;padding-right:5px;color:gray;"
+            .clearfix style="color:#A9A9A9;padding-top:2px;"
+              .text-right.change_unit.memo-tooltip style="float:left;width:40%;padding-right:5px;color:gray;"
                 - if m.object.material_id.present?
                   = material.order_unit_quantity
                   = material.order_unit
@@ -100,15 +100,19 @@
                 - if material.present?
                   - if material.memo.present?
                     span style='color:red;margin-left:10px;' class="glyphicon glyphicon-tags original-tooltip" aria-hidden="true"  data-toggle="tooltip" data-placement="top" title="#{material.memo}"
-              .text-right style="float:left;width:50%;"
+              - if material.need_inventory_flag == true
+                - style = 'float:left;width:55%;height:22px;background-color:red;padding-top:2px;margin-left:5%;'
+              - else
+                - style = 'float:left;width:55%;height:22px;padding-top:2px;margin-left:5%;'
+              .text-right style=style
                 span class="stock_yoso_#{m.object.material_id} text-right"
                   - if material.need_inventory_flag == true
-                    span.label.label-warning style='margin-right:10px;' 棚卸し
+                    span style='margin-right:10px;color:white;' 棚卸し！
                   - if m.object.material_id.present?
                     - if material.stock_management_flag == true
                       - if @prev_stocks[m.object.material_id]
                         - if @prev_stocks[m.object.material_id].end_day_stock < 0
-                          span style='color:red;' = "#{(@prev_stocks[m.object.material_id].end_day_stock/material.accounting_unit_quantity).floor(1)} #{material.accounting_unit}：不足"
+                          span style='color:black;' = "#{(@prev_stocks[m.object.material_id].end_day_stock/material.accounting_unit_quantity).floor(1)} #{material.accounting_unit}：不足"
                         - else
                           span style='color:lime;' = "残り：#{(@prev_stocks[m.object.material_id].end_day_stock/material.accounting_unit_quantity).floor(1)} #{material.accounting_unit} "
                       - else
