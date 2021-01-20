@@ -32,7 +32,7 @@ class MenusController < ApplicationController
       @ar = Menu.used_additives(original_menu.materials)
     elsif params[:original_menu_id].present?
       origin_menu = Menu.find(params[:original_menu_id])
-      @menu = origin_menu.deep_clone(include: [:menu_materials])
+      @menu = origin_menu.deep_clone(include: [:menu_materials], except: [{ menu_materials: [:base_menu_material_id]}])
       @menu.base_menu_id = nil
       @ar = Menu.used_additives(@menu.materials)
       @materials = origin_menu.materials
