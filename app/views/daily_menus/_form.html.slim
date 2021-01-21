@@ -29,14 +29,16 @@
       .col-md-3 style='float:left;'
         = f.label :weather,"天気　", class: 'text-right'
         = link_to 'tenki.jp','https://tenki.jp/forecast/3/16/4410/13114/',target:'_blank'
-        = f.select :weather, DailyMenu.weathers.keys.to_a, {include_blank:true}, class: 'col-md-10 form-control'
+        = f.select :weather, DailyMenu.weathers.keys.map {|k| [I18n.t("enum.daily_menu.weather.#{k}"), k]}, {include_blank:true}, class: 'col-md-10 form-control'
+
+
       .col-md-3 style='float:left;'
         = f.label :max_temperature,"最高気温", class: 'text-right'
         = f.select :max_temperature,(-10..40),{include_blank:true}, class: 'col-md-10 form-control'
       .col-md-3 style='float:left;'
         = f.label :min_temperature,"最低気温", class: 'text-right'
         = f.select :min_temperature,(-10..40),{include_blank:true}, class: 'col-md-10 form-control'
-      .col-md-3 style='float:left;'
+      = f.submit '登録する',class:'btn btn-primary', data: {disable_with: '登録中...'},style:'float:right;'
   .clearfix.col-md-12
     table.show_case_table style='float:left;width:14%;margin-right:5px;'
       thead
@@ -69,14 +71,15 @@
             td = select_tag "place_#{i[2]}", options_from_collection_for_select(@daily_menu_details,:id,:name, @hash[i[2]]),include_blank: true, class: "form-control"
             td = select_tag "place_#{i[3]}", options_from_collection_for_select(@daily_menu_details,:id,:name, @hash[i[3]]),include_blank: true, class: "form-control"
 
+  .col-md-12.clearfix style='padding:10px 0;'
+    = f.fields_for :daily_menu_photos do |dmp|
+      .col-md-6 style='float:left;width:50%;'
+        = image_tag dmp.object.image.url,style:'max-width:100%' if dmp.object.image.present?
+        = dmp.file_field :image
   table.table.table-list.cocoon_are
     thead
       tr
-        th
-          = link_to_add_association '商品追加', f, :daily_menu_details,
-              class: 'btn btn-default add_menu_details',
-               data: {association_insertion_node: '#daily_menu_details_area',
-                      association_insertion_method: 'append' }
+        th = link_to_add_association '商品追加', f, :daily_menu_details,class: 'btn btn-default add_menu_details',data: {association_insertion_node: '#daily_menu_details_area',association_insertion_method: 'append' }
         th メニュー名
         th 製造数
         / th 盛付皿
@@ -89,11 +92,17 @@
 
 javascript:
   $(function () {
-      var previous;
+    $(".show_case_table td select").each(function(index, element){
+      var val = $(element).val();
+      if (val) {
+        console.log(val);
+        $('.show_case_table td select').not(this).children('option[value='+ val +']').attr("disabled", "disabled");
+      }
+    });
+    var previous;
     $(".show_case_table td select").on('click', function () {
       // Store the current value on focus and on change
       previous = $(this).val();
-      console.log(previous);
     }).change(function() {
       var val = $(this).val();
       var id = $(this).attr('id');

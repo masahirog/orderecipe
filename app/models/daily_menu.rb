@@ -2,6 +2,10 @@ class DailyMenu < ApplicationRecord
   has_many :daily_menu_details, ->{order("row_order") }, dependent: :destroy
   has_many :products, through: :daily_menu_details
   accepts_nested_attributes_for :daily_menu_details, allow_destroy: true
+  has_many :daily_menu_photos, dependent: :destroy
+  accepts_nested_attributes_for :daily_menu_photos
+
+
   validates :start_time, presence: true, uniqueness: true
   after_save :input_stock
   enum weather: {sunny:1, cloud:2,rain:3,strong_rain:4,taihoon:5,snow:6}

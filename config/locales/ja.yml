@@ -1,0 +1,10 @@
+ja:
+  enum:
+    daily_menu:
+      weather:
+        sunny: 晴れ
+        cloud: くもり
+        rain: 雨
+        strong_rain: 大雨
+        taihoon: 台風
+        snow: 雪

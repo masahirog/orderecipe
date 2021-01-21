@@ -29,6 +29,10 @@ class DailyMenusController < ApplicationController
   end
 
   def edit
+    saveble_photo_nums = 2 - @daily_menu.daily_menu_photos.length
+    saveble_photo_nums.times {
+      @daily_menu.daily_menu_photos.build
+    }
     @date = @daily_menu.start_time
     @products = Product.where(brand_id:111)
     @place_showcases = PlaceShowcase.all
@@ -157,8 +161,7 @@ class DailyMenusController < ApplicationController
     end
 
     def daily_menu_params
-      params.require(:daily_menu).permit(:start_time,:total_manufacturing_number,:fixed_flag,
-        :weather,:max_temperature,:min_temperature,
+      params.require(:daily_menu).permit(:start_time,:total_manufacturing_number,:fixed_flag,:weather,:max_temperature,:min_temperature,daily_menu_photos_attributes: [:id,:daily_menu_id,:image],
         daily_menu_details_attributes: [:id,:daily_menu_id,:product_id,:manufacturing_number,:row_order,:_destroy,
           :serving_plate_id,:place_showcase_id,:signboard_flag,:window_pop_flag,:sold_outed])
     end

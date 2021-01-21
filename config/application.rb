@@ -11,6 +11,7 @@ module Orderecipe
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 5.0
     config.i18n.default_locale = :ja
+    config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s] # 追記
     config.generators.template_engine = :slim
     config.time_zone = 'Tokyo'
     config.active_record.default_timezone = :local
