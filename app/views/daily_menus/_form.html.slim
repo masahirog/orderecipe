@@ -18,15 +18,15 @@
       = f.number_field :total_manufacturing_number, class: 'col-md-10 form-control total_manufacturing_number',readonly:true
 
   .clearfix
-    .col-md-8
-      .col-md-12
+    .col-md-8 style='float:left;'
+      .col-md-12.clearfix
         .col-md-4 style='float:left;'
           = f.label :start_time,"日付", class: ''
           = f.date_field :start_time, value:params['start_time'], class: 'col-md-10 form-control start_time',readonly: true
         .col-md-4 style='float:left;'
           = f.label :fixed_flag,"ステータス", class: ''
           = f.select :fixed_flag,[["編集中",false],["確定",true]],{}, class: 'col-md-10 form-control'
-      .col-md-12
+      .col-md-12.clearfix
         .col-md-4 style='float:left;'
           = f.label :weather,"天気", class: 'text-right'
           = f.select :weather, DailyMenu.weathers.keys.to_a, {include_blank:true}, class: 'col-md-10 form-control'
@@ -40,24 +40,35 @@
   h4 配置
   .clearfix.col-md-12
     table.show_case_table style='float:left;width:14%;margin-right:5px;'
+      thead
+        tr
+          th 煮込み台
+
       tbody
         - [191,201,211].each do |i|
           tr
             td = select_tag "place_#{i}", options_from_collection_for_select(@daily_menu_details,:id,:name, @hash[i]),include_blank: true, class: "form-control"
     table.show_case_table style='float:left;width:34%;margin-right:5px;'
+      thead
+        tr
+          th colspan=2 小ショーケース
+
       tbody
         - [11,21,31,41,51,61].each_slice(2) do |i|
           tr
             td = select_tag "place_#{i[0]}", options_from_collection_for_select(@daily_menu_details,:id,:name, @hash[i[0]]),include_blank: true, class: "form-control"
             td = select_tag "place_#{i[1]}", options_from_collection_for_select(@daily_menu_details,:id,:name, @hash[i[1]]),include_blank: true, class: "form-control"
-
     table.show_case_table style='float:left;width:50%'
+      thead
+        tr
+          th colspan=4 大ショーケース
       tbody
         - [71,81,91,101,111,121,131,141,151,161,171,181].each_slice(4) do |i|
           tr
             td = select_tag "place_#{i[0]}", options_from_collection_for_select(@daily_menu_details,:id,:name, @hash[i[0]]),include_blank: true, class: "form-control"
             td = select_tag "place_#{i[1]}", options_from_collection_for_select(@daily_menu_details,:id,:name, @hash[i[1]]),include_blank: true, class: "form-control"
             td = select_tag "place_#{i[2]}", options_from_collection_for_select(@daily_menu_details,:id,:name, @hash[i[2]]),include_blank: true, class: "form-control"
+            td = select_tag "place_#{i[3]}", options_from_collection_for_select(@daily_menu_details,:id,:name, @hash[i[3]]),include_blank: true, class: "form-control"
 
   table.table.table-list.cocoon_are
     thead
@@ -80,13 +91,25 @@
 
 javascript:
   $(function () {
-
-    $(".show_case_table td select").change(function(e){
+      var previous;
+    $(".show_case_table td select").on('focus', function () {
+      // Store the current value on focus and on change
+      previous = $(this).val();
+    }).change(function() {
       var val = $(this).val();
       var id = $(this).attr('id');
       var show_case_place_id = id.replace("place_", "");
-      console.log(show_case_place_id);
       $(".tr_"+val).find('.show_case_place').val(show_case_place_id);
+      if (val){
+        $('.show_case_table td select').not(this).children('option[value='+ val +']').attr("disabled", "disabled");
+      }
+      if (previous) {
+        $('.show_case_table td select').children('option[value='+ previous +']').removeAttr('disabled');
+      }
+    });
+
+    $(".show_case_table td select").change(function(e){
+
     });
 
     var API_KEY = "707215c3609225bf8d64cf51c00c6502";
@@ -137,7 +160,8 @@ javascript:
   }
 css:
   .show_case_table td {
-    border: solid 1px black;
+    padding:2px;
+    border: solid 1px silver;
     width:100px;
     height:40px;
   }

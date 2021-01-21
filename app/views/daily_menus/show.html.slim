@@ -5,7 +5,11 @@
     p = @daily_menu.start_time.strftime("%Y年%-m月%-d日(#{%w(日 月 火 水 木 金 土)[@daily_menu.start_time.wday]})")
   .col-md-4 style='float:left;'
     label ステータス
-    p = @daily_menu.fixed_flag
+    p
+      - if @daily_menu.fixed_flag == true
+        |確定
+      - else
+        |まだ
 .clearfix
   div style='float:left;width:30%;padding:10px;'
     label 天気
@@ -18,30 +22,35 @@
     p = @daily_menu.min_temperature
 
 .clearfix.col-md-12
-  #weather style='float:left;padding:30px 20px;'
-  #show_case_haichi style='float:left;width:700px;'
-    = image_tag 'show_case_haichi.png',width:'100%'
-.clearfix.col-md-12
   table.show_case_table style='float:left;width:14%;margin-right:5px;'
+    thead
+      tr
+        th 煮込み台
     tbody
       - [191,201,211].each do |i|
         tr
           td = @hash[i]
-
   table.show_case_table style='float:left;width:34%;margin-right:5px;'
+    thead
+      tr
+        th 小ショーケース
     tbody
       - [11,21,31,41,51,61].each_slice(2) do |i|
         tr
           td = @hash[i[0]]
           td = @hash[i[1]]
-
   table.show_case_table style='float:left;width:50%'
+    thead
+      tr
+        th 大ショーケース
+
     tbody
       - [71,81,91,101,111,121,131,141,151,161,171,181].each_slice(4) do |i|
         tr
           td = @hash[i[0]]
           td = @hash[i[1]]
           td = @hash[i[2]]
+          td = @hash[i[3]]
 
 .form-group.col-md-12.clearfix
   = link_to "編集する", edit_daily_menu_path(@daily_menu),class:'btn btn-primary',style:'float:left;margin-left:20px;margin-top:10px;'

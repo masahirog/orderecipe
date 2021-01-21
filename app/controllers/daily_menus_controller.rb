@@ -11,7 +11,6 @@ class DailyMenusController < ApplicationController
       [dmd.place_showcase_id,dmd.product.name] if dmd.place_showcase_id.present?
     end
     @hash = @hash.compact.to_h
-
   end
 
   def new
