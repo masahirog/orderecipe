@@ -92,9 +92,10 @@
 javascript:
   $(function () {
       var previous;
-    $(".show_case_table td select").on('focus', function () {
+    $(".show_case_table td select").on('click', function () {
       // Store the current value on focus and on change
       previous = $(this).val();
+      console.log(previous);
     }).change(function() {
       var val = $(this).val();
       var id = $(this).attr('id');
@@ -106,10 +107,6 @@ javascript:
       if (previous) {
         $('.show_case_table td select').children('option[value='+ previous +']').removeAttr('disabled');
       }
-    });
-
-    $(".show_case_table td select").change(function(e){
-
     });
 
     var API_KEY = "707215c3609225bf8d64cf51c00c6502";
