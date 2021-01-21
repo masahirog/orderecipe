@@ -1,5 +1,6 @@
 class DailyMenu < ApplicationRecord
   has_many :daily_menu_details, ->{order("row_order") }, dependent: :destroy
+  has_many :products, through: :daily_menu_details
   accepts_nested_attributes_for :daily_menu_details, allow_destroy: true
   validates :start_time, presence: true, uniqueness: true
   after_save :input_stock

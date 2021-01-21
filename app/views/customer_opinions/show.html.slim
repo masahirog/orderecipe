@@ -1,0 +1,9 @@
+
+label.col-md-12 日付
+.col-md-12
+  = @customer_opinion.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@customer_opinion.date.wday]})")
+label.col-md-12 内容
+.col-md-12
+  = @customer_opinion.content
+.col-md-12
+  = link_to '編集する', edit_customer_opinion_path(@customer_opinion),class:'btn btn-primary'

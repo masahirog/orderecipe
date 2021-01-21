@@ -1,0 +1,28 @@
+span style='font-size:18px;font-weight:bold;margin-right:10px;' べじはん お客さまの声
+span を調理チームのみんなにも届けたいです！
+= form_for @customer_opinion do |f|
+  - if @customer_opinion.errors.any?
+    #error_explanation
+      h2 = "#{pluralize(@customer_opinion.errors.count, "error")} prohibited this customer_opinion from being saved:"
+      ul
+        - @customer_opinion.errors.full_messages.each do |message|
+          li = message
+  .form-group
+    = f.text_area :content,class:'form-control', size: "20x5"
+  .form-group.clear-fix
+    = f.date_field :date,class:'form-control',style:'float:left;width:200px;margin-right:20px;'
+    = f.submit '送信する',class:'btn btn-success',style:'float:left;'
+
+table.table
+  thead
+    tr
+      th 日付
+      th 内容
+      th
+
+  tbody
+    - @customer_opinions.each do |customer_opinion|
+      tr
+        td = customer_opinion.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[customer_opinion.date.wday]})")
+        td = customer_opinion.content
+        td = link_to '編集', edit_customer_opinion_path(customer_opinion)

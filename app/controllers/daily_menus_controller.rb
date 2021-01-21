@@ -7,6 +7,11 @@ class DailyMenusController < ApplicationController
   def show
     @date = @daily_menu.start_time
     @daily_menu_details = @daily_menu.daily_menu_details.includes(:product)
+    @hash = @daily_menu_details.map do |dmd|
+      [dmd.place_showcase_id,dmd.product.name] if dmd.place_showcase_id.present?
+    end
+    @hash = @hash.compact.to_h
+
   end
 
   def new
@@ -24,6 +29,12 @@ class DailyMenusController < ApplicationController
   def edit
     @date = @daily_menu.start_time
     @products = Product.where(brand_id:111)
+    @place_showcases = PlaceShowcase.all
+    @daily_menu_details = @daily_menu.products
+    @hash = @daily_menu.daily_menu_details.map do |dmd|
+      [dmd.place_showcase_id,dmd.product_id] if dmd.place_showcase_id.present?
+    end
+    @hash = @hash.compact.to_h
   end
 
   def create

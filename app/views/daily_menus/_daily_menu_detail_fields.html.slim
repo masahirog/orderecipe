@@ -1,4 +1,9 @@
-tr.nested-fields.item.daily_menu_detail_tr
+- if f.object.id.present?
+  -class_name = "tr_#{f.object.product_id}"
+- else
+  -class_name = ''
+
+tr.nested-fields.item.daily_menu_detail_tr class=class_name
   td.row_order
     = f.number_field :row_order, class: 'form-control',readonly:true
   td
@@ -8,9 +13,9 @@ tr.nested-fields.item.daily_menu_detail_tr
       = f.collection_select :product_id, @products, :id, :name, {include_blank:true},class:'form-control input_select_product'
   td
     = f.number_field :manufacturing_number, class: 'form-control manufacturing_number'
-  td
+  / td
     = f.collection_select :serving_plate_id,ServingPlate.all, :id, :name,{include_blank:true},class:'form-control'
   td
-    = f.collection_select :place_showcase_id,PlaceShowcase.all, :id, :name,{include_blank:true},class:'form-control'
+    = f.collection_select :place_showcase_id,PlaceShowcase.all, :id, :name,{include_blank:true},class:'form-control show_case_place'
   td
     = link_to_remove_association '削除', f, class: 'btn btn-default'

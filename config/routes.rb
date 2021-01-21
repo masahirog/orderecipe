@@ -74,6 +74,7 @@ Rails.application.routes.draw do
   end
   resources :order_materials
   resources :vendors
+  resources :customer_opinions
   resources :materials do
     collection do
       get :include_material
