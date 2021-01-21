@@ -17,27 +17,26 @@
     .col-md-10
       = f.number_field :total_manufacturing_number, class: 'col-md-10 form-control total_manufacturing_number',readonly:true
 
-  .clearfix
-    .col-md-8 style='float:left;'
-      .col-md-12.clearfix
-        .col-md-4 style='float:left;'
-          = f.label :start_time,"日付", class: ''
-          = f.date_field :start_time, value:params['start_time'], class: 'col-md-10 form-control start_time',readonly: true
-        .col-md-4 style='float:left;'
-          = f.label :fixed_flag,"ステータス", class: ''
-          = f.select :fixed_flag,[["編集中",false],["確定",true]],{}, class: 'col-md-10 form-control'
-      .col-md-12.clearfix
-        .col-md-4 style='float:left;'
-          = f.label :weather,"天気", class: 'text-right'
-          = f.select :weather, DailyMenu.weathers.keys.to_a, {include_blank:true}, class: 'col-md-10 form-control'
-        .col-md-4 style='float:left;'
-          = f.label :max_temperature,"最高気温", class: 'text-right'
-          = f.select :max_temperature,(-10..40),{include_blank:true}, class: 'col-md-10 form-control'
-        .col-md-4 style='float:left;'
-          = f.label :min_temperature,"最低気温", class: 'text-right'
-          = f.select :min_temperature,(-10..40),{include_blank:true}, class: 'col-md-10 form-control'
-    .col-md-4#weather style='float:left;'
-  h4 配置
+  .clearfix.form-group
+    .col-md-12.form-group.clearfix
+      .col-md-4 style='float:left;'
+        = f.label :start_time,"日付", class: ''
+        = f.date_field :start_time, value:params['start_time'], class: 'col-md-10 form-control start_time',readonly: true
+      .col-md-4 style='float:left;'
+        = f.label :fixed_flag,"ステータス", class: ''
+        = f.select :fixed_flag,[["編集中",false],["確定",true]],{}, class: 'col-md-10 form-control'
+    .col-md-12.clearfix
+      .col-md-3 style='float:left;'
+        = f.label :weather,"天気　", class: 'text-right'
+        = link_to 'tenki.jp','https://tenki.jp/forecast/3/16/4410/13114/',target:'_blank'
+        = f.select :weather, DailyMenu.weathers.keys.to_a, {include_blank:true}, class: 'col-md-10 form-control'
+      .col-md-3 style='float:left;'
+        = f.label :max_temperature,"最高気温", class: 'text-right'
+        = f.select :max_temperature,(-10..40),{include_blank:true}, class: 'col-md-10 form-control'
+      .col-md-3 style='float:left;'
+        = f.label :min_temperature,"最低気温", class: 'text-right'
+        = f.select :min_temperature,(-10..40),{include_blank:true}, class: 'col-md-10 form-control'
+      .col-md-3 style='float:left;'
   .clearfix.col-md-12
     table.show_case_table style='float:left;width:14%;margin-right:5px;'
       thead
@@ -73,21 +72,20 @@
   table.table.table-list.cocoon_are
     thead
       tr
-        th No.
+        th
+          = link_to_add_association '商品追加', f, :daily_menu_details,
+              class: 'btn btn-default add_menu_details',
+               data: {association_insertion_node: '#daily_menu_details_area',
+                      association_insertion_method: 'append' }
         th メニュー名
         th 製造数
         / th 盛付皿
-        th 配置
+        / th 配置
         th
     tbody#daily_menu_details_area
       = f.fields_for :daily_menu_details do |dmd|
         = render 'daily_menu_detail_fields', f: dmd
-  .col-md-12
-    = link_to_add_association '商品追加', f, :daily_menu_details,
-          class: 'btn btn-default add_menu_details',
-           data: {association_insertion_node: '#daily_menu_details_area',
-                  association_insertion_method: 'append' }
-    = f.submit '登録する',class:'btn btn-primary', data: {disable_with: '登録中...'},style:'float:right;'
+  = f.submit '登録する',class:'btn btn-primary', data: {disable_with: '登録中...'},style:'float:right;'
 
 javascript:
   $(function () {
@@ -108,53 +106,8 @@ javascript:
         $('.show_case_table td select').children('option[value='+ previous +']').removeAttr('disabled');
       }
     });
-
-    var API_KEY = "707215c3609225bf8d64cf51c00c6502";
-    var city = "Nakano,1855847"; // 該当ユーザーの都道府県名を変数に代入
-    // APIを読み込み変数に代入
-    var url = 'https://api.openweathermap.org/data/2.5/forecast?q=' + city + ',jp&units=metric&APPID=' + API_KEY;
-
-    $.ajax({
-        url: url,
-        dataType: 'json',
-        type: 'GET',
-      })
-      .done(function (data) {
-        var insertHTML = '';
-        var cityName = data.city.name;
-        $('#city-name').html(cityName);
-
-        // デフォルトでは3時間ごとの天気を取得するため、
-        // 8の倍数でデータを取得することにより、24時間ごとの天気を取得する
-        // for (var i = 0; i <= 32; i = i + 8) {
-        //   insertHTML += buildHTML(data, i);
-        // }
-        $('#weather').html(buildHTML(data, 0));
-      })
-      .fail(function (data) {
-        alert('天気予報取得に失敗しました');
-      });
   });
 
-  // 日本語化
-  function buildHTML(data, i) {
-    var Week = new Array('(日)', '(月)', '(火)', '(水)', '(木)', '(金)', '(土)');
-    // var date = new Date(data.list[i].dt_txt);
-    var date = new Date($('.start_time').val());
-    date.setHours(date.getHours() + 9);
-    var month = date.getMonth() + 1;
-    var day = month + '/' + date.getDate() + Week[date.getDay()];
-    var icon = data.list[i].weather[0].icon;
-    var html =
-      '<p style="font-weight:bold;">中野区の天気</p>' +
-      '<div class="weather-report">' +
-        '<img src="https://openweathermap.org/img/w/' + icon + '.png">' +
-        '<span class="weather-date">' + day + "</span>" +
-        '<div class="weather-temp-max">' + '最高：' + Math.round(data.list[i].main.temp_max) + "℃</div>" +
-        '<span class="weather-temp-min">' + '最低：' + Math.floor(data.list[i].main.temp_min) + "℃</span>" +
-      '</div>';
-    return html
-  }
 css:
   .show_case_table td {
     padding:2px;

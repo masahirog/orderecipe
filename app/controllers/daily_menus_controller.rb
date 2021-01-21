@@ -17,11 +17,14 @@ class DailyMenusController < ApplicationController
     @products = Product.where(brand_id:111)
     date = params['start_time']
     @date = Date.parse(date)
+    @place_showcases = PlaceShowcase.all
     if DailyMenu.where(start_time:date).present?
       id = DailyMenu.find_by(start_time:date).id
       redirect_to "/daily_menus/#{id}/edit"
     else
       @daily_menu = DailyMenu.new
+      @daily_menu_details = []
+      @hash = {}
     end
   end
 
