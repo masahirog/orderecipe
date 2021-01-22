@@ -1,3 +1,4 @@
+
 /
 / .form-group.required.col-md-12
 /   label.col-md-2 別日にコピーする
@@ -20,7 +21,17 @@
   .clearfix.form-group
     .col-md-12.form-group.clearfix
       .col-md-4 style='float:left;'
-        = f.label :start_time,"日付", class: ''
+        = f.label :start_time,"日付　", class: ''
+        - if @yesterday
+          = link_to "前日",@yesterday
+        - else
+          = link_to "前日",new_daily_menu_path(start_time:@date-1)
+        |　
+        - if @tommoroww
+          = link_to "翌日",@tommoroww
+        - else
+          = link_to "翌日",new_daily_menu_path(start_time:@date+1)
+
         = f.date_field :start_time, value:params['start_time'], class: 'col-md-10 form-control start_time',readonly: true
       .col-md-4 style='float:left;'
         = f.label :fixed_flag,"ステータス", class: ''
@@ -73,8 +84,8 @@
 
   .col-md-12.clearfix style='padding:10px 0;'
     = f.fields_for :daily_menu_photos do |dmp|
-      .col-md-6 style='float:left;width:50%;'
-        = image_tag dmp.object.image.url,style:'max-width:100%' if dmp.object.image.present?
+      div style='float:left;width:350px;'
+        = image_tag dmp.object.image.url,style:'height:200px;width:300px;object-fit:cover;object-position: 0 0;' if dmp.object.image.present?
         = dmp.file_field :image
   table.table.table-list.cocoon_are
     thead

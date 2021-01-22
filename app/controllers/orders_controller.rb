@@ -169,7 +169,7 @@ class OrdersController < ApplicationController
       end
       make_date = Date.parse(date)
     else
-      # 折兼の発注機能
+      #企業ごとの発注
       order_products = []
       make_date = Date.today
       if params[:vendor_id].present?

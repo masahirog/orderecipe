@@ -6,6 +6,8 @@ class DailyMenusController < ApplicationController
 
   def show
     @date = @daily_menu.start_time
+    @tommoroww = DailyMenu.find_by(start_time:@date+1)
+    @yesterday = DailyMenu.find_by(start_time:@date-1)
     @daily_menu_details = @daily_menu.daily_menu_details.includes(:product)
     @hash = @daily_menu_details.map do |dmd|
       [dmd.place_showcase_id,dmd.product.name] if dmd.place_showcase_id.present?
@@ -17,6 +19,8 @@ class DailyMenusController < ApplicationController
     @products = Product.where(brand_id:111)
     date = params['start_time']
     @date = Date.parse(date)
+    @tommoroww = DailyMenu.find_by(start_time:@date+1)
+    @yesterday = DailyMenu.find_by(start_time:@date-1)
     @place_showcases = PlaceShowcase.all
     if DailyMenu.where(start_time:date).present?
       id = DailyMenu.find_by(start_time:date).id
@@ -34,6 +38,9 @@ class DailyMenusController < ApplicationController
       @daily_menu.daily_menu_photos.build
     }
     @date = @daily_menu.start_time
+    @tommoroww = DailyMenu.find_by(start_time:@date+1)
+    @yesterday = DailyMenu.find_by(start_time:@date-1)
+
     @products = Product.where(brand_id:111)
     @place_showcases = PlaceShowcase.all
     @daily_menu_details = @daily_menu.products
