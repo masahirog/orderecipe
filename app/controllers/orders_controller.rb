@@ -168,6 +168,28 @@ class OrdersController < ApplicationController
         order_products << hash
       end
       make_date = Date.parse(date)
+    elsif params[:bihin_flag] == 'true'
+      order_products = []
+      make_date = Date.today
+      materials = Material.where(category:5,unused_flag:false)
+      materials.each do |material|
+        hash = {}
+        hash['material'] = material
+        hash['make_num'] = 0
+        hash['product_id'] = ''
+        hash['menu_num'] = {'なし' => 0}
+        hash['material_id'] = material.id
+        hash['calculated_order_amount'] = 0
+        hash["recipe_unit_quantity"] = material.recipe_unit_quantity
+        hash["order_unit_quantity"] = material.order_unit_quantity
+        hash["vendor_id"] = material.vendor_id
+        hash["vendor_name"] = material.vendor.company_name
+        hash['recipe_unit'] = material.recipe_unit
+        hash['order_unit'] = material.order_unit
+        hash['delivery_deadline'] = material.delivery_deadline
+        hash['order_material_memo'] =''
+        @arr << hash
+      end
     else
       #企業ごとの発注
       order_products = []

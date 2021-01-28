@@ -6,8 +6,10 @@
     .col-md-1
       = submit_tag "検索" ,class:"btn btn-primary btn-sm"
 .col-md-12.clearfix
-  = link_to "新規発注開始", new_order_path(),class:"order btn btn-primary",style:"float:left;margin-right:70px;"
-  = form_tag new_order_path, method: :get do
+  = link_to "新規発注", new_order_path(),class:"order btn btn-primary",style:"float:left;margin-right:70px;"
+  = link_to "備品HAchu", new_order_path(bihin_flag:true),class:"order btn btn-primary",style:"float:left;margin-right:70px;"
+
+  / = form_tag new_order_path, method: :get do
     = select_tag "vendor_id", options_from_collection_for_select(Vendor.all,:id,:company_name),include_blank:'企業を選択して', class: "form-control",style:'width:200px;float:left;'
     = submit_tag '発注',class:'btn btn-default',style:'float:left;'
 
