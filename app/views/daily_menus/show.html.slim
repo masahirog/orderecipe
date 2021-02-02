@@ -67,7 +67,30 @@
 
 .form-group.col-md-12.clearfix
   = link_to "編集する", edit_daily_menu_path(@daily_menu),class:'btn btn-primary',style:'float:left;margin-left:20px;margin-top:10px;'
-  = link_to "発注開始", new_order_path(daily_menu_id:@daily_menu.id),class:'btn btn-success',style:'float:left;margin-left:20px;margin-top:10px;'
+  / = link_to "発注開始", new_order_path(daily_menu_id:@daily_menu.id),class:'btn btn-success',style:'float:left;margin-left:20px;margin-top:10px;'
+  .form-group.col-md-12.clearfix
+    / = link_to "発注開始", new_order_path(kurumesi_order_date:params[:date]),class:'new_order btn btn-success',:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
+    button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#newOrder" style='float:left;margin-left:20px;margin-top:10px;' 発注開始
+    #newOrder.modal.fade tabindex="-1"
+      = form_tag(new_order_path,method: :get) do
+        = date_field_tag 'daily_menu_start_time',@daily_menu.start_time
+        .modal-dialog style='width:1000px;'
+          .modal-content
+            .modal-header
+              h4.modal-title 以下内容で発注する
+            table.table
+              - @daily_menu.daily_menu_details.each_with_index do |dmd,i|
+                - product = dmd.product
+                tr
+                  td.col-md-7
+                    = product.name
+                    = text_field_tag "products[#{i}][id]",product.id,readonly:true,class:'form-control',style:'display:none;'
+                  td.col-md-3
+                    = number_field_tag "products[#{i}][num]",dmd.manufacturing_number,class:'form-control',min:0
+            .modal-footer
+              button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
+              = submit_tag "発注する" ,class:"btn btn-primary"
+
   = link_to "レシピ印刷",products_pdfs_daily_menus_path(daily_menu_id:@daily_menu.id, :format => :pdf),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
   = link_to "タレレシピ",sources_pdfs_daily_menus_path(daily_menu_id:@daily_menu.id, :format => :pdf),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
   / = link_to "ラムさん",recipes_roma_daily_menus_path(daily_menu_id:@daily_menu.id, :format => :pdf),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'

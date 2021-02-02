@@ -144,17 +144,17 @@ class OrdersController < ApplicationController
     @product_hash = {}
     @arr = []
     @order = Order.new
-    if params[:daily_menu_id]
+    if params[:daily_menu_start_time]
       order_products = []
-      daily_menu = DailyMenu.find(params[:daily_menu_id])
-      daily_menu.daily_menu_details.each do |dmd|
+      date = params[:daily_menu_start_time]
+      params[:products].each do |id_num|
         hash = {}
-        hash[:product_id] = dmd.product_id
-        hash[:num] = dmd.manufacturing_number
-        hash[:make_date] = daily_menu.start_time
+        hash[:product_id] = id_num[1][:id].to_i
+        hash[:num] = id_num[1][:num]
+        hash[:make_date] = date
         order_products << hash
       end
-      make_date = DailyMenu.find(params[:daily_menu_id]).start_time
+      make_date = Date.parse(date)
     elsif params[:kurumesi_order_date]
       order_products = []
       date = params[:kurumesi_order_date]
