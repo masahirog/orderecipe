@@ -224,7 +224,6 @@ class StocksController < ApplicationController
 
   def monthly_inventory
     date = params[:date]
-    @stocks = Stock.where(date:date).uniq(&:material_id)
     if params[:category] == '食材'
       category = ['食材（肉・魚）','食材（その他）']
     else
@@ -232,8 +231,12 @@ class StocksController < ApplicationController
     end
     ids = Material.where(category:category).ids
     stocks = Stock.where(material_id:ids).where("date <= ?", date).order(date: :desc).uniq(&:material_id)
-    stocks = stocks.each{|stock|stock.end_day_stock = 0 if stock.end_day_stock < 0}
-    @stocks_h = stocks.map{|stock| [stock.material_id,[(stock.end_day_stock/stock.material.accounting_unit_quantity),(stock.end_day_stock * stock.material.cost_price),stock.date]]}.to_h
+    @stocks_h = stocks.map do |stock|
+      if stock.end_day_stock > 0
+        [stock.material_id,[(stock.end_day_stock/stock.material.accounting_unit_quantity),(stock.end_day_stock * stock.material.cost_price),stock.date]]
+      end
+    end
+    @stocks_h = @stocks_h.compact.to_h
     @stocks_h = Hash[ @stocks_h.sort_by{ |_, v| -v[1] } ]
     material_ids = @stocks_h.keys
     @materials = Material.where(id:material_ids).order("field(id, #{material_ids.join(',')})").page(params[:page]).per(20)
