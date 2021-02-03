@@ -216,14 +216,27 @@ class StocksController < ApplicationController
     else
       @stocks_h = Hash[ @stocks_h.to_h.sort_by{ |_, v| -v[1] } ]
     end
-    material_ids = @stocks_h.keys
-    @materials = Material.where(id:material_ids).order("field(id, #{material_ids.join(',')})").page(params[:page]).per(50)
-    @stock_hash ={}
-    @materials.each do |material|
-      stocks_arr = stocks.where(material_id:material.id).last(5)
-      aaa(material,@date,stocks_arr)
+    respond_to do |format|
+      format.html do
+        material_ids = @stocks_h.keys
+        @materials = Material.where(id:material_ids).order("field(id, #{material_ids.join(',')})").page(params[:page]).per(50)
+        @stock_hash ={}
+        @materials.each do |material|
+          stocks_arr = stocks.where(material_id:material.id).last(5)
+          aaa(material,@date,stocks_arr)
+        end
+      end
+      format.csv do
+        material_ids = @stocks_h.keys
+        @materials = Material.where(id:material_ids).order("field(id, #{material_ids.join(',')})")
+        @stock_hash ={}
+        @materials.each do |material|
+          stocks_arr = stocks.where(material_id:material.id).last(5)
+          aaa(material,@date,stocks_arr)
+        end
+        send_data render_to_string, filename: "#{Time.now.strftime('%Y%m%d')}_inventory.csv", type: :csv
+      end
     end
-
   end
 
 
