@@ -33,7 +33,7 @@ class DailyMenusController < ApplicationController
   end
 
   def edit
-    saveble_photo_nums = 2 - @daily_menu.daily_menu_photos.length
+    saveble_photo_nums = 3 - @daily_menu.daily_menu_photos.length
     saveble_photo_nums.times {
       @daily_menu.daily_menu_photos.build
     }

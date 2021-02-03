@@ -83,10 +83,18 @@
             td = select_tag "place_#{i[3]}", options_from_collection_for_select(@daily_menu_details,:id,:name, @hash[i[3]]),include_blank: true, class: "form-control"
 
   .col-md-12.clearfix style='padding:10px 0;'
+    - i = 0
     = f.fields_for :daily_menu_photos do |dmp|
       div style='float:left;width:350px;'
+        - if i == 0
+          label ショーケース左
+        - elsif i==1
+          label ショーケース右
+        - else
+          label 看板
         = image_tag dmp.object.image.url,style:'height:200px;width:300px;object-fit:cover;object-position: 0 0;' if dmp.object.image.present?
         = dmp.file_field :image
+        - i += 1
   table.table.table-list.cocoon_are
     thead
       tr

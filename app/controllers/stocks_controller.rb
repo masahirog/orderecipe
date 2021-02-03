@@ -34,10 +34,9 @@ class StocksController < ApplicationController
   def update_monthly_stocks
     date = params[:date]
     @month_total_amount = {}
-    stocks = Stock.where("date <= ?", date).order(date: :desc).uniq(&:material_id)
-    stocks.delete_if do |stock|
-      stock.end_day_stock == 0
-    end
+    ids = Material.where(stock_management_flag:true).ids
+    stocks = Stock.where(material_id:ids).where("date <= ?", date).order(date: :desc).uniq(&:material_id)
+    stocks.delete_if{|stock|stock.end_day_stock <= 0}
     total_amount = 0
     foods_amount = 0
     equipments_amount = 0
@@ -207,10 +206,16 @@ class StocksController < ApplicationController
     @stocks_h = []
     stocks.uniq(&:material_id).each do |stock|
       if stock.end_day_stock > 0
-        @stocks_h << [stock.material_id,[(stock.end_day_stock/stock.material.accounting_unit_quantity),(stock.end_day_stock * stock.material.cost_price),stock.date,stock.material.last_inventory_date]]
+        @stocks_h << [stock.material_id,[(stock.end_day_stock/stock.material.accounting_unit_quantity),(stock.end_day_stock * stock.material.cost_price),stock.date,stock.material.last_inventory_date,stock.material.vendor_id]]
       end
     end
-    @stocks_h = Hash[ @stocks_h.to_h.sort_by{ |_, v| -v[1] } ]
+    if params[:order] == '業者'
+      @stocks_h = Hash[ @stocks_h.to_h.sort_by{ |_, v| -v[4] } ]
+    elsif params[:order] == '棚卸し'
+      @stocks_h = Hash[ @stocks_h.to_h.sort_by{ |_, v| -v[3].to_s } ]
+    else
+      @stocks_h = Hash[ @stocks_h.to_h.sort_by{ |_, v| -v[1] } ]
+    end
     material_ids = @stocks_h.keys
     @materials = Material.where(id:material_ids).order("field(id, #{material_ids.join(',')})").page(params[:page]).per(50)
     @stock_hash ={}
