@@ -196,11 +196,20 @@ class StocksController < ApplicationController
   end
 
   def inventory
-    @date = Date.today
+    if params[:date]
+      @date = DateTime.parse(params[:date])
+    else
+      @date = Date.today
+    end
+    if params[:category] == '食材'
+      category = ['食材（肉・魚）','食材（その他）']
+    else
+      category = params[:category]
+    end
     @stocks = Stock.where(date:@date).uniq(&:material_id)
     materials = Material.where(stock_management_flag:true)
     materials = materials.where(name:params[:name]) if params[:name].present?
-    materials = materials.where(category:params[:category]) if params[:category].present?
+    materials = materials.where(category:category) if params[:category].present?
     ids = materials.ids
     stocks = Stock.where(material_id:ids).where("date <= ?", @date).order(date: :desc)
     @stocks_h = []
@@ -222,7 +231,7 @@ class StocksController < ApplicationController
         @materials = Material.where(id:material_ids).order("field(id, #{material_ids.join(',')})").page(params[:page]).per(50)
         @stock_hash ={}
         @materials.each do |material|
-          stocks_arr = stocks.where(material_id:material.id).last(5)
+          stocks_arr = stocks.where(material_id:material.id).first(5)
           aaa(material,@date,stocks_arr)
         end
       end
@@ -230,10 +239,6 @@ class StocksController < ApplicationController
         material_ids = @stocks_h.keys
         @materials = Material.where(id:material_ids).order("field(id, #{material_ids.join(',')})")
         @stock_hash ={}
-        @materials.each do |material|
-          stocks_arr = stocks.where(material_id:material.id).last(5)
-          aaa(material,@date,stocks_arr)
-        end
         send_data render_to_string, filename: "#{Time.now.strftime('%Y%m%d')}_inventory.csv", type: :csv
       end
     end
@@ -262,6 +267,7 @@ class StocksController < ApplicationController
 
   def history
     @material = Material.find(params[:material_id])
+    @history = true
     test_hash
   end
 
@@ -275,7 +281,11 @@ class StocksController < ApplicationController
 
   def test_hash
     today = Date.today
-    @stocks_hash = Stock.where(material_id:@material.id).order('date DESC').limit(20).map{|stock|[stock.date, stock]}.to_h
+    if @history == true
+      @stocks_hash = Stock.where(material_id:@material.id).order('date DESC').map{|stock|[stock.date, stock]}.to_h
+    else
+      @stocks_hash = Stock.where(material_id:@material.id).order('date DESC').limit(20).map{|stock|[stock.date, stock]}.to_h
+    end
     if @stocks_hash.keys.include?(today)
       @dates = @stocks_hash.keys.sort
     else
