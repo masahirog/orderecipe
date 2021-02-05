@@ -5,8 +5,8 @@ class CreateDailyMenus < ActiveRecord::Migration[4.2][5.2]
       t.integer :total_manufacturing_number,null:false,default:0
       t.boolean :fixed_flag,null:false,default:false
       t.integer :weather
-      t.float :max_temperature
-      t.float :min_temperature
+      t.integer :max_temperature
+      t.integer :min_temperature
       t.timestamps
     end
   end

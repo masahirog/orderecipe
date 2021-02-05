@@ -49,6 +49,8 @@ ActiveRecord::Schema.define(version: 2021_01_21_140459) do
     t.boolean "signboard_flag", default: false, null: false
     t.boolean "window_pop_flag", default: false, null: false
     t.time "sold_outed"
+    t.integer "for_single_item_number", default: 0, null: false
+    t.integer "for_sub_item_number", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -65,8 +67,8 @@ ActiveRecord::Schema.define(version: 2021_01_21_140459) do
     t.integer "total_manufacturing_number", default: 0, null: false
     t.boolean "fixed_flag", default: false, null: false
     t.integer "weather"
-    t.float "max_temperature"
-    t.float "min_temperature"
+    t.integer "max_temperature"
+    t.integer "min_temperature"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

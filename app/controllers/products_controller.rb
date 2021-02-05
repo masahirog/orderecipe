@@ -60,7 +60,7 @@ class ProductsController < ApplicationController
       @menus = original_product.menus
     else
       @management_id = Product.bentoid()
-      @product = Product.new
+      @product = Product.new(sell_price:0)
       @product.product_menus.build(row_order: 0)
       @menus = []
     end

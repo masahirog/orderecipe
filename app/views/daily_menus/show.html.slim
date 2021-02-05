@@ -143,20 +143,20 @@ table.table.table-list
   thead
     tr
       th メニュー名
-      th 原価
-      th 製造数
-      th 総原価
+      th 単品惣菜分
+      th 弁当等副菜分
+      th 合計製造数
   tbody
     -@daily_menu_details.each do |dmd|
       tr
         td
           = link_to dmd.product.name,product_path(dmd.product)
         td
-          = dmd.cost_price_per_product
+          = dmd.for_single_item_number
+        td
+          = dmd.for_sub_item_number
         td
           = dmd.manufacturing_number
-        td
-          = dmd.total_cost_price
 css:
   .show_case_table td {
     border: solid 1px silver;

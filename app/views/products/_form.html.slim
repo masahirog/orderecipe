@@ -11,27 +11,27 @@
   .col-md-7
     .col-md-12.form-group
       = f.label :brand_id, "ブランド"
-      = f.collection_select :brand_id, Brand.all, :id, :name, {}, { class: "form-control"}
+      = f.collection_select :brand_id, Brand.all, :id, :name, {selected: 111}, { class: "form-control"}
 
 
     .col-md-12.form-group
       = f.label :name, "商品名"
       = f.text_field :name, id: "menu_search", class:"name form-control"
-    .col-md-12.form-group
-      = f.label :short_name, "短縮名（例：9A←の9の部分を入力）"
-      = f.text_field :short_name,class:"form-control"
-    .col-md-12.form-group
-      = f.label :symbol, "記号（例：9A←のAのイニシャル部分を入力）"
-      = f.text_field :symbol,class:"form-control"
+    / .col-md-12.form-group
+    /   = f.label :short_name, "短縮名（例：9A←の9の部分を入力）"
+    /   = f.text_field :short_name,class:"form-control"
+    / .col-md-12.form-group
+    /   = f.label :symbol, "記号（例：9A←のAのイニシャル部分を入力）"
+    /   = f.text_field :symbol,class:"form-control"
 
-    .col-md-12.form-group
+    / .col-md-12.form-group
       = f.label :management_id, "管理ID（各ブランドの商品ID）"
       = f.number_field :management_id, class:"management_id form-control"
 
-    .col-md-12.form-group style='padding:0;'
-      .col-md-3
-        = f.label :status, "状況"
-        = f.select :status, options_for_select(Product.statuses.keys.to_a,@product.status), {}, class: 'form-control'
+    / .col-md-12.form-group style='padding:0;'
+    /   .col-md-3
+    /     = f.label :status, "状況"
+    /     = f.select :status, options_for_select(Product.statuses.keys.to_a,@product.status), {}, class: 'form-control'
     .col-md-12.form-group
       = f.label :cooking_rice_id, "使用ライス"
       = f.collection_select :cooking_rice_id, CookingRice.all, :id, :name, {}, { class: "form-control"}
@@ -39,9 +39,9 @@
     .col-md-12.form-group
       = f.label :description, "説明文"
       = f.text_area :description, class:"form-control", style:"height:7em;"
-    .col-md-12.form-group
-      = f.label :contents, "内容物"
-      = f.text_area :contents, class:"form-control", style:"height:7em;"
+    / .col-md-12.form-group
+    /   = f.label :contents, "内容物"
+    /   = f.text_area :contents, class:"form-control", style:"height:7em;"
     .col-md-12.form-group
       .col-md-5
         = f.label :sell_price, "販売価格"

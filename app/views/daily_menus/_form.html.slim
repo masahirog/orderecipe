@@ -41,8 +41,6 @@
         = f.label :weather,"天気　", class: 'text-right'
         = link_to 'tenki.jp','https://tenki.jp/forecast/3/16/4410/13114/',target:'_blank'
         = f.select :weather, DailyMenu.weathers.keys.map {|k| [I18n.t("enum.daily_menu.weather.#{k}"), k]}, {include_blank:true}, class: 'col-md-10 form-control'
-
-
       .col-md-3 style='float:left;'
         = f.label :max_temperature,"最高気温", class: 'text-right'
         = f.select :max_temperature,(-10..40),{include_blank:true}, class: 'col-md-10 form-control'
@@ -100,7 +98,9 @@
       tr
         th = link_to_add_association '商品追加', f, :daily_menu_details,class: 'btn btn-default add_menu_details',data: {association_insertion_node: '#daily_menu_details_area',association_insertion_method: 'append' }
         th メニュー名
-        th 製造数
+        th 単品惣菜分
+        th 弁当等副菜分
+        th 合計製造数
         / th 盛付皿
         / th 配置
         th
@@ -111,6 +111,14 @@
 
 javascript:
   $(function () {
+    $('.input_num').on('keyup',function(){
+      var single_item_num = Number($(this).parents('.daily_menu_detail_tr').find('.sngle_item_number').val());
+      var sub_item_num = Number($(this).parents('.daily_menu_detail_tr').find('.sub_item_number').val());
+      var total_manufacturing_number = single_item_num + sub_item_num
+      console.log(total_manufacturing_number);
+      $(this).parents('.daily_menu_detail_tr').find('.manufacturing_number').val(total_manufacturing_number);
+    });
+
     $(".show_case_table td select").each(function(index, element){
       var val = $(element).val();
       if (val) {

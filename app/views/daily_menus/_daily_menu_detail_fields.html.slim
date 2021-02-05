@@ -12,10 +12,15 @@ tr.nested-fields.item.daily_menu_detail_tr class=class_name
     - else
       = f.collection_select :product_id, @products, :id, :name, {include_blank:true},class:'form-control input_select_product'
   td
-    = f.number_field :manufacturing_number, class: 'form-control manufacturing_number'
-    = f.collection_select :place_showcase_id,PlaceShowcase.all, :id, :name,{include_blank:true},class:'form-control show_case_place',style:'display:none;'
+    = f.number_field :for_single_item_number, class: 'form-control sngle_item_number input_num'
+  td
+    = f.number_field :for_sub_item_number, class: 'form-control sub_item_number input_num'
+  td
+    = f.number_field :manufacturing_number, class: 'form-control manufacturing_number',readonly:true
+
   / td
     = f.collection_select :serving_plate_id,ServingPlate.all, :id, :name,{include_blank:true},class:'form-control'
   / td
   td
+    = f.collection_select :place_showcase_id,PlaceShowcase.all, :id, :name,{include_blank:true},class:'form-control show_case_place',style:'display:none;'
     = link_to_remove_association '削除', f, class: 'btn btn-default'

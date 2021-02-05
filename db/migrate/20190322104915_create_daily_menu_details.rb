@@ -12,6 +12,8 @@ class CreateDailyMenuDetails < ActiveRecord::Migration[4.2][5.2]
       t.boolean :signboard_flag, default: 0, null: false
       t.boolean :window_pop_flag, default: 0, null: false
       t.time :sold_outed
+      t.integer :for_single_item_number, default: 0, null: false
+      t.integer :for_sub_item_number, default: 0, null: false
       t.timestamps
     end
   end
