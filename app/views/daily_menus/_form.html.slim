@@ -111,13 +111,6 @@
 
 javascript:
   $(function () {
-    $('.input_num').on('keyup',function(){
-      var single_item_num = Number($(this).parents('.daily_menu_detail_tr').find('.sngle_item_number').val());
-      var sub_item_num = Number($(this).parents('.daily_menu_detail_tr').find('.sub_item_number').val());
-      var total_manufacturing_number = single_item_num + sub_item_num
-      console.log(total_manufacturing_number);
-      $(this).parents('.daily_menu_detail_tr').find('.manufacturing_number').val(total_manufacturing_number);
-    });
 
     $(".show_case_table td select").each(function(index, element){
       var val = $(element).val();
