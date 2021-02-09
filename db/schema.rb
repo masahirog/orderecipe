@@ -71,6 +71,7 @@ ActiveRecord::Schema.define(version: 2021_01_21_140459) do
     t.integer "min_temperature"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "sozai_manufacturing_number", default: 0, null: false
   end
 
   create_table "date_manufacture_numbers", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

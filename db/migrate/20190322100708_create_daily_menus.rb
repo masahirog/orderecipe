@@ -8,6 +8,7 @@ class CreateDailyMenus < ActiveRecord::Migration[4.2][5.2]
       t.integer :max_temperature
       t.integer :min_temperature
       t.timestamps
+      t.integer :sozai_manufacturing_number,null:false,default:0
     end
   end
 end

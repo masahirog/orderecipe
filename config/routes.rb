@@ -56,6 +56,7 @@ Rails.application.routes.draw do
       get :get_menu_cost_price
       get :serving_kana
       get :serving
+      get :get_product
       # get :recipe_romaji
       get :get_products
       get :input_name_get_products

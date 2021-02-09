@@ -478,7 +478,6 @@ class OrdersController < ApplicationController
     redirect_to order, notice: "#{vendors.length} 件のFAXを送信しました。しばらくたったあとにFAXが届いているか確認してください。"
   end
 
-
   def get_management_id
     @product = Product.find_by(management_id: params[:management_id])
     respond_to do |format|

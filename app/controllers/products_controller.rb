@@ -9,6 +9,15 @@ class ProductsController < ApplicationController
     end
   end
 
+  def get_product
+    @product = Product.find(params[:product_id])
+    respond_to do |format|
+      format.html
+      format.json { render json: { bejihan_sozai_flag: @product.bejihan_sozai_flag } }
+    end
+  end
+
+
 
   def get_menu_cost_price
     @menu = Menu.includes(:menu_materials,:materials).find(params[:id])

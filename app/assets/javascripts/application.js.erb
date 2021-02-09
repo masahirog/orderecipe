@@ -36,13 +36,6 @@ $(document).on('turbolinks:load', function() {
     },5);
   });
 
-  $('#daily_menu_details_area').on('keyup','.input_num',function(){
-    var single_item_num = Number($(this).parents('.daily_menu_detail_tr').find('.sngle_item_number').val());
-    var sub_item_num = Number($(this).parents('.daily_menu_detail_tr').find('.sub_item_number').val());
-    var total_manufacturing_number = single_item_num + sub_item_num
-    console.log(total_manufacturing_number);
-    $(this).parents('.daily_menu_detail_tr').find('.manufacturing_number').val(total_manufacturing_number);
-  });
 
   $("#kurumesi_order_details_area").on('keyup','.kurumesi_order_details_product_number', function(){
     calculate_num();

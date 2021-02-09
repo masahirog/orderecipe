@@ -6,13 +6,18 @@
 tr.nested-fields.item.daily_menu_detail_tr class=class_name
   td.row_order
     = f.number_field :row_order, class: 'form-control',readonly:true
-  td
-    - if f.object.id.present?
-      = Product.find(f.object.product_id).name
-    - else
+  - if f.object.id.present?
+    td
+      = f.object.product.name
+    td.bejihan_sozai_flag_td
+      = "true" if f.object.product.bejihan_sozai_flag == true
+  - else
+    td
       = f.collection_select :product_id, @products, :id, :name, {include_blank:true},class:'form-control input_select_product'
+    td.bejihan_sozai_flag_td
+
   td
-    = f.number_field :for_single_item_number, class: 'form-control sngle_item_number input_num'
+    = f.number_field :for_single_item_number, class: 'form-control single_item_number input_num'
   td
     = f.number_field :for_sub_item_number, class: 'form-control sub_item_number input_num'
   td

@@ -1,6 +1,6 @@
 
 .clearfix
-  .col-md-4 style='float:left;'
+  .col-md-3 style='float:left;'
     label 日付　
     - if @yesterday
       = link_to "前日",@yesterday
@@ -13,13 +13,23 @@
       = link_to "翌日",new_daily_menu_path(start_time:@date+1)
 
     p = @daily_menu.start_time.strftime("%Y年%-m月%-d日(#{%w(日 月 火 水 木 金 土)[@daily_menu.start_time.wday]})")
-  .col-md-4 style='float:left;'
+  .col-md-3 style='float:left;'
     label ステータス
     p
       - if @daily_menu.fixed_flag == true
         |確定
       - else
         |まだ
+  .col-md-3 style='float:left;'
+    label 総製造数
+    p = @daily_menu.total_manufacturing_number
+
+  .col-md-3 style='float:left;'
+    label 惣菜在庫
+    p = @daily_menu.sozai_manufacturing_number
+
+
+
 .clearfix
   div style='float:left;width:30%;padding:10px;'
     label 天気
