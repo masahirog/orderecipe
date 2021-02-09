@@ -349,6 +349,7 @@ ActiveRecord::Schema.define(version: 2021_01_21_140459) do
     t.integer "cooking_rice_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "bejihan_sozai_flag", default: false, null: false
   end
 
   create_table "serving_plates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

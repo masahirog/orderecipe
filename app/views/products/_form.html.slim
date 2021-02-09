@@ -13,10 +13,13 @@
       = f.label :brand_id, "ブランド"
       = f.collection_select :brand_id, Brand.all, :id, :name, {selected: 111}, { class: "form-control"}
 
-
     .col-md-12.form-group
       = f.label :name, "商品名"
       = f.text_field :name, id: "menu_search", class:"name form-control"
+    .col-md-12.form-group
+      = f.label :product_category, "べじはんの惣菜フラグ"
+      = f.check_box :bejihan_sozai_flag, class: "form-control"
+
     / .col-md-12.form-group
     /   = f.label :short_name, "短縮名（例：9A←の9の部分を入力）"
     /   = f.text_field :short_name,class:"form-control"
