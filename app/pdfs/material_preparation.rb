@@ -65,19 +65,19 @@ class MaterialPreparation < Prawn::Document
           menu_materials_arr_cook << value
         elsif value[4] == '切出し'
           menu_materials_arr_cut << value
-        else
+        elsif value[4] == '切出/調理' || value[4] == '切出/スチ'
           menu_materials_arr_cook << value
           menu_materials_arr_cut << value
         end
       end
     end
     if sort == 1
-      i = 0
+      i = 4
     else
       i = 6
     end
-    menu_materials_arr_cut = menu_materials_arr_cut.sort { |a, b| a[i] <=> b[i]}
-    menu_materials_arr_cook = menu_materials_arr_cook.sort { |a, b| a[i] <=> b[i]}
+    menu_materials_arr_cut = menu_materials_arr_cut.sort { |a, b| a[0] <=> b[0]}.sort { |a, b| a[i] <=> b[i]}
+    menu_materials_arr_cook = menu_materials_arr_cook.sort { |a, b| a[0] <=> b[0]}.sort { |a, b| a[i] <=> b[i]}
     start_page_count = 0
     if mochiba == "0"
       text "切り出し  #{date}"
