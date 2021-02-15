@@ -33,7 +33,7 @@ li.add_li_material.col-md-12.list-group-item.item.nested-fields.field
       option[value="計量"]
 
   .select_post.col-md-1
-    = f.select :post, [["調理場", "調理場"],[ "切出し", "切出し"],[ "切出/調理", "切出/調理"],[ "切出/スチ", "切出/スチ"]],{include_blank: true}, { class: "form-control"}
+    = f.select :post, [["調理場", "調理場"],[ "切出し", "切出し"],["タレ計量","タレ計量"],[ "切出/調理", "切出/調理"],[ "切出/スチ", "切出/スチ"]],{include_blank: true}, { class: "form-control"}
   .remove_material.col-md-1
     = link_to_remove_association '削除', f, class: 'btn btn-danger' unless @base_menu.present?
   .col-md-12.menu_materials_li[style="padding:0;"]
