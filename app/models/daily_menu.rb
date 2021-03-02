@@ -7,10 +7,17 @@ class DailyMenu < ApplicationRecord
 
 
   validates :start_time, presence: true, uniqueness: true
+  before_save :total_check
   after_save :input_stock
   after_destroy :input_stock
   enum weather: {sunny:1, cloud:2,rain:3,strong_rain:4,taihoon:5,snow:6}
   #納品量の追加
+
+  def total_check
+    self.daily_menu_details.each do |dmd|
+      dmd.manufacturing_number = dmd.for_single_item_number + dmd.for_sub_item_number
+    end
+  end
 
   def input_stock
     #saveされたdailymenuの日付を取得
