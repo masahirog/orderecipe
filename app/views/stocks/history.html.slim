@@ -34,7 +34,7 @@ table.table
                 = f.number_field :end_day_stock_accounting_unit,value:'',class:'input_inventory_stock form-control',style:'width:120px;float:right;margin-right:10px;', :step => 0.01
 
             td
-
+= paginate @stocks
 sass:
   .stock-tooltip
     .tooltip

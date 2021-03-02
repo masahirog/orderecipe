@@ -8,17 +8,34 @@
         - @product.errors.full_messages.each do |message|
           li
             = message
-  .col-md-7
-    .col-md-12.form-group
+  .col-md-12.form-group
+    .col-md-2
       = f.label :brand_id, "ブランド"
-      = f.collection_select :brand_id, Brand.all, :id, :name, {selected: 111}, { class: "form-control"}
+      = f.collection_select :brand_id, Brand.all, :id, :name, {}, { class: "form-control"}
 
-    .col-md-12.form-group
+    .col-md-3
       = f.label :name, "商品名"
       = f.text_field :name, id: "menu_search", class:"name form-control"
-    .col-md-12.form-group
-      = f.label :product_category, "べじはんの惣菜フラグ"
+    .col-md-2
+      = f.label :sell_price, "販売価格"
+      .form-inline
+        .form-group
+          = f.number_field :sell_price, class:"price form-control"
+          .form-group
+            |  円
+    .col-md-2
+      = f.label :cost_price, "商品原価"
+      .form-inline
+        .form-group
+          = f.number_field :cost_price, :readonly => 'readonly', class:"product_cost_price form-control text-right"
+        .form-group
+          |  円
+    .col-md-1
+      = f.label :product_category, "べじはん惣菜"
       = f.check_box :bejihan_sozai_flag, class: "form-control"
+    .col-md-2
+      = f.label :cooking_rice_id, "使用ライス"
+      = f.collection_select :cooking_rice_id, CookingRice.all, :id, :name, {}, { class: "form-control"}
 
     / .col-md-12.form-group
     /   = f.label :short_name, "短縮名（例：9A←の9の部分を入力）"
@@ -35,41 +52,41 @@
     /   .col-md-3
     /     = f.label :status, "状況"
     /     = f.select :status, options_for_select(Product.statuses.keys.to_a,@product.status), {}, class: 'form-control'
-    .col-md-12.form-group
-      = f.label :cooking_rice_id, "使用ライス"
-      = f.collection_select :cooking_rice_id, CookingRice.all, :id, :name, {}, { class: "form-control"}
 
-    .col-md-12.form-group
-      = f.label :description, "説明文"
+  .col-md-12.form-group
+    .col-md-6
+      = f.label :serving_infomation, "盛付情報"
+      = f.text_area :serving_infomation, class:"form-control", style:"height:7em;"
+
+    .col-md-6
+      = f.label :description, "紹介文"
       = f.text_area :description, class:"form-control", style:"height:7em;"
-    / .col-md-12.form-group
-    /   = f.label :contents, "内容物"
-    /   = f.text_area :contents, class:"form-control", style:"height:7em;"
-    .col-md-12.form-group
-      .col-md-5
-        = f.label :sell_price, "販売価格"
-        .form-inline
-          .form-group
-            = f.number_field :sell_price, class:"price form-control"
-            .form-group
-              |  円
-      .col-md-5
-        = f.label :cost_price, "商品原価"
-        .form-inline
-          .form-group
-            = f.number_field :cost_price, :readonly => 'readonly', class:"product_cost_price form-control text-right"
-          .form-group
-            |  円
-  .col-md-5
-    = f.label :image, "写真"
-    = f.file_field :image
-    = f.hidden_field :image_cache
-    .form-group
-      - if @product.image?
-        = image_tag @product.image.to_s,class:"img-responsive",style:'max-height:450px;'
-        div
-          = f.label :remove_image,"削除する"
-          = f.check_box :remove_image
+
+  .col-md-12
+    .col-md-4
+      = f.label :image, "製造側用写真"
+      = f.file_field :image
+      = f.hidden_field :image_cache
+      .form-group
+        - if @product.image?
+          = image_tag @product.image.to_s,class:"img-responsive",style:'max-height:450px;'
+          div
+            = f.label :remove_image,"削除する"
+            = f.check_box :remove_image
+    .col-md-4
+      = f.label :display_image, "大皿写真"
+      = f.file_field :display_image
+      .form-group
+        - if @product.display_image?
+          = image_tag @product.display_image.to_s,class:"img-responsive",style:'max-height:450px;'
+    .col-md-4
+      = f.label :image_for_one_person, "一人前写真"
+      = f.file_field :image_for_one_person
+      .form-group
+        - if @product.image_for_one_person?
+          = image_tag @product.image_for_one_person.to_s,class:"img-responsive",style:'max-height:450px;'
+
+
   .menu-area.table-striped
     .col-md-12[style="margin-top:10px;"]
       label.col-md-3 メニュー名

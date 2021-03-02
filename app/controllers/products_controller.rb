@@ -69,7 +69,7 @@ class ProductsController < ApplicationController
       @menus = original_product.menus
     else
       @management_id = Product.bentoid()
-      @product = Product.new(sell_price:0)
+      @product = Product.new(sell_price:0,brand_id:111)
       @product.product_menus.build(row_order: 0)
       @menus = []
     end
@@ -285,7 +285,8 @@ class ProductsController < ApplicationController
   private
     def product_create_update
       params.require(:product).permit(:name,:memo, :management_id,:short_name,:symbol, :sell_price, :description, :contents, :image,:brand_id,:product_category,:bejihan_sozai_flag,
-                      :status,:remove_image, :image_cache, :cost_price,:cooking_rice_id, product_menus_attributes: [:id, :product_id, :menu_id,:row_order, :_destroy,
+                      :status,:remove_image, :image_cache,:display_image,:image_for_one_person,:serving_infomation,
+                      :cost_price,:cooking_rice_id, product_menus_attributes: [:id, :product_id, :menu_id,:row_order, :_destroy,
                       menu_attributes:[:name ]])
     end
 end

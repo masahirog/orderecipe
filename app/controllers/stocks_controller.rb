@@ -281,16 +281,9 @@ class StocksController < ApplicationController
 
   def test_hash
     today = Date.today
-    if @history == true
-      @stocks_hash = Stock.where(material_id:@material.id).order('date DESC').map{|stock|[stock.date, stock]}.to_h
-    else
-      @stocks_hash = Stock.where(material_id:@material.id).order('date DESC').limit(20).map{|stock|[stock.date, stock]}.to_h
-    end
-    if @stocks_hash.keys.include?(today)
-      @dates = @stocks_hash.keys.sort
-    else
-      @dates = @stocks_hash.keys.push(today).sort
-    end
+    @stocks = Stock.where(material_id:@material.id).order('date DESC').page(params[:page]).per(20)
+    @stocks_hash = @stocks.map{|stock|[stock.date, stock]}.to_h
+    @dates = @stocks_hash.keys.sort
     @hash_date = {}
     @hash = {}
     menu_ids = MenuMaterial.where(material_id:@material.id).map{|mm|mm.menu_id}.uniq

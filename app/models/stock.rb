@@ -76,7 +76,7 @@ class Stock < ApplicationRecord
     #dateの対象となる、kurumesi_orderとdaily_menuかつ、fixしているものを、product_idと製造数を配列で習得
     date_manufacturing_products(date)
     #全部の弁当と製造数をeachでまわして、materialのuniqと使用量のハッシュ形式にする
-    self.calculate_date_all_material_used_amount()
+    calculate_date_all_material_used_amount()
     #materialのハッシュをまわしていく、このとき単位の変換を行なう。dateとmaterialに対応するstockがすでにあれば更新の配列に、なければ新規の配列にぶちこみ、最後にbulk_insertで終了
     @hash.each do |data|
       material_id = data[0]
@@ -108,7 +108,26 @@ class Stock < ApplicationRecord
 
   def self.initialize_stocks(previous_day)
     stocks = Stock.where(date:previous_day)
-    stocks.update_all(used_amount:0)
+    update_stocks = []
+    stocks.each do |stock|
+      stock.used_amount = 0
+      end_day_stock = stock.start_day_stock + stock.delivery_amount
+      stock.end_day_stock = end_day_stock
+      inventory_stocks = Stock.where(material_id:stock.material_id).where('date > ?', previous_day).where(inventory_flag:true)
+      if inventory_stocks.present?
+        #date以降で棚卸ししてたら、在庫を動かす処理はとくになし
+      else
+        date_later_stocks = Stock.where(material_id:stock.material_id).where('date > ?', previous_day).order('date ASC')
+        date_later_stocks.each_with_index do |dls,i|
+          dls.start_day_stock = end_day_stock
+          dls.end_day_stock = dls.start_day_stock - dls.used_amount + dls.delivery_amount
+          end_day_stock = dls.end_day_stock
+          update_stocks << dls
+        end
+      end
+      update_stocks << stock
+    end
+    Stock.import update_stocks, on_duplicate_key_update:[:used_amount,:end_day_stock,:start_day_stock] if update_stocks.present?
   end
 
   def self.date_manufacturing_products(date)

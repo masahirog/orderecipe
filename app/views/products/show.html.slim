@@ -22,40 +22,46 @@
 
 
 .amount_number.col-md-12
-.col-md-6
   table.table
-    tr
-      th.active.col-md-4 商品名
-      td = @product.name
-    tr
-      th.active.col-md-4 短縮名
-      td = @product.short_name
-    tr
-      th.active.col-md-4 記号
-      td = @product.symbol
+    thead
+      tr
+        th 商品名
+        th 総菜？
+        th 販売価格
+        th 原価価格
+    tbody
+      tr
+        td = @product.name
+        td = 'yes' if @product.bejihan_sozai_flag == true
+        td = "#{@product.sell_price} 円"
+        td = "#{@product.cost_price} 円"
+  table.table
+    thead
+      tr
+        th 商品紹介
+        th 盛り付け情報
+    tbody
+      tr
+        td = text_url_to_link(simple_format(h(@product.description))).html_safe
+        td =simple_format( @product.serving_infomation)
+  table.table
+    thead
+      tr
+        th 製造側写真
+        th 大皿写真
+        th 1人前写真
+    tbody
+      tr
+        td
+          = link_to @product.image.to_s, "data-lightbox" => @product.image.to_s do
+            = image_tag @product.image.to_s ,class:"text-center img-responsive center-block",style:'max-height:150px;'
+        td
+          = link_to @product.display_image.to_s, "data-lightbox" => @product.display_image.to_s do
+            = image_tag @product.display_image.to_s ,class:"text-center img-responsive center-block",style:'max-height:150px;'
+        td
+          = link_to @product.image_for_one_person.to_s, "data-lightbox" => @product.image_for_one_person.to_s do
+            = image_tag @product.image_for_one_person.to_s ,class:"text-center img-responsive center-block",style:'max-height:150px;'
 
-    / tr
-    /   th.active.col-md-4 bentoID
-    /   td = @product.management_id
-    tr
-      th.active.col-md-4 べじはんの惣菜？
-      td = 'yes' if @product.bejihan_sozai_flag == true
-
-    tr
-      th.active.col-md-4 使用ライス
-      td = @product.cooking_rice.name
-    tr
-      th.active.col-md-4 販売価格
-      td = "#{@product.sell_price} 円"
-    tr
-      th.active.col-md-4 原価価格
-      td = "#{@product.cost_price} 円"
-    tr
-      th.active.col-md-4 説明文
-      td = text_url_to_link(simple_format(h(@product.description))).html_safe
-    tr
-      th.active.col-md-4 内容物
-      td =simple_format( @product.contents)
     / tr
     /   th.active.col-md-4 アレルギー
     /   td = @allergies.join('、')
@@ -66,13 +72,11 @@
     /   th.active.col-md-4 カロリー
     /   td = "#{MenuMaterial.where(menu_id:@product.menus.ids).sum(:calorie).round(2)} kcal"
 
-.col-md-4.text-center
-  = image_tag @product.image.to_s ,class:"text-center img-responsive center-block",style:'max-height:450px;'
 .col-md-12.active[style="padding:10px;"]
   label.col-md-2 メニュー名
   label.col-md-1 原価
-  label.col-md-2 調理
-  label.col-md-2 盛付
+  label.col-md-2 前日調理
+  label.col-md-2 当日調理
   .col-md-5
     label.col-md-2 タレ
     label.col-md-4 食材資材名
@@ -89,18 +93,9 @@ ul.list-group[style="list-style-type:none;"]
       .col-md-1
         = pm.menu.cost_price
       .first_tr_td.col-md-2
-        - if pm.menu.cook_the_day_before.present?
-          .col-md-12
-            strong 前日
-            = text_url_to_link(simple_format(h(pm.menu.cook_the_day_before))).html_safe
-        - if pm.menu.cook_the_day_before.present? && pm.menu.cook_on_the_day.present?
-          .col-md-12 ーーーーーーーーーーーー
-        - if pm.menu.cook_on_the_day.present?
-          .col-md-12
-            strong 当日
-            = text_url_to_link(simple_format(h(pm.menu.cook_on_the_day))).html_safe
+        = text_url_to_link(simple_format(h(pm.menu.cook_the_day_before))).html_safe
       .first_tr_td.col-md-2
-        = simple_format(pm.menu.serving_memo)
+        = text_url_to_link(simple_format(h(pm.menu.cook_on_the_day))).html_safe
       - i = 1
       - u = pm.menu.materials.length
       .first_tr_td.col-md-5

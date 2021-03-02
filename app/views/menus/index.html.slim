@@ -7,8 +7,6 @@
     .col-md-2
       = select_tag :category, options_for_select(Menu.pluck(:category).uniq,params[:category]), include_blank: true, class:"form-control"
     .col-md-2
-      = select_tag :confirm_flag,options_for_select([['未確定',0],['確定',1]],params[:confirm_flag]), include_blank: true, class:"form-control"
-    .col-md-2
       = select_tag :order,options_for_select([['原価高い順','cost_price DESC'],['原価低い順','cost_price ASC']],params[:order]), include_blank: true, class:"form-control",style:"width:150px;"
     .col-md-2
       = submit_tag "検索" ,class:"btn btn-primary"
@@ -18,7 +16,6 @@ table.table
   thead
     tr
       th オリジナルID
-      th 確定
       th メニュー名
       th カテゴリ
       th 画像
@@ -41,8 +38,6 @@ table.table
 
           - else
             = link_to menu.base_menu_id,menu_path(id:menu.base_menu_id)
-        td
-          = "OK" if menu.confirm_flag == true
         td
           = link_to "#{menu.name}", menu_path(menu)
         td

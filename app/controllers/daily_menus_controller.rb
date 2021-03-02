@@ -1,7 +1,12 @@
 class DailyMenusController < ApplicationController
   before_action :set_daily_menu, only: [:show, :edit, :update, :destroy]
   def index
-    @daily_menus = DailyMenu.includes(daily_menu_details:[:product]).all
+    if params[:start_date].present?
+      date = params[:start_date]
+    else
+      date = Date.today
+    end
+    @daily_menus = DailyMenu.where(start_time:date.in_time_zone.all_month).includes(daily_menu_details:[:product])
   end
 
   def show
@@ -150,7 +155,6 @@ class DailyMenusController < ApplicationController
       format.html
       format.pdf do
         pdf = MaterialPreparation.new(@bentos_num_h,date,mochiba,lang,sort)
-
         send_data pdf.render,
         filename:    "#{date}.pdf",
         type:        "application/pdf",
@@ -160,7 +164,25 @@ class DailyMenusController < ApplicationController
   end
 
   def copy
-    date = params[:date]
+    copied_menu_id = params[:daily_menu_id]
+    copied_daily_menu = DailyMenu.find(copied_menu_id)
+    dates = params[:dates].compact.reject(&:empty?)
+    if dates.empty?
+      count = 0
+    else
+      count = 0
+      dates.each do |date|
+        daily_menu = DailyMenu.find_by(start_time:date)
+        if daily_menu.present?
+        else
+          copy_daily_menu = copied_daily_menu.deep_clone(include: [:daily_menu_details])
+          copy_daily_menu.start_time = date
+          copy_daily_menu.save
+          count += 1
+        end
+      end
+    end
+    redirect_to daily_menus_path, notice: "#{count}日間、同じメニューをコピーして献立に反映しました！"
   end
   private
     def set_daily_menu

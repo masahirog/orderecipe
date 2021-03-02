@@ -16,6 +16,9 @@ class CreateProducts < ActiveRecord::Migration[4.2]
       t.integer :cooking_rice_id,null:false
       t.timestamps null: false
       t.boolean :bejihan_sozai_flag, null: false, default: false
+      t.string :display_image
+      t.string :image_for_one_person
+      t.text :serving_infomation
     end
   end
 end

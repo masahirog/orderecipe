@@ -8,6 +8,7 @@ class DailyMenu < ApplicationRecord
 
   validates :start_time, presence: true, uniqueness: true
   after_save :input_stock
+  after_destroy :input_stock
   enum weather: {sunny:1, cloud:2,rain:3,strong_rain:4,taihoon:5,snow:6}
   #納品量の追加
 
@@ -17,4 +18,5 @@ class DailyMenu < ApplicationRecord
     previous_day = self.start_time - 1
     Stock.calculate_stock(date,previous_day)
   end
+
 end
