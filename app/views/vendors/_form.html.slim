@@ -1,3 +1,21 @@
+button type="button" class="btn btn-primary" data-toggle="modal" data-target="#used_amount_modal" style='' 業者使用量
+#used_amount_modal.modal.fade tabindex="-1"
+  = form_tag(monthly_used_amount_vendors_path,method: :get) do
+    = hidden_field_tag :vendor_id,@vendor.id
+    .modal-dialog style='width:1000px;'
+      .modal-content
+        .modal-header
+          h4.modal-title 年月を選択する
+        .modal-body
+          .col-md-2
+            = select_tag :year, options_for_select([2019,2020,2021]), class: "form-control"
+          .col-md-2
+            = select_tag :month, options_for_select(1..12), class: "form-control"
+
+        .modal-footer
+          = submit_tag "計算する" ,class:"btn btn-primary"
+
+
 = form_for @vendor do |f|
   - if @vendor.errors.any?
     #error_explanation

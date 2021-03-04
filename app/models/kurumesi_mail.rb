@@ -174,6 +174,8 @@ class KurumesiMail < ApplicationRecord
         Brand.suzukaze_order_make(order_details_arr,line,product_name,num,brand_id)
       elsif brand_id == 61
         Brand.taikai_order_make(order_details_arr,line,product_name,num,brand_id)
+      elsif brand_id == 81
+        Brand.tokishirazu_order_make(order_details_arr,line,product_name,num,brand_id)
       end
     end
     #重複はまとめる！

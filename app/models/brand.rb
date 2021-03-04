@@ -20,7 +20,7 @@ class Brand < ApplicationRecord
         # 茶の有無
         if line.include?('ペット茶')
           order_details_arr << {product_id:3791,num:num}
-        elsif line.include?('缶茶')
+        elsif line.include?('/185ml缶茶')
           order_details_arr << {product_id:3801,num:num}
         end
       end
@@ -52,7 +52,7 @@ class Brand < ApplicationRecord
           # 茶の有無
           if line.include?('ペット茶')
             order_details_arr << {product_id:3791,num:num}
-          elsif line.include?('缶茶')
+          elsif line.include?('/185ml缶茶')
             order_details_arr << {product_id:3801,num:num}
           end
         end
@@ -72,7 +72,7 @@ class Brand < ApplicationRecord
         # 茶の有無
         if line.include?('ペット茶')
           order_details_arr << {product_id:3791,num:num}
-        elsif line.include?('缶茶')
+        elsif line.include?('/185ml缶茶')
           order_details_arr << {product_id:3801,num:num}
         end
       end
@@ -92,7 +92,7 @@ class Brand < ApplicationRecord
         # 茶の有無
         if line.include?('ペット茶')
           order_details_arr << {product_id:3791,num:num}
-        elsif line.include?('缶茶')
+        elsif line.include?('/185ml缶茶')
           order_details_arr << {product_id:3801,num:num}
         end
       end
@@ -123,9 +123,33 @@ class Brand < ApplicationRecord
           # 茶の有無
           if line.include?('ペット茶')
             order_details_arr << {product_id:3791,num:num}
-          elsif line.include?('缶茶')
+          elsif line.include?('/185ml缶茶')
             order_details_arr << {product_id:3801,num:num}
           end
+        end
+      end
+    end
+  end
+
+  # ときしらず
+  def self.tokishirazu_order_make(order_details_arr,line,product_name,num,brand_id)
+    if line.index('】').present?
+      product_name_end_kakko = line.index('】') - 1
+      if line.include?('大盛')
+        product_name = '大盛' + line[0..product_name_end_kakko]
+      else
+        product_name = line[0..product_name_end_kakko]
+      end
+      product = Product.where(brand_id:[brand_id,41]).find_by(name:product_name)
+      if product.present?
+        product_id = product.id
+        num = line.match(/×(.+)食/)[1].to_i
+        order_details_arr << {product_id:product_id,num:num}
+        # 茶の有無
+        if line.include?('ペット茶')
+          order_details_arr << {product_id:3791,num:num}
+        elsif line.include?('/185ml缶茶')
+          order_details_arr << {product_id:3801,num:num}
         end
       end
     end

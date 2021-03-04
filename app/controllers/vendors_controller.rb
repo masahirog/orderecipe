@@ -47,6 +47,39 @@ class VendorsController < ApplicationController
     end
   end
 
+  def monthly_used_amount
+    @material_hash = Hash.new { |h,k| h[k] = Hash.new { |h,k| h[k] = {} } }
+    @vendor_hash = {}
+    year = params[:year].to_i
+    month = params[:month].to_i
+    date = Date.new(year,month,1)
+    # material_ids = vendor.materials.ids
+    # used_product_ids = Product.joins(product_menus:[menu:[:menu_materials]]).where(:product_menus => {:menus => {:menu_materials => {material_id:material_ids}}}).ids
+    bejihan_souzais = DailyMenuDetail.joins(:daily_menu,:product).where(:daily_menus => {start_time:date.in_time_zone.all_month,fixed_flag:true}).group('product_id').sum(:manufacturing_number)
+    kurumesi_bentos = KurumesiOrderDetail.joins(:kurumesi_order,:product).where(:kurumesi_orders => {start_time:date.in_time_zone.all_month,canceled_flag:false}).group('product_id').sum(:number)
+    month_bentos = bejihan_souzais.merge(kurumesi_bentos)
+    month_bentos.each do |product_num|
+      product = Product.includes(menus:[menu_materials:[:material]]).find(product_num[0])
+      product.product_menus.each do |pm|
+        menu = pm.menu
+        menu.menu_materials.each do |mm|
+          if @material_hash[mm.material.vendor_id][mm.material_id].present?
+            @material_hash[mm.material.vendor_id][mm.material_id]['amount'] += (mm.amount_used * product_num[1])
+            @material_hash[mm.material.vendor_id][mm.material_id]['cost'] += (mm.amount_used * product_num[1] * mm.material.cost_price).round(2)
+          else
+            @material_hash[mm.material.vendor_id][mm.material_id]['amount'] = (mm.amount_used * product_num[1])
+            @material_hash[mm.material.vendor_id][mm.material_id]['cost'] = (mm.amount_used * product_num[1] * mm.material.cost_price).round(2)
+          end
+          if @vendor_hash[mm.material.vendor_id].present?
+            @vendor_hash[mm.material.vendor_id] += (mm.amount_used * product_num[1] * mm.material.cost_price).round(2)
+          else
+            @vendor_hash[mm.material.vendor_id] = (mm.amount_used * product_num[1] * mm.material.cost_price).round(2)
+          end
+        end
+      end
+    end
+    binding.pry
+  end
 
   private
   def vendor_params
