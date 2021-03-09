@@ -126,32 +126,6 @@ ActiveRecord::Schema.define(version: 2021_01_21_140459) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "kurumesi_admin_data", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.string "store_name"
-    t.date "delivery_date"
-    t.time "pick_time"
-    t.string "delivery_time"
-    t.string "delivery_address"
-    t.text "products"
-    t.string "order_price"
-    t.string "total_price"
-    t.string "delivery_company"
-    t.string "delivery_name"
-    t.string "payment"
-    t.datetime "order_date"
-    t.string "status"
-    t.integer "order_id"
-    t.integer "member_id"
-    t.string "orderer_name"
-    t.string "orderer_company"
-    t.string "orderer_mail"
-    t.string "orderer_tell"
-    t.string "ordered_site"
-    t.string "ordered_type"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "kurumesi_mails", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "kurumesi_order_id"
     t.string "subject"
@@ -271,13 +245,13 @@ ActiveRecord::Schema.define(version: 2021_01_21_140459) do
     t.float "cost_price"
     t.string "food_label_name"
     t.string "used_additives", default: "", null: false
+    t.boolean "confirm_flag", default: false, null: false
     t.text "cook_on_the_day"
     t.string "image"
     t.integer "base_menu_id"
+    t.integer "serving_cost", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "cutout_weight", default: 0, null: false
-    t.integer "cooking_weight", default: 0, null: false
   end
 
   create_table "monthly_stocks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -351,9 +325,6 @@ ActiveRecord::Schema.define(version: 2021_01_21_140459) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "bejihan_sozai_flag", default: false, null: false
-    t.string "display_image"
-    t.string "image_for_one_person"
-    t.text "serving_infomation"
   end
 
   create_table "serving_plates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -377,6 +348,19 @@ ActiveRecord::Schema.define(version: 2021_01_21_140459) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["date", "material_id"], name: "index_stocks_on_date_and_material_id", unique: true
+  end
+
+  create_table "stores", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "name"
+    t.string "address"
+    t.string "tel"
+    t.integer "sales_type", default: 1, null: false
+    t.string "staff_name"
+    t.text "memo"
+    t.boolean "jfd_flag", default: false, null: false
+    t.integer "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "users", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
