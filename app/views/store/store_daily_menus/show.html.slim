@@ -1,11 +1,9 @@
+h4 = @store_daily_menu.start_time.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@store_daily_menu.start_time.wday]})")
+.pull-right
+  label 発注合計数
+  p = @store_daily_menu.total_num
 
-.clearfix
-  .col-md-3 style='float:left;'
-    label 総製造数
-    p = @store_daily_menu.total_num
-
-.form-group.col-md-12.clearfix
-  = link_to "編集する", edit_store_store_daily_menu_path(@store_daily_menu),class:'btn btn-primary',style:'float:left;margin-left:20px;margin-top:10px;'
+= link_to "編集する", edit_store_store_daily_menu_path(@store_daily_menu),class:'btn btn-primary',style:'float:left;margin-left:20px;margin-top:10px;'
 
 table.table.table-list
   thead
