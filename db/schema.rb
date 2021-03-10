@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_21_140459) do
+ActiveRecord::Schema.define(version: 2021_03_09_171100) do
 
   create_table "brands", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name", null: false
@@ -245,13 +245,13 @@ ActiveRecord::Schema.define(version: 2021_01_21_140459) do
     t.float "cost_price"
     t.string "food_label_name"
     t.string "used_additives", default: "", null: false
-    t.boolean "confirm_flag", default: false, null: false
     t.text "cook_on_the_day"
     t.string "image"
     t.integer "base_menu_id"
-    t.integer "serving_cost", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "cutout_weight", default: 0, null: false
+    t.integer "cooking_weight", default: 0, null: false
   end
 
   create_table "monthly_stocks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -325,6 +325,9 @@ ActiveRecord::Schema.define(version: 2021_01_21_140459) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "bejihan_sozai_flag", default: false, null: false
+    t.string "display_image"
+    t.string "image_for_one_person"
+    t.text "serving_infomation"
   end
 
   create_table "serving_plates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -350,14 +353,42 @@ ActiveRecord::Schema.define(version: 2021_01_21_140459) do
     t.index ["date", "material_id"], name: "index_stocks_on_date_and_material_id", unique: true
   end
 
+  create_table "store_daily_menu_details", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "store_daily_menu_id", null: false
+    t.integer "product_id", null: false
+    t.integer "number", default: 0, null: false
+    t.float "price", default: 0.0, null: false
+    t.integer "total_price", default: 0, null: false
+    t.integer "row_order", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "store_daily_menus", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "daily_menu_id"
+    t.integer "store_id"
+    t.date "start_time"
+    t.integer "total_num", default: 0, null: false
+    t.boolean "fixed_flag", default: false, null: false
+    t.integer "weather"
+    t.integer "max_temperature"
+    t.integer "min_temperature"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "stores", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.string "name"
-    t.string "address"
-    t.string "tel"
-    t.integer "sales_type", default: 1, null: false
+    t.string "name", null: false
+    t.string "phone"
+    t.string "fax"
+    t.string "email"
+    t.string "zip"
+    t.text "address"
     t.string "staff_name"
+    t.string "staff_phone"
+    t.string "staff_email"
     t.text "memo"
-    t.boolean "jfd_flag", default: false, null: false
+    t.boolean "jfd", default: false, null: false
     t.integer "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -377,6 +408,7 @@ ActiveRecord::Schema.define(version: 2021_01_21_140459) do
     t.datetime "last_mail_check"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "admin", default: false, null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end

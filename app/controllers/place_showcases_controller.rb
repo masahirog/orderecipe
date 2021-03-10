@@ -1,4 +1,4 @@
-class PlaceShowcasesController < ApplicationController
+class PlaceShowcasesController < AdminController
   before_action :set_place_showcase, only: [:show, :edit, :update, :destroy]
 
   def index

@@ -1,4 +1,4 @@
-class CustomerOpinionsController < ApplicationController
+class CustomerOpinionsController < AdminController
   before_action :set_customer_opinion, only: [:show, :edit, :update, :destroy]
 
   def index

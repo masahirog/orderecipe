@@ -1,4 +1,4 @@
-class VendorsController < ApplicationController
+class VendorsController < AdminController
   def index
     @vendors = Vendor.all
     if params[:month_used_price] == 'true'
@@ -78,7 +78,6 @@ class VendorsController < ApplicationController
         end
       end
     end
-    binding.pry
   end
 
   private

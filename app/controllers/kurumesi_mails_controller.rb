@@ -1,4 +1,4 @@
-class KurumesiMailsController < ApplicationController
+class KurumesiMailsController < AdminController
   before_action :set_kurumesi_mail, only: [:show, :edit, :update, :destroy]
 
   def index

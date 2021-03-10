@@ -1,4 +1,4 @@
-class MenusController < ApplicationController
+class MenusController < AdminController
   def get_cost_price
     @material = Material.includes(:vendor).find(params[:id])
     respond_to do |format|

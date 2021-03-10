@@ -1,4 +1,4 @@
-class ServingPlatesController < ApplicationController
+class ServingPlatesController < AdminController
   before_action :set_serving_plate, only: [:show, :edit, :update, :destroy]
 
   def index

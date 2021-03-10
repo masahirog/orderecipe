@@ -1,4 +1,9 @@
 Rails.application.routes.draw do
+  namespace :store do
+    resources :store_daily_menus, only:[:index, :show,:edit,:update]
+    resources :products
+  end
+
   devise_for :users
   root 'kurumesi_orders#index'
   post 'orders/new' => 'orders#new'
@@ -95,6 +100,7 @@ Rails.application.routes.draw do
   end
   resources :daily_menus do
     collection do
+      get :store_reflect
       get :copy
       get :material_preparation
       get :preparation_all
@@ -130,4 +136,5 @@ Rails.application.routes.draw do
   resources :brands
   resources :place_showcases
   resources :serving_plates
+  resources :stores
 end

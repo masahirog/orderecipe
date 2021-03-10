@@ -20,7 +20,7 @@ class Brand < ApplicationRecord
         # 茶の有無
         if line.include?('ペット茶')
           order_details_arr << {product_id:3791,num:num}
-        elsif line.include?('/185ml缶茶')
+        elsif line.include?('缶茶')
           order_details_arr << {product_id:3801,num:num}
         end
       end
@@ -52,7 +52,7 @@ class Brand < ApplicationRecord
           # 茶の有無
           if line.include?('ペット茶')
             order_details_arr << {product_id:3791,num:num}
-          elsif line.include?('/185ml缶茶')
+          elsif line.include?('缶茶')
             order_details_arr << {product_id:3801,num:num}
           end
         end
@@ -72,7 +72,7 @@ class Brand < ApplicationRecord
         # 茶の有無
         if line.include?('ペット茶')
           order_details_arr << {product_id:3791,num:num}
-        elsif line.include?('/185ml缶茶')
+        elsif line.include?('缶茶')
           order_details_arr << {product_id:3801,num:num}
         end
       end
@@ -92,7 +92,7 @@ class Brand < ApplicationRecord
         # 茶の有無
         if line.include?('ペット茶')
           order_details_arr << {product_id:3791,num:num}
-        elsif line.include?('/185ml缶茶')
+        elsif line.include?('缶茶')
           order_details_arr << {product_id:3801,num:num}
         end
       end
@@ -123,7 +123,7 @@ class Brand < ApplicationRecord
           # 茶の有無
           if line.include?('ペット茶')
             order_details_arr << {product_id:3791,num:num}
-          elsif line.include?('/185ml缶茶')
+          elsif line.include?('缶茶')
             order_details_arr << {product_id:3801,num:num}
           end
         end
@@ -148,7 +148,7 @@ class Brand < ApplicationRecord
         # 茶の有無
         if line.include?('ペット茶')
           order_details_arr << {product_id:3791,num:num}
-        elsif line.include?('/185ml缶茶')
+        elsif line.include?('缶茶')
           order_details_arr << {product_id:3801,num:num}
         end
       end

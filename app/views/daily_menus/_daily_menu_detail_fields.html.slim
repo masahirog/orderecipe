@@ -15,7 +15,10 @@ tr.nested-fields.item.daily_menu_detail_tr class=class_name
     td
       = f.collection_select :product_id, @products, :id, :name, {include_blank:true},class:'form-control input_select_product'
     td.bejihan_sozai_flag_td
-
+  td.higasinakano
+    = @store_daily_menus[1][f.object.product_id][:number] if @store_daily_menus[1][f.object.product_id]
+  td.koenji
+    = @store_daily_menus[2][f.object.product_id][:number] if @store_daily_menus[2][f.object.product_id]
   td
     = f.number_field :for_single_item_number, class: 'form-control single_item_number input_num'
   td

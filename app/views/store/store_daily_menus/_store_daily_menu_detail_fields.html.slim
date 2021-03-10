@@ -1,0 +1,11 @@
+- if f.object.id.present?
+  -class_name = "tr_#{f.object.product_id}"
+- else
+  -class_name = ''
+
+tr.nested-fields.item.daily_menu_detail_tr class=class_name
+  td
+    = link_to f.object.product.name,store_product_path(f.object.product),target:'_blank'
+
+  td
+    = f.number_field :number, class: 'form-control'

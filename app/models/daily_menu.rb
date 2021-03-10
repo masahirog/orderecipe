@@ -4,7 +4,7 @@ class DailyMenu < ApplicationRecord
   accepts_nested_attributes_for :daily_menu_details, allow_destroy: true
   has_many :daily_menu_photos, dependent: :destroy
   accepts_nested_attributes_for :daily_menu_photos
-
+  has_many :store_daily_menus
 
   validates :start_time, presence: true, uniqueness: true
   before_save :total_check

@@ -1,4 +1,4 @@
-class OrdersController < ApplicationController
+class OrdersController < AdminController
   def material_reload
     @material = Material.find(params[:material_id])
     date = params[:date]

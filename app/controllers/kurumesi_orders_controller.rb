@@ -1,4 +1,4 @@
-class KurumesiOrdersController < ApplicationController
+class KurumesiOrdersController < AdminController
   before_action :set_kurumesi_order, only: [ :edit, :update, :destroy]
   # def collation_sheet
   #   date = params[:date]

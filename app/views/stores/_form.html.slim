@@ -1,0 +1,45 @@
+= form_for @store do |f|
+  - if @store.errors.any?
+    #error_explanation
+      h2 = "#{pluralize(@store.errors.count, "error")} prohibited this store from being saved:"
+      ul
+        - @store.errors.full_messages.each do |message|
+          li = message
+  .form-group
+    = f.label :name, "店名"
+    = f.text_field :name, required: true, class:"form-control"
+  .form-group
+    = f.label :phone, "電話番号"
+    = f.text_field :phone, class:"form-control"
+  .form-group
+    = f.label :fax, "FAX番号"
+    = f.text_field :fax, class:"form-control"
+  .form-group
+    = f.label :email, "メールアドレス"
+    = f.text_field :email, class:"form-control"
+  .form-group
+    = f.label :zip, "郵便番号"
+    = f.text_field :zip, class:"form-control"
+  .form-group
+    = f.label :address, "住所"
+    = f.text_field :address, class:"form-control"
+  .form-group
+    = f.label :staff_name, "担当者名"
+    = f.text_field :staff_name, class:"form-control"
+  .form-group
+    = f.label :staff_phone, "担当者電話番号"
+    = f.text_field :staff_phone, class:"form-control"
+  .form-group
+    = f.label :staff_email, "担当者メールアドレス"
+    = f.text_field :staff_email, class:"form-control"
+  .form-group
+    = f.label :memo, "メモ"
+    = f.text_area :memo, class:"form-control",style:"height:10em;"
+  .form-group
+    = f.label :jfd, "直営店舗？"
+    = f.check_box :jfd, class:"form-control"
+  .form-group
+    = f.label :user_id, "管理アカウント"
+    = f.collection_select :user_id, User.all, :id, :email, {}, { class: "form-control"}
+
+  .actions = f.submit

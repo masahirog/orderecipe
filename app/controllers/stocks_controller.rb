@@ -1,4 +1,4 @@
-class StocksController < ApplicationController
+class StocksController < AdminController
   # def inventory
   #   @date = Date.parse(params[:date])
   #   @materials = Material.order('vendor_id').search(params).where(unused_flag:false,stock_management_flag:true).includes(:vendor).page(params[:page]).per(20)

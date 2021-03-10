@@ -1,4 +1,4 @@
-class OrderMaterialsController < ApplicationController
+class OrderMaterialsController < AdminController
   before_action :set_order_material, only: [:show, :edit, :update, :destroy]
 
   def index

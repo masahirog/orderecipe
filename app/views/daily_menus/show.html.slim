@@ -148,7 +148,7 @@
           .modal-footer
             button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
             = submit_tag "表示する" ,class:"btn btn-primary"
-  = link_to '献立の削除', daily_menu_path(@daily_menu), method: :delete,class:"btn btn-danger",style:'float:right;margin-top:10px;margin-left:20px;', data: { confirm: "献立を削除してよろしいですか？" }
+  = link_to '献立の削除', daily_menu_path(@daily_menu), method: :delete,class:"btn btn-danger",style:'float:right;margin-top:10px;margin-left:10px;', data: { confirm: "献立を削除してよろしいですか？" }
   button type="button" class="btn btn-default" data-toggle="modal" data-target="#copy_menu" style='float:right;margin-top:10px;' 同じ献立を別日に反映
   #copy_menu.modal.fade tabindex="-1"
     = form_tag(copy_daily_menus_path,method: :get) do
@@ -164,6 +164,29 @@
                   tr
                     td = "日付 #{i+1}"
                     td = date_field_tag 'dates[]',{},class:'form-control'
+          .modal-footer
+            button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
+            = submit_tag "作成する" ,class:"btn btn-primary"
+  button type="button" class="btn btn-success" data-toggle="modal" data-target="#store_reflect_modal" style='float:right;margin-top:10px;margin-right:10px;' 各店舗の献立更新
+  #store_reflect_modal.modal.fade tabindex="-1"
+    = form_tag(store_reflect_daily_menus_path,method: :get) do
+      = number_field_tag 'daily_menu_id',@daily_menu.id
+      .modal-dialog
+        .modal-content
+          .modal-header
+            h4.modal-title 反映させる店舗を選択してください
+          .modal-body
+            table.table
+              tbody
+                - @stores.each_with_index do |store,i|
+                  tr
+                    td
+                      = store.name
+                      = hidden_field_tag "stores[#{i}][id]",store.id
+                    td
+                      = hidden_field_tag "stores[#{i}][reflect]", false
+                      = check_box_tag "stores[#{i}][reflect]",true,false, {}
+
           .modal-footer
             button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
             = submit_tag "作成する" ,class:"btn btn-primary"

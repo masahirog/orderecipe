@@ -1,4 +1,4 @@
-class DailyMenusController < ApplicationController
+class DailyMenusController < AdminController
   before_action :set_daily_menu, only: [:show, :edit, :update, :destroy]
   def index
     if params[:start_date].present?
@@ -10,6 +10,7 @@ class DailyMenusController < ApplicationController
   end
 
   def show
+    @stores = Store.all
     @date = @daily_menu.start_time
     @tommoroww = DailyMenu.find_by(start_time:@date+1)
     @yesterday = DailyMenu.find_by(start_time:@date-1)
@@ -38,6 +39,13 @@ class DailyMenusController < ApplicationController
   end
 
   def edit
+    store_daily_menus = @daily_menu.store_daily_menus.includes(:store_daily_menu_details)
+    @store_daily_menus = Hash.new { |h,k| h[k] = {} }
+    store_daily_menus.each do |sdm|
+      sdm.store_daily_menu_details.each do |sdmd|
+        @store_daily_menus[sdm.store_id][sdmd.product_id] = {number:sdmd.number}
+      end
+    end
     saveble_photo_nums = 3 - @daily_menu.daily_menu_photos.length
     saveble_photo_nums.times {
       @daily_menu.daily_menu_photos.build
@@ -184,6 +192,28 @@ class DailyMenusController < ApplicationController
     end
     redirect_to daily_menus_path, notice: "#{count}日間、同じメニューをコピーして献立に反映しました！"
   end
+
+  def store_reflect
+    store_daily_menu_details_arr = []
+    daily_menu_id = params[:daily_menu_id]
+    daily_menu = DailyMenu.find(daily_menu_id)
+    start_time = daily_menu.start_time
+    count = 0
+    params['stores'].each do |store|
+      store_id = store[1]['id']
+      reflect_flag = store[1]['reflect']
+      if reflect_flag == "true"
+        store_daily_menu = StoreDailyMenu.create(daily_menu_id:daily_menu_id,store_id:store_id,start_time:start_time)
+        daily_menu.daily_menu_details.each do |dmd|
+          store_daily_menu_details_arr << StoreDailyMenuDetail.new(store_daily_menu_id:store_daily_menu.id,product_id:dmd.product_id,row_order:dmd.row_order)
+        end
+        count += 1
+      end
+    end
+    StoreDailyMenuDetail.import store_daily_menu_details_arr
+    redirect_to daily_menu, notice: "#{count}店舗にメニュー反映しました"
+  end
+
   private
     def set_daily_menu
       @daily_menu = DailyMenu.find(params[:id])

@@ -1,0 +1,17 @@
+h1 店舗一覧
+= link_to 'New Store', new_store_path,class:'btn btn-primary'
+table.table
+  thead
+    tr
+      th 店名
+      th 管理アカウント
+      th
+      th
+
+  tbody
+    - @stores.each do |store|
+      tr
+        td = store.name
+        td = store.user.email
+        td = link_to 'Show', store
+        td = link_to 'Edit', edit_store_path(store)

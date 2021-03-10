@@ -101,8 +101,13 @@
       tr
         th = link_to_add_association '商品追加', f, :daily_menu_details,class: 'btn btn-default add_menu_details',data: {association_insertion_node: '#daily_menu_details_area',association_insertion_method: 'append' }
         th メニュー名
-        th 惣菜在庫
-        th 単品惣菜分
+        th 惣菜
+        th 東中野
+        th 高円寺
+        th.clearfix
+          span 単品惣菜分
+          .calculate_number style='border:1px solid;padding:2px 4px;border-radius:8px;float:right;' 店舗合計
+
         th 弁当等副菜分
         th 合計製造数
         / th 盛付皿
@@ -115,7 +120,14 @@
 
 javascript:
   $(function () {
-
+    $('.calculate_number').on('click',function(){
+      $('.daily_menu_detail_tr').each(function(){
+        var higasinakano = Number($(this).find('.higasinakano').text());
+        var koenji = Number($(this).find('.koenji').text());
+        var total = higasinakano + koenji
+        $(this).find('.single_item_number').val(total)
+      });
+    });
     $(".show_case_table td select").each(function(index, element){
       var val = $(element).val();
       if (val) {

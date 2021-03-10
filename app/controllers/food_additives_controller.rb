@@ -1,4 +1,4 @@
-class FoodAdditivesController < ApplicationController
+class FoodAdditivesController < AdminController
   def create
     @food_additive = FoodAdditive.create(food_additive_params)
     respond_to do |format|
