@@ -19,6 +19,7 @@ class MenusController < AdminController
   end
 
   def new
+    @range = 80.times.map { |i| i * 5 }
     # @food_ingredients = FoodIngredient.all
     @food_ingredients = []
     @materials = []
