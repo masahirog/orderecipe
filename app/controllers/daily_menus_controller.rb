@@ -22,6 +22,7 @@ class DailyMenusController < AdminController
   end
 
   def new
+    @store_daily_menus = Hash.new { |h,k| h[k] = {} }
     @products = Product.where(brand_id:111)
     date = params['start_time']
     @date = Date.parse(date)
