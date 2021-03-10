@@ -45,6 +45,7 @@ gem 'line_notify'
 gem 'combine_pdf'
 gem 'google_drive'
 gem 'enum_help'
+gem 'font-awesome-sass'
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]

@@ -7,8 +7,8 @@
         - store_daily_menu.errors.full_messages.each do |message|
           li = message
   .clearfix.form-group
-    / .col-md-12.form-group.clearfix
-      .col-md-3 style='float:left;'
+    .col-md-12.form-group.clearfix
+      .col-md-3 style='float:right;'
         = f.label :total_num,"総数", class: ''
         = f.number_field :total_num, class: 'col-md-10 form-control total_manufacturing_number',readonly:true
       / .col-md-3 style='float:left;'
@@ -77,9 +77,21 @@
     thead
       tr
         th メニュー名
+        th 販売価格
+        th 写真
         th 発注数
-        th
     tbody#store_daily_menu_details_area
       = f.fields_for :store_daily_menu_details do |dmd|
         = render 'store_daily_menu_detail_fields', f: dmd
   = f.submit '登録する',class:'btn btn-primary', data: {disable_with: '登録中...'},style:'float:right;'
+
+javascript:
+  $(function() {
+    $('.number').on('keyup',function(){
+      var num = 0;
+      $('.daily_menu_detail_tr').each(function(){
+        num = num + Number($(this).find('.number').val());
+      });
+      $(".total_manufacturing_number").val(num);
+    });
+  });

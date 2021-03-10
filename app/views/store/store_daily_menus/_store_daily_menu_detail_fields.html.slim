@@ -6,6 +6,13 @@
 tr.nested-fields.item.daily_menu_detail_tr class=class_name
   td
     = link_to f.object.product.name,store_product_path(f.object.product),target:'_blank'
+  td
+    = f.object.product.sell_price
+  td
+    - if f.object.product.display_image.present?
+      = link_to f.object.product.display_image.to_s, "data-lightbox" => f.object.product.display_image.to_s do
+        i class="fas fa-camera-retro"
+
 
   td
-    = f.number_field :number, class: 'form-control'
+    = f.number_field :number, class: 'form-control number', min: 0

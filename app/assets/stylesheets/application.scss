@@ -12,8 +12,11 @@
  *
  *= require select2
  */
+
 @import "print.scss";
 @import 'jquery-ui';
+@import "font-awesome-sprockets";
+@import "font-awesome";
 
 .ui-helper-hidden-accessible {
   display: none;

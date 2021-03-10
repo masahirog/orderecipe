@@ -9,11 +9,20 @@ table.table.table-list
   thead
     tr
       th メニュー名
+      th 売価
+      th 画像
       th 発注数
   tbody
     -@store_daily_menu_details.each do |sdmd|
       tr
         td
           = link_to sdmd.product.name,store_product_path(sdmd.product)
+        td
+          = sdmd.product.sell_price
+        td
+          - if sdmd.product.display_image.present?
+            = link_to sdmd.product.display_image.to_s, "data-lightbox" => sdmd.product.display_image.to_s do
+              i class="fas fa-camera-retro"
+
         td
           = sdmd.number
