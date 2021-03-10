@@ -11,7 +11,7 @@ table.table
   tbody
     - @stores.each do |store|
       tr
-        td = store.name
+        td = link_to store.name, store_daily_menus_path(store_id:store.id)
         td = store.user.email
         td = link_to 'Show', store
         td = link_to 'Edit', edit_store_path(store)

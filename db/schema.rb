@@ -250,8 +250,12 @@ ActiveRecord::Schema.define(version: 2021_03_09_171100) do
     t.integer "base_menu_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "cutout_weight", default: 0, null: false
-    t.integer "cooking_weight", default: 0, null: false
+    t.integer "daybefore_20_cut", default: 0, null: false
+    t.integer "daybefore_60_cut", default: 0, null: false
+    t.integer "daybefore_20_cook", default: 0, null: false
+    t.integer "daybefore_60_cook", default: 0, null: false
+    t.integer "onday_20_cook", default: 0, null: false
+    t.integer "onday_60_cook", default: 0, null: false
   end
 
   create_table "monthly_stocks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

@@ -1,0 +1,85 @@
+= form_with(model: store_daily_menu, local: true) do |f|
+
+  - if store_daily_menu.errors.any?
+    #error_explanation
+      h2 = "#{pluralize(store_daily_menu.errors.count, "error")} prohibited this store_daily_menu from being saved:"
+      ul
+        - store_daily_menu.errors.full_messages.each do |message|
+          li = message
+  .clearfix.form-group
+    / .col-md-12.form-group.clearfix
+      .col-md-3 style='float:left;'
+        = f.label :total_num,"総数", class: ''
+        = f.number_field :total_num, class: 'col-md-10 form-control total_manufacturing_number',readonly:true
+      / .col-md-3 style='float:left;'
+        = f.label :sozai_manufacturing_number,"惣菜在庫", class: ''
+        = f.number_field :sozai_manufacturing_number, class: 'col-md-10 form-control input_sozai_manufacturing_number',readonly:true
+
+    / .col-md-12.clearfix
+      .col-md-3 style='float:left;'
+        = f.label :weather,"天気　", class: 'text-right'
+        = link_to 'tenki.jp','https://tenki.jp/forecast/3/16/4410/13114/',target:'_blank'
+        = f.select :weather, DailyMenu.weathers.keys.map {|k| [I18n.t("enum.store_daily_menu.weather.#{k}"), k]}, {include_blank:true}, class: 'col-md-10 form-control'
+      .col-md-3 style='float:left;'
+        = f.label :max_temperature,"最高気温", class: 'text-right'
+        = f.select :max_temperature,(-10..40),{include_blank:true}, class: 'col-md-10 form-control'
+      .col-md-3 style='float:left;'
+        = f.label :min_temperature,"最低気温", class: 'text-right'
+        = f.select :min_temperature,(-10..40),{include_blank:true}, class: 'col-md-10 form-control'
+      .col-md-3 style='float:right;padding-top:25px;text-align:right;'
+        = f.submit '登録する',class:'btn btn-primary', data: {disable_with: '登録中...'}
+  / .clearfix.col-md-12
+    table.show_case_table style='float:left;width:14%;margin-right:5px;'
+      thead
+        tr
+          th 煮込み台
+
+      tbody
+        - [191,201,211].each do |i|
+          tr
+            td = select_tag "place_#{i}", options_from_collection_for_select(@store_daily_menu_details,:id,:name, @hash[i]),include_blank: true, class: "form-control"
+    table.show_case_table style='float:left;width:34%;margin-right:5px;'
+      thead
+        tr
+          th colspan=2 小ショーケース
+
+      tbody
+        - [11,21,31,41,51,61].each_slice(2) do |i|
+          tr
+            td = select_tag "place_#{i[0]}", options_from_collection_for_select(@store_daily_menu_details,:id,:name, @hash[i[0]]),include_blank: true, class: "form-control"
+            td = select_tag "place_#{i[1]}", options_from_collection_for_select(@store_daily_menu_details,:id,:name, @hash[i[1]]),include_blank: true, class: "form-control"
+    table.show_case_table style='float:left;width:50%'
+      thead
+        tr
+          th colspan=4 大ショーケース
+      tbody
+        - [71,81,91,101,111,121,131,141,151,161,171,181].each_slice(4) do |i|
+          tr
+            td = select_tag "place_#{i[0]}", options_from_collection_for_select(@store_daily_menu_details,:id,:name, @hash[i[0]]),include_blank: true, class: "form-control"
+            td = select_tag "place_#{i[1]}", options_from_collection_for_select(@store_daily_menu_details,:id,:name, @hash[i[1]]),include_blank: true, class: "form-control"
+            td = select_tag "place_#{i[2]}", options_from_collection_for_select(@store_daily_menu_details,:id,:name, @hash[i[2]]),include_blank: true, class: "form-control"
+            td = select_tag "place_#{i[3]}", options_from_collection_for_select(@store_daily_menu_details,:id,:name, @hash[i[3]]),include_blank: true, class: "form-control"
+
+  / .col-md-12.clearfix style='padding:10px 0;'
+    - i = 0
+    = f.fields_for :store_daily_menu_photos do |dmp|
+      div style='float:left;width:350px;'
+        - if i == 0
+          label ショーケース左
+        - elsif i==1
+          label ショーケース右
+        - else
+          label 看板
+        = image_tag dmp.object.image.url,style:'height:200px;width:300px;object-fit:cover;object-position: 0 0;' if dmp.object.image.present?
+        = dmp.file_field :image
+        - i += 1
+  table.table.table-list.cocoon_are
+    thead
+      tr
+        th メニュー名
+        th 発注数
+        th = link_to_add_association '商品追加', f, :store_daily_menu_details,class: 'btn btn-default add_menu_details',data: {association_insertion_node: '#store_daily_menu_details_area',association_insertion_method: 'append' }
+    tbody#store_daily_menu_details_area
+      = f.fields_for :store_daily_menu_details do |dmd|
+        = render 'store_daily_menu_detail_fields', f: dmd
+  = f.submit '登録する',class:'btn btn-primary', data: {disable_with: '登録中...'},style:'float:right;'

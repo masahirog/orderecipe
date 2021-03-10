@@ -6,6 +6,7 @@ class DailyMenuDetail < ApplicationRecord
 
   before_create :calculate_cost_price
   before_update :calculate_total_cost_price
+  validates :daily_menu_id, :uniqueness => {:scope => :product_id}
 
   def calculate_cost_price
     per_cost = self.product.cost_price

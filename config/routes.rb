@@ -137,4 +137,5 @@ Rails.application.routes.draw do
   resources :place_showcases
   resources :serving_plates
   resources :stores
+  resources :store_daily_menus
 end

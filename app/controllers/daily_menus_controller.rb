@@ -78,6 +78,24 @@ class DailyMenusController < AdminController
   end
 
   def update
+    store_daily_menus = @daily_menu.store_daily_menus.includes(:store_daily_menu_details)
+    @store_daily_menus = Hash.new { |h,k| h[k] = {} }
+    store_daily_menus.each do |sdm|
+      sdm.store_daily_menu_details.each do |sdmd|
+        @store_daily_menus[sdm.store_id][sdmd.product_id] = {number:sdmd.number}
+      end
+    end
+
+    @date = @daily_menu.start_time
+    @tommoroww = DailyMenu.find_by(start_time:@date+1)
+    @yesterday = DailyMenu.find_by(start_time:@date-1)
+    @place_showcases = PlaceShowcase.all
+    @daily_menu_details = @daily_menu.products
+    @hash = @daily_menu.daily_menu_details.map do |dmd|
+      [dmd.place_showcase_id,dmd.product_id] if dmd.place_showcase_id.present?
+    end
+    @hash = @hash.compact.to_h
+
     @products = Product.where(brand_id:111)
     respond_to do |format|
       if @daily_menu.update(daily_menu_params)

@@ -32,12 +32,28 @@
           = f.number_field :cost_price, :readonly => 'readonly',class: "menu_cost_price form-control"
           .form-group
             |  円
-    .col-md-2
-      = f.label :cooking_weight ,'調理重さ'
-      = f.select :cooking_weight,(0..5),{}, { class: "form-control",style:"width:100%;"}
-    .col-md-2
-      = f.label :cutout_weight ,'切出重さ'
-      = f.select :cutout_weight,(0..5),{}, { class: "form-control",style:"width:100%;"}
+  .form-group.col-md-12
+    .col-md-4
+      .co-md-6
+        = f.label :daybefore_20_cut ,'前日切出（20人前の分）'
+        = f.select :daybefore_20_cut,@range,{}, { class: "form-control",style:"width:100%;"}
+      .co-md-6
+        = f.label :daybefore_60_cut ,'前日切出（60人前の分）'
+        = f.select :daybefore_60_cut,@range,{}, { class: "form-control",style:"width:100%;"}
+    .col-md-4
+      .co-md-6
+        = f.label :daybefore_20_cook ,'前日調理（20人前の分）'
+        = f.select :daybefore_20_cook,@range,{}, { class: "form-control",style:"width:100%;"}
+      .co-md-6
+        = f.label :daybefore_60_cook ,'前日調理（60人前の分）'
+        = f.select :daybefore_60_cook,@range,{}, { class: "form-control",style:"width:100%;"}
+    .col-md-4
+      .co-md-6
+        = f.label :onday_20_cook ,'当日調理（20人前の分）',style:'color:red;'
+        = f.select :onday_20_cook,@range,{}, { class: "form-control",style:"width:100%;"}
+      .col-md-6
+        = f.label :onday_60_cook ,'当日調理（60人前の分）',style:'color:red;'
+        = f.select :onday_60_cook,@range,{}, { class: "form-control",style:"width:100%;"}
 
   .col-md-4.form-group
     = f.label :cook_the_day_before ,'前日調理'

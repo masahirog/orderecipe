@@ -13,8 +13,12 @@ class CreateMenus < ActiveRecord::Migration[4.2]
       t.string :image
       t.integer :base_menu_id
       t.timestamps null: false
-      t.integer :cutout_weight,null:false,default:0
-      t.integer :cooking_weight,null:false,default:0
+      t.integer :daybefore_20_cut,null:false,default:0
+      t.integer :daybefore_60_cut,null:false,default:0
+      t.integer :daybefore_20_cook,null:false,default:0
+      t.integer :daybefore_60_cook,null:false,default:0
+      t.integer :onday_20_cook,null:false,default:0
+      t.integer :onday_60_cook,null:false,default:0
     end
   end
 end
