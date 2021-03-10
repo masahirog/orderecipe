@@ -43,16 +43,26 @@
       th.active.col-md-4 メニュー名
       td = @menu.name
     tr
-      th.active.col-md-4 ローマ字名
-      td = @menu.roma_name
+      th.active.col-md-4 前日 切り出し重さ
+      td
+        = "20人前：#{@menu.daybefore_20_cut}分" if @menu.daybefore_20_cut > 0
+        = "、60人前：#{@menu.daybefore_60_cut}分" if @menu.daybefore_60_cut > 0
+    tr
+      th.active.col-md-4 前日 調理重さ
+      td
+        = "20人前：#{@menu.daybefore_20_cook}分" if @menu.daybefore_20_cook > 0
+        = "、60人前：#{@menu.daybefore_60_cook}分" if @menu.daybefore_60_cook > 0
+    tr
+      th.active.col-md-4 当日 調理重さ
+      td
+        = "20人前：#{@menu.onday_20_cook}分" if @menu.onday_20_cook > 0
+        = "、60人前：#{@menu.onday_60_cook}分" if @menu.onday_60_cook > 0
+
+
     tr
       th.active.col-md-4 メニュー原価
       td = @menu.cost_price
 
-
-    tr
-      th.active.col-md-4 カテゴリー
-      td = @menu.category
     tr
       th.active.col-md-4 アレルギー
       td
