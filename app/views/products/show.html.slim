@@ -38,6 +38,16 @@
   table.table
     thead
       tr
+        th 食品表示名
+        th 食品表示内容
+    tbody
+      tr
+        td = @product.food_label_name
+        td = simple_format(@product.food_label_content)
+
+  table.table
+    thead
+      tr
         th 商品紹介
         th 盛り付け情報
     tbody

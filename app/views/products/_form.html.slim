@@ -36,6 +36,13 @@
     .col-md-2
       = f.label :cooking_rice_id, "使用ライス"
       = f.collection_select :cooking_rice_id, CookingRice.all, :id, :name, {}, { class: "form-control"}
+  .col-md-12.form-group
+    .col-md-4
+      = f.label :food_label_name, "食品表示名"
+      = f.text_field :food_label_name, class:"form-control"
+    .col-md-6
+      = f.label :food_label_content, "食品表示内容"
+      = f.text_area :food_label_content, class:"form-control"
 
     / .col-md-12.form-group
     /   = f.label :short_name, "短縮名（例：9A←の9の部分を入力）"
