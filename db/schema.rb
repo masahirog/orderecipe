@@ -243,7 +243,6 @@ ActiveRecord::Schema.define(version: 2021_03_09_171100) do
     t.integer "category"
     t.text "serving_memo"
     t.float "cost_price"
-    t.string "food_label_name"
     t.string "used_additives", default: "", null: false
     t.text "cook_on_the_day"
     t.string "image"
@@ -332,6 +331,8 @@ ActiveRecord::Schema.define(version: 2021_03_09_171100) do
     t.string "display_image"
     t.string "image_for_one_person"
     t.text "serving_infomation"
+    t.string "food_label_name"
+    t.text "food_label_content"
   end
 
   create_table "serving_plates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

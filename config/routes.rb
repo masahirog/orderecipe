@@ -8,7 +8,6 @@ Rails.application.routes.draw do
   root 'kurumesi_orders#index'
   post 'orders/new' => 'orders#new'
   post'orders/order_print/:id' => 'orders#order_print'
-  post 'products/hyoji' => 'products#hyoji'
   post "products/henkan" => "products#henkan"
   post'materials/include_update' => 'materials#include_update'
   post "versions/:id/revert" => "versions#revert", :as => "revert_version"
@@ -57,7 +56,6 @@ Rails.application.routes.draw do
     collection do
       get :bejihan_ss_cost_sync
       post :print
-      get :picture_book
       get :get_menu_cost_price
       get :serving_kana
       get :serving

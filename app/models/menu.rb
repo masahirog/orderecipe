@@ -13,8 +13,6 @@ class Menu < ApplicationRecord
     message: "：全角英数字は使用出来ません。"}
   validates :category, presence: true
   validates :cost_price, presence: true, numericality: true
-  validates :food_label_name, presence: true, format: { with:/\A[^０-９ａ-ｚＡ-Ｚ]+\z/,
-    message: "：全角英数字は使用出来ません。"}
   after_create :base_menu_id_check
   after_update :copy_menu_reflect
 

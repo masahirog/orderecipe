@@ -164,7 +164,7 @@ class MenusController < AdminController
   private
 
     def menu_create_update
-      params.require(:menu).permit({used_additives:[]},:name,:roma_name, :cook_the_day_before, :category, :serving_memo, :cost_price,:food_label_name,:cook_on_the_day, :image,:base_menu_id,
+      params.require(:menu).permit({used_additives:[]},:name,:roma_name, :cook_the_day_before, :category, :serving_memo, :cost_price,:cook_on_the_day, :image,:base_menu_id,
         :daybefore_20_cut,:daybefore_60_cut,:daybefore_20_cook,:daybefore_60_cook,:onday_20_cook,:onday_60_cook,:remove_image, :image_cache,
                                     menu_materials_attributes: [:id, :amount_used, :material_id, :_destroy,:preparation,:post,:base_menu_material_id,:source_flag,
                                      :row_order,:gram_quantity,:food_ingredient_id,:calorie,:protein,:lipid,:carbohydrate,:dietary_fiber,

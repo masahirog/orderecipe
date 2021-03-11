@@ -19,6 +19,8 @@ class CreateProducts < ActiveRecord::Migration[4.2]
       t.string :display_image
       t.string :image_for_one_person
       t.text :serving_infomation
+      t.string :food_label_name
+      t.text :food_label_content
     end
   end
 end

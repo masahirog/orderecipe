@@ -7,7 +7,6 @@ class CreateMenus < ActiveRecord::Migration[4.2]
       t.integer :category
       t.text :serving_memo
       t.float :cost_price
-      t.string :food_label_name
       t.string :used_additives, null: false, default: ''
       t.text :cook_on_the_day
       t.string :image
