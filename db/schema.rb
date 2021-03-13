@@ -65,7 +65,6 @@ ActiveRecord::Schema.define(version: 2021_03_09_171100) do
   create_table "daily_menus", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.date "start_time", null: false
     t.integer "total_manufacturing_number", default: 0, null: false
-    t.boolean "fixed_flag", default: false, null: false
     t.integer "weather"
     t.integer "max_temperature"
     t.integer "min_temperature"
@@ -374,7 +373,6 @@ ActiveRecord::Schema.define(version: 2021_03_09_171100) do
     t.integer "store_id"
     t.date "start_time"
     t.integer "total_num", default: 0, null: false
-    t.boolean "fixed_flag", default: false, null: false
     t.integer "weather"
     t.integer "max_temperature"
     t.integer "min_temperature"

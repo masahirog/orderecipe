@@ -16,8 +16,8 @@ h4
             = @store_daily_menu.start_time
             = hidden_field_tag 'from',@store_daily_menu.start_time
             label 　TO：
-            = @store_daily_menu.start_time + 6
-            = hidden_field_tag 'to',@store_daily_menu.start_time + 6
+            = @store_daily_menu.start_time + 3
+            = hidden_field_tag 'to',@store_daily_menu.start_time + 3
           .modal-footer
             button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
             = submit_tag "まとめて発注" ,class:"btn btn-primary"
