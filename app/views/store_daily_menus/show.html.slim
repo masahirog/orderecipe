@@ -1,17 +1,32 @@
-
-.clearfix
-  .col-md-3 style='float:left;'
-    label 総製造数
-    p = @store_daily_menu.total_num
-
-.form-group.col-md-12.clearfix
-  = link_to "編集する", edit_store_daily_menu_path(@store_daily_menu),class:'btn btn-primary',style:'float:left;margin-left:20px;margin-top:10px;'
+h4
+  = @store_daily_menu.start_time.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@store_daily_menu.start_time.wday]})")
+  = "　#{@store_daily_menu.store.name}店 "
+.col-md-12
+  = link_to "発注数の入力", edit_store_daily_menu_path(@store_daily_menu),class:'btn btn-primary',style:'margin-right:20px;'
+  button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newOrder" まとめて発注
+  #newOrder.modal.fade tabindex="-1"
+    = form_tag(once_edit_store_daily_menus_path,method: :get) do
+      = hidden_field_tag :id,@store_daily_menu.id
+      .modal-dialog style='width:1000px;'
+        .modal-content
+          .modal-header
+            h4.modal-title 日付を選択（最大5日）
+          .modal-body
+            label FROM：
+            = @store_daily_menu.start_time
+            = hidden_field_tag 'from',@store_daily_menu.start_time
+            label 　TO：
+            = @store_daily_menu.start_time + 6
+            = hidden_field_tag 'to',@store_daily_menu.start_time + 6
+          .modal-footer
+            button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
+            = submit_tag "まとめて発注" ,class:"btn btn-primary"
 
 table.table.table-list
   thead
     tr
       th メニュー名
-      th 発注数
+      th = "発注数：#{@store_daily_menu.total_num}"
   tbody
     -@store_daily_menu_details.each do |sdmd|
       tr

@@ -239,7 +239,7 @@ class DailyMenusController < AdminController
     end
 
     def daily_menu_params
-      params.require(:daily_menu).permit(:start_time,:total_manufacturing_number,:sozai_manufacturing_number,:fixed_flag,:weather,:max_temperature,:min_temperature,daily_menu_photos_attributes: [:id,:daily_menu_id,:image],
+      params.require(:daily_menu).permit(:start_time,:total_manufacturing_number,:sozai_manufacturing_number,:weather,:max_temperature,:min_temperature,daily_menu_photos_attributes: [:id,:daily_menu_id,:image],
         daily_menu_details_attributes: [:id,:daily_menu_id,:product_id,:manufacturing_number,:row_order,:_destroy,
           :serving_plate_id,:place_showcase_id,:signboard_flag,:window_pop_flag,:sold_outed,:for_single_item_number,:for_sub_item_number])
     end

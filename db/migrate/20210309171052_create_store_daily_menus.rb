@@ -5,7 +5,6 @@ class CreateStoreDailyMenus < ActiveRecord::Migration[5.2]
       t.integer :store_id
       t.date :start_time
       t.integer :total_num,null:false,default:0
-      t.boolean :fixed_flag,null:false,default:false
       t.integer :weather
       t.integer :max_temperature
       t.integer :min_temperature

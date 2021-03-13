@@ -1,11 +1,10 @@
-h1 献立
+h1
+  = "献立　#{@store.name}"
 = month_calendar events: @store_daily_menus do |start_time, store_daily_menu|
   div style='height:29px;'
     - if store_daily_menu[0]
       div style='font-size:16px;margin-right:10px;'
         = link_to start_time.strftime("%-m月%-d日"), store_daily_menu_path(store_daily_menu[0])
-        - if store_daily_menu[0].fixed_flag == true
-          label style='background-color:#52AF52;color:white;padding:2px 6px;font-weight:normal;border-radius: 5px;font-size:13px;' 確定済
     - else
       div style='float:left;font-size:16px;'
         = start_time.strftime("%-m月%-d日")

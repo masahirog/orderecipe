@@ -91,7 +91,7 @@ class MaterialsController < AdminController
     @material = Material.find(params[:id])
     material_id = @material.id
     used_product_ids = Product.joins(product_menus:[menu:[:menu_materials]]).where(:product_menus => {:menus => {:menu_materials => {material_id:material_id}}}).ids
-    shogun_bentos = DailyMenuDetail.joins(:daily_menu,:product).where(:daily_menus => {start_time:@month_ago..@today,fixed_flag:true},:products => {id:used_product_ids}).group('product_id').sum(:manufacturing_number)
+    shogun_bentos = DailyMenuDetail.joins(:daily_menu,:product).where(:daily_menus => {start_time:@month_ago..@today},:products => {id:used_product_ids}).group('product_id').sum(:manufacturing_number)
     kurumesi_bentos = KurumesiOrderDetail.joins(:kurumesi_order,:product).where(:kurumesi_orders => {start_time:@month_ago..@today,canceled_flag:false},:products => {id:used_product_ids}).group('product_id').sum(:number)
     month_bentos = shogun_bentos.merge(kurumesi_bentos)
     month_bentos.each do |product_num|

@@ -8,14 +8,41 @@ class Store::StoreDailyMenusController < ApplicationController
     @store_daily_menus = StoreDailyMenu.where(store_id:current_user.store.id,start_time:date.in_time_zone.all_month).includes(store_daily_menu_details:[:product])
   end
   def show
+    now = Time.now
+    wday = StoreDailyMenu.find(params[:id]).start_time.wday
+    if wday == 2
+      order_shimekiri = (StoreDailyMenu.find(params[:id]).start_time - 4).to_time
+    elsif wday == 1 || wday == 3
+      order_shimekiri = (StoreDailyMenu.find(params[:id]).start_time - 3).to_time
+    else
+      order_shimekiri = (StoreDailyMenu.find(params[:id]).start_time - 2).to_time
+    end
+    if now < order_shimekiri
+      @edit_flag = true
+    else
+      @edit_flag = false
+    end
     @store_daily_menu = StoreDailyMenu.find(params[:id])
     @date = @store_daily_menu.start_time
     @tommoroww = StoreDailyMenu.find_by(start_time:@date+1)
     @yesterday = StoreDailyMenu.find_by(start_time:@date-1)
     @store_daily_menu_details = @store_daily_menu.store_daily_menu_details.includes(:product)
   end
+
   def edit
+    now = Time.now
     @store_daily_menu = StoreDailyMenu.find(params[:id])
+    wday = @store_daily_menu.start_time.wday
+    if wday == 2
+      order_shimekiri = (@store_daily_menu.start_time - 4).to_time
+    elsif wday == 1 || wday == 3
+      order_shimekiri = (@store_daily_menu.start_time - 3).to_time
+    else
+      order_shimekiri = (@store_daily_menu.start_time - 2).to_time
+    end
+    if now > order_shimekiri
+      redirect_to store_store_daily_menu_path(@store_daily_menu),notice:'締め切りを過ぎた為、発注個数を変更する場合はキッチンまでにてご連絡ください'
+    end
   end
   def update
     @store_daily_menu = StoreDailyMenu.find(params[:id])

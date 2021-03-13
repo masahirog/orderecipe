@@ -55,7 +55,7 @@ class VendorsController < AdminController
     date = Date.new(year,month,1)
     # material_ids = vendor.materials.ids
     # used_product_ids = Product.joins(product_menus:[menu:[:menu_materials]]).where(:product_menus => {:menus => {:menu_materials => {material_id:material_ids}}}).ids
-    bejihan_souzais = DailyMenuDetail.joins(:daily_menu,:product).where(:daily_menus => {start_time:date.in_time_zone.all_month,fixed_flag:true}).group('product_id').sum(:manufacturing_number)
+    bejihan_souzais = DailyMenuDetail.joins(:daily_menu,:product).where(:daily_menus => {start_time:date.in_time_zone.all_month}).group('product_id').sum(:manufacturing_number)
     kurumesi_bentos = KurumesiOrderDetail.joins(:kurumesi_order,:product).where(:kurumesi_orders => {start_time:date.in_time_zone.all_month,canceled_flag:false}).group('product_id').sum(:number)
     month_bentos = bejihan_souzais.merge(kurumesi_bentos)
     month_bentos.each do |product_num|

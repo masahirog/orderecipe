@@ -132,7 +132,7 @@ class Stock < ApplicationRecord
 
   def self.date_manufacturing_products(date)
     kurumesi_order_products = KurumesiOrderDetail.joins(:kurumesi_order).where(:kurumesi_orders => {start_time:date,canceled_flag:false}).group('product_id').sum(:number).to_a
-    shogun_order_products = DailyMenuDetail.joins(:daily_menu).where(:daily_menus => {start_time:date,fixed_flag:true}).group('product_id').sum(:manufacturing_number).to_a
+    shogun_order_products = DailyMenuDetail.joins(:daily_menu).where(:daily_menus => {start_time:date}).group('product_id').sum(:manufacturing_number).to_a
     @product_manufacturing = kurumesi_order_products + shogun_order_products
   end
 

@@ -29,9 +29,6 @@
 
         = f.date_field :start_time, value:params['start_time'], class: 'col-md-10 form-control start_time',readonly: true
       .col-md-3 style='float:left;'
-        = f.label :fixed_flag,"ステータス", class: ''
-        = f.select :fixed_flag,[["編集中",false],["確定",true]],{}, class: 'col-md-10 form-control'
-      .col-md-3 style='float:left;'
         = f.label :total_manufacturing_number,"総製造数", class: ''
         = f.number_field :total_manufacturing_number, class: 'col-md-10 form-control total_manufacturing_number',readonly:true
       .col-md-3 style='float:left;'

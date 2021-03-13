@@ -14,13 +14,6 @@
 
     p = @daily_menu.start_time.strftime("%Y年%-m月%-d日(#{%w(日 月 火 水 木 金 土)[@daily_menu.start_time.wday]})")
   .col-md-3 style='float:left;'
-    label ステータス
-    p
-      - if @daily_menu.fixed_flag == true
-        |確定
-      - else
-        |まだ
-  .col-md-3 style='float:left;'
     label 総製造数
     p = @daily_menu.total_manufacturing_number
 
@@ -167,7 +160,7 @@
           .modal-footer
             button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
             = submit_tag "作成する" ,class:"btn btn-primary"
-  button type="button" class="btn btn-success" data-toggle="modal" data-target="#store_reflect_modal" style='float:right;margin-top:10px;margin-right:10px;' 各店舗の献立更新
+  button type="button" class="btn btn-success" data-toggle="modal" data-target="#store_reflect_modal" style='float:right;margin-top:10px;margin-right:10px;' 各店舗に献立を反映する
   #store_reflect_modal.modal.fade tabindex="-1"
     = form_tag(store_reflect_daily_menus_path,method: :get) do
       = number_field_tag 'daily_menu_id',@daily_menu.id

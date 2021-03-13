@@ -6,4 +6,35 @@ class StoreDailyMenu < ApplicationRecord
   accepts_nested_attributes_for :store_daily_menu_details, allow_destroy: true
   enum weather: {sunny:1, cloud:2,rain:3,strong_rain:4,taihoon:5,snow:6}
   validates :daily_menu_id, :uniqueness => {:scope => :store_id}
+
+  before_save :total_check
+  after_save :input_stock
+  after_destroy :input_stock
+
+  #納品量の追加
+  def total_check
+  end
+
+  def input_stock
+    update_dmds = []
+    total_manufacturing_number = 0
+    daily_menu = self.daily_menu
+    sdmds = StoreDailyMenuDetail.where(store_daily_menu_id:daily_menu.store_daily_menus.ids)
+    product_num_hash = sdmds.group(:product_id).sum(:number)
+    daily_menu.daily_menu_details.each do |dmd|
+      dmd.for_single_item_number = product_num_hash[dmd.product_id]
+      dmd.manufacturing_number = dmd.for_single_item_number + dmd.for_sub_item_number
+      update_dmds << dmd
+      total_manufacturing_number = dmd.manufacturing_number
+    end
+    daily_menu.update_attributes(total_manufacturing_number:total_manufacturing_number)
+    DailyMenuDetail.import update_dmds, on_duplicate_key_update:[:for_single_item_number,:manufacturing_number]
+
+    #saveされたdailymenuの日付を取得
+    date = daily_menu.start_time
+    previous_day = daily_menu.start_time - 1
+    Stock.calculate_stock(date,previous_day)
+  end
+
+
 end

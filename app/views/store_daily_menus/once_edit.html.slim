@@ -1,0 +1,40 @@
+h4
+  = @store_daily_menu.start_time.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@store_daily_menu.start_time.wday]})")
+  = "　#{@store_daily_menu.store.name}店 "
+= form_tag(once_update_store_daily_menus_path,method: :get) do
+  = hidden_field_tag :store_daily_menu_ids,@store_dayily_menus.ids
+  = hidden_field_tag :store_id,@store_daily_menu.store_id
+  input.btn.btn-primary type="button" onclick="submit();" value="確定する"
+  table.table
+    thead
+      tr
+        th メニュー名
+        - @store_dayily_menus.sort_by {|sdm| sdm.start_time }.each_with_index do |sdm,i|
+          th
+            - if i==0
+              div
+                div.btn.btn-default.btn-sm.first_day_copy 1日目を一括コピー
+
+            = sdm.start_time
+    tbody
+      - @products.each do |product|
+        tr.sdms_tr
+          td = product.name
+          - @store_dayily_menus.sort_by {|sdm| sdm.start_time }.each_with_index do |sdm,index|
+            td
+              - if @sdmd_product[[sdm.id,product.id]].present?
+                = number_field_tag "sdmd[#{@sdmd_product[[sdm.id,product.id]][0]}]",@sdmd_product[[sdm.id,product.id]][1],class:"form-control input_#{index} input_number",min:0
+javascript:
+  $(function() {
+    $('.first_day_copy').on('click',function(){
+      $('.sdms_tr').each(function(){
+        var first_val = $(this).find('.input_0').val();
+        if($(this).find('.input_0').length){$(this).children().children(':not(.input_0)').val(first_val)}
+      });
+    });
+    $('.input_number').on('keyup',function(){
+      if ($(this).val()=="") {
+        $(this).val(0);
+      }
+    });
+  });
