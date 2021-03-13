@@ -1,5 +1,5 @@
 class DailyMenusController < AdminController
-  before_action :set_daily_menu, only: [:show, :edit, :update, :destroy]
+  before_action :set_daily_menu, only: [:show, :update, :destroy]
   def index
     if params[:start_date].present?
       date = params[:start_date]
@@ -40,6 +40,7 @@ class DailyMenusController < AdminController
   end
 
   def edit
+    @daily_menu = DailyMenu.includes(daily_menu_details:[:product]).find(params[:id])
     store_daily_menus = @daily_menu.store_daily_menus.includes(:store_daily_menu_details)
     @store_daily_menus = Hash.new { |h,k| h[k] = {} }
     store_daily_menus.each do |sdm|
