@@ -27,13 +27,8 @@ class StoreDailyMenu < ApplicationRecord
       update_dmds << dmd
       total_manufacturing_number = dmd.manufacturing_number
     end
-    daily_menu.update_attributes(total_manufacturing_number:total_manufacturing_number)
     DailyMenuDetail.import update_dmds, on_duplicate_key_update:[:for_single_item_number,:manufacturing_number]
-
-    #saveされたdailymenuの日付を取得
-    date = daily_menu.start_time
-    previous_day = daily_menu.start_time - 1
-    Stock.calculate_stock(date,previous_day)
+    daily_menu.update_attributes(total_manufacturing_number:total_manufacturing_number)
   end
 
 
