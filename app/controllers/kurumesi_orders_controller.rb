@@ -193,7 +193,7 @@ class KurumesiOrdersController < AdminController
     kurumesi_orders = KurumesiOrder.where(start_time:date,canceled_flag:false).where.not(management_id:0)
     kurumesi_orders.each do |ko|
       if ko.payment == '請求書（持参）'
-        data[ko.management_id] = [0,signer.presigned_url(:get_object,bucket: 'accounting-screenshot', key: "#{ko.management_id}.png", expires_in: 60)]
+        # data[ko.management_id] = [0,signer.presigned_url(:get_object,bucket: 'accounting-screenshot', key: "#{ko.management_id}.png", expires_in: 60)]
       elsif ko.payment == "現金" || ko.payment == "クレジットカード"
         to = ko.reciept_name
         keisho = "御中"
