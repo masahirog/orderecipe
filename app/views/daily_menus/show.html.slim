@@ -184,13 +184,15 @@
             button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
             = submit_tag "作成する" ,class:"btn btn-primary"
 
-table.table.table-list
+table.table.table-list.table-striped
   thead
     tr
       th メニュー名
       th 単品惣菜分
       th 弁当等副菜分
       th 合計製造数
+      th 東中野
+      th 高円寺
   tbody
     -@daily_menu_details.each do |dmd|
       tr
@@ -202,6 +204,11 @@ table.table.table-list
           = dmd.for_sub_item_number
         td
           = dmd.manufacturing_number
+        td
+          = @sdmd_hash[9][dmd.product_id]
+        td
+          = @sdmd_hash[19][dmd.product_id] if @sdmd_hash[19].present? && @sdmd_hash[19][dmd.product_id].present?
+
 css:
   .show_case_table td {
     border: solid 1px silver;

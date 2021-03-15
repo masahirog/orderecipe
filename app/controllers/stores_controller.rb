@@ -2,7 +2,7 @@ class StoresController < AdminController
   before_action :set_store, only: [:show, :edit, :update, :destroy]
 
   def index
-    @stores = Store.all
+    @stores = Store.includes(:user).all
   end
 
   def show

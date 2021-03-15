@@ -20,6 +20,12 @@ class StoreDailyMenusController < AdminController
     @tommoroww = StoreDailyMenu.find_by(start_time:@date+1)
     @yesterday = StoreDailyMenu.find_by(start_time:@date-1)
     @store_daily_menu_details = @store_daily_menu.store_daily_menu_details.includes(:product)
+    respond_to do |format|
+      format.html
+      format.csv do
+        send_data render_to_string, filename: "#{@date}_#{@store_daily_menu.store_id}_shokuhinhyouzi.csv", type: :csv
+      end
+    end
   end
 
   def edit

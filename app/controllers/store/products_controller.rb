@@ -8,6 +8,7 @@ class Store::ProductsController < ApplicationController
   def show
     @product = Product.includes(:product_menus,{menus: [:menu_materials, :materials]}).find(params[:id])
     @allergies = Product.allergy_seiri(@product)
+    @allergies = Product.allergy_seiri(@product)
     @additives = Product.additive_seiri(@product)
     order_products = @product.order_products
     daily_menu_details = @product.daily_menu_details

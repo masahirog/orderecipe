@@ -23,3 +23,10 @@ table.table
       td
         = link_to @product.image_for_one_person.to_s, "data-lightbox" => @product.image_for_one_person.to_s do
           = image_tag @product.image_for_one_person.to_s ,class:"",style:'max-height:150px;'
+    tr
+      th アレルギー
+      td = @allergies.join('、')
+
+    tr
+      th 使用食材（順不同）
+      td = @product.menus.where.not(category:4).map{|menu|menu.materials.uniq.map{|material|material.name}}.join('、')

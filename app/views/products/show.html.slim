@@ -72,9 +72,9 @@
           = link_to @product.image_for_one_person.to_s, "data-lightbox" => @product.image_for_one_person.to_s do
             = image_tag @product.image_for_one_person.to_s ,class:"text-center img-responsive center-block",style:'max-height:150px;'
 
-    / tr
-    /   th.active.col-md-4 アレルギー
-    /   td = @allergies.join('、')
+    tr
+      th.active.col-md-4 アレルギー
+      td = @allergies.join('、')
     / tr
     /   th.active.col-md-4 食品添加物
     /   td = @additives.join('、')

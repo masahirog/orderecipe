@@ -19,6 +19,13 @@ class DailyMenusController < AdminController
       [dmd.place_showcase_id,dmd.product.name] if dmd.place_showcase_id.present?
     end
     @hash = @hash.compact.to_h
+    @sdmd_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    @daily_menu.store_daily_menus.each do |sdm|
+      sdm.store_daily_menu_details.each do |sdmd|
+        @sdmd_hash[sdm.store_id][sdmd.product_id] = sdmd.number
+      end
+    end
+
   end
 
   def new
