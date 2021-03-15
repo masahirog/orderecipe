@@ -54,18 +54,19 @@ class Order < ApplicationRecord
           new_stocks << Stock.new(material_id:material_id,date:date,end_day_stock:end_day_stock,delivery_amount:delivery_amount)
         end
       end
+      Stock.change_stock(update_stocks,material_id,date,end_day_stock)
 
-      stocks = Stock.where(material_id:material_id).where('date > ?', date).where(inventory_flag:true)
-      if stocks.present?
-      else
-        date_later_stocks = Stock.where(material_id:material_id).where('date > ?', date).order('date ASC')
-        date_later_stocks.each_with_index do |dls,i|
-          dls.start_day_stock = end_day_stock
-          dls.end_day_stock = dls.start_day_stock - dls.used_amount + dls.delivery_amount
-          end_day_stock = dls.end_day_stock
-          update_stocks << dls
-        end
-      end
+      # stocks = Stock.where(material_id:material_id).where('date > ?', date).where(inventory_flag:true)
+      # if stocks.present?
+      # else
+      #   date_later_stocks = Stock.where(material_id:material_id).where('date > ?', date).order('date ASC')
+      #   date_later_stocks.each_with_index do |dls,i|
+      #     dls.start_day_stock = end_day_stock
+      #     dls.end_day_stock = dls.start_day_stock - dls.used_amount + dls.delivery_amount
+      #     end_day_stock = dls.end_day_stock
+      #     update_stocks << dls
+      #   end
+      # end
     end
     Stock.import new_stocks if new_stocks.present?
     Stock.import update_stocks, on_duplicate_key_update:[:delivery_amount,:end_day_stock,:start_day_stock] if update_stocks.present?

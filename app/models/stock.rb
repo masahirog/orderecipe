@@ -120,7 +120,7 @@ class Stock < ApplicationRecord
           new_stocks << Stock.new(material_id:material_id,date:previous_day,used_amount:used_amount,end_day_stock:end_day_stock)
         end
       end
-      change_stock(update_stocks,material_id,end_day_stock,inventory_materials,recent_stocks_hash)
+      calculate_change_stock(update_stocks,material_id,end_day_stock,inventory_materials,recent_stocks_hash)
     end
     Stock.import new_stocks if new_stocks.present?
     Stock.import update_stocks, on_duplicate_key_update:[:used_amount,:end_day_stock,:start_day_stock] if update_stocks.present?
@@ -144,7 +144,7 @@ class Stock < ApplicationRecord
       stock.used_amount = 0
       end_day_stock = stock.start_day_stock + stock.delivery_amount
       stock.end_day_stock = end_day_stock
-      change_stock(update_stocks,stock.material_id,end_day_stock,inventory_materials,recent_stocks_hash)
+      calculate_change_stock(update_stocks,stock.material_id,end_day_stock,inventory_materials,recent_stocks_hash)
       update_stocks << stock
     end
     Stock.import update_stocks, on_duplicate_key_update:[:used_amount,:end_day_stock,:start_day_stock] if update_stocks.present?
@@ -171,7 +171,7 @@ class Stock < ApplicationRecord
   end
 
   #未来の在庫を書き換えていく処理
-  def self.change_stock(update_stocks,material_id,end_day_stock,inventory_materials,recent_stocks_hash)
+  def self.calculate_change_stock(update_stocks,material_id,end_day_stock,inventory_materials,recent_stocks_hash)
     if inventory_materials.include?(material_id)
       #date以降で棚卸ししてたら、在庫を動かす処理はとくになし
     else
@@ -182,7 +182,20 @@ class Stock < ApplicationRecord
         update_stocks << dls
       end
     end
+  end
 
+  def self.change_stock(update_stocks,material_id,date,end_day_stock)
+    stocks = Stock.where(material_id:material_id).where('date > ?', date).where(inventory_flag:true)
+    if stocks.present?
+    else
+      date_later_stocks = Stock.where(material_id:material_id).where('date > ?', date).order('date ASC')
+      date_later_stocks.each_with_index do |dls,i|
+        dls.start_day_stock = end_day_stock
+        dls.end_day_stock = dls.start_day_stock - dls.used_amount + dls.delivery_amount
+        end_day_stock = dls.end_day_stock
+        update_stocks << dls
+      end
+    end
   end
 
   def self.stock_status_check
