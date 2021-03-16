@@ -39,7 +39,7 @@ gem 'mail'
 gem "jquery-ui-rails"
 gem 'gon'
 # gem 'chart-js-rails', '~> 0.1.4'
-# gem 'aws-sdk'
+gem 'aws-sdk'
 # gem 'aws-sdk-s3'
 gem 'line_notify'
 gem 'combine_pdf'

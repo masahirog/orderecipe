@@ -260,12 +260,26 @@ class ProductsController < AdminController
     redirect_to products_path, notice: 'スプレッドシートに連携しました！'
   end
 
+  # def download
+  #   url = URI.encode(params[:file_name])
+  #   data_path = open(url)
+  #   send_data data_path.read, disposition: 'attachment',
+  #   type: params[:type]
+  # end
   def download
-    url = URI.encode(params[:file_name])
-    data_path = open(url)
-    send_data data_path.read, disposition: 'attachment',
-    type: params[:type]
+    region='ap-northeast-1'
+    bucket='product_pop'
+    key= params[:file_name]
+    credentials=Aws::Credentials.new(
+      ENV['ACCESS_KEY_ID'],
+      ENV['SECRET_ACCESS_KEY']
+    )
+    # send_dataのtypeはtypeで指定
+    client=Aws::S3::Client.new(region:region, credentials:credentials)
+    data=client.get_object(bucket:bucket, key:key).body
+    send_data data.read, filename: params[:file_name], disposition: 'attachment', type: params[:type]
   end
+
   private
     def product_create_update
       params.require(:product).permit(:name,:memo, :management_id,:short_name,:symbol, :sell_price, :description, :contents, :image,:brand_id,:product_category,:bejihan_sozai_flag,
