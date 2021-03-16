@@ -260,7 +260,12 @@ class ProductsController < AdminController
     redirect_to products_path, notice: 'スプレッドシートに連携しました！'
   end
 
-
+  def download
+    url = URI.encode(params[:file_name])
+    data_path = open(url)
+    send_data data_path.read, disposition: 'attachment',
+    type: params[:type]
+  end
   private
     def product_create_update
       params.require(:product).permit(:name,:memo, :management_id,:short_name,:symbol, :sell_price, :description, :contents, :image,:brand_id,:product_category,:bejihan_sozai_flag,

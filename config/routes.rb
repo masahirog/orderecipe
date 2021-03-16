@@ -54,6 +54,7 @@ Rails.application.routes.draw do
   end
   resources :products do
     collection do
+      get :download
       get :bejihan_ss_cost_sync
       post :print
       get :get_menu_cost_price
