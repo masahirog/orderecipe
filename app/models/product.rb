@@ -1,6 +1,9 @@
 class Product < ApplicationRecord
   belongs_to :brand
 
+  has_many :product_pops, dependent: :destroy
+  accepts_nested_attributes_for :product_pops, allow_destroy: true
+
   has_many :product_menus,->{order("product_menus.row_order asc") }, dependent: :destroy
   has_many :menus, through: :product_menus
   accepts_nested_attributes_for :product_menus, allow_destroy: true

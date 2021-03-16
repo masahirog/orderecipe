@@ -93,6 +93,12 @@
         - if @product.image_for_one_person?
           = image_tag @product.image_for_one_person.to_s,class:"img-responsive",style:'max-height:450px;'
 
+    .col-md-4
+      = f.fields_for :product_pops do |pp|
+        .form-group
+          = f.label :image_for_one_person, "ポップ写真"
+          = image_tag pp.object.image.url,style:'height:200px;width:300px;object-fit:cover;object-position: 0 0;' if pp.object.image.present?
+          = pp.file_field :image
 
   .menu-area.table-striped
     .col-md-12[style="margin-top:10px;"]
