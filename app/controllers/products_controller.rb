@@ -267,9 +267,10 @@ class ProductsController < AdminController
   #   type: params[:type]
   # end
   def download
+    Dotenv.overload
     region='ap-northeast-1'
-    bucket='product_pop'
-    key= params[:file_name]
+    bucket='bento-orderecipe'
+    key=params[:key]
     credentials=Aws::Credentials.new(
       ENV['ACCESS_KEY_ID'],
       ENV['SECRET_ACCESS_KEY']
@@ -279,6 +280,8 @@ class ProductsController < AdminController
     data=client.get_object(bucket:bucket, key:key).body
     send_data data.read, filename: params[:file_name], disposition: 'attachment', type: params[:type]
   end
+
+
 
   private
     def product_create_update

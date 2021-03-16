@@ -1,7 +1,11 @@
 Rails.application.routes.draw do
   namespace :store do
     resources :store_daily_menus, only:[:index, :show,:edit,:update]
-    resources :products, only:[:show]
+    resources :products do
+      collection do
+        get :download
+      end
+    end
   end
 
   devise_for :users

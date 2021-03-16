@@ -96,7 +96,7 @@
     .col-md-4
       = f.fields_for :product_pops do |pp|
         .form-group
-          = link_to "ダウンロード", download_products_path(:file_name => pp.object.image, :type => 'pdf')
+          = link_to "ダウンロード", download_products_path(:file_name => pp.object.image,:key => pp.object.image.path, :type => 'pdf'),target:'_blank'
           = f.label :image_for_one_person, "ポップ写真"
           = pp.file_field :image
 
