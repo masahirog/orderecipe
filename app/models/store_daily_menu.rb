@@ -22,10 +22,14 @@ class StoreDailyMenu < ApplicationRecord
     sdmds = StoreDailyMenuDetail.where(store_daily_menu_id:daily_menu.store_daily_menus.ids)
     product_num_hash = sdmds.group(:product_id).sum(:number)
     daily_menu.daily_menu_details.each do |dmd|
-      dmd.for_single_item_number = product_num_hash[dmd.product_id]
-      dmd.manufacturing_number = dmd.for_single_item_number + dmd.for_sub_item_number
-      update_dmds << dmd
-      total_manufacturing_number = dmd.manufacturing_number
+      if product_num_hash[dmd.product_id].present?
+        dmd.for_single_item_number = product_num_hash[dmd.product_id]
+        dmd.manufacturing_number = dmd.for_single_item_number + dmd.for_sub_item_number
+        dmd.for_single_item_number = product_num_hash[dmd.product_id]
+        dmd.manufacturing_number = dmd.for_single_item_number + dmd.for_sub_item_number
+        update_dmds << dmd
+        total_manufacturing_number = dmd.manufacturing_number
+      end
     end
     DailyMenuDetail.import update_dmds, on_duplicate_key_update:[:for_single_item_number,:manufacturing_number]
     daily_menu.update_attributes(total_manufacturing_number:total_manufacturing_number)
