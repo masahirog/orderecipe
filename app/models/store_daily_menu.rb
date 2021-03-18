@@ -8,7 +8,7 @@ class StoreDailyMenu < ApplicationRecord
   validates :daily_menu_id, :uniqueness => {:scope => :store_id}
 
   before_save :total_check
-  after_save :input_stock
+  after_update :input_stock
   after_destroy :input_stock
 
   #納品量の追加
