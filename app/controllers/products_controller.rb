@@ -13,7 +13,7 @@ class ProductsController < AdminController
     @product = Product.find(params[:product_id])
     respond_to do |format|
       format.html
-      format.json { render json: { bejihan_sozai_flag: @product.bejihan_sozai_flag } }
+      format.json { render json: { bejihan_sozai_flag: @product.bejihan_sozai_flag,sell_price:@product.sell_price } }
     end
   end
 

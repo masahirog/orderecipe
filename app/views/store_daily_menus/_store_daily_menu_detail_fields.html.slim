@@ -5,13 +5,19 @@
 
 tr.nested-fields.item.daily_menu_detail_tr class=class_name
   - if f.object.id.present?
+    td.bejihan_sozai_flag_td
+      = "true" if f.object.product.bejihan_sozai_flag == true
+    td.sell_price
+      = f.object.product.sell_price
     td
       = f.object.product.name
   - else
+    td.bejihan_sozai_flag_td
+    td.sell_price
     td
       = f.collection_select :product_id, @dmd_products, :id, :name, {include_blank:true},class:'form-control input_select_product'
 
   td
-    = f.number_field :number, class: 'form-control'
+    = f.number_field :number, class: 'form-control manufacturing_number', min: 0
   td
     = link_to_remove_association '削除', f, class: 'btn btn-danger btn-sm'

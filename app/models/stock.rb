@@ -81,11 +81,13 @@ class Stock < ApplicationRecord
     material_ids = @hash.keys
     # stocks_hash = Stock.where(date:previous_day,material_id:material_ids).map{|stock|{stock.material_id => stock}}
     stocks_hash = {}
+
     Stock.where(date:previous_day,material_id:material_ids).each do|stock|
       stocks_hash[stock.material_id] = stock
     end
     prev_stocks_hash = {}
-    Stock.where("date < ?", previous_day).order('date desc').group('material_id').each do |stock|
+    stocks = Stock.where("date < ?", previous_day).order('date desc')
+    Stock.group('material_id').from(stocks, :stocks).each do |stock|
       prev_stocks_hash[stock.material_id] = stock
     end
     inventory_materials = []
