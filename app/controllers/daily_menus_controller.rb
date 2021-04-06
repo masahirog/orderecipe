@@ -180,6 +180,7 @@ class DailyMenusController < AdminController
   #   end
   # end
   def material_preparation
+    category = params[:category]
     mochiba = params[:mochiba]
     lang = params[:lang]
     daily_menu = DailyMenu.find(params[:daily_menu_id])
@@ -189,7 +190,7 @@ class DailyMenusController < AdminController
     respond_to do |format|
       format.html
       format.pdf do
-        pdf = MaterialPreparation.new(@bentos_num_h,date,mochiba,lang,sort)
+        pdf = MaterialPreparation.new(@bentos_num_h,date,mochiba,lang,sort,category)
         send_data pdf.render,
         filename:    "#{date}.pdf",
         type:        "application/pdf",
