@@ -12,6 +12,7 @@ table.table.table-list
       th メニュー名
       th 売価
       th 画像
+      th ポップ
       th 発注数
   tbody
     -@store_daily_menu_details.each do |sdmd|
@@ -24,6 +25,8 @@ table.table.table-list
           - if sdmd.product.display_image.present?
             = link_to sdmd.product.display_image.to_s, "data-lightbox" => sdmd.product.display_image.to_s do
               i class="fas fa-camera-retro"
-
+        td
+          - if sdmd.product.product_pops.present?
+            = link_to "ダウンロード", download_store_products_path(:file_name => sdmd.product.product_pops[0].image,:key => sdmd.product.product_pops[0].image.path, :type => 'pdf'),target:'_blank',class:'col-md-12'
         td
           = sdmd.number

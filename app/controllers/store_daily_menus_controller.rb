@@ -11,7 +11,12 @@ class StoreDailyMenusController < AdminController
     store_id = params[:store_id]
     @store = Store.find(store_id)
     @store_daily_menus = @store.store_daily_menus.where(start_time:date.in_time_zone.all_month).includes(store_daily_menu_details:[:product])
-
+    respond_to do |format|
+      format.html
+      format.csv do
+        send_data render_to_string, filename: "#{date}_#{store_id}_shukei.csv", type: :csv
+      end
+    end
   end
 
   def show

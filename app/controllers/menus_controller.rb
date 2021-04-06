@@ -45,6 +45,7 @@ class MenusController < AdminController
   end
 
   def create
+    @range = 80.times.map { |i| i * 5 }
     @food_ingredients = FoodIngredient.all
     # @materials = Material.where(unused_flag:false)
     @menu = Menu.new(menu_create_update)
@@ -73,6 +74,7 @@ class MenusController < AdminController
     @ar = Menu.used_additives(@menu.materials)
   end
   def update
+    @range = 80.times.map { |i| i * 5 }
     @food_ingredients = FoodIngredient.all
     @menu = Menu.includes(:menu_materials,{materials:[:vendor,:material_food_additives]}).find(params[:id])
     @materials = @menu.materials

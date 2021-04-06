@@ -1,5 +1,6 @@
 h1
   = "献立　#{@store.name}"
+= link_to "CSV", store_daily_menus_path(start_date:params[:start_date],store_id:params[:store_id],format:'csv'), class: "btn btn-default",style:'float:right;'
 = month_calendar events: @store_daily_menus do |start_time, store_daily_menu|
   div style='height:29px;'
     - if store_daily_menu[0]

@@ -93,12 +93,14 @@
         - if @product.image_for_one_person?
           = image_tag @product.image_for_one_person.to_s,class:"img-responsive",style:'max-height:450px;'
 
-    .col-md-4
-      = f.fields_for :product_pops do |pp|
+    = f.fields_for :product_pops do |pp|
+      .col-md-4
+        = f.label :image, "ポップ写真"
         .form-group
-          = link_to "ダウンロード", download_products_path(:file_name => pp.object.image,:key => pp.object.image.path, :type => 'pdf'),target:'_blank'
-          = f.label :image_for_one_person, "ポップ写真"
-          = pp.file_field :image
+          - if pp.object.image.present?
+            object data="#{pp.object.image.to_s}" type="application/pdf" width="" height=""
+            = link_to "ダウンロード", download_products_path(:file_name => pp.object.image,:key => pp.object.image.path, :type => 'pdf'),target:'_blank',class:'col-md-12'
+        = pp.file_field :image
 
   .menu-area.table-striped
     .col-md-12[style="margin-top:10px;"]
