@@ -286,6 +286,7 @@ class KurumesiOrdersController < AdminController
   # end
 
   def material_preparation
+    category = params[:category]
     mochiba = params[:mochiba]
     lang = params[:lang]
     date = params[:date]
@@ -295,7 +296,7 @@ class KurumesiOrdersController < AdminController
     respond_to do |format|
       format.html
       format.pdf do
-        pdf = MaterialPreparation.new(@bentos_num_h,date,mochiba,lang,sort)
+        pdf = MaterialPreparation.new(@bentos_num_h,date,mochiba,lang,sort,category)
 
         send_data pdf.render,
         filename:    "#{date}.pdf",
