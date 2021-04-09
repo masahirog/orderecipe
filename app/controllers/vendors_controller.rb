@@ -1,18 +1,37 @@
 class VendorsController < AdminController
   def index
     @vendors = Vendor.all
-    if params[:month_used_price] == 'true'
+    if params[:monthly_price] == 'true'
       if params[:year] && params[:month]
+        @monthly_useds = {}
+        @monthly_orders = {}
         @year = params[:year].to_i
         @month = params[:month].to_i
         from = Date.new(@year,@month,1)
         to = Date.new(@year,@month,-1)
-        @hash = {}
         OrderMaterial.joins(:order).includes(:material).where(un_order_flag:false,orders:{fixed_flag:1}).where(delivery_date:from..to).each do |om|
-          if @hash[om.material.vendor_id].present?
-            @hash[om.material.vendor_id] += om.order_quantity.to_f * om.material.cost_price
+          if @monthly_orders[om.material.vendor_id].present?
+            @monthly_orders[om.material.vendor_id] += om.order_quantity.to_f * om.material.cost_price
           else
-            @hash[om.material.vendor_id] = om.order_quantity.to_f * om.material.cost_price
+            @monthly_orders[om.material.vendor_id] = om.order_quantity.to_f * om.material.cost_price
+          end
+        end
+        # material_ids = vendor.materials.ids
+        # used_product_ids = Product.joins(product_menus:[menu:[:menu_materials]]).where(:product_menus => {:menus => {:menu_materials => {material_id:material_ids}}}).ids
+        bejihan_souzais = DailyMenuDetail.joins(:daily_menu,:product).where(:daily_menus => {start_time:from.in_time_zone.all_month}).group('product_id').sum(:manufacturing_number)
+        kurumesi_bentos = KurumesiOrderDetail.joins(:kurumesi_order,:product).where(:kurumesi_orders => {start_time:from.in_time_zone.all_month,canceled_flag:false}).group('product_id').sum(:number)
+        monthly_make_products = bejihan_souzais.merge(kurumesi_bentos)
+        monthly_make_products.each do |product_num|
+          product = Product.find(product_num[0])
+          product.product_menus.includes(menu:[menu_materials:[:material]]).each do |pm|
+            menu = pm.menu
+            menu.menu_materials.each do |mm|
+              if @monthly_useds[mm.material.vendor_id].present?
+                @monthly_useds[mm.material.vendor_id] += (mm.amount_used * product_num[1] * mm.material.cost_price)
+              else
+                @monthly_useds[mm.material.vendor_id] = (mm.amount_used * product_num[1] * mm.material.cost_price)
+              end
+            end
           end
         end
       end
@@ -57,23 +76,25 @@ class VendorsController < AdminController
     # used_product_ids = Product.joins(product_menus:[menu:[:menu_materials]]).where(:product_menus => {:menus => {:menu_materials => {material_id:material_ids}}}).ids
     bejihan_souzais = DailyMenuDetail.joins(:daily_menu,:product).where(:daily_menus => {start_time:date.in_time_zone.all_month}).group('product_id').sum(:manufacturing_number)
     kurumesi_bentos = KurumesiOrderDetail.joins(:kurumesi_order,:product).where(:kurumesi_orders => {start_time:date.in_time_zone.all_month,canceled_flag:false}).group('product_id').sum(:number)
-    month_bentos = bejihan_souzais.merge(kurumesi_bentos)
-    month_bentos.each do |product_num|
-      product = Product.includes(menus:[menu_materials:[:material]]).find(product_num[0])
-      product.product_menus.each do |pm|
+    monthly_make_products = bejihan_souzais.merge(kurumesi_bentos)
+    monthly_make_products.each do |product_num|
+      product = Product.find(product_num[0])
+      product.product_menus.includes(:menu).each do |pm|
         menu = pm.menu
-        menu.menu_materials.each do |mm|
-          if @material_hash[mm.material.vendor_id][mm.material_id].present?
-            @material_hash[mm.material.vendor_id][mm.material_id]['amount'] += (mm.amount_used * product_num[1])
-            @material_hash[mm.material.vendor_id][mm.material_id]['cost'] += (mm.amount_used * product_num[1] * mm.material.cost_price).round(2)
+        vendor_menu_materials = menu.menu_materials.includes([:material]).joins(:material).where(:materials => {vendor_id:params[:vendor_id]})
+        vendor_menu_materials.each do |mm|
+          if @material_hash[mm.material_id].present?
+            @material_hash[mm.material_id]['amount'] += (mm.amount_used * product_num[1])
+            @material_hash[mm.material_id]['cost'] += (mm.amount_used * product_num[1] * mm.material.cost_price)
           else
-            @material_hash[mm.material.vendor_id][mm.material_id]['amount'] = (mm.amount_used * product_num[1])
-            @material_hash[mm.material.vendor_id][mm.material_id]['cost'] = (mm.amount_used * product_num[1] * mm.material.cost_price).round(2)
+            @material_hash[mm.material_id]['material_name'] = mm.material.name
+            @material_hash[mm.material_id]['amount'] = (mm.amount_used * product_num[1])
+            @material_hash[mm.material_id]['cost'] = (mm.amount_used * product_num[1] * mm.material.cost_price)
           end
-          if @vendor_hash[mm.material.vendor_id].present?
-            @vendor_hash[mm.material.vendor_id] += (mm.amount_used * product_num[1] * mm.material.cost_price).round(2)
+          if @vendor_hash.present?
+            @vendor_hash += (mm.amount_used * product_num[1] * mm.material.cost_price)
           else
-            @vendor_hash[mm.material.vendor_id] = (mm.amount_used * product_num[1] * mm.material.cost_price).round(2)
+            @vendor_hash = (mm.amount_used * product_num[1] * mm.material.cost_price)
           end
         end
       end

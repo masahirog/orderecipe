@@ -30,9 +30,14 @@
           = f.number_field :cost_price, :readonly => 'readonly', class:"product_cost_price form-control text-right"
         .form-group
           |  円
-    .col-md-1
+  .col-md-12
+    .col-md-2
       = f.label :product_category, "べじはん惣菜"
       = f.check_box :bejihan_sozai_flag, class: "form-control"
+    .col-md-2
+      = f.label :carryover_able_flag, "在庫を翌日以降繰越可能？"
+      = f.check_box :carryover_able_flag, class: "form-control"
+
     .col-md-2
       = f.label :cooking_rice_id, "使用ライス"
       = f.collection_select :cooking_rice_id, CookingRice.all, :id, :name, {}, { class: "form-control"}

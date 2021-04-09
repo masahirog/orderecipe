@@ -1,1 +1,12 @@
-|aaa
+table.table
+  thead
+    tr
+      th 食材名
+      th 使用量
+      th = "#{@vendor_hash.round().to_s(:delimited)} 円"
+  tbody
+    - @material_hash.each do |material_used|
+      tr
+        td =  material_used[1]['material_name']
+        td = material_used[1]['amount'].round(2)
+        td = material_used[1]['cost'].round(2)

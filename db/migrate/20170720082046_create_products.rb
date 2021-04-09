@@ -21,6 +21,7 @@ class CreateProducts < ActiveRecord::Migration[4.2]
       t.text :serving_infomation
       t.string :food_label_name
       t.text :food_label_content
+      t.boolean :carryover_able_flag, null: false, default: false
     end
   end
 end

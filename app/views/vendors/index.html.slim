@@ -4,13 +4,10 @@
   .col-md-11
     .pull-right
       = form_tag vendors_path, :method => 'get' do
-        = hidden_field_tag :month_used_price ,true
+        = hidden_field_tag :monthly_price ,true
         = select_tag :year, options_for_select([2021,2020,2019],params[:year]), include_blank: 'year', class:"form-control "
         = select_tag :month, options_for_select([1,2,3,4,5,6,7,8,9,10,11,12],params[:month]), include_blank: 'month', class:"form-control"
-        = submit_tag "月次発注金額" ,class:"btn btn-primary"
-    .pull-right style='padding-right:20px;'
-      -if @hash.present?
-        h4 = "トータル：#{@hash.values.inject(:+).floor.to_s(:delimited)}円"
+        = submit_tag "計算" ,class:"btn btn-primary"
 
 table.table.table-striped
   thead
@@ -20,8 +17,15 @@ table.table.table-striped
       th 担当TEL
       th TEL
       th FAX
-      - if @hash.present?
-        th #{@year}年#{@month}月 発注金額
+      - if @monthly_orders.present?
+        th
+          div = " #{@year}年#{@month}月 発注"
+          div = "#{@monthly_orders.values.inject(:+).floor.to_s(:delimited)}円"
+      - if @monthly_useds.present?
+        th
+          div = "#{@year}年#{@month}月 使用"
+          div = "#{@monthly_useds.values.inject(:+).floor.to_s(:delimited)}円"
+
   tbody
     - @vendors.each do |vendor|
       tr
@@ -30,7 +34,11 @@ table.table.table-striped
         td = vendor.staff_phone
         td = vendor.company_phone
         td = vendor.company_fax
-        - if @hash.present?
+        - if @monthly_orders.present?
           td
-            - if @hash[vendor.id].present?
-              = "#{@hash[vendor.id].floor.to_s(:delimited)}円"
+            - if @monthly_orders[vendor.id].present?
+              = "#{@monthly_orders[vendor.id].floor.to_s(:delimited)}円"
+        - if @monthly_useds.present?
+          td
+            - if @monthly_useds[vendor.id].present?
+              = "#{@monthly_useds[vendor.id].floor.to_s(:delimited)}円"

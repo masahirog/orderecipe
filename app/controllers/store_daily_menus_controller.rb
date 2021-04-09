@@ -4,13 +4,18 @@ class StoreDailyMenusController < AdminController
   def index
     if params[:start_date].present?
       date = params[:start_date]
+    elsif params[:start_time].present?
+      date = params[:start_time]
     else
       date = Date.today
     end
-
     store_id = params[:store_id]
     @store = Store.find(store_id)
-    @store_daily_menus = @store.store_daily_menus.where(start_time:date.in_time_zone.all_month).includes(store_daily_menu_details:[:product])
+    if params['one_day_flag'] == 'true'
+      @store_daily_menus = @store.store_daily_menus.where(start_time:date).includes(store_daily_menu_details:[:product])
+    else
+      @store_daily_menus = @store.store_daily_menus.where(start_time:date.in_time_zone.all_month).includes(store_daily_menu_details:[:product])
+    end
     respond_to do |format|
       format.html
       format.csv do
@@ -99,6 +104,6 @@ class StoreDailyMenusController < AdminController
 
     def store_daily_menu_params
       params.require(:store_daily_menu).permit(:start_time,:total_num,:weather,:max_temperature,:min_temperature,
-        store_daily_menu_details_attributes: [:id,:store_daily_menu_id,:product_id,:number,:row_order,:_destroy])
+        store_daily_menu_details_attributes: [:id,:store_daily_menu_id,:product_id,:number,:row_order,:_destroy,:actual_inventory,:add_stocked,:use_stock,:sold_out_flag])
     end
 end

@@ -1,9 +1,12 @@
+= link_to 'カレンダー', store_daily_menus_path(store_id:@store_daily_menu.store_id)
 h4
   = @store_daily_menu.start_time.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@store_daily_menu.start_time.wday]})")
   = "　#{@store_daily_menu.store.name}店 "
+
+
 .col-md-12
-  = link_to "発注数の入力", edit_store_daily_menu_path(@store_daily_menu),class:'btn btn-primary',style:'margin-right:20px;'
-  button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newOrder" まとめて発注
+  = link_to "数の入力", edit_store_daily_menu_path(@store_daily_menu),class:'btn btn-primary',style:'margin-right:20px;'
+  button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newOrder" 複数日入力
   #newOrder.modal.fade tabindex="-1"
     = form_tag(once_edit_store_daily_menus_path,method: :get) do
       = hidden_field_tag :id,@store_daily_menu.id
@@ -21,16 +24,47 @@ h4
           .modal-footer
             button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
             = submit_tag "まとめて発注" ,class:"btn btn-primary"
+  = link_to "在庫CSV", store_daily_menus_path(start_time:@store_daily_menu.start_time,store_id:@store_daily_menu.store_id,one_day_flag:true,format:'csv'), class: "btn btn-default",style:'float:right;'
   = link_to "食品表示CSV", store_daily_menu_path(@store_daily_menu,format:'csv'), class: "btn btn-default",style:'float:right;'
 table.table.table-list
   thead
     tr
+      th 総発注数
+      th 金額
+      th 総菜発注数
+      th 総菜金額
+  tbody
+    tr
+      td = @store_daily_menu.total_num
+      td = @store_daily_menu_details.sum(:total_price)
+      td
+      td
+
+
+table.table.table-list
+  thead
+    tr
       th メニュー名
+      th 販売価格
       th = "発注数：#{@store_daily_menu.total_num}"
+      th 翌日以降くりこし
+      th 当日以前のストック使用数
+      th 実際の調理済み在庫数
+      th 完売
   tbody
     -@store_daily_menu_details.each do |sdmd|
       tr
         td
           = link_to sdmd.product.name,product_path(sdmd.product)
         td
+          = "#{sdmd.product.sell_price}円"
+        td
           = sdmd.number
+        td
+          = sdmd.add_stocked
+        td
+          = sdmd.use_stock
+        td
+          = sdmd.actual_inventory
+        td
+          = '◯' if sdmd.sold_out_flag == true

@@ -89,11 +89,15 @@
   table.table.table-list.cocoon_are
     thead
       tr
+        th = link_to_add_association '商品追加', f, :store_daily_menu_details,class: 'btn btn-default add_menu_details',data: {association_insertion_node: '#store_daily_menu_details_area',association_insertion_method: 'append' }
         th 総菜？
         th 売価
         th メニュー名
         th 発注数
-        th = link_to_add_association '商品追加', f, :store_daily_menu_details,class: 'btn btn-default add_menu_details',data: {association_insertion_node: '#store_daily_menu_details_area',association_insertion_method: 'append' }
+        th 翌日以降繰越数
+        th 当日分以外のストック使用数
+        th 実際の調理済み在庫数
+        th 完売
     tbody#store_daily_menu_details_area
       = f.fields_for :store_daily_menu_details do |dmd|
         = render 'store_daily_menu_detail_fields', f: dmd
@@ -108,6 +112,15 @@ javascript:
       calculate_num();
     },5);
   });
+  $("#store_daily_menu_details_area").on("change",'.input_number',function(){
+    var tr = $(this).parents('tr')
+    var manufacturing_number = Number(tr.find('.manufacturing_number').val());
+    var add_stocked = Number(tr.find('.add_stocked_input').val());
+    var use_stock = Number(tr.find('.use_stock_input').val());
+    var actual_inventory = manufacturing_number - add_stocked + use_stock
+    tr.find('.actual_inventory_input').val(actual_inventory);
+  });
+
   $("#store_daily_menu_details_area").on("change",'.input_select_product',function(){
     var product_id =  parseInt($(this).val());
     var td = $(this).parent().parent().find(".bejihan_sozai_flag_td")
