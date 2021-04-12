@@ -1,4 +1,20 @@
 class OrdersController < AdminController
+  def material_stock_sheet
+    vendor_id = params[:vendor_id]
+    date = Date.strptime(params[:date])
+    from = date - 7
+    respond_to do |format|
+      format.html
+      format.pdf do
+        pdf = MaterialStockSheet.new(from,date,vendor_id)
+        send_data pdf.render,
+        filename:    "#{date}.pdf",
+        type:        "application/pdf",
+        disposition: "inline"
+      end
+    end
+  end
+
   def material_reload
     @material = Material.find(params[:material_id])
     date = params[:date]

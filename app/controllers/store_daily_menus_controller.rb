@@ -35,6 +35,13 @@ class StoreDailyMenusController < AdminController
       format.csv do
         send_data render_to_string, filename: "#{@date}_#{@store_daily_menu.store_id}_shokuhinhyouzi.csv", type: :csv
       end
+      format.pdf do
+        pdf = StoreDailyMenuPdf.new(@store_daily_menu.id)
+        send_data pdf.render,
+        filename:    "#{@store_daily_menu.id}.pdf",
+        type:        "application/pdf",
+        disposition: "inline"
+      end
     end
   end
 

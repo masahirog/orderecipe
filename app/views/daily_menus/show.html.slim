@@ -205,8 +205,8 @@ table.table.table-list.table-striped
       th 単品惣菜分
       th 弁当等副菜分
       th 合計製造数
-      th 東中野
-      th 高円寺
+      th = link_to '東中野',store_daily_menu_path(@store_daily_menu_idhash[9])
+      th = link_to '高円寺',store_daily_menu_path(@store_daily_menu_idhash[19])
   tbody
     -@daily_menu_details.each do |dmd|
       tr

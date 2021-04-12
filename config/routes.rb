@@ -89,6 +89,7 @@ Rails.application.routes.draw do
   end
   resources :orders do
     collection do
+      get :material_stock_sheet
       get :send_order_fax
       get :preparation_all
       get :monthly

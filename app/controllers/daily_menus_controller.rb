@@ -10,6 +10,7 @@ class DailyMenusController < AdminController
   end
 
   def show
+    @store_daily_menu_idhash = {}
     @stores = Store.all
     @date = @daily_menu.start_time
     @tommoroww = DailyMenu.find_by(start_time:@date+1)
@@ -21,6 +22,7 @@ class DailyMenusController < AdminController
     @hash = @hash.compact.to_h
     @sdmd_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @daily_menu.store_daily_menus.each do |sdm|
+      @store_daily_menu_idhash[sdm.store_id] = sdm.id
       sdm.store_daily_menu_details.each do |sdmd|
         @sdmd_hash[sdm.store_id][sdmd.product_id] = sdmd.number
       end
