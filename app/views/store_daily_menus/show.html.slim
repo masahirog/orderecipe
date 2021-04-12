@@ -4,6 +4,51 @@ h4
   = "　#{@store_daily_menu.store.name}店 "
 
 
+.clearfix
+  div style='float:left;width:30%;padding:10px;'
+    label 天気
+    p = @store_daily_menu.weather
+  div style='float:left;width:30%;padding:10px;'
+    label 最高気温
+    p = @store_daily_menu.max_temperature
+  div style='float:left;width:30%;padding:10px;'
+    label 最高気温
+    p = @store_daily_menu.min_temperature
+
+.clearfix.col-md-12
+  table.show_case_table style='float:left;width:14%;margin-right:5px;'
+    thead
+      tr
+        th 煮込み台
+    tbody
+      - [191,201,211].each do |i|
+        tr
+          td = @hash[i]
+  table.show_case_table style='float:left;width:34%;margin-right:5px;'
+    thead
+      tr
+        th 小ショーケース
+    tbody
+      - [11,21,31,41,51,61].each_slice(2) do |arr|
+        tr
+          - arr.each do |i|
+            td = @hash[i]
+  table.show_case_table style='float:left;width:50%'
+    thead
+      tr
+        th 大ショーケース
+
+    tbody
+      - [71,81,91,101,111,121,131,141,151,161,171,181].each_slice(4) do |arr|
+        tr
+          - arr.each do |i|
+            td = @hash[i]
+.form-group.col-md-12.clearfix style='padding-top:10px;'
+  - @store_daily_menu.store_daily_menu_photos.each do |sdmp|
+    div style='float:left;width:350px;'
+      = link_to sdmp.image.url, "data-lightbox" => sdmp.image.url do
+        = image_tag sdmp.image.url,style:'height:200px;width:300px;object-fit:cover;object-position: 0 0;'
+
 .col-md-12
   = link_to "数の入力", edit_store_daily_menu_path(@store_daily_menu),class:'btn btn-primary',style:'margin-right:20px;'
   button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newOrder" 複数日入力
@@ -69,3 +114,14 @@ table.table.table-list
           = sdmd.actual_inventory
         td
           = '◯' if sdmd.sold_out_flag == true
+
+css:
+  .show_case_table td {
+    border: solid 1px silver;
+    width:100px;
+    height:40px;
+    padding:5px;
+  }
+  .show_case_table {
+    border-collapse: collapse;
+  }

@@ -1,6 +1,6 @@
 ja:
   enum:
-    daily_menu:
+    store_daily_menu:
       weather:
         sunny: 晴れ
         cloud: くもり

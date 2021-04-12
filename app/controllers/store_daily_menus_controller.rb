@@ -30,6 +30,11 @@ class StoreDailyMenusController < AdminController
     @tommoroww = StoreDailyMenu.find_by(start_time:@date+1)
     @yesterday = StoreDailyMenu.find_by(start_time:@date-1)
     @store_daily_menu_details = @store_daily_menu.store_daily_menu_details.includes(:product)
+    @hash = @store_daily_menu_details.map do |sdmd|
+      [sdmd.place_showcase_id,sdmd.product.name] if sdmd.place_showcase_id.present?
+    end
+    @hash = @hash.compact.to_h
+
     respond_to do |format|
       format.html
       format.csv do
@@ -49,6 +54,22 @@ class StoreDailyMenusController < AdminController
     daily_menu = @store_daily_menu.daily_menu
     dmd_product_ids = daily_menu.products.ids - @store_daily_menu.products.ids
     @dmd_products = Product.where(id:dmd_product_ids)
+    saveble_photo_nums = 3 - @store_daily_menu.store_daily_menu_photos.length
+    saveble_photo_nums.times {
+      @store_daily_menu.store_daily_menu_photos.build
+    }
+    @date = @store_daily_menu.start_time
+    @tommoroww = DailyMenu.find_by(start_time:@date+1)
+    @yesterday = DailyMenu.find_by(start_time:@date-1)
+
+    @products = Product.where(brand_id:111)
+    @place_showcases = PlaceShowcase.all
+    @store_daily_menu_details = @store_daily_menu.products
+    @hash = @store_daily_menu.store_daily_menu_details.map do |sdmd|
+      [sdmd.place_showcase_id,sdmd.product_id] if sdmd.place_showcase_id.present?
+    end
+    @hash = @hash.compact.to_h
+
   end
 
   def update
@@ -111,6 +132,6 @@ class StoreDailyMenusController < AdminController
 
     def store_daily_menu_params
       params.require(:store_daily_menu).permit(:start_time,:total_num,:weather,:max_temperature,:min_temperature,
-        store_daily_menu_details_attributes: [:id,:store_daily_menu_id,:product_id,:number,:row_order,:_destroy,:actual_inventory,:add_stocked,:use_stock,:sold_out_flag])
+        store_daily_menu_details_attributes: [:id,:store_daily_menu_id,:product_id,:number,:row_order,:_destroy,:actual_inventory,:add_stocked,:use_stock,:sold_out_flag,:serving_plate_id,:place_showcase_id,:signboard_flag,:window_pop_flag])
     end
 end

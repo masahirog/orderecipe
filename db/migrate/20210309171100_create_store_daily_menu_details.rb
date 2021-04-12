@@ -12,6 +12,10 @@ class CreateStoreDailyMenuDetails < ActiveRecord::Migration[5.2]
       t.integer :use_stock, default: 0, null: false
       t.integer :actual_inventory, default: 0, null: false
       t.boolean :sold_out_flag, null: false, default: false
+      t.integer :serving_plate_id
+      t.integer :place_showcase_id
+      t.boolean :signboard_flag, default: 0, null: false
+      t.boolean :window_pop_flag, default: 0, null: false
     end
   end
 end

@@ -16,12 +16,8 @@ class DailyMenusController < AdminController
     @tommoroww = DailyMenu.find_by(start_time:@date+1)
     @yesterday = DailyMenu.find_by(start_time:@date-1)
     @daily_menu_details = @daily_menu.daily_menu_details.includes(:product)
-    @hash = @daily_menu_details.map do |dmd|
-      [dmd.place_showcase_id,dmd.product.name] if dmd.place_showcase_id.present?
-    end
-    @hash = @hash.compact.to_h
     @sdmd_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    @daily_menu.store_daily_menus.each do |sdm|
+    @daily_menu.store_daily_menus.includes(:store_daily_menu_details).each do |sdm|
       @store_daily_menu_idhash[sdm.store_id] = sdm.id
       sdm.store_daily_menu_details.each do |sdmd|
         @sdmd_hash[sdm.store_id][sdmd.product_id] = sdmd.number
@@ -37,7 +33,6 @@ class DailyMenusController < AdminController
     @date = Date.parse(date)
     @tommoroww = DailyMenu.find_by(start_time:@date+1)
     @yesterday = DailyMenu.find_by(start_time:@date-1)
-    @place_showcases = PlaceShowcase.all
     if DailyMenu.where(start_time:date).present?
       id = DailyMenu.find_by(start_time:date).id
       redirect_to "/daily_menus/#{id}/edit"
@@ -57,21 +52,11 @@ class DailyMenusController < AdminController
         @store_daily_menus[sdm.store_id][sdmd.product_id] = {number:sdmd.number}
       end
     end
-    saveble_photo_nums = 3 - @daily_menu.daily_menu_photos.length
-    saveble_photo_nums.times {
-      @daily_menu.daily_menu_photos.build
-    }
     @date = @daily_menu.start_time
     @tommoroww = DailyMenu.find_by(start_time:@date+1)
     @yesterday = DailyMenu.find_by(start_time:@date-1)
-
     @products = Product.where(brand_id:111)
-    @place_showcases = PlaceShowcase.all
     @daily_menu_details = @daily_menu.products
-    @hash = @daily_menu.daily_menu_details.map do |dmd|
-      [dmd.place_showcase_id,dmd.product_id] if dmd.place_showcase_id.present?
-    end
-    @hash = @hash.compact.to_h
   end
 
   def create

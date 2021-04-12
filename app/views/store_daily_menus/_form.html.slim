@@ -20,19 +20,19 @@
         - store_daily_menu.errors.full_messages.each do |message|
           li = message
   .clearfix.form-group
-    / .col-md-12.form-group.clearfix
+    .col-md-12.form-group.clearfix
       .col-md-3 style='float:left;'
         = f.label :total_num,"総数", class: ''
         = f.number_field :total_num, class: 'col-md-10 form-control total_manufacturing_number',readonly:true
-      / .col-md-3 style='float:left;'
+      .col-md-3 style='float:left;'
         = f.label :sozai_manufacturing_number,"惣菜在庫", class: ''
         = f.number_field :sozai_manufacturing_number, class: 'col-md-10 form-control input_sozai_manufacturing_number',readonly:true
 
-    / .col-md-12.clearfix
+    .col-md-12.clearfix
       .col-md-3 style='float:left;'
         = f.label :weather,"天気　", class: 'text-right'
         = link_to 'tenki.jp','https://tenki.jp/forecast/3/16/4410/13114/',target:'_blank'
-        = f.select :weather, DailyMenu.weathers.keys.map {|k| [I18n.t("enum.store_daily_menu.weather.#{k}"), k]}, {include_blank:true}, class: 'col-md-10 form-control'
+        = f.select :weather, StoreDailyMenu.weathers.keys.map {|k| [I18n.t("enum.store_daily_menu.weather.#{k}"), k]}, {include_blank:true}, class: 'col-md-10 form-control'
       .col-md-3 style='float:left;'
         = f.label :max_temperature,"最高気温", class: 'text-right'
         = f.select :max_temperature,(-10..40),{include_blank:true}, class: 'col-md-10 form-control'
@@ -41,7 +41,7 @@
         = f.select :min_temperature,(-10..40),{include_blank:true}, class: 'col-md-10 form-control'
       .col-md-3 style='float:right;padding-top:25px;text-align:right;'
         = f.submit '登録する',class:'btn btn-primary', data: {disable_with: '登録中...'}
-  / .clearfix.col-md-12
+  .clearfix.col-md-12
     table.show_case_table style='float:left;width:14%;margin-right:5px;'
       thead
         tr
@@ -73,7 +73,7 @@
             td = select_tag "place_#{i[2]}", options_from_collection_for_select(@store_daily_menu_details,:id,:name, @hash[i[2]]),include_blank: true, class: "form-control"
             td = select_tag "place_#{i[3]}", options_from_collection_for_select(@store_daily_menu_details,:id,:name, @hash[i[3]]),include_blank: true, class: "form-control"
 
-  / .col-md-12.clearfix style='padding:10px 0;'
+  .col-md-12.clearfix style='padding:10px 0;'
     - i = 0
     = f.fields_for :store_daily_menu_photos do |dmp|
       div style='float:left;width:350px;'
@@ -159,4 +159,40 @@ javascript:
     $('.total_price').val(total_price);
     $('.total_sozai_price').val(sozai_price);
 
+  }
+
+  $(function () {
+    $(".show_case_table td select").each(function(index, element){
+      var val = $(element).val();
+      if (val) {
+        $('.show_case_table td select').not(this).children('option[value='+ val +']').attr("disabled", "disabled");
+      }
+    });
+    var previous;
+    $(".show_case_table td select").on('click', function () {
+      // Store the current value on focus and on change
+      previous = $(this).val();
+    }).change(function() {
+      var val = $(this).val();
+      var id = $(this).attr('id');
+      var show_case_place_id = id.replace("place_", "");
+      $(".tr_"+val).find('.show_case_place').val(show_case_place_id);
+      if (val){
+        $('.show_case_table td select').not(this).children('option[value='+ val +']').attr("disabled", "disabled");
+      }
+      if (previous) {
+        $('.show_case_table td select').children('option[value='+ previous +']').removeAttr('disabled');
+      }
+    });
+  });
+
+css:
+  .show_case_table td {
+    padding:2px;
+    border: solid 1px silver;
+    width:100px;
+    height:40px;
+  }
+  .show_case_table {
+    border-collapse: collapse;
   }

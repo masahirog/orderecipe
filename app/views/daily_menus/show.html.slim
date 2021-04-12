@@ -22,52 +22,6 @@
     p = @daily_menu.sozai_manufacturing_number
 
 
-
-.clearfix
-  div style='float:left;width:30%;padding:10px;'
-    label 天気
-    p = @daily_menu.weather
-  div style='float:left;width:30%;padding:10px;'
-    label 最高気温
-    p = @daily_menu.max_temperature
-  div style='float:left;width:30%;padding:10px;'
-    label 最高気温
-    p = @daily_menu.min_temperature
-
-.clearfix.col-md-12
-  table.show_case_table style='float:left;width:14%;margin-right:5px;'
-    thead
-      tr
-        th 煮込み台
-    tbody
-      - [191,201,211].each do |i|
-        tr
-          td = @hash[i]
-  table.show_case_table style='float:left;width:34%;margin-right:5px;'
-    thead
-      tr
-        th 小ショーケース
-    tbody
-      - [11,21,31,41,51,61].each_slice(2) do |arr|
-        tr
-          - arr.each do |i|
-            td = @hash[i]
-  table.show_case_table style='float:left;width:50%'
-    thead
-      tr
-        th 大ショーケース
-
-    tbody
-      - [71,81,91,101,111,121,131,141,151,161,171,181].each_slice(4) do |arr|
-        tr
-          - arr.each do |i|
-            td = @hash[i]
-.form-group.col-md-12.clearfix style='padding-top:10px;'
-  - @daily_menu.daily_menu_photos.each do |dmp|
-    div style='float:left;width:350px;'
-      = link_to dmp.image.url, "data-lightbox" => dmp.image.url do
-        = image_tag dmp.image.url,style:'height:200px;width:300px;object-fit:cover;object-position: 0 0;'
-
 .form-group.col-md-12.clearfix
   = link_to "編集する", edit_daily_menu_path(@daily_menu),class:'btn btn-primary',style:'float:left;margin-left:20px;margin-top:10px;'
   / = link_to "発注開始", new_order_path(daily_menu_id:@daily_menu.id),class:'btn btn-success',style:'float:left;margin-left:20px;margin-top:10px;'
@@ -81,7 +35,7 @@
           .modal-header
             h4.modal-title 以下内容で発注する
           table.table
-            - @daily_menu.daily_menu_details.each_with_index do |dmd,i|
+            - @daily_menu.daily_menu_details.includes(:product).each_with_index do |dmd,i|
               - product = dmd.product
               tr
                 td.col-md-7
@@ -205,8 +159,16 @@ table.table.table-list.table-striped
       th 単品惣菜分
       th 弁当等副菜分
       th 合計製造数
-      th = link_to '東中野',store_daily_menu_path(@store_daily_menu_idhash[9])
-      th = link_to '高円寺',store_daily_menu_path(@store_daily_menu_idhash[19])
+      th
+        - if @store_daily_menu_idhash[9].present?
+          = link_to '東中野',store_daily_menu_path(@store_daily_menu_idhash[9])
+        - else
+          |東中野
+      th
+        - if @store_daily_menu_idhash[9].present?
+          = link_to '高円寺',store_daily_menu_path(@store_daily_menu_idhash[19])
+        - else
+          |高円寺
   tbody
     -@daily_menu_details.each do |dmd|
       tr

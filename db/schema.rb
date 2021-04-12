@@ -55,13 +55,6 @@ ActiveRecord::Schema.define(version: 2021_03_16_124221) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "daily_menu_photos", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "daily_menu_id", null: false
-    t.string "image"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "daily_menus", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.date "start_time", null: false
     t.integer "total_manufacturing_number", default: 0, null: false
@@ -378,6 +371,17 @@ ActiveRecord::Schema.define(version: 2021_03_16_124221) do
     t.integer "use_stock", default: 0, null: false
     t.integer "actual_inventory", default: 0, null: false
     t.boolean "sold_out_flag", default: false, null: false
+    t.integer "serving_plate_id"
+    t.integer "place_showcase_id"
+    t.boolean "signboard_flag", default: false, null: false
+    t.boolean "window_pop_flag", default: false, null: false
+  end
+
+  create_table "store_daily_menu_photos", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "store_daily_menu_id", null: false
+    t.string "image"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "store_daily_menus", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

@@ -5,7 +5,8 @@
 
 tr.nested-fields.item.daily_menu_detail_tr class=class_name
   td
-    = link_to_remove_association '削除', f, class: 'btn btn-danger btn-sm'
+    = f.collection_select :place_showcase_id,PlaceShowcase.all, :id, :name,{include_blank:true},class:'form-control show_case_place',style:'display:none;'
+    = link_to_remove_association '削除', f, class: 'btn btn-danger btn-sm',  data: {confirm: '削除しますか？'}
 
   - if f.object.id.present?
     td.bejihan_sozai_flag_td
