@@ -50,7 +50,7 @@ h4
         = image_tag sdmp.image.url,style:'height:200px;width:300px;object-fit:cover;object-position: 0 0;'
 
 .col-md-12
-  = link_to "数の入力", edit_store_daily_menu_path(@store_daily_menu),class:'btn btn-primary',style:'margin-right:20px;'
+  = link_to "編集", edit_store_daily_menu_path(@store_daily_menu),class:'btn btn-primary',style:'margin-right:20px;'
   button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newOrder" 複数日入力
   #newOrder.modal.fade tabindex="-1"
     = form_tag(once_edit_store_daily_menus_path,method: :get) do
@@ -93,9 +93,9 @@ table.table.table-list
       th メニュー名
       th 販売価格
       th = "発注数：#{@store_daily_menu.total_num}"
-      th 翌日以降くりこし
-      th 当日以前のストック使用数
-      th 実際の調理済み在庫数
+      th 過不足
+      th 翌日繰越
+      th 調理済み在庫
       th 完売
   tbody
     -@store_daily_menu_details.each do |sdmd|
@@ -107,9 +107,9 @@ table.table.table-list
         td
           = sdmd.number
         td
-          = sdmd.add_stocked
+          = sdmd.stock_deficiency_excess
         td
-          = sdmd.use_stock
+          = sdmd.carry_over
         td
           = sdmd.actual_inventory
         td

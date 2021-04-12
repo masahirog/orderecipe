@@ -1,16 +1,3 @@
-.col-md-2
-  label 総数
-  input.total_manufacturing_number
-.col-md-3
-  label 売上上限額
-  input.total_price
-.col-md-2
-  label 総菜数
-  input.input_sozai_manufacturing_number
-.col-md-3
-  label 総菜上限額
-  input.total_sozai_price
-
 = form_with(model: store_daily_menu, local: true) do |f|
 
   - if store_daily_menu.errors.any?
@@ -24,9 +11,16 @@
       .col-md-3 style='float:left;'
         = f.label :total_num,"総数", class: ''
         = f.number_field :total_num, class: 'col-md-10 form-control total_manufacturing_number',readonly:true
+      .col-md-3
+        label 売上上限額
+        input.total_price.form-control readonly='true'
+
       .col-md-3 style='float:left;'
         = f.label :sozai_manufacturing_number,"惣菜在庫", class: ''
         = f.number_field :sozai_manufacturing_number, class: 'col-md-10 form-control input_sozai_manufacturing_number',readonly:true
+      .col-md-3
+        label 総菜上限額
+        input.total_sozai_price.form-control readonly='true'
 
     .col-md-12.clearfix
       .col-md-3 style='float:left;'
@@ -93,16 +87,25 @@
         th 総菜？
         th 売価
         th メニュー名
-        th 発注数
-        th 翌日以降繰越数
-        th 当日分以外のストック使用数
-        th 実際の調理済み在庫数
         th 完売
+        th.order_num.readonly 発注数
+        th 過不足
+        th 翌日繰越
+        th 調理済み在庫
     tbody#store_daily_menu_details_area
-      = f.fields_for :store_daily_menu_details do |dmd|
+      = f.fields_for :store_daily_menu_details, f.object.store_daily_menu_details.sort_by(&:id) do |dmd|
         = render 'store_daily_menu_detail_fields', f: dmd
   = f.submit '登録する',class:'btn btn-primary', data: {disable_with: '登録中...'},style:'float:right;'
 javascript:
+  $('.order_num').on('click',function(){
+    if ($(this).hasClass('readonly')==true) {
+      $(this).removeClass("readonly");
+      $('.manufacturing_number').attr('readonly',false);
+    }else{
+      $(this).addClass("readonly");
+      $('.manufacturing_number').attr('readonly',true);
+    };
+  });
   calculate_num();
   $('#store_daily_menu_details_area').on('keyup','.manufacturing_number',function(){
     calculate_num();
@@ -115,9 +118,9 @@ javascript:
   $("#store_daily_menu_details_area").on("change",'.input_number',function(){
     var tr = $(this).parents('tr')
     var manufacturing_number = Number(tr.find('.manufacturing_number').val());
-    var add_stocked = Number(tr.find('.add_stocked_input').val());
-    var use_stock = Number(tr.find('.use_stock_input').val());
-    var actual_inventory = manufacturing_number - add_stocked + use_stock
+    var stock_deficiency_excess = Number(tr.find('.stock_deficiency_excess_input').val());
+    var carry_over = Number(tr.find('.carry_over_input').val());
+    var actual_inventory = manufacturing_number + stock_deficiency_excess - carry_over
     tr.find('.actual_inventory_input').val(actual_inventory);
   });
 

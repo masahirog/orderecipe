@@ -6,7 +6,7 @@
 tr.nested-fields.item.daily_menu_detail_tr class=class_name
   td
     = f.collection_select :place_showcase_id,PlaceShowcase.all, :id, :name,{include_blank:true},class:'form-control show_case_place',style:'display:none;'
-    = link_to_remove_association '削除', f, class: 'btn btn-danger btn-sm',  data: {confirm: '削除しますか？'}
+    = link_to_remove_association '削除', f, class: 'btn btn-sm',  data: {confirm: '削除しますか？'}
 
   - if f.object.id.present?
     td.bejihan_sozai_flag_td
@@ -20,20 +20,14 @@ tr.nested-fields.item.daily_menu_detail_tr class=class_name
     td.sell_price
     td
       = f.collection_select :product_id, @dmd_products, :id, :name, {include_blank:true},class:'form-control input_select_product'
-
-  td
-    = f.number_field :number, class: 'form-control manufacturing_number input_number', min: 0
-    - if f.object.id.present? && f.object.product.carryover_able_flag == true
-      td
-        = f.number_field :add_stocked, class: 'form-control add_stocked_input input_number', min: 0
-      td
-        = f.number_field :use_stock, class: 'form-control use_stock_input input_number', min: 0
-    - else
-      td
-        = f.hidden_field :add_stocked, class: 'form-control add_stocked_input', min: 0
-      td
-        = f.hidden_field :use_stock, class: 'form-control use_stock_input', min: 0
-  td
-    = f.number_field :actual_inventory, class: 'form-control actual_inventory_input', min: 0,readonly:true
   td
     = f.check_box :sold_out_flag, class: "form-control"
+
+  td
+    = f.number_field :number, class: 'form-control manufacturing_number input_number', min: 0,readonly:true
+  td
+    = f.number_field :stock_deficiency_excess, class: 'form-control input_number stock_deficiency_excess_input'
+  td
+    = f.number_field :carry_over, class: 'form-control carry_over_input input_number', min: 0
+  td
+    = f.number_field :actual_inventory, class: 'form-control actual_inventory_input', min: 0,readonly:true
