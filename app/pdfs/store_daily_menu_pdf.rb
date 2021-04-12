@@ -17,6 +17,15 @@ class StoreDailyMenuPdf < Prawn::Document
       move_down 10
       table line_item_rows(store_daily_menu) do
         row(0).background_color = 'f5f5f5'
+        grayout = []
+        values = cells.columns(4).rows(1..-1)
+        values.each do |cell|
+          if cell.content == ""
+          else
+            grayout << cell.row
+          end
+        end
+        grayout.map{|num|row(num).column(2..-1).background_color = "DDDDDD"}
         # cells.padding = 6
         cells.size = 7
         # columns(1).size = 10
@@ -25,16 +34,20 @@ class StoreDailyMenuPdf < Prawn::Document
         # cells.valign = :center
         # columns(2..-1).align = :center
         self.header = true
-        self.column_widths = [40,180,60,60,60,60,60]
+        self.column_widths = [180,50,50,50,50,50,50]
       end
     end
   end
 
   def line_item_rows(store_daily_menu)
-
-    data = [['No.','商品名','味見','当日ストック','朝調理','追加調理','翌日繰越']]
-    store_daily_menu.store_daily_menu_details.each_with_index do |sdmd,i|
-      data << [i+1,sdmd.product.name,'',sdmd.number,'','','']
+    data = [['商品名','味見','製造予定','過不足','朝調理','追加調理','翌日繰越']]
+    store_daily_menu_details = StoreDailyMenuDetail.joins(:product).order("products.carryover_able_flag DESC").order(:row_order).where(store_daily_menu_id:store_daily_menu.id)
+    store_daily_menu_details.each do |sdmd|
+      if sdmd.product.carryover_able_flag == true
+        data << [sdmd.product.name,'',sdmd.number,'','','','']
+      else
+        data << [sdmd.product.name,'',sdmd.number,'',sdmd.number,'','']
+      end
     end
     data
   end
