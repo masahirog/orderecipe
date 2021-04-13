@@ -48,8 +48,8 @@ class KurumesiOrder < ApplicationRecord
       mypage = page.form_with(name:'form1') do |form|
         # ログインに必要な入力項目を設定していく
         # formオブジェクトが持っている変数名は入力項目(inputタグ)のname属性
-        form.shop_id = '897'
-        form.shop_pass = 'csuxFJRT'
+        form.shop_id = '759'
+        form.shop_pass = 'bchimBS9'
       end.submit
       taget_url = "http://admin.kurumesi-bentou.com/admin_shop/order/?action=SearchOrder&delivery_yy_s=#{year}&delivery_mm_s=#{month}&delivery_dd_s=#{day}&delivery_yy_e=#{year}&delivery_mm_e=#{month}&delivery_dd_e=#{day}&order_status=1"
       html = agent.get(taget_url).content.toutf8
