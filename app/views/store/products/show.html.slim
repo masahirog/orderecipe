@@ -35,3 +35,10 @@ table.table
     tr
       th 使用食材（順不同）
       td = @product.menus.where.not(category:4).map{|menu|menu.materials.uniq.map{|material|material.name}}.join('、')
+
+    tr
+      th 食品表示名
+      td = @product.food_label_name
+    tr
+      th 原材料
+      td = @product.food_label_content
