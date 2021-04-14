@@ -11,7 +11,7 @@ CSV.generate do |csv|
         end
         csv_column_values = [
           sdmd.store_daily_menu.store.name,sdmd.store_daily_menu.start_time,sdmd.product_id,sdmd.product.name,sdmd.product.sell_price,sdmd.number,
-          sdmd.stock_deficiency_excess,sdmd.carry_over,sdmd.actual_inventory,kanbai
+          sdmd.stock_deficiency_excess,sdmd.actual_inventory,sdmd.carry_over,kanbai
         ]
         csv << csv_column_values
       end
