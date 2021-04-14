@@ -26,3 +26,5 @@ table.table
         td = customer_opinion.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[customer_opinion.date.wday]})")
         td = customer_opinion.content
         td = link_to '編集', edit_customer_opinion_path(customer_opinion)
+
+= paginate @customer_opinions

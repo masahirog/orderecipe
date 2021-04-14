@@ -24,6 +24,16 @@ class DailyMenusController < AdminController
       end
     end
 
+    respond_to do |format|
+      format.html
+      format.pdf do
+        pdf = DailyMenuPdf.new(@daily_menu.id)
+        send_data pdf.render,
+        filename:    "#{@daily_menu.id}.pdf",
+        type:        "application/pdf",
+        disposition: "inline"
+      end
+    end
   end
 
   def new
