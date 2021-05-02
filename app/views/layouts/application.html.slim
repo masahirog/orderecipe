@@ -59,6 +59,7 @@ html
                     li = link_to "発注",orders_path
                     li = link_to "納品確認",deliveried_list_orders_path
                     li = link_to "野菜シート",material_stock_sheet_orders_path(date:Date.today,vendor_id:151, :format => :pdf),target:'_blank'
+                    li = link_to "野菜棚卸し",vege_stocks_path(date:Date.today,vendor_id:151),target:'_blank'
                     li = link_to "お肉シート",material_stock_sheet_orders_path(date:Date.today,vendor_id:[121,131], :format => :pdf),target:'_blank'
                     li = link_to "くるめし備品手配","https://docs.google.com/spreadsheets/d/12VRdyriEK7nqzdMFcdHqPPcs52n_CsZ20nGfbS0X5GI/edit#gid=104376609",target:'_blank'
                     li

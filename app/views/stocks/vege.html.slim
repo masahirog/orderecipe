@@ -1,0 +1,55 @@
+doctype html
+html
+  head
+    title
+      | Order
+    = include_gon
+    = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload'
+    = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
+    = csrf_meta_tags
+    meta name="viewport" content="width=device-width, initial-scale=1"
+    link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet"
+    link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-rc.2/css/select2.min.css" rel="stylesheet"
+    script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.0/jquery-ui.min.js"
+    script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"
+    script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-rc.2/js/select2.min.js"
+  body data-controller="#{controller_name}" data-action="#{action_name}"
+    header
+      nav.navbar.navbar-default
+        .container-fluid
+          .navbar-header
+            button.navbar-toggle.collapsed[type="button" data-toggle="collapse" data-target="#navbarEexample"]
+              span.sr-only
+                | Toggle navigation
+              span.icon-bar
+              span.icon-bar
+              span.icon-bar
+            a.navbar-brand style="padding:12px 10px 8px 20px;" href="/"
+              = image_tag 'orderecipe.png',height:'85%'
+
+
+
+    div.clearfix.col-sm-12
+      div style='float:left;width:200px;'
+        |食材
+      div style='float:left;'
+        = "#{@date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@date.wday]})")}在庫"
+    - @materials.each do |material|
+      .col-sm-12.clearfix class="inventory_tr_#{material.id}" style='padding:10px 12px;'
+        div style='float:left;width:200px;font-size:1.2em;'
+          = material.name
+        - stock = Stock.find_by(material_id:material.id,date:@date)
+        - if stock.present?
+          div style='float:left;'
+            = form_with(model: stock, data: {remote: true}) do |f|
+              = f.hidden_field :inventory_flag,value:true
+              = f.number_field :end_day_stock_accounting_unit,class:'input_inventory_stock form-control',style:'width:120px;float:left;margin-right:10px;', :step => 0.01
+              span.accounting_unit_span style='float:left;padding-top:10px;' = material.accounting_unit
+        - else
+          div style='float:left;'
+            = form_with(model: Stock.new, data: {remote: true}) do |f|
+              = f.hidden_field :material_id,value:material.id
+              = f.hidden_field :date,value:@date
+              = f.hidden_field :inventory_flag,value:true
+              = f.number_field :end_day_stock_accounting_unit,value:'',class:'input_inventory_stock form-control',style:'width:120px;float:left;margin-right:10px;', :step => 0.01
+              span.accounting_unit_span style='float:left;padding-top:10px;' = material.accounting_unit

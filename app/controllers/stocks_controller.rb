@@ -30,7 +30,14 @@ class StocksController < AdminController
   #     @stocks_hash = []
   #   end
   # end
-
+  def vege
+    vendor_id = params[:vendor_id]
+    @date = Date.strptime(params[:date])
+    from = @date - 7
+    vendor = Vendor.find(vendor_id)
+    @materials = Material.joins(:order_materials).where(:order_materials => {delivery_date:from..@date,un_order_flag:false}).where(vendor_id:vendor_id).order(name:'asc').uniq
+    render :layout => false
+  end
   def upload_inventory_csv
     update_datas_count = Stock.upload_data(params[:file])
     if update_datas_count == 'false'
