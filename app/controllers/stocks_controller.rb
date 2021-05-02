@@ -31,6 +31,15 @@ class StocksController < AdminController
   #   end
   # end
 
+  def upload_inventory_csv
+    update_datas_count = Stock.upload_data(params[:file])
+    if update_datas_count == 'false'
+      redirect_to stocks_path(), :alert => 'csvデータが正しいかどうか確認してください'
+    else
+      redirect_to stocks_path(), :notice => "#{update_datas_count}件棚卸しを登録しました"
+    end
+  end
+
   def update_monthly_stocks
     date = params[:date]
     @month_total_amount = {}

@@ -1,9 +1,10 @@
-= form_tag inventory_stocks_path,class:'invento_material_search', :method => 'get' do
-  = text_field_tag :name, params[:name], class:"form-control material_name_search",placeholder:'食材・資材名',style:'width:200px;float:left;margin-right:20px;', autocomplete: "off"
-  = select_tag :category, options_for_select(Material.categories.keys.to_a,params[:category]), include_blank:true, class:"form-control",style:'width:200px;float:left;margin-right:20px;'
-  = select_tag :order, options_for_select(['金額','業者','棚卸し'],params[:order]), class: "form-control",style:'width:200px;float:left;margin-right:20px;'
-  = submit_tag "検索" ,class:"btn btn-primary",style:'float:left;'
-= link_to "CSV", inventory_stocks_path(category:params[:category],order:params[:order],date:@date,format:'csv'), class: "btn btn-default",style:'float:right;'
+.clearfix.form-group
+  = form_tag inventory_stocks_path,class:'invento_material_search', :method => 'get' do
+    = text_field_tag :name, params[:name], class:"form-control material_name_search",placeholder:'食材・資材名',style:'width:200px;float:left;margin-right:20px;', autocomplete: "off"
+    = select_tag :category, options_for_select(Material.categories.keys.to_a,params[:category]), include_blank:true, class:"form-control",style:'width:200px;float:left;margin-right:20px;'
+    = select_tag :order, options_for_select(['金額','業者','棚卸し'],params[:order]), class: "form-control",style:'width:200px;float:left;margin-right:20px;'
+    = submit_tag "検索" ,class:"btn btn-primary",style:'float:left;'
+  = link_to "CSV", inventory_stocks_path(category:params[:category],order:params[:order],date:@date,format:'csv'), class: "btn btn-default",style:'float:right;'
 table.table
   thead
     tr
