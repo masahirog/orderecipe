@@ -112,6 +112,8 @@ class StocksController < AdminController
 
   def create
     @date = Date.today
+    @mobile = false
+    @mobile = true if params[:stock][:mobile_flag].present?
     update_stocks = []
     if params[:stock][:end_day_stock_accounting_unit] == ""
       # 空欄だと何もしない
@@ -142,6 +144,8 @@ class StocksController < AdminController
 
 
   def update
+    @mobile = false
+    @mobile = true if params[:stock][:mobile_flag].present?
     @date = Date.today
     update_stocks = []
     @stock_hash = {}
