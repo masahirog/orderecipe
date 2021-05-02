@@ -1,4 +1,4 @@
-class DailyMenuPhotoUploader < CarrierWave::Uploader::Base
+class StoreDailyMenuPhotoUploader < CarrierWave::Uploader::Base
 
   # Include RMagick or MiniMagick support:
   include CarrierWave::RMagick

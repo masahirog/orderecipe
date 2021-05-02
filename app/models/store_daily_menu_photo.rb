@@ -1,5 +1,5 @@
 class StoreDailyMenuPhoto < ApplicationRecord
   belongs_to :store_daily_menu
-  mount_uploader :image, DailyMenuPhotoUploader
+  mount_uploader :image, StoreDailyMenuPhotoUploader
 
 end
