@@ -31,7 +31,7 @@ class DailyMenuPdf < Prawn::Document
   end
 
   def line_item_rows(daily_menu)
-    data = [['商品名','製造合計','東中野','高円寺','朝調理','追加在庫','残（冷凍）','完売']]
+    data = [['商品名','東中野','当日分残','追加調理','残（冷凍）','完売']]
     daily_menu_details = DailyMenuDetail.joins(:product).order(:row_order).where(daily_menu_id:daily_menu.id)
     sdmd_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     store_daily_menu_idhash = {}
@@ -63,10 +63,10 @@ class DailyMenuPdf < Prawn::Document
       end
 
       if dmd.product.carryover_able_flag == true
-        morning_number = "※　" + (nakano/2.0).ceil.to_s
-        data << [dmd.product.name,dmd.manufacturing_number,nakano,koenji,morning_number,'','','']
+        morning_number = "※　" + (nakano/2.0).floor.to_s
+        data << [dmd.product.name,nakano,morning_number,'','','']
       else
-        data << [dmd.product.name,dmd.manufacturing_number,nakano,koenji,nakano,'','ー','']
+        data << [dmd.product.name,nakano,'','','ー','']
       end
     end
     data
