@@ -7,6 +7,13 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   before_action :stock_alert_materials
 
+  def after_sign_in_path_for(resource)
+    if current_user.id == 1
+      root_url
+    else
+      vege_stocks_path
+    end
+  end
   def render_500(e)
     ExceptionNotifier.notify_exception(e, :env => request.env, :data => {:message => "your error message"})
     render template: 'errors/error_500', status: 500

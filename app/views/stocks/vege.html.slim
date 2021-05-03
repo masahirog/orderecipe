@@ -17,39 +17,29 @@ html
     header
       nav.navbar.navbar-default
         .container-fluid
-          .navbar-header
-            button.navbar-toggle.collapsed[type="button" data-toggle="collapse" data-target="#navbarEexample"]
-              span.sr-only
-                | Toggle navigation
-              span.icon-bar
-              span.icon-bar
-              span.icon-bar
-            a.navbar-brand style="padding:12px 10px 8px 20px;" href="/"
-              = image_tag 'orderecipe.png',height:'85%'
-
-
-
-    div.clearfix.col-sm-12
-      div style='float:left;width:50%;'
+          span = image_tag 'orderecipe.png',width:'150px',style:"margin:10px;"
+          b style='font-size:22px;' = "#{@date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@date.wday]})")}"
+    div.clearfix.col-sm-12 style='border-bottom:solid 0.1ex silver;'
+      div style='float:left;width:50%;font-size:18px;font-weight:bold;'
         |食材
-      div style='float:left;'
-        = "#{@date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@date.wday]})")}在庫"
+      div style='float:left;font-size:18px;font-weight:bold;'
+        = "#{@date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[@date.wday]})")}在庫"
     - @materials.each do |material|
       - stock = Stock.find_by(material_id:material.id,date:@date)
-      .col-sm-12.clearfix class="inventory_tr_#{material.id}" style='padding:10px 12px;'
-        div style='float:left;width:40%;font-size:1.2em;'
+      .clearfix class="inventory_tr_#{material.id}" style='padding:10px 12px;border-bottom:solid 0.1ex silver;padding:10px 5px;'
+        div style='float:left;width:200px;padding:5px;'
           = material.name
         - if stock.present?
-          div.before_end_day_stock style='float:left;width:20%;'
+          div.before_end_day_stock style='float:left;width:60px;padding-top:7px;font-size:12px;'
             = "#{(stock.end_day_stock / material.accounting_unit_quantity).round(1)} #{material.accounting_unit}"
           div style='float:left;'
             = form_with(model: stock, data: {remote: true}) do |f|
               = f.hidden_field :mobile_flag,value:true
               = f.hidden_field :inventory_flag,value:true
-              = f.number_field :end_day_stock_accounting_unit,class:'input_inventory_stock form-control',style:'width:100px;float:left;margin-right:10px;', :step => 0.01
+              = f.number_field :end_day_stock_accounting_unit,class:'input_inventory_stock form-control',style:'width:80px;float:left;margin-right:10px;', :step => 0.01
               span.accounting_unit_span style='float:left;padding-top:10px;' = material.accounting_unit
         - else
-          div.before_end_day_stock style='float:left;width:20%;'
+          div.before_end_day_stock style='float:left;width:60px;padding-top:7px;font-size:12px;'
             |-
           div style='float:left;'
             = form_with(model: Stock.new, data: {remote: true}) do |f|
@@ -57,5 +47,5 @@ html
               = f.hidden_field :material_id,value:material.id
               = f.hidden_field :date,value:@date
               = f.hidden_field :inventory_flag,value:true
-              = f.number_field :end_day_stock_accounting_unit,value:'',class:'input_inventory_stock form-control',style:'width:100px;float:left;margin-right:10px;', :step => 0.01
+              = f.number_field :end_day_stock_accounting_unit,value:'',class:'input_inventory_stock form-control',style:'width:80px;float:left;margin-right:10px;', :step => 0.01
               span.accounting_unit_span style='float:left;padding-top:10px;' = material.accounting_unit

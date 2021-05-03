@@ -31,10 +31,13 @@ class StocksController < AdminController
   #   end
   # end
   def vege
-    vendor_id = params[:vendor_id]
-    @date = Date.strptime(params[:date])
+    vendor_id = 151
+    if params[:date].present?
+      @date = Date.strptime(params[:date])
+    else
+      @date = Date.today
+    end
     from = @date - 7
-    vendor = Vendor.find(vendor_id)
     @materials = Material.joins(:order_materials).where(:order_materials => {delivery_date:from..@date,un_order_flag:false}).where(vendor_id:vendor_id).order(name:'asc').uniq
     render :layout => false
   end
