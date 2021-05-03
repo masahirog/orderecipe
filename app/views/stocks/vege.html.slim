@@ -17,7 +17,7 @@ html
     header
       nav.navbar.navbar-default
         .container-fluid
-          
+
           b style='font-size:22px;' = "#{@date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@date.wday]})")}"
     div.clearfix.col-sm-12 style='border-bottom:solid 0.1ex silver;'
       div style='float:left;width:50%;font-size:18px;font-weight:bold;'
@@ -27,7 +27,7 @@ html
     - @materials.each do |material|
       - stock = Stock.find_by(material_id:material.id,date:@date)
       .clearfix class="inventory_tr_#{material.id}" style='padding:10px 12px;border-bottom:solid 0.1ex silver;padding:10px 5px;'
-        div style='float:left;width:200px;padding:5px;'
+        div style='float:left;width:160px;padding:5px;'
           = material.name
         - if stock.present?
           div.before_end_day_stock style='float:left;width:60px;padding-top:7px;font-size:12px;'
