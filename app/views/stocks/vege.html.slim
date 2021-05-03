@@ -17,7 +17,7 @@ html
     header
       nav.navbar.navbar-default
         .container-fluid
-          span = image_tag 'orderecipe.png',width:'150px',style:"margin:10px;"
+          
           b style='font-size:22px;' = "#{@date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@date.wday]})")}"
     div.clearfix.col-sm-12 style='border-bottom:solid 0.1ex silver;'
       div style='float:left;width:50%;font-size:18px;font-weight:bold;'
