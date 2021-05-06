@@ -16,6 +16,9 @@ class StoreDailyMenu < ApplicationRecord
 
   #納品量の追加
   def total_check
+    self.store_daily_menu_details.each do |sdmd|
+      sdmd.actual_inventory = sdmd.number + sdmd.stock_deficiency_excess - sdmd.carry_over
+    end
   end
 
   def input_stock

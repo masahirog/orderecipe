@@ -89,9 +89,9 @@
         th メニュー名
         th 完売
         th.order_num.readonly 発注数
-        th 過不足
-        th 翌日繰越
-        th 調理済み在庫
+        th 発注量以外からの追加分
+        th 冷凍繰越
+        th 調理在庫
     tbody#store_daily_menu_details_area
       = f.fields_for :store_daily_menu_details, f.object.store_daily_menu_details.sort_by(&:id) do |dmd|
         = render 'store_daily_menu_detail_fields', f: dmd
@@ -145,18 +145,29 @@ javascript:
     });
   });
   function calculate_num(){
+    var stock_deficiency_excess = 0;
+    var carry_over = 0;
+    var number = 0;
     var total_sum = 0;
     var sozai_sum = 0;
+    var actual_inventory = 0;
     var total_price = 0;
     var sozai_price = 0;
     $('.daily_menu_detail_tr:visible').each(function(i){
+      number = Number($(this).find('.manufacturing_number').val());
+      stock_deficiency_excess = Number($(this).find('.stock_deficiency_excess_input').val());
+      carry_over = Number($(this).find('.carry_over_input').val());
+      actual_inventory = number + stock_deficiency_excess - carry_over;
+
       total_sum += Number($(this).find('.manufacturing_number').val());
       total_price += Number($(this).find('.manufacturing_number').val()) * Number($(this).find('.sell_price').text());
       if ($(this).find('.bejihan_sozai_flag_td').text()=='true') {
         sozai_sum += Number($(this).find('.manufacturing_number').val());
         sozai_price += Number($(this).find('.manufacturing_number').val()) * Number($(this).find('.sell_price').text());
       }
+      $(this).find('.actual_inventory_input').val(actual_inventory);
     });
+
     $('.total_manufacturing_number').val(total_sum);
     $('.input_sozai_manufacturing_number').val(sozai_sum);
     $('.total_price').val(total_price);

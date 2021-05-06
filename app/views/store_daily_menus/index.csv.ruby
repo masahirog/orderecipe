@@ -5,7 +5,7 @@ CSV.generate do |csv|
     @store_daily_menus.each do |store_daily_menu|
       store_daily_menu.store_daily_menu_details.each do |sdmd|
         if sdmd.sold_out_flag == true
-          kanbai = true
+          kanbai = 1
         else
           kanbai = ''
         end
