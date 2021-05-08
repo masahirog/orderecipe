@@ -1,0 +1,33 @@
+.col-md-12
+  .row
+    div class="col-md-3"
+      div class="panel panel-default"
+        div class="panel-heading"
+          b フォルダ
+          = link_to '　⊕', new_wiki_path
+        ul class="nav nav-pills nav-stacked"
+          - @wikis.each do |wiki|
+
+            - if wiki.id == @wiki.id
+              li
+                = link_to wiki.name,wiki
+                ul style='list-style: none;'
+                  - wiki.wiki_items.each do |wi|
+                    - if wi.id == @wiki_item.id
+                      li.active
+                        span └　
+                        span = wi.title
+                    -else
+                      li
+                        span └　
+                        = link_to "#{wi.title}",wi
+            - else
+              li = link_to wiki.name,wiki
+
+    div class="col-md-9"
+      div class="page-header" style="margin-top:-30px;padding-bottom:0px;"
+      h1
+        small
+          = "Wiki＞#{@wiki.name}>#{@wiki_item.title}"
+      = link_to 'Edit', edit_wiki_item_path(@wiki_item)
+      = markdown(@wiki_item.content).html_safe

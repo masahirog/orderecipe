@@ -1,0 +1,35 @@
+= form_for @wiki_item do |f|
+  = f.hidden_field :wiki_id
+  - if @wiki_item.errors.any?
+    #error_explanation
+      h2 = "#{pluralize(@wiki_item.errors.count, "error")} prohibited this wiki_item from being saved:"
+      ul
+        - @wiki_item.errors.full_messages.each do |message|
+          li = message
+  .form-group
+    = f.text_field :title, class:"form-control",placeholder:'タイトル'
+  .form-group
+    a data-html="true" href="https://qiita.com/kamorits/items/6f342da395ad57468ae3" target='_blank' data-toggle="tooltip" data-placement="right" title='<table class="table"><thead><tr><th>やりたいこと</th><th>書き方</th></thead>
+    <tbody><tr><td>見出し</td><td># 見出しh1</td></tr><tr><td>リスト</td><td>- インデントはタブ</td></tr><tr><td>番号付きリスト</td><td>1. テキスト</td></tr><tr><td>インライン表示</td><td>`テキスト`</td></tr><tr><td>コード</td><td>```</td></tr>
+      <tr><td>リンク</td><td>[タイトル](URL)</td></tr><tr><td>文字色</td><td>"<font color=Red>テキスト</font>"</td></tr><tr><td>太字</td><td>**テキスト**</td></tr>
+      <tr><td>打ち消し線</td><td>~~テキスト~~</td></tr><tr><td>注釈</td><td>テキスト[^1]、[^1]: 注釈内容</td></tr><tr><td>引用</td><td>> テキスト</td></tr>
+      <tr><td>斜体</td><td>*テキスト*</td></tr><tr><td>水平線</td><td>***</td></tr><tr><td>空行・改行</td><td>半角2つ、<br></td></tr></tbody></table>' マークダウン記法
+
+
+    = f.text_area :content, class:"form-control",placeholder:"内容", rows: 30
+  .actions = f.submit
+javascript:
+  $(function () {
+  	$('[data-toggle="tooltip"]').tooltip();
+  });
+
+sass:
+  .tooltip-inner
+    max-width: 1000px
+  .tooltip
+    width: 600px
+    font-size: 14px
+  .tooltip .tooltip-inner
+    background-color: white
+    border: 2px solid black
+    color: black

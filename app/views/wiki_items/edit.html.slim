@@ -1,0 +1,8 @@
+h1
+  = "Wiki>#{@wiki_item.wiki.name}"
+
+== render 'form'
+
+=> link_to 'Show', @wiki_item
+'|
+=< link_to 'Back', wiki_items_path

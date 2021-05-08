@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_03_16_124221) do
+ActiveRecord::Schema.define(version: 2021_05_08_113618) do
 
   create_table "brands", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name", null: false
@@ -445,6 +445,23 @@ ActiveRecord::Schema.define(version: 2021_03_16_124221) do
     t.string "management_id"
     t.string "efax_address"
     t.text "memo"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "wiki_items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "wiki_id"
+    t.integer "row_order"
+    t.string "title"
+    t.text "content"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "wikis", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "name"
+    t.text "summary"
+    t.integer "row_order"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

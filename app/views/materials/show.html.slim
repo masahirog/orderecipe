@@ -62,6 +62,8 @@
       td = @material.material_food_additives.map{|fa|fa.food_additive.name}.join("、 ")
     tr
       th.col-md-4 メモ
-      td = @material.memo
+      td
+        = markdown(@material.memo).html_safe
+
 .col-md-6
   = image_tag @material.image.to_s ,class:"text-center img-responsive center-block",style:'max-height:450px;'

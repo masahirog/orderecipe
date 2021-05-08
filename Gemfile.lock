@@ -1402,6 +1402,7 @@ GEM
     rb-inotify (0.10.1)
       ffi (~> 1.0)
     rbtree (0.4.4)
+    redcarpet (2.3.0)
     regexp_parser (2.1.1)
     representable (3.1.1)
       declarative (< 0.1.0)
@@ -1516,6 +1517,7 @@ DEPENDENCIES
   capybara (>= 2.15, < 4.0)
   carrierwave
   cocoon
+  coderay
   combine_pdf
   deep_cloneable
   derailed_benchmarks
@@ -1547,6 +1549,7 @@ DEPENDENCIES
   rails-i18n
   rails_12factor
   ranked-model
+  redcarpet (~> 2.3.0)
   rmagick
   sass-rails (~> 5.0)
   select2-rails

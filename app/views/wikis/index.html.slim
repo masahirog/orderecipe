@@ -1,0 +1,33 @@
+
+.col-md-12
+  .row
+    div class="col-md-3"
+      div class="panel panel-default"
+        div class="panel-heading"
+          b フォルダ
+          = link_to '　⊕', new_wiki_path
+        ul class="nav nav-pills nav-stacked"
+          - @wikis.each do |wiki|
+            li = link_to wiki.name,wiki
+    div class="col-md-9"
+      div class="page-header" style="margin-top:-30px;padding-bottom:0px;"
+      h1
+        small menu1->submenu1
+      table class="table table-striped table-hover"
+        thead
+          tr
+            th No
+            th name
+            th email
+            th tel
+            th opration
+        tbody
+          tr
+            td 01
+            td hoge foo
+            td hoge@foo.com
+            td 03-1234-5678
+            td
+              <a href="" class="btn btn-primary btn-xs">詳細</a>
+              <a href="" class="btn btn-primary btn-xs">編集</a>
+              <a href="" class="btn btn-primary btn-xs">削除</a>

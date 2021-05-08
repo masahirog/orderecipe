@@ -1,0 +1,25 @@
+.col-md-12
+  .row
+    div class="col-md-3"
+      div class="panel panel-default"
+        div class="panel-heading"
+          b フォルダ　
+          = link_to '新規作成',new_wiki_path,class:'btn btn-sm btn-default'
+        ul class="nav nav-pills nav-stacked"
+          - @wikis.each do |wiki|
+            - if wiki.id==@wiki.id
+              li.active = link_to wiki.name,wiki
+            -else
+              li = link_to wiki.name,wiki
+    div class="col-md-9"
+      div class="page-header" style="margin-top:-30px;padding-bottom:0px;"
+      h1
+        small
+          = "Wiki＞#{@wiki.name}　"
+          = link_to "Wiki追加",new_wiki_item_path(wiki_id:@wiki.id),class:'btn btn-primary btn-sm'
+      ul.list-group
+        - @wiki.wiki_items.each do |wi|
+          li.list-group-item.col-md-12
+            .col-md-12
+              label = link_to wi.title,wi
+            .col-md-12 = markdown(wi.content.truncate(20)).html_safe
