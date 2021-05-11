@@ -1,0 +1,11 @@
+require 'csv'
+CSV.generate do |csv|
+  csv_column_names = %w(年 月 区分 食材名 業者名 単価（税別） 使用量 単位 金額（税別）)
+  csv << csv_column_names
+  @material_hash.each do |hash|
+    csv_column_values = [@year,@month,@kubun,hash[1][:material].name,@vendor_hash[hash[1][:material].vendor_id],
+    "1#{hash[1][:material].recipe_unit}：#{hash[1][:material].cost_price}円",
+    hash[1][:amount_used].round(1),hash[1][:material].recipe_unit,"#{hash[1][:amount_price].round().to_s(:delimited)} 円"]
+    csv << csv_column_values
+  end
+end

@@ -1,0 +1,27 @@
+.form-group.clearfix
+  = link_to "CSV", monthly_used_amount_materials_path(year:params[:year],month:params[:month],kubun:params[:kubun],format:'csv'), class: "btn btn-default",style:'float:right;'
+  = form_tag monthly_used_amount_materials_path(),class:'invento_material_search', :method => 'get' do
+    = select_tag :year, options_for_select([2021,2020,2019],params[:year]), class: "form-control",style:'width:100px;float:left;'
+    = select_tag :month,options_for_select(1..12,params[:month]), class:"form-control",style:'width:100px;float:left;'
+    = select_tag :kubun,options_for_select([['くるめし',0],['べじはん',1]],params[:kubun]), class:"form-control",style:'width:100px;float:left;'
+    = submit_tag "検索" ,class:"btn btn-primary",style:'float:left;'
+
+h3 = "#{@year}年#{@month}月 #{@kubun}"
+table.table
+  thead
+    tr
+      th 食材名
+      th 業者名
+      th 単価（税別）
+      th 使用量
+      th 単位
+      th 金額（税別）
+  tbody
+    - @material_hash.each do |hash|
+      tr
+        td = hash[1][:material].name
+        td = @vendor_hash[hash[1][:material].vendor_id]
+        td = "1#{hash[1][:material].recipe_unit}：#{hash[1][:material].cost_price}円"
+        td = hash[1][:amount_used].round(1)
+        td = hash[1][:material].recipe_unit
+        td = "#{hash[1][:amount_price].round().to_s(:delimited)} 円"

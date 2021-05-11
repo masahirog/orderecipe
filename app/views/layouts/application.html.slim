@@ -73,8 +73,15 @@ html
                   = link_to "商品一覧",products_path
                 li.menu_li
                   = link_to "メニュー",menus_path
-                li.menu_li
-                  = link_to "食材・資材",materials_path
+                li.dropdown
+                  a.dropdown-toggle href="#" data-toggle="dropdown" role="button"
+                    |食材
+                    span.caret
+                  ul.dropdown-menu role="menu" style='width:250px;'
+                    li = link_to "食材・資材",materials_path
+                    li = link_to "月間使用量",monthly_used_amount_materials_path
+
+
                 li.menu_li
                   = link_to "仕入先",vendors_path
                 li.menu_li
