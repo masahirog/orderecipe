@@ -83,9 +83,21 @@ class MaterialsController < AdminController
   end
 
   def monthly_used_amount
-    @year = params[:year]
-    @month = params[:month]
-    kubun = params[:kubun]
+    if params[:year].present?
+      @year = params[:year]
+    else
+      @year = Date.today.year
+    end
+    if params[:month].present?
+      @month = params[:month]
+    else
+      @month = Date.today.month
+    end
+    if params[:kubun].present?
+      kubun = params[:kubun]
+    else
+      kubun = '0'
+    end
     if kubun == "0"
       @kubun = "くるめし"
     else
