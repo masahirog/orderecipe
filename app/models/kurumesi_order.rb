@@ -52,7 +52,7 @@ class KurumesiOrder < ApplicationRecord
         form.shop_pass = 'bchimBS9'
       end.submit
       taget_url = "http://admin.kurumesi-bentou.com/admin_shop/order/?action=SearchOrder&delivery_yy_s=#{year}&delivery_mm_s=#{month}&delivery_dd_s=#{day}&delivery_yy_e=#{year}&delivery_mm_e=#{month}&delivery_dd_e=#{day}&order_status=1"
-      html = agent.get(taget_url).content.toutf8
+      html = agent.get(taget_url).content
       contents = Nokogiri::HTML(html, nil, 'utf-8')
       kurumesi_orders_arr = []
       contents.search(".detail").each do |content|
