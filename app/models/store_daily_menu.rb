@@ -1,3 +1,4 @@
+require 'csv'
 class StoreDailyMenu < ApplicationRecord
   belongs_to :daily_menu
   belongs_to :store
@@ -13,6 +14,31 @@ class StoreDailyMenu < ApplicationRecord
   before_save :total_check
   after_update :input_stock
   after_destroy :input_stock
+
+  def self.upload_sales_data(file,store_daily_menu_id)
+    store_daily_menu = StoreDailyMenu.find(store_daily_menu_id)
+    hash = {}
+    update_datas = []
+    count = 0
+    CSV.foreach(file.path,liberal_parsing:true, headers: true) do |row|
+      row = row.to_hash
+      if row["品番"].present?
+        product_id = row["品番"].to_i
+        sales_num = row["実販売点数"].to_i
+        hash[product_id] = sales_num
+      end
+    end
+    store_daily_menu.store_daily_menu_details.each do |sdmd|
+      product_id = sdmd.product_id
+      if hash[product_id]
+        sdmd.sales_number = hash[product_id]
+        update_datas << sdmd
+      end
+    end
+    StoreDailyMenuDetail.import update_datas, on_duplicate_key_update:[:sales_number] if update_datas.present?
+    binding.pry
+    return (update_datas.count)
+  end
 
   #納品量の追加
   def total_check

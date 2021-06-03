@@ -375,6 +375,7 @@ ActiveRecord::Schema.define(version: 2021_05_08_113618) do
     t.boolean "signboard_flag", default: false, null: false
     t.boolean "window_pop_flag", default: false, null: false
     t.integer "stock_deficiency_excess", default: 0, null: false
+    t.integer "sales_number", default: 0, null: false
   end
 
   create_table "store_daily_menu_photos", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

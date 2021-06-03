@@ -57,6 +57,15 @@ class Store::StoreDailyMenusController < ApplicationController
     end
   end
 
+  def sales_upload
+    store_daily_menu_id = params[:id]
+    update_result = StoreDailyMenu.upload_sales_data(params[:file],store_daily_menu_id)
+    if update_result = 0
+      redirect_to store_store_daily_menu_path(store_daily_menu_id), :alert => 'csvデータが正しいかどうか確認してください'
+    else
+      redirect_to store_store_daily_menu_path(store_daily_menu_id), :notice => "販売データを反映しました"
+    end
+  end
   private
 
     def store_daily_menu_params
