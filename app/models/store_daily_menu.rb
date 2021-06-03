@@ -36,7 +36,6 @@ class StoreDailyMenu < ApplicationRecord
       end
     end
     StoreDailyMenuDetail.import update_datas, on_duplicate_key_update:[:sales_number] if update_datas.present?
-    binding.pry
     return (update_datas.count)
   end
 
