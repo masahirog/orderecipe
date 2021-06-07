@@ -84,7 +84,7 @@ class Order < ApplicationRecord
     imap = Net::IMAP.new(imap_host, imap_port, imap_usessl)
     # imapにログイン
     imap_user = 'masahiro11g@gmail.com'
-    imap_passwd = ENV['GMAIL_PASS']
+    imap_passwd = ENV['MASA_MAIL_PASS']
     imap.login(imap_user, imap_passwd)
     search_criterias = [
       'FROM','send@mail.efax.com',
