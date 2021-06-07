@@ -14,4 +14,15 @@ class NotificationMailer < ActionMailer::Base
       format.text
     end
   end
+  def co_send_mail(co)
+    @co = co
+    mail(
+      subject: "customer_voice", #メールのタイトル
+      to: 'kitchen@taberu.co.jp',
+
+    ) do |format|
+      format.text
+    end
+  end
+
 end
