@@ -22,7 +22,6 @@ class CreateMaterials < ActiveRecord::Migration[4.2]
       t.string :accounting_unit,null:false
       t.integer :accounting_unit_quantity,null:false
       t.boolean :measurement_flag, :null => false, :default => false
-      t.boolean :stock_management_flag,:null => false,:default => true
       t.date :last_inventory_date
       t.boolean :need_inventory_flag,:null => false,:default => false
       t.string :image

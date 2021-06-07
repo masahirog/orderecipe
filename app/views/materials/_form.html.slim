@@ -20,9 +20,6 @@
         = f.label :order_name, "発注書記載名"
         = f.text_field :order_name, class:'form-control'
       .col-md-12.form-group
-        = f.label :stock_management_flag, "在庫を管理する（チェックを外すと日常の在庫管理は行いません）"
-        = f.check_box :stock_management_flag, class: "form-control"
-      .col-md-12.form-group
         = f.label :unused_flag, "販売ステータス"
         = f.select :unused_flag,[['使用中',false],['使用停止',true]],{selected:@material.unused_flag}, class:"form-control"
       .col-md-12.form-group

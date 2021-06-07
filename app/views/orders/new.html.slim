@@ -42,15 +42,16 @@
     thead.order_materials_thead
       tr
         th style="min-width:350px;" 食材名
-        th style="min-width:186px;" 納品日
-        th style="min-width:80px;"
-          span 削除
-          input.all_delete type="checkbox" style="width:24px;height:24px;margin:0;"
         th style="min-width:500px;"
           div style="float:left;width:50%;"
             | 発注量
           div style="float:left;width:50%;"
             | 計算値
+
+        th style="min-width:186px;" 納品日
+        th style="min-width:80px;"
+          span 削除
+          input.all_delete type="checkbox" style="width:24px;height:24px;margin:0;"
         th style='min-width:250px;' 備考欄
 
     tbody#order_materials_table
@@ -65,9 +66,56 @@
               = m.hidden_field :material_id
             - else
               = m.collection_select :material_id, @materials, :id, :name,{include_blank: true}, class:'select_order_materials',style:"width:250px;"
-            .vendor_company_name style="padding-top:3px;color:#A9A9A9;"
+            .vendor_company_name style="padding-top:3px;color:#gray;"
               - if m.object.material_id.present?
                 span = @b_hash[m.object.material_id]['vendor_name']
+          td class="quantity_#{m.object.material_id}" style="min-width:500px;"
+            .clearfix.text-right
+              div style="float:left;width:50%;"
+                = m.text_field :order_quantity_order_unit,class:'order_quantity text-right form-control',style:"float:left;width:70%;"
+                = m.text_field :order_unit, style:'float:left;width:20%;',class:'form-control order_material_unit',readonly:true
+              div style="float:left;width:50%;"
+                = m.text_field :calculated_quantity,class:'recipe_unit_quantity text-right form-control',style:"float:left;width:70%;",readonly:true
+                = m.text_field :recipe_unit, style:'float:left;width:20%;',class:'form-control calculated_material_unit',readonly:true
+            .clearfix style="color:#A9A9A9;padding-top:2px;"
+              - if material.need_inventory_flag == true
+                - style = 'float:left;width:55%;height:22px;background-color:red;padding-top:2px;margin-right:5%;'
+              - else
+                - style = 'float:left;width:55%;height:22px;padding-top:2px;margin-right:5%;'
+
+              .text-right style=style
+                span class="stock_yoso_#{m.object.material_id} text-right"
+                  - if material.need_inventory_flag == true
+                    span style='margin-right:10px;color:white;' 棚卸し！
+                - if m.object.material_id.present?
+                  - if @stock_hash[m.object.material_id].present?
+                    = link_to history_stocks_path(material_id:m.object.material_id),target:'_blank',class:'stock-tooltip' do
+                      span data-html="true" style='color:blue;margin-left:10px;' class="" aria-hidden="true"  data-toggle="tooltip" data-placement="bottom" title="<div style='padding:10px;'><span style='font-size:16px;'>直近10日間の使用量合計は： 約 #{(@latest_material_used_amount[material.id]/material.recipe_unit_quantity).ceil(1) if @latest_material_used_amount[material.id] > 0} #{material.order_unit}です</span></div><table class='table tooltip-table table-striped'>#{@stock_hash[m.object.material_id].flatten.join('')}</table>"
+                        - if m.object.material_id.present?
+                          - if @prev_stocks[m.object.material_id]
+                            - if @prev_stocks[m.object.material_id].end_day_stock < 0
+                              span style='color:black;' = "#{(@prev_stocks[m.object.material_id].end_day_stock/material.accounting_unit_quantity).floor(1)} #{material.accounting_unit}：不足"
+                            - else
+                              span style='color:lime;' = "残り：#{(@prev_stocks[m.object.material_id].end_day_stock/material.accounting_unit_quantity).floor(1)} #{material.accounting_unit} "
+                          - else
+                            |0
+
+                    = link_to edit_material_path(material),target:'_blank',class:'stock-tooltip' do
+                      span style='color:green;margin-left:10px;' class="glyphicon glyphicon-pencil" aria-hidden="true"  data-toggle="tooltip" data-placement="bottom" title="食材の編集"
+                    -if @prev_stocks.first[1].present?
+                      = link_to material_reload_orders_path(material_id:m.object.material_id,date:@prev_stocks.first[1].date), method: :post, remote: true
+                        span style='color:red;margin-left:10px;' class="glyphicon glyphicon-refresh" aria-hidden="true"
+
+              .text-right.change_unit.memo-tooltip style="float:left;width:40%;padding-left:5px;color:gray;"
+                - if m.object.material_id.present?
+                  = material.order_unit_quantity
+                  = material.order_unit
+                  |  ：
+                  = material.recipe_unit_quantity.to_i.to_s(:delimited)
+                  = material.recipe_unit
+                - if material.present?
+                  - if material.memo.present?
+                    span style='color:red;margin-left:10px;' class="glyphicon glyphicon-tags original-tooltip" aria-hidden="true"  data-toggle="tooltip" data-placement="top" title="#{material.memo}"
           td.delivery_date style="min-width:186px;"
             - if m.object.delivery_date
               = m.date_field(:delivery_date,value:m.object.delivery_date,class:"form-control input_delivery_date")
@@ -80,54 +128,6 @@
 
           td.destroy_order_material.text-center style="min-width:50px;"
             = m.check_box :un_order_flag,class:"form-control destroy_order_materials check_box",style:" height:50px;margin:0;"
-
-          td class="quantity_#{m.object.material_id}" style="min-width:500px;"
-            .clearfix.text-right
-              div style="float:left;width:50%;"
-                = m.text_field :order_quantity_order_unit,class:'order_quantity text-right form-control',style:"float:left;width:70%;"
-                = m.text_field :order_unit, style:'float:left;width:20%;',class:'form-control order_material_unit',readonly:true
-              div style="float:left;width:50%;"
-                = m.text_field :calculated_quantity,class:'recipe_unit_quantity text-right form-control',style:"float:left;width:70%;",readonly:true
-                = m.text_field :recipe_unit, style:'float:left;width:20%;',class:'form-control calculated_material_unit',readonly:true
-            .clearfix style="color:#A9A9A9;padding-top:2px;"
-              .text-right.change_unit.memo-tooltip style="float:left;width:40%;padding-right:5px;color:gray;"
-                - if m.object.material_id.present?
-                  = material.order_unit_quantity
-                  = material.order_unit
-                  |  ：
-                  = material.recipe_unit_quantity.to_i.to_s(:delimited)
-                  = material.recipe_unit
-                - if material.present?
-                  - if material.memo.present?
-                    span style='color:red;margin-left:10px;' class="glyphicon glyphicon-tags original-tooltip" aria-hidden="true"  data-toggle="tooltip" data-placement="top" title="#{material.memo}"
-              - if material.need_inventory_flag == true
-                - style = 'float:left;width:55%;height:22px;background-color:red;padding-top:2px;margin-left:5%;'
-              - else
-                - style = 'float:left;width:55%;height:22px;padding-top:2px;margin-left:5%;'
-              .text-right style=style
-                span class="stock_yoso_#{m.object.material_id} text-right"
-                  - if material.need_inventory_flag == true
-                    span style='margin-right:10px;color:white;' 棚卸し！
-                  - if m.object.material_id.present?
-                    - if material.stock_management_flag == true
-                      - if @prev_stocks[m.object.material_id]
-                        - if @prev_stocks[m.object.material_id].end_day_stock < 0
-                          span style='color:black;' = "#{(@prev_stocks[m.object.material_id].end_day_stock/material.accounting_unit_quantity).floor(1)} #{material.accounting_unit}：不足"
-                        - else
-                          span style='color:lime;' = "残り：#{(@prev_stocks[m.object.material_id].end_day_stock/material.accounting_unit_quantity).floor(1)} #{material.accounting_unit} "
-                      - else
-                        |0
-                    - else
-                      |ー
-                - if m.object.material_id.present?
-                  - if @stock_hash[m.object.material_id].present?
-                    = link_to history_stocks_path(material_id:m.object.material_id),target:'_blank',class:'stock-tooltip' do
-                      span data-html="true" style='color:blue;margin-left:10px;' class="glyphicon glyphicon-eye-open" aria-hidden="true"  data-toggle="tooltip" data-placement="bottom" title="<div style='padding:10px;'><span style='font-size:16px;'>直近10日間の使用量合計は： 約 #{(@latest_material_used_amount[material.id]/material.recipe_unit_quantity).ceil(1) if @latest_material_used_amount[material.id] > 0} #{material.order_unit}です</span></div><table class='table tooltip-table table-striped'>#{@stock_hash[m.object.material_id].flatten.join('')}</table>"
-                    = link_to edit_material_path(material),target:'_blank',class:'stock-tooltip' do
-                      span style='color:green;margin-left:10px;' class="glyphicon glyphicon-pencil" aria-hidden="true"  data-toggle="tooltip" data-placement="bottom" title="食材の編集"
-                    -if @prev_stocks.first[1].present?
-                      = link_to material_reload_orders_path(material_id:m.object.material_id,date:@prev_stocks.first[1].date), method: :post, remote: true
-                        span style='color:red;margin-left:10px;' class="glyphicon glyphicon-refresh" aria-hidden="true"
 
           td.order_material_memo style='width:999px;'
             = m.text_field :order_material_memo,class:'form-control'

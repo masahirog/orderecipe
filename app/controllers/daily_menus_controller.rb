@@ -1,12 +1,28 @@
 class DailyMenusController < AdminController
   before_action :set_daily_menu, only: [:show, :update, :destroy]
-  def index
-    if params[:start_date].present?
-      date = params[:start_date]
+  def create_1month
+    date = params[:date]
+    DailyMenu.once_1month_create(date)
+    redirect_to daily_menus_path
+  end
+  def upload_menu
+    update_result = DailyMenu.upload_menu(params[:file])
+    if update_result = 0
+      redirect_to daily_menus_path(), :alert => 'csvデータが正しいかどうか確認してください'
     else
-      date = Date.today
+      redirect_to daily_menus_path(), :notice => "メニューを登録しました"
     end
-    @daily_menus = DailyMenu.where(start_time:date.in_time_zone.all_month).includes(daily_menu_details:[:product])
+  end
+  def index
+    today = Date.today
+    if params[:start_date].present?
+      @date = params[:start_date]
+    else
+      @date = today
+    end
+    @daily_menus = DailyMenu.where(start_time:@date.in_time_zone.all_month).includes(daily_menu_details:[:product])
+    @today_after_daily_menus = @daily_menus.where('start_time >= ?',today).order('start_time')
+    @stores = Store.all
   end
 
   def show
@@ -216,6 +232,38 @@ class DailyMenusController < AdminController
       end
     end
     redirect_to daily_menus_path, notice: "#{count}日間、同じメニューをコピーして献立に反映しました！"
+  end
+
+  def once_store_reflect
+    store_daily_menu_details_arr = []
+    params['daily_menu_store'].each do |dms|
+      if dms[1]['reflect_flag'].present?
+        store_ids = dms[1]['reflect_flag'].keys
+        start_time = dms[1]['start_time']
+        daily_menu_id = dms[0]
+        daily_menu = DailyMenu.find(daily_menu_id)
+        store_ids.each do |store_id|
+          store_daily_menu = StoreDailyMenu.find_by(daily_menu_id:daily_menu_id,store_id:store_id)
+          if store_daily_menu.present?
+          else
+            store_daily_menu = StoreDailyMenu.create(daily_menu_id:daily_menu_id,store_id:store_id,start_time:start_time)
+          end
+          if store_daily_menu.store_daily_menu_details.present?
+            sdmd_product_ids = store_daily_menu.store_daily_menu_details.map{|sdmd|sdmd.product_id}
+            dmd_product_ids = daily_menu.daily_menu_details.map{|dmd|dmd.product_id}
+            add_product_ids = dmd_product_ids - sdmd_product_ids
+            dmds = daily_menu.daily_menu_details.where(product_id:add_product_ids)
+          else
+            dmds = daily_menu.daily_menu_details
+          end
+          dmds.each do |dmd|
+            store_daily_menu_details_arr << StoreDailyMenuDetail.new(store_daily_menu_id:store_daily_menu.id,product_id:dmd.product_id,row_order:dmd.row_order)
+          end
+        end
+      end
+    end
+    StoreDailyMenuDetail.import store_daily_menu_details_arr
+    redirect_to daily_menus_path
   end
 
   def store_reflect

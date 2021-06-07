@@ -95,7 +95,6 @@ Rails.application.routes.draw do
   end
   resources :orders do
     collection do
-      get :material_stock_sheet
       get :send_order_fax
       get :preparation_all
       get :monthly
@@ -110,6 +109,9 @@ Rails.application.routes.draw do
   end
   resources :daily_menus do
     collection do
+      post :create_1month
+      post :upload_menu
+      post :once_store_reflect
       get :store_reflect
       get :copy
       get :material_preparation
@@ -141,7 +143,6 @@ Rails.application.routes.draw do
       get :alert
       post :update_monthly_stocks
       post :upload_inventory_csv
-      get :vege
     end
   end
   resources :kurumesi_mails
@@ -153,6 +154,8 @@ Rails.application.routes.draw do
     collection do
       get :once_edit
       get :once_update
+      post :upload_number
+      post :once_update_number
     end
   end
 end

@@ -1,4 +1,48 @@
 h1 献立
+button type="button" class="btn btn-default" data-toggle="modal" data-target="#store_once_reflect" style='margin-right:10px;float:right;' 店舗へメニュー登録
+#store_once_reflect.modal.fade tabindex="-1"
+  = form_tag once_store_reflect_daily_menus_path do
+    .modal-dialog style='width:1000px;'
+      .modal-content
+        .modal-header
+        .modal-body
+          table.table.table-striped
+            thead
+              tr
+                th 日付
+                - @stores.each do |store|
+                  th
+                    div style='float:left;height:19px;width:40px;'
+                    div = store.name
+            tbody
+              - @today_after_daily_menus.each do |dm|
+                tr
+                  td = dm.start_time.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[dm.start_time.wday]})")
+                  - @stores.each do |store|
+                    td.clearfix
+                      div style='float:left;height:19px;width:40px;'
+                        - sdmds_count = 0
+                        - sdmds_count = dm.store_daily_menus.find_by(store_id:store.id).store_daily_menu_details.count if dm.store_daily_menus.find_by(store_id:store.id)
+                        span style="color:red;" = (dm.daily_menu_details.count - sdmds_count) if dm.daily_menu_details.count - sdmds_count > 0
+                      = check_box_tag "daily_menu_store[#{dm.id}][reflect_flag][#{store.id}]",true,false,class:'form-control',style:'height:1em;width:100px;float:left;'
+                    = hidden_field_tag "daily_menu_store[#{dm.id}][start_time]",dm.start_time
+        .modal-footer
+          button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
+          = submit_tag "登録",class:'btn btn-primary'
+button type="button" class="btn btn-default" data-toggle="modal" data-target="#upload" style='margin-right:10px;float:right;' CSV登録
+#upload.modal.fade tabindex="-1"
+  = form_tag upload_menu_daily_menus_path, multipart: true do
+    .modal-dialog style='width:1000px;'
+      .modal-content
+        .modal-header
+        .modal-body
+          = file_field_tag :file,class:'form-control',style:'padding:10px;height:100%;'
+        .modal-footer
+          button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
+          = submit_tag "アップロード",class:'btn btn-primary'
+
+= link_to "1ヶ月分の枠作成", {controller: "daily_menus", action: "create_1month", date: @date}, method: :post,class:'btn btn-default',style:'margin-right:10px;float:right;'
+
 = month_calendar events: @daily_menus do |start_time, daily_menu|
   div style='height:29px;'
     - if daily_menu[0]

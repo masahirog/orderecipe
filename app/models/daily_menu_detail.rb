@@ -7,6 +7,7 @@ class DailyMenuDetail < ApplicationRecord
   before_create :calculate_cost_price
   before_update :calculate_total_cost_price
   validates :daily_menu_id, :uniqueness => {:scope => :product_id}
+  after_destroy :store_daily_menu_detail_destroy
 
   def calculate_cost_price
     per_cost = self.product.cost_price
@@ -21,5 +22,9 @@ class DailyMenuDetail < ApplicationRecord
     num = self.manufacturing_number
     total_cost = (per_cost * num).round
     self.total_cost_price = total_cost
+  end
+  def store_daily_menu_detail_destroy
+    store_daily_menu_ids = self.daily_menu.store_daily_menus.ids
+    StoreDailyMenuDetail.where(store_daily_menu_id:store_daily_menu_ids,product_id:self.product_id).destroy_all
   end
 end

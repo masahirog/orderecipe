@@ -1,7 +1,6 @@
 .col-md-12 style="margin-bottom:20px;"
   = link_to '食材詳細',material_path(@material),class:"btn btn-default", style:"margin-right:10px;"
   = link_to '使用確認',include_material_materials_path(id:@material.id),class:"btn btn-default", style:"margin-right:10px;"
-  - if @material.stock_management_flag == true
-    = link_to '棚卸し',history_stocks_path(material_id:@material.id),target:'_blank',class:"btn btn-default", style:"margin-right:10px;"
+  = link_to '棚卸し',history_stocks_path(material_id:@material.id),target:'_blank',class:"btn btn-default", style:"margin-right:10px;"
   = link_to '1ヶ月',used_check_materials_path(id:@material.id),class:"btn btn-default", style:"margin-right:10px;"
 = render 'form', path: edit_material_path, method: :post , locals: {edit_flag:true}

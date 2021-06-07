@@ -1,44 +1,13 @@
 class StocksController < AdminController
-  # def inventory
-  #   @date = Date.parse(params[:date])
-  #   @materials = Material.order('vendor_id').search(params).where(unused_flag:false,stock_management_flag:true).includes(:vendor).page(params[:page]).per(20)
-  #   stocks = Stock.where(material_id:@materials.ids).where('date <= ?',@date).order("date")
-  #   if @materials.present?
-  #     @stocks_hash = Stock.where(date:@date,material_id:@materials.ids).map{|stock|[stock.material_id,stock]}.to_h
-  #     @stock_hash ={}
-  #     @materials.each do |material|
-  #       stocks_arr = stocks.where(material_id:material.id).last(5)
-  #       aaa(material,@date,stocks_arr)
-  #     end
-  #   else
-  #     @stocks_hash = []
-  #   end
-  # end
-
-  # def inventory
-  #   @materials = Material.includes(:vendor).where(['name LIKE ?', "%#{params["name"]}%"]).page(params[:page]).per(20)
-  #   @date = Date.today
-  #   stocks = Stock.where(material_id:@materials.ids).where('date <= ?',@date).order("date")
-  #   if @materials.present?
-  #     @stocks_hash = Stock.where(date:@date,material_id:@materials.ids).map{|stock|[stock.material_id,stock]}.to_h
-  #     @stock_hash ={}
-  #     @materials.each do |material|
-  #       stocks_arr = stocks.where(material_id:material.id).last(5)
-  #       aaa(material,@date,stocks_arr)
-  #     end
-  #   else
-  #     @stocks_hash = []
-  #   end
-  # end
-  def vege
-    vendor_id = 151
+  def mobile_inventory
+    vendor_ids = params[:vendor_id]
     if params[:date].present?
       @date = Date.strptime(params[:date])
     else
       @date = Date.today
     end
-    from = @date - 7
-    @materials = Material.joins(:order_materials).where(:order_materials => {delivery_date:from..@date,un_order_flag:false}).where(vendor_id:vendor_id).order(name:'asc').uniq
+    from = @date - 14
+    @materials = Material.joins(:order_materials).where(:order_materials => {delivery_date:from..@date,un_order_flag:false}).where(vendor_id:vendor_ids).order(name:'asc').uniq
     render :layout => false
   end
   def upload_inventory_csv
@@ -53,8 +22,8 @@ class StocksController < AdminController
   def update_monthly_stocks
     date = params[:date]
     @month_total_amount = {}
-    ids = Material.where(stock_management_flag:true).ids
-    stocks = Stock.where(material_id:ids).where("date <= ?", date).order(date: :desc).uniq(&:material_id)
+    # ids = Material.where(stock_management_flag:true).ids
+    stocks = Stock.where("date <= ?", date).order(date: :desc).uniq(&:material_id)
     stocks.delete_if{|stock|stock.end_day_stock <= 0}
     total_amount = 0
     foods_amount = 0
@@ -230,7 +199,7 @@ class StocksController < AdminController
       category = params[:category]
     end
     @stocks = Stock.where(date:@date).uniq(&:material_id)
-    materials = Material.where(stock_management_flag:true)
+    materials = Material.all
     materials = materials.where(name:params[:name]) if params[:name].present?
     materials = materials.where(category:category) if params[:category].present?
     ids = materials.ids

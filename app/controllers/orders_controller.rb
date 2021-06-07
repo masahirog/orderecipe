@@ -1,20 +1,4 @@
 class OrdersController < AdminController
-  def material_stock_sheet
-    vendor_id = params[:vendor_id]
-    date = Date.strptime(params[:date])
-    from = date - 7
-    respond_to do |format|
-      format.html
-      format.pdf do
-        pdf = MaterialStockSheet.new(from,date,vendor_id)
-        send_data pdf.render,
-        filename:    "#{date}.pdf",
-        type:        "application/pdf",
-        disposition: "inline"
-      end
-    end
-  end
-
   def material_reload
     @material = Material.find(params[:material_id])
     date = params[:date]
@@ -207,30 +191,8 @@ class OrdersController < AdminController
         @arr << hash
       end
     else
-      #企業ごとの発注
       order_products = []
       make_date = Date.today
-      if params[:vendor_id].present?
-        materials = Material.where(vendor_id:params[:vendor_id],unused_flag:0)
-        materials.each do |material|
-          hash = {}
-          hash['material'] = material
-          hash['make_num'] = 0
-          hash['product_id'] = ''
-          hash['menu_num'] = {'なし' => 0}
-          hash['material_id'] = material.id
-          hash['calculated_order_amount'] = 0
-          hash["recipe_unit_quantity"] = material.recipe_unit_quantity
-          hash["order_unit_quantity"] = material.order_unit_quantity
-          hash["vendor_id"] = material.vendor_id
-          hash["vendor_name"] = material.vendor.company_name
-          hash['recipe_unit'] = material.recipe_unit
-          hash['order_unit'] = material.order_unit
-          hash['delivery_deadline'] = material.delivery_deadline
-          hash['order_material_memo'] =''
-          @arr << hash
-        end
-      end
     end
     product_ids = order_products.map{|op|op[:product_id]}
     product_hash = Product.includes(:product_menus,[menus: [menu_materials: [material:[:vendor]]]]).where(id:product_ids).map{|product|[product.id,product]}.to_h
@@ -300,6 +262,9 @@ class OrdersController < AdminController
     @prev_stocks = {}
     @stock_hash = {}
     stocks_hash = Stock.where("date < ?", make_date).order("date ASC").map{|stock|[stock.material_id,stock]}.to_h
+    # stocks_hash_short = Stock.joins(:material).where(:materials => {vendor_id:[151,121,131]}).where("date < ?", make_date+1).order("date ASC").map{|stock|[stock.material_id,stock]}.to_h
+    # stocks_hash_long = Stock.joins(:material).where.not(:materials => {vendor_id:[151,121,131]}).where("date < ?", make_date+5).order("date ASC").map{|stock|[stock.material_id,stock]}.to_h
+    # stocks_hash = stocks_hash_short.merge(stocks_hash_long)
     date = make_date - 1
     stock_hash = {}
     @latest_material_used_amount = {}
@@ -331,13 +296,24 @@ class OrdersController < AdminController
         i = 0
       end
       # 直近の在庫から発注量を計算
-      if stocks_hash[key].present? && material.stock_management_flag == true
-        if stocks_hash[key].end_day_stock < 0
-          shortage_stock = (-1 * stocks_hash[key].end_day_stock).round(1)
-          order_quantity_order_unit = ((shortage_stock / value['recipe_unit_quantity'].to_f) * value['order_unit_quantity'].to_f).ceil(i)
+      jogai_vendor_ids = [121,131,151]
+      if stocks_hash[key].present?
+        if jogai_vendor_ids.include?(material.vendor_id)
+          if stocks_hash[key].end_day_stock < 0
+            shortage_stock = (-1 * stocks_hash[key].end_day_stock).ceil(1)
+            order_quantity_order_unit = ((shortage_stock / value['recipe_unit_quantity'].to_f) * value['order_unit_quantity'].to_f).ceil(i)
+          else
+            un_order_flag = true
+            order_quantity_order_unit = 0
+          end
         else
-          un_order_flag = true
-          order_quantity_order_unit = 0
+          if stocks_hash[key].end_day_stock - @latest_material_used_amount[material.id] < 0
+            shortage_stock = (@latest_material_used_amount[material.id] - stocks_hash[key].end_day_stock).ceil(1)
+            order_quantity_order_unit = ((shortage_stock / value['recipe_unit_quantity'].to_f) * value['order_unit_quantity'].to_f).ceil(i)
+          else
+            un_order_flag = true
+            order_quantity_order_unit = 0
+          end
         end
       else
         order_quantity_order_unit = (calculated_quantity / value['recipe_unit_quantity'].to_f * value['order_unit_quantity'].to_f).ceil(i)

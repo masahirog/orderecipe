@@ -1,6 +1,19 @@
 h1
   = "献立　#{@store.name}"
-= link_to "CSV", store_daily_menus_path(start_date:params[:start_date],store_id:params[:store_id],format:'csv'), class: "btn btn-default",style:'float:right;'
+button type="button" class="btn btn-default" data-toggle="modal" data-target="#upload" style='float:right;' 食数CSV登録
+#upload.modal.fade tabindex="-1"
+  = form_tag upload_number_store_daily_menus_path, multipart: true do
+    = hidden_field_tag :store_id,@store.id
+    .modal-dialog style='width:1000px;'
+      .modal-content
+        .modal-header
+        .modal-body
+          = file_field_tag :file,class:'form-control',style:'padding:10px;height:100%;'
+        .modal-footer
+          button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
+          = submit_tag "アップロード",class:'btn btn-primary'
+
+= link_to "CSVダウンロード", store_daily_menus_path(start_date:params[:start_date],store_id:params[:store_id],format:'csv'), class: "btn btn-default",style:'float:right;margin-right:10px;'
 = month_calendar events: @store_daily_menus do |start_time, store_daily_menu|
   div style='height:29px;'
     - if store_daily_menu[0]

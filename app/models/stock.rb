@@ -203,23 +203,19 @@ class Stock < ApplicationRecord
     materials.each do |material|
       latest_stock = stocks.find_by(material_id:material.id)
       last_inventory = stocks.find_by(material_id:material.id,inventory_flag:true)
-      if material.stock_management_flag == true
-        if last_inventory.present?
-          material.last_inventory_date = last_inventory.date
-          if latest_stock.inventory_flag == true && latest_stock.end_day_stock == 0
+      if last_inventory.present?
+        material.last_inventory_date = last_inventory.date
+        if latest_stock.inventory_flag == true && latest_stock.end_day_stock == 0
+          material.need_inventory_flag = false
+        else
+          if today - last_inventory.date < 30
             material.need_inventory_flag = false
           else
-            if today - last_inventory.date < 30
-              material.need_inventory_flag = false
-            else
-              material.need_inventory_flag = true
-            end
+            material.need_inventory_flag = true
           end
-        else
-          material.need_inventory_flag = true
         end
       else
-        material.need_inventory_flag = false
+        material.need_inventory_flag = true
       end
       materials_arr << material
     end

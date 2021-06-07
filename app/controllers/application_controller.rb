@@ -11,7 +11,7 @@ class ApplicationController < ActionController::Base
     if current_user.id == 1
       root_url
     else
-      vege_stocks_path
+      mobile_inventory_stocks_path
     end
   end
   def render_500(e)
