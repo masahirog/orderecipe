@@ -22,25 +22,40 @@ class Order < ApplicationRecord
     stocks_arr = []
     update_stocks = []
     @dates = []
-    before_dates = self.order_materials.map do |om|
-      [om.material_id,om.delivery_date_was] if om.delivery_date_was.present?
+
+
+    before_dates = self.order_materials.map{|om|om.delivery_date_was}.uniq
+    after_dates = self.order_materials.map{|om|om.delivery_date}.uniq
+    @dates = (before_dates + after_dates).uniq
+    stocks = Stock.where(date:@dates)
+    # stocks.update_all(delivery_amount:0)
+    stocks.each do |stock|
+      stock.end_day_stock = stock.start_day_stock + stock.used_amount
+      stock.delivery_amount = 0
+      stocks_arr << stock
+      stock_ids << stock.id
     end
 
-    after_dates = self.order_materials.map{|om|[om.material_id,om.delivery_date]}
-    material_dates = (before_dates + after_dates).uniq.compact
-    material_dates.each do |material_id_date|
-      material_id = material_id_date[0]
-      date = material_id_date[1]
-      @dates << date
-      stock =  Stock.find_by(material_id:material_id,date:date)
-      if stock.present?
-        end_day_stock = stock.start_day_stock - stock.used_amount
-        stock.delivery_amount = 0
-        stock.end_day_stock = end_day_stock
-        stocks_arr << stock
-        stock_ids << stock.id
-      end
-    end
+
+    # before_dates = self.order_materials.map do |om|
+    #   [om.material_id,om.delivery_date_was] if om.delivery_date_was.present?
+    # end
+    #
+    # after_dates = self.order_materials.map{|om|[om.material_id,om.delivery_date]}
+    # material_dates = (before_dates + after_dates).uniq.compact
+    # material_dates.each do |material_id_date|
+    #   material_id = material_id_date[0]
+    #   date = material_id_date[1]
+    #   @dates << date
+    #   stock =  Stock.find_by(material_id:material_id,date:date)
+    #   if stock.present?
+    #     end_day_stock = stock.start_day_stock - stock.used_amount
+    #     stock.delivery_amount = 0
+    #     stock.end_day_stock = end_day_stock
+    #     stocks_arr << stock
+    #     stock_ids << stock.id
+    #   end
+    # end
     @dates = @dates.uniq
     Stock.import stocks_arr,on_duplicate_key_update:[:delivery_amount,:end_day_stock] if stocks_arr.present?
     Stock.where(id:stock_ids).each do |stock|
