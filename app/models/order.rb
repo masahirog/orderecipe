@@ -18,11 +18,35 @@ class Order < ApplicationRecord
   after_save :input_stock
 
   def initialize_stock
-    before_dates = self.order_materials.map{|om|om.delivery_date_was}.uniq
-    after_dates = self.order_materials.map{|om|om.delivery_date}.uniq
-    @dates = (before_dates + after_dates).uniq
-    stocks = Stock.where(date:@dates)
-    stocks.update_all(delivery_amount:0)
+    stock_ids = []
+    stocks_arr = []
+    update_stocks = []
+    @dates = []
+    before_dates = self.order_materials.map do |om|
+      [om.material_id,om.delivery_date_was] if om.delivery_date_was.present?
+    end
+
+    after_dates = self.order_materials.map{|om|[om.material_id,om.delivery_date]}
+    material_dates = (before_dates + after_dates).uniq.compact
+    material_dates.each do |material_id_date|
+      material_id = material_id_date[0]
+      date = material_id_date[1]
+      @dates << date
+      stock =  Stock.find_by(material_id:material_id,date:date)
+      if stock.present?
+        end_day_stock = stock.start_day_stock - stock.used_amount
+        stock.delivery_amount = 0
+        stock.end_day_stock = end_day_stock
+        stocks_arr << stock
+        stock_ids << stock.id
+      end
+    end
+    @dates = @dates.uniq
+    Stock.import stocks_arr,on_duplicate_key_update:[:delivery_amount,:end_day_stock] if stocks_arr.present?
+    Stock.where(id:stock_ids).each do |stock|
+      Stock.change_stock(update_stocks,stock.material_id,stock.date,stock.end_day_stock)
+    end
+    Stock.import update_stocks, on_duplicate_key_update:[:end_day_stock,:start_day_stock] if update_stocks.present?
   end
 
 

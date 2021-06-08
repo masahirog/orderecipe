@@ -277,8 +277,10 @@ class OrdersController < AdminController
       end
       @latest_material_used_amount[stock.material_id] += stock.used_amount if date > stock.date
     end
+    vendors_ids = []
     @b_hash.each do |key,value|
       material = value['material']
+      vendors_ids << material.vendor_id
       recipe_unit = value['recipe_unit']
       order_unit = value['order_unit']
       a = []
@@ -386,7 +388,9 @@ class OrdersController < AdminController
       end
     end
     @materials = []
-    @vendors = Vendor.all.map{|vendor|[vendor.company_name,vendor.id]}
+    #一旦vendors
+    # @vendors = Vendor.all.map{|vendor|[vendor.company_name,vendor.id]}
+    @vendors = Vendor.where(id:vendors_ids.uniq).map{|vendor|[vendor.company_name,vendor.id]}
   end
 
   def create

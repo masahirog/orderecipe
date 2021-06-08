@@ -134,6 +134,7 @@ class Product < ApplicationRecord
         product = Product.find_by_id(id)
         if product.present?
           sheet[i, 2] = product.cost_price
+          sheet[i, 3] = product.serving_infomation.gsub("\b","") if product.serving_infomation.present?
         end
       end
     end
