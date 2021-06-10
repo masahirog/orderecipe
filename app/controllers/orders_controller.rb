@@ -309,9 +309,14 @@ class OrdersController < AdminController
             order_quantity_order_unit = 0
           end
         else
-          if stocks_hash[key].end_day_stock - @latest_material_used_amount[material.id] < 0
-            shortage_stock = (@latest_material_used_amount[material.id] - stocks_hash[key].end_day_stock).ceil(1)
-            order_quantity_order_unit = ((shortage_stock / value['recipe_unit_quantity'].to_f) * value['order_unit_quantity'].to_f).ceil(i)
+          if @latest_material_used_amount[material.id].present?
+            if stocks_hash[key].end_day_stock - @latest_material_used_amount[material.id] < 0
+              shortage_stock = (@latest_material_used_amount[material.id] - stocks_hash[key].end_day_stock).ceil(1)
+              order_quantity_order_unit = ((shortage_stock / value['recipe_unit_quantity'].to_f) * value['order_unit_quantity'].to_f).ceil(i)
+            else
+              un_order_flag = true
+              order_quantity_order_unit = 0
+            end
           else
             un_order_flag = true
             order_quantity_order_unit = 0
