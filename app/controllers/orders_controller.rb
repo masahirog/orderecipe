@@ -123,6 +123,21 @@ class OrdersController < AdminController
         @vendors_hash[om.order_id][om.material.vendor_id] = [1,sended,om.material.vendor.company_name]
       end
     end
+    if params[:start_date].present?
+      @date = params[:start_date]
+    else
+      @date = Date.today
+    end
+    daily_menus = DailyMenu.where(start_time:@date.in_time_zone.all_month)
+    @date_daily_menu_count= {}
+    @date_daily_menu = {}
+    @date_confirm_order_count = KurumesiOrder.where(canceled_flag:false,start_time: @date.in_time_zone.all_month).group('start_time').count
+    @date_notconfirm_order_count = KurumesiOrder.where(canceled_flag:false,confirm_flag:false,start_time: @date.in_time_zone.all_month).group('start_time').count
+    daily_menus.each do |dm|
+      @date_daily_menu_count[dm.start_time] = dm.daily_menu_details.sum(:manufacturing_number)
+      @date_daily_menu[dm.start_time] = dm
+    end
+
   end
   def update
     @prev_stocks = {}
@@ -190,6 +205,20 @@ class OrdersController < AdminController
         hash['order_material_memo'] =''
         @arr << hash
       end
+    elsif params[:make_date].present?
+      order_products = []
+      date = params[:make_date]
+      kurumesi_orders = KurumesiOrder.where(start_time:date,canceled_flag:false)
+      bentos_num_h = kurumesi_orders.joins(kurumesi_order_details:[:product]).group('kurumesi_order_details.product_id').sum('kurumesi_order_details.number')
+      DailyMenu.find_by(start_time:date).daily_menu_details.each{|dmd|bentos_num_h[dmd.product_id]=dmd.manufacturing_number}
+      bentos_num_h.each do |bn|
+        hash = {}
+        hash[:product_id] = bn[0]
+        hash[:num] = bn[1]
+        hash[:make_date] = date
+        order_products << hash
+      end
+      make_date = Date.parse(date)
     else
       order_products = []
       make_date = Date.today
@@ -555,7 +584,7 @@ class OrdersController < AdminController
         om[1]['order_quantity'] = 0
       end
     end
-    params.require(:order).permit(:fixed_flag,order_materials_attributes: [:id,:calculated_quantity,:order_quantity_order_unit,:order_quantity,
+    params.require(:order).permit(:staff_name,:fixed_flag,order_materials_attributes: [:id,:calculated_quantity,:order_quantity_order_unit,:order_quantity,
       :menu_name, :order_id, :material_id,:order_material_memo,:delivery_date, :un_order_flag,:_destroy],
       order_products_attributes: [:id,:make_date, :serving_for, :order_id, :product_id, :_destroy])
   end

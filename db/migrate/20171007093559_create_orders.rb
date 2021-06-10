@@ -3,6 +3,7 @@ class CreateOrders < ActiveRecord::Migration[4.2][5.0]
     create_table :orders do |t|
       t.timestamps
       t.boolean :fixed_flag,null:false,default:false
+      t.string :staff_name
     end
   end
 end

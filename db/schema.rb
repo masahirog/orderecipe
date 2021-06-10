@@ -286,6 +286,7 @@ ActiveRecord::Schema.define(version: 2021_05_08_113618) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "fixed_flag", default: false, null: false
+    t.string "staff_name"
   end
 
   create_table "place_showcases", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

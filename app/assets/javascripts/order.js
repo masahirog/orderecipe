@@ -11,8 +11,16 @@ $(document).on('turbolinks:load', function() {
   $('.material_search').select2();
 
   $('.fixed_flag').on('change',function(){
-    var value = $(this).val();
-    if (value=="true") {
+    submit_button_check();
+  });
+  $('#order_staff_name').on('keyup',function(){
+    submit_button_check();
+  });
+
+  function submit_button_check(){
+    var fix = $('.fixed_flag').val();
+    var name = $('#order_staff_name').val();
+    if (fix=="true"&& name != '') {
       $(".save-btn").val('確定で保存する');
       $(".save-btn").removeClass("btn-danger");
       $(".save-btn").addClass("btn-success");
@@ -21,10 +29,7 @@ $(document).on('turbolinks:load', function() {
       $(".save-btn").removeClass("btn-success");
       $(".save-btn").addClass("btn-danger");
     }
-
-  });
-
-
+  }
 
   function material_select2(){
     $(".select_order_materials").select2({
