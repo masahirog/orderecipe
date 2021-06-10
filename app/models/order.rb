@@ -30,7 +30,7 @@ class Order < ApplicationRecord
     stocks = Stock.where(date:@dates)
     # stocks.update_all(delivery_amount:0)
     stocks.each do |stock|
-      stock.end_day_stock = stock.start_day_stock + stock.used_amount
+      stock.end_day_stock = stock.start_day_stock - stock.used_amount
       stock.delivery_amount = 0
       stocks_arr << stock
       stock_ids << stock.id
