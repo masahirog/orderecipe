@@ -70,8 +70,9 @@
             - else
               = m.collection_select :material_id, @materials, :id, :name,{include_blank: true}, class:'select_order_materials',style:"width:250px;"
             .vendor_company_name style="padding-top:3px;color:#gray;"
+              span = @b_hash[m.object.material_id]['vendor_name']
               - if m.object.material_id.present?
-                span = @b_hash[m.object.material_id]['vendor_name']
+              span ="｜納品：#{@b_hash[m.object.material_id]['vendor_info']}" 
           td class="quantity_#{m.object.material_id}" style="min-width:500px;"
             .clearfix.text-right
               div style="float:left;width:50%;"

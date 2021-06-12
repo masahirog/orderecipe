@@ -16,5 +16,4 @@
   <% end %>
 <% else %>
   $("<%= @class_name %>").css('background-color','#ffffe0');
-  $("<%= @class_name %>").find('.before_end_day_stock').text("<%= (@stock.end_day_stock/@material.accounting_unit_quantity).round(1) %> <%= @material.accounting_unit %>");
 <% end %>

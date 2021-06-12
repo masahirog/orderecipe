@@ -16,10 +16,14 @@
           h4.modal-title ※発注開始する前に、該当日のくるめしオーダーとべじはん献立をよく確認してください。
           span くるめしのカッコ内の数字は確認チェックがついていないオーダーの件数です。
         .modal-body
-          = month_calendar do |date|
+          = week_calendar(number_of_weeks: 2) do |date|
             div
               div style='padding-top:5px;padding-bottom:10px;font-size:16px;'
-                = link_to date.strftime("%-m月%-d日"),new_order_path(make_date:date)
+                p = date.strftime("%-m月%-d日")
+                p = link_to 'すべて',new_order_path(make_date:date,filter:"none"),class:'btn btn-primary btn-sm'
+                p = link_to 'クイーンズ',new_order_path(make_date:date,filter:"veg"),class:'btn btn-default btn-sm'
+                p = link_to '小田・田中',new_order_path(make_date:date,filter:"meat"),class:'btn btn-default btn-sm'
+                p = link_to 'ク・小・田 以外',new_order_path(make_date:date,filter:"not_veg_meat"),class:'btn btn-default btn-sm'
               div style=''
                 p
                   = link_to 'くるめし',date_kurumesi_orders_path(date:date)

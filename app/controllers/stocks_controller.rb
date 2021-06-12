@@ -6,8 +6,10 @@ class StocksController < AdminController
     else
       @date = Date.today
     end
-    from = @date - 14
-    @materials = Material.joins(:order_materials).where(:order_materials => {delivery_date:from..@date,un_order_flag:false}).where(vendor_id:vendor_ids).order(name:'asc').uniq
+    from = @date - 5
+    to = @date + 5
+    material_ids = Stock.joins(:material).where(:materials => {vendor_id:vendor_ids}).where(date:from..to).map{|stock|stock.material_id}.uniq
+    @materials = Material.where(id:material_ids).order(name:'asc')
     render :layout => false
   end
   def upload_inventory_csv
@@ -97,12 +99,12 @@ class StocksController < AdminController
       respond_to do |format|
         if @stock.save
           material_update(@date)
+          @class_name = ".inventory_tr_#{@material.id}"
           Stock.change_stock(update_stocks,@material.id,@stock.date,@stock.end_day_stock)
           Stock.import update_stocks, on_duplicate_key_update:[:end_day_stock,:start_day_stock,:inventory_flag] if update_stocks.present?
           if params[:stock][:history_flag] == 'true'
             test_hash
             @history_flag = true
-            @class_name = ".inventory_tr_#{@stock.id}"
           else
             check_test(@stock)
           end
@@ -118,10 +120,10 @@ class StocksController < AdminController
   def update
     @mobile = false
     @mobile = true if params[:stock][:mobile_flag].present?
-    @date = Date.today
     update_stocks = []
     @stock_hash = {}
     @stock = Stock.find(params[:id])
+    @date = @stock.date
     @material = @stock.material
     end_day_stock_accounting_unit = params[:stock][:end_day_stock_accounting_unit].to_f
     new_end_day_stock = end_day_stock_accounting_unit*@stock.material.accounting_unit_quantity
@@ -132,10 +134,10 @@ class StocksController < AdminController
         material_update(@date)
         Stock.change_stock(update_stocks,@material.id,@stock.date,new_end_day_stock)
         Stock.import update_stocks, on_duplicate_key_update:[:end_day_stock,:start_day_stock,:inventory_flag] if update_stocks.present?
+        @class_name = ".inventory_tr_#{@material.id}"
         if params[:stock][:history_flag] == 'true'
           test_hash
           @history_flag = true
-          @class_name = ".inventory_tr_#{@stock.id}"
         else
           check_test(@stock)
         end
@@ -311,9 +313,7 @@ class StocksController < AdminController
     date = stock.date
     stocks = Stock.where(material_id:@material.id).where('date <= ?',date).order("date DESC")
     stocks_arr = stocks.where(material_id:@material.id).first(5)
-
     aaa(@material,date,stocks_arr)
-    @class_name = ".inventory_tr_#{@material.id}"
     @stocks_hash = {@material.id => stock}
     @stocks_info_hash[@material.id] = [stock.date,stock.end_day_stock,stock.date,stock.material.last_inventory_date]
 
