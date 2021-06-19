@@ -2,7 +2,7 @@ require 'nokogiri'
 require 'mechanize'
 
 class KurumesiOrder < ApplicationRecord
-  has_many :kurumei_mails
+  has_many :kurumesi_mails
   has_many :kurumesi_order_details, dependent: :destroy
   accepts_nested_attributes_for :kurumesi_order_details, allow_destroy: true
 

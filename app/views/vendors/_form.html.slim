@@ -14,6 +14,10 @@
     = f.label :company_name, "企業名"
     = f.text_field :company_name, required: true, class:"form-control"
   .form-group
+    = f.label :status, "分類"
+    = f.select :status, Vendor.statuses.keys.to_a, {}, class: 'form-control'
+
+  .form-group
     = f.label :company_phone, "電話番号"
     = f.text_field :company_phone, class:"form-control"
   .form-group
@@ -40,6 +44,10 @@
   .form-group
     = f.label :staff_mail, "担当者メールアドレス"
     = f.text_field :staff_mail, class:"form-control"
+  .form-group
+    = f.label :delivery_date, "納品曜日"
+    = f.text_field :delivery_date, class:"form-control"
+
   .form-group
     = f.label :memo, "メモ"
     = f.text_area :memo, class:"form-control",style:"height:10em;"

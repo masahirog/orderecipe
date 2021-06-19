@@ -40,58 +40,63 @@ class KurumesiMail < ApplicationRecord
       imap.fetch(ids, ["RFC822", "ENVELOPE"]).each do |mail|
         m = Mail.new(mail.attr["RFC822"])
         subject = m.subject
-        recieved_datetime = m.date
-        if m.multipart?
-          if m.text_part
-            body = m.text_part.decoded
-          elsif m.html_part
-            body = m.html_part.decoded
-          end
+        if subject.include?('未確認案件')
+          #未確認案件のメールはスルーする
         else
-          begin
-          # 例外が起こるかも知れないコード
-            body = m.body.decoded.encode("UTF-8", m.charset)
-          rescue => error # 変数(例外オブジェクトの代入)
-          # 例外が発生した時のコード
-            next
-          end
-        end
-        #波ダッシュなどの置換
-        mappings = {
-          "\u{00A2}" => "\u{FFE0}",
-          "\u{00A3}" => "\u{FFE1}",
-          "\u{00AC}" => "\u{FFE2}",
-          "\u{2016}" => "\u{2225}",
-          "\u{2012}" => "\u{FF0D}",
-          "\u{301C}" => "\u{FF5E}"
-        }
-        mappings.each{|before, after| body = body.gsub(before, after) }
-        body = body.encode(Encoding::Windows_31J, undef: :replace).encode(Encoding::UTF_8)
-        unless KurumesiMail.find_by(body:body,recieved_datetime:recieved_datetime).present?
-          @kurumei_mail = KurumesiMail.new
-          @kurumei_mail.subject = subject
-          @kurumei_mail.body = body
-          @kurumei_mail.recieved_datetime = recieved_datetime
-          @kurumei_mail.kurumesi_order_reflect_flag = false
-          # kurumei_mailの作成
-          if subject.include?("ご注文がありました")
-            @kurumei_mail.summary = 1
-            # @kurumei_mail.save
-            order_info_from_mail = input_order(body)
-            new_order(order_info_from_mail) unless KurumesiOrder.where(management_id:order_info_from_mail[:management_id]).present?
-          elsif subject.include?("変更致しました")
-            @kurumei_mail.summary = 2
-            @kurumei_mail.save
-            order_info_from_mail = input_order(body)
-            update_order(order_info_from_mail)
-          elsif subject.include?("キャンセルさせて頂きました")
-            @kurumei_mail.summary = 3
-            @kurumei_mail.save
-            order_info_from_mail = input_order(body)
-            cancel_order(order_info_from_mail)
+          recieved_datetime = m.date
+          if m.multipart?
+            if m.text_part
+              body = m.text_part.decoded
+            elsif m.html_part
+              body = m.html_part.decoded
+            end
           else
-            @kurumei_mail.summary = 0
-            @kurumei_mail.save
+            begin
+            # 例外が起こるかも知れないコード
+              body = m.body.decoded.encode("UTF-8", m.charset)
+            rescue => error # 変数(例外オブジェクトの代入)
+            # 例外が発生した時のコード
+              next
+            end
+          end
+          #波ダッシュなどの置換
+          mappings = {
+            "\u{00A2}" => "\u{FFE0}",
+            "\u{00A3}" => "\u{FFE1}",
+            "\u{00AC}" => "\u{FFE2}",
+            "\u{2016}" => "\u{2225}",
+            "\u{2012}" => "\u{FF0D}",
+            "\u{301C}" => "\u{FF5E}"
+          }
+          mappings.each{|before, after| body = body.gsub(before, after) }
+          body = body.encode(Encoding::Windows_31J, undef: :replace).encode(Encoding::UTF_8)
+          unless KurumesiMail.find_by(body:body,recieved_datetime:recieved_datetime).present?
+            @kurumesi_mail = KurumesiMail.new
+            @kurumesi_mail.subject = subject
+            @kurumesi_mail.body = body
+            @kurumesi_mail.recieved_datetime = recieved_datetime
+            @kurumesi_mail.kurumesi_order_reflect_flag = false
+            # kurumesi_mailの作成
+            if subject.include?("ご注文がありました")
+              @kurumesi_mail.summary = 1
+              @kurumesi_mail.save
+              order_info_from_mail = input_order(body)
+              new_order(order_info_from_mail) unless KurumesiOrder.where(management_id:order_info_from_mail[:management_id]).present?
+            elsif subject.include?("変更致しました")
+              @kurumesi_mail.summary = 2
+              @kurumesi_mail.save
+              order_info_from_mail = input_order(body)
+              update_order(order_info_from_mail)
+            elsif subject.include?("キャンセルさせて頂きました")
+              @kurumesi_mail.summary = 3
+              @kurumesi_mail.save
+              order_info_from_mail = input_order(body)
+              cancel_order(order_info_from_mail)
+            else
+              @kurumesi_mail.summary = 0
+              @kurumesi_mail.save
+            end
+            NotificationMailer.send_error_notice(@kurumesi_mail.recieved_datetime,@kurumesi_mail.body).deliver if @kurumesi_mail.kurumesi_order_reflect_flag == false
           end
         end
       end
@@ -242,9 +247,9 @@ class KurumesiMail < ApplicationRecord
 
   def self.reflect_check()
     if @kurumesi_order.save
-      @kurumei_mail.update(kurumesi_order_reflect_flag:true,kurumesi_order_id: @kurumesi_order.id)
+      @kurumesi_mail.update(kurumesi_order_reflect_flag:true,kurumesi_order_id: @kurumesi_order.id)
     else
-      @kurumei_mail.update(kurumesi_order_reflect_flag:false)
+      @kurumesi_mail.update(kurumesi_order_reflect_flag:false)
     end
   end
 end

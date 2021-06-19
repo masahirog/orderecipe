@@ -1,6 +1,10 @@
 class VendorsController < AdminController
   def index
-    @vendors = Vendor.all
+    if params[:all_flag]
+      @vendors = Vendor.all
+    else
+      @vendors = Vendor.where(status:1)
+    end
     if params[:monthly_price] == 'true'
       if params[:year] && params[:month]
         @monthly_useds = {}
@@ -103,7 +107,7 @@ class VendorsController < AdminController
 
   private
   def vendor_params
-    params.require(:vendor).permit(:company_name, :company_phone, :company_fax, :company_mail,:efax_address,
+    params.require(:vendor).permit(:company_name, :company_phone, :company_fax, :company_mail,:efax_address,:status,:delivery_date,
                                     :zip, :address, :staff_name, :staff_phone, :staff_mail, :memo)
   end
 end

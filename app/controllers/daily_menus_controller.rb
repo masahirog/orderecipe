@@ -152,19 +152,23 @@ class DailyMenusController < AdminController
     end
   end
 
-  def sources_pdfs
-    daily_menu = DailyMenu.includes(daily_menu_details:[product:[menus:[:materials]]]).find(params[:daily_menu_id])
+  def sources
+    @daily_menu = DailyMenu.includes(daily_menu_details:[product:[menus:[:materials]]]).find(params[:daily_menu_id])
     respond_to do |format|
       format.html
       format.pdf do
-        pdf = SourcesPdf.new(daily_menu.start_time,'daily_menus')
+        pdf = SourcesPdf.new(@daily_menu.start_time,'daily_menus')
         send_data pdf.render,
-        filename:    "#{daily_menu.id}.pdf",
+        filename:    "#{@daily_menu.id}.pdf",
         type:        "application/pdf",
         disposition: "inline"
       end
+      format.csv do
+        send_data render_to_string, filename: "#{daily_menu.id}_source.csv", type: :csv
+      end
     end
   end
+
   # def recipes_roma
   #   daily_menu = DailyMenu.includes(daily_menu_details:[product:[menus:[:materials]]]).find(params[:daily_menu_id])
   #   respond_to do |format|

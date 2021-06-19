@@ -231,7 +231,7 @@ class OrdersController < AdminController
     elsif params[:filter] == "veg"
       vendor_ids = [151]
     elsif params[:filter] == "meat"
-      vendor_ids = [121,131]
+      vendor_ids = [121,131,21,441]
     elsif params[:filter] == "not_veg_meat"
       vendor_ids = Vendor.where.not(id:[121,131,151]).ids
     end
@@ -261,7 +261,7 @@ class OrdersController < AdminController
               hash["order_unit_quantity"] = menu_material.material.order_unit_quantity
               hash["vendor_id"] = menu_material.material.vendor_id
               hash["vendor_name"] = menu_material.material.vendor.company_name.first(5)
-              hash["vendor_info"] = menu_material.material.vendor.memo
+              hash["vendor_info"] = menu_material.material.vendor.delivery_date
               hash['recipe_unit'] = menu_material.material.recipe_unit
               hash['order_unit'] = menu_material.material.order_unit
               hash['delivery_deadline'] = menu_material.material.delivery_deadline

@@ -21,9 +21,9 @@
               div style='padding-top:5px;padding-bottom:10px;font-size:16px;'
                 p = date.strftime("%-m月%-d日")
                 p = link_to 'すべて',new_order_path(make_date:date,filter:"none"),class:'btn btn-primary btn-sm'
-                p = link_to 'クイーンズ',new_order_path(make_date:date,filter:"veg"),class:'btn btn-default btn-sm'
-                p = link_to '小田・田中',new_order_path(make_date:date,filter:"meat"),class:'btn btn-default btn-sm'
-                p = link_to 'ク・小・田 以外',new_order_path(make_date:date,filter:"not_veg_meat"),class:'btn btn-default btn-sm'
+                p = link_to '野菜',new_order_path(make_date:date,filter:"veg"),class:'btn btn-default btn-sm'
+                p = link_to '肉・米',new_order_path(make_date:date,filter:"meat"),class:'btn btn-default btn-sm'
+                p = link_to 'その他',new_order_path(make_date:date,filter:"not_veg_meat"),class:'btn btn-default btn-sm'
               div style=''
                 p
                   = link_to 'くるめし',date_kurumesi_orders_path(date:date)

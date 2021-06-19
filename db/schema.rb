@@ -445,6 +445,8 @@ ActiveRecord::Schema.define(version: 2021_05_08_113618) do
     t.string "management_id"
     t.string "efax_address"
     t.text "memo"
+    t.string "delivery_date"
+    t.integer "status", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

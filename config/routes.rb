@@ -119,7 +119,7 @@ Rails.application.routes.draw do
       get :products_pdfs
       get :recipes_roma
       get :print_preparation
-      get :sources_pdfs
+      get :sources
     end
   end
   resources :cooking_rices do

@@ -72,7 +72,7 @@
             .vendor_company_name style="padding-top:3px;color:#gray;"
               span = @b_hash[m.object.material_id]['vendor_name']
               - if m.object.material_id.present?
-              span ="｜納品：#{@b_hash[m.object.material_id]['vendor_info']}" 
+                span ="｜納品：#{@b_hash[m.object.material_id]['vendor_info']}" 
           td class="quantity_#{m.object.material_id}" style="min-width:500px;"
             .clearfix.text-right
               div style="float:left;width:50%;"

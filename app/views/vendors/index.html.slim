@@ -1,7 +1,10 @@
 .form-inline.col-md-12[style="padding:10px;"]
+
   .col-md-1
     = link_to '新規登録',new_vendor_path,class:'btn btn-primary'
-  .col-md-11
+  .col-md-1
+    = link_to 'すべての企業',vendors_path(all_flag:true),class:'btn btn-default'
+  .col-md-10
     .pull-right
       = form_tag vendors_path, :method => 'get' do
         = hidden_field_tag :monthly_price ,true
