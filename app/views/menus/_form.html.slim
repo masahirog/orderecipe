@@ -130,7 +130,7 @@
     input#menu_submit_btn.btn.btn-success type="button" value="保存する"
 
 javascript:
-  $(function() {
+  $(document).on('turbolinks:load', function() {
     $('.add_li_material').each(function(){
       change_color(this)
     });
