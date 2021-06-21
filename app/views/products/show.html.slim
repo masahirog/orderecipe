@@ -53,7 +53,7 @@
     tbody
       tr
         td = text_url_to_link(simple_format(h(@product.description))).html_safe
-        td =simple_format( @product.serving_infomation)
+        td = text_url_to_link(simple_format(h(@product.serving_infomation))).html_safe
   table.table
     thead
       tr
