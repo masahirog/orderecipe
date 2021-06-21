@@ -177,20 +177,21 @@ $(document).on('turbolinks:load', function() {
       return false;
     }else{
       /*　OKの時の処理 */
-      $(".add_li_material").each(function(){
-        if ($(this).find('.remove_material').children().val()=='false') {
-          if ($(this).children(".preparation").children().val()=="" && $(this).children(".select_post").children().val()==""){
-          }else if($(this).children(".preparation").children().val().length > 0  && $(this).children(".select_post").children().val().length > 0){
-          }else{
-            i += 1
-          };
-        }else{};
-      });
-      if (i==0) {
-        $('form').submit();
-      }else{
-        alert("仕込みが埋まっていないものがあります。")
-      };
+      $('form').submit();
+      // $(".add_li_material").each(function(){
+      //   if ($(this).find('.remove_material').children().val()=='false') {
+      //     if ($(this).children(".preparation").children().val()=="" && $(this).children(".select_post").children().val()==""){
+      //     }else if($(this).children(".preparation").children().val().length > 0  && $(this).children(".select_post").children().val().length > 0){
+      //     }else{
+      //       i += 1
+      //     };
+      //   }else{};
+      // });
+      // if (i==0) {
+      //   $('form').submit();
+      // }else{
+      //   alert("仕込みが埋まっていないものがあります。")
+      // };
     };
   });
 
@@ -281,7 +282,7 @@ $(document).on('turbolinks:load', function() {
     var row_len =  $(".add_li_material").length
     var menu_price = 0;
     $(".add_li_material").each(function(){
-      if ($(this).children(".remove_material").children("input").val()==1){
+      if ($(this).find(".remove_material").children("input").val()==1){
       }else{
         var price_used = Number($(this).children(".price_used").html())
         if (isNaN(price_used) == true ){}else{
@@ -369,13 +370,4 @@ $(document).on('turbolinks:load', function() {
     });
   }
 
-  // function menu_category_check(){
-  //   var val = $("#menu_category").val();
-  //   if (val=='主食') {
-  //     $(".rice_mixed_area").show();
-  //   }else{
-  //     $(".input_source_flag").prop('checked', false);
-  //     $(".rice_mixed_area").hide();
-  //   }
-  // }
 });

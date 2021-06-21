@@ -5,7 +5,7 @@ class CreateMenuMaterials < ActiveRecord::Migration[4.2]
       t.integer :material_id,null:false
       t.float :amount_used,null:false,default:0
       t.string :preparation
-      t.string :post
+      t.integer :post
       t.integer :row_order,null:false,default:0
       t.float :gram_quantity
       t.integer :food_ingredient_id
@@ -28,6 +28,7 @@ class CreateMenuMaterials < ActiveRecord::Migration[4.2]
       t.float :vitamin_d
       t.integer :base_menu_material_id
       t.boolean :source_flag,default:false,null:false
+      t.integer :source_group,default:0,null:false
       t.timestamps
     end
   end

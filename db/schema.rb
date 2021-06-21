@@ -200,7 +200,7 @@ ActiveRecord::Schema.define(version: 2021_05_08_113618) do
     t.integer "material_id", null: false
     t.float "amount_used", default: 0.0, null: false
     t.string "preparation"
-    t.string "post"
+    t.integer "post"
     t.integer "row_order", default: 0, null: false
     t.float "gram_quantity"
     t.integer "food_ingredient_id"
@@ -223,6 +223,7 @@ ActiveRecord::Schema.define(version: 2021_05_08_113618) do
     t.float "vitamin_d"
     t.integer "base_menu_material_id"
     t.boolean "source_flag", default: false, null: false
+    t.integer "source_group", default: 0, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

@@ -78,7 +78,7 @@
       = f.select :used_additives, grouped_options_for_select(@ar,f.object.used_additives),{ include_hidden: false},{class:"select_used_additives col-md-12",multiple:true}
     - else
       = f.select :used_additives, grouped_options_for_select(@ar),{include_hidden: false},{class:"select_used_additives col-md-12",multiple:true}
-  table.col-md-12.table
+  / table.col-md-12.table
     thead
       th カロリー(kcal)
       th タンパク質(g)
@@ -128,3 +128,19 @@
   = f.hidden_field :back_to, :value => @back_to
   .action.col-md-12 style="margin-bottom:20px;"
     input#menu_submit_btn.btn.btn-success type="button" value="保存する"
+
+javascript:
+  $(function() {
+    $('.add_li_material').each(function(){
+      change_color(this)
+    });
+    $('.select_source_group').on("change", function() {
+      var li = $(this).parents(".add_li_material")
+      change_color(li)
+    });
+    function change_color(li){
+      var hash = {"":'white',A:'#ffede6',B:'#eaf9de',C:'#ffffeb',D:'#f1ffff',E:'#ffeff9',F:'#f7f7f7',G:'#f8f2ff',H:'#dfecf9'};
+      var source_group = $(li).find('.select_source_group').children('select').val();
+      $(li).css('background-color',hash[source_group]);
+    }
+  });

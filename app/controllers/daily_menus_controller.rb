@@ -31,7 +31,7 @@ class DailyMenusController < AdminController
     @date = @daily_menu.start_time
     @tommoroww = DailyMenu.find_by(start_time:@date+1)
     @yesterday = DailyMenu.find_by(start_time:@date-1)
-    @daily_menu_details = @daily_menu.daily_menu_details.includes(:product)
+    @daily_menu_details = @daily_menu.daily_menu_details.order("row_order ASC").includes(:product)
     @sdmd_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @daily_menu.store_daily_menus.includes(:store_daily_menu_details).each do |sdm|
       @store_daily_menu_idhash[sdm.store_id] = sdm.id
@@ -39,7 +39,6 @@ class DailyMenusController < AdminController
         @sdmd_hash[sdm.store_id][sdmd.product_id] = sdmd.number
       end
     end
-
     respond_to do |format|
       format.html
       format.pdf do
@@ -164,7 +163,7 @@ class DailyMenusController < AdminController
         disposition: "inline"
       end
       format.csv do
-        send_data render_to_string, filename: "#{daily_menu.id}_source.csv", type: :csv
+        send_data render_to_string, filename: "#{@daily_menu.id}_source.csv", type: :csv
       end
     end
   end

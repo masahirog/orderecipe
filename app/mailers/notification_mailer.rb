@@ -37,4 +37,15 @@ class NotificationMailer < ActionMailer::Base
     end
   end
 
+  def send_kurumesi_capa_notice(date,num)
+    @date = date
+    @num = num
+    mail(
+      subject: "くるめしキャパオーバー", #メールのタイトル
+      to: 'kitchen@taberu.co.jp',
+    ) do |format|
+      format.text
+    end
+  end
+
 end
