@@ -75,4 +75,4 @@ li.add_li_material.col-md-12.list-group-item.item.nested-fields.field
         = f.select :post,MenuMaterial.posts.keys.to_a,{}, class: "form-control",style:'width:calc(100% - 80px);float:left;'
       .select_source_group.col-md-2.text-right
         span style="margin:8px 8px 0 0;float:left;width:70px;" グループ：
-        = f.select :source_group, MenuMaterial.source_groups.keys.to_a, {}, class: 'form-control',style:'width:calc(100% - 80px);float:left;'
+        = f.select :source_group, MenuMaterial.source_groups.keys.to_a, {include_blank:true}, class: 'form-control',style:'width:calc(100% - 80px);float:left;'

@@ -51,13 +51,13 @@ class MenusController < AdminController
     @menu = Menu.new(menu_create_update)
     @materials = Material.where(id:@menu.menu_materials.map{|mm|mm.material_id})
     # @materials = @menu.materials
-     if @menu.save
-       redirect_to @menu,
-       notice: "「#{@menu.name}」を作成しました。続けてメニューを作成する：<a href='/menus/new'>新規作成</a>".html_safe
-     else
-       @ar = Menu.used_additives(@menu.materials)
-       render 'new'
-     end
+    if @menu.save
+     redirect_to @menu,
+     notice: "「#{@menu.name}」を作成しました。続けてメニューを作成する：<a href='/menus/new'>新規作成</a>".html_safe
+    else
+     @ar = Menu.used_additives(@menu.materials)
+     render 'new'
+    end
   end
 
   def edit
