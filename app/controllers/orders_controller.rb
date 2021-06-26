@@ -233,7 +233,7 @@ class OrdersController < AdminController
     elsif params[:filter] == "meat"
       vendor_ids = [121,131,21,441]
     elsif params[:filter] == "not_veg_meat"
-      vendor_ids = Vendor.where.not(id:[121,131,151]).ids
+      vendor_ids = Vendor.where.not(id:[121,131,151,21,441]).ids
     end
 
     product_ids = order_products.map{|op|op[:product_id]}

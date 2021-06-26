@@ -69,9 +69,9 @@ h4
           .modal-footer
             button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
             = submit_tag "まとめて発注" ,class:"btn btn-primary"
-  = link_to "当日印刷",store_daily_menu_path(id:@store_daily_menu.id, :format => :pdf),class:"btn btn-default",:target=>"_blank",style:'margin-left:20px;'
+  / = link_to "当日印刷",store_daily_menu_path(id:@store_daily_menu.id, :format => :pdf),class:"btn btn-default",:target=>"_blank",style:'margin-left:20px;'
   / = link_to "販売データUP",sales_upload_store_store_daily_menus_path(id:@store_daily_menu.id),class:"btn btn-default",style:'margin-left:20px;'
-  button type="button" class="btn btn-default" data-toggle="modal" data-target="#upload" 販売データUP
+  button type="button" class="btn btn-default" data-toggle="modal" style="margin-left:20px;" data-target="#upload" 販売データUP
   #upload.modal.fade tabindex="-1"
     = form_tag sales_upload_store_store_daily_menus_path, multipart: true do
       = hidden_field_tag :id,@store_daily_menu.id
@@ -87,8 +87,8 @@ h4
 
 
 
-  = link_to "在庫CSV", store_daily_menus_path(start_time:@store_daily_menu.start_time,store_id:@store_daily_menu.store_id,one_day_flag:true,format:'csv'), class: "btn btn-default",style:'float:right;'
-  = link_to "食品表示CSV", store_daily_menu_path(@store_daily_menu,format:'csv'), class: "btn btn-default",style:'float:right;'
+  = link_to "在庫CSV", stock_store_daily_menus_path(store_daily_menu_id:@store_daily_menu.id,format:'csv'), class: "btn btn-default",style:'float:right;'
+  / = link_to "食品表示CSV", store_daily_menu_path(@store_daily_menu,format:'csv'), class: "btn btn-default",style:'float:right;'
 table.table.table-list
   thead
     tr

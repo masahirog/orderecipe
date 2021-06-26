@@ -39,7 +39,7 @@ class SourcesPdf < Prawn::Document
   end
 
   def table_content(menus,num)
-    bounding_box([0, 495], :width => 780) do
+    bounding_box([-10, 495], :width => 790) do
       table line_item_rows(menus,num) do
         cells.padding = 2
         cells.leading = 2
@@ -51,32 +51,33 @@ class SourcesPdf < Prawn::Document
         column(4).padding = [2,6,2,2]
         row(0).border_width = 1
         row(0).size = 9
+        cells.columns(5).rows(0).size = 6
         columns(4).size = 11
         self.header = true
-        self.column_widths = [100,190,30,140,60,190,60]
+        self.column_widths = [100,190,40,140,70,30,150,60]
         grayout = []
         menuline = []
         values = cells.columns(2).rows(1..-1)
         values.each do |cell|
-          grayout << cell.row unless cell.content == '◯'
+          grayout << cell.row unless cell.content == 'タレ'
         end
         grayout.map{|num|row(num).column(2..-1).background_color = "dcdcdc"}
       end
     end
   end
   def line_item_rows(menus,num)
-    data= [["メニュー名","調理メモ",'タレ',"食材・資材","#{num}人分","仕込み内容","1人分"]]
+    data= [["メニュー名","調理メモ",'担当',"食材・資材","#{num}人分","グループ","仕込み内容","1人分"]]
     menus.each do |menu|
       u = menu.materials.length
       cook_the_day_before_mozi = menu.cook_the_day_before.length
       if cook_the_day_before_mozi<50
-        cook_the_day_before_size = 9
+        cook_the_day_before_size = 10
       elsif cook_the_day_before_mozi<100
-        cook_the_day_before_size = 8
+        cook_the_day_before_size = 9
       elsif cook_the_day_before_mozi<150
-        cook_the_day_before_size = 7
+        cook_the_day_before_size = 8
       else
-        cook_the_day_before_size = 6
+        cook_the_day_before_size = 7
       end
       menu.menu_materials.each_with_index do |mm,i|
         if menu.cook_the_day_before.present? || menu.cook_on_the_day.present?
@@ -84,23 +85,20 @@ class SourcesPdf < Prawn::Document
         else
           cook_memo = ''
         end
-        if mm.source_flag == true
-          source_flag = '◯'
-        else
-          source_flag = ''
-        end
         if i == 0
-          data << [{:content => "#{menu.name}", :rowspan => u, size: cook_the_day_before_size},{:content => "#{cook_memo}", :rowspan => u, size: cook_the_day_before_size},
-            source_flag ,
-            {:content => "#{mm.material.name}", size: cook_the_day_before_size },
-            {:content => "#{((mm.amount_used * num.to_i).round(1)).to_s(:delimited)} #{mm.material.recipe_unit}", size: cook_the_day_before_size },
-            {:content => "#{mm.preparation}", size: cook_the_day_before_size },
-            {:content => "#{mm.amount_used} #{mm.material.recipe_unit}", size: cook_the_day_before_size }]
+          data << [{:content => "#{menu.name}", :rowspan => u, size: 9},{:content => "#{cook_memo}", :rowspan => u, size: cook_the_day_before_size},
+            {:content => "#{mm.post}", size: 8 },
+            {:content => "#{mm.material.name}", size: 9 },
+            {:content => "#{((mm.amount_used * num.to_i).round(1)).to_s(:delimited)} #{mm.material.recipe_unit}", size: 9 },
+            {:content => "#{mm.source_group}", size:9,:align => :center },
+            {:content => "#{mm.preparation}", size:9 },
+            {:content => "#{mm.amount_used} #{mm.material.recipe_unit}", size: 9 }]
         else
-          data << [source_flag ,{:content => "#{mm.material.name}", size: cook_the_day_before_size },
-            {:content => "#{((mm.amount_used * num.to_i).round(1)).to_s(:delimited)} #{mm.material.recipe_unit}", size: cook_the_day_before_size },
-            {:content => "#{mm.preparation}", size: cook_the_day_before_size },
-            {:content => "#{mm.amount_used} #{mm.material.recipe_unit}", size: cook_the_day_before_size }]
+          data << [{:content => "#{mm.post}", size: 8 },{:content => "#{mm.material.name}", size: 9 },
+            {:content => "#{((mm.amount_used * num.to_i).round(1)).to_s(:delimited)} #{mm.material.recipe_unit}"},
+            {:content => "#{mm.source_group}", size:9,:align => :center },
+            {:content => "#{mm.preparation}", size: 9 },
+            {:content => "#{mm.amount_used} #{mm.material.recipe_unit}", size: 9 }]
         end
       end
     end

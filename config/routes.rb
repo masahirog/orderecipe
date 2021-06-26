@@ -156,6 +156,7 @@ Rails.application.routes.draw do
       get :once_update
       post :upload_number
       post :once_update_number
+      get :stock
     end
   end
 end
