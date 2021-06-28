@@ -7,12 +7,12 @@ CSV.generate do |csv|
     dmd.product.product_menus.each do |pm|
       hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
       pm.menu.menu_materials.each do |mm|
-        unless mm.source_group == ''
+        if mm.source_group.present?
           if hash[mm.source_group].present?
             if mm.post == 'タレ'
             else
               amount = (num * mm.amount_used).round(1)
-              hash[mm.source_group]['add'] << "、#{mm.material.name}：#{amount}#{mm.material.recipe_unit}"
+              hash[mm.source_group]['add'] << "#{mm.material.name}：#{amount}#{mm.material.recipe_unit}；"
             end
           else
             hash[mm.source_group]['date'] = @daily_menu.start_time.strftime("%-m/%-d")
@@ -21,7 +21,7 @@ CSV.generate do |csv|
               hash[mm.source_group]['add'] = ''
             else
               amount = (num * mm.amount_used).round(1)
-              hash[mm.source_group]['add'] = "#{mm.material.name}：#{amount}#{mm.material.recipe_unit}"
+              hash[mm.source_group]['add'] = "#{mm.material.name}：#{amount}#{mm.material.recipe_unit}；"
             end
 
           end
