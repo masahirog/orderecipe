@@ -14,6 +14,10 @@
         = f.label :name, "食材・資材名（余分な情報はメモへお願いします）"
         = f.text_field :name, class:'form-control name_ja'
       .col-md-12.form-group
+        = f.label :short_name, "省略名 ひらがな"
+        = f.text_field :short_name, class:'form-control'
+
+      .col-md-12.form-group
         = f.label :roma_name, "ローマ字名"
         = f.text_field :roma_name, class:'form-control roma_name'
       .col-md-12.form-group

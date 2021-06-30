@@ -12,16 +12,16 @@ CSV.generate do |csv|
             if mm.post == 'タレ'
             else
               amount = (num * mm.amount_used).round(1)
-              hash[mm.source_group]['add'] << "#{mm.material.name}：#{amount}#{mm.material.recipe_unit}；"
+              hash[mm.source_group]['add'] << "#{mm.material.short_name}：#{amount}#{mm.material.recipe_unit}；"
             end
           else
             hash[mm.source_group]['date'] = @daily_menu.start_time.strftime("%-m/%-d")
-            hash[mm.source_group]['menu_name'] = pm.menu.name
+            hash[mm.source_group]['menu_name'] = pm.menu.short_name
             if mm.post == 'タレ'
               hash[mm.source_group]['add'] = ''
             else
               amount = (num * mm.amount_used).round(1)
-              hash[mm.source_group]['add'] = "#{mm.material.name}：#{amount}#{mm.material.recipe_unit}；"
+              hash[mm.source_group]['add'] = "#{mm.material.short_name}：#{amount}#{mm.material.recipe_unit}；"
             end
 
           end
