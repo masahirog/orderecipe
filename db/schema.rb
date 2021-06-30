@@ -193,6 +193,7 @@ ActiveRecord::Schema.define(version: 2021_05_08_113618) do
     t.date "last_inventory_date"
     t.boolean "need_inventory_flag", default: false, null: false
     t.string "image"
+    t.string "short_name"
   end
 
   create_table "menu_materials", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -247,6 +248,7 @@ ActiveRecord::Schema.define(version: 2021_05_08_113618) do
     t.integer "daybefore_60_cook", default: 0, null: false
     t.integer "onday_20_cook", default: 0, null: false
     t.integer "onday_60_cook", default: 0, null: false
+    t.string "short_name"
   end
 
   create_table "monthly_stocks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
