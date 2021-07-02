@@ -25,13 +25,13 @@ class KurumesiMail < ApplicationRecord
     imap_port = 993 # ssl有効なら993、そうでなければ143
     imap = Net::IMAP.new(imap_host, imap_port, imap_usessl)
     # imapにログイン
-    imap_user = 'masahiro11g@gmail.com'
-    imap_passwd = ENV['MASA_MAIL_PASS']
+    imap_user = 'm.yamashita@jfd.co.jp'
+    imap_passwd = ENV['MASA_MAIL_PASS']'
     imap.login(imap_user, imap_passwd)
     # 'FROM','info@kurumesi-bentou.com',
     search_criterias = [
       'FROM','info@kurumesi-bentou.com',
-      'SINCE', (Date.today-1).strftime("%d-%b-%Y")
+      'SINCE', (Date.today-3).strftime("%d-%b-%Y")
       # 'SINCE', (Date.today).strftime("%d-%b-%Y") テスト環境
     ]
     imap.select('INBOX') # 対象のメールボックスを選択
