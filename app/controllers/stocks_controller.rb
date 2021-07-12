@@ -208,9 +208,13 @@ class StocksController < AdminController
     stocks = Stock.where(material_id:ids).where("date <= ?", @date).order(date: :desc)
     @stocks_h = []
     stocks.uniq(&:material_id).each do |stock|
-      if stock.end_day_stock > 0
+      if stock.end_day_stock == 0 && stock.inventory_flag == true
+      else
         @stocks_h << [stock.material_id,[(stock.end_day_stock/stock.material.accounting_unit_quantity),(stock.end_day_stock * stock.material.cost_price),stock.date,stock.material.last_inventory_date,stock.material.vendor_id]]
       end
+      # if stock.end_day_stock > 0
+      #   @stocks_h << [stock.material_id,[(stock.end_day_stock/stock.material.accounting_unit_quantity),(stock.end_day_stock * stock.material.cost_price),stock.date,stock.material.last_inventory_date,stock.material.vendor_id]]
+      # end
     end
     if params[:order] == '業者'
       @stocks_h = Hash[ @stocks_h.to_h.sort_by{ |_, v| -v[4] } ]
