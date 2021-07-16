@@ -33,7 +33,7 @@
           = f.number_field :cost_price, :readonly => 'readonly',class: "menu_cost_price form-control"
           .form-group
             |  円
-  .form-group.col-md-12
+  / .form-group.col-md-12
     .col-md-4
       .co-md-6
         = f.label :daybefore_20_cut ,'前日切出（20人前の分）'
@@ -62,7 +62,7 @@
   .col-md-4.form-group
     = f.label :cook_on_the_day ,'当日調理'
     = f.text_area :cook_on_the_day,style:"height:10em;width:100%;", class: "form-control"
-  .col-md-4.form-group
+  / .col-md-4.form-group
     = f.label :serving_memo ,'盛付'
     = f.text_area :serving_memo,style:"height:10em;width:100%;", class: "form-control"
 
@@ -76,7 +76,7 @@
         div
           = f.label :remove_image,"削除する"
           = f.check_box :remove_image
-  .used_additives.col-md-12 style="margin:20px 0;"
+  / .used_additives.col-md-12 style="margin:20px 0;"
     = f.label :used_additives ,"使用食品添加物"
     - if f.object.used_additives.present?
       = f.select :used_additives, grouped_options_for_select(@ar,f.object.used_additives),{ include_hidden: false},{class:"select_used_additives col-md-12",multiple:true}

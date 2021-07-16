@@ -120,6 +120,7 @@ Rails.application.routes.draw do
       get :recipes_roma
       get :print_preparation
       get :sources
+      get :loading
     end
   end
   resources :cooking_rices do

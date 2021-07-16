@@ -1,0 +1,7 @@
+tr.nested-fields.field
+  td
+    = f.text_field :name,class:'form-control',placeholder:'パーツ名'
+  td
+    = f.number_field :amount,class:'form-control'
+  td
+    = f.select :unit,['','g','kg','個','枚'],{},class:'form-control'

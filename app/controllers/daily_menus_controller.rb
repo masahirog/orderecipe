@@ -1,5 +1,18 @@
 class DailyMenusController < AdminController
   before_action :set_daily_menu, only: [:show, :update, :destroy]
+  def loading
+    @daily_menu = DailyMenu.find(params[:id])
+    respond_to do |format|
+      format.html
+      format.pdf do
+        pdf = DailyMenuLoadingPdf.new(@daily_menu.id)
+        send_data pdf.render,
+        filename:    "#{@daily_menu.id}.pdf",
+        type:        "application/pdf",
+        disposition: "inline"
+      end
+    end
+  end
   def create_1month
     date = params[:date]
     DailyMenu.once_1month_create(date)

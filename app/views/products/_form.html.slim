@@ -73,6 +73,19 @@
     .col-md-6
       = f.label :description, "紹介文"
       = f.text_area :description, class:"form-control", style:"height:7em;"
+  .col-md-12
+    table.table
+      thead
+        tr
+          th
+            span 仕込み後のパーツ
+            = link_to_add_association '追加', f, :product_parts,class:'btn btn-primary add_product_parts_fields',style:'margin-left:20px;',
+            data: {association_insertion_node: '#product_parts-add-point',association_insertion_method: 'append' }
+          th 1人前の分量
+          th 単位
+      tbody#product_parts-add-point
+        = f.fields_for :product_parts do |mp|
+          = render 'product_part_fields', f:mp
 
   .col-md-12
     .col-md-4
