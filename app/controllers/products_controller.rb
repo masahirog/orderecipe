@@ -289,6 +289,6 @@ class ProductsController < AdminController
       params.require(:product).permit(:name,:memo, :management_id,:short_name,:symbol, :sell_price, :description, :contents, :image,:brand_id,:product_category,:bejihan_sozai_flag,
                       :food_label_name,:food_label_content,:status,:remove_image, :image_cache,:display_image,:image_for_one_person,:serving_infomation,:carryover_able_flag,
                       :cost_price,:cooking_rice_id, product_menus_attributes: [:id, :product_id, :menu_id,:row_order, :_destroy],product_pops_attributes: [:id, :product_id,:image],
-                    product_parts_attributes: [:id,:product_id,:name,:amount,:unit])
+                    product_parts_attributes: [:id,:product_id,:name,:amount,:unit, :_destroy])
     end
 end

@@ -5,3 +5,5 @@ tr.nested-fields.field
     = f.number_field :amount,class:'form-control'
   td
     = f.select :unit,['','g','kg','個','枚'],{},class:'form-control'
+  td
+    = link_to_remove_association '削除', f,class:'remove_menu_btn btn btn-danger'

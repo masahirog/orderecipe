@@ -83,6 +83,7 @@
             data: {association_insertion_node: '#product_parts-add-point',association_insertion_method: 'append' }
           th 1人前の分量
           th 単位
+          th
       tbody#product_parts-add-point
         = f.fields_for :product_parts do |mp|
           = render 'product_part_fields', f:mp
