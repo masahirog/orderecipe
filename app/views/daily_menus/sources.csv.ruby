@@ -1,6 +1,7 @@
 require 'csv'
-CSV.generate do |csv|
-  csv_column_names = %w(日付 メニュー名 グループ 追加)
+bom = "\uFEFF"
+CSV.generate(bom) do |csv|
+  csv_column_names = %w(日付 名称 分類 追加)
   csv << csv_column_names
   @daily_menu.daily_menu_details.each do |dmd|
     num = dmd.manufacturing_number
@@ -12,7 +13,11 @@ CSV.generate do |csv|
             if mm.post == 'タレ'
             else
               amount = (num * mm.amount_used).round(1)
-              hash[mm.source_group]['add'] << "\n#{mm.material.short_name}：#{amount}#{mm.material.recipe_unit}"
+              if hash[mm.source_group]['add'].present?
+                hash[mm.source_group]['add'] << "｜#{mm.material.short_name}：#{amount}#{mm.material.recipe_unit}"
+              else
+                hash[mm.source_group]['add'] << "#{mm.material.short_name}：#{amount}#{mm.material.recipe_unit}"
+              end
             end
           else
             hash[mm.source_group]['date'] = @daily_menu.start_time.strftime("%-m/%-d")
