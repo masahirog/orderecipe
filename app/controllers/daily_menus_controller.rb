@@ -4,6 +4,9 @@ class DailyMenusController < AdminController
     @daily_menu = DailyMenu.find(params[:id])
     respond_to do |format|
       format.html
+      format.csv do
+        send_data render_to_string, filename: "#{@daily_menu.id}_loading.csv", type: :csv
+      end
       format.pdf do
         pdf = DailyMenuLoadingPdf.new(@daily_menu.id)
         send_data pdf.render,
