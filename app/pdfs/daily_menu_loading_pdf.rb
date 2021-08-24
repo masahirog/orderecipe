@@ -13,7 +13,7 @@ class DailyMenuLoadingPdf < Prawn::Document
     daily_menu = DailyMenu.find(daily_menu_id)
     daily_menu.store_daily_menus.each_with_index do |sdm,i|
       bounding_box([10, 800], :width => 560) do
-        text "発行時間：#{Time.now.strftime("%Y年 %m月 %d日　%H:%M")}",size:10,:align => :right
+        text "発行時間：#{Time.now.strftime("%Y年 %m月 %d日　%H:%M")}",size:8,:align => :right
         text "#{sdm.start_time} #{sdm.store.name}"
         move_down 10
         table line_item_rows(sdm) do
@@ -26,7 +26,7 @@ class DailyMenuLoadingPdf < Prawn::Document
           # cells.valign = :center
           columns(-2).align = :center
           self.header = true
-          self.column_widths = [180,50,50,50,50,50,50,50]
+          self.column_widths = [150,30,80,50,30,50,170]
         end
       end
       start_new_page if i < daily_menu.store_daily_menus.length - 1
@@ -34,10 +34,10 @@ class DailyMenuLoadingPdf < Prawn::Document
   end
 
   def line_item_rows(sdm)
-    data = [['商品名','バーツ名','人前','分量','チェック']]
+    data = [['商品名','人前','バーツ名','分量','✓','器','メモ']]
     sdm.store_daily_menu_details.each do |sdmd|
       sdmd.product.product_parts.each do |pp|
-        data << [sdmd.product.name,pp.name,sdmd.number,"#{(pp.amount*sdmd.number)} #{pp.unit}",'']
+        data << [sdmd.product.name,sdmd.number,pp.name,"#{(pp.amount*sdmd.number)} #{pp.unit}","",pp.container,pp.memo]
       end
     end
     data

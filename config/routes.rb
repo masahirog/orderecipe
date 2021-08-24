@@ -13,7 +13,7 @@ Rails.application.routes.draw do
   end
 
   devise_for :users
-  root 'kurumesi_orders#index'
+  root 'daily_menus#index'
   post 'orders/new' => 'orders#new'
   post'orders/order_print/:id' => 'orders#order_print'
   post "products/henkan" => "products#henkan"

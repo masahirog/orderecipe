@@ -6,4 +6,8 @@ tr.nested-fields.field
   td
     = f.select :unit,['','g','kg','個','枚'],{},class:'form-control'
   td
+    = f.select :container,ProductPart.containers.keys.to_a,{},class:'form-control'
+  td
+    = f.text_field :memo,class:'form-control',placeholder:'メモ'
+  td
     = link_to_remove_association '削除', f,class:'remove_menu_btn btn btn-danger'
