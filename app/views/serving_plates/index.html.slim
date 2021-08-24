@@ -4,6 +4,7 @@ table.table
   thead
     tr
       th 皿名
+      th 画像
       th ジャンル
       th 色
       th 形
@@ -13,6 +14,11 @@ table.table
     - @serving_plates.each do |serving_plate|
       tr
         td = serving_plate.name
+        td
+          - if serving_plate.image.present?
+            = link_to serving_plate.image.url, "data-lightbox" => serving_plate.image.url do
+              = image_tag serving_plate.image.url,style:'height:50px;width:50px;object-fit:cover;object-position: 0 0;'
+
         td = serving_plate.genre
         td = serving_plate.color
         td = serving_plate.shape
