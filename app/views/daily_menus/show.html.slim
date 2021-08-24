@@ -182,10 +182,21 @@ table.table.table-list.table-striped
         td
           - if dmd.product.main_serving_plate_id.present?
             - serving_plate = ServingPlate.find(dmd.product.main_serving_plate_id)
-            a.p
-              = serving_plate.name
-              span
-                = image_tag serving_plate.image.url,style:'width:400px;'
+            - if serving_plate.image.present?
+              a.p
+                = image_tag serving_plate.image.url,style:'width:30px;'
+                span
+                  = image_tag serving_plate.image.url,style:'width:400px;'
+                = "　#{serving_plate.name}"
+
+        / td
+        /   - if dmd.product.main_serving_plate_id.present?
+        /     - serving_plate = ServingPlate.find(dmd.product.main_serving_plate_id)
+        /     a.p
+        /       = serving_plate.name
+        /       - if serving_plate.image.present?
+        /         span
+        /           = image_tag serving_plate.image.url,style:'width:400px;'
           - else
         td
           = dmd.for_single_item_number
