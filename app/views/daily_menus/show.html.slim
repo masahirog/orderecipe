@@ -185,7 +185,7 @@ table.table.table-list.table-striped
             a.p
               = serving_plate.name
               span
-                = image_tag serving_plate.image.url
+                = image_tag serving_plate.image.url,style:'width:400px;'
           - else
         td
           = dmd.for_single_item_number
@@ -208,6 +208,7 @@ css:
   .show_case_table {
     border-collapse: collapse;
   }
+
   a.p:hover {
     position: relative;
     text-decoration: none;
@@ -221,5 +222,4 @@ css:
   a.p:hover span {
       border: none;
       display: block;
-      width: 200px;
   }
