@@ -6,4 +6,18 @@
         - @serving_plate.errors.full_messages.each do |message|
           li = message
 
+  .form-group
+    = f.label :name, "皿名"
+    = f.text_field :name, required: true, class:"form-control"
+  .form-group
+    = f.label :image, "写真"
+    = f.file_field :image
+    = f.hidden_field :image_cache
+    .form-group
+      - if @serving_plate.image?
+        = image_tag @serving_plate.image.to_s,class:"img-responsive",style:'max-height:450px;'
+        div
+          = f.label :remove_image,"削除する"
+          = f.check_box :remove_image
+
   .actions = f.submit

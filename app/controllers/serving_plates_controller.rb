@@ -55,6 +55,6 @@ class ServingPlatesController < AdminController
     end
 
     def serving_plate_params
-      params.require(:serving_plate).permit(:name,:image,:color,:shape,:genre)
+      params.require(:serving_plate).permit(:name,:image,:color,:shape,:genre, :image_cache, :remove_image)
     end
 end

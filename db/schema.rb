@@ -309,8 +309,10 @@ ActiveRecord::Schema.define(version: 2021_07_15_231056) do
   create_table "product_parts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "product_id", null: false
     t.string "name", default: "", null: false
-    t.integer "amount", default: 0, null: false
+    t.float "amount", default: 0.0, null: false
     t.string "unit", null: false
+    t.string "memo"
+    t.integer "container", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -345,6 +347,8 @@ ActiveRecord::Schema.define(version: 2021_07_15_231056) do
     t.string "food_label_name"
     t.text "food_label_content"
     t.boolean "carryover_able_flag", default: false, null: false
+    t.integer "main_serving_plate_id"
+    t.integer "sub_serving_plate_id"
   end
 
   create_table "serving_plates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

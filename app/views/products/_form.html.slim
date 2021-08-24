@@ -30,7 +30,7 @@
           = f.number_field :cost_price, :readonly => 'readonly', class:"product_cost_price form-control text-right"
         .form-group
           |  円
-  .col-md-12
+  .col-md-12.form-group
     .col-md-2
       = f.label :product_category, "べじはん惣菜"
       = f.check_box :bejihan_sozai_flag, class: "form-control"
@@ -41,6 +41,14 @@
     .col-md-2
       = f.label :cooking_rice_id, "使用ライス"
       = f.collection_select :cooking_rice_id, CookingRice.all, :id, :name, {}, { class: "form-control"}
+  .col-md-12.form-group
+    .col-md-2
+      = f.label :main_serving_plate_id, "大皿候補第１"
+      = f.collection_select :main_serving_plate_id, ServingPlate.all, :id, :name, {include_blank:true}, { class: "form-control"}
+    .col-md-2
+      = f.label :sub_serving_plate_id, "大皿候補第２"
+      = f.collection_select :sub_serving_plate_id, ServingPlate.all, :id, :name, {include_blank:true}, { class: "form-control"}
+
   .col-md-12.form-group
     .col-md-4
       = f.label :food_label_name, "食品表示名"

@@ -3,8 +3,10 @@ class CreateProductParts < ActiveRecord::Migration[5.2]
     create_table :product_parts do |t|
       t.integer :product_id,null:false
       t.string :name,null:false,default:''
-      t.integer :amount,null:false,default:0
+      t.float :amount,null:false,default:0
       t.string :unit,null:false
+      t.string :memo
+      t.integer :container,null:false,default:0
 
       t.timestamps
     end
