@@ -182,8 +182,10 @@ table.table.table-list.table-striped
         td
           - if dmd.product.main_serving_plate_id.present?
             - serving_plate = ServingPlate.find(dmd.product.main_serving_plate_id)
-            = link_to serving_plate.image.url, "data-lightbox" => serving_plate.image.url do
+            a.p
               = serving_plate.name
+              span
+                = image_tag serving_plate.image.url
           - else
         td
           = dmd.for_single_item_number
@@ -205,4 +207,19 @@ css:
   }
   .show_case_table {
     border-collapse: collapse;
+  }
+  a.p:hover {
+    position: relative;
+    text-decoration: none;
+  }
+  a.p span {
+      display: none;
+      position: absolute;
+      top: 1em;
+      left: 0;
+  }
+  a.p:hover span {
+      border: none;
+      display: block;
+      width: 200px;
   }
