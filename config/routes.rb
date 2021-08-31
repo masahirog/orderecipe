@@ -25,6 +25,7 @@ Rails.application.routes.draw do
   # get '/sell_reports' => 'application#sell_reports'
   get '/product_report' => 'application#product_report'
   resources :wikis
+  resources :containers
   resources :wiki_items
   resources :kurumesi_orders do
     collection do

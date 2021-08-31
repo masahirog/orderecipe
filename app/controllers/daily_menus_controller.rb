@@ -2,15 +2,16 @@ class DailyMenusController < AdminController
   before_action :set_daily_menu, only: [:show, :update, :destroy]
   def loading
     @daily_menu = DailyMenu.find(params[:id])
+    binding.pry
     respond_to do |format|
       format.html
       format.csv do
-        send_data render_to_string, filename: "#{@daily_menu.id}_loading.csv", type: :csv
+        send_data render_to_string, filename: "#{@daily_menu.start_time.strftime("%-m/%-d")}_積載シールデータ.csv", type: :csv
       end
       format.pdf do
         pdf = DailyMenuLoadingPdf.new(@daily_menu.id)
         send_data pdf.render,
-        filename:    "#{@daily_menu.id}.pdf",
+        filename:    "#{@daily_menu.start_time.strftime("%-m/%-d")}_積載表.pdf",
         type:        "application/pdf",
         disposition: "inline"
       end

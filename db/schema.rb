@@ -10,13 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_15_231056) do
+ActiveRecord::Schema.define(version: 2021_08_31_142613) do
 
   create_table "brands", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name", null: false
     t.integer "store_id", default: 0, null: false
     t.boolean "kurumesi_flag", default: false, null: false
     t.string "store_path"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "containers", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -349,6 +355,7 @@ ActiveRecord::Schema.define(version: 2021_07_15_231056) do
     t.boolean "carryover_able_flag", default: false, null: false
     t.integer "main_serving_plate_id"
     t.integer "sub_serving_plate_id"
+    t.integer "container_id"
   end
 
   create_table "serving_plates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

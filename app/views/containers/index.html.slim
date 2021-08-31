@@ -1,0 +1,15 @@
+h1 包材一覧
+= link_to '新規追加', new_container_path
+table.table
+  thead
+    tr
+      th 名称
+      th
+      / th
+
+  tbody
+    - @containers.each do |container|
+      tr
+        td = container.name
+        td = link_to 'Edit', edit_container_path(container)
+        / td = link_to 'Destroy', container, data: { confirm: 'Are you sure?' }, method: :delete

@@ -1,5 +1,6 @@
 class Product < ApplicationRecord
   belongs_to :brand
+  belongs_to :container
 
   has_many :product_pops, dependent: :destroy
   accepts_nested_attributes_for :product_pops, allow_destroy: true
@@ -147,6 +148,12 @@ class Product < ApplicationRecord
           else
             sheet[i, 4] = ""
           end
+          if product.container_id.present?
+            sheet[i, 4] = product.container.name
+          else
+            sheet[i, 4] = ""
+          end
+
         end
       end
     end
