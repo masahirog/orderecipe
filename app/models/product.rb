@@ -143,7 +143,7 @@ class Product < ApplicationRecord
             sheet[i, 3] = ""
           end
           if product.main_serving_plate_id.present?
-            sheet[i, 4] = ServingPlate.find(dmd.product.main_serving_plate_id).name
+            sheet[i, 4] = ServingPlate.find(product.main_serving_plate_id).name
           else
             sheet[i, 4] = ""
           end
