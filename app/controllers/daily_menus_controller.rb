@@ -5,12 +5,12 @@ class DailyMenusController < AdminController
     respond_to do |format|
       format.html
       format.csv do
-        send_data render_to_string, filename: "#{@daily_menu.start_time.strftime("%-m/%-d")}_積載シールデータ.csv", type: :csv
+        send_data render_to_string, filename: "#{@daily_menu.start_time.strftime("%m%d")}_積載シールデータ.csv", type: :csv
       end
       format.pdf do
         pdf = DailyMenuLoadingPdf.new(@daily_menu.id)
         send_data pdf.render,
-        filename:    "#{@daily_menu.start_time.strftime("%-m/%-d")}_積載表.pdf",
+        filename:    "#{@daily_menu.start_time.strftime("%m%d")}_積載表.pdf",
         type:        "application/pdf",
         disposition: "inline"
       end
