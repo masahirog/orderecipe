@@ -2,7 +2,6 @@ class DailyMenusController < AdminController
   before_action :set_daily_menu, only: [:show, :update, :destroy]
   def loading
     @daily_menu = DailyMenu.find(params[:id])
-    binding.pry
     respond_to do |format|
       format.html
       format.csv do
