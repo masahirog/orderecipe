@@ -149,9 +149,9 @@ class Product < ApplicationRecord
             sheet[i, 4] = ""
           end
           if product.container_id.present?
-            sheet[i, 4] = product.container.name
+            sheet[i, 5] = product.container.name
           else
-            sheet[i, 4] = ""
+            sheet[i, 5] = ""
           end
 
         end

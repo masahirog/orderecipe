@@ -161,6 +161,7 @@ table.table.table-list.table-striped
     tr
       th メニュー名
       th 盛り皿
+      th 容器
       th 単品惣菜分
       th 弁当等副菜分
       th 合計製造数
@@ -198,6 +199,8 @@ table.table.table-list.table-striped
         /         span
         /           = image_tag serving_plate.image.url,style:'width:400px;'
           - else
+        td
+          = dmd.product.container.name if dmd.product.container_id.present?
         td
           = dmd.for_single_item_number
         td
