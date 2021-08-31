@@ -137,7 +137,16 @@ class Product < ApplicationRecord
         product = Product.find_by_id(id)
         if product.present?
           sheet[i, 2] = product.cost_price
-          sheet[i, 3] = product.serving_infomation.gsub("\b","") if product.serving_infomation.present?
+          if product.serving_infomation.present?
+            sheet[i, 3] = product.serving_infomation.gsub("\b","")
+          else
+            sheet[i, 3] = ""
+          end
+          if product.main_serving_plate_id.present?
+            sheet[i, 4] = ServingPlate.find(dmd.product.main_serving_plate_id).name
+          else
+            sheet[i, 4] = ""
+          end
         end
       end
     end
