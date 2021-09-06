@@ -1,0 +1,34 @@
+h3 分析
+= form_tag analyses_path, :method => 'get' do
+  div
+    = date_field_tag :from, params[:from], class:"form-control float-left",style:'width:200px;float:left;'
+    div style="float:left;padding:8px;" 〜
+    = date_field_tag :to, params[:to], class:"form-control",style:'width:200px;float:left;'
+
+  .col-md-2
+    = select_tag 'store_id',options_from_collection_for_select(Store.all, :id, :name,params[:store_id]),include_blank: true, class: "form-control"
+
+
+  .kensaku.col-md-1
+    = submit_tag "検索" ,class:"btn btn-primary"
+
+
+table.table
+  thead
+    tr
+      th 日付
+      th 合計売上
+      th 売上
+      th 人件費
+      th ロス
+      th 営業利益
+
+  tbody
+    - (@from..@to).each do |date|
+      tr
+        td = link_to date,date_analyses_path(date:date)
+        td
+        td
+        td
+        td
+        td

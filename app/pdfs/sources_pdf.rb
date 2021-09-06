@@ -89,13 +89,13 @@ class SourcesPdf < Prawn::Document
           data << [{:content => "#{menu.name}", :rowspan => u, size: 9},{:content => "#{cook_memo}", :rowspan => u, size: cook_the_day_before_size},
             {:content => "#{mm.post}", size: 8 },
             {:content => "#{mm.material.name}", size: 9 },
-            {:content => "#{((mm.amount_used * num.to_i).round(1)).to_s(:delimited)} #{mm.material.recipe_unit}", size: 9 },
+            {:content => "#{ActiveSupport::NumberHelper.number_to_rounded((mm.amount_used * num.to_i).round(1), strip_insignificant_zeros: true)} #{mm.material.recipe_unit}", size: 9 },
             {:content => "#{mm.source_group}", size:9,:align => :center },
             {:content => "#{mm.preparation}", size:9 },
             {:content => "#{mm.amount_used} #{mm.material.recipe_unit}", size: 9 }]
         else
           data << [{:content => "#{mm.post}", size: 8 },{:content => "#{mm.material.name}", size: 9 },
-            {:content => "#{((mm.amount_used * num.to_i).round(1)).to_s(:delimited)} #{mm.material.recipe_unit}"},
+            {:content => "#{ActiveSupport::NumberHelper.number_to_rounded((mm.amount_used * num.to_i).round(1), strip_insignificant_zeros: true)} #{mm.material.recipe_unit}"},
             {:content => "#{mm.source_group}", size:9,:align => :center },
             {:content => "#{mm.preparation}", size: 9 },
             {:content => "#{mm.amount_used} #{mm.material.recipe_unit}", size: 9 }]

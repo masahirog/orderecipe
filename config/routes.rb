@@ -26,6 +26,22 @@ Rails.application.routes.draw do
   get '/product_report' => 'application#product_report'
   resources :wikis
   resources :containers
+  resources :analyses do
+    collection do
+      post :products
+      post :smaregi_trading_history_totalling
+      get :date
+      post :bulk_delete_analysis_products
+    end
+  end
+  resources :smaregi_trading_histories do
+    collection do
+      post :upload_salesdatas
+      get :date_datas
+      post :bulk_delete
+    end
+  end
+
   resources :wiki_items
   resources :kurumesi_orders do
     collection do

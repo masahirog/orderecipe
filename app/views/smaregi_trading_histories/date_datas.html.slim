@@ -1,0 +1,13 @@
+table.table
+  thead
+    tr
+      th 取引ID
+      th 取引日時
+      th 販売者
+
+  tbody
+    - @smaregi_trading_histories.each do |smaregi_trading_history|
+      tr
+        td = smaregi_trading_history.torihiki_id
+        td = smaregi_trading_history.torihiki_nichiji.strftime("%Y/%m/%d %H:%M")
+        td = smaregi_trading_history.hanbaiin_mei

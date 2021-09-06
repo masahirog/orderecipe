@@ -1,0 +1,18 @@
+h1 販売データ一覧
+= form_tag upload_salesdatas_smaregi_trading_histories_path, multipart: true do
+  = file_field_tag :file,class:'form-control',style:'padding:10px;height:100%;'
+  = submit_tag "アップロード",class:'btn btn-primary'
+
+table.table
+  thead
+    tr
+      th 日付
+      th 取引件数
+      th
+
+  tbody
+    - @date_counts.each do |date_count|
+      tr
+        td = link_to date_count[0],date_datas_smaregi_trading_histories_path(date:date_count[0])
+        td = date_count[1]
+        td = link_to '削除',bulk_delete_smaregi_trading_histories_path(date:date_count[0]), {method: :post, data: { confirm: '削除しますか？' }}

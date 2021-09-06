@@ -37,7 +37,7 @@ class DailyMenuLoadingPdf < Prawn::Document
     data = [['商品名','人前','バーツ名','分量','✓','器','メモ']]
     sdm.store_daily_menu_details.each do |sdmd|
       sdmd.product.product_parts.each do |pp|
-        data << [sdmd.product.name,sdmd.number,pp.name,"#{(pp.amount*sdmd.number)} #{pp.unit}","",pp.container,pp.memo]
+        data << [sdmd.product.name,sdmd.number,pp.name,"#{ActiveSupport::NumberHelper.number_to_rounded((pp.amount*sdmd.number), strip_insignificant_zeros: true)} #{pp.unit}","",pp.container,pp.memo]
       end
     end
     data

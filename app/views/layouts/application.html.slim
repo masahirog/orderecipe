@@ -34,8 +34,12 @@ html
                     |べじはん
                     span.caret
                   ul.dropdown-menu role="menu" style='width:250px;'
-                    li = link_to "献立",daily_menus_path
+                    li = link_to "キッチン献立",daily_menus_path
+                    li = link_to "店舗",stores_path
                     li = link_to "お客さまの声",customer_opinions_path
+                    li = link_to "データ分析",analyses_path
+                    li = link_to "スマレジ取引データ",smaregi_trading_histories_path
+
 
                 li.dropdown
                   a.dropdown-toggle href="#" data-toggle="dropdown" role="button"
@@ -67,38 +71,30 @@ html
                           = @stock_alert_materials
                     li = link_to "月次棚卸し在庫",stocks_path()
 
-                li.menu_li
-                  = link_to "商品一覧",products_path
-                li.menu_li
-                  = link_to "メニュー",menus_path
                 li.dropdown
                   a.dropdown-toggle href="#" data-toggle="dropdown" role="button"
-                    |食材
+                    |レシピ
                     span.caret
                   ul.dropdown-menu role="menu" style='width:250px;'
+                    li = link_to "商品一覧",products_path
+                    li = link_to "メニュー",menus_path
                     li = link_to "食材・資材",materials_path
-                    li = link_to "月間使用量",monthly_used_amount_materials_path
+                    li = link_to "食材月間使用確認",monthly_used_amount_materials_path
 
-
                 li.menu_li
-                  = link_to "仕入先",vendors_path
-                li.menu_li
-                  = link_to "ブランド",brands_path
-                li.menu_li
-                  = link_to "店舗",stores_path
+                  = link_to "Wiki",wikis_path
 
                 li.dropdown
                   a.dropdown-toggle href="#" data-toggle="dropdown" role="button"
-                    |その他
+                    |その他設定
                     span.caret
                   ul.dropdown-menu role="menu"
+                    li = link_to "仕入先",vendors_path
+                    li = link_to "ブランド",brands_path
                     li = link_to "炊飯シート",cooking_rices_path
                     li = link_to "ショーケース配置設定",place_showcases_path
                     li = link_to "盛り付け皿設定",serving_plates_path
                     li = link_to "盛り付け包材設定",containers_path
-                li.menu_li
-                  = link_to "Wiki",wikis_path
-
               #navbarEexample.collapse.navbar-collapse.navbar-right
                 ul.nav.navbar-nav
                   li.user_nav.grid-6

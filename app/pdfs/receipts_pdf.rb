@@ -67,7 +67,7 @@ class ReceiptsPdf < Prawn::Document
       image 'app/assets/images/taberu_stamp.png', at: [440, 585], width: 60 if stamp == "true"
       bounding_box([330, 595], :width => 200, :height => 70) do
         move_down 10
-        text "タベル株式会社", size: 11
+        text "日本フードデリバリー株式会社", size: 11
         text "〒150-0043", size: 11
         text "東京都渋谷区道玄坂2-10-12", size: 11
         text "新大宗ビル3号館9階", size: 11

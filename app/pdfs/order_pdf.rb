@@ -36,7 +36,7 @@ class OrderPdf < Prawn::Document
   def header_adress(vendor)
     bounding_box([330, 700], :width => 200, :height =>70) do
         font_size 10
-        text "タベル株式会社", :leading => 3
+        text "日本フードデリバリー株式会社", :leading => 3
         text "No：#{vendor.management_id}", :leading => 3 if vendor.management_id.present?
         text "〒164-0003 東京都中野区東中野1-35-1", :leading => 3
         text "TEL：03-5937-5431", :leading => 3

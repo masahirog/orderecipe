@@ -13,7 +13,7 @@ class CreateStores < ActiveRecord::Migration[5.2]
       t.text :memo
       t.boolean :jfd ,default:false,null:false
       t.integer :user_id
-
+      t.integer :smaregi_store_id
       t.timestamps
     end
   end

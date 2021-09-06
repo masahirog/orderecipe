@@ -10,7 +10,35 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_31_142613) do
+ActiveRecord::Schema.define(version: 2021_09_03_104116) do
+
+  create_table "analyses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "store_id"
+    t.date "date"
+    t.integer "sales_amount"
+    t.integer "loss_amount"
+    t.integer "labor_cost"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "analysis_products", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "analysis_id"
+    t.integer "smaregi_shohin_id"
+    t.string "smaregi_shohin_name"
+    t.integer "smaregi_shohintanka"
+    t.integer "product_id"
+    t.integer "orderecipe_sell_price"
+    t.float "cost_price"
+    t.integer "list_price"
+    t.integer "manufacturing_number"
+    t.integer "sales_number"
+    t.integer "loss_number"
+    t.integer "total_sales_amount"
+    t.integer "loss_amount"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "brands", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name", null: false
@@ -368,6 +396,52 @@ ActiveRecord::Schema.define(version: 2021_08_31_142613) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "smaregi_trading_histories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.date "date"
+    t.integer "analysis_id"
+    t.integer "torihiki_id"
+    t.datetime "torihiki_nichiji"
+    t.integer "tanka_nebikimae_shokei"
+    t.integer "tanka_nebiki_shokei"
+    t.integer "shokei"
+    t.integer "shikei_nebiki"
+    t.float "shokei_waribikiritsu"
+    t.integer "point_nebiki"
+    t.integer "gokei"
+    t.integer "suryo_gokei"
+    t.integer "henpinsuryo_gokei"
+    t.integer "huyo_point"
+    t.integer "shiyo_point"
+    t.integer "genzai_point"
+    t.integer "gokei_point"
+    t.integer "tenpo_id"
+    t.integer "kaiin_id"
+    t.string "kaiin_code"
+    t.integer "tanmatsu_torihiki_id"
+    t.integer "nenreiso"
+    t.integer "kyakuso_id"
+    t.integer "hanbaiin_id"
+    t.string "hanbaiin_mei"
+    t.integer "torihikimeisai_id"
+    t.integer "torihiki_meisaikubun"
+    t.integer "shohin_id"
+    t.integer "shohin_code"
+    t.integer "hinban"
+    t.string "shohinmei"
+    t.integer "shohintanka"
+    t.integer "hanbai_tanka"
+    t.integer "tanpin_nebiki"
+    t.integer "tanpin_waribiki"
+    t.integer "suryo"
+    t.integer "nebikimaekei"
+    t.integer "tanka_nebikikei"
+    t.integer "nebikigokei"
+    t.integer "bumon_id"
+    t.string "bumonmei"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "stocks", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "material_id", null: false
     t.date "date", null: false
@@ -432,6 +506,7 @@ ActiveRecord::Schema.define(version: 2021_08_31_142613) do
     t.text "memo"
     t.boolean "jfd", default: false, null: false
     t.integer "user_id"
+    t.integer "smaregi_store_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
