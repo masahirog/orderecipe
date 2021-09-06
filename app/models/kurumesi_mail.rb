@@ -40,7 +40,7 @@ class KurumesiMail < ApplicationRecord
       imap.fetch(ids, ["RFC822", "ENVELOPE"]).each do |mail|
         m = Mail.new(mail.attr["RFC822"])
         subject = m.subject
-        if subject.include?('日本フードデリバリー株式会社')
+        if subject.include?('タベル株式会社')
           #未確認案件のメールはスルーする
         else
           recieved_datetime = m.date
