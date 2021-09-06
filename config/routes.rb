@@ -37,7 +37,7 @@ Rails.application.routes.draw do
   resources :smaregi_trading_histories do
     collection do
       post :upload_salesdatas
-      get :date_datas
+      get :analysis_data
       post :bulk_delete
     end
   end

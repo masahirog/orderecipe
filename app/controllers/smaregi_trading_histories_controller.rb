@@ -8,9 +8,12 @@ class SmaregiTradingHistoriesController < ApplicationController
     @smaregi_trading_histories.destroy_all
     redirect_to analysis, :alert => "#{count}件を削除しました。"
   end
-  def date_datas
-    date = params[:date]
-    @smaregi_trading_histories = SmaregiTradingHistory.all
+  def analysis_data
+    analysis_id = params[:analysis_id]
+    shohin_id = params[:shohin_id]
+    hinban = params[:hinban]
+    shohinmei = params[:shohinmei]
+    @smaregi_trading_histories = SmaregiTradingHistory.where(analysis_id:analysis_id)
   end
 
   def upload_salesdatas
@@ -26,7 +29,16 @@ class SmaregiTradingHistoriesController < ApplicationController
 
   end
   def index
+    @analysis_id = params[:analysis_id]
+    @analysis = Analysis.find(@analysis_id) if @analysis_id
+    @shohin_id = params[:shohin_id]
+    @hinban = params[:hinban]
+    @shohinmei = params[:shohinmei]
     @smaregi_trading_histories = SmaregiTradingHistory.all
+    @smaregi_trading_histories = @smaregi_trading_histories.where(analysis_id:@analysis_id) if @analysis_id.present?
+    @smaregi_trading_histories = @smaregi_trading_histories.where(shohin_id:@shohin_id) if @shohin_id.present?
+    @smaregi_trading_histories = @smaregi_trading_histories.where(hinban:@hinban) if @hinban.present?
+    @smaregi_trading_histories = @smaregi_trading_histories.where(hinban:@shohinmei) if @shohinmei.present?
     @date_counts = @smaregi_trading_histories.group(:date).count()
   end
 

@@ -1,7 +1,4 @@
-= form_tag smaregi_trading_histories_path, :method => 'get' do
-  - if @analysis.present?
-    .col-md-2
-      = "#{@analysis.date}｜#{@analysis.store.name}店"
+= form_tag analysis_datas_smaregi_trading_histories_path, :method => 'get' do
   .col-md-2
     = text_field_tag :shohin_id, params[:shohin_id], class:"form-control",placeholder:'商品ID'
   .col-md-2

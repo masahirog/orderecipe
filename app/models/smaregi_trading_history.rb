@@ -64,7 +64,7 @@ class SmaregiTradingHistory < ApplicationRecord
         if smaregi_shohin_ids.include?(shohin_id)
         else
           new_analysis_product = AnalysisProduct.new(analysis_id:analysis_id,smaregi_shohin_id:shohin_id,smaregi_shohin_name:shohinmei,smaregi_shohintanka:shohintanka,
-          product_id:hinban)
+          product_id:hinban,total_sales_amount:0,salse_number:0)
           analysis_products_arr << new_analysis_product
           smaregi_shohin_ids << shohin_id
         end

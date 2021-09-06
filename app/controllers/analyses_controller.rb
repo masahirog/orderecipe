@@ -62,7 +62,7 @@ class AnalysesController < ApplicationController
       elsif analysis_products.length == 1
         analysis_product = analysis_products[0]
         analysis_product.list_price = sdmd.product.sell_price
-        analysis_product.manufacturing_number = sdmd.number
+        analysis_product.manufacturing_number = sdmd.actual_inventory
         update_store_daily_menu_details_arr << analysis_product
       else
         new_store_daily_menu_detail = AnalysisProduct.new(analysis_id:analysis_id,product_id:sdmd.product_id,list_price:sdmd.product.sell_price,manufacturing_number:sdmd.number)
@@ -102,7 +102,7 @@ class AnalysesController < ApplicationController
     date = @analysis.date
     store_id = @analysis.store_id
     store_daily_menu = StoreDailyMenu.find_by(start_time:date,store_id:store_id)
-    @store_daily_menu_details = store_daily_menu.store_daily_menu_details
+    @store_daily_menu_details = store_daily_menu.store_daily_menu_details.order(:row_order)
     sdmd_arr = store_daily_menu.store_daily_menu_details.includes([:product]).map{|sdmd|sdmd.product_id}
     @analysis.analysis_products.includes([:product]).each do |ap|
       if sdmd_arr.include?(ap.product_id)

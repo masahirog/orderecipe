@@ -1,5 +1,4 @@
 p#notice = notice
-= link_to '売上履歴削除',bulk_delete_smaregi_trading_histories_path(analysis_id:@analysis.id), {method: :post, data: { confirm: '削除しますか？' },class:'btn btn-danger btn-sm pull-right'}
 
 table.table
   thead
@@ -7,8 +6,8 @@ table.table
       th 日付
       th 店舗名
       th 合計売上
-      th ロス
-      th ロス率
+      th 廃棄
+      th 廃棄率
       th 人件費
       th 営業利益
 
@@ -21,17 +20,23 @@ table.table
       td = "#{((@analysis.loss_amount.to_f/@analysis.sales_amount)*100).round(1)}%" if @analysis.sales_amount && @analysis.loss_amount
       td
       td
-= link_to '更新する', products_analyses_path(analysis: {analysis_id:@analysis.id}), method: :post,class:'btn btn-sm btn-default'
-= link_to '削除',bulk_delete_analysis_products_analyses_path(analysis_id:@analysis.id), {method: :post, data: { confirm: '削除しますか？' },class:'btn btn-sm btn-default'}
-= link_to '販売データ反映', smaregi_trading_history_totalling_analyses_path(analysis: {analysis_id:@analysis.id}), method: :post,class:'btn btn-sm btn-default'
+
+= link_to '③売上履歴から計算', smaregi_trading_history_totalling_analyses_path(analysis: {analysis_id:@analysis.id}), method: :post,class:'btn btn-sm btn-primary'
+= link_to 'Delete',bulk_delete_analysis_products_analyses_path(analysis_id:@analysis.id), {method: :post, data: { confirm: '削除しますか？' },class:'btn btn-sm btn-danger pull-right'}
 table.table
   thead
-    tr style="background-color:steelblue;color:white;"
-      th Orderecipe 献立
+    tr style="background-color:gainsboro;"
+      th
+        |Orderecipe 献立
+        = link_to products_analyses_path(analysis: {analysis_id:@analysis.id}), method: :post,style:'margin-left:20px;color:darkgreen;border:1px solid;padding:3px;border-radius:4px;' do
+          span ②
+          i class="fas fa-sync-alt"
       th OR単価
       th スマレジ商品
       th スマレジ単価
       th 在庫
+      th 繰越
+      th 実在庫
       th 販売数
       th 販売金額
       th 廃棄数
@@ -44,22 +49,21 @@ table.table
         td = link_to sdmd.product.name,sdmd.product
         td = sdmd.product.sell_price
         td = ap.smaregi_shohin_name if ap.present?
-          / - if ap.product_id.present?
-          /   = link_to ap.smaregi_shohin_name,ap.product,target:'_blank'
-          / - else
-          /   = ap.smaregi_shohin_name
         td = ap.smaregi_shohintanka if ap.present?
         td = ap.manufacturing_number if ap.present?
+        td = sdmd.carry_over
+        td = sdmd.actual_inventory
         td = ap.sales_number if ap.present?
-        td = ap.total_sales_amount if ap.present?
+        td = ap.total_sales_amount.to_s(:delimited) if ap.present?
         td = ap.loss_number if ap.present?
-        td = ap.loss_amount if ap.present?
+        td = ap.loss_amount.to_s(:delimited) if ap.present?
     tr style="background-color:steelblue;color:white;"
       th Orderecipe 献立外 メニュー
       th OR単価
       th スマレジ商品
       th スマレジ単価
       th 在庫
+      th 繰越在庫
       th 販売数
       th 販売金額
       th 廃棄数
@@ -74,42 +78,55 @@ table.table
         td = ap.smaregi_shohintanka
         td = ap.manufacturing_number
         td = ap.sales_number
+        td
         td = ap.total_sales_amount
         td = ap.loss_number
         td = ap.loss_amount
+
+= link_to "売上履歴データ一覧",smaregi_trading_histories_path(analysis_id:@analysis.id),style:'margin-right:20px;'
+button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#sampleModal" ①データアップロード
+#sampleModal.modal.fade tabindex="-1"
+  = form_tag upload_salesdatas_smaregi_trading_histories_path, multipart: true do
+    .modal-dialog
+      .modal-content
+        .modal-header
+          h4.modal-title 新規作成
+        .modal-body
+          = hidden_field_tag :smaregi_store_id,@analysis.store.smaregi_store_id
+          = hidden_field_tag :analysis_id,@analysis.id
+          = hidden_field_tag :date,@analysis.date
+          = file_field_tag :file,class:'form-control',style:'padding:10px;height:100%;'
+        .modal-footer
+          button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
+          = submit_tag "アップロード",class:'btn btn-primary'
+= link_to 'Delete',bulk_delete_smaregi_trading_histories_path(analysis_id:@analysis.id), {method: :post, data: { confirm: '削除しますか？' },class:'pull-right btn btn-sm btn-danger'}
 table.table
   thead
     tr
-      th
-        = link_to "売上履歴データ一覧",date_datas_smaregi_trading_histories_path(date:@analysis.date)
-        button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#sampleModal" データアップロード
-        #sampleModal.modal.fade tabindex="-1"
-          = form_tag upload_salesdatas_smaregi_trading_histories_path, multipart: true do
-            .modal-dialog
-              .modal-content
-                .modal-header
-                  h4.modal-title 新規作成
-                .modal-body
-                  = hidden_field_tag :smaregi_store_id,@analysis.store.smaregi_store_id
-                  = hidden_field_tag :analysis_id,@analysis.id
-                  = hidden_field_tag :date,@analysis.date
-                  = file_field_tag :file,class:'form-control',style:'padding:10px;height:100%;'
-                .modal-footer
-                  button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
-                  = submit_tag "アップロード",class:'btn btn-primary'
-
-      th 合計売上
-      th 人件費
-      th ロス
-      th = link_to '削除',bulk_delete_smaregi_trading_histories_path(analysis_id:@analysis.id), {method: :post, data: { confirm: '削除しますか？' }}
+      th 取引ID
+      th 取引日時
+      th 販売者
+      th 商品ID
+      th OR_ID
+      th 商品名
+      th 商品単価
+      th 数量
+      th 単価値引き計
+      th 値引き後計
 
   tbody
-    - @smaregi_trading_histories.each do |sth|
+    - @smaregi_trading_histories.each do |smaregi_trading_history|
       tr
-        td = sth.torihiki_nichiji
-        td = sth.nebikigokei
-        td
-        td
+        td = smaregi_trading_history.torihiki_id
+        td = smaregi_trading_history.torihiki_nichiji.strftime("%Y/%m/%d %H:%M")
+        td = smaregi_trading_history.hanbaiin_mei
+        td = smaregi_trading_history.shohin_id
+        td = smaregi_trading_history.hinban
+        td = smaregi_trading_history.shohinmei
+        td = smaregi_trading_history.shohintanka
+        td = smaregi_trading_history.suryo
+        td = smaregi_trading_history.tanka_nebikikei
+        td = smaregi_trading_history.nebikigokei
 
 = paginate @smaregi_trading_histories
 
