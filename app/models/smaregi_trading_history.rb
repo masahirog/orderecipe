@@ -4,9 +4,14 @@ class SmaregiTradingHistory < ApplicationRecord
 
 
   def self.upload_data(form_date,smaregi_store_id,analysis_id,file)
+    total_sales = 0
     smaregi_trading_histories_arr = []
     analysis_products_arr = []
-    smaregi_shohin_ids = []
+    update_analysis_products_arr = []
+    product_sales_number = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    product_sales_amount = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    analysis = Analysis.find(analysis_id)
+    smaregi_shohin_ids = analysis.analysis_products.map{|ap|ap.smaregi_shohin_id.to_s}
     CSV.foreach file.path, {encoding: 'BOM|UTF-8', headers: true} do |row|
       row = row.to_hash
       torihiki_id = row["取引ID"]
@@ -50,6 +55,18 @@ class SmaregiTradingHistory < ApplicationRecord
       bumon_id = row["部門ID"]
       bumonmei = row["部門名"]
       if date == form_date.to_date && smaregi_store_id == tenpo_id
+        total_sales += nebikigokei.to_i
+        if product_sales_number[shohin_id].present?
+          product_sales_number[shohin_id] += suryo.to_i
+        else
+          product_sales_number[shohin_id] = suryo.to_i
+        end
+
+        if product_sales_amount[shohin_id].present?
+          product_sales_amount[shohin_id] += nebikigokei.to_i
+        else
+          product_sales_amount[shohin_id] = nebikigokei.to_i
+        end
         new_smaregi_trading_history = SmaregiTradingHistory.new(date:date,analysis_id:analysis_id,torihiki_id:torihiki_id,torihiki_nichiji:torihiki_nichiji,tanka_nebikimae_shokei:tanka_nebikimae_shokei,
           tanka_nebiki_shokei:tanka_nebiki_shokei,shokei:shokei,shikei_nebiki:shikei_nebiki,shokei_waribikiritsu:shokei_waribikiritsu,
           point_nebiki:point_nebiki,gokei:gokei,suryo_gokei:suryo_gokei,henpinsuryo_gokei:henpinsuryo_gokei,huyo_point:huyo_point,
@@ -59,21 +76,22 @@ class SmaregiTradingHistory < ApplicationRecord
           hinban:hinban,shohinmei:shohinmei,shohintanka:shohintanka,hanbai_tanka:hanbai_tanka,tanpin_nebiki:tanpin_nebiki,tanpin_waribiki:tanpin_waribiki,
           suryo:suryo,nebikimaekei:nebikimaekei,tanka_nebikikei:tanka_nebikikei,nebikigokei:nebikigokei,bumon_id:bumon_id,bumonmei:bumonmei)
         smaregi_trading_histories_arr << new_smaregi_trading_history
-
-
         if smaregi_shohin_ids.include?(shohin_id)
         else
           new_analysis_product = AnalysisProduct.new(analysis_id:analysis_id,smaregi_shohin_id:shohin_id,smaregi_shohin_name:shohinmei,smaregi_shohintanka:shohintanka,
-          product_id:hinban,total_sales_amount:0,salse_number:0)
+          product_id:hinban,total_sales_amount:0,sales_number:0,loss_amount:0,)
           analysis_products_arr << new_analysis_product
           smaregi_shohin_ids << shohin_id
         end
       end
     end
+    analysis_products_arr.each do |analysis_product|
+      analysis_product.sales_number = product_sales_number[analysis_product.smaregi_shohin_id.to_s]
+      analysis_product.total_sales_amount = product_sales_amount[analysis_product.smaregi_shohin_id.to_s]
+    end
     SmaregiTradingHistory.import smaregi_trading_histories_arr
     AnalysisProduct.import analysis_products_arr
-    total_sales = SmaregiTradingHistory.where(analysis_id:analysis_id).sum(:nebikigokei)
-    Analysis.find(analysis_id).update(sales_amount:total_sales.to_i)
+    analysis.update(sales_amount:total_sales.to_i)
     return (smaregi_trading_histories_arr.count)
   end
 end

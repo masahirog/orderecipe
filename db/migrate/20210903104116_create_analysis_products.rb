@@ -10,6 +10,8 @@ class CreateAnalysisProducts < ActiveRecord::Migration[5.2]
       t.float :cost_price
       t.integer :list_price
       t.integer :manufacturing_number
+      t.integer :carry_over
+      t.integer :actual_inventory
       t.integer :sales_number
       t.integer :loss_number
       t.integer :total_sales_amount

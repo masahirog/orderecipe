@@ -45,32 +45,60 @@ class AnalysesController < ApplicationController
   end
   def products
     #データ検証の商品情報を更新する
+    total_loass_amount = 0
     analysis_id = params[:analysis]["analysis_id"]
     @analysis = Analysis.find(analysis_id)
     # smaregi_trading_histories = SmaregiTradingHistory.where(analysis_id:analysis_id)
     @store_daily_menu = StoreDailyMenu.find_by(start_time:@analysis.date,store_id:@analysis.store_id)
-    store_daily_menu_details_arr = []
-    update_store_daily_menu_details_arr = []
+    analysis_product_shohin_ids = []
+    update_analysis_products_arr = []
+    new_analysis_products_arr = []
     @store_daily_menu.store_daily_menu_details.each do |sdmd|
       analysis_products = @analysis.analysis_products.where(product_id:sdmd.product_id)
       if analysis_products.length > 1
         analysis_products.each do |analysis_product|
           analysis_product.list_price = 0
           analysis_product.manufacturing_number = 0
-          update_store_daily_menu_details_arr << analysis_product
+          analysis_product.carry_over = 0
+          analysis_product.actual_inventory = 0
+          update_analysis_products_arr << analysis_product
+          analysis_product_shohin_ids << analysis_product.shohin_id
         end
       elsif analysis_products.length == 1
         analysis_product = analysis_products[0]
         analysis_product.list_price = sdmd.product.sell_price
-        analysis_product.manufacturing_number = sdmd.actual_inventory
-        update_store_daily_menu_details_arr << analysis_product
+        analysis_product.manufacturing_number = sdmd.number
+        analysis_product.carry_over = sdmd.carry_over
+        analysis_product.actual_inventory = sdmd.actual_inventory
+
+        if analysis_product.sales_number.present?
+          analysis_product.loss_number = analysis_product.actual_inventory - analysis_product.sales_number
+          loss_amount = analysis_product.list_price * analysis_product.loss_number
+          if loss_amount < 0 || analysis_product.product_id == 10459
+            analysis_product.loss_amount = 0
+          else
+            analysis_product.loss_amount = loss_amount
+            total_loass_amount += loss_amount
+          end
+        else
+          analysis_product.loss_number = 0
+          analysis_product.loss_amount = 0
+          total_loass_amount += 0
+        end
+
+        update_analysis_products_arr << analysis_product
+        analysis_product_shohin_ids << analysis_product.smaregi_shohin_id
       else
-        new_store_daily_menu_detail = AnalysisProduct.new(analysis_id:analysis_id,product_id:sdmd.product_id,list_price:sdmd.product.sell_price,manufacturing_number:sdmd.number)
-        store_daily_menu_details_arr << new_store_daily_menu_detail
+        new_analysis_product = AnalysisProduct.new(analysis_id:analysis_id,product_id:sdmd.product_id,list_price:sdmd.product.sell_price,
+          manufacturing_number:sdmd.number, carry_over:sdmd.carry_over,actual_inventory:sdmd.actual_inventory,loss_amount:0,loss_number:0)
+        new_analysis_products_arr << new_analysis_product
       end
     end
-    AnalysisProduct.import store_daily_menu_details_arr
-    AnalysisProduct.import update_store_daily_menu_details_arr, on_duplicate_key_update:[:list_price,:manufacturing_number] if update_store_daily_menu_details_arr
+
+    AnalysisProduct.import new_analysis_products_arr
+    AnalysisProduct.import update_analysis_products_arr, on_duplicate_key_update:[:list_price,:manufacturing_number,:carry_over,:actual_inventory,
+      :sales_number,:loss_number,:total_sales_amount,:loss_amount] if update_analysis_products_arr.present?
+    @analysis.update(loss_amount:total_loass_amount)
     redirect_to @analysis
   end
   def date
@@ -101,10 +129,10 @@ class AnalysesController < ApplicationController
     @smaregi_trading_histories = @analysis.smaregi_trading_histories.page(params[:page]).per(50)
     date = @analysis.date
     store_id = @analysis.store_id
-    store_daily_menu = StoreDailyMenu.find_by(start_time:date,store_id:store_id)
-    @store_daily_menu_details = store_daily_menu.store_daily_menu_details.order(:row_order)
-    sdmd_arr = store_daily_menu.store_daily_menu_details.includes([:product]).map{|sdmd|sdmd.product_id}
-    @analysis.analysis_products.includes([:product]).each do |ap|
+    @store_daily_menu = StoreDailyMenu.find_by(start_time:date,store_id:store_id)
+    @store_daily_menu_details = @store_daily_menu.store_daily_menu_details.includes([:product]).order(:row_order)
+    sdmd_arr = @store_daily_menu_details.map{|sdmd|sdmd.product_id}
+    @analysis.analysis_products.each do |ap|
       if sdmd_arr.include?(ap.product_id)
         if @or_ari_analysis_products[ap.product_id].present?
           @or_nashi_analysis_products << ap

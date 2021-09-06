@@ -21,16 +21,17 @@ table.table
       td
       td
 
-= link_to '③売上履歴から計算', smaregi_trading_history_totalling_analyses_path(analysis: {analysis_id:@analysis.id}), method: :post,class:'btn btn-sm btn-primary'
-= link_to 'Delete',bulk_delete_analysis_products_analyses_path(analysis_id:@analysis.id), {method: :post, data: { confirm: '削除しますか？' },class:'btn btn-sm btn-danger pull-right'}
+/ = link_to '③売上履歴から計算', smaregi_trading_history_totalling_analyses_path(analysis: {analysis_id:@analysis.id}), method: :post,class:'btn btn-sm btn-primary'
+= link_to 'OR＜＞スマレジ計算', products_analyses_path(analysis: {analysis_id:@analysis.id}), method: :post,class:'btn btn-sm btn-primary'
+- if @smaregi_trading_histories.present?
+  span.pull-right ▼データを作り直す場合は、下の販売データを先に削除してください
+- else
+  = link_to 'Delete',bulk_delete_analysis_products_analyses_path(analysis_id:@analysis.id), {method: :post, data: { confirm: '削除しますか？' },class:'btn btn-sm btn-danger pull-right'}
+
 table.table
   thead
     tr style="background-color:gainsboro;"
-      th
-        |Orderecipe 献立
-        = link_to products_analyses_path(analysis: {analysis_id:@analysis.id}), method: :post,style:'margin-left:20px;color:darkgreen;border:1px solid;padding:3px;border-radius:4px;' do
-          span ②
-          i class="fas fa-sync-alt"
+      th = link_to "Orderecipe 献立",@store_daily_menu
       th OR単価
       th スマレジ商品
       th スマレジ単価
@@ -51,19 +52,20 @@ table.table
         td = ap.smaregi_shohin_name if ap.present?
         td = ap.smaregi_shohintanka if ap.present?
         td = ap.manufacturing_number if ap.present?
-        td = sdmd.carry_over
-        td = sdmd.actual_inventory
+        td = ap.carry_over if ap.present?
+        td = ap.actual_inventory if ap.present?
         td = ap.sales_number if ap.present?
-        td = ap.total_sales_amount.to_s(:delimited) if ap.present?
+        td = ap.total_sales_amount.to_s(:delimited) if ap.present? && ap.total_sales_amount.present?
         td = ap.loss_number if ap.present?
-        td = ap.loss_amount.to_s(:delimited) if ap.present?
+        td = ap.loss_amount.to_s(:delimited) if ap.present? && ap.loss_amount.present?
     tr style="background-color:steelblue;color:white;"
       th Orderecipe 献立外 メニュー
       th OR単価
       th スマレジ商品
       th スマレジ単価
       th 在庫
-      th 繰越在庫
+      th 繰越
+      th 実在庫
       th 販売数
       th 販売金額
       th 廃棄数
@@ -73,32 +75,35 @@ table.table
       tr style="background-color:whitesmoke;"
         td = link_to ap.product.name,ap.product,target:'_blank' if ap.product_id
         td = ap.product.sell_price if ap.product_id
-        td
-          = ap.smaregi_shohin_name
+        td = ap.smaregi_shohin_name
         td = ap.smaregi_shohintanka
         td = ap.manufacturing_number
-        td = ap.sales_number
         td
+        td
+        td = ap.sales_number
         td = ap.total_sales_amount
         td = ap.loss_number
         td = ap.loss_amount
 
-= link_to "売上履歴データ一覧",smaregi_trading_histories_path(analysis_id:@analysis.id),style:'margin-right:20px;'
-button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#sampleModal" ①データアップロード
-#sampleModal.modal.fade tabindex="-1"
-  = form_tag upload_salesdatas_smaregi_trading_histories_path, multipart: true do
-    .modal-dialog
-      .modal-content
-        .modal-header
-          h4.modal-title 新規作成
-        .modal-body
-          = hidden_field_tag :smaregi_store_id,@analysis.store.smaregi_store_id
-          = hidden_field_tag :analysis_id,@analysis.id
-          = hidden_field_tag :date,@analysis.date
-          = file_field_tag :file,class:'form-control',style:'padding:10px;height:100%;'
-        .modal-footer
-          button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
-          = submit_tag "アップロード",class:'btn btn-primary'
+= link_to "売上履歴データ一覧",smaregi_trading_histories_path(analysis_id:@analysis.id),style:'margin-right:20px;',class:"btn btn-sm btn-primary"
+- if @smaregi_trading_histories.present?
+  span ※販売履歴のデータを再アップロードする場合は一度全件削除してください。
+- else
+  button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#sampleModal" ①データアップロード
+  #sampleModal.modal.fade tabindex="-1"
+    = form_tag upload_salesdatas_smaregi_trading_histories_path, multipart: true do
+      .modal-dialog
+        .modal-content
+          .modal-header
+            h4.modal-title 新規作成
+          .modal-body
+            = hidden_field_tag :smaregi_store_id,@analysis.store.smaregi_store_id
+            = hidden_field_tag :analysis_id,@analysis.id
+            = hidden_field_tag :date,@analysis.date
+            = file_field_tag :file,class:'form-control',style:'padding:10px;height:100%;'
+          .modal-footer
+            button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
+            = submit_tag "アップロード",class:'btn btn-primary'
 = link_to 'Delete',bulk_delete_smaregi_trading_histories_path(analysis_id:@analysis.id), {method: :post, data: { confirm: '削除しますか？' },class:'pull-right btn btn-sm btn-danger'}
 table.table
   thead
