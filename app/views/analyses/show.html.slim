@@ -23,10 +23,11 @@ table.table
 
 / = link_to '③売上履歴から計算', smaregi_trading_history_totalling_analyses_path(analysis: {analysis_id:@analysis.id}), method: :post,class:'btn btn-sm btn-primary'
 = link_to 'OR＜＞スマレジ計算', products_analyses_path(analysis: {analysis_id:@analysis.id}), method: :post,class:'btn btn-sm btn-primary'
-- if @smaregi_trading_histories.present?
-  span.pull-right ▼データを作り直す場合は、下の販売データを先に削除してください
-- else
-  = link_to 'Delete',bulk_delete_analysis_products_analyses_path(analysis_id:@analysis.id), {method: :post, data: { confirm: '削除しますか？' },class:'btn btn-sm btn-danger pull-right'}
+- if @analysis.analysis_products.present?
+  - if @smaregi_trading_histories.present?
+    span.pull-right ▼データを作り直す場合は、下の販売データを先に削除してください
+  - else
+    = link_to 'Delete',bulk_delete_analysis_products_analyses_path(analysis_id:@analysis.id), {method: :post, data: { confirm: '削除しますか？' },class:'btn btn-sm btn-danger pull-right'}
 
 table.table
   thead
@@ -58,7 +59,7 @@ table.table
         td = ap.total_sales_amount.to_s(:delimited) if ap.present? && ap.total_sales_amount.present?
         td = ap.loss_number if ap.present?
         td = ap.loss_amount.to_s(:delimited) if ap.present? && ap.loss_amount.present?
-    tr style="background-color:steelblue;color:white;"
+    tr style="background-color:gainsboro;"
       th Orderecipe 献立外 メニュー
       th OR単価
       th スマレジ商品
@@ -85,11 +86,12 @@ table.table
         td = ap.loss_number
         td = ap.loss_amount
 
-= link_to "売上履歴データ一覧",smaregi_trading_histories_path(analysis_id:@analysis.id),style:'margin-right:20px;',class:"btn btn-sm btn-primary"
 - if @smaregi_trading_histories.present?
+  = link_to "売上履歴データ一覧",smaregi_trading_histories_path(analysis_id:@analysis.id),style:'margin-right:20px;',class:"btn btn-sm btn-primary"
   span ※販売履歴のデータを再アップロードする場合は一度全件削除してください。
+  = link_to 'Delete',bulk_delete_smaregi_trading_histories_path(analysis_id:@analysis.id), {method: :post, data: { confirm: '削除しますか？' },class:'pull-right btn btn-sm btn-danger'}
 - else
-  button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#sampleModal" ①データアップロード
+  button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#sampleModal" スマレジ販売履歴アップロード
   #sampleModal.modal.fade tabindex="-1"
     = form_tag upload_salesdatas_smaregi_trading_histories_path, multipart: true do
       .modal-dialog
@@ -104,7 +106,22 @@ table.table
           .modal-footer
             button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
             = submit_tag "アップロード",class:'btn btn-primary'
-= link_to 'Delete',bulk_delete_smaregi_trading_histories_path(analysis_id:@analysis.id), {method: :post, data: { confirm: '削除しますか？' },class:'pull-right btn btn-sm btn-danger'}
+= form_tag analysis_path, :method => 'get' do
+  - if @analysis.present?
+    .col-md-2
+      = "#{@analysis.date}｜#{@analysis.store.name}店"
+  .col-md-2
+    = hidden_field_tag :id,params[:id]
+    = select_tag :shohin_id, options_for_select(@shohin_ids,params[:shohin_id]),include_blank: true, class: "form-control",placeholder:'商品ID'
+  .col-md-2
+    = select_tag :hinban, options_for_select(@product_ids,params[:hinban]),include_blank: true, class: "form-control",placeholder:'ORID'
+  .col-md-2
+    = select_tag :shohinmei, options_for_select(@shohinmeis,params[:shohinmei]),include_blank: true, class: "form-control",placeholder:'ORID'
+  .col-md-1
+    label 　
+    = submit_tag "絞り込む" ,class:"btn btn-primary"
+
+
 table.table
   thead
     tr
@@ -121,12 +138,14 @@ table.table
 
   tbody
     - @smaregi_trading_histories.each do |smaregi_trading_history|
-      tr
+      tr class="sth_#{smaregi_trading_history.id}"
         td = smaregi_trading_history.torihiki_id
         td = smaregi_trading_history.torihiki_nichiji.strftime("%Y/%m/%d %H:%M")
         td = smaregi_trading_history.hanbaiin_mei
         td = smaregi_trading_history.shohin_id
-        td = smaregi_trading_history.hinban
+        td style='padding-top:2px;padding-bottom:2px;'
+          = form_with(model: smaregi_trading_history, data: {remote: true}) do |f|
+            = f.number_field :hinban,style:'width:80px;',value:smaregi_trading_history.hinban,class:'form-control'
         td = smaregi_trading_history.shohinmei
         td = smaregi_trading_history.shohintanka
         td = smaregi_trading_history.suryo
@@ -134,8 +153,3 @@ table.table
         td = smaregi_trading_history.nebikigokei
 
 = paginate @smaregi_trading_histories
-
-.col-md-12
-  => link_to 'Edit', edit_analysis_path(@analysis)
-  '|
-  =< link_to 'Back', analyses_path

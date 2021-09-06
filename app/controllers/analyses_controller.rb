@@ -126,7 +126,23 @@ class AnalysesController < ApplicationController
   def show
     @or_ari_analysis_products = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @or_nashi_analysis_products = []
-    @smaregi_trading_histories = @analysis.smaregi_trading_histories.page(params[:page]).per(50)
+
+
+    @shohin_id = params[:shohin_id]
+    @hinban = params[:hinban]
+    @shohinmei = params[:shohinmei]
+    @smaregi_trading_histories = SmaregiTradingHistory.all
+    @smaregi_trading_histories = @smaregi_trading_histories.where(analysis_id:@analysis_id) if @analysis_id.present?
+    @shohin_ids = @smaregi_trading_histories.map{|sth|sth.shohin_id}.uniq
+    @product_ids = @smaregi_trading_histories.map{|sth|sth.hinban}.uniq
+    @shohinmeis = @smaregi_trading_histories.map{|sth|sth.shohinmei}.uniq
+    @smaregi_trading_histories = @smaregi_trading_histories.where(shohin_id:@shohin_id) if @shohin_id.present?
+    @smaregi_trading_histories = @smaregi_trading_histories.where(hinban:@hinban) if @hinban.present?
+    @smaregi_trading_histories = @smaregi_trading_histories.where(shohinmei:@shohinmei) if @shohinmei.present?
+    # @date_counts = @smaregi_trading_histories.group(:date).count()
+
+    @smaregi_trading_histories = @smaregi_trading_histories.page(params[:page]).per(50)
+
     date = @analysis.date
     store_id = @analysis.store_id
     @store_daily_menu = StoreDailyMenu.find_by(start_time:date,store_id:store_id)

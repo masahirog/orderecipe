@@ -36,9 +36,12 @@ class SmaregiTradingHistoriesController < ApplicationController
     @shohinmei = params[:shohinmei]
     @smaregi_trading_histories = SmaregiTradingHistory.all
     @smaregi_trading_histories = @smaregi_trading_histories.where(analysis_id:@analysis_id) if @analysis_id.present?
+    @shohin_ids = @smaregi_trading_histories.map{|sth|sth.shohin_id}.uniq
+    @product_ids = @smaregi_trading_histories.map{|sth|sth.hinban}.uniq
+    @shohinmeis = @smaregi_trading_histories.map{|sth|sth.shohinmei}.uniq
     @smaregi_trading_histories = @smaregi_trading_histories.where(shohin_id:@shohin_id) if @shohin_id.present?
     @smaregi_trading_histories = @smaregi_trading_histories.where(hinban:@hinban) if @hinban.present?
-    @smaregi_trading_histories = @smaregi_trading_histories.where(hinban:@shohinmei) if @shohinmei.present?
+    @smaregi_trading_histories = @smaregi_trading_histories.where(shohinmei:@shohinmei) if @shohinmei.present?
     @date_counts = @smaregi_trading_histories.group(:date).count()
   end
 
@@ -67,11 +70,14 @@ class SmaregiTradingHistoriesController < ApplicationController
   end
 
   def update
+    @class_name = ".sth_" + @smaregi_trading_history.id.to_s
     respond_to do |format|
       if @smaregi_trading_history.update(smaregi_trading_history_params)
+        format.js
         format.html { redirect_to @smaregi_trading_history, notice: "SmaregiTradingHistory was successfully updated." }
         format.json { render :show, status: :ok, location: @smaregi_trading_history }
       else
+        format.js
         format.html { render :edit, status: :unprocessable_entity }
         format.json { render json: @smaregi_trading_history.errors, status: :unprocessable_entity }
       end

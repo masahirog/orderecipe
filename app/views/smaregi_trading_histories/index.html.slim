@@ -3,11 +3,12 @@
     .col-md-2
       = "#{@analysis.date}｜#{@analysis.store.name}店"
   .col-md-2
-    = text_field_tag :shohin_id, params[:shohin_id], class:"form-control",placeholder:'商品ID'
+    = hidden_field_tag :analysis_id,params[:analysis_id]
+    = select_tag :shohin_id, options_for_select(@shohin_ids,params[:shohin_id]),include_blank: true, class: "form-control",placeholder:'商品ID'
   .col-md-2
-    = text_field_tag :hinban, params[:hinban], class:"form-control",placeholder:'OR_ID'
+    = select_tag :hinban, options_for_select(@product_ids,params[:hinban]),include_blank: true, class: "form-control",placeholder:'ORID'
   .col-md-2
-    = text_field_tag :shohinmei, params[:shohinmei], class:"form-control",placeholder:'商品名'
+    = select_tag :shohinmei, options_for_select(@shohinmeis,params[:shohinmei]),include_blank: true, class: "form-control",placeholder:'ORID'
   .col-md-1
     label 　
     = submit_tag "絞り込む" ,class:"btn btn-primary"
@@ -29,11 +30,14 @@ table.table
 
   tbody
     - @smaregi_trading_histories.each do |smaregi_trading_history|
-      tr
+      tr class="sth_#{smaregi_trading_history.id}"
         td = smaregi_trading_history.torihiki_id
         td = smaregi_trading_history.torihiki_nichiji.strftime("%Y/%m/%d %H:%M")
         td = smaregi_trading_history.hanbaiin_mei
-        td = smaregi_trading_history.shohin_id
+        td
+          = form_with(model: smaregi_trading_history, data: {remote: true}) do |f|
+            = f.number_field :shohin_id,class:'input_inventory_stock form-control',style:'width:80px;float:left;margin-right:10px;',value:smaregi_trading_history.shohin_id
+
         td = smaregi_trading_history.hinban
         td = smaregi_trading_history.shohinmei
         td = smaregi_trading_history.shohintanka
