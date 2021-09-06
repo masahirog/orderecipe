@@ -132,7 +132,7 @@ class AnalysesController < ApplicationController
     @hinban = params[:hinban]
     @shohinmei = params[:shohinmei]
     @smaregi_trading_histories = SmaregiTradingHistory.all
-    @smaregi_trading_histories = @smaregi_trading_histories.where(analysis_id:@analysis_id) if @analysis_id.present?
+    @smaregi_trading_histories = @smaregi_trading_histories.where(analysis_id:@analysis.id)
     @shohin_ids = @smaregi_trading_histories.map{|sth|sth.shohin_id}.uniq
     @product_ids = @smaregi_trading_histories.map{|sth|sth.hinban}.uniq
     @shohinmeis = @smaregi_trading_histories.map{|sth|sth.shohinmei}.uniq
