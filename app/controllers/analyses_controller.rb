@@ -121,12 +121,12 @@ class AnalysesController < ApplicationController
   end
   def index
     if params[:from]
-      @from = params[:from]
+      @from = params[:from].to_date
     else
       @from = Date.today.beginning_of_month
     end
     if params[:to]
-      @to = params[:to]
+      @to = params[:to].to_date
     else
       @to = @from.end_of_month
     end
