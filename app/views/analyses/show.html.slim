@@ -21,13 +21,8 @@ table.table
       td
       td
 
-/ = link_to '③売上履歴から計算', smaregi_trading_history_totalling_analyses_path(analysis: {analysis_id:@analysis.id}), method: :post,class:'btn btn-sm btn-primary'
 = link_to 'OR＜＞スマレジ計算', products_analyses_path(analysis: {analysis_id:@analysis.id}), method: :post,class:'btn btn-sm btn-primary'
-- if @analysis.analysis_products.present?
-  - if @smaregi_trading_histories.present?
-    span.pull-right ▼データを作り直す場合は、下の販売データを先に削除してください
-  - else
-    = link_to 'Delete',bulk_delete_analysis_products_analyses_path(analysis_id:@analysis.id), {method: :post, data: { confirm: '削除しますか？' },class:'btn btn-sm btn-danger pull-right'}
+= link_to 'Orderecipeデータリセット',bulk_delete_analysis_products_analyses_path(analysis_id:@analysis.id), {method: :post, data: { confirm: '削除しますか？' },class:'btn btn-sm btn-danger pull-right'}
 
 table.table
   thead
@@ -86,40 +81,38 @@ table.table
         td = ap.loss_number
         td = ap.loss_amount
 
-- if @smaregi_trading_histories.present?
-  = link_to "売上履歴データ一覧",smaregi_trading_histories_path(analysis_id:@analysis.id),style:'margin-right:20px;',class:"btn btn-sm btn-primary"
-  span ※販売履歴のデータを再アップロードする場合は一度全件削除してください。
-  = link_to 'Delete',bulk_delete_smaregi_trading_histories_path(analysis_id:@analysis.id), {method: :post, data: { confirm: '削除しますか？' },class:'pull-right btn btn-sm btn-danger'}
-- else
-  button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#sampleModal" スマレジ販売履歴アップロード
-  #sampleModal.modal.fade tabindex="-1"
-    = form_tag upload_salesdatas_smaregi_trading_histories_path, multipart: true do
-      .modal-dialog
-        .modal-content
-          .modal-header
-            h4.modal-title 新規作成
-          .modal-body
-            = hidden_field_tag :smaregi_store_id,@analysis.store.smaregi_store_id
-            = hidden_field_tag :analysis_id,@analysis.id
-            = hidden_field_tag :date,@analysis.date
-            = file_field_tag :file,class:'form-control',style:'padding:10px;height:100%;'
-          .modal-footer
-            button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
-            = submit_tag "アップロード",class:'btn btn-primary'
-= form_tag analysis_path, :method => 'get' do
-  - if @analysis.present?
+.col-md-12
+  = form_tag analysis_path, :method => 'get' do
     .col-md-2
-      = "#{@analysis.date}｜#{@analysis.store.name}店"
-  .col-md-2
-    = hidden_field_tag :id,params[:id]
-    = select_tag :shohin_id, options_for_select(@shohin_ids,params[:shohin_id]),include_blank: true, class: "form-control",placeholder:'商品ID'
-  .col-md-2
-    = select_tag :hinban, options_for_select(@product_ids,params[:hinban]),include_blank: true, class: "form-control",placeholder:'ORID'
-  .col-md-2
-    = select_tag :shohinmei, options_for_select(@shohinmeis,params[:shohinmei]),include_blank: true, class: "form-control",placeholder:'ORID'
-  .col-md-1
-    label 　
-    = submit_tag "絞り込む" ,class:"btn btn-primary"
+      = hidden_field_tag :id,params[:id]
+      = select_tag :shohin_id, options_for_select(@shohin_ids,params[:shohin_id]),include_blank:'商品ID' , class: "form-control",placeholder:'商品ID'
+    .col-md-2
+      = select_tag :hinban, options_for_select(@product_ids,params[:hinban]),include_blank: 'OR_ID', class: "form-control",placeholder:'ORID'
+    .col-md-2
+      = select_tag :shohinmei, options_for_select(@shohinmeis,params[:shohinmei]),include_blank:'商品名', class: "form-control",placeholder:'ORID'
+    .col-md-1
+      label 　
+      = submit_tag "絞り込む" ,class:"btn btn-primary"
+  - if @smaregi_trading_histories.present?
+    .pull-right
+      |※販売履歴のデータを再アップロードする場合は一度全件削除してください。
+  - else
+    .pull-right
+      button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#sampleModal" スマレジ販売履歴アップロード
+      #sampleModal.modal.fade tabindex="-1"
+        = form_tag upload_salesdatas_smaregi_trading_histories_path, multipart: true do
+          .modal-dialog
+            .modal-content
+              .modal-header
+                h4.modal-title 新規作成
+              .modal-body
+                = hidden_field_tag :smaregi_store_id,@analysis.store.smaregi_store_id
+                = hidden_field_tag :analysis_id,@analysis.id
+                = hidden_field_tag :date,@analysis.date
+                = file_field_tag :file,class:'form-control',style:'padding:10px;height:100%;'
+              .modal-footer
+                button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
+                = submit_tag "アップロード",class:'btn btn-primary'
 
 
 table.table
@@ -142,7 +135,9 @@ table.table
         td = smaregi_trading_history.torihiki_id
         td = smaregi_trading_history.torihiki_nichiji.strftime("%Y/%m/%d %H:%M")
         td = smaregi_trading_history.hanbaiin_mei
-        td = smaregi_trading_history.shohin_id
+        td style='padding-top:2px;padding-bottom:2px;'
+          = form_with(model: smaregi_trading_history, data: {remote: true}) do |f|
+            = f.number_field :shohin_id,style:'width:80px;',value:smaregi_trading_history.shohin_id,class:'form-control'
         td style='padding-top:2px;padding-bottom:2px;'
           = form_with(model: smaregi_trading_history, data: {remote: true}) do |f|
             = f.number_field :hinban,style:'width:80px;',value:smaregi_trading_history.hinban,class:'form-control'
@@ -153,3 +148,9 @@ table.table
         td = smaregi_trading_history.nebikigokei
 
 = paginate @smaregi_trading_histories
+- if @smaregi_trading_histories.present?
+  = link_to '販売履歴データリセット',bulk_delete_smaregi_trading_histories_path(analysis_id:@analysis.id), {method: :post, data: { confirm: '削除しますか？' },class:'pull-right btn btn-sm btn-danger'}
+  - if @analysis.analysis_products.present?
+    span ※販売履歴の数値を修正後、データ反映するには、ページ最上部右のOrderecipeの献立データをリセットしてください
+  - else
+    = link_to '販売履歴の更新を反映', smaregi_trading_history_totalling_analyses_path(analysis: {analysis_id:@analysis.id}), method: :post,class:'btn btn-sm btn-success pull-right',style:'margin-right:10px;', data: { confirm: '更新した売上データ情報を反映しますか？' }

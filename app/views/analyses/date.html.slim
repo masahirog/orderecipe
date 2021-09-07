@@ -1,32 +1,22 @@
 h3 分析
 
-
 table.table
   thead
     tr
       th 店舗名
-      th
       th 合計売上
-      th 売上
+      th 廃棄
+      th 廃棄率
       th 人件費
-      th ロス
       th 営業利益
 
   tbody
     - @stores.each do |store|
+      - analysis = @analyses_hash[store.id]
       tr
-        td = store.name
-        td
-          - if @analyses_hash[store.id]
-            = link_to '詳細', analysis_path(@analyses_hash[store.id]),class:"btn btn-sm btn-primary",style:'margin-right:10px;'
-
-          - else
-            / =link_to "分析作成",new_analysis_path(store_id:store.id,date:@date),class:'btn btn-default btn-sm'
-            = link_to '分析作成', analyses_path(analysis: {store_id: store.id,date:@date}), method: :post
-
-
-        td
-        td
-        td
+        td = link_to store.name, analysis_path(analysis),class:"btn btn-sm btn-primary",style:'margin-right:10px;'
+        td = "#{analysis.sales_amount.to_s(:delimited)}円" if analysis.sales_amount.present?
+        td = "#{analysis.loss_amount.to_s(:delimited)}円" if analysis.loss_amount.present?
+        td = "#{((analysis.loss_amount.to_f/analysis.sales_amount)*100).round(1)}%" if analysis.sales_amount.present? && analysis.loss_amount.present?
         td
         td

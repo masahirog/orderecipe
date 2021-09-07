@@ -55,18 +55,6 @@ class SmaregiTradingHistory < ApplicationRecord
       bumon_id = row["部門ID"]
       bumonmei = row["部門名"]
       if date == form_date.to_date && smaregi_store_id == tenpo_id
-        total_sales += nebikigokei.to_i
-        if product_sales_number[shohin_id].present?
-          product_sales_number[shohin_id] += suryo.to_i
-        else
-          product_sales_number[shohin_id] = suryo.to_i
-        end
-
-        if product_sales_amount[shohin_id].present?
-          product_sales_amount[shohin_id] += nebikigokei.to_i
-        else
-          product_sales_amount[shohin_id] = nebikigokei.to_i
-        end
         new_smaregi_trading_history = SmaregiTradingHistory.new(date:date,analysis_id:analysis_id,torihiki_id:torihiki_id,torihiki_nichiji:torihiki_nichiji,tanka_nebikimae_shokei:tanka_nebikimae_shokei,
           tanka_nebiki_shokei:tanka_nebiki_shokei,shokei:shokei,shikei_nebiki:shikei_nebiki,shokei_waribikiritsu:shokei_waribikiritsu,
           point_nebiki:point_nebiki,gokei:gokei,suryo_gokei:suryo_gokei,henpinsuryo_gokei:henpinsuryo_gokei,huyo_point:huyo_point,
@@ -82,6 +70,26 @@ class SmaregiTradingHistory < ApplicationRecord
           product_id:hinban,total_sales_amount:0,sales_number:0,loss_amount:0,)
           analysis_products_arr << new_analysis_product
           smaregi_shohin_ids << shohin_id
+        end
+
+        if torihiki_meisaikubun == '1'
+          number = suryo.to_i
+          salse = nebikigokei.to_i
+        else
+          number = -1 * suryo.to_i
+          salse = -1 * nebikigokei.to_i
+        end
+        total_sales += salse
+        if product_sales_number[shohin_id].present?
+          product_sales_number[shohin_id] += number
+        else
+          product_sales_number[shohin_id] = number
+        end
+
+        if product_sales_amount[shohin_id].present?
+          product_sales_amount[shohin_id] += salse
+        else
+          product_sales_amount[shohin_id] = salse
         end
       end
     end

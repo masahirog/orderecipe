@@ -12,35 +12,44 @@ class AnalysesController < ApplicationController
   end
   def smaregi_trading_history_totalling
     #アップロード済みのスマレジの販売履歴を計算する
-    total_loass_amount = 0
     analysis_id = params[:analysis]["analysis_id"]
     @analysis = Analysis.find(analysis_id)
+    smaregi_shohin_ids = @analysis.analysis_products.map{|ap|ap.smaregi_shohin_id}
     smaregi_trading_histories = SmaregiTradingHistory.where(analysis_id:analysis_id)
+    analysis_products_arr = []
+    @product_sales_number = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
 
-    update_analysis_products = []
-    @product_sales_number = smaregi_trading_histories.group(:shohin_id).sum(:suryo)
-    @product_sales_amount = smaregi_trading_histories.group(:shohin_id).sum(:nebikigokei)
-    @analysis.analysis_products.each do |ap|
-      ap.sales_number = @product_sales_number[ap.smaregi_shohin_id]
-      ap.total_sales_amount = @product_sales_amount[ap.smaregi_shohin_id]
-      if ap.manufacturing_number.present? && ap.sales_number.present?
-        ap.loss_number = ap.manufacturing_number - ap.sales_number
-        loss_amount = ap.list_price * ap.loss_number
-        if loss_amount < 0 || ap.product_id == 10459
-          ap.loss_amount = 0
-        else
-          ap.loss_amount = loss_amount
-          total_loass_amount += loss_amount
-        end
+    smaregi_trading_histories.each do |sth|
+      if sth.torihiki_meisaikubun == 1
+        suryo = sth.suryo
+        nebikigokei = sth.nebikigokei
       else
-        ap.loss_number = 0
-        ap.loss_amount = 0
-        total_loass_amount += 0
+        suryo = -1 * sth.suryo
+        nebikigokei = -1 * sth.nebikigokei
       end
-      update_analysis_products << ap
+      if @product_sales_number[sth.shohin_id].present?
+        @product_sales_number[sth.shohin_id][:suryo] += suryo
+        @product_sales_number[sth.shohin_id][:nebikigokei] += nebikigokei
+      else
+        @product_sales_number[sth.shohin_id][:suryo] = suryo
+        @product_sales_number[sth.shohin_id][:nebikigokei] = nebikigokei
+      end
+      if smaregi_shohin_ids.include?(sth.shohin_id)
+      else
+        new_analysis_product = AnalysisProduct.new(analysis_id:sth.analysis_id,smaregi_shohin_id:sth.shohin_id,smaregi_shohin_name:sth.shohinmei,smaregi_shohintanka:sth.shohintanka,
+        product_id:sth.hinban,total_sales_amount:0,sales_number:0,loss_amount:0)
+        analysis_products_arr << new_analysis_product
+        smaregi_shohin_ids << sth.shohin_id
+      end
     end
-    AnalysisProduct.import update_analysis_products, on_duplicate_key_update:[:sales_number,:loss_number,:total_sales_amount,:loss_amount]
-    @analysis.update(loss_amount:total_loass_amount)
+    AnalysisProduct.import analysis_products_arr
+    update_analysis_products_arr = []
+    @analysis.analysis_products.each do |ap|
+      ap.sales_number = @product_sales_number[ap.smaregi_shohin_id][:suryo]
+      ap.total_sales_amount = @product_sales_number[ap.smaregi_shohin_id][:nebikigokei]
+      update_analysis_products_arr << ap
+    end
+    AnalysisProduct.import update_analysis_products_arr, on_duplicate_key_update:[:sales_number,:total_sales_amount]
     redirect_to @analysis
   end
   def products
@@ -106,7 +115,7 @@ class AnalysesController < ApplicationController
     @stores = Store.all
     @analyses_hash = {}
     Analysis.where(date:@date).each do |analysis|
-      @analyses_hash[analysis.store_id] = analysis.id
+      @analyses_hash[analysis.store_id] = analysis
     end
 
   end
@@ -121,6 +130,13 @@ class AnalysesController < ApplicationController
     else
       @to = @from.end_of_month
     end
+    @date_analyses = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    analyses = Analysis.where(date:@from..@to)
+    analyses.each do |analysis|
+      @date_analyses[analysis.date][analysis.store_id] = analysis
+    end
+    @date_sales_amount = analyses.group(:date).sum(:sales_amount)
+    @date_loss_amount = analyses.group(:date).sum(:loss_amount)
   end
 
   def show
