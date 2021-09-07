@@ -14,9 +14,18 @@ table.table
     - @stores.each do |store|
       - analysis = @analyses_hash[store.id]
       tr
-        td = link_to store.name, analysis_path(analysis),class:"btn btn-sm btn-primary",style:'margin-right:10px;'
-        td = "#{analysis.sales_amount.to_s(:delimited)}円" if analysis.sales_amount.present?
-        td = "#{analysis.loss_amount.to_s(:delimited)}円" if analysis.loss_amount.present?
-        td = "#{((analysis.loss_amount.to_f/analysis.sales_amount)*100).round(1)}%" if analysis.sales_amount.present? && analysis.loss_amount.present?
-        td
-        td
+        - if analysis
+          td = link_to store.name, analysis_path(analysis),class:"btn btn-sm btn-primary",style:'margin-right:10px;'
+          td = "#{analysis.sales_amount.to_s(:delimited)}円" if analysis.sales_amount.present?
+          td = "#{analysis.loss_amount.to_s(:delimited)}円" if analysis.loss_amount.present?
+          td = "#{((analysis.loss_amount.to_f/analysis.sales_amount)*100).round(1)}%" if analysis.sales_amount.present? && analysis.loss_amount.present?
+          td
+          td
+
+        - else
+          td = link_to '分析作成', analyses_path(analysis: {store_id: store.id,date:@date}), method: :post
+          td
+          td
+          td
+          td
+          td
