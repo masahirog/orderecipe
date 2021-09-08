@@ -23,7 +23,7 @@ Rails.application.routes.draw do
   post 'materials/change_additives' => 'materials#change_additives'
   # get '/kpi' => 'application#kpi'
   # get '/sell_reports' => 'application#sell_reports'
-  get '/product_report' => 'application#product_report'
+  get '/shift' => 'application#shift'
   resources :wikis
   resources :containers
   resources :analyses do

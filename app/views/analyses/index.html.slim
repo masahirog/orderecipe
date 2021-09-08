@@ -1,5 +1,8 @@
 h3 分析
-= column_chart @data
+/ = column_chart @data
+canvas#chart1
+
+
 
 = form_tag analyses_path, :method => 'get' do
   div
@@ -36,3 +39,68 @@ table.table
         td = "#{((@date_loss_amount[date].to_f/@date_sales_amount[date])*100).round(1)}%" if @date_loss_amount[date] && @date_sales_amount[date]
         td
         td
+
+
+javascript:
+  var ctx = document.getElementById("chart1").getContext('2d');
+  ctx.canvas.height = 80;
+  var chart1 = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: gon.sales_dates,
+      datasets: [{
+        type: 'line',
+        label: "10日間",
+        data: gon.sales_data,
+        backgroundColor: 'blue',
+        borderColor: 'blue',
+        fill: false,
+        stacked: false,
+        yAxisID: "y-axis-1"
+      },{
+        type: 'line',
+        label: "目標(850個)",
+        data: gon.loss_data,
+        backgroundColor: 'red',
+        borderColor: 'red',
+        fill: false,
+        stacked: false,
+        yAxisID: "y-axis-2",
+        pointRadius: 0
+      },{
+        label: "製造数",
+        data: gon.date_sum,
+        backgroundColor: 'rgba(0,153,255,0.9)',
+        borderColor: 'rgba(0,153,255,0.9)',
+        fill: false,
+        stacked: false,
+        yAxisID: "y-axis-1"
+      }]
+    },
+    options: {
+      scales: {
+        xAxes: [{
+          stacked: true,
+          scaleLabel: {
+            display: true,
+            fontSize: 16
+          }
+        }],
+        yAxes: [{
+          stacked: false,
+          id: "y-axis-1",
+          type: "linear",
+          position: "left",
+          ticks: {          // スケール
+                max: 500000,
+                min: 0
+            }
+        },{
+          stacked: false,
+          id: "y-axis-2",
+          type: "linear",
+          position: "right"
+        }]
+      }
+    }
+  });

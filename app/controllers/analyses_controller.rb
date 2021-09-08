@@ -130,16 +130,30 @@ class AnalysesController < ApplicationController
     else
       @from = @to - 30
     end
+    gon.dates = (@from..@to).map{|date|date}
     @date_analyses = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     analyses = Analysis.where(date:@from..@to)
-    @data = []
     analyses.each do |analysis|
       @date_analyses[analysis.date][analysis.store_id] = analysis
-      @data << [analysis.date,analysis.sales_amount]
     end
     @date_sales_amount = analyses.group(:date).sum(:sales_amount)
     @date_loss_amount = analyses.group(:date).sum(:loss_amount)
-
+    date_arr = []
+    data_arr = []
+    date_loss_arr = []
+    data_loss_arr = []
+    @date_sales_amount.sort.each do |date_sales|
+      date_arr << date_sales[0]
+      data_arr << date_sales[1]
+    end
+    @date_loss_amount.sort.each do |date_loss|
+      date_loss_arr << date_loss[0]
+      data_loss_arr << date_loss[1]
+    end
+    gon.sales_dates = date_arr
+    gon.sales_data = data_arr
+    gon.loss_dates = date_loss_arr
+    gon.loss_data = data_loss_arr
 
   end
 

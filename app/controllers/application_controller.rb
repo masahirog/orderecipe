@@ -19,6 +19,21 @@ class ApplicationController < ActionController::Base
     render template: 'errors/error_500', status: 500
   end
 
+  def shift
+
+    # frozen_string_literal: tru
+    session = GoogleDrive::Session.from_config("config.json")
+    sheet = session.spreadsheet_by_key("1ekgHswr8Pg9H0eTYvXGiDGLA7Vog2BJv5ftZ04jwn18").worksheet_by_title("シート1")
+    last_row = sheet.num_rows
+    @tables = []
+    for i in 1..last_row do
+      row = []
+      for ii in 1..34 do
+        row << sheet[i, ii]
+      end
+      @tables << row
+    end
+  end
 
   protected
     def revert_link
