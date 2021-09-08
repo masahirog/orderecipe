@@ -1169,6 +1169,7 @@ GEM
       mimemagic (>= 0.3.0)
       mini_mime (>= 0.1.3)
       ssrf_filter (~> 1.0)
+    chartkick (4.0.5)
     choice (0.2.0)
     cocoon (1.2.15)
     coderay (1.1.3)
@@ -1540,6 +1541,7 @@ DEPENDENCIES
   byebug
   capybara (>= 2.15, < 4.0)
   carrierwave
+  chartkick
   cocoon
   coderay
   combine_pdf

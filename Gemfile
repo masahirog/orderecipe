@@ -48,6 +48,7 @@ gem 'enum_help'
 gem 'font-awesome-sass'
 gem 'redcarpet', '~> 2.3.0'
 gem 'coderay'
+gem 'chartkick'
 
 
 group :development, :test do

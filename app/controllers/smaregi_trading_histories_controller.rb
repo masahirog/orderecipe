@@ -28,22 +28,22 @@ class SmaregiTradingHistoriesController < ApplicationController
     end
 
   end
-  def index
-    @analysis_id = params[:analysis_id]
-    @analysis = Analysis.find(@analysis_id) if @analysis_id
-    @shohin_id = params[:shohin_id]
-    @hinban = params[:hinban]
-    @shohinmei = params[:shohinmei]
-    @smaregi_trading_histories = SmaregiTradingHistory.all
-    @smaregi_trading_histories = @smaregi_trading_histories.where(analysis_id:@analysis_id) if @analysis_id.present?
-    @shohin_ids = @smaregi_trading_histories.map{|sth|sth.shohin_id}.uniq
-    @product_ids = @smaregi_trading_histories.map{|sth|sth.hinban}.uniq
-    @shohinmeis = @smaregi_trading_histories.map{|sth|sth.shohinmei}.uniq
-    @smaregi_trading_histories = @smaregi_trading_histories.where(shohin_id:@shohin_id) if @shohin_id.present?
-    @smaregi_trading_histories = @smaregi_trading_histories.where(hinban:@hinban) if @hinban.present?
-    @smaregi_trading_histories = @smaregi_trading_histories.where(shohinmei:@shohinmei) if @shohinmei.present?
-    @date_counts = @smaregi_trading_histories.group(:date).count()
-  end
+  # def index
+  #   @analysis_id = params[:analysis_id]
+  #   @analysis = Analysis.find(@analysis_id) if @analysis_id
+  #   @shohin_id = params[:shohin_id]
+  #   @hinban = params[:hinban]
+  #   @shohinmei = params[:shohinmei]
+  #   @smaregi_trading_histories = SmaregiTradingHistory.all
+  #   @smaregi_trading_histories = @smaregi_trading_histories.where(analysis_id:@analysis_id) if @analysis_id.present?
+  #   @shohin_ids = @smaregi_trading_histories.map{|sth|sth.shohin_id}.uniq
+  #   @product_ids = @smaregi_trading_histories.map{|sth|sth.hinban}.uniq
+  #   @shohinmeis = @smaregi_trading_histories.map{|sth|sth.shohinmei}.uniq
+  #   @smaregi_trading_histories = @smaregi_trading_histories.where(shohin_id:@shohin_id) if @shohin_id.present?
+  #   @smaregi_trading_histories = @smaregi_trading_histories.where(hinban:@hinban) if @hinban.present?
+  #   @smaregi_trading_histories = @smaregi_trading_histories.where(shohinmei:@shohinmei) if @shohinmei.present?
+  #   @date_counts = @smaregi_trading_histories.group(:date).count()
+  # end
 
   def show
   end

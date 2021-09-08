@@ -120,23 +120,27 @@ class AnalysesController < ApplicationController
 
   end
   def index
-    if params[:from]
-      @from = params[:from].to_date
-    else
-      @from = Date.today.beginning_of_month
-    end
     if params[:to]
       @to = params[:to].to_date
     else
-      @to = @from.end_of_month
+      @to = Date.today
+    end
+    if params[:from]
+      @from = params[:from].to_date
+    else
+      @from = @to - 30
     end
     @date_analyses = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     analyses = Analysis.where(date:@from..@to)
+    @data = []
     analyses.each do |analysis|
       @date_analyses[analysis.date][analysis.store_id] = analysis
+      @data << [analysis.date,analysis.sales_amount]
     end
     @date_sales_amount = analyses.group(:date).sum(:sales_amount)
     @date_loss_amount = analyses.group(:date).sum(:loss_amount)
+
+
   end
 
   def show
