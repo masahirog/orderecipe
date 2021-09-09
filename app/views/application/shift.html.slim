@@ -4,9 +4,9 @@
       tr
         - @tables[0].each_with_index do |data,ind|
           - if ind == 0
-            th.fixed01 style="z-index:10;width:200px;" =data
+            th.fixed01 style="z-index:10;width:250px;" =data
           - elsif ind < 3
-            th.fixed01 style="width:100px;" =data
+            th.fixed01 style="width:140px;" =data
           - else
             th.fixed02 =data
     tbody
@@ -21,31 +21,34 @@
       tr
         - @tables[0].each_with_index do |data,ind|
           - if ind == 0
-            th.fixed03 =data
+            th.fixed03 style='z-index:10' =data
           - elsif ind < 3
-            th.fixed03 style="width:70px;" =data
+            th.fixed03 =data
           - else
             th.fixed04 =data
 
 css:
+  /* 行交互色 */
+
   .shift_table tr:nth-child(odd) td {
     background-color: #fff;
     color:silver;
-    font-size:22px;
+    font-size:28px;
   }
   .shift_table tr:nth-child(even) td {
     background-color: #EAF6FD;
     font-weight:bold;
-    font-size:24px;
+    font-size:30px;
   }
+
+  /* 列1,2行目 */
   .shift_table tr td:nth-of-type(1){
     color:black;
-    font-size:30px;
-    padding:3px 10px;
+    font-size:36px;
+    padding:10px 15px;
   }
   .shift_table tr td:nth-of-type(2){
     color:black;
-    width:200px;
   }
 
   div.fixed-box-yoko-tate {
@@ -62,14 +65,14 @@ css:
     table-layout: fixed;
   }
   table.shift_table th, table.shift_table td {
-    width:80px;
-    font-size:20px;
+    width:100px;
+    font-size:28px;
     vertical-align: middle;
-    padding: 2px 5px;
+    padding: 8px 8px;
     border: 1px solid #ccc;
   }
 
-
+  /* 最上行固定 */
   table.shift_table .fixed01,
   table.shift_table .fixed02 {
     position: sticky;
@@ -97,6 +100,7 @@ css:
     z-index: 1;
   }
 
+  /* 最下行固定 */
   table.shift_table .fixed03,
   table.shift_table .fixed04 {
     position: sticky;
