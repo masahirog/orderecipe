@@ -35,11 +35,14 @@ class ApplicationController < ActionController::Base
       last_row = sheet.num_rows
       @tables = []
       for i in 1..last_row do
-        row = []
-        for ii in 2..34 do
-          row << sheet[i, ii]
+        if sheet[i,1] == "-"
+        else
+          row = []
+          for ii in 2..34 do
+            row << sheet[i, ii]
+          end
+          @tables << row
         end
-        @tables << row
       end
     else
       redirect_to '/shift', notice: "#{month}月のシフトが存在しません。" and return
