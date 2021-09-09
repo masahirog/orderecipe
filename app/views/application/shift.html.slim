@@ -1,8 +1,10 @@
-= form_tag shift_path(), :method => 'get' do
-  = select_tag :month,options_for_select(@months,params[:month]), class:"form-control",style:'float:left;width:300px;font-size:25px;height:100%;'
-  / = select_tag :kubun,options_for_select([['くるめし',0],['べじはん',1]],params[:kubun]), class:"form-control",style:'width:100px;float:left;'
-  = submit_tag "表示" ,class:"btn btn-primary",style:'float:left;font-size:25px;'
+.clearfix style='padding:10px;'
+  = form_tag shift_path(), :method => 'get' do
+    = select_tag :month,options_for_select(@months,params[:month]), class:"form-control",style:'float:left;width:300px;font-size:25px;height:100%;'
+    / = select_tag :kubun,options_for_select([['くるめし',0],['べじはん',1]],params[:kubun]), class:"form-control",style:'width:100px;float:left;'
+    = submit_tag "表示" ,class:"btn btn-primary",style:'float:left;font-size:25px;'
 
+  = link_to "シフト提出",'https://forms.gle/fGPNLsYL3zMsoEMM8',target:'_blank',class:'btn btn-primary pull-right',style:'font-size:25px;'
 
 .fixed-box-yoko-tate
   table.shift_table
