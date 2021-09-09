@@ -1,40 +1,83 @@
-.clearfix style='padding:10px;'
-  = form_tag shift_path(), :method => 'get' do
-    = select_tag :month,options_for_select(@months,params[:month]), class:"form-control",style:'float:left;width:300px;font-size:25px;height:100%;'
-    / = select_tag :kubun,options_for_select([['くるめし',0],['べじはん',1]],params[:kubun]), class:"form-control",style:'width:100px;float:left;'
-    = submit_tag "表示" ,class:"btn btn-primary",style:'float:left;font-size:25px;'
+doctype html
+html
+  head
+    title
+      | Order
+    = csrf_meta_tags
+    = include_gon
+    = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'true'
+    = javascript_include_tag 'application', 'data-turbolinks-track': 'true'
 
-  = link_to "シフト提出",'https://forms.gle/fGPNLsYL3zMsoEMM8',target:'_blank',class:'btn btn-primary pull-right',style:'font-size:25px;'
+    link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet"
+    script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.0/jquery-ui.min.js"
+    script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"
+    link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/css/lightbox.css" rel="stylesheet"
+    script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js"
+    script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/js/lightbox.min.js" type="text/javascript"
+  body data-controller="#{controller_name}" data-action="#{action_name}"
+    header
+      nav.navbar.navbar-default
+        .container-fluid
+          .navbar-header
+            button.navbar-toggle.collapsed[type="button" data-toggle="collapse" data-target="#navbarEexample"]
+              span.sr-only
+                | Toggle navigation
+              span.icon-bar
+              span.icon-bar
+              span.icon-bar
+            a.navbar-brand style="padding:12px 10px 8px 20px;" href="/"
+              = image_tag 'orderecipe.png',height:'85%'
+          #navbarEexample.collapse.navbar-collapse
+            ul.nav.navbar-nav style='font-size:30px;'
+              li.menu_li
+                = link_to "Wiki",wikis_path
+              li.menu_li
+                = link_to 'シフト','/shift'
+              li.menu_li
+                = link_to "ログアウト", destroy_user_session_path, :method => :delete
+    .all_body
+      - flash.each do |name, msg|
+        .col-md-12 class="alert alert-success" role="alert"
+          = content_tag :div, raw(msg), :id => name
+      .clearfix style='padding:10px;'
+        = form_tag shift_path(), :method => 'get' do
+          = select_tag :month,options_for_select(@months,params[:month]), class:"form-control",style:'float:left;width:300px;font-size:25px;height:100%;height:49px;margin-right:10px;'
+          / = select_tag :kubun,options_for_select([['くるめし',0],['べじはん',1]],params[:kubun]), class:"form-control",style:'width:100px;float:left;'
+          = submit_tag "表示" ,class:"btn btn-primary",style:'float:left;font-size:25px;'
 
-.fixed-box-yoko-tate
-  table.shift_table
-    thead
-      tr
-        - @tables[0].each_with_index do |data,ind|
-          - if ind == 0
-            th.fixed01 style="z-index:10;width:250px;" =data
-          - elsif ind < 3
-            th.fixed01 style="width:140px;" =data
-          - else
-            th.fixed02 =data
-    tbody
-      - @tables[1..-1].each_with_index do |data,tr_i|
-        tr
-          - data.each_with_index do |td,index|
-            - if index == 0
-              td.fixed02 = td
-            - else
-              td = td
-    thead
-      tr
-        - @tables[0].each_with_index do |data,ind|
-          - if ind == 0
-            th.fixed03 style='z-index:10' =data
-          - elsif ind < 3
-            th.fixed03 =data
-          - else
-            th.fixed04 =data
+        = link_to "シフト提出",'https://forms.gle/fGPNLsYL3zMsoEMM8',target:'_blank',class:'btn btn-primary pull-right',style:'font-size:25px;'
 
+      .fixed-box-yoko-tate
+        table.shift_table
+          thead
+            tr
+              - @tables[0].each_with_index do |data,ind|
+                - if ind == 0
+                  th.fixed01 style="z-index:10;width:250px;" =data
+                - elsif ind < 3
+                  th.fixed01 style="width:140px;" =data
+                - else
+                  th.fixed02 =data
+          tbody
+            - @tables[1..-1].each_with_index do |data,tr_i|
+              tr
+                - data.each_with_index do |td,index|
+                  - if index == 0
+                    td.fixed02 = td
+                  - else
+                    td = td
+          thead
+            tr
+              - @tables[0].each_with_index do |data,ind|
+                - if ind == 0
+                  th.fixed03 style='z-index:10' =data
+                - elsif ind < 3
+                  th.fixed03 =data
+                - else
+                  th.fixed04 =data
+
+
+    .col-md-12.footer style="height:20px;"
 css:
   /* 行交互色 */
 
@@ -61,7 +104,7 @@ css:
 
   div.fixed-box-yoko-tate {
     width:100%;
-    height:1500px;
+    height:1300px;
     background: #fff;
     border:1px solid #dc6000;
     overflow:auto;

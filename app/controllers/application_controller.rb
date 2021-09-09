@@ -44,6 +44,7 @@ class ApplicationController < ActionController::Base
     else
       redirect_to '/shift', notice: "#{month}月のシフトが存在しません。"
     end
+    render :layout => false
   end
 
   protected
