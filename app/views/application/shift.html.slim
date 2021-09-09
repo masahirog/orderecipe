@@ -4,7 +4,7 @@
       tr
         - @tables[0].each_with_index do |data,ind|
           - if ind == 0
-            th.fixed01 style="width:200px;" =data
+            th.fixed01 style="z-index:10;width:200px;" =data
           - elsif ind < 3
             th.fixed01 style="width:100px;" =data
           - else
