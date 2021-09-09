@@ -20,18 +20,29 @@ class ApplicationController < ActionController::Base
   end
 
   def shift
-
-    # frozen_string_literal: tru
+    @months = [['1月',1],['2月',2],['3月',3],['4月',4],['5月',5],['6月',6],
+              ['7月',7],['8月',8],['9月',9],['10月',10],['11月',11],['12月',12]]
+    if params[:month]
+      month = params[:month]
+    else
+      month = Date.today.month
+      params[:month] = month
+    end
+    sheet_name = "#{month}月"
     session = GoogleDrive::Session.from_config("config.json")
-    sheet = session.spreadsheet_by_key("1ekgHswr8Pg9H0eTYvXGiDGLA7Vog2BJv5ftZ04jwn18").worksheet_by_title("シート1")
-    last_row = sheet.num_rows
-    @tables = []
-    for i in 1..last_row do
-      row = []
-      for ii in 1..34 do
-        row << sheet[i, ii]
+    sheet = session.spreadsheet_by_key("1ekgHswr8Pg9H0eTYvXGiDGLA7Vog2BJv5ftZ04jwn18").worksheet_by_title(sheet_name)
+    if sheet.present?
+      last_row = sheet.num_rows
+      @tables = []
+      for i in 1..last_row do
+        row = []
+        for ii in 1..34 do
+          row << sheet[i, ii]
+        end
+        @tables << row
       end
-      @tables << row
+    else
+      redirect_to '/shift', notice: "#{month}月のシフトが存在しません。"
     end
   end
 
