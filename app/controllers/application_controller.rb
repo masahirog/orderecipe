@@ -36,7 +36,7 @@ class ApplicationController < ActionController::Base
       @tables = []
       for i in 1..last_row do
         row = []
-        for ii in 1..34 do
+        for ii in 2..34 do
           row << sheet[i, ii]
         end
         @tables << row
