@@ -42,7 +42,7 @@ class ApplicationController < ActionController::Base
         @tables << row
       end
     else
-      redirect_to '/shift', notice: "#{month}月のシフトが存在しません。"
+      redirect_to '/shift', notice: "#{month}月のシフトが存在しません。" and return
     end
     render :layout => false
   end
