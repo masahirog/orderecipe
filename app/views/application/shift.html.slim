@@ -4,9 +4,9 @@
       tr
         - @tables[0].each_with_index do |data,ind|
           - if ind == 0
-            th.fixed01 style="width:160px;" =data
+            th.fixed01 style="width:200px;" =data
           - elsif ind < 3
-            th.fixed01 style="width:70px;" =data
+            th.fixed01 style="width:100px;" =data
           - else
             th.fixed02 =data
     tbody
@@ -14,9 +14,18 @@
         tr
           - data.each_with_index do |td,index|
             - if index == 0
-              td.fixed02 style="width:200px;" = td
+              td.fixed02 = td
             - else
               td = td
+    thead
+      tr
+        - @tables[0].each_with_index do |data,ind|
+          - if ind == 0
+            th.fixed03 =data
+          - elsif ind < 3
+            th.fixed03 style="width:70px;" =data
+          - else
+            th.fixed04 =data
 
 css:
   .shift_table tr:nth-child(odd) td {
@@ -26,18 +35,21 @@ css:
   .shift_table tr:nth-child(even) td {
     background-color: #EAF6FD;
     font-weight:bold;
+    font-size:22px;
   }
   .shift_table tr td:nth-of-type(1){
     color:black;
-    font-size:18px;
+    font-size:28px;
     padding:3px 10px;
   }
   .shift_table tr td:nth-of-type(2){
     color:black;
+    width:200px;
   }
+
   div.fixed-box-yoko-tate {
-    width:1000px;
-    height:750px;
+    width:100%;
+    height:100%;
     background: #fff;
     border:1px solid #dc6000;
     overflow:auto;
@@ -49,7 +61,8 @@ css:
     table-layout: fixed;
   }
   table.shift_table th, table.shift_table td {
-    width:60px;
+    width:80px;
+    font-size:20px;
     vertical-align: middle;
     padding: 2px 5px;
     border: 1px solid #ccc;
@@ -77,5 +90,31 @@ css:
     z-index: 2;
   }
   table.shift_table .fixed02 {
+    z-index: 1;
+  }
+
+
+
+  table.shift_table .fixed03,
+  table.shift_table .fixed04 {
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    background: #dc6000;
+  }
+  table.shift_table .fixed03:before,
+  table.shift_table .fixed04:before {
+    content: "";
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    width: 100%;
+    height: 100%;
+    border: 1px solid #ccc;
+  }
+  table.shift_table .fixed03 {
+    z-index: 2;
+  }
+  table.shift_table .fixed04 {
     z-index: 1;
   }
