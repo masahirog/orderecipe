@@ -38,7 +38,7 @@ class ApplicationController < ActionController::Base
         if sheet[i,2] == ""
         else
           row = []
-          for ii in 2..34 do
+          for ii in 2..36 do
             if ii == 5
             else
               row << sheet[i, ii]
