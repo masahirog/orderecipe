@@ -189,7 +189,6 @@ class AnalysesController < ApplicationController
       @from = @to - 30
       params[:from] = @from
     end
-    gon.dates = (@from..@to).map{|date|date}
     @date_analyses = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     analyses = Analysis.where(date:@from..@to).where(store_id:checked_store_ids)
     analyses.each do |analysis|
@@ -197,20 +196,7 @@ class AnalysesController < ApplicationController
     end
     @date_sales_amount = analyses.group(:date).sum(:sales_amount)
     @date_loss_amount = analyses.group(:date).sum(:loss_amount)
-    date_arr = []
-    data_arr = []
-    data_loss_arr = []
-    haiki_mokuhyo_arr = []
-    @date_sales_amount.sort.each do |date_sales|
-      date_arr << date_sales[0].strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[date_sales[0].wday]})")
-      data_arr << date_sales[1]
-      data_loss_arr << ((@date_loss_amount[date_sales[0]].to_f/date_sales[1])*100).round(1)
-      haiki_mokuhyo_arr << 6
-    end
-    gon.sales_dates = date_arr
-    gon.sales_data = data_arr
-    gon.loss_data = data_loss_arr
-    gon.loss_mokuhyo_data = haiki_mokuhyo_arr
+    @date_transaction_count = analyses.group(:date).sum(:transaction_count)
   end
 
   def show
