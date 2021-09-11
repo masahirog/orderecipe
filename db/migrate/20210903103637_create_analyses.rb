@@ -8,6 +8,7 @@ class CreateAnalyses < ActiveRecord::Migration[5.2]
       t.integer :labor_cost
       t.timestamps
       t.integer :transaction_count
+      t.index [:date, :store_id], unique: true
     end
   end
 end
