@@ -16,7 +16,7 @@ div style='margin-bottom:20px;'
 h3 売上推移と来客数
 canvas#chart1
 
-h3 廃棄率
+h3 廃棄金額と廃棄率
 canvas#chart2
 
 javascript:
@@ -29,20 +29,10 @@ javascript:
       labels: gon.sales_dates,
       datasets: [{
         type: 'line',
-        label: "廃棄率",
-        data: gon.loss_data,
+        label: "来客組数",
+        data: gon.transaction_count_date,
         backgroundColor: 'rgba(255, 99, 132, 0.7)',
         borderColor: 'rgba(255, 99, 132, 0.8)',
-        fill: false,
-        stacked: false,
-        yAxisID: "y-axis-2",
-        pointRadius: 0
-      },{
-        type: 'line',
-        label: "廃棄率8%",
-        data: gon.loss_mokuhyo_data,
-        backgroundColor: 'rgba(255,0,0,0.9)',
-        borderColor: 'rgba(255,0,0,0.9)',
         fill: false,
         stacked: false,
         yAxisID: "y-axis-2",
@@ -84,10 +74,7 @@ javascript:
           type: "linear",
           position: "right",
           ticks: {
-            min: 0,
-            callback: function(label, index, labels) {
-              return label.toString() + "%";
-            }
+            min: 0
           }
 
         }]
@@ -123,8 +110,8 @@ javascript:
         pointRadius: 0
       },{
         type: 'bar',
-        label: "売上",
-        data: gon.sales_data,
+        label: "廃棄金額",
+        data: gon.lossamount_data,
         backgroundColor: 'rgba(54, 162, 235, 0.7)',
         borderColor: 'rgba(54, 162, 235, 0.7)',
         fill: false,

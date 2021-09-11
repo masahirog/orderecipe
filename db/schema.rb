@@ -21,6 +21,7 @@ ActiveRecord::Schema.define(version: 2021_09_03_104116) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "transaction_count"
+    t.index ["date", "store_id"], name: "index_analyses_on_date_and_store_id", unique: true
   end
 
   create_table "analysis_products", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

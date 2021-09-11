@@ -148,23 +148,29 @@ class AnalysesController < ApplicationController
     analyses.each do |analysis|
       @date_analyses[analysis.date][analysis.store_id] = analysis
     end
+    @date_transaction_count = analyses.group(:date).sum(:transaction_count)
     @date_sales_amount = analyses.group(:date).sum(:sales_amount)
     @date_loss_amount = analyses.group(:date).sum(:loss_amount)
     date_arr = []
     data_arr = []
     data_loss_arr = []
+    date_transaction_count_arr = []
     haiki_mokuhyo_arr = []
+    data_lossamount_arr = []
     @date_sales_amount.sort.each do |date_sales|
       date_arr << date_sales[0].strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[date_sales[0].wday]})")
       data_arr << date_sales[1]
+      data_lossamount_arr << @date_loss_amount[date_sales[0]]
       data_loss_arr << ((@date_loss_amount[date_sales[0]].to_f/date_sales[1])*100).round(1)
+      date_transaction_count_arr << @date_transaction_count[date_sales[0]]
       haiki_mokuhyo_arr << 6
     end
     gon.sales_dates = date_arr
     gon.sales_data = data_arr
     gon.loss_data = data_loss_arr
     gon.loss_mokuhyo_data = haiki_mokuhyo_arr
-
+    gon.transaction_count_date = date_transaction_count_arr
+    gon.lossamount_data = data_lossamount_arr
   end
   def index
     @stores = Store.all
