@@ -99,7 +99,8 @@ class SmaregiTradingHistory < ApplicationRecord
     end
     SmaregiTradingHistory.import smaregi_trading_histories_arr
     AnalysisProduct.import analysis_products_arr
-    analysis.update(sales_amount:total_sales.to_i)
+    transaction_count = smaregi_trading_histories_arr.pluck(:torihiki_id).uniq.count
+    analysis.update(sales_amount:total_sales.to_i,transaction_count:transaction_count)
     return (smaregi_trading_histories_arr.count)
   end
 end

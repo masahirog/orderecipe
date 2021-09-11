@@ -20,6 +20,7 @@ ActiveRecord::Schema.define(version: 2021_09_03_104116) do
     t.integer "labor_cost"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "transaction_count"
   end
 
   create_table "analysis_products", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -83,7 +84,7 @@ ActiveRecord::Schema.define(version: 2021_09_03_104116) do
     t.integer "serving_plate_id"
     t.integer "place_showcase_id"
     t.boolean "signboard_flag", default: false, null: false
-    t.boolean "window_pop_flag", default: false, null: false
+    t.boolean "window_pop_flag", default: false, null: false, unsigned: true
     t.time "sold_outed"
     t.integer "for_single_item_number", default: 0, null: false
     t.integer "for_sub_item_number", default: 0, null: false

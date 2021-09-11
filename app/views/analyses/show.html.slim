@@ -5,6 +5,7 @@ table.table
     tr
       th 日付
       th 店舗名
+      th 来客数
       th 合計売上
       th 廃棄
       th 廃棄率
@@ -15,6 +16,7 @@ table.table
     tr
       td = @analysis.date.strftime("%-m月%-d日(#{%w(日 月 火 水 木 金 土)[@analysis.date.wday]})")
       td = @analysis.store.name
+      td = "#{@analysis.transaction_count}組"
       td = "#{@analysis.sales_amount.to_s(:delimited)}円" if @analysis.sales_amount
       td = "#{@analysis.loss_amount.to_s(:delimited)}円" if @analysis.loss_amount
       td = "#{((@analysis.loss_amount.to_f/@analysis.sales_amount)*100).round(1)}%" if @analysis.sales_amount && @analysis.loss_amount

@@ -13,7 +13,7 @@ Rails.application.routes.draw do
   end
 
   devise_for :users
-  root 'daily_menus#index'
+  root 'analyses#index'
   post 'orders/new' => 'orders#new'
   post'orders/order_print/:id' => 'orders#order_print'
   post "products/henkan" => "products#henkan"
@@ -28,6 +28,7 @@ Rails.application.routes.draw do
   resources :containers
   resources :analyses do
     collection do
+      get :summary
       post :products
       post :smaregi_trading_history_totalling
       get :date
