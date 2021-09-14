@@ -52,6 +52,13 @@ class StoreDailyMenu < ApplicationRecord
     daily_menu = self.daily_menu
     sdmds = StoreDailyMenuDetail.where(store_daily_menu_id:daily_menu.store_daily_menus.ids)
     product_num_hash = sdmds.group(:product_id).sum(:number)
+
+    dmdps = daily_menu.daily_menu_details.pluck(:product_id).uniq
+    sdmdps = sdmds.pluck(:product_id).uniq
+    (sdmdps - dmdps).each do |product_id|
+      DailyMenuDetail.create(daily_menu_id:daily_menu.id,product_id:product_id,manufacturing_number:product_num_hash[product_id],for_single_item_number:product_num_hash[product_id])
+    end
+
     daily_menu.daily_menu_details.each do |dmd|
       if product_num_hash[dmd.product_id].present?
         dmd.for_single_item_number = product_num_hash[dmd.product_id]
