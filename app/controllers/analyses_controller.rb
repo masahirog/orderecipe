@@ -145,6 +145,44 @@ class AnalysesController < ApplicationController
     gon.dates = (@from..@to).map{|date|date}
     @date_analyses = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     analyses = Analysis.where(date:@from..@to).where(store_id:checked_store_ids)
+    analysis_products = AnalysisProduct.where(analysis_id:analyses.ids).where.not(product_id:nil)
+    product_ids = analysis_products.pluck(:product_id).uniq
+    @products = Product.where(id:product_ids).order(:bejihan_sozai_flag)
+    @product_datas = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    analysis_products.each do |ap|
+      if ap.sales_number.present? && ap.actual_inventory.present?
+        if @product_datas[ap.product_id].present?
+          @product_datas[ap.product_id]['sales_number'] += ap.sales_number
+          @product_datas[ap.product_id]['actual_inventory'] += ap.actual_inventory
+          @product_datas[ap.product_id]['count'] += 1
+        else
+          @product_datas[ap.product_id]['name'] = ap.product.name
+          @product_datas[ap.product_id]['sales_number'] = ap.sales_number
+          @product_datas[ap.product_id]['actual_inventory'] = ap.actual_inventory
+          @product_datas[ap.product_id]['count'] = 1
+        end
+      end
+    end
+    # score計算
+    smaregi_trading_histories = []
+
+
+    if params[:sort]
+      sort = params[:sort]
+    else
+      sort = 'sales_number'
+    end
+    if params[:sc]
+      if params[:sc]=='asc'
+        @product_datas = @product_datas.values.sort!{|a, b|a[sort] <=> b[sort]}
+      else
+        @product_datas = @product_datas.values.sort!{|a, b|b[sort] <=> a[sort]}
+      end
+    else
+      @product_datas = @product_datas.values.sort!{|a, b|a[sort] <=> b[sort]}
+    end
+
+
     analyses.each do |analysis|
       @date_analyses[analysis.date][analysis.store_id] = analysis
     end

@@ -43,6 +43,7 @@ class CreateSmaregiTradingHistories < ActiveRecord::Migration[5.2]
       t.integer :bumon_id
       t.string :bumonmei
       t.timestamps
+      t.time :time
     end
   end
 end

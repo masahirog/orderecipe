@@ -19,6 +19,50 @@ canvas#chart1
 h3 廃棄金額と廃棄率
 canvas#chart2
 
+h3 メニュー別販売数
+table.table
+  thead
+    tr
+      th メニュー名
+      th スコア
+      th 販売率
+      th
+        = link_to '▲',summary_analyses_path(sort:'count',sc:'asc')
+        span 販売日数
+        = link_to '▼',summary_analyses_path(sort:'count',sc:'desc')
+
+      th
+        = link_to '▲',summary_analyses_path(sort:'actual_inventory',sc:'asc')
+        span 在庫数
+        = link_to '▼',summary_analyses_path(sort:'actual_inventory',sc:'desc')
+      th
+        = link_to '▲',summary_analyses_path(sort:'sales_number',sc:'asc')
+        span 販売数
+        = link_to '▼',summary_analyses_path(sort:'sales_number',sc:'desc')
+
+  tbody
+    - @product_datas.each do |product_data|
+      tr
+        td = product_data['name']
+        td = product_data['sales_number']/product_data['count'] if product_data['sales_number'].present?
+        td
+          - if product_data['sales_number'].present?
+
+            - if ((product_data['sales_number'].to_f/product_data['actual_inventory'])*100) < 70
+              - color = "red"
+            - elsif ((product_data['sales_number'].to_f/product_data['actual_inventory'])*100) < 80
+              - color = "blue"
+            - else
+              - color = 'black'
+
+            span style="color:#{color};" = "#{((product_data['sales_number'].to_f/product_data['actual_inventory'])*100).round}%"
+
+        td = product_data['count']
+        td = product_data['actual_inventory']
+        td = product_data['sales_number']
+
+
+
 javascript:
   // 1個目のグラフ
   var ctx = document.getElementById("chart1").getContext('2d');
@@ -150,7 +194,6 @@ javascript:
               return label.toString() + "%";
             }
           }
-
         }]
       }
     }

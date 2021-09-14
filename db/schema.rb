@@ -444,6 +444,7 @@ ActiveRecord::Schema.define(version: 2021_09_03_104116) do
     t.string "bumonmei"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.time "time"
   end
 
   create_table "stocks", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
