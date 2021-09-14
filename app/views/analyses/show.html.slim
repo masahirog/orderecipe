@@ -22,8 +22,8 @@ table.table
       td = "#{((@analysis.loss_amount.to_f/@analysis.sales_amount)*100).round(1)}%" if @analysis.sales_amount && @analysis.loss_amount
       td
       td
-
-= link_to 'OR＜＞スマレジ計算', products_analyses_path(analysis: {analysis_id:@analysis.id}), method: :post,class:'btn btn-sm btn-primary'
+- if @analysis.analysis_products.present?
+  = link_to 'OR＜＞スマレジ計算', products_analyses_path(analysis: {analysis_id:@analysis.id}), method: :post,class:'btn btn-sm btn-primary'
 = link_to 'Orderecipeデータリセット',bulk_delete_analysis_products_analyses_path(analysis_id:@analysis.id), {method: :post, data: { confirm: '削除しますか？' },class:'btn btn-sm btn-danger pull-right'}
 
 table.table

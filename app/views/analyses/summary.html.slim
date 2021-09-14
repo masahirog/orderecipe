@@ -24,8 +24,13 @@ table.table
   thead
     tr
       th メニュー名
-      th スコア
-      th 販売率
+      th 11-14
+      th 14-19
+      th 19-21
+      th 11-14
+      th 14-19
+      th 19-21
+
       th
         = link_to '▲',summary_analyses_path(sort:'count',sc:'asc')
         span 販売日数
@@ -39,12 +44,20 @@ table.table
         = link_to '▲',summary_analyses_path(sort:'sales_number',sc:'asc')
         span 販売数
         = link_to '▼',summary_analyses_path(sort:'sales_number',sc:'desc')
-
+        th 販売率
   tbody
     - @product_datas.each do |product_data|
       tr
         td = product_data['name']
-        td = product_data['sales_number']/product_data['count'] if product_data['sales_number'].present?
+        td = "#{((@early_sales_number[product_data["product_id"]].to_f/@day_sales_number[product_data["product_id"]])*100).round(1)}%"
+        td = "#{((@middle_sales_number[product_data["product_id"]].to_f/@day_sales_number[product_data["product_id"]])*100).round(1)}%"
+        td = "#{((@late_sales_number[product_data["product_id"]].to_f/@day_sales_number[product_data["product_id"]])*100).round(1)}%"
+        td = @early_sales_number[product_data["product_id"]]/product_data['count']
+        td = @middle_sales_number[product_data["product_id"]]/product_data['count']
+        td = @late_sales_number[product_data["product_id"]]/product_data['count']
+        td = product_data['count']
+        td = product_data['actual_inventory']
+        td = product_data['sales_number']
         td
           - if product_data['sales_number'].present?
 
@@ -56,10 +69,6 @@ table.table
               - color = 'black'
 
             span style="color:#{color};" = "#{((product_data['sales_number'].to_f/product_data['actual_inventory'])*100).round}%"
-
-        td = product_data['count']
-        td = product_data['actual_inventory']
-        td = product_data['sales_number']
 
 
 

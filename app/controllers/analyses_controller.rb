@@ -42,14 +42,11 @@ class AnalysesController < ApplicationController
         smaregi_shohin_ids << sth.shohin_id
       end
     end
-    AnalysisProduct.import analysis_products_arr
-    update_analysis_products_arr = []
-    @analysis.analysis_products.each do |ap|
+    analysis_products_arr.each do |ap|
       ap.sales_number = @product_sales_number[ap.smaregi_shohin_id][:suryo]
       ap.total_sales_amount = @product_sales_number[ap.smaregi_shohin_id][:nebikigokei]
-      update_analysis_products_arr << ap
     end
-    AnalysisProduct.import update_analysis_products_arr, on_duplicate_key_update:[:sales_number,:total_sales_amount]
+    AnalysisProduct.import analysis_products_arr
     redirect_to @analysis
   end
   def products
@@ -145,7 +142,7 @@ class AnalysesController < ApplicationController
     gon.dates = (@from..@to).map{|date|date}
     @date_analyses = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     analyses = Analysis.where(date:@from..@to).where(store_id:checked_store_ids)
-    analysis_products = AnalysisProduct.where(analysis_id:analyses.ids).where.not(product_id:nil)
+    analysis_products = AnalysisProduct.includes([:product,:analysis]).where(analysis_id:analyses.ids).where.not(product_id:nil)
     product_ids = analysis_products.pluck(:product_id).uniq
     @products = Product.where(id:product_ids).order(:bejihan_sozai_flag)
     @product_datas = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
@@ -160,12 +157,17 @@ class AnalysesController < ApplicationController
           @product_datas[ap.product_id]['sales_number'] = ap.sales_number
           @product_datas[ap.product_id]['actual_inventory'] = ap.actual_inventory
           @product_datas[ap.product_id]['count'] = 1
+          @product_datas[ap.product_id]['product_id'] = ap.product_id
+          @product_datas[ap.product_id]['date'] = ap.analysis.date
         end
       end
     end
     # score計算
-    smaregi_trading_histories = []
-
+    all_smaregi_trading_histories = SmaregiTradingHistory.where(analysis_id:analyses.ids)
+    @day_sales_number = all_smaregi_trading_histories.group(:hinban).sum(:suryo)
+    @early_sales_number = all_smaregi_trading_histories.where(time:'00:00:00'..'13:59:59').group(:hinban).sum(:suryo)
+    @middle_sales_number = all_smaregi_trading_histories.where(time:'14:00:00'..'18:59:59').group(:hinban).sum(:suryo)
+    @late_sales_number = all_smaregi_trading_histories.where(time:'19:00:00'..'23:59:59').group(:hinban).sum(:suryo)
 
     if params[:sort]
       sort = params[:sort]
