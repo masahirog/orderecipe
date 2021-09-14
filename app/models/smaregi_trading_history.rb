@@ -54,6 +54,7 @@ class SmaregiTradingHistory < ApplicationRecord
       nebikigokei = row["値引き後計"]
       bumon_id = row["部門ID"]
       bumonmei = row["部門名"]
+      time = "#{Time.parse(torihiki_nichiji).hour}:#{Time.parse(torihiki_nichiji).min}"
       if date == form_date.to_date && smaregi_store_id == tenpo_id
         new_smaregi_trading_history = SmaregiTradingHistory.new(date:date,analysis_id:analysis_id,torihiki_id:torihiki_id,torihiki_nichiji:torihiki_nichiji,tanka_nebikimae_shokei:tanka_nebikimae_shokei,
           tanka_nebiki_shokei:tanka_nebiki_shokei,shokei:shokei,shikei_nebiki:shikei_nebiki,shokei_waribikiritsu:shokei_waribikiritsu,
@@ -62,7 +63,7 @@ class SmaregiTradingHistory < ApplicationRecord
           tanmatsu_torihiki_id:tanmatsu_torihiki_id,nenreiso:nenreiso,kyakuso_id:kyakuso_id,hanbaiin_id:hanbaiin_id,hanbaiin_mei:hanbaiin_mei,
           torihikimeisai_id:torihikimeisai_id,torihiki_meisaikubun:torihiki_meisaikubun,shohin_id:shohin_id,shohin_code:shohin_code,
           hinban:hinban,shohinmei:shohinmei,shohintanka:shohintanka,hanbai_tanka:hanbai_tanka,tanpin_nebiki:tanpin_nebiki,tanpin_waribiki:tanpin_waribiki,
-          suryo:suryo,nebikimaekei:nebikimaekei,tanka_nebikikei:tanka_nebikikei,nebikigokei:nebikigokei,bumon_id:bumon_id,bumonmei:bumonmei)
+          suryo:suryo,nebikimaekei:nebikimaekei,tanka_nebikikei:tanka_nebikikei,nebikigokei:nebikigokei,bumon_id:bumon_id,bumonmei:bumonmei,time:time)
         smaregi_trading_histories_arr << new_smaregi_trading_history
         if smaregi_shohin_ids.include?(shohin_id)
         else

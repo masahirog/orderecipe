@@ -42,9 +42,13 @@ class AnalysesController < ApplicationController
         smaregi_shohin_ids << sth.shohin_id
       end
     end
+    #14時までの販売率を計算する
+    @early_sales_number = smaregi_trading_histories.where(time:'00:00:00'..'13:59:59').sum(:suryo)
+
     analysis_products_arr.each do |ap|
       ap.sales_number = @product_sales_number[ap.smaregi_shohin_id][:suryo]
       ap.total_sales_amount = @product_sales_number[ap.smaregi_shohin_id][:nebikigokei]
+      ap.early_sales_rate_of_all =  (ap.sales_number.to_f / @early_sales_number).round(3)
     end
     AnalysisProduct.import analysis_products_arr
     redirect_to @analysis
@@ -168,6 +172,10 @@ class AnalysesController < ApplicationController
     @early_sales_number = all_smaregi_trading_histories.where(time:'00:00:00'..'13:59:59').group(:hinban).sum(:suryo)
     @middle_sales_number = all_smaregi_trading_histories.where(time:'14:00:00'..'18:59:59').group(:hinban).sum(:suryo)
     @late_sales_number = all_smaregi_trading_histories.where(time:'19:00:00'..'23:59:59').group(:hinban).sum(:suryo)
+
+    @product_datas.each do |pd|
+      pd[1]['sales_rate'] = ((pd[1]['sales_number'].to_f / pd[1]['actual_inventory'])*100).round
+    end
 
     if params[:sort]
       sort = params[:sort]

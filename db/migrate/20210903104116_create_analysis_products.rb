@@ -17,6 +17,7 @@ class CreateAnalysisProducts < ActiveRecord::Migration[5.2]
       t.integer :total_sales_amount
       t.integer :loss_amount
       t.timestamps
+      t.float :early_sales_rate_of_all
     end
   end
 end

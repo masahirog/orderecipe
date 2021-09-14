@@ -42,6 +42,7 @@ ActiveRecord::Schema.define(version: 2021_09_03_104116) do
     t.integer "loss_amount"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.float "early_sales_rate_of_all"
   end
 
   create_table "brands", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
