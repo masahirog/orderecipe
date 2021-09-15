@@ -5,10 +5,12 @@ class SmaregiTradingHistory < ApplicationRecord
 
   def self.upload_data(form_date,smaregi_store_id,analysis_id,file)
     total_sales = 0
+    total_early_sales_number = 0
     smaregi_trading_histories_arr = []
     analysis_products_arr = []
     update_analysis_products_arr = []
     product_sales_number = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    product_early_sales_number = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     product_sales_amount = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     analysis = Analysis.find(analysis_id)
     smaregi_shohin_ids = analysis.analysis_products.map{|ap|ap.smaregi_shohin_id.to_s}
@@ -87,16 +89,31 @@ class SmaregiTradingHistory < ApplicationRecord
           product_sales_number[shohin_id] = number
         end
 
+        if Time.parse(time) < Time.parse('14:00')
+          total_early_sales_number += number
+          if product_early_sales_number[shohin_id].present?
+            product_early_sales_number[shohin_id] += number
+          else
+            product_early_sales_number[shohin_id] = number
+          end
+        end
+
+
         if product_sales_amount[shohin_id].present?
           product_sales_amount[shohin_id] += salse
         else
           product_sales_amount[shohin_id] = salse
         end
+
       end
     end
+    # csvのeachはここまで▲
     analysis_products_arr.each do |analysis_product|
       analysis_product.sales_number = product_sales_number[analysis_product.smaregi_shohin_id.to_s]
       analysis_product.total_sales_amount = product_sales_amount[analysis_product.smaregi_shohin_id.to_s]
+      if product_early_sales_number[analysis_product.smaregi_shohin_id.to_s].present?
+        analysis_product.early_sales_rate_of_all = (product_early_sales_number[analysis_product.smaregi_shohin_id.to_s].to_f/total_early_sales_number).round(3)
+      end
     end
     SmaregiTradingHistory.import smaregi_trading_histories_arr
     AnalysisProduct.import analysis_products_arr
