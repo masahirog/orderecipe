@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_03_104116) do
+ActiveRecord::Schema.define(version: 2021_09_16_054336) do
 
   create_table "analyses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "store_id"
@@ -341,6 +341,15 @@ ActiveRecord::Schema.define(version: 2021_09_03_104116) do
     t.integer "product_id", null: false
     t.integer "menu_id", null: false
     t.integer "row_order", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "product_ozara_serving_informations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "product_id", null: false
+    t.integer "row_order", default: 0, null: false
+    t.string "image"
+    t.text "content"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

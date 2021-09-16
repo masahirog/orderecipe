@@ -87,17 +87,25 @@
     /     = f.select :status, options_for_select(Product.statuses.keys.to_a,@product.status), {}, class: 'form-control'
 
   .col-md-12.form-group
-    .col-md-12
-      = f.label :description, "商品紹介"
-      = f.text_area :description, class:"form-control", style:"height:5em;"
-
-  .col-md-12.form-group
     .col-md-6
-      = f.label :description, "大皿盛り付け手順"
+      = f.label :description, "商品紹介"
       = f.text_area :description, class:"form-control", style:"height:10em;"
     .col-md-6
       = f.label :serving_infomation, "1人前分量"
       = f.text_area :serving_infomation, class:"form-control", style:"height:10em;"
+  .col-md-12
+    table.table
+      thead
+        tr
+          th
+            span 大皿盛り手順
+            = link_to_add_association '追加', f, :product_ozara_serving_informations,class:'btn btn-primary add_product_ozara_serving_information_fields',style:'margin-left:20px;',
+            data: {association_insertion_node: '#product_ozara_serving_informations-add-point',association_insertion_method: 'append' }
+          th
+          th
+      tbody#product_ozara_serving_informations-add-point
+        = f.fields_for :product_ozara_serving_informations do |posi|
+          = render 'product_ozara_serving_information_fields', f:posi
 
   .col-md-12
     table.table
@@ -166,12 +174,3 @@
       = link_to_add_association '品目追加', f, :product_menus,class:'btn btn-primary add_menu_fields'
   .action.col-md-12
     input.btn.btn-success[type="button" onclick="submit();" value="登録する"]
-
-
-javascript:
-  $("#product_sell_price").on('change',function(){
-    var price = $(this).val();
-    var cost_price = $("#product_cost_price").val();
-    var cost_rate = Math.round((cost_price/price)*1000)/10;
-    $('.cost_rate').val(cost_rate);
-  });

@@ -1,0 +1,10 @@
+tr.nested-fields.field
+  td
+    = f.text_area :content,class:'form-control', style:"height:8em;"
+  td
+    - if f.object.image.present?
+      object data="#{f.object.image.to_s}" width="" height=""
+    = f.file_field :image
+
+  td
+    = link_to_remove_association '削除', f,class:'remove_menu_btn btn btn-danger'

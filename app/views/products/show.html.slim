@@ -26,13 +26,11 @@
     thead
       tr
         th 商品名
-        th 総菜？
         th 販売価格
         th 原価価格
     tbody
       tr
         td = @product.name
-        td = 'yes' if @product.bejihan_sozai_flag == true
         td = "#{@product.sell_price} 円"
         td = "#{@product.cost_price} 円"
   / table.table
@@ -49,7 +47,7 @@
     thead
       tr
         th 商品紹介
-        th 盛り付け情報
+        th 1人前盛り
     tbody
       tr
         td = text_url_to_link(simple_format(h(@product.description))).html_safe

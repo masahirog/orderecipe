@@ -6,6 +6,7 @@ $(document).on('turbolinks:load', function() {
   });
   reset_row_order();
   menu_select2();
+  cost_rate_calc();
 
   $('.name_search').select2({
     height:"40px",
@@ -21,6 +22,17 @@ $(document).on('turbolinks:load', function() {
       reset_row_order();
     },1);
   });
+
+  $("#product_sell_price").on('keyup',function(){
+    cost_rate_calc();
+  });
+
+  function cost_rate_calc(){
+    var price = $("#product_sell_price").val();
+    var cost_price = $("#product_cost_price").val();
+    var cost_rate = Math.round((cost_price/price)*1000)/10;
+    $('.cost_rate').val(cost_rate);
+  };
 
 
   function menu_select2(){
@@ -83,6 +95,7 @@ $(document).on('turbolinks:load', function() {
       calculate_product_price();
       reset_row_order();
       calculate_total_calorie();
+      cost_rate_calc();
     },10);
   });
 
@@ -98,7 +111,8 @@ $(document).on('turbolinks:load', function() {
     .done(function(data) {
       get_menu_price(data,u);
       calculate_product_price();
-      show_calorie(data,u)
+      show_calorie(data,u);
+      cost_rate_calc();
    });
   });
 

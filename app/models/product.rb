@@ -28,6 +28,9 @@ class Product < ApplicationRecord
   has_many :product_parts, dependent: :destroy
   accepts_nested_attributes_for :product_parts, allow_destroy: true
 
+  has_many :product_ozara_serving_informations, dependent: :destroy
+  accepts_nested_attributes_for :product_ozara_serving_informations, allow_destroy: true
+
   mount_uploader :image, ProductImageUploader
   mount_uploader :display_image, ProductImageUploader
   mount_uploader :image_for_one_person, ProductImageUploader
