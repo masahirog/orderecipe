@@ -20,28 +20,37 @@
       = f.label :sell_price, "販売価格"
       .form-inline
         .form-group
-          = f.number_field :sell_price, class:"price form-control"
+          = f.number_field :sell_price, class:"price form-control text-right",style:'width:150px;'
           .form-group
-            |  円
+            |円
     .col-md-2
       = f.label :cost_price, "商品原価"
       .form-inline
         .form-group
-          = f.number_field :cost_price, :readonly => 'readonly', class:"product_cost_price form-control text-right"
+          = f.number_field :cost_price, :readonly => 'readonly', class:"product_cost_price form-control text-right",style:'width:150px;'
         .form-group
-          |  円
+          |円
+    .col-md-2
+      label 原価率
+      .form-inline
+        .form-group
+          input.cost_rate.form-control style="width:150px;" readonly='true'
+        .form-group
+          |%
+
+
+
   .col-md-12.form-group
     .col-md-2
       = f.label :product_category, "べじはん惣菜"
       = f.check_box :bejihan_sozai_flag, class: "form-control"
     .col-md-2
-      = f.label :carryover_able_flag, "在庫を翌日以降繰越可能？"
+      = f.label :carryover_able_flag, "冷凍ストック可"
       = f.check_box :carryover_able_flag, class: "form-control"
-
-    .col-md-2
+    = f.hidden_field :cooking_rice_id,value:21
+    / .col-md-2
       = f.label :cooking_rice_id, "使用ライス"
       = f.collection_select :cooking_rice_id, CookingRice.all, :id, :name, {}, { class: "form-control"}
-  .col-md-12.form-group
     .col-md-2
       = f.label :container_id, "盛り付け包材"
       = f.collection_select :container_id, Container.all, :id, :name, {include_blank:true}, { class: "form-control"}
@@ -53,7 +62,7 @@
       = f.label :sub_serving_plate_id, "大皿候補第２"
       = f.collection_select :sub_serving_plate_id, ServingPlate.all, :id, :name, {include_blank:true}, { class: "form-control"}
 
-  .col-md-12.form-group
+  / .col-md-12.form-group
     .col-md-4
       = f.label :food_label_name, "食品表示名"
       = f.text_field :food_label_name, class:"form-control"
@@ -78,13 +87,18 @@
     /     = f.select :status, options_for_select(Product.statuses.keys.to_a,@product.status), {}, class: 'form-control'
 
   .col-md-12.form-group
-    .col-md-6
-      = f.label :serving_infomation, "盛付情報"
-      = f.text_area :serving_infomation, class:"form-control", style:"height:7em;"
+    .col-md-12
+      = f.label :description, "商品紹介"
+      = f.text_area :description, class:"form-control", style:"height:5em;"
 
+  .col-md-12.form-group
     .col-md-6
-      = f.label :description, "紹介文"
-      = f.text_area :description, class:"form-control", style:"height:7em;"
+      = f.label :description, "大皿盛り付け手順"
+      = f.text_area :description, class:"form-control", style:"height:10em;"
+    .col-md-6
+      = f.label :serving_infomation, "1人前分量"
+      = f.text_area :serving_infomation, class:"form-control", style:"height:10em;"
+
   .col-md-12
     table.table
       thead
@@ -152,3 +166,12 @@
       = link_to_add_association '品目追加', f, :product_menus,class:'btn btn-primary add_menu_fields'
   .action.col-md-12
     input.btn.btn-success[type="button" onclick="submit();" value="登録する"]
+
+
+javascript:
+  $("#product_sell_price").on('change',function(){
+    var price = $(this).val();
+    var cost_price = $("#product_cost_price").val();
+    var cost_rate = Math.round((cost_price/price)*1000)/10;
+    $('.cost_rate').val(cost_rate);
+  });
