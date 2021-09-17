@@ -1,19 +1,21 @@
-= link_to 'カレンダー', store_daily_menus_path(store_id:@store_daily_menu.store_id)
-h4
+= link_to 'カレンダー', store_daily_menus_path(store_id:@store_daily_menu.store_id),class:'pull-right btn btn-primary'
+h2 style='float:left;' = "#{@store_daily_menu.store.name}店 "
+h2 style='float:left;margin-left:10px;'
+  - if @yesterday
+    = link_to "＜",@yesterday
   = @store_daily_menu.start_time.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@store_daily_menu.start_time.wday]})")
-  = "　#{@store_daily_menu.store.name}店 "
+  - if @tommoroww
+    = link_to "＞",@tommoroww
 
-
-.clearfix
-  div style='float:left;width:30%;padding:10px;'
-    label 天気
-    p = @store_daily_menu.weather
-  div style='float:left;width:30%;padding:10px;'
-    label 最高気温
-    p = @store_daily_menu.max_temperature
-  div style='float:left;width:30%;padding:10px;'
-    label 最高気温
-    p = @store_daily_menu.min_temperature
+div style='float:left;padding:15px 20px 15px 40px;'
+  label 天気
+  p = @store_daily_menu.weather
+div style='float:left;padding:15px 20px;'
+  label 最高気温
+  p = @store_daily_menu.max_temperature
+div style='float:left;padding:15px 20px;'
+  label 最高気温
+  p = @store_daily_menu.min_temperature
 
 .clearfix.col-md-12
   table.show_case_table style='float:left;width:14%;margin-right:5px;'
@@ -50,77 +52,66 @@ h4
         = image_tag sdmp.image.url,style:'height:200px;width:300px;object-fit:cover;object-position: 0 0;'
 
 .col-md-12
-  = link_to "編集", edit_store_daily_menu_path(@store_daily_menu),class:'btn btn-primary',style:'margin-right:20px;'
-  button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newOrder" 複数日入力
-  #newOrder.modal.fade tabindex="-1"
-    = form_tag(once_edit_store_daily_menus_path,method: :get) do
-      = hidden_field_tag :id,@store_daily_menu.id
-      .modal-dialog style='width:1000px;'
-        .modal-content
-          .modal-header
-            h4.modal-title 日付を選択（最大5日）
-          .modal-body
-            label FROM：
-            = @store_daily_menu.start_time
-            = hidden_field_tag 'from',@store_daily_menu.start_time
-            label 　TO：
-            = @store_daily_menu.start_time + 3
-            = hidden_field_tag 'to',@store_daily_menu.start_time + 3
-          .modal-footer
-            button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
-            = submit_tag "まとめて発注" ,class:"btn btn-primary"
-  / = link_to "当日印刷",store_daily_menu_path(id:@store_daily_menu.id, :format => :pdf),class:"btn btn-default",:target=>"_blank",style:'margin-left:20px;'
-  / = link_to "販売データUP",sales_upload_store_store_daily_menus_path(id:@store_daily_menu.id),class:"btn btn-default",style:'margin-left:20px;'
-  button type="button" class="btn btn-default" data-toggle="modal" style="margin-left:20px;" data-target="#upload" 販売データUP
-  #upload.modal.fade tabindex="-1"
-    = form_tag sales_upload_store_store_daily_menus_path, multipart: true do
-      = hidden_field_tag :id,@store_daily_menu.id
-      .modal-dialog style='width:1000px;'
-        .modal-content
-          .modal-header
-          .modal-body
-            = file_field_tag :file,class:'form-control',style:'padding:10px;height:100%;'
-          .modal-footer
-            button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
-            = submit_tag "アップロード",class:'btn btn-primary'
-
-
-
 
   = link_to "在庫CSV", stock_store_daily_menus_path(store_daily_menu_id:@store_daily_menu.id,format:'csv'), class: "btn btn-default",style:'float:right;'
-  / = link_to "食品表示CSV", store_daily_menu_path(@store_daily_menu,format:'csv'), class: "btn btn-default",style:'float:right;'
 table.table.table-list
   thead
     tr
-      th 総発注数
-      th 金額
-      th 総菜発注数
-      th 総菜金額
-  tbody
-    tr
-      td = @store_daily_menu.total_num
-      td = @store_daily_menu_details.sum(:total_price)
-      td
-      td
-
-
-table.table.table-list
-  thead
-    tr
-      th メニュー名
+      th
+        |メニュー名
+        = link_to "編集", edit_store_daily_menu_path(@store_daily_menu),class:'btn btn-primary btn-sm',style:'margin-left:20px;'
+      th 大皿盛り
       th 販売価格
+      th 盛り皿
+      th 容器
       th = "発注数：#{@store_daily_menu.total_num}"
-      th 当日分以外からの追加
-      th 冷凍繰越
-      th 調理済み在庫
-      th 完売
+      th 別日ストック使用分
+      th 冷凍ストック化
+      th 実在庫
+      th 完売F
   tbody
     -@store_daily_menu_details.each do |sdmd|
       tr
         td
           = link_to sdmd.product.name,product_path(sdmd.product)
         td
+          - if sdmd.product.product_ozara_serving_informations.present?
+            button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#ozara_serving_#{sdmd.product_id}" style='' 盛り方
+            .modal.fade tabindex="-1" ID="ozara_serving_#{sdmd.product_id}"
+              .modal-dialog style='width:1000px;'
+                .modal-content
+                  .modal-header
+                    h4.modal-title 大皿盛り付け
+                  table.table
+                    thead
+                      tr
+                        th.col-md-6 工程
+                        th 画像
+                    tbody
+                      - sdmd.product.product_ozara_serving_informations.each do |posi|
+                        tr
+                          td
+                            = posi.content
+                          td
+                            = image_tag posi.image.to_s,class:"img-responsive",style:'max-height:350px;'
+                  .modal-footer
+                    button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
+
+        td
           = "#{sdmd.product.sell_price}円"
+        td
+          - if sdmd.product.main_serving_plate_id.present?
+            - serving_plate = ServingPlate.find(sdmd.product.main_serving_plate_id)
+            - if serving_plate.image.present?
+              a.p
+                = image_tag serving_plate.image.url,style:'width:30px;'
+                span
+                  = image_tag serving_plate.image.url,style:'width:400px;'
+                = "　#{serving_plate.name}"
+
+        td
+          = sdmd.product.container.name if sdmd.product.container_id.present?
+
         td
           = sdmd.number
         td
@@ -141,4 +132,18 @@ css:
   }
   .show_case_table {
     border-collapse: collapse;
+  }
+  a.p:hover {
+    position: relative;
+    text-decoration: none;
+  }
+  a.p span {
+      display: none;
+      position: absolute;
+      top: 1em;
+      left: 0;
+  }
+  a.p:hover span {
+      border: none;
+      display: block;
   }

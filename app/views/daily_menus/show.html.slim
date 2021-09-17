@@ -159,9 +159,7 @@
 table.table.table-list.table-striped
   thead
     tr
-      th メニュー名
-      th 盛り皿
-      th 容器
+      th 商品名
       th 単品惣菜分
       th 弁当等副菜分
       th 合計製造数
@@ -180,27 +178,6 @@ table.table.table-list.table-striped
       tr
         td
           = link_to dmd.product.name,product_path(dmd.product)
-        td
-          - if dmd.product.main_serving_plate_id.present?
-            - serving_plate = ServingPlate.find(dmd.product.main_serving_plate_id)
-            - if serving_plate.image.present?
-              a.p
-                = image_tag serving_plate.image.url,style:'width:30px;'
-                span
-                  = image_tag serving_plate.image.url,style:'width:400px;'
-                = "　#{serving_plate.name}"
-
-        / td
-        /   - if dmd.product.main_serving_plate_id.present?
-        /     - serving_plate = ServingPlate.find(dmd.product.main_serving_plate_id)
-        /     a.p
-        /       = serving_plate.name
-        /       - if serving_plate.image.present?
-        /         span
-        /           = image_tag serving_plate.image.url,style:'width:400px;'
-          - else
-        td
-          = dmd.product.container.name if dmd.product.container_id.present?
         td
           = dmd.for_single_item_number
         td

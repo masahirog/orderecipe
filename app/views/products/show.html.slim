@@ -19,71 +19,70 @@
   - if @delete_flag == true
     = link_to "削除", @product, method: :delete,class:'btn btn-danger pull-right',data: { confirm: "ほんまに削除してええの？" },style:''
 
-
-
-.amount_number.col-md-12
-  table.table
-    thead
-      tr
-        th 商品名
-        th 販売価格
-        th 原価価格
-    tbody
-      tr
-        td = @product.name
-        td = "#{@product.sell_price} 円"
-        td = "#{@product.cost_price} 円"
-  / table.table
-    thead
-      tr
-        th 食品表示名
-        th 食品表示内容
-    tbody
-      tr
-        td = @product.food_label_name
-        td = simple_format(@product.food_label_content)
-
-  table.table
-    thead
-      tr
-        th 商品紹介
-        th 1人前盛り
-    tbody
-      tr
-        td = text_url_to_link(simple_format(h(@product.description))).html_safe
-        td = text_url_to_link(simple_format(h(@product.serving_infomation))).html_safe
-  table.table
-    thead
-      tr
-        th 製造側写真
-        th 大皿写真
-        th 1人前写真
-        th ポップ
-    tbody
-      tr
-        td
-          = link_to @product.image.to_s, "data-lightbox" => @product.image.to_s do
-            = image_tag @product.image.to_s ,class:"text-center img-responsive center-block",style:'max-height:150px;'
-        td
-          = link_to @product.display_image.to_s, "data-lightbox" => @product.display_image.to_s do
-            = image_tag @product.display_image.to_s ,class:"text-center img-responsive center-block",style:'max-height:150px;'
-        td
-          = link_to @product.image_for_one_person.to_s, "data-lightbox" => @product.image_for_one_person.to_s do
-            = image_tag @product.image_for_one_person.to_s ,class:"text-center img-responsive center-block",style:'max-height:150px;'
-        td
-          - if @product.product_pops.present?
-            object data="#{@product.product_pops[0].image.to_s}" type="application/pdf" width="" height=""
-            = link_to "ダウンロード", download_products_path(:file_name => @product.product_pops[0].image,:key => @product.product_pops[0].image.path, :type => 'pdf'),target:'_blank',class:'col-md-12'
-
+table.table
+  thead
     tr
-      th.active.col-md-4 アレルギー
-      td = @allergies.join('、')
-    / tr
-    /   th.active.col-md-4 食品添加物
-    /   td = @additives.join('、')
-    / tr
-    /   th.active.col-md-4 カロリー
-    /   td = "#{MenuMaterial.where(menu_id:@product.menus.ids).sum(:calorie).round(2)} kcal"
+      th 商品名
+      th.col-md-6 商品紹介
+      th 販売価格
+      th 原価価格
+      th 原価率
+
+  tbody
+    tr
+      td = @product.name
+      td = text_url_to_link(simple_format(h(@product.description))).html_safe
+      td = "#{@product.sell_price} 円"
+      td = "#{@product.cost_price} 円"
+      td = "#{((@product.cost_price/@product.sell_price)*100).round(1)}%"
+table.table
+  thead
+    tr
+      th 大皿盛りつけ手順
+      th
+  tbody
+    - @product.product_ozara_serving_informations.each_with_index do |posi,i|
+      tr
+        td
+          span style='font-weight:bold;' = "#{i+1}. "
+          = posi.content
+        td
+          = link_to posi.image.to_s, "data-lightbox" => posi.image.to_s do
+            = image_tag posi.image.to_s ,class:"text-center img-responsive center-block",style:'max-height:150px;'
+
+
+
+table.table
+  thead
+    tr
+      th.col-md-2 製造側写真
+      th.col-md-2 大皿写真
+      th.col-md-2 ポップ
+      th.col-md-2 1人前写真
+      th.col-md-2 1人前盛り
+  tbody
+    tr
+      td
+        = link_to @product.image.to_s, "data-lightbox" => @product.image.to_s do
+          = image_tag @product.image.to_s ,class:"text-center img-responsive center-block",style:'max-height:150px;'
+      td
+        = link_to @product.display_image.to_s, "data-lightbox" => @product.display_image.to_s do
+          = image_tag @product.display_image.to_s ,class:"text-center img-responsive center-block",style:'max-height:150px;'
+      td
+        - if @product.product_pops.present?
+          object data="#{@product.product_pops[0].image.to_s}" type="application/pdf"
+          = link_to "ダウンロード", download_products_path(:file_name => @product.product_pops[0].image,:key => @product.product_pops[0].image.path, :type => 'pdf'),target:'_blank',class:'col-md-12'
+      td
+        = link_to @product.image_for_one_person.to_s, "data-lightbox" => @product.image_for_one_person.to_s do
+          = image_tag @product.image_for_one_person.to_s ,class:"text-center img-responsive center-block",style:'max-height:150px;'
+
+      td = text_url_to_link(simple_format(h(@product.serving_infomation))).html_safe
+  / tr
+  /   th.active.col-md-4 食品添加物
+  /   td = @additives.join('、')
+  / tr
+  /   th.active.col-md-4 カロリー
+  /   td = "#{MenuMaterial.where(menu_id:@product.menus.ids).sum(:calorie).round(2)} kcal"
 
 .col-md-12.active[style="padding:10px;"]
   label.col-md-2 メニュー名

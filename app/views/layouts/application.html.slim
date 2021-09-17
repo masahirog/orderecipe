@@ -47,6 +47,8 @@ html
                     li = link_to "キッチン献立",daily_menus_path
                     li = link_to "店舗",stores_path
                     li = link_to "お客さまの声",customer_opinions_path
+                    li = link_to "Wiki",wikis_path
+                    li = link_to 'シフト','/shift'
 
 
                 li.dropdown
@@ -88,11 +90,6 @@ html
                     li = link_to "メニュー",menus_path
                     li = link_to "食材・資材",materials_path
                     li = link_to "食材月間使用確認",monthly_used_amount_materials_path
-
-                li.menu_li
-                  = link_to "Wiki",wikis_path
-                li.menu_li
-                  = link_to 'シフト','/shift'
 
                 li.dropdown
                   a.dropdown-toggle href="#" data-toggle="dropdown" role="button"

@@ -13,6 +13,7 @@ div style='margin-bottom:20px;'
       div style="float:left;padding:8px;" 〜
       = date_field_tag :to, params[:to], class:"form-control",style:'width:200px;float:left;'
     = submit_tag "絞り込み" ,class:"btn btn-primary",style:"margin-left:20px;"
+    = link_to '販売データ',analyses_path(from:params[:from],to:params[:to]),class:'btn btn-sm btn-primary pull-right'
 h3 売上推移と来客数
 canvas#chart1
 
