@@ -2,7 +2,14 @@ class TasksController < ApplicationController
   before_action :set_task, only: %i[ show edit update destroy ]
 
   def index
-    @tasks = Task.all
+    if params[:date]
+      @date = params[:date]
+    else
+      @date = Date.today
+      params[:date]=@date
+    end
+    @store = Store.find(params[:store_id])
+    @tasks = @store.tasks.where(action_date:@date)
   end
 
   def show

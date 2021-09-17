@@ -1,6 +1,18 @@
 class TaskTemplatesController < ApplicationController
   before_action :set_task_template, only: %i[ show edit update destroy ]
 
+  def hand_reflect
+    date = Date.today
+    new_tasks = []
+    TaskTemplate.all.each do |tt|
+      tt.store_ids.each do |store_id|
+        task = Task.new(store_id:store_id,task_template_id:tt.id,action_date:date,action_time:tt.action_time,content:tt.content,memo:tt.memo,status:0)
+        new_tasks << task
+      end
+    end
+    Task.import new_tasks
+    redirect_to task_templates_path
+  end
   def index
     @task_templates = TaskTemplate.all
   end

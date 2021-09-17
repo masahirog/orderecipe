@@ -1,13 +1,14 @@
-h3 タスクのテンプレート
-.col-md-1
+h3 チェック項目のテンプレート
+.col-md-2
   = link_to '新規登録',new_task_template_path,class:'btn btn-primary'
-
+.col-md-2.pull-right
+  = link_to '今日分の手動作成',hand_reflect_task_templates_path,class:'btn btn-primary', method: :post, data: { confirm: 'チェックリストを作成します。' }
 table.table.table-striped
   thead
     tr
       th リピート
       th 時間
-      th タスク内容
+      th 内容
       th メモ
       th ステータス
       th 店舗

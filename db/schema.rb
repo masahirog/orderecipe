@@ -546,7 +546,8 @@ ActiveRecord::Schema.define(version: 2021_09_17_010306) do
   create_table "tasks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "store_id", null: false
     t.integer "task_template_id"
-    t.datetime "action_datetime"
+    t.date "action_date"
+    t.time "action_time"
     t.string "content"
     t.text "memo"
     t.integer "status"

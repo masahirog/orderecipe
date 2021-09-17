@@ -1,25 +1,35 @@
-h3 タスク一覧
-.col-md-1
-  = link_to '新規登録',new_task_path,class:'btn btn-primary'
+h3 = "#{@store.name} チェックリスト一覧"
+= form_tag tasks_path, :method => 'get' do
+  = hidden_field_tag :store_id,params[:store_id]
+  .col-md-2
+    = date_field_tag :date,params[:date], class:"form-control"
+  .col-md-2
+    = select_tag :status, options_for_select(Task.statuses.keys.to_a,params[:status]), include_blank: true, class:"form-control"
+
+  .kensaku.col-md-1
+    label 　
+    = submit_tag "検索" ,class:"btn btn-primary"
+
+
 
 table.table.table-striped
   thead
     tr
-      th リピート
+      th
+        |日付
+        = link_to '新規登録',new_task_path,class:'btn btn-primary btn-sm',style:'margin-left:20px;'
       th 時間
-      th タスク内容
+      th 内容
       th メモ
       th ステータス
-      th 店舗
       th
 
   tbody
     - @tasks.each do |task|
       tr
-        td = task.repeat_type
+        td = task.action_date.strftime("%-m/%d")
         td = task.action_time.strftime("%H:%M")
         td = task.content
         td = task.memo
         td = task.status
-        td = task.stores.pluck(:name).join(',')
         td = link_to '編集',edit_task_path(task)

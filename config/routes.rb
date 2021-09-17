@@ -25,7 +25,11 @@ Rails.application.routes.draw do
   # get '/sell_reports' => 'application#sell_reports'
   get '/shift' => 'application#shift'
   resources :tasks
-  resources :task_templates
+  resources :task_templates do
+    collection do
+      post :hand_reflect
+    end
+  end
   resources :wikis
   resources :containers
   resources :analyses do
