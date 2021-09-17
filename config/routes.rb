@@ -24,6 +24,8 @@ Rails.application.routes.draw do
   # get '/kpi' => 'application#kpi'
   # get '/sell_reports' => 'application#sell_reports'
   get '/shift' => 'application#shift'
+  resources :tasks
+  resources :task_templates
   resources :wikis
   resources :containers
   resources :analyses do

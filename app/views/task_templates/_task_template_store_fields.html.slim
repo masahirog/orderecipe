@@ -1,0 +1,2 @@
+li.list-group-item.col-md-12.nested-fields.field
+  = f.collection_select :store_id, Store.all, :id, :name, {}, { class: "form-control"}

@@ -1,0 +1,25 @@
+h3 タスクのテンプレート
+.col-md-1
+  = link_to '新規登録',new_task_template_path,class:'btn btn-primary'
+
+table.table.table-striped
+  thead
+    tr
+      th リピート
+      th 時間
+      th タスク内容
+      th メモ
+      th ステータス
+      th 店舗
+      th
+
+  tbody
+    - @task_templates.each do |task_template|
+      tr
+        td = task_template.repeat_type
+        td = task_template.action_time.strftime("%H:%M")
+        td = task_template.content
+        td = task_template.memo
+        td = task_template.status
+        td = task_template.stores.pluck(:name).join(',')
+        td = link_to '編集',edit_task_template_path(task_template)

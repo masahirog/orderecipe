@@ -1,0 +1,33 @@
+
+= form_for @task_template do |f|
+  - if @task_template.errors.any?
+    #error_explanation
+      h2
+        = pluralize(@task_template.errors.count, "error")
+        |  prohibited this recipe from being saved:
+      ul
+        - @task_template.errors.full_messages.each do |message|
+          li
+            = message
+  .form-group
+    = f.label :repeat_type, "リピートタイプ"
+    = f.select :repeat_type, TaskTemplate.repeat_types.keys.to_a, {}, class: 'form-control'
+  .form-group
+    = f.label :action_time, "時間"
+    = f.time_field :action_time, class:"form-control"
+
+  .form-group
+    = f.label :content, "内容"
+    = f.text_field :content, class:"form-control"
+  .form-group
+    = f.label :memo, "メモ"
+    = f.text_area :memo, class:"form-control",style:"height:5em;"
+  .form-group
+    label 店舗選択
+    = link_to_add_association '追加', f, :task_template_stores,class:'btn btn-primary btn-sm',style:'margin-left:20px;',
+    data: {association_insertion_node: '#task_template_store-add-point',association_insertion_method: 'append' }
+    ul#task_template_store-add-point.list-group
+      = f.fields_for :task_template_stores do |tts|
+        = render 'task_template_store_fields', f:tts
+  .form-group
+    input.btn.btn-success[type="button" onclick="submit();" value="登録する"]

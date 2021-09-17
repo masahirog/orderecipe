@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_16_054336) do
+ActiveRecord::Schema.define(version: 2021_09_17_010306) do
 
   create_table "analyses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "store_id"
@@ -522,6 +522,35 @@ ActiveRecord::Schema.define(version: 2021_09_16_054336) do
     t.boolean "jfd", default: false, null: false
     t.integer "user_id"
     t.integer "smaregi_store_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "task_template_stores", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "task_template_id"
+    t.integer "store_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "task_templates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "repeat_type", null: false
+    t.time "action_time"
+    t.string "content"
+    t.text "memo"
+    t.integer "status", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "tasks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "store_id", null: false
+    t.integer "task_template_id"
+    t.datetime "action_datetime"
+    t.string "content"
+    t.text "memo"
+    t.integer "status"
+    t.datetime "status_change_datetime"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
