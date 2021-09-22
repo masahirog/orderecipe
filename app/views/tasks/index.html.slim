@@ -1,4 +1,6 @@
-h3 = "#{@store.name} チェックリスト一覧"
+.clearfix style='margin-bottom:10px;'
+  h3 style='float:left;' = "#{@date.strftime("%Y/%-m/%-d(#{%w(日 月 火 水 木 金 土)[@date.wday]})")}ワーク一覧"
+  = link_to '新規登録',new_task_path,class:'btn btn-primary btn-sm',style:'margin:18px 0 0 20px;float:left;'
 = form_tag tasks_path, :method => 'get' do
   = hidden_field_tag :store_id,params[:store_id]
   .col-md-2
@@ -10,26 +12,32 @@ h3 = "#{@store.name} チェックリスト一覧"
     label 　
     = submit_tag "検索" ,class:"btn btn-primary"
 
-
-
 table.table.table-striped
   thead
     tr
-      th
-        |日付
-        = link_to '新規登録',new_task_path,class:'btn btn-primary btn-sm',style:'margin-left:20px;'
+      th 日付
       th 時間
-      th 内容
+      th 店舗
+      th ワーク
       th メモ
       th ステータス
-      th
 
   tbody
     - @tasks.each do |task|
-      tr
+      tr class="task_tr_#{task.id}"
         td = task.action_date.strftime("%-m/%d")
         td = task.action_time.strftime("%H:%M")
+        td = task.store.name
         td = task.content
         td = task.memo
-        td = task.status
-        td = link_to '編集',edit_task_path(task)
+        td
+          = form_with(model: task, data: {remote: true},id:"update_task_#{task.id}") do |f|
+            = f.hidden_field :id,class:'task_id'
+            = f.select :status, options_for_select(Task.statuses.keys.to_a,f.object.status),{}, { class: "task_status form-control"}
+javascript:
+  $(function() {
+    $(document).on("change", ".task_status", function(event) {
+      var task_id = $(this).parent().find('.task_id').val();
+      Rails.fire($('#update_task_' + task_id)[0], 'submit');
+    });
+  });

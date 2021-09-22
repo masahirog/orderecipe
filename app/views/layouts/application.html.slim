@@ -49,8 +49,8 @@ html
                     li = link_to "お客さまの声",customer_opinions_path
                     li = link_to "Wiki",wikis_path
                     li = link_to 'シフト','/shift'
-                    / li = link_to 'タスク',tasks_path
-                    li = link_to 'チェックリストテンプレ',task_templates_path
+                    li = link_to 'ワーク',tasks_path
+                    li = link_to '定期ワーク一覧',task_templates_path
 
 
                 li.dropdown
@@ -61,9 +61,6 @@ html
                     li = link_to "くるめしオーダー",kurumesi_orders_path(start_date:Date.today)
                     li = link_to "領収書発行",receipt_kurumesi_orders_path,target:'_blank'
                     li = link_to "請求書発行",'https://docs.google.com/spreadsheets/d/1BBs1RL8ojynO-MW14mH49ejwaTP7pWeHuvfjs-aX_4Y/edit#gid=737319184',target:'_blank'
-                    / li = link_to "KPI",kpi_path
-                    / li = link_to "個数データ",sell_reports_path(from:Date.today-30,to:Date.today+30)
-                    / li = link_to "くるめしメール",kurumesi_mails_path
 
 
                 li.dropdown

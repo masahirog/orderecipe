@@ -1,0 +1,67 @@
+h3 = "#{@store.name} チェックリスト一覧"
+= form_tag tasks_path, :method => 'get' do
+  = hidden_field_tag :store_id,params[:store_id]
+  .col-md-2
+    = date_field_tag :date,params[:date], class:"form-control"
+  .col-md-2
+    = select_tag :status, options_for_select(Task.statuses.keys.to_a,params[:status]), include_blank: true, class:"form-control"
+
+  .kensaku.col-md-1
+    label 　
+    = submit_tag "検索" ,class:"btn btn-primary"
+
+
+
+table.table.table-striped
+  thead
+    tr
+      th
+        |日付　
+        button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#sampleModal" タスク追加
+        #sampleModal.modal.fade tabindex="-1"
+          = form_for @task do |f|
+            .modal-dialog
+              .modal-content
+                .modal-header
+                  h4.modal-title 新規作成
+                .modal-body
+                  .form-group
+                    = f.label :action_date, "日付"
+                    = f.date_field :action_date,class:'form-control'
+                  .form-group
+                    = f.label :action_time, "時間"
+                    = f.time_field :action_time, class:"form-control"
+
+                  .form-group
+                    = f.label :content, "内容"
+                    = f.text_field :content, class:"form-control"
+                  .form-group
+                    = f.label :memo, "メモ"
+                    = f.text_area :memo, class:"form-control",style:"height:5em;"
+                    = f.hidden_field :store_id,class: "form-control"
+                .modal-footer
+                  button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
+                  = f.submit '追加',class:"btn btn-success"
+      th 時間
+      th 内容
+      th メモ
+      th ステータス
+
+  tbody
+    - @tasks.each do |task|
+      tr class="task_tr_#{task.id}"
+        td = task.action_date.strftime("%-m/%d")
+        td = task.action_time.strftime("%H:%M")
+        td = task.content
+        td = task.memo
+        td
+          = form_with(model: task, data: {remote: true},id:"update_task_#{task.id}") do |f|
+            = f.hidden_field :id,class:'task_id'
+            = f.select :status, options_for_select(Task.statuses.keys.to_a,f.object.status),{}, { class: "task_status form-control"}
+javascript:
+  $(function() {
+    $(document).on("change", ".task_status", function(event) {
+      var task_id = $(this).parent().find('.task_id').val();
+      Rails.fire($('#update_task_' + task_id)[0], 'submit');
+    });
+  });

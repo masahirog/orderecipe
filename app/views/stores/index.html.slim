@@ -15,7 +15,7 @@ table.table
       tr
         td = store.name
         td = link_to 'カレンダー', store_daily_menus_path(store_id:store.id),class:'btn btn-sm btn-primary'
-        td = link_to 'チェック', tasks_path(store_id:store.id),class:'btn btn-sm btn-primary'
+        td = link_to 'タスク', store_tasks_path(store_id:store.id),class:'btn btn-sm btn-primary'
         td = store.user.email
         td = link_to 'Show', store
         td = link_to 'Edit', edit_store_path(store)
