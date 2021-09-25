@@ -1,4 +1,4 @@
-class SmaregiTradingHistoriesController < ApplicationController
+class SmaregiTradingHistoriesController < AdminController
   before_action :set_smaregi_trading_history, only: %i[ show edit update destroy ]
   def bulk_delete
     analysis_id = params[:analysis_id]

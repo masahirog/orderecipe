@@ -6,7 +6,7 @@ h3
     .modal-dialog
       .modal-content
         .modal-header
-          h4.modal-title 新規作成
+          h4.modal-title リマインダー作成
         .modal-body
           .form-group
             = f.label :action_date, "日付"
@@ -25,36 +25,55 @@ h3
           .form-group
             = f.label :drafter, "作者"
             = f.text_field :drafter, class:"form-control", required:true
+          .clearfix
+            label 他店舗も同時に作成する
+            ul style="list-style:none;float:left;"
+              - Store.where.not(id:params[:store_id]).each do |store|
+                li style='float:left;margin-right:10px;'
+                  = check_box_tag "stores[#{store.id}]",true,params[store.id.to_s]
+                  = label_tag "stores[#{store.id}]",store.name
+          .clearfix
+            label チャットワークに通知する　
+            = check_box_tag "chatwork_notice",true,true
 
         .modal-footer
           button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
           = f.submit '追加',class:"btn btn-success"
 
-= form_tag store_tasks_path, :method => 'get' do
-  = hidden_field_tag :store_id,params[:store_id]
-  .col-md-2
-    = date_field_tag :date,params[:date], class:"form-control"
-  .col-md-2
-    = select_tag :status, options_for_select(Task.statuses.keys.to_a,params[:status]), include_blank: true, class:"form-control"
+.form-group.clearfix
+  = form_tag store_tasks_path, :method => 'get' do
+    = hidden_field_tag :store_id,params[:store_id]
+    div style='float:left;'
+      = date_field_tag :date,params[:date], class:"form-control"
+    / .col-md-2
+    /   = select_tag :status, options_for_select(Task.statuses.keys.to_a,params[:status]), include_blank: true, class:"form-control"
 
-  .kensaku.col-md-1
-    label 　
-    = submit_tag "検索" ,class:"btn btn-primary"
-
-= link_to '定期リマインド作成', task_templates_path(),class:'pull-right btn btn-primary'
+    div style='float:left;'
+      label 　
+      = submit_tag "検索" ,class:"btn btn-primary"
 
 table.table
   thead
     tr
-      th.col-md-2 日時　
+      th.col-md-1 ステータス
+      th.col-md-1 日時　
       th 内容
       th メモ
       th.col-md-1 作者
-      th.col-md-1 ステータス
 
   tbody
     - @tasks.each do |task|
-      tr class="task_tr_#{task.id}"
+      - bg_color = '#ffffff'
+      - if task.status == "done"
+        - bg_color = '#f5f5f5'
+      - elsif task.status == "cancel"
+        - bg_color = '#d3d3d3'
+      tr class="task_tr_#{task.id}" style="background-color:#{bg_color}"
+        td
+          = form_with(model: task, data: {remote: true},id:"update_task_#{task.id}") do |f|
+            = f.hidden_field :id,class:'task_id'
+            = f.select :status, options_for_select_from_enum(Task, :status),{}, { class: "task_status form-control"}
+
         td
           - if task.action_time.present?
             - time = task.action_time.strftime("%H:%M")
@@ -64,10 +83,9 @@ table.table
         td = task.content
         td = task.memo
         td = task.drafter
-        td
-          = form_with(model: task, data: {remote: true},id:"update_task_#{task.id}") do |f|
-            = f.hidden_field :id,class:'task_id'
-            = f.select :status, options_for_select(Task.statuses.keys.to_a,f.object.status),{}, { class: "task_status form-control"}
+.form-group.clearfix
+  = link_to '定期リマインド作成', task_templates_path(),class:'pull-right btn btn-primary btn-sm'
+
 javascript:
   $(function() {
     $(document).on("change", ".task_status", function(event) {

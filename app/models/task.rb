@@ -1,10 +1,14 @@
 class Task < ApplicationRecord
   belongs_to :store
-  enum status: {未完了:0,完了:1}
+  enum status: {yet:0,done:1,cancel:2}
   validates :action_date, presence: true
   validates :content, presence: true
   validates :drafter, presence: true
 
+
+  def self.chatwork_notice(task,store_ids)
+    NotificationMailer.task_create_send_mail(task,store_ids).deliver
+  end
 
   def self.reminder_bulk_create
     new_tasks_arr = []
@@ -32,5 +36,16 @@ class Task < ApplicationRecord
       content:task_template.content,memo:task_template.memo,status:0,drafter:task_template.drafter)
       new_tasks_arr << new_task
     end
+  end
+  def self.yet_task_move_nextday
+    today = Date.today
+    yesterday = today - 1
+    update_tasks_arr = []
+    Task.where(action_date:yesterday,status:0).each do |task|
+      task.action_date = today
+      task.content = task.content + "｜#{yesterday.strftime("%-m/%-d")}繰越"
+      update_tasks_arr << task
+    end
+    Task.import update_tasks_arr, on_duplicate_key_update: [:action_date,:content]
   end
 end

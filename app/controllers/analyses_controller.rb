@@ -1,4 +1,4 @@
-class AnalysesController < ApplicationController
+class AnalysesController < AdminController
   before_action :set_analysis, only: %i[ show edit update destroy ]
   def bulk_delete_analysis_products
     # データ検証の商品情報を一括削除

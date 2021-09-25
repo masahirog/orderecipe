@@ -1,8 +1,8 @@
-class StoresController < AdminController
+class StoresController < ApplicationController
   before_action :set_store, only: [:show, :edit, :update, :destroy]
 
   def index
-    @stores = Store.includes(:user).all
+    @stores = Store.all
   end
 
   def show

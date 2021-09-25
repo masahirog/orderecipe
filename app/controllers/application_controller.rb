@@ -10,8 +10,10 @@ class ApplicationController < ActionController::Base
   def after_sign_in_path_for(resource)
     if current_user.id == 1
       root_url
-    else
+    elsif  current_user.id == 39
       mobile_inventory_stocks_path
+    elsif  current_user.id == 49
+      '/shift'
     end
   end
   def render_500(e)
@@ -50,7 +52,6 @@ class ApplicationController < ActionController::Base
     else
       redirect_to '/shift', notice: "#{month}月のシフトが存在しません。" and return
     end
-    render :layout => false
   end
 
   protected

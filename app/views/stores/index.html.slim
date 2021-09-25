@@ -1,13 +1,16 @@
-h1 店舗一覧
-= link_to '新店', new_store_path,class:'btn btn-primary'
+h3
+  |店舗一覧
+  / = link_to new_store_path do
+    i class="text-primary fas fa-plus-circle" style="cursor: pointer;" data-toggle="modal" data-target="#sampleModal"
+
+
 table.table
   thead
     tr
       th 店名
-      th 
       th
-      th 管理アカウント
       th
+      / th
 
   tbody
     - @stores.each do |store|
@@ -15,5 +18,4 @@ table.table
         td = store.name
         td = link_to '献立', store_daily_menus_path(store_id:store.id),class:'btn btn-sm btn-primary'
         td = link_to 'リマインダー', store_tasks_path(store_id:store.id),class:'btn btn-sm btn-primary'
-        td = store.user.email
-        td = link_to '編集', edit_store_path(store)
+        / td = link_to '編集', edit_store_path(store)

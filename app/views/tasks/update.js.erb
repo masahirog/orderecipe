@@ -1,1 +1,7 @@
-$("<%= @class_name %>").css('background-color','#ffffe0');
+<% if @task.status == "yet" %>
+  $("<%= @class_name %>").css('background-color','#ffffff');
+<% elsif  @task.status == "done" %>
+  $("<%= @class_name %>").css('background-color','#f5f5f5');
+<% else %>
+  $("<%= @class_name %>").css('background-color','#d3d3d3');
+<% end %>

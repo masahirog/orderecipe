@@ -19,6 +19,11 @@
     = f.label :memo, "メモ"
     = f.text_area :memo, class:"form-control",style:"height:5em;"
     = f.hidden_field :store_id,class: "form-control"
+  .form-group
+    = f.label :drafter, "作者"
+    = f.text_field :drafter, class:"form-control", required:true
+  .form-group
+    = f.label :store_ids, "店舗"
 
 
   .actions = f.submit '更新',class:'btn btn-success'

@@ -1,5 +1,5 @@
 require "csv"
-class StoreDailyMenusController < AdminController
+class StoreDailyMenusController < ApplicationController
   before_action :set_store_daily_menu, only: [:show, :edit, :update, :destroy]
 
   def stock

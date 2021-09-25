@@ -1,6 +1,8 @@
 class AdminController < ApplicationController
   before_action :if_not_admin
   # layout 'admin'
+
+  #admniコントローラを継承しているページへの入り口ジャッジ
   def if_not_admin
     if current_user.admin?
     else

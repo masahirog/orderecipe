@@ -20,3 +20,8 @@ ja:
         sun: 毎週日曜
         beg_of_month: 月初
         end_of_month: 月末
+    task:
+      status:
+        yet: 未完了
+        done: 完了
+        cancel: キャンセル

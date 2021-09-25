@@ -25,6 +25,21 @@ class NotificationMailer < ActionMailer::Base
     end
   end
 
+  def task_create_send_mail(task,store_ids)
+    @task = task
+    @store_names = [@task.store.name]
+    if store_ids.present?
+      @store_names << Store.where(id:store_ids.keys).pluck(:name)
+    end
+    mail(
+      subject: "task_create", #メールのタイトル
+      to: 'kitchen@taberu.co.jp',
+
+    ) do |format|
+      format.text
+    end
+  end
+
   def send_error_notice(recieved_datetime,body)
     @recieved_datetime = recieved_datetime.strftime("%Y/%m/%d/%H:%M")
     @body = body

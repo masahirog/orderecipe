@@ -8,7 +8,7 @@ class TasksController < ApplicationController
       params[:date]=@date
     end
     @store = Store.find(params[:store_id])
-    @tasks = @store.tasks.where(action_date:@date)
+    @tasks = @store.tasks.where(action_date:@date).order(:action_time)
     @task = Task.new(store_id:params[:store_id],action_date:params[:date])
   end
 
@@ -36,8 +36,17 @@ class TasksController < ApplicationController
 
   def create
     @task = Task.new(task_params)
+    if params['stores'].present?
+      new_tasks_arr = []
+      Store.where(id:params['stores'].keys).each do |store|
+        new_task = Task.new(store_id:store.id,action_date:@task.action_date,action_time:@task.action_time,content:@task.content,memo:@task.memo,drafter:@task.drafter)
+        new_tasks_arr << new_task
+      end
+      Task.import new_tasks_arr
+    end
     respond_to do |format|
       if @task.save
+        Task.chatwork_notice(@task,params['stores']) if params['chatwork_notice'].present?
         format.html { redirect_to store_tasks_path(store_id:@task.store_id,date:@task.action_date), notice: "Task was successfully created." }
         format.json { render :show, status: :created, location: @task }
       else

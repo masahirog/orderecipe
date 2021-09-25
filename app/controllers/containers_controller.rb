@@ -1,4 +1,4 @@
-class ContainersController < ApplicationController
+class ContainersController < AdminController
   before_action :set_container, only: %i[ show edit update destroy ]
 
   def index

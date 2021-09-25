@@ -43,3 +43,7 @@ end
 task :reminder_bulk_create => :environment do
   Task.reminder_bulk_create
 end
+
+task :yet_task_move_nextday => :environment do
+  Task.yet_task_move_nextday
+end
