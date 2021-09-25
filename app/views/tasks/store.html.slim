@@ -1,5 +1,36 @@
-h3 = "#{@store.name} チェックリスト一覧"
-= form_tag tasks_path, :method => 'get' do
+h3
+  = "#{@store.name} リマインダー "
+  i class="text-primary fas fa-plus-circle" style="cursor: pointer;" data-toggle="modal" data-target="#sampleModal"
+#sampleModal.modal.fade tabindex="-1"
+  = form_for @task do |f|
+    .modal-dialog
+      .modal-content
+        .modal-header
+          h4.modal-title 新規作成
+        .modal-body
+          .form-group
+            = f.label :action_date, "日付"
+            = f.date_field :action_date,class:'form-control', required:true
+          .form-group
+            = f.label :action_time, "時間"
+            br
+            = f.time_field :action_time,step:900,class:'form-control'
+          .form-group
+            = f.label :content, "内容"
+            = f.text_field :content, class:"form-control", required:true
+          .form-group
+            = f.label :memo, "メモ"
+            = f.text_area :memo, class:"form-control",style:"height:5em;"
+            = f.hidden_field :store_id,class: "form-control"
+          .form-group
+            = f.label :drafter, "作者"
+            = f.text_field :drafter, class:"form-control", required:true
+
+        .modal-footer
+          button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
+          = f.submit '追加',class:"btn btn-success"
+
+= form_tag store_tasks_path, :method => 'get' do
   = hidden_field_tag :store_id,params[:store_id]
   .col-md-2
     = date_field_tag :date,params[:date], class:"form-control"
@@ -10,50 +41,29 @@ h3 = "#{@store.name} チェックリスト一覧"
     label 　
     = submit_tag "検索" ,class:"btn btn-primary"
 
+= link_to '定期リマインド作成', task_templates_path(),class:'pull-right btn btn-primary'
 
-
-table.table.table-striped
+table.table
   thead
     tr
-      th
-        |日付　
-        button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#sampleModal" タスク追加
-        #sampleModal.modal.fade tabindex="-1"
-          = form_for @task do |f|
-            .modal-dialog
-              .modal-content
-                .modal-header
-                  h4.modal-title 新規作成
-                .modal-body
-                  .form-group
-                    = f.label :action_date, "日付"
-                    = f.date_field :action_date,class:'form-control'
-                  .form-group
-                    = f.label :action_time, "時間"
-                    = f.time_field :action_time, class:"form-control"
-
-                  .form-group
-                    = f.label :content, "内容"
-                    = f.text_field :content, class:"form-control"
-                  .form-group
-                    = f.label :memo, "メモ"
-                    = f.text_area :memo, class:"form-control",style:"height:5em;"
-                    = f.hidden_field :store_id,class: "form-control"
-                .modal-footer
-                  button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
-                  = f.submit '追加',class:"btn btn-success"
-      th 時間
+      th.col-md-2 日時　
       th 内容
       th メモ
-      th ステータス
+      th.col-md-1 作者
+      th.col-md-1 ステータス
 
   tbody
     - @tasks.each do |task|
       tr class="task_tr_#{task.id}"
-        td = task.action_date.strftime("%-m/%d")
-        td = task.action_time.strftime("%H:%M")
+        td
+          - if task.action_time.present?
+            - time = task.action_time.strftime("%H:%M")
+          - else
+            - time = ''
+          = link_to "#{task.action_date.strftime("%-m/%d")} #{time}",edit_task_path(task)
         td = task.content
         td = task.memo
+        td = task.drafter
         td
           = form_with(model: task, data: {remote: true},id:"update_task_#{task.id}") do |f|
             = f.hidden_field :id,class:'task_id'

@@ -11,17 +11,21 @@
             = message
   .form-group
     = f.label :repeat_type, "リピートタイプ"
-    = f.select :repeat_type, TaskTemplate.repeat_types.keys.to_a, {}, class: 'form-control'
+    = f.select :repeat_type, TaskTemplate.repeat_types.keys.to_a, {}, class: 'form-control', required:true
   .form-group
     = f.label :action_time, "時間"
-    = f.time_field :action_time, class:"form-control"
+    = f.time_field :action_time,step:900,class:'form-control'
 
   .form-group
     = f.label :content, "内容"
-    = f.text_field :content, class:"form-control"
+    = f.text_field :content, class:"form-control", required:true
   .form-group
     = f.label :memo, "メモ"
     = f.text_area :memo, class:"form-control",style:"height:5em;"
+  .form-group
+    = f.label :drafter, "作者"
+    = f.text_field :drafter, class:"form-control", required:true
+
   .form-group
     label 店舗選択
     = link_to_add_association '追加', f, :task_template_stores,class:'btn btn-primary btn-sm',style:'margin-left:20px;',

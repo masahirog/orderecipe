@@ -527,8 +527,8 @@ ActiveRecord::Schema.define(version: 2021_09_17_010306) do
   end
 
   create_table "task_template_stores", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "task_template_id"
-    t.integer "store_id"
+    t.integer "task_template_id", null: false
+    t.integer "store_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -536,9 +536,10 @@ ActiveRecord::Schema.define(version: 2021_09_17_010306) do
   create_table "task_templates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "repeat_type", null: false
     t.time "action_time"
-    t.string "content"
+    t.string "content", null: false
     t.text "memo"
     t.integer "status", default: 0, null: false
+    t.string "drafter", default: "", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -546,12 +547,13 @@ ActiveRecord::Schema.define(version: 2021_09_17_010306) do
   create_table "tasks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "store_id", null: false
     t.integer "task_template_id"
-    t.date "action_date"
+    t.date "action_date", null: false
     t.time "action_time"
-    t.string "content"
+    t.string "content", default: "", null: false
     t.text "memo"
-    t.integer "status"
+    t.integer "status", default: 0, null: false
     t.datetime "status_change_datetime"
+    t.string "drafter", default: "", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

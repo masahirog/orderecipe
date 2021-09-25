@@ -4,18 +4,16 @@ table.table
   thead
     tr
       th 店名
-      th 献立
-      th チェックリスト
-      th 管理アカウント
+      th 
       th
+      th 管理アカウント
       th
 
   tbody
     - @stores.each do |store|
       tr
         td = store.name
-        td = link_to 'カレンダー', store_daily_menus_path(store_id:store.id),class:'btn btn-sm btn-primary'
-        td = link_to 'タスク', store_tasks_path(store_id:store.id),class:'btn btn-sm btn-primary'
+        td = link_to '献立', store_daily_menus_path(store_id:store.id),class:'btn btn-sm btn-primary'
+        td = link_to 'リマインダー', store_tasks_path(store_id:store.id),class:'btn btn-sm btn-primary'
         td = store.user.email
-        td = link_to 'Show', store
-        td = link_to 'Edit', edit_store_path(store)
+        td = link_to '編集', edit_store_path(store)

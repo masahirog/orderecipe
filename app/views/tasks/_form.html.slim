@@ -5,20 +5,20 @@
       ul
         - @task.errors.full_messages.each do |message|
           li = message
-
-
+  .form-group
+    = f.label :action_date, "日付"
+    = f.date_field :action_date,class:'form-control', required:true
   .form-group
     = f.label :action_time, "時間"
-    = f.time_field :action_time, class:"form-control"
-
+    br
+    = f.time_field :action_time,step:900,class:'form-control'
   .form-group
     = f.label :content, "内容"
-    = f.text_field :content, class:"form-control"
+    = f.text_field :content, class:"form-control", required:true
   .form-group
     = f.label :memo, "メモ"
     = f.text_area :memo, class:"form-control",style:"height:5em;"
-  .form-group
-    = f.label :memo, "店舗"
-    = f.text_area :memo, class:"form-control",style:"height:5em;"
+    = f.hidden_field :store_id,class: "form-control"
 
-  .actions = f.submit
+
+  .actions = f.submit '更新',class:'btn btn-success'

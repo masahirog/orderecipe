@@ -23,8 +23,8 @@ table.table
           td
 
         - else
+          td = store.name
           td = link_to '分析作成', analyses_path(analysis: {store_id: store.id,date:@date}), method: :post
-          td
           td
           td
           td

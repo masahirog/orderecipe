@@ -1,8 +1,6 @@
-h3 チェック項目のテンプレート
+h3 リマインダー定期自動作成の一覧
 .col-md-2
   = link_to '新規登録',new_task_template_path,class:'btn btn-primary'
-.col-md-2.pull-right
-  = link_to '今日分の手動作成',hand_reflect_task_templates_path,class:'btn btn-primary', method: :post, data: { confirm: 'チェックリストを作成します。' }
 table.table.table-striped
   thead
     tr
@@ -13,14 +11,16 @@ table.table.table-striped
       th ステータス
       th 店舗
       th
+      th
 
   tbody
     - @task_templates.each do |task_template|
       tr
         td = task_template.repeat_type
-        td = task_template.action_time.strftime("%H:%M")
+        td = task_template.action_time.strftime("%H:%M") if task_template.action_time
         td = task_template.content
         td = task_template.memo
         td = task_template.status
         td = task_template.stores.pluck(:name).join(',')
+        td = link_to '作成',hand_reflect_task_templates_path(task_template_id:task_template.id),class:'btn btn-sm btn-primary', method: :post, data: { confirm: '本日の日付でリマインダーを作成します。' }
         td = link_to '編集',edit_task_template_path(task_template)

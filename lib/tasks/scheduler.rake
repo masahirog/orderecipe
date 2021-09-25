@@ -39,3 +39,7 @@ end
 task :pick_time_get => :environment do
   KurumesiOrder.pick_time_scraping
 end
+
+task :reminder_bulk_create => :environment do
+  Task.reminder_bulk_create
+end

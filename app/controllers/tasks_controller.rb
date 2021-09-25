@@ -2,7 +2,7 @@ class TasksController < ApplicationController
   before_action :set_task, only: %i[ show edit update destroy ]
   def store
     if params[:date]
-      @date = params[:date]
+      @date = Date.parse(params[:date])
     else
       @date = Date.today
       params[:date]=@date
@@ -15,7 +15,7 @@ class TasksController < ApplicationController
 
   def index
     if params[:date]
-      @date = params[:date]
+      @date = Date.parse(params[:date])
     else
       @date = Date.today
       params[:date]=@date
@@ -38,7 +38,7 @@ class TasksController < ApplicationController
     @task = Task.new(task_params)
     respond_to do |format|
       if @task.save
-        format.html { redirect_to store_tasks_path(store_id:@task.store_id), notice: "Task was successfully created." }
+        format.html { redirect_to store_tasks_path(store_id:@task.store_id,date:@task.action_date), notice: "Task was successfully created." }
         format.json { render :show, status: :created, location: @task }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -49,9 +49,10 @@ class TasksController < ApplicationController
 
   def update
     @class_name = ".task_tr_#{@task.id}"
+
     respond_to do |format|
       if @task.update(task_params)
-        format.html { redirect_to @task, notice: "Task was successfully updated." }
+        format.html { redirect_to store_tasks_path(store_id:@task.store_id,date:@task.action_date), notice: "Task was successfully updated." }
         format.json { render :show, status: :ok, location: @task }
         format.js
       else
@@ -75,6 +76,6 @@ class TasksController < ApplicationController
     end
 
     def task_params
-      params.require(:task).permit(:store_id,:task_template_id,:action_date,:action_time,:content,:memo,:status,:status_change_datetime)
+      params.require(:task).permit(:store_id,:task_template_id,:action_date,:action_time,:content,:memo,:status,:status_change_datetime,:drafter)
     end
 end
