@@ -1,5 +1,5 @@
 ja:
-  enum:
+  enums:
     store_daily_menu:
       weather:
         sunny: 晴れ
@@ -8,3 +8,15 @@ ja:
         strong_rain: 大雨
         taihoon: 台風
         snow: 雪
+    task_template:
+      repeat_type:
+        everyday: 毎日
+        mon: 毎週月曜
+        tue: 毎週火曜
+        wed: 毎週水曜
+        thu: 毎週木曜
+        fri: 毎週金曜
+        sat: 毎週土曜
+        sun: 毎週日曜
+        beg_of_month: 月初
+        end_of_month: 月末

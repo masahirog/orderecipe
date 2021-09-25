@@ -16,7 +16,7 @@ table.table.table-striped
   tbody
     - @task_templates.each do |task_template|
       tr
-        td = task_template.repeat_type
+        td = t("enums.task_template.repeat_type.#{task_template.repeat_type}")
         td = task_template.action_time.strftime("%H:%M") if task_template.action_time
         td = task_template.content
         td = task_template.memo
