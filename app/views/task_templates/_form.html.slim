@@ -11,7 +11,7 @@
             = message
   .form-group
     = f.label :repeat_type, "リピートタイプ"
-    = f.select :repeat_type, TaskTemplate.repeat_types.keys.to_a, {}, class: 'form-control', required:true
+    = f.select :repeat_type, options_for_select_from_enum(TaskTemplate, :repeat_type),{}, { class: "form-control", required:true}
   .form-group
     = f.label :action_time, "時間"
     = f.time_field :action_time,step:900,class:'form-control'
