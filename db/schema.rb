@@ -531,6 +531,7 @@ ActiveRecord::Schema.define(version: 2021_09_17_010306) do
     t.integer "store_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["task_template_id", "store_id"], name: "index_task_template_stores_on_task_template_id_and_store_id", unique: true
   end
 
   create_table "task_templates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

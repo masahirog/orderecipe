@@ -22,14 +22,33 @@ class TaskTemplatesController < ApplicationController
 
   def new
     @task_template = TaskTemplate.new
+    # @task_template.task_template_stores.build
+    new_store_ids = Store.all.ids
+    @stores_hash = {}
+    Store.all.each do |store|
+      @stores_hash[store.id]=store.name
+    end
+    new_store_ids.each do |store_id|
+      @task_template.task_template_stores.build(store_id:store_id)
+    end
   end
 
   def edit
+    store_ids = @task_template.task_template_stores.pluck(:store_id)
+    all_store_ids = Store.all.ids
+    new_store_ids = all_store_ids - store_ids
+    @stores_hash = {}
+    Store.all.each do |store|
+      @stores_hash[store.id]=store.name
+    end
+
+    new_store_ids.each do |store_id|
+      @task_template.task_template_stores.build(store_id:store_id)
+    end
   end
 
   def create
     @task_template = TaskTemplate.new(task_template_params)
-
     respond_to do |format|
       if @task_template.save
         format.html { redirect_to task_templates_path, notice: "Task template was successfully created." }
@@ -68,6 +87,6 @@ class TaskTemplatesController < ApplicationController
 
     def task_template_params
       params.require(:task_template).permit(:repeat_type,:action_time,:content,:memo,:status,:drafter,
-      task_template_stores_attributes: [:id, :store_id,:task_template_id])
+      task_template_stores_attributes: [:id, :store_id,:task_template_id,:_destroy])
     end
 end
