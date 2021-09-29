@@ -11,6 +11,7 @@ ja:
     task_template:
       repeat_type:
         everyday: 毎日
+        every_sales_day: 毎営業日
         mon: 毎週月曜
         tue: 毎週火曜
         wed: 毎週水曜
