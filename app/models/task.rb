@@ -18,9 +18,11 @@ class Task < ApplicationRecord
     TaskTemplate.where(status:0).each do |task_template|
       if task_template.repeat_type == 'everyday'
         new_task_create(task_template,new_tasks_arr,today)
-      elsif  task_template.repeat_type == 'beg_of_month'
+      elsif task_template.repeat_type == 'every_sales_day'
+        new_task_create(task_template,new_tasks_arr,today) if wday != 0
+      elsif task_template.repeat_type == 'beg_of_month'
         new_task_create(task_template,new_tasks_arr,today) if today == today.beginning_of_month
-      elsif  task_template.repeat_type == 'end_of_month'
+      elsif task_template.repeat_type == 'end_of_month'
         new_task_create(task_template,new_tasks_arr,today) if today == today.end_of_month
       else
         if wday_hash[task_template.repeat_type] == wday
