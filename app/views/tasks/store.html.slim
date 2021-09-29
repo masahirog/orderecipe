@@ -66,7 +66,6 @@ table.table
 
   tbody
     - @tasks.each do |task|
-      - binding.pry
       - if task.important_flag == false
         - bg_color = '#ffffff'
       - else
