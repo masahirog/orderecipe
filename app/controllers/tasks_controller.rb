@@ -85,6 +85,6 @@ class TasksController < ApplicationController
     end
 
     def task_params
-      params.require(:task).permit(:store_id,:task_template_id,:action_date,:action_time,:content,:memo,:status,:status_change_datetime,:drafter)
+      params.require(:task).permit(:store_id,:task_template_id,:action_date,:action_time,:content,:memo,:status,:status_change_datetime,:drafter,:important_flag)
     end
 end

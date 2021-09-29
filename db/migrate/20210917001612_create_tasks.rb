@@ -11,6 +11,7 @@ class CreateTasks < ActiveRecord::Migration[5.2]
       t.datetime :status_change_datetime
       t.string :drafter,null:false,default:''
       t.timestamps
+      t.boolean :important_flag,null:false,default:0
     end
   end
 end

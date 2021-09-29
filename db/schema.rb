@@ -557,6 +557,7 @@ ActiveRecord::Schema.define(version: 2021_09_17_010306) do
     t.string "drafter", default: "", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "important_flag", default: false, null: false
   end
 
   create_table "users", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
