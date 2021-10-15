@@ -1,0 +1,18 @@
+h3 = @product.name
+table.table
+  thead
+    tr
+      th 日付
+      th 在庫
+      th 〜14時販売
+      th 14時〜販売
+      th 合計販売
+
+  tbody
+    - @analysis_products.each do |analysis_product|
+      tr
+        td = analysis_product.analysis.date
+        td = analysis_product.actual_inventory
+        td = analysis_product.early_sales_number
+        td = analysis_product.sales_number - analysis_product.early_sales_number
+        td = analysis_product.sales_number

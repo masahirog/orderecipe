@@ -1,0 +1,20 @@
+
+h3 メニュー別販売数
+= link_to '一日',store_products_sales_analyses_path(store_id:params[:store_id],early_sales_number_flag:false),class:'btn btn-default'
+= link_to '14時まで',store_products_sales_analyses_path(store_id:params[:store_id],early_sales_number_flag:true),class:'btn btn-default'
+table.table
+  thead
+    tr
+      th メニュー名
+      - @analyses.each do |analysis|
+        th = analysis.date.strftime("%-m/%-d")
+  tbody
+    - @product_datas.each do |product_data|
+      tr
+        td rowspan=2
+          = link_to product_data['name'],store_product_sales_analyses_path(store_id:params[:store_id],product_id:product_data['product_id'])
+        - @analyses.each do |analysis|
+          td style='color:#a9a9a9;' = product_data[analysis.id]['actual_inventory'] if product_data[analysis.id].present?
+      tr
+        - @analyses.each do |analysis|
+          td style='color:#1e90ff;' = product_data[analysis.id]['sales_number'] if product_data[analysis.id].present?
