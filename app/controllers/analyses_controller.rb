@@ -1,5 +1,42 @@
 class AnalysesController < AdminController
   before_action :set_analysis, only: %i[ show edit update destroy ]
+  def store_product
+    @store = Store.find(params[:store_id])
+    if params[:to]
+      @to = params[:to].to_date
+    else
+      @to = Date.today
+      params[:to] = @to
+    end
+    if params[:from]
+      @from = params[:from].to_date
+    else
+      @from = @to - 30
+      params[:from] = @from
+    end
+    @date_analyses = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    analyses = Analysis.where(date:@from..@to).where(store_id:params[:store_id])
+    analysis_products = AnalysisProduct.includes([:product,:analysis]).where(analysis_id:analyses.ids).where.not(product_id:nil)
+    product_ids = analysis_products.pluck(:product_id).uniq
+    @products = Product.where(id:product_ids).order(:bejihan_sozai_flag)
+    @product_datas = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    analysis_products.each do |ap|
+      if ap.sales_number.present? && ap.actual_inventory.present?
+        if @product_datas[ap.product_id].present?
+          @product_datas[ap.product_id]['sales_number'] += ap.sales_number
+          @product_datas[ap.product_id]['actual_inventory'] += ap.actual_inventory
+          @product_datas[ap.product_id]['count'] += 1
+        else
+          @product_datas[ap.product_id]['name'] = ap.product.name
+          @product_datas[ap.product_id]['sales_number'] = ap.sales_number
+          @product_datas[ap.product_id]['actual_inventory'] = ap.actual_inventory
+          @product_datas[ap.product_id]['count'] = 1
+          @product_datas[ap.product_id]['product_id'] = ap.product_id
+          @product_datas[ap.product_id]['date'] = ap.analysis.date
+        end
+      end
+    end
+  end
   def bulk_delete_analysis_products
     # データ検証の商品情報を一括削除
     analysis_id = params[:analysis_id]
@@ -18,7 +55,7 @@ class AnalysesController < AdminController
     smaregi_trading_histories = SmaregiTradingHistory.where(analysis_id:analysis_id)
     analysis_products_arr = []
     @product_sales_number = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-
+    product_early_sales_number = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     smaregi_trading_histories.each do |sth|
       if sth.torihiki_meisaikubun == 1
         suryo = sth.suryo
@@ -34,6 +71,13 @@ class AnalysesController < AdminController
         @product_sales_number[sth.shohin_id][:suryo] = suryo
         @product_sales_number[sth.shohin_id][:nebikigokei] = nebikigokei
       end
+      if sth.time.strftime('%H%M').to_i < 1400
+        if product_early_sales_number[sth.shohin_id].present?
+          product_early_sales_number[sth.shohin_id] += suryo
+        else
+          product_early_sales_number[sth.shohin_id] = suryo
+        end
+      end
       if smaregi_shohin_ids.include?(sth.shohin_id)
       else
         new_analysis_product = AnalysisProduct.new(analysis_id:sth.analysis_id,smaregi_shohin_id:sth.shohin_id,smaregi_shohin_name:sth.shohinmei,smaregi_shohintanka:sth.shohintanka,
@@ -42,13 +86,12 @@ class AnalysesController < AdminController
         smaregi_shohin_ids << sth.shohin_id
       end
     end
-    #14時までの販売率を計算する
-    @early_sales_number = smaregi_trading_histories.where(time:'00:00:00'..'13:59:59').sum(:suryo)
-
     analysis_products_arr.each do |ap|
       ap.sales_number = @product_sales_number[ap.smaregi_shohin_id][:suryo]
       ap.total_sales_amount = @product_sales_number[ap.smaregi_shohin_id][:nebikigokei]
-      ap.early_sales_rate_of_all =  (ap.sales_number.to_f / @early_sales_number).round(3)
+      if product_early_sales_number[ap.smaregi_shohin_id].present?
+        ap.early_sales_number = product_early_sales_number[ap.smaregi_shohin_id]
+      end
     end
     AnalysisProduct.import analysis_products_arr
     redirect_to @analysis
@@ -60,6 +103,10 @@ class AnalysesController < AdminController
     @analysis = Analysis.find(analysis_id)
     # smaregi_trading_histories = SmaregiTradingHistory.where(analysis_id:analysis_id)
     @store_daily_menu = StoreDailyMenu.find_by(start_time:@analysis.date,store_id:@analysis.store_id)
+    smaregi_trading_histories = SmaregiTradingHistory.where(analysis_id:@analysis.id)
+    product_day_sales_number = smaregi_trading_histories.group(:hinban).sum(:suryo)
+    # product_day_sales_amount = smaregi_trading_histories.group(:hinban).sum(:nebikigokei)
+    product_early_sales_number = smaregi_trading_histories.where(time:'00:00:00'..'13:59:59').group(:hinban).sum(:suryo)
     analysis_product_shohin_ids = []
     update_analysis_products_arr = []
     new_analysis_products_arr = []
@@ -80,20 +127,21 @@ class AnalysesController < AdminController
         analysis_product.manufacturing_number = sdmd.number
         analysis_product.carry_over = sdmd.carry_over
         analysis_product.actual_inventory = sdmd.actual_inventory
-
-        if analysis_product.sales_number.present?
-          analysis_product.loss_number = analysis_product.actual_inventory - analysis_product.sales_number
-          loss_amount = analysis_product.list_price * analysis_product.loss_number
-          if loss_amount < 0 || analysis_product.product_id == 10459
-            analysis_product.loss_amount = 0
-          else
-            analysis_product.loss_amount = loss_amount
-            total_loass_amount += loss_amount
-          end
+        if product_day_sales_number[sdmd.product_id].present?
+          analysis_product.sales_number = product_day_sales_number[sdmd.product_id]
+          analysis_product.early_sales_number = product_early_sales_number[sdmd.product_id]
         else
-          analysis_product.loss_number = 0
+          analysis_product.sales_number = 0
+          analysis_product.early_sales_number = 0
+        end
+        analysis_product.total_sales_amount =
+        analysis_product.loss_number = analysis_product.actual_inventory - analysis_product.sales_number
+        loss_amount = analysis_product.list_price * analysis_product.loss_number
+        if loss_amount < 0 || analysis_product.product_id == 10459
           analysis_product.loss_amount = 0
-          total_loass_amount += 0
+        else
+          analysis_product.loss_amount = loss_amount
+          total_loass_amount += loss_amount
         end
 
         update_analysis_products_arr << analysis_product
@@ -107,7 +155,7 @@ class AnalysesController < AdminController
 
     AnalysisProduct.import new_analysis_products_arr
     AnalysisProduct.import update_analysis_products_arr, on_duplicate_key_update:[:list_price,:manufacturing_number,:carry_over,:actual_inventory,
-      :sales_number,:loss_number,:total_sales_amount,:loss_amount] if update_analysis_products_arr.present?
+      :sales_number,:loss_number,:total_sales_amount,:loss_amount,:early_sales_number] if update_analysis_products_arr.present?
     @analysis.update(loss_amount:total_loass_amount)
     redirect_to @analysis
   end
@@ -220,6 +268,7 @@ class AnalysesController < AdminController
     gon.transaction_count_date = date_transaction_count_arr
     gon.lossamount_data = data_lossamount_arr
   end
+
   def index
     @stores = Store.all
     if params[:stores]
@@ -251,6 +300,7 @@ class AnalysesController < AdminController
     @date_sales_amount = analyses.group(:date).sum(:sales_amount)
     @date_loss_amount = analyses.group(:date).sum(:loss_amount)
     @date_transaction_count = analyses.group(:date).sum(:transaction_count)
+    @date_sales_number = analyses.group(:date).sum(:transaction_count)
   end
 
   def show

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_17_010306) do
+ActiveRecord::Schema.define(version: 2021_10_06_060848) do
 
   create_table "analyses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "store_id"
@@ -42,7 +42,7 @@ ActiveRecord::Schema.define(version: 2021_09_17_010306) do
     t.integer "loss_amount"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.float "early_sales_rate_of_all"
+    t.integer "early_sales_number", default: 0, null: false
   end
 
   create_table "brands", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -504,6 +504,15 @@ ActiveRecord::Schema.define(version: 2021_09_17_010306) do
     t.integer "weather"
     t.integer "max_temperature"
     t.integer "min_temperature"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "store_products", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "store_id", null: false
+    t.integer "product_id", null: false
+    t.integer "sales_potential", default: 0, null: false
+    t.integer "sales_count", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

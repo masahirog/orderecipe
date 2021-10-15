@@ -1,6 +1,9 @@
 class StoresController < ApplicationController
   before_action :set_store, only: [:show, :edit, :update, :destroy]
 
+  def products
+    @store = Store.find(params[:store_id])
+  end
   def index
     @stores = Store.all
   end

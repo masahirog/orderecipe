@@ -38,6 +38,7 @@ Rails.application.routes.draw do
   resources :containers
   resources :analyses do
     collection do
+      get :store_product
       get :summary
       post :products
       post :smaregi_trading_history_totalling
@@ -178,7 +179,11 @@ Rails.application.routes.draw do
   resources :brands
   resources :place_showcases
   resources :serving_plates
-  resources :stores
+  resources :stores do
+    collection do
+      :products
+    end
+  end
   resources :store_daily_menus do
     collection do
       get :once_edit

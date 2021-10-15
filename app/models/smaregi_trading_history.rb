@@ -70,7 +70,7 @@ class SmaregiTradingHistory < ApplicationRecord
         if smaregi_shohin_ids.include?(shohin_id)
         else
           new_analysis_product = AnalysisProduct.new(analysis_id:analysis_id,smaregi_shohin_id:shohin_id,smaregi_shohin_name:shohinmei,smaregi_shohintanka:shohintanka,
-          product_id:hinban,total_sales_amount:0,sales_number:0,loss_amount:0,)
+          product_id:hinban,total_sales_amount:0,sales_number:0,loss_amount:0,early_sales_number:0)
           analysis_products_arr << new_analysis_product
           smaregi_shohin_ids << shohin_id
         end
@@ -90,15 +90,12 @@ class SmaregiTradingHistory < ApplicationRecord
         end
 
         if Time.parse(time) < Time.parse('14:00')
-          total_early_sales_number += number
           if product_early_sales_number[shohin_id].present?
             product_early_sales_number[shohin_id] += number
           else
             product_early_sales_number[shohin_id] = number
           end
         end
-
-
         if product_sales_amount[shohin_id].present?
           product_sales_amount[shohin_id] += salse
         else
@@ -111,9 +108,7 @@ class SmaregiTradingHistory < ApplicationRecord
     analysis_products_arr.each do |analysis_product|
       analysis_product.sales_number = product_sales_number[analysis_product.smaregi_shohin_id.to_s]
       analysis_product.total_sales_amount = product_sales_amount[analysis_product.smaregi_shohin_id.to_s]
-      if product_early_sales_number[analysis_product.smaregi_shohin_id.to_s].present?
-        analysis_product.early_sales_rate_of_all = (product_early_sales_number[analysis_product.smaregi_shohin_id.to_s].to_f/total_early_sales_number).round(3)
-      end
+      analysis_product.early_sales_number = product_early_sales_number[analysis_product.smaregi_shohin_id.to_s] if product_early_sales_number[analysis_product.smaregi_shohin_id.to_s].present?
     end
     SmaregiTradingHistory.import smaregi_trading_histories_arr
     AnalysisProduct.import analysis_products_arr

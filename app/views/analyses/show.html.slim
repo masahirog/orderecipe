@@ -57,7 +57,7 @@ table.table
         td = ap.total_sales_amount.to_s(:delimited) if ap.present? && ap.total_sales_amount.present?
         td = ap.loss_number if ap.present?
         td = ap.loss_amount.to_s(:delimited) if ap.present? && ap.loss_amount.present?
-        td = "#{(ap.early_sales_rate_of_all * 100).round(1)}%" if ap.present?&&ap.early_sales_rate_of_all.present?
+        td = ap.early_sales_number if ap.present?
     tr style="background-color:gainsboro;"
       th Orderecipe 献立外 メニュー
       th OR単価
