@@ -1,6 +1,12 @@
 class AnalysesController < AdminController
   before_action :set_analysis, only: %i[ show edit update destroy ]
-  def store_product
+  def store_product_sales
+    @product = Product.find(params[:product_id])
+    @store = Store.find(params[:store_id])
+    analysis_ids = @store.analyses
+    @analysis_products = AnalysisProduct.joins(:analysis).order("analyses.date desc").where(product_id:@product.id,analysis_id:analysis_ids)
+  end
+  def store_products_sales
     @store = Store.find(params[:store_id])
     if params[:to]
       @to = params[:to].to_date
@@ -15,26 +21,38 @@ class AnalysesController < AdminController
       params[:from] = @from
     end
     @date_analyses = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    analyses = Analysis.where(date:@from..@to).where(store_id:params[:store_id])
-    analysis_products = AnalysisProduct.includes([:product,:analysis]).where(analysis_id:analyses.ids).where.not(product_id:nil)
+    @analyses = Analysis.where(date:@from..@to).where(store_id:params[:store_id])
+    analysis_products = AnalysisProduct.includes([:product]).where(analysis_id:@analyses.ids).where.not(product_id:nil)
     product_ids = analysis_products.pluck(:product_id).uniq
     @products = Product.where(id:product_ids).order(:bejihan_sozai_flag)
     @product_datas = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     analysis_products.each do |ap|
       if ap.sales_number.present? && ap.actual_inventory.present?
-        if @product_datas[ap.product_id].present?
-          @product_datas[ap.product_id]['sales_number'] += ap.sales_number
-          @product_datas[ap.product_id]['actual_inventory'] += ap.actual_inventory
-          @product_datas[ap.product_id]['count'] += 1
+        @product_datas[ap.product_id]['name'] = ap.product.name
+        @product_datas[ap.product_id]['product_id'] = ap.product_id
+        if params[:early_sales_number_flag]=='true'
+          @product_datas[ap.product_id][ap.analysis_id]['sales_number'] = ap.early_sales_number
         else
-          @product_datas[ap.product_id]['name'] = ap.product.name
-          @product_datas[ap.product_id]['sales_number'] = ap.sales_number
-          @product_datas[ap.product_id]['actual_inventory'] = ap.actual_inventory
-          @product_datas[ap.product_id]['count'] = 1
-          @product_datas[ap.product_id]['product_id'] = ap.product_id
-          @product_datas[ap.product_id]['date'] = ap.analysis.date
+          @product_datas[ap.product_id][ap.analysis_id]['sales_number'] = ap.sales_number
         end
+        @product_datas[ap.product_id][ap.analysis_id]['actual_inventory'] = ap.actual_inventory
+        # @product_datas[ap.product_id][ap.analysis_id]['date'] = ap.analysis.date
       end
+    end
+
+    if params[:sort]
+      sort = params[:sort]
+    else
+      sort = 'sales_number'
+    end
+    if params[:sc]
+      if params[:sc]=='asc'
+        @product_datas = @product_datas.values.sort!{|a, b|a[sort] <=> b[sort]}
+      else
+        @product_datas = @product_datas.values.sort!{|a, b|b[sort] <=> a[sort]}
+      end
+    else
+      @product_datas = @product_datas.values.sort!{|a, b|a[sort] <=> b[sort]}
     end
   end
   def bulk_delete_analysis_products

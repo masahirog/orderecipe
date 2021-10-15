@@ -38,7 +38,8 @@ Rails.application.routes.draw do
   resources :containers
   resources :analyses do
     collection do
-      get :store_product
+      get :store_products_sales
+      get :store_product_sales
       get :summary
       post :products
       post :smaregi_trading_history_totalling
