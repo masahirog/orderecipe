@@ -1,4 +1,5 @@
 class Product < ApplicationRecord
+  has_many :product_sales_potentials
   has_many :analysis_products
   belongs_to :brand
   belongs_to :container

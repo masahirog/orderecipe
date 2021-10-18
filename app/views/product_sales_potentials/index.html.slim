@@ -1,0 +1,19 @@
+h1 Listing product_sales_potentials
+
+table
+  thead
+    tr
+      th
+      th
+      th
+
+  tbody
+    - @product_sales_potentials.each do |product_sales_potential|
+      tr
+        td = link_to 'Show', product_sales_potential
+        td = link_to 'Edit', edit_product_sales_potential_path(product_sales_potential)
+        td = link_to 'Destroy', product_sales_potential, data: { confirm: 'Are you sure?' }, method: :delete
+
+br
+
+= link_to 'New Product sales potential', new_product_sales_potential_path

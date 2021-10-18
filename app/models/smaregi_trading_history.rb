@@ -4,8 +4,12 @@ class SmaregiTradingHistory < ApplicationRecord
 
 
   def self.upload_data(form_date,smaregi_store_id,analysis_id,file)
+    torihiki_ids = []
+    fourteen_transaction_count = 0
     total_sales = 0
     total_early_sales_number = 0
+    total_number_sales_sozai = 0
+    fourteen_number_sales_sozai = 0
     smaregi_trading_histories_arr = []
     analysis_products_arr = []
     update_analysis_products_arr = []
@@ -74,7 +78,6 @@ class SmaregiTradingHistory < ApplicationRecord
           analysis_products_arr << new_analysis_product
           smaregi_shohin_ids << shohin_id
         end
-
         if torihiki_meisaikubun == '1'
           number = suryo.to_i
           salse = nebikigokei.to_i
@@ -82,18 +85,24 @@ class SmaregiTradingHistory < ApplicationRecord
           number = -1 * suryo.to_i
           salse = -1 * nebikigokei.to_i
         end
+        total_number_sales_sozai += number if bumon_id == "1"
         total_sales += salse
         if product_sales_number[shohin_id].present?
           product_sales_number[shohin_id] += number
         else
           product_sales_number[shohin_id] = number
         end
-
         if Time.parse(time) < Time.parse('14:00')
           if product_early_sales_number[shohin_id].present?
             product_early_sales_number[shohin_id] += number
           else
             product_early_sales_number[shohin_id] = number
+          end
+          fourteen_number_sales_sozai += number if bumon_id == "1"
+          if torihiki_ids.include?(torihiki_id)
+          else
+            fourteen_transaction_count += 1
+            torihiki_ids << torihiki_id
           end
         end
         if product_sales_amount[shohin_id].present?
@@ -113,7 +122,8 @@ class SmaregiTradingHistory < ApplicationRecord
     SmaregiTradingHistory.import smaregi_trading_histories_arr
     AnalysisProduct.import analysis_products_arr
     transaction_count = smaregi_trading_histories_arr.pluck(:torihiki_id).uniq.count
-    analysis.update(sales_amount:total_sales.to_i,transaction_count:transaction_count)
+    analysis.update(sales_amount:total_sales.to_i,transaction_count:transaction_count,fourteen_transaction_count:fourteen_transaction_count,
+      total_number_sales_sozai:total_number_sales_sozai,fourteen_number_sales_sozai:fourteen_number_sales_sozai)
     return (smaregi_trading_histories_arr.count)
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_06_060848) do
+ActiveRecord::Schema.define(version: 2021_10_18_152440) do
 
   create_table "analyses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "store_id"
@@ -20,7 +20,10 @@ ActiveRecord::Schema.define(version: 2021_10_06_060848) do
     t.integer "labor_cost"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "transaction_count"
+    t.integer "transaction_count", default: 0, null: false
+    t.integer "fourteen_transaction_count", default: 0, null: false
+    t.integer "fourteen_number_sales_sozai", default: 0, null: false
+    t.integer "total_number_sales_sozai", default: 0, null: false
     t.index ["date", "store_id"], name: "index_analyses_on_date_and_store_id", unique: true
   end
 
@@ -43,6 +46,7 @@ ActiveRecord::Schema.define(version: 2021_10_06_060848) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "early_sales_number", default: 0, null: false
+    t.boolean "exclusion_flag", default: false, null: false
   end
 
   create_table "brands", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -372,6 +376,15 @@ ActiveRecord::Schema.define(version: 2021_10_06_060848) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "product_sales_potentials", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "store_id", null: false
+    t.integer "product_id", null: false
+    t.integer "sales_potential", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["product_id", "store_id"], name: "index_product_sales_potentials_on_product_id_and_store_id", unique: true
+  end
+
   create_table "products", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
     t.integer "sell_price"
@@ -504,15 +517,6 @@ ActiveRecord::Schema.define(version: 2021_10_06_060848) do
     t.integer "weather"
     t.integer "max_temperature"
     t.integer "min_temperature"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "store_products", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "store_id", null: false
-    t.integer "product_id", null: false
-    t.integer "sales_potential", default: 0, null: false
-    t.integer "sales_count", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

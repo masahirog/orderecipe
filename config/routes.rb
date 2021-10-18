@@ -36,6 +36,8 @@ Rails.application.routes.draw do
   end
   resources :wikis
   resources :containers
+  resources :product_sales_potentials
+  resources :analysis_products
   resources :analyses do
     collection do
       get :store_products_sales

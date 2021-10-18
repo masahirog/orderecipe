@@ -1,18 +1,57 @@
-h3 = @product.name
+table.table
+  thead
+    tr
+      th 店舗
+      th 商品名
+      th 販売ポテンシャル
+      th
+  tbody
+    tr
+      td = @store.name
+      td = @product.name
+      td 26.5
+      td = link_to '更新する','',class:'btn btn-sm btn-primary'
+
+
 table.table
   thead
     tr
       th 日付
-      th 在庫
+      th 来客数
+      th 〜14時来客数
+      th 惣菜販売数
+      th 〜14時惣菜販売数
+      th 在庫数
+      th 販売数
       th 〜14時販売
-      th 14時〜販売
-      th 合計販売
+      th ポテンシャル
+      th 除外
+
 
   tbody
-    - @analysis_products.each do |analysis_product|
-      tr
+    - @analysis_products.includes([:analysis]).each do |analysis_product|
+      - if analysis_product.exclusion_flag == true
+        - color = "#d3d3d3"
+      - else
+        - color = "#ffffff"
+      tr class="analysis_product_tr_#{analysis_product.id}" style="background-color:#{color};"
         td = analysis_product.analysis.date
+        td = analysis_product.analysis.transaction_count
+        td = analysis_product.analysis.fourteen_transaction_count
+        td = analysis_product.analysis.total_number_sales_sozai
+        td = analysis_product.analysis.fourteen_number_sales_sozai
         td = analysis_product.actual_inventory
-        td = analysis_product.early_sales_number
-        td = analysis_product.sales_number - analysis_product.early_sales_number
         td = analysis_product.sales_number
+        td = analysis_product.early_sales_number
+        td
+        td
+          = form_with(model: analysis_product, data: {remote: true},id:"update_analysis_product_#{analysis_product.id}") do |f|
+            = f.hidden_field :id,class:'analysis_product_id'
+            = f.check_box :exclusion_flag, class: "exclusion_flag_check"
+javascript:
+  $(function() {
+    $(document).on("change", ".exclusion_flag_check", function(event) {
+      var analysis_product_id = $(this).parent().find('.analysis_product_id').val();
+      Rails.fire($('#update_analysis_product_' + analysis_product_id)[0], 'submit');
+    });
+  });

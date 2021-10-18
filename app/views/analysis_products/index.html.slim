@@ -1,0 +1,19 @@
+h1 Listing analysis_products
+
+table
+  thead
+    tr
+      th
+      th
+      th
+
+  tbody
+    - @analysis_products.each do |analysis_product|
+      tr
+        td = link_to 'Show', analysis_product
+        td = link_to 'Edit', edit_analysis_product_path(analysis_product)
+        td = link_to 'Destroy', analysis_product, data: { confirm: 'Are you sure?' }, method: :delete
+
+br
+
+= link_to 'New Analysis product', new_analysis_product_path

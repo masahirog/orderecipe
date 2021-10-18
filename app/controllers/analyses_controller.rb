@@ -147,9 +147,12 @@ class AnalysesController < AdminController
         analysis_product.actual_inventory = sdmd.actual_inventory
         if product_day_sales_number[sdmd.product_id].present?
           analysis_product.sales_number = product_day_sales_number[sdmd.product_id]
-          analysis_product.early_sales_number = product_early_sales_number[sdmd.product_id]
         else
           analysis_product.sales_number = 0
+        end
+        if product_early_sales_number[sdmd.product_id].present?
+          analysis_product.early_sales_number = product_early_sales_number[sdmd.product_id]
+        else
           analysis_product.early_sales_number = 0
         end
         analysis_product.total_sales_amount =

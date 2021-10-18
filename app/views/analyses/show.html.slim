@@ -46,7 +46,7 @@ table.table
     - @store_daily_menu_details.each do |sdmd|
       - ap = @or_ari_analysis_products[sdmd.product_id]
       tr
-        td = link_to sdmd.product.name,sdmd.product
+        td = link_to sdmd.product.name,store_product_sales_analyses_path(store_id:@analysis.store_id,product_id:sdmd.product_id)
         td = sdmd.product.sell_price
         td = ap.smaregi_shohin_name if ap.present?
         td = ap.smaregi_shohintanka if ap.present?

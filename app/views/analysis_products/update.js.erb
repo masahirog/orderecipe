@@ -1,0 +1,5 @@
+<% if @analysis_product.exclusion_flag == true %>
+  $("<%= @class_name %>").css('background-color','#d3d3d3');
+<% else %>
+  $("<%= @class_name %>").css('background-color','#ffffff');
+<% end %>

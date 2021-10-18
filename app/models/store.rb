@@ -4,4 +4,5 @@ class Store < ApplicationRecord
   has_many :analyses
   has_many :task_template_stores
   has_many :tasks
+  has_many :product_sales_potentials
 end
