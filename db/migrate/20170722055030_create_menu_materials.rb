@@ -29,6 +29,8 @@ class CreateMenuMaterials < ActiveRecord::Migration[4.2]
       t.integer :base_menu_material_id
       t.boolean :source_flag,default:false,null:false
       t.integer :source_group,default:0,null:false
+      t.boolean :first_flag,default:false,null:false
+      t.boolean :machine_flag,default:false,null:false
       t.timestamps
     end
   end

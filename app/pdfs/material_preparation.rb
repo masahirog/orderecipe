@@ -47,6 +47,8 @@ class MaterialPreparation < Prawn::Document
 
         menu_materials.each do |mm|
           base_menu_material_id = mm.base_menu_material_id
+          machine = "○" if mm.machine_flag == true
+          first = "○" if mm.first_flag == true
           if test_hash[base_menu_material_id]
             test_hash[base_menu_material_id][2] =(test_hash[base_menu_material_id][2] + mm.amount_used * num).round(1)
             if lang == "1"
@@ -56,9 +58,9 @@ class MaterialPreparation < Prawn::Document
             end
           else
             if lang == "1"
-              test_hash[base_menu_material_id] = ["#{mm.material.category_before_type_cast}-#{mm.material.name}",mm.material.name,(mm.amount_used*num).round(1),mm.material.recipe_unit,mm.post,mm.preparation,"#{menu.name} (#{num})"]
+              test_hash[base_menu_material_id] = ["#{mm.material.category_before_type_cast}-#{mm.material.name}",mm.material.name,(mm.amount_used*num).round(1),mm.material.recipe_unit,mm.post,mm.preparation,"#{menu.name} (#{num})",first,machine]
             else
-              test_hash[base_menu_material_id] = ["#{mm.material.category_before_type_cast}-#{mm.material.name}",mm.material.roma_name,(mm.amount_used*num).round(1),mm.material.recipe_unit,mm.post,mm.preparation,"#{menu.roma_name} (#{num})"]
+              test_hash[base_menu_material_id] = ["#{mm.material.category_before_type_cast}-#{mm.material.name}",mm.material.roma_name,(mm.amount_used*num).round(1),mm.material.recipe_unit,mm.post,mm.preparation,"#{menu.roma_name} (#{num})",first,machine]
             end
           end
         end
@@ -118,7 +120,7 @@ class MaterialPreparation < Prawn::Document
       columns(5).size = 6
       row(0).column(2).align = :left
       self.header = true
-      self.column_widths = [160,60,30,60,250,260]
+      self.column_widths = [140,20,30,60,30,60,250,230]
     end
     page_count.times do |i|
       unless i < start_page_count
@@ -131,9 +133,9 @@ class MaterialPreparation < Prawn::Document
   end
 
   def line_item_rows(menu_materials_arr)
-    data = [['食材名',{:content => "分量", :colspan => 2},{:content => "仕込み", :colspan => 2},'メニュー名']]
+    data = [['食材名','先','機械',{:content => "分量", :colspan => 2},{:content => "仕込み", :colspan => 2},'メニュー名']]
     menu_materials_arr.each do |mma|
-        data << [mma[1],mma[2],mma[3],mma[4],mma[5],mma[6]]
+        data << [mma[1],mma[7],mma[8],mma[2],mma[3],mma[4],mma[5],mma[6]]
     end
     data
   end

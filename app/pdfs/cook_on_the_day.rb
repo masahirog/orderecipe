@@ -1,4 +1,4 @@
-class DailyMenuPdf < Prawn::Document
+class CookOnTheDay < Prawn::Document
   def initialize(daily_menu_id)
     super(
       page_size: 'A4',
@@ -16,43 +16,52 @@ class DailyMenuPdf < Prawn::Document
         text "発行時間：#{Time.now.strftime("%Y年 %m月 %d日　%H:%M")}",size:10,:align => :right
         text "#{sdm.start_time} #{sdm.store.name}"
         move_down 10
-        table line_item_rows(sdm) do
+        text "当日調理工程一覧："
+        move_down 5
+        table cook_on_the_day(sdm) do
           self.row_colors = ["FFFFFF","E5E5E5"]
-          # cells.padding = 6
           cells.size = 7
-          # columns(1).size = 10
-          # row(0..1).columns(0).size = 10
           cells.border_width = 0.1
-          # cells.valign = :center
           columns(-2).align = :center
           self.header = true
-          self.column_widths = [180,50,50,50,50,50,50,50]
+          self.column_widths = [180,100,100,50]
         end
         move_down 10
-
-        rows = [
-          ['コンテナ数','　　　'],
-          ['　','　　　'],['　','　　　'],['　','　　　'],['　','　　　']
-        ]
-        table rows do
-          self.column_widths = [180,50]
-        end
+        text "朝調理個数一覧："
         move_down 5
+        table line_item_rows(sdm) do
+          self.row_colors = ["FFFFFF","E5E5E5"]
+          cells.size = 7
+          cells.border_width = 0.1
+          columns(-2).align = :center
+          self.header = true
+          self.column_widths = [180,50,50,50,50,50]
+        end
+        move_down 10
         text "その他メモ："
       end
-
       start_new_page if i < daily_menu.store_daily_menus.length - 1
     end
   end
+  def cook_on_the_day(sdm)
+    data = [['商品名','品目','工程','チェック']]
+    sdm.store_daily_menu_details.each do |sdmd|
+      sdmd.product.menus.each do |menu|
+        menu.menu_last_processes.each do |mlp|
+          data << [sdmd.product.name,mlp.content,mlp.memo,'']
+        end
+      end
+    end
+    data
+  end
+
 
   def line_item_rows(sdm)
-    data = [['商品名','東中野','当日分残','追加調理','残（冷凍）','完売']]
+    data = [['商品名',sdm.store.name,'当日分残','追加調理']]
     sdm.store_daily_menu_details.each do |sdmd|
       if sdmd.product.carryover_able_flag == true
         morning_number = "※　" + (sdmd.number/2.0).floor.to_s
-        data << [sdmd.product.name,sdmd.number,morning_number,'','','']
-      else
-        data << [sdmd.product.name,sdmd.number,'','','ー','']
+        data << [sdmd.product.name,sdmd.number,morning_number,'']
       end
     end
     data

@@ -170,6 +170,7 @@ class MenusController < AdminController
         :daybefore_20_cut,:daybefore_60_cut,:daybefore_20_cook,:daybefore_60_cook,:onday_20_cook,:onday_60_cook,:remove_image, :image_cache,
         menu_materials_attributes: [:id, :amount_used, :material_id, :_destroy,:preparation,:post,:base_menu_material_id,:source_flag,
         :row_order,:gram_quantity,:food_ingredient_id,:calorie,:protein,:lipid,:carbohydrate,:dietary_fiber,
-        :potassium,:calcium,:vitamin_b1,:vitamin_b2,:vitamin_c,:salt,:magnesium,:iron,:zinc,:copper,:folic_acid,:vitamin_d,:source_group])
+        :potassium,:calcium,:vitamin_b1,:vitamin_b2,:vitamin_c,:salt,:magnesium,:iron,:zinc,:copper,:folic_acid,:vitamin_d,:source_group,:first_flag,:machine_flag],
+        menu_last_processes_attributes:[:menu_id,:content,:memo])
     end
 end

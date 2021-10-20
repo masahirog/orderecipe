@@ -65,7 +65,19 @@
   / .col-md-4.form-group
     = f.label :serving_memo ,'盛付'
     = f.text_area :serving_memo,style:"height:10em;width:100%;", class: "form-control"
-
+  .col-md-12
+    table.table
+      thead
+        tr
+          th
+            span 当日仕上げ工程
+            = link_to_add_association '追加', f, :menu_last_processes,class:'btn btn-primary add_menu_last_process_fields',style:'margin-left:20px;',
+            data: {association_insertion_node: '#menu_last_process-add-point',association_insertion_method: 'append' }
+          th メモ
+          th
+      tbody#menu_last_process-add-point
+        = f.fields_for :menu_last_processes do |mlp|
+          = render 'menu_last_process_fields', f:mlp
   .col-md-12
     = f.label :image, "写真"
     = f.file_field :image

@@ -1,5 +1,17 @@
 class DailyMenusController < AdminController
   before_action :set_daily_menu, only: [:show, :update, :destroy]
+  def cook_on_the_day
+    @daily_menu = DailyMenu.find(params[:id])
+    respond_to do |format|
+      format.pdf do
+        pdf = CookOnTheDay.new(@daily_menu.id)
+        send_data pdf.render,
+        filename:    "#{@daily_menu.start_time.strftime("%m%d")}_当日調理.pdf",
+        type:        "application/pdf",
+        disposition: "inline"
+      end
+    end
+  end
   def loading
     @daily_menu = DailyMenu.find(params[:id])
     respond_to do |format|

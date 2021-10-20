@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_18_152440) do
+ActiveRecord::Schema.define(version: 2021_10_20_044742) do
 
   create_table "analyses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "store_id"
@@ -240,6 +240,14 @@ ActiveRecord::Schema.define(version: 2021_10_18_152440) do
     t.string "short_name"
   end
 
+  create_table "menu_last_processes", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "menu_id", null: false
+    t.string "content", default: "", null: false
+    t.string "memo"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "menu_materials", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "menu_id", null: false
     t.integer "material_id", null: false
@@ -269,6 +277,8 @@ ActiveRecord::Schema.define(version: 2021_10_18_152440) do
     t.integer "base_menu_material_id"
     t.boolean "source_flag", default: false, null: false
     t.integer "source_group", default: 0, null: false
+    t.boolean "first_flag", default: false, null: false
+    t.boolean "machine_flag", default: false, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

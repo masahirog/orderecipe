@@ -67,7 +67,7 @@ li.add_li_material.col-md-12.list-group-item.item.nested-fields.field
               = f.number_field :gram_quantity,class:'form-control input_gram_quantity',style:'background-color: #ffa2a2;'
         span[style="padding-top:10px;"]
           | g/ml
-      .col-md-3.input_nutritions style="padding:0;"
+      / .col-md-3.input_nutritions style="padding:0;"
         span.view_food_ingredient
           = "カロリー:#{f.object.calorie}kcal" if f.object.calorie
       .select_post.col-md-2.text-right
@@ -76,3 +76,9 @@ li.add_li_material.col-md-12.list-group-item.item.nested-fields.field
       .select_source_group.col-md-2.text-right
         span style="margin:8px 8px 0 0;float:left;width:70px;" グループ：
         = f.select :source_group, MenuMaterial.source_groups.keys.to_a, {include_blank:true}, class: 'form-control',style:'width:calc(100% - 80px);float:left;'
+      .select_source_group.col-md-1
+        span style="margin:8px 8px 0 0;float:left;width:70px;" 急ぎ：
+        = f.check_box :first_flag,class:'form-control',style:'width:20px;'
+      .select_source_group.col-md-1
+        span style="margin:8px 8px 0 0;float:left;width:70px;" 機械：
+        = f.check_box :machine_flag,class:'form-control',style:'width:20px;'
