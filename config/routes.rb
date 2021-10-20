@@ -36,10 +36,15 @@ Rails.application.routes.draw do
   end
   resources :wikis
   resources :containers
-  resources :product_sales_potentials
+  resources :product_sales_potentials do
+    collection do
+      post :reflesh
+    end
+  end
   resources :analysis_products
   resources :analyses do
     collection do
+      post :recalculate_potential
       get :store_products_sales
       get :store_product_sales
       get :summary
@@ -189,6 +194,8 @@ Rails.application.routes.draw do
   end
   resources :store_daily_menus do
     collection do
+      post :input_multi_number
+      get :input_manufacturing_number
       get :once_edit
       get :once_update
       post :upload_number

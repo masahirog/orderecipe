@@ -47,6 +47,7 @@ ActiveRecord::Schema.define(version: 2021_10_18_152440) do
     t.datetime "updated_at", null: false
     t.integer "early_sales_number", default: 0, null: false
     t.boolean "exclusion_flag", default: false, null: false
+    t.float "potential"
   end
 
   create_table "brands", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

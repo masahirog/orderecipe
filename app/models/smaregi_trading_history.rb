@@ -117,7 +117,10 @@ class SmaregiTradingHistory < ApplicationRecord
     analysis_products_arr.each do |analysis_product|
       analysis_product.sales_number = product_sales_number[analysis_product.smaregi_shohin_id.to_s]
       analysis_product.total_sales_amount = product_sales_amount[analysis_product.smaregi_shohin_id.to_s]
-      analysis_product.early_sales_number = product_early_sales_number[analysis_product.smaregi_shohin_id.to_s] if product_early_sales_number[analysis_product.smaregi_shohin_id.to_s].present?
+      if product_early_sales_number[analysis_product.smaregi_shohin_id.to_s].present?
+        analysis_product.early_sales_number = product_early_sales_number[analysis_product.smaregi_shohin_id.to_s]
+        analysis_product.potential = ((total_number_sales_sozai.to_f/fourteen_number_sales_sozai)*product_early_sales_number[analysis_product.smaregi_shohin_id.to_s]).round(1)
+      end
     end
     SmaregiTradingHistory.import smaregi_trading_histories_arr
     AnalysisProduct.import analysis_products_arr

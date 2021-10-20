@@ -1,5 +1,30 @@
-= link_to 'カレンダー', store_daily_menus_path(store_id:@store_daily_menu.store_id),class:'pull-right btn btn-primary'
-h2 style='float:left;' = "#{@store_daily_menu.store.name}店 "
+= link_to '製造数入力', input_manufacturing_number_store_daily_menus_path(store_daily_menu_id:@store_daily_menu.id),class:'pull-right btn btn-primary'
+button type="button" class="btn btn-default" data-toggle="modal" data-target="#store_once_reflect" style='margin-right:10px;float:right;' 製造数入力
+#store_once_reflect.modal.fade tabindex="-1"
+  = form_tag input_manufacturing_number_store_daily_menus_path, method: :get do
+    = number_field_tag 'store_id',@store_daily_menu.store_id
+    .modal-dialog style='width:1000px;'
+      .modal-content
+        .modal-header
+        .modal-body
+          table.table.table-striped
+            thead
+              tr
+                th 日付
+                th
+            tbody
+              - @after_store_daily_menus.each_with_index do |sdm,i|
+                tr
+                  td = sdm.start_time.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[sdm.start_time.wday]})")
+                  - if i==0
+                    td = check_box_tag "store_daily_menu_ids[]",sdm.id,sdm.id,class:'form-control',style:'height:1em;width:100px;float:left;'
+                  - else
+                    td = check_box_tag "store_daily_menu_ids[]",sdm.id,false,class:'form-control',style:'height:1em;width:100px;float:left;'
+        .modal-footer
+          button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
+          = submit_tag "登録",class:'btn btn-primary'
+
+h2 style='float:left;' = link_to "#{@store_daily_menu.store.name}店 ", store_daily_menus_path(store_id:@store_daily_menu.store_id),class:''
 h2 style='float:left;margin-left:10px;'
   - if @yesterday
     = link_to "＜",@yesterday
@@ -16,7 +41,6 @@ div style='float:left;padding:15px 20px;'
 div style='float:left;padding:15px 20px;'
   label 最高気温
   p = @store_daily_menu.min_temperature
-
 .clearfix.col-md-12
   table.show_case_table style='float:left;width:14%;margin-right:5px;'
     thead
@@ -51,9 +75,9 @@ div style='float:left;padding:15px 20px;'
       = link_to sdmp.image.url, "data-lightbox" => sdmp.image.url do
         = image_tag sdmp.image.url,style:'height:200px;width:300px;object-fit:cover;object-position: 0 0;'
 
-.col-md-12
+/ .col-md-12
 
-  = link_to "在庫CSV", stock_store_daily_menus_path(store_daily_menu_id:@store_daily_menu.id,format:'csv'), class: "btn btn-default",style:'float:right;'
+  / = link_to "在庫CSV", stock_store_daily_menus_path(store_daily_menu_id:@store_daily_menu.id,format:'csv'), class: "btn btn-default",style:'float:right;'
 table.table.table-list
   thead
     tr

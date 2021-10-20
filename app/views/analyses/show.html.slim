@@ -5,23 +5,25 @@ table.table
     tr
       th 日付
       th 店舗名
-      th 来客数
+      th 総来客数
+      th 14時来客数
+      th 惣菜総販売数
+      th 惣菜14時販売数
       th 合計売上
       th 廃棄
       th 廃棄率
-      th 人件費
-      th 営業利益
 
   tbody
     tr
       td = @analysis.date.strftime("%-m月%-d日(#{%w(日 月 火 水 木 金 土)[@analysis.date.wday]})")
       td = @analysis.store.name
       td = "#{@analysis.transaction_count}組"
+      td = "#{@analysis.fourteen_transaction_count}組"
+      td = @analysis.total_number_sales_sozai
+      td = @analysis.fourteen_number_sales_sozai
       td = "#{@analysis.sales_amount.to_s(:delimited)}円" if @analysis.sales_amount
       td = "#{@analysis.loss_amount.to_s(:delimited)}円" if @analysis.loss_amount
       td = "#{((@analysis.loss_amount.to_f/@analysis.sales_amount)*100).round(1)}%" if @analysis.sales_amount && @analysis.loss_amount
-      td
-      td
 - if @analysis.analysis_products.present?
   = link_to 'OR＜＞スマレジ計算', products_analyses_path(analysis: {analysis_id:@analysis.id}), method: :post,class:'btn btn-sm btn-primary'
 = link_to 'Orderecipeデータリセット',bulk_delete_analysis_products_analyses_path(analysis_id:@analysis.id), {method: :post, data: { confirm: '削除しますか？' },class:'btn btn-sm btn-danger pull-right'}
@@ -41,6 +43,7 @@ table.table
       th 廃棄数
       th 廃棄金額
       th 14時まで
+      th ポテンシャル
 
   tbody
     - @store_daily_menu_details.each do |sdmd|
@@ -58,6 +61,7 @@ table.table
         td = ap.loss_number if ap.present?
         td = ap.loss_amount.to_s(:delimited) if ap.present? && ap.loss_amount.present?
         td = ap.early_sales_number if ap.present?
+        td = ap.potential
     tr style="background-color:gainsboro;"
       th Orderecipe 献立外 メニュー
       th OR単価

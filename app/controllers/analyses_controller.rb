@@ -1,8 +1,22 @@
 class AnalysesController < AdminController
   before_action :set_analysis, only: %i[ show edit update destroy ]
+  def recalculate_potential
+    store_id = params[:store_id]
+    product_id = params[:product_id]
+    # 計算に直近2週間分の販売データを使用する
+    potential_average = ProductSalesPotential.recalculate_potential(store_id,product_id)
+    product_sales_potential = ProductSalesPotential.find_by(store_id:store_id,product_id:product_id)
+    if product_sales_potential.present?
+      product_sales_potential.update(sales_potential:potential_average)
+    else
+      ProductSalesPotential.create(store_id:store_id,product_id:product_id,sales_potential:potential_average)
+    end
+    redirect_to store_product_sales_analyses_path(store_id:store_id,product_id:product_id)
+  end
   def store_product_sales
     @product = Product.find(params[:product_id])
     @store = Store.find(params[:store_id])
+    @product_sales_potential= ProductSalesPotential.find_by(store_id:@store.id,product_id:@product.id)
     analysis_ids = @store.analyses
     @analysis_products = AnalysisProduct.joins(:analysis).order("analyses.date desc").where(product_id:@product.id,analysis_id:analysis_ids)
   end

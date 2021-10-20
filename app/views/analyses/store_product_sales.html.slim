@@ -4,15 +4,26 @@ table.table
       th 店舗
       th 商品名
       th 販売ポテンシャル
-      th
   tbody
     tr
       td = @store.name
       td = @product.name
-      td 26.5
-      td = link_to '更新する','',class:'btn btn-sm btn-primary'
+      td
+        = @product_sales_potential.sales_potential if @product_sales_potential
+        button type="button" class="btn btn-default" data-toggle="modal" data-target="#upload" style='margin-right:10px;float:right;' 手動更新
+        #upload.modal.fade tabindex="-1"
+          = form_with(model: @product_sales_potential, data: {remote: true}) do |f|
+            .modal-dialog style='width:1000px;'
+              .modal-content
+                .modal-header
+                .modal-body
+                  = f.number_field :sales_potential,class:'form-control'
+                .modal-footer
+                  = submit_tag "保存",class:'btn btn-primary'
 
 
+
+= link_to '直近12日のデータで再計算',recalculate_potential_analyses_path(product_id:@product.id,store_id:@store.id),class:'btn btn-sm btn-primary', method: :post
 table.table
   thead
     tr
@@ -29,11 +40,16 @@ table.table
 
 
   tbody
+    - i = 0
     - @analysis_products.includes([:analysis]).each do |analysis_product|
       - if analysis_product.exclusion_flag == true
         - color = "#d3d3d3"
       - else
-        - color = "#ffffff"
+        - if i < 12
+          - color = "#ffefd5"
+        - else
+          - color = "#ffffff"
+        - i += 1
       tr class="analysis_product_tr_#{analysis_product.id}" style="background-color:#{color};"
         td = analysis_product.analysis.date
         td = analysis_product.analysis.transaction_count
@@ -43,7 +59,7 @@ table.table
         td = analysis_product.actual_inventory
         td = analysis_product.sales_number
         td = analysis_product.early_sales_number
-        td
+        td = analysis_product.potential
         td
           = form_with(model: analysis_product, data: {remote: true},id:"update_analysis_product_#{analysis_product.id}") do |f|
             = f.hidden_field :id,class:'analysis_product_id'

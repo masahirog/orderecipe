@@ -19,6 +19,7 @@ class CreateAnalysisProducts < ActiveRecord::Migration[5.2]
       t.timestamps
       t.integer :early_sales_number,default:0,null:false
       t.boolean :exclusion_flag,default:0,null:false
+      t.float :potential
     end
   end
 end

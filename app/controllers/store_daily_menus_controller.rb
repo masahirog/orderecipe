@@ -1,7 +1,38 @@
 require "csv"
 class StoreDailyMenusController < ApplicationController
   before_action :set_store_daily_menu, only: [:show, :edit, :update, :destroy]
-
+  def input_manufacturing_number
+    @store_id = params[:store_id]
+    @store = Store.find(@store_id)
+    @store_daily_menu_details_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    @store_daily_menu_detail_ids_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    store_daily_menu_ids = params["store_daily_menu_ids"]
+    @store_daily_menus = StoreDailyMenu.where(id:store_daily_menu_ids)
+    store_daily_menu_details = StoreDailyMenuDetail.where(store_daily_menu_id:@store_daily_menus.ids)
+    store_daily_menu_details.each do |sdmd|
+      @store_daily_menu_detail_ids_hash[[sdmd.store_daily_menu_id,sdmd.product_id]]= sdmd.id
+      @store_daily_menu_details_hash[[sdmd.store_daily_menu_id,sdmd.product_id]]= sdmd.number
+    end
+    @uniq_product_store_daily_menu_details = store_daily_menu_details.select(:product_id).distinct
+    @uniq_product_ids = @uniq_product_store_daily_menu_details.map{|sdmd|sdmd.product_id}
+    product_sales_potentials = ProductSalesPotential.where(store_id:@store_id,product_id:@uniq_product_ids)
+    @product_sales_potentials = product_sales_potentials.map{|psp|[psp.product_id,psp.sales_potential]}.to_h
+    sozai_ids = Product.where(id:@uniq_product_ids).where(bejihan_sozai_flag:true).ids
+    @sozai_total_sales_potential = product_sales_potentials.where(product_id:sozai_ids).sum(:sales_potential)
+  end
+  def input_multi_number
+    update_arr = []
+    store_daily_menu_detail_ids = params[:store_daily_menu_details].keys
+    store_daily_menu_details = StoreDailyMenuDetail.where(id:store_daily_menu_detail_ids)
+    store_daily_menu_details_hash = store_daily_menu_details.map{|sdmd|[sdmd.id,sdmd]}.to_h
+    params[:store_daily_menu_details].each do |sdmd|
+      store_daily_menu_detail = store_daily_menu_details_hash[sdmd[0].to_i]
+      store_daily_menu_detail.number = sdmd[1].to_i
+      update_arr << store_daily_menu_detail
+    end
+    StoreDailyMenuDetail.import update_arr,on_duplicate_key_update:[:number]
+    redirect_to input_manufacturing_number_store_daily_menus_path(store_id:params['store_id'],store_daily_menu_ids:params['store_daily_menu_ids'].split(" ")),notice:'更新OK！'
+  end
   def stock
     store_daily_menu = StoreDailyMenu.find(params[:store_daily_menu_id])
   end
@@ -27,6 +58,8 @@ class StoreDailyMenusController < ApplicationController
 
   def show
     @store_daily_menu = StoreDailyMenu.find(params[:id])
+    store_id = @store_daily_menu.store_id
+    date = @store_daily_menu.start_time
     @date = @store_daily_menu.start_time
     @tommoroww = StoreDailyMenu.find_by(start_time:@date+1)
     @yesterday = StoreDailyMenu.find_by(start_time:@date-1)
@@ -35,7 +68,7 @@ class StoreDailyMenusController < ApplicationController
       [sdmd.place_showcase_id,sdmd.product.name] if sdmd.place_showcase_id.present?
     end
     @hash = @hash.compact.to_h
-
+    @after_store_daily_menus = StoreDailyMenu.where('start_time >= ?',date).where(store_id:store_id)
     respond_to do |format|
       format.html
       format.csv do
