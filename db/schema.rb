@@ -48,6 +48,7 @@ ActiveRecord::Schema.define(version: 2021_10_20_044742) do
     t.integer "early_sales_number", default: 0, null: false
     t.boolean "exclusion_flag", default: false, null: false
     t.float "potential"
+    t.index ["analysis_id", "product_id"], name: "index_analysis_products_on_analysis_id_and_product_id", unique: true
   end
 
   create_table "brands", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

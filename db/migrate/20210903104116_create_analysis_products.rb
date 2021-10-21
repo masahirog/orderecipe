@@ -20,6 +20,7 @@ class CreateAnalysisProducts < ActiveRecord::Migration[5.2]
       t.integer :early_sales_number,default:0,null:false
       t.boolean :exclusion_flag,default:0,null:false
       t.float :potential
+      t.index [:analysis_id, :product_id], unique: true
     end
   end
 end

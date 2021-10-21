@@ -89,33 +89,35 @@ class AnalysesController < AdminController
     @product_sales_number = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     product_early_sales_number = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     smaregi_trading_histories.each do |sth|
-      if sth.torihiki_meisaikubun == 1
-        suryo = sth.suryo
-        nebikigokei = sth.nebikigokei
-      else
-        suryo = -1 * sth.suryo
-        nebikigokei = -1 * sth.nebikigokei
-      end
-      if @product_sales_number[sth.shohin_id].present?
-        @product_sales_number[sth.shohin_id][:suryo] += suryo
-        @product_sales_number[sth.shohin_id][:nebikigokei] += nebikigokei
-      else
-        @product_sales_number[sth.shohin_id][:suryo] = suryo
-        @product_sales_number[sth.shohin_id][:nebikigokei] = nebikigokei
-      end
-      if sth.time.strftime('%H%M').to_i < 1400
-        if product_early_sales_number[sth.shohin_id].present?
-          product_early_sales_number[sth.shohin_id] += suryo
+      if sth.suryo.present?
+        if sth.torihiki_meisaikubun == 1
+          suryo = sth.suryo
+          nebikigokei = sth.nebikigokei
         else
-          product_early_sales_number[sth.shohin_id] = suryo
+          suryo = -1 * sth.suryo
+          nebikigokei = -1 * sth.nebikigokei
         end
-      end
-      if smaregi_shohin_ids.include?(sth.shohin_id)
-      else
-        new_analysis_product = AnalysisProduct.new(analysis_id:sth.analysis_id,smaregi_shohin_id:sth.shohin_id,smaregi_shohin_name:sth.shohinmei,smaregi_shohintanka:sth.shohintanka,
-        product_id:sth.hinban,total_sales_amount:0,sales_number:0,loss_amount:0)
-        analysis_products_arr << new_analysis_product
-        smaregi_shohin_ids << sth.shohin_id
+        if @product_sales_number[sth.shohin_id].present?
+          @product_sales_number[sth.shohin_id][:suryo] += suryo
+          @product_sales_number[sth.shohin_id][:nebikigokei] += nebikigokei
+        else
+          @product_sales_number[sth.shohin_id][:suryo] = suryo
+          @product_sales_number[sth.shohin_id][:nebikigokei] = nebikigokei
+        end
+        if sth.time.strftime('%H%M').to_i < 1400
+          if product_early_sales_number[sth.shohin_id].present?
+            product_early_sales_number[sth.shohin_id] += suryo
+          else
+            product_early_sales_number[sth.shohin_id] = suryo
+          end
+        end
+        if smaregi_shohin_ids.include?(sth.shohin_id)
+        else
+          new_analysis_product = AnalysisProduct.new(analysis_id:sth.analysis_id,smaregi_shohin_id:sth.shohin_id,smaregi_shohin_name:sth.shohinmei,smaregi_shohintanka:sth.shohintanka,
+          product_id:sth.hinban,total_sales_amount:0,sales_number:0,loss_amount:0)
+          analysis_products_arr << new_analysis_product
+          smaregi_shohin_ids << sth.shohin_id
+        end
       end
     end
     analysis_products_arr.each do |ap|
@@ -133,28 +135,48 @@ class AnalysesController < AdminController
     total_loass_amount = 0
     analysis_id = params[:analysis]["analysis_id"]
     @analysis = Analysis.find(analysis_id)
-    # smaregi_trading_histories = SmaregiTradingHistory.where(analysis_id:analysis_id)
     @store_daily_menu = StoreDailyMenu.find_by(start_time:@analysis.date,store_id:@analysis.store_id)
     smaregi_trading_histories = SmaregiTradingHistory.where(analysis_id:@analysis.id)
-    product_day_sales_number = smaregi_trading_histories.group(:hinban).sum(:suryo)
-    # product_day_sales_amount = smaregi_trading_histories.group(:hinban).sum(:nebikigokei)
-    product_early_sales_number = smaregi_trading_histories.where(time:'00:00:00'..'13:59:59').group(:hinban).sum(:suryo)
-    analysis_product_shohin_ids = []
+    product_day_sales_number = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    product_day_sales_amount = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    product_fourteen_sales_number = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    # product_day_sales_number = smaregi_trading_histories.group(:hinban).sum(:suryo)
+    # product_early_sales_number = smaregi_trading_histories.where(time:'00:00:00'..'13:59:59').where(bumon_id:1).group(:hinban).sum(:suryo)
     update_analysis_products_arr = []
     new_analysis_products_arr = []
-    @store_daily_menu.store_daily_menu_details.each do |sdmd|
-      analysis_products = @analysis.analysis_products.where(product_id:sdmd.product_id)
-      if analysis_products.length > 1
-        analysis_products.each do |analysis_product|
-          analysis_product.list_price = 0
-          analysis_product.manufacturing_number = 0
-          analysis_product.carry_over = 0
-          analysis_product.actual_inventory = 0
-          update_analysis_products_arr << analysis_product
-          analysis_product_shohin_ids << analysis_product.shohin_id
+
+    smaregi_trading_histories.each do |sth|
+      if sth.torihiki_meisaikubun == 1
+        number = sth.suryo.to_i
+        salse = sth.nebikigokei.to_i
+      else
+        number = -1 * sth.suryo.to_i
+        salse = -1 * sth.nebikigokei.to_i
+      end
+      if product_day_sales_number[sth.hinban].present?
+        product_day_sales_number[sth.hinban] += number
+      else
+        product_day_sales_number[sth.hinban] = number
+      end
+      if product_day_sales_amount[sth.hinban].present?
+        product_day_sales_amount[sth.hinban] += salse
+      else
+        product_day_sales_amount[sth.hinban] = salse
+      end
+
+      if sth.time < Time.parse('14:00')
+        if product_fourteen_sales_number[sth.hinban].present?
+          product_fourteen_sales_number[sth.hinban] += number
+        else
+          product_fourteen_sales_number[sth.hinban] = number
         end
-      elsif analysis_products.length == 1
-        analysis_product = analysis_products[0]
+      end
+    end
+
+
+    @store_daily_menu.store_daily_menu_details.each do |sdmd|
+      analysis_product = @analysis.analysis_products.find_by(product_id:sdmd.product_id)
+      if analysis_product.present?
         analysis_product.list_price = sdmd.product.sell_price
         analysis_product.manufacturing_number = sdmd.number
         analysis_product.carry_over = sdmd.carry_over
@@ -164,23 +186,21 @@ class AnalysesController < AdminController
         else
           analysis_product.sales_number = 0
         end
-        if product_early_sales_number[sdmd.product_id].present?
-          analysis_product.early_sales_number = product_early_sales_number[sdmd.product_id]
+        if product_fourteen_sales_number[sdmd.product_id].present?
+          analysis_product.early_sales_number = product_fourteen_sales_number[sdmd.product_id]
         else
           analysis_product.early_sales_number = 0
         end
-        analysis_product.total_sales_amount =
+        analysis_product.total_sales_amount = product_day_sales_amount[sdmd.product_id]
         analysis_product.loss_number = analysis_product.actual_inventory - analysis_product.sales_number
-        loss_amount = analysis_product.list_price * analysis_product.loss_number
+        loss_amount = ((analysis_product.list_price * analysis_product.loss_number)*1.08).floor(1)
         if loss_amount < 0 || analysis_product.product_id == 10459
           analysis_product.loss_amount = 0
         else
           analysis_product.loss_amount = loss_amount
           total_loass_amount += loss_amount
         end
-
         update_analysis_products_arr << analysis_product
-        analysis_product_shohin_ids << analysis_product.smaregi_shohin_id
       else
         new_analysis_product = AnalysisProduct.new(analysis_id:analysis_id,product_id:sdmd.product_id,list_price:sdmd.product.sell_price,
           manufacturing_number:sdmd.number, carry_over:sdmd.carry_over,actual_inventory:sdmd.actual_inventory,loss_amount:0,loss_number:0)
