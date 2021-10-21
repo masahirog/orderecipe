@@ -1,6 +1,6 @@
 class Task < ApplicationRecord
   belongs_to :store
-  enum status: {yet:0,done:1,cancel:2}
+  enum status: {yet:0,done:1,cancel:2,carry_forward:3}
   validates :action_date, presence: true
   validates :content, presence: true
   validates :drafter, presence: true
@@ -43,7 +43,7 @@ class Task < ApplicationRecord
     today = Date.today
     yesterday = today - 1
     update_tasks_arr = []
-    Task.where(action_date:yesterday,status:0).each do |task|
+    Task.where(action_date:yesterday,status:3).each do |task|
       task.action_date = today
       task.content = task.content + "｜#{yesterday.strftime("%-m/%-d")}繰越"
       update_tasks_arr << task

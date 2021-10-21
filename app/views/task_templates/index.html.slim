@@ -1,9 +1,23 @@
 h3 リマインダー定期自動作成の一覧
-.col-md-2
+.col-md-1
   = link_to '新規登録',new_task_template_path,class:'btn btn-primary'
+.form-group.clearfix
+  = form_tag task_templates_path, :method => 'get' do
+    .col-md-1
+      = select_tag :store_id,options_for_select(Store.all.map{|store|[store.name,store.id]},params[:store_id]),include_blank:true , class: "task_status form-control"
+    .col-md-1
+      = select_tag :repeat_type,options_for_select(options_for_select_from_enum(TaskTemplate,:repeat_type),params[:repeat_type]),include_blank:true , class: "task_repeat_type form-control"
+
+
+    div style='float:left;'
+      label 　
+      = submit_tag "検索" ,class:"btn btn-primary"
+
+
 table.table.table-striped
   thead
     tr
+      th
       th リピート
       th 時間
       th 内容
@@ -11,16 +25,15 @@ table.table.table-striped
       th ステータス
       th 店舗
       th
-      th
 
   tbody
     - @task_templates.each do |task_template|
       tr
+        td = link_to '編集',edit_task_template_path(task_template),class:'btn btn-primary btn-sm'
         td = t("enums.task_template.repeat_type.#{task_template.repeat_type}")
         td = task_template.action_time.strftime("%H:%M") if task_template.action_time
         td = task_template.content
         td = task_template.memo
         td = task_template.status
         td = task_template.stores.pluck(:name).join(',')
-        td = link_to '作成',hand_reflect_task_templates_path(task_template_id:task_template.id),class:'btn btn-sm btn-primary', method: :post, data: { confirm: '本日の日付でリマインダーを作成します。' }
-        td = link_to '編集',edit_task_template_path(task_template)
+        td = link_to "削除", task_template, method: :delete,class:'btn btn-danger btn-sm',data: { confirm: "ホンマに削除するで？" }

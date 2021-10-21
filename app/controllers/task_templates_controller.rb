@@ -14,7 +14,9 @@ class TaskTemplatesController < ApplicationController
     redirect_to task_templates_path
   end
   def index
-    @task_templates = TaskTemplate.all
+    @task_templates = TaskTemplate.order(:action_time)
+    @task_templates = @task_templates.joins(:task_template_stores).where(:task_template_stores => {store_id:params[:store_id]}) if params[:store_id].present?
+    @task_templates = @task_templates.where(repeat_type:params[:repeat_type]) if params[:repeat_type].present?
   end
 
   def show

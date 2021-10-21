@@ -9,6 +9,7 @@ class TasksController < ApplicationController
     end
     @store = Store.find(params[:store_id])
     @tasks = @store.tasks.where(action_date:@date).order(:action_time)
+    @tasks = @tasks.where(status:params[:status]) if params[:status].present?
     @task = Task.new(store_id:params[:store_id],action_date:params[:date])
   end
 
@@ -47,7 +48,7 @@ class TasksController < ApplicationController
     respond_to do |format|
       if @task.save
         Task.chatwork_notice(@task,params['stores']) if params['chatwork_notice'].present?
-        format.html { redirect_to store_tasks_path(store_id:@task.store_id,date:@task.action_date), notice: "Task was successfully created." }
+        format.html { redirect_to store_tasks_path(store_id:@task.store_id,date:@task.action_date,status:'yet'), notice: "Task was successfully created." }
         format.json { render :show, status: :created, location: @task }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -61,7 +62,7 @@ class TasksController < ApplicationController
 
     respond_to do |format|
       if @task.update(task_params)
-        format.html { redirect_to store_tasks_path(store_id:@task.store_id,date:@task.action_date), notice: "Task was successfully updated." }
+        format.html { redirect_to store_tasks_path(store_id:@task.store_id,date:@task.action_date,status:'yet'), notice: "Task was successfully updated." }
         format.json { render :show, status: :ok, location: @task }
         format.js
       else

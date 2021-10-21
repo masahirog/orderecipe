@@ -48,8 +48,9 @@ h3
     = hidden_field_tag :store_id,params[:store_id]
     div style='float:left;'
       = date_field_tag :date,params[:date], class:"form-control"
-    / .col-md-2
-    /   = select_tag :status, options_for_select(Task.statuses.keys.to_a,params[:status]), include_blank: true, class:"form-control"
+    .col-md-2
+      = select_tag :status,options_for_select(options_for_select_from_enum(Task,:status),params[:status]),include_blank:true , class: "task_status form-control"
+
 
     div style='float:left;'
       label 　
@@ -58,44 +59,55 @@ h3
 table.table
   thead
     tr
-      th.col-md-1 ステータス
+      th 完了！
       th.col-md-1 日時　
       th 内容
       th メモ
       th.col-md-1 作者
+      th.col-md-1 ステータス
 
   tbody
     - @tasks.each do |task|
+
       - if task.important_flag == false
         - bg_color = '#ffffff'
       - else
         - bg_color = '#ffb6c1'
       - if task.status == "done"
-        - bg_color = '#f5f5f5'
+        - bg_color = '#d3d3d3'
       - elsif task.status == "cancel"
         - bg_color = '#d3d3d3'
       tr class="task_tr_#{task.id}" style="background-color:#{bg_color}"
         td
-          = form_with(model: task, data: {remote: true},id:"update_task_#{task.id}") do |f|
+          = form_with(model: task, data: {remote: true},id:"update_task_1_#{task.id}") do |f|
+            = f.hidden_field :status,value:'done'
             = f.hidden_field :id,class:'task_id'
-            = f.select :status, options_for_select_from_enum(Task, :status),{}, { class: "task_status form-control"}
-
+            = f.check_box :check_box_flag,class: "task_status_check form-control"
         td
           - if task.action_time.present?
             - time = task.action_time.strftime("%H:%M")
           - else
             - time = ''
-          = link_to "#{task.action_date.strftime("%-m/%d")} #{time}",edit_task_path(task)
+          = link_to "#{time}",edit_task_path(task)
         td = task.content
-        td = task.memo
+        td = text_url_to_link(simple_format(h(task.memo))).html_safe
         td = task.drafter
+        td
+          = form_with(model: task, data: {remote: true},id:"update_task_2_#{task.id}") do |f|
+            = f.hidden_field :id,class:'task_id'
+            = f.select :status, options_for_select_from_enum(Task, :status),{}, { class: "task_status form-control"}
+
 .form-group.clearfix
   = link_to '定期リマインド作成', task_templates_path(),class:'pull-right btn btn-primary btn-sm'
 
 javascript:
   $(function() {
+    $(document).on("change", ".task_status_check", function(event) {
+      var task_id = $(this).parent().find('.task_id').val();
+      Rails.fire($('#update_task_1_' + task_id)[0], 'submit');
+    });
     $(document).on("change", ".task_status", function(event) {
       var task_id = $(this).parent().find('.task_id').val();
-      Rails.fire($('#update_task_' + task_id)[0], 'submit');
+      Rails.fire($('#update_task_2_' + task_id)[0], 'submit');
     });
   });

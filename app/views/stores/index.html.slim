@@ -18,6 +18,6 @@ table.table
       tr
         td = store.name
         td = link_to '献立', store_daily_menus_path(store_id:store.id),class:'btn btn-sm btn-primary'
-        td = link_to 'リマインダー', store_tasks_path(store_id:store.id),class:'btn btn-sm btn-primary'
+        td = link_to 'リマインダー', store_tasks_path(store_id:store.id,status:'yet'),class:'btn btn-sm btn-primary'
         / td = link_to '販売データ', store_products_sales_analyses_path(store_id:store.id),class:'btn btn-sm btn-primary'
         / td = link_to '編集', edit_store_path(store)
