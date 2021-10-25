@@ -11,7 +11,9 @@ Rails.application.routes.draw do
       end
     end
   end
-
+  constraints subdomain: 'one' do
+    resources :brands
+  end
   devise_for :users
   root 'analyses#summary'
   post 'orders/new' => 'orders#new'
@@ -185,7 +187,7 @@ Rails.application.routes.draw do
     end
   end
   resources :kurumesi_mails
-  resources :brands
+  # resources :brands
   resources :place_showcases
   resources :serving_plates
   resources :stores do
