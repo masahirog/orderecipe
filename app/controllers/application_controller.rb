@@ -7,6 +7,9 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   before_action :stock_alert_materials
 
+  def aaa
+
+  end
   def after_sign_in_path_for(resource)
     if current_user.id == 1
       root_url
