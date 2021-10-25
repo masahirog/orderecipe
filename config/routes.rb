@@ -1,8 +1,6 @@
 Rails.application.routes.draw do
-  constraints Subdomain::One do
-    namespace :one, path: Subdomain::One.path do
-      resources :brands
-    end
+  constraints subdomain: "one" do
+    resources :users
   end
 
   namespace :store do
