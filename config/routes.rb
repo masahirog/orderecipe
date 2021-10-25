@@ -1,4 +1,10 @@
 Rails.application.routes.draw do
+  constraints Subdomain::One do
+    namespace :one, path: Subdomain::One.path do
+      resources :brands
+    end
+  end
+
   namespace :store do
     resources :store_daily_menus do
       collection do
@@ -10,9 +16,6 @@ Rails.application.routes.draw do
         get :download
       end
     end
-  end
-  constraints subdomain: 'one' do
-    resources :brands
   end
   devise_for :users
   root 'analyses#summary'
@@ -187,7 +190,7 @@ Rails.application.routes.draw do
     end
   end
   resources :kurumesi_mails
-  # resources :brands
+  resources :brands
   resources :place_showcases
   resources :serving_plates
   resources :stores do
