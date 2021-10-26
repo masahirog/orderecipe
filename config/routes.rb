@@ -1,11 +1,4 @@
 Rails.application.routes.draw do
-  constraints subdomain: 'one' do
-    get '/aaa' => 'application#aaa'
-  end
-end
-
-Rails.application.routes.draw do
-
   namespace :store do
     resources :store_daily_menus do
       collection do
