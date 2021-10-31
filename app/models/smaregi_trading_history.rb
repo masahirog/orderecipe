@@ -120,6 +120,9 @@ class SmaregiTradingHistory < ApplicationRecord
       if product_early_sales_number[analysis_product.smaregi_shohin_id.to_s].present?
         analysis_product.early_sales_number = product_early_sales_number[analysis_product.smaregi_shohin_id.to_s]
         analysis_product.potential = ((total_number_sales_sozai.to_f/fourteen_number_sales_sozai)*product_early_sales_number[analysis_product.smaregi_shohin_id.to_s]).round(1)
+      else
+        analysis_product.early_sales_number = 0
+        analysis_product.potential = 0
       end
     end
     SmaregiTradingHistory.import smaregi_trading_histories_arr

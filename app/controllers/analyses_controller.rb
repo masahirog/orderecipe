@@ -5,6 +5,7 @@ class AnalysesController < AdminController
     product_id = params[:product_id]
     # 計算に直近2週間分の販売データを使用する
     potential_average = ProductSalesPotential.recalculate_potential(store_id,product_id)
+
     product_sales_potential = ProductSalesPotential.find_by(store_id:store_id,product_id:product_id)
     if product_sales_potential.present?
       product_sales_potential.update(sales_potential:potential_average)
@@ -81,6 +82,8 @@ class AnalysesController < AdminController
   end
   def smaregi_trading_history_totalling
     #アップロード済みのスマレジの販売履歴を計算する
+    total_number_sales_sozai = 0
+    fourteen_number_sales_sozai = 0
     analysis_id = params[:analysis]["analysis_id"]
     @analysis = Analysis.find(analysis_id)
     smaregi_shohin_ids = @analysis.analysis_products.map{|ap|ap.smaregi_shohin_id}
@@ -104,12 +107,15 @@ class AnalysesController < AdminController
           @product_sales_number[sth.shohin_id][:suryo] = suryo
           @product_sales_number[sth.shohin_id][:nebikigokei] = nebikigokei
         end
+        total_number_sales_sozai += suryo if sth.bumon_id == 1
+
         if sth.time.strftime('%H%M').to_i < 1400
           if product_early_sales_number[sth.shohin_id].present?
             product_early_sales_number[sth.shohin_id] += suryo
           else
             product_early_sales_number[sth.shohin_id] = suryo
           end
+          fourteen_number_sales_sozai += suryo if sth.bumon_id == 1
         end
         if smaregi_shohin_ids.include?(sth.shohin_id)
         else
@@ -125,6 +131,10 @@ class AnalysesController < AdminController
       ap.total_sales_amount = @product_sales_number[ap.smaregi_shohin_id][:nebikigokei]
       if product_early_sales_number[ap.smaregi_shohin_id].present?
         ap.early_sales_number = product_early_sales_number[ap.smaregi_shohin_id]
+        ap.potential = ((total_number_sales_sozai.to_f/fourteen_number_sales_sozai)*product_early_sales_number[ap.smaregi_shohin_id]).round(1)
+      else
+        ap.early_sales_number = 0
+        ap.potential = 0
       end
     end
     AnalysisProduct.import analysis_products_arr
@@ -163,8 +173,7 @@ class AnalysesController < AdminController
       else
         product_day_sales_amount[sth.hinban] = salse
       end
-
-      if sth.time < Time.parse('14:00')
+      if sth.time.strftime('%H%M').to_i < 1400
         if product_fourteen_sales_number[sth.hinban].present?
           product_fourteen_sales_number[sth.hinban] += number
         else
