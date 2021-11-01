@@ -22,9 +22,13 @@ tr.nested-fields.item.daily_menu_detail_tr class=class_name
       = f.collection_select :product_id, @dmd_products, :id, :name, {include_blank:true},class:'form-control input_select_product'
   td
     = f.check_box :sold_out_flag, class: "form-control"
-
   td
-    = f.number_field :number, class: 'form-control manufacturing_number input_number', min: 0,readonly:true
+    = f.number_field :number, class: 'form-control total_number', min: 0,readonly:true
+  td
+    = f.number_field :bento_fukusai_number, class: 'form-control bento_fukusai_number input_number', min: 0,readonly:true
+  td
+    = f.number_field :sozai_number, class: 'form-control sozai_number input_number', min: 0,readonly:true
+
   td
     = f.number_field :stock_deficiency_excess, class: 'form-control input_number stock_deficiency_excess_input'
   td

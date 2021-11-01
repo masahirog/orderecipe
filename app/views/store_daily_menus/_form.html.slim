@@ -84,44 +84,56 @@
     thead
       tr
         th = link_to_add_association '商品追加', f, :store_daily_menu_details,class: 'btn btn-default add_menu_details',data: {association_insertion_node: '#store_daily_menu_details_area',association_insertion_method: 'append' }
-        th 総菜？
+        th 惣菜？
         th 売価
         th メニュー名
         th 完売
-        th.order_num.readonly 発注数
+        th 総発注数
+        th.order_num.readonly 弁当副菜数
+        th.order_num.readonly 惣菜数
         th 発注量以外からの追加分
         th 冷凍繰越
-        th 調理在庫
+        th 実在庫
     tbody#store_daily_menu_details_area
       = f.fields_for :store_daily_menu_details, f.object.store_daily_menu_details.sort_by(&:id) do |dmd|
         = render 'store_daily_menu_detail_fields', f: dmd
   = f.submit '登録する',class:'btn btn-primary', data: {disable_with: '登録中...'},style:'float:right;'
 javascript:
+  calculate_num();
+
   $('.order_num').on('click',function(){
     if ($(this).hasClass('readonly')==true) {
       $(this).removeClass("readonly");
-      $('.manufacturing_number').attr('readonly',false);
+      $('.sozai_number').attr('readonly',false);
+      $('.bento_fukusai_number').attr('readonly',false);
     }else{
       $(this).addClass("readonly");
-      $('.manufacturing_number').attr('readonly',true);
+      $('.sozai_number').attr('readonly',true);
+      $('.bento_fukusai_number').attr('readonly',true);
     };
   });
-  calculate_num();
-  $('#store_daily_menu_details_area').on('keyup','.manufacturing_number',function(){
-    calculate_num();
-  });
+
+
+  // $('#store_daily_menu_details_area').on('keyup','.manufacturing_number',function(){
+  //   calculate_num();
+  // });
   $("#store_daily_menu_details_area").on('click','.remove_fields', function(){
     setTimeout(function(){
       calculate_num();
     },5);
   });
+
   $("#store_daily_menu_details_area").on("change",'.input_number',function(){
-    var tr = $(this).parents('tr')
-    var manufacturing_number = Number(tr.find('.manufacturing_number').val());
-    var stock_deficiency_excess = Number(tr.find('.stock_deficiency_excess_input').val());
-    var carry_over = Number(tr.find('.carry_over_input').val());
-    var actual_inventory = manufacturing_number + stock_deficiency_excess - carry_over
-    tr.find('.actual_inventory_input').val(actual_inventory);
+    // var tr = $(this).parents('tr')
+    // var bento_fukusai_number = Number(tr.find('.bento_fukusai_number').val());
+    // var sozai_number = Number(tr.find('.sozai_number').val());
+    // var stock_deficiency_excess = Number(tr.find('.stock_deficiency_excess_input').val());
+    // var carry_over = Number(tr.find('.carry_over_input').val());
+    // var actual_inventory = sozai_number + stock_deficiency_excess - carry_over
+    // var total_order_number = sozai_number + bento_fukusai_number
+    // tr.find('.actual_inventory_input').val(actual_inventory);
+    // tr.find('.total_number').val(total_order_number);
+    calculate_num();
   });
 
   $("#store_daily_menu_details_area").on("change",'.input_select_product',function(){
@@ -153,19 +165,23 @@ javascript:
     var actual_inventory = 0;
     var total_price = 0;
     var sozai_price = 0;
+    var total_order_number = 0;
     $('.daily_menu_detail_tr:visible').each(function(i){
-      number = Number($(this).find('.manufacturing_number').val());
+      sozai_number = Number($(this).find('.sozai_number').val());
+      bento_fukusai_number = Number($(this).find('.bento_fukusai_number').val());
       stock_deficiency_excess = Number($(this).find('.stock_deficiency_excess_input').val());
       carry_over = Number($(this).find('.carry_over_input').val());
-      actual_inventory = number + stock_deficiency_excess - carry_over;
+      actual_inventory = sozai_number + stock_deficiency_excess - carry_over;
+      total_order_number = sozai_number + bento_fukusai_number
 
-      total_sum += Number($(this).find('.manufacturing_number').val());
-      total_price += Number($(this).find('.manufacturing_number').val()) * Number($(this).find('.sell_price').text());
+      total_sum += total_order_number;
+      total_price += total_order_number * Number($(this).find('.sell_price').text());
       if ($(this).find('.bejihan_sozai_flag_td').text()=='true') {
-        sozai_sum += Number($(this).find('.manufacturing_number').val());
-        sozai_price += Number($(this).find('.manufacturing_number').val()) * Number($(this).find('.sell_price').text());
+        sozai_sum += sozai_number;
+        sozai_price += sozai_number * Number($(this).find('.sell_price').text());
       }
       $(this).find('.actual_inventory_input').val(actual_inventory);
+      $(this).find('.total_number').val(total_order_number);
     });
 
     $('.total_manufacturing_number').val(total_sum);

@@ -89,9 +89,11 @@ table.table.table-list
       th 販売価格
       th 盛り皿
       th 容器
-      th = "発注数：#{@store_daily_menu.total_num}"
-      th 別日ストック使用分
-      th 冷凍ストック化
+      th 合計数
+      th 副菜分
+      th 惣菜分
+      th 別在庫使用
+      th 翌日繰越
       th 実在庫
       th 完売F
   tbody
@@ -153,13 +155,17 @@ table.table.table-list
                 = image_tag serving_plate.image.url,style:'width:30px;'
                 span
                   = image_tag serving_plate.image.url,style:'width:400px;'
-                = "　#{serving_plate.name}"
 
         td
           = sdmd.product.container.name if sdmd.product.container_id.present?
 
         td
           = sdmd.number
+        td
+          = sdmd.bento_fukusai_number
+        td
+          = sdmd.sozai_number
+
         td
           = sdmd.stock_deficiency_excess
         td
