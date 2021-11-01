@@ -61,8 +61,8 @@ class StoreDailyMenusController < ApplicationController
     store_id = @store_daily_menu.store_id
     date = @store_daily_menu.start_time
     @date = @store_daily_menu.start_time
-    @tommoroww = StoreDailyMenu.find_by(start_time:@date+1)
-    @yesterday = StoreDailyMenu.find_by(start_time:@date-1)
+    @tommoroww = StoreDailyMenu.find_by(store_id:store_id,start_time:@date+1)
+    @yesterday = StoreDailyMenu.find_by(store_id:store_id,start_time:@date-1)
     @store_daily_menu_details = @store_daily_menu.store_daily_menu_details.order("row_order ASC").includes(product:[:container,:product_ozara_serving_informations])
     @hash = @store_daily_menu_details.map do |sdmd|
       [sdmd.place_showcase_id,sdmd.product.name] if sdmd.place_showcase_id.present?

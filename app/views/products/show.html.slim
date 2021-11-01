@@ -45,7 +45,7 @@ table.table
       tr
         td
           span style='font-weight:bold;' = "#{i+1}. "
-          = posi.content
+          = text_url_to_link(simple_format(h(posi.content))).html_safe
         td
           = link_to posi.image.to_s, "data-lightbox" => posi.image.to_s do
             = image_tag posi.image.to_s ,class:"text-center img-responsive center-block",style:'max-height:150px;'
