@@ -43,6 +43,8 @@ Rails.application.routes.draw do
   resources :analysis_products
   resources :analyses do
     collection do
+      get :product_sales
+      get :visitors_time_zone
       post :recalculate_potential
       get :store_products_sales
       get :store_product_sales

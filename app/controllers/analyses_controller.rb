@@ -1,5 +1,112 @@
 class AnalysesController < AdminController
   before_action :set_analysis, only: %i[ show edit update destroy ]
+  def product_sales
+    @stores = Store.all
+    @product = Product.find(params[:product_id])
+    if params[:stores]
+      checked_store_ids = params['stores'].keys
+    else
+      checked_store_ids = @stores.ids
+      params[:stores] = {}
+      @stores.each do |store|
+        params[:stores][store.id.to_s] = true
+      end
+    end
+    if params[:to]
+      @to = params[:to].to_date
+    else
+      @to = Date.today
+      params[:to] = @to
+    end
+    if params[:from]
+      @from = params[:from].to_date
+    else
+      @from = @to - 30
+      params[:from] = @from
+    end
+    analyses = Analysis.where(date:@from..@to).where(store_id:checked_store_ids)
+    gon.time_zones = []
+    gon.visitors_time_zone = []
+    gon.average_visitors_time_zone = []
+    ruikei = 0
+    @dates = []
+    @hours = []
+    all_smaregi_trading_histories = SmaregiTradingHistory.where(analysis_id:analyses.ids,hinban:@product.id)
+    @dates_visitors = all_smaregi_trading_histories.select(:torihiki_id).distinct.group(:date).count
+    @date_time_zorn_visitors = all_smaregi_trading_histories.select(:torihiki_id).distinct.group(:date).group("time_format(time, '%H')").count
+    @date_time_zorn_visitors.keys.map do |date_hour|
+      @dates << date_hour[0]
+      @hours << date_hour[1]
+    end
+    @dates.uniq!
+    @hours.uniq!
+    @time_zone_visitors = all_smaregi_trading_histories.select(:torihiki_id).distinct.group("time_format(time, '%H')").count
+    @time_zone_visitors.each do |tz|
+      gon.time_zones << tz[0]
+      gon.visitors_time_zone << tz[1]
+      if tz[1].present?
+        ruikei += tz[1]
+        gon.average_visitors_time_zone << ((ruikei.to_f/@time_zone_visitors.values.sum)*100).round(1)
+      else
+        gon.average_visitors_time_zone << (ruikei.to_f/@dates.count)
+        # gon.average_visitors_time_zone << ''
+      end
+    end
+
+  end
+  def visitors_time_zone
+    @stores = Store.all
+    if params[:stores]
+      checked_store_ids = params['stores'].keys
+    else
+      checked_store_ids = @stores.ids
+      params[:stores] = {}
+      @stores.each do |store|
+        params[:stores][store.id.to_s] = true
+      end
+    end
+    if params[:to]
+      @to = params[:to].to_date
+    else
+      @to = Date.today
+      params[:to] = @to
+    end
+    if params[:from]
+      @from = params[:from].to_date
+    else
+      @from = @to - 30
+      params[:from] = @from
+    end
+    analyses = Analysis.where(date:@from..@to).where(store_id:checked_store_ids)
+    gon.time_zones = []
+    gon.visitors_time_zone = []
+    gon.average_visitors_time_zone = []
+    ruikei = 0
+    @dates = []
+    @hours = []
+    all_smaregi_trading_histories = SmaregiTradingHistory.where(analysis_id:analyses.ids)
+    @dates_visitors = all_smaregi_trading_histories.select(:torihiki_id).distinct.group(:date).count
+    @date_time_zorn_visitors = all_smaregi_trading_histories.select(:torihiki_id).distinct.group(:date).group("time_format(time, '%H')").count
+    @date_time_zorn_visitors.keys.map do |date_hour|
+      @dates << date_hour[0]
+      @hours << date_hour[1]
+    end
+    @dates.uniq!
+    @hours.uniq!
+    @time_zone_visitors = all_smaregi_trading_histories.select(:torihiki_id).distinct.group("time_format(time, '%H')").count
+    @time_zone_visitors.each do |tz|
+      gon.time_zones << tz[0]
+      gon.visitors_time_zone << tz[1]
+      if tz[1].present?
+        ruikei += tz[1]
+        gon.average_visitors_time_zone << ((ruikei.to_f/@time_zone_visitors.values.sum)*100).round(1)
+      else
+        gon.average_visitors_time_zone << (ruikei.to_f/@dates.count)
+        # gon.average_visitors_time_zone << ''
+      end
+    end
+  end
+
   def recalculate_potential
     store_id = params[:store_id]
     product_id = params[:product_id]

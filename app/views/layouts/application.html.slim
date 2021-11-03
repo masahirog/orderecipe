@@ -59,7 +59,9 @@ html
                       |データ
                       span.caret
                     ul.dropdown-menu role="menu" style='width:250px;'
-                      li = link_to "サマリ",summary_analyses_path
+                      li = link_to "売上・廃棄",summary_analyses_path
+                      li = link_to "時間帯別来客数",visitors_time_zone_analyses_path
+                      li = link_to "商品販売数推移",product_sales_analyses_path
                       li = link_to "販売データ",analyses_path
 
 
