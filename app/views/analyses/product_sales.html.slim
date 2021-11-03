@@ -1,0 +1,109 @@
+div style='margin-bottom:20px;'
+  = form_tag product_sales_analyses_path, :method => 'get' do
+    .clearfix
+      label style='float:left;' 店舗選択
+      ul style="list-style:none;float:left;"
+        - @stores.each do |store|
+          li style='float:left;margin-right:10px;'
+            = check_box_tag "stores[#{store.id}]",true,params['stores'][store.id.to_s]
+            = label_tag "stores[#{store.id}]",store.name
+    div
+      label style='float:left;margin-right:10px;' 商品
+      = select_tag :product_id, options_for_select(Product.where(brand_id:111).all.map{|product|[product.name,product.id]},params[:product_id]),include_blank: true, class: "form-control",placeholder:'商品ID',style:'width:200px;float:left;margin-right:20px;'
+      label style='float:left;margin-right:10px;' 表示期間
+      = date_field_tag :from, params[:from], class:"form-control float-left",style:'width:200px;float:left;'
+      div style="float:left;padding:8px;" 〜
+      = date_field_tag :to, params[:to], class:"form-control",style:'width:200px;float:left;'
+    = submit_tag "絞り込み" ,class:"btn btn-primary",style:"margin-left:20px;"
+
+h3 販売数推移
+canvas#chart2
+
+table.table
+  thead
+    tr
+      th 日付
+      - @hours.sort.each do |hour|
+        th.text-center colspan=2 = hour
+  tbody
+    tr
+      td 平均
+      - @hours.sort.each do |hour|
+        td.text-center = (@time_zone_visitors[hour].to_f/@dates.count).round(1)
+        td.text-center style='color:#a9a9a9;' = "#{((@time_zone_visitors[hour].to_f/@time_zone_visitors.values.sum)*100).round(1)}%"
+    - @dates.sort.each do |date|
+      tr
+        td = date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})")
+        - @hours.sort.each do |hour|
+          td.text-center = @date_time_zorn_visitors[[date,hour]]
+          td.text-center style='color:#a9a9a9;'
+            - if @date_time_zorn_visitors[[date,hour]]
+              = "#{((@date_time_zorn_visitors[[date,hour]].to_f/@dates_visitors[date])*100).round(1)}%"
+
+
+
+
+
+javascript:
+  // 2個目のグラフ
+  var ctx = document.getElementById("chart2").getContext('2d');
+  ctx.canvas.height = 80;
+  var chart2 = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: gon.time_zones,
+      datasets: [{
+        type: 'bar',
+        label: "来客数",
+        data: gon.visitors_time_zone,
+        backgroundColor: 'rgba(54, 162, 235, 0.7)',
+        borderColor: 'rgba(54, 162, 235, 0.7)',
+        fill: false,
+        stacked: false,
+        yAxisID: "y-axis-2"
+      },{
+        type: 'line',
+        label: "累計(%)",
+        data: gon.average_visitors_time_zone,
+        backgroundColor: 'rgba(255, 99, 132, 0.7)',
+        borderColor: 'rgba(255, 99, 132, 0.8)',
+        fill: false,
+        stacked: false,
+        yAxisID: "y-axis-1"
+      }]
+    },
+    options: {
+      scales: {
+        xAxes: [{
+          stacked: true,
+          scaleLabel: {
+            display: true,
+            fontSize: 16
+          }
+        }],
+        yAxes: [{
+          stacked: false,
+          id: "y-axis-2",
+          type: "linear",
+          position: "left",
+          ticks: {
+            min: 0,
+            callback: function(label, index, labels) {
+              return label.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            }
+          }
+        },{
+          stacked: false,
+          id: "y-axis-1",
+          type: "linear",
+          position: "right",
+          ticks: {
+            min: 0,
+            callback: function(label, index, labels) {
+              return label.toString() + "%";
+            }
+          }
+        }]
+      }
+    }
+  });
