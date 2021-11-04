@@ -8,7 +8,6 @@ class NotificationMailer < ActionMailer::Base
     filename = "#{Time.now.strftime('%y%m%d')}_taberu.pdf"
     attachments[filename] = OrderPdf.new(@materials_this_vendor,@vendor,order).render
     mail(
-      from:'masahiro11g@gmail.com',
       subject: "#{@vendor.company_name}様 オーダーID：#{order.id} 計：#{num}枚", #メールのタイトル
       to: @vendor.efax_address
     ) do |format|
