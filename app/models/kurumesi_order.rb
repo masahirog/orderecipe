@@ -110,7 +110,7 @@ class KurumesiOrder < ApplicationRecord
     update_arr = []
     kurumesi_orders = KurumesiOrder.where('start_time >= ?',Date.today).where(canceled_flag:false)
     kurumesi_order_details = KurumesiOrderDetail.joins(:kurumesi_order,:product).where(:kurumesi_orders => {id:kurumesi_orders.ids})
-    date_numbers = kurumesi_order_details.where(:products => {product_category:1}).group('kurumesi_orders.start_time').sum(:number)
+    date_numbers = kurumesi_order_details.where(:products => {product_category:5}).group('kurumesi_orders.start_time').sum(:number)
     date_manufacture_numbers = DateManufactureNumber.where('date >= ?',Date.today)
     dmf_hash = date_manufacture_numbers.map{|dmf|[dmf.date,dmf]}.to_h
     date_numbers.each do |date,num|

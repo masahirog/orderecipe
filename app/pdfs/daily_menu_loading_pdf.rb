@@ -26,7 +26,7 @@ class DailyMenuLoadingPdf < Prawn::Document
           # cells.valign = :center
           columns(-2).align = :center
           self.header = true
-          self.column_widths = [150,30,80,50,30,50,170]
+          self.column_widths = [140,30,80,50,30,50,30,150]
         end
       end
       start_new_page if i < daily_menu.store_daily_menus.length - 1
@@ -34,10 +34,16 @@ class DailyMenuLoadingPdf < Prawn::Document
   end
 
   def line_item_rows(sdm)
-    data = [['商品名','人前','バーツ名','分量','✓','器','メモ']]
+    data = [['商品名','人前','バーツ名','分量','✓','器','弁当','メモ']]
     sdm.store_daily_menu_details.each do |sdmd|
       sdmd.product.product_parts.each do |pp|
-        data << [sdmd.product.name,sdmd.number,pp.name,"#{ActiveSupport::NumberHelper.number_to_rounded((pp.amount*sdmd.number), strip_insignificant_zeros: true)} #{pp.unit}","",pp.container,pp.memo]
+        if sdmd.product.product_category == 'お弁当' || sdmd.bento_fukusai_number > 0
+          bento_flag = '弁'
+        else
+          bento_flag = ''
+        end
+        data << [sdmd.product.name,sdmd.number,pp.name,"#{ActiveSupport::NumberHelper.number_to_rounded((pp.amount*sdmd.number),
+           strip_insignificant_zeros: true)} #{pp.unit}","",pp.container,bento_flag,pp.memo]
       end
     end
     data

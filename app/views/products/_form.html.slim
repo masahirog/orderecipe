@@ -1,4 +1,5 @@
 = form_for @product do |f|
+  = f.hidden_field :cooking_rice_id,value:21
   - if @product.errors.any?
     #error_explanation
       h2
@@ -41,13 +42,16 @@
 
 
   .col-md-12.form-group
-    .col-md-2
+    .col-md-1
       = f.label :product_category, "べじはん惣菜"
       = f.check_box :bejihan_sozai_flag, class: "form-control"
-    .col-md-2
+    .col-md-1
       = f.label :carryover_able_flag, "冷凍ストック可"
       = f.check_box :carryover_able_flag, class: "form-control"
-    = f.hidden_field :cooking_rice_id,value:21
+    .col-md-2
+      = f.label :product_category, "カテゴリー"
+      = f.select :product_category, options_for_select(Product.product_categories.keys.to_a,@product.product_category), {}, class: 'form-control'
+
     / .col-md-2
       = f.label :cooking_rice_id, "使用ライス"
       = f.collection_select :cooking_rice_id, CookingRice.all, :id, :name, {}, { class: "form-control"}
@@ -62,29 +66,24 @@
       = f.label :sub_serving_plate_id, "大皿候補第２"
       = f.collection_select :sub_serving_plate_id, ServingPlate.all, :id, :name, {include_blank:true}, { class: "form-control"}
 
-  / .col-md-12.form-group
-    .col-md-4
-      = f.label :food_label_name, "食品表示名"
-      = f.text_field :food_label_name, class:"form-control"
-    .col-md-6
-      = f.label :food_label_content, "食品表示内容"
-      = f.text_area :food_label_content, class:"form-control"
-
     / .col-md-12.form-group
-    /   = f.label :short_name, "短縮名（例：9A←の9の部分を入力）"
-    /   = f.text_field :short_name,class:"form-control"
-    / .col-md-12.form-group
-    /   = f.label :symbol, "記号（例：9A←のAのイニシャル部分を入力）"
-    /   = f.text_field :symbol,class:"form-control"
+      .col-md-4
+        = f.label :food_label_name, "食品表示名"
+        = f.text_field :food_label_name, class:"form-control"
+      .col-md-6
+        = f.label :food_label_content, "食品表示内容"
+        = f.text_area :food_label_content, class:"form-control"
 
-    / .col-md-12.form-group
-      = f.label :management_id, "管理ID（各ブランドの商品ID）"
-      = f.number_field :management_id, class:"management_id form-control"
+      / .col-md-12.form-group
+      /   = f.label :short_name, "短縮名（例：9A←の9の部分を入力）"
+      /   = f.text_field :short_name,class:"form-control"
+      / .col-md-12.form-group
+      /   = f.label :symbol, "記号（例：9A←のAのイニシャル部分を入力）"
+      /   = f.text_field :symbol,class:"form-control"
 
-    / .col-md-12.form-group style='padding:0;'
-    /   .col-md-3
-    /     = f.label :status, "状況"
-    /     = f.select :status, options_for_select(Product.statuses.keys.to_a,@product.status), {}, class: 'form-control'
+      / .col-md-12.form-group
+        = f.label :management_id, "管理ID（各ブランドの商品ID）"
+        = f.number_field :management_id, class:"management_id form-control"
 
   .col-md-12.form-group
     .col-md-6

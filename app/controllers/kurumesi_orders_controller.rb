@@ -44,7 +44,7 @@ class KurumesiOrdersController < AdminController
   def loading_sheet
     date = params[:date]
     @kurumesi_orders = KurumesiOrder.where(start_time:date,canceled_flag:false).order(:pick_time)
-    @kurumesi_orders_num_h = @kurumesi_orders.joins(kurumesi_order_details:[:product]).where(:products => {product_category:1}).group('kurumesi_order_details.kurumesi_order_id').sum('kurumesi_order_details.number')
+    @kurumesi_orders_num_h = @kurumesi_orders.joins(kurumesi_order_details:[:product]).where(:products => {product_category:5}).group('kurumesi_order_details.kurumesi_order_id').sum('kurumesi_order_details.number')
     @products_num_h = @kurumesi_orders.joins(kurumesi_order_details:[:product]).group('kurumesi_order_details.product_id').sum('kurumesi_order_details.number')
     @brand_ids = @kurumesi_orders.map{|kurumesi_order|kurumesi_order.brand_id}.uniq
     respond_to do |format|
@@ -62,7 +62,7 @@ class KurumesiOrdersController < AdminController
   def make_order
     date = params[:date]
     @kurumesi_orders = KurumesiOrder.where(start_time:date,canceled_flag:false).order(:pick_time)
-    @kurumesi_orders_num_h = @kurumesi_orders.joins(kurumesi_order_details:[:product]).where(:products => {product_category:1}).group('kurumesi_order_details.kurumesi_order_id').sum('kurumesi_order_details.number')
+    @kurumesi_orders_num_h = @kurumesi_orders.joins(kurumesi_order_details:[:product]).where(:products => {product_category:5}).group('kurumesi_order_details.kurumesi_order_id').sum('kurumesi_order_details.number')
     @products_num_h = @kurumesi_orders.joins(kurumesi_order_details:[:product]).group('kurumesi_order_details.product_id').sum('kurumesi_order_details.number')
     @brand_ids = @kurumesi_orders.map{|kurumesi_order|kurumesi_order.brand_id}.uniq
     respond_to do |format|
@@ -80,7 +80,7 @@ class KurumesiOrdersController < AdminController
   def equipment
     date = params[:date]
     @kurumesi_orders = KurumesiOrder.where(start_time:date,canceled_flag:false).order(:pick_time)
-    @kurumesi_orders_num_h = @kurumesi_orders.joins(kurumesi_order_details:[:product]).where(:products => {product_category:1}).group('kurumesi_order_details.kurumesi_order_id').sum('kurumesi_order_details.number')
+    @kurumesi_orders_num_h = @kurumesi_orders.joins(kurumesi_order_details:[:product]).where(:products => {product_category:5}).group('kurumesi_order_details.kurumesi_order_id').sum('kurumesi_order_details.number')
     @products_num_h = @kurumesi_orders.joins(kurumesi_order_details:[:product]).group('kurumesi_order_details.product_id').sum('kurumesi_order_details.number')
     @brand_ids = @kurumesi_orders.map{|kurumesi_order|kurumesi_order.brand_id}.uniq
     respond_to do |format|
@@ -165,11 +165,11 @@ class KurumesiOrdersController < AdminController
     @date_canceled_order_count = KurumesiOrder.where(canceled_flag:true,start_time: date.in_time_zone.all_month).group('start_time').count
     @unconfirmed_order_count = KurumesiOrder.where(canceled_flag:false,start_time: date.in_time_zone.all_month,confirm_flag:false).group('start_time').count
     @brands_count = KurumesiOrder.where(canceled_flag:false,start_time: date.in_time_zone.all_month).group('start_time').count('DISTINCT brand_id')
-    @products_count = kurumesi_order_details.where(:products => {product_category:1}).group('kurumesi_orders.start_time').count('DISTINCT product_id')
-    @date_group = kurumesi_order_details.where(:products => {product_category:1}).group('kurumesi_orders.start_time').group('products.id').sum(:number)
-    @date_sum = kurumesi_order_details.where(:products => {product_category:1}).group('kurumesi_orders.start_time').sum(:number)
-    @am_sum = kurumesi_order_details.where(:kurumesi_orders => {delivery_time:'00:00:00'..'11:59:00'}).where(:products => {product_category:1}).group('kurumesi_orders.start_time').sum(:number)
-    @pm_sum = kurumesi_order_details.where(:kurumesi_orders => {delivery_time:'12:00:00'..'23:59:00'}).where(:products => {product_category:1}).group('kurumesi_orders.start_time').sum(:number)
+    @products_count = kurumesi_order_details.where(:products => {product_category:5}).group('kurumesi_orders.start_time').count('DISTINCT product_id')
+    @date_group = kurumesi_order_details.where(:products => {product_category:5}).group('kurumesi_orders.start_time').group('products.id').sum(:number)
+    @date_sum = kurumesi_order_details.where(:products => {product_category:5}).group('kurumesi_orders.start_time').sum(:number)
+    @am_sum = kurumesi_order_details.where(:kurumesi_orders => {delivery_time:'00:00:00'..'11:59:00'}).where(:products => {product_category:5}).group('kurumesi_orders.start_time').sum(:number)
+    @pm_sum = kurumesi_order_details.where(:kurumesi_orders => {delivery_time:'12:00:00'..'23:59:00'}).where(:products => {product_category:5}).group('kurumesi_orders.start_time').sum(:number)
     @miso_num = kurumesi_order_details.where(:products => {id:3831}).group('kurumesi_orders.start_time').sum(:number)
     @cantea_num = kurumesi_order_details.where(:products => {id:3801}).group('kurumesi_orders.start_time').sum(:number)
     @pettea_num = kurumesi_order_details.where(:products => {id:3791}).group('kurumesi_orders.start_time').sum(:number)
@@ -235,7 +235,7 @@ class KurumesiOrdersController < AdminController
     @kurumesi_orders = KurumesiOrder.where(start_time:date,canceled_flag:false).order(:pick_time,:created_at)
     @canceled_kurumesi_orders = KurumesiOrder.where(start_time:date,canceled_flag:true).order(:pick_time)
     @bentos_num_h = @kurumesi_orders.joins(kurumesi_order_details:[:product]).group('products.brand_id').group('kurumesi_order_details.product_id').sum('kurumesi_order_details.number').sort {|(k1, v1), (k2, v2)| k1[0] <=> k2[0] }
-    @kurumesi_orders_num_h = @kurumesi_orders.where(:products => {product_category:1}).joins(kurumesi_order_details:[:product]).group('kurumesi_order_details.kurumesi_order_id').sum('kurumesi_order_details.number')
+    @kurumesi_orders_num_h = @kurumesi_orders.where(:products => {product_category:5}).joins(kurumesi_order_details:[:product]).group('kurumesi_order_details.kurumesi_order_id').sum('kurumesi_order_details.number')
     @brands = Brand.all
     # arr = []
     # @kurumesi_orders.includes(:brand).each do |ko|
@@ -253,7 +253,7 @@ class KurumesiOrdersController < AdminController
     mochiba = params[:mochiba]
     date = params[:date]
     kurumesi_orders = KurumesiOrder.includes(kurumesi_order_details:[:product]).where(start_time:date,canceled_flag:false).order(:pick_time)
-    @bentos_num_h = kurumesi_orders.joins(kurumesi_order_details:[:product]).where(:products => {product_category:1}).group('kurumesi_order_details.product_id').sum('kurumesi_order_details.number')
+    @bentos_num_h = kurumesi_orders.joins(kurumesi_order_details:[:product]).where(:products => {product_category:5}).group('kurumesi_order_details.product_id').sum('kurumesi_order_details.number')
     respond_to do |format|
       format.html
       format.pdf do
@@ -271,7 +271,7 @@ class KurumesiOrdersController < AdminController
   #   mochiba = params[:mochiba]
   #   date = params[:date]
   #   kurumesi_orders = KurumesiOrder.includes(kurumesi_order_details:[:product]).where(start_time:date,canceled_flag:false).order(:pick_time)
-  #   @bentos_num_h = kurumesi_orders.joins(kurumesi_order_details:[:product]).where(:products => {product_category:1}).group('kurumesi_order_details.product_id').sum('kurumesi_order_details.number')
+  #   @bentos_num_h = kurumesi_orders.joins(kurumesi_order_details:[:product]).where(:products => {product_category:5}).group('kurumesi_order_details.product_id').sum('kurumesi_order_details.number')
   #   respond_to do |format|
   #     format.html
   #     format.pdf do
@@ -292,7 +292,7 @@ class KurumesiOrdersController < AdminController
     date = params[:date]
     sort = params[:sort].to_i
     kurumesi_orders = KurumesiOrder.includes(kurumesi_order_details:[:product]).where(start_time:date,canceled_flag:false).order(:pick_time)
-    @bentos_num_h = kurumesi_orders.joins(kurumesi_order_details:[:product]).where(:products => {product_category:1}).group('kurumesi_order_details.product_id').sum('kurumesi_order_details.number')
+    @bentos_num_h = kurumesi_orders.joins(kurumesi_order_details:[:product]).where(:products => {product_category:5}).group('kurumesi_order_details.product_id').sum('kurumesi_order_details.number')
     respond_to do |format|
       format.html
       format.pdf do

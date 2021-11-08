@@ -42,7 +42,7 @@ class Product < ApplicationRecord
   validates :sell_price, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :cost_price, presence: true, numericality: true
   validates :management_id, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, :allow_nil => true
-  enum product_category: {商品:1,他:2}
+  enum product_category: {惣菜:1,ご飯・丼:2,ドリンク:3,備品:4,お弁当:5,オードブル:6,スープ:7,惣菜（仕入れ）:8,レジ修正:9,オプション:11,その他:12}
   enum status: {販売中:1,販売停止:2,試作中:3}
   before_save :name_code
   before_destroy :clean_s3

@@ -52,7 +52,7 @@ class CookingRicesController < AdminController
     @arr = []
     @make_products = {}
     date = params[:date]
-    bentos = KurumesiOrderDetail.joins(:kurumesi_order,:product).where(:kurumesi_orders => {start_time:date,canceled_flag:false},:products => {product_category:1}).group('product_id').sum(:number)
+    bentos = KurumesiOrderDetail.joins(:kurumesi_order,:product).where(:kurumesi_orders => {start_time:date,canceled_flag:false},:products => {product_category:5}).group('product_id').sum(:number)
     kurumesi_rice_hash = {}
     number = 0
     bentos.each do |data|
