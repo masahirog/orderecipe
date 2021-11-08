@@ -11,7 +11,7 @@ CSV.generate(bom) do |csv|
         else
           part_name = pp.name
         end
-        csv << [@daily_menu.start_time,sdm.store.name,sdmd.product.name,part_name,sdmd.number,"#{(pp.amount*sdmd.number)} #{pp.unit}"]
+        csv << [@daily_menu.start_time,sdm.store.name,sdmd.product.name,part_name,sdmd.number,"#{(pp.amount*sdmd.number).round(1)} #{pp.unit}"]
       end
     end
   end
