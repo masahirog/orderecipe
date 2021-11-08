@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_20_044742) do
+ActiveRecord::Schema.define(version: 2021_11_05_071333) do
 
   create_table "analyses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "store_id"
@@ -430,6 +430,26 @@ ActiveRecord::Schema.define(version: 2021_10_20_044742) do
     t.integer "color"
     t.integer "shape"
     t.integer "genre"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "smaregi_members", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "kaiin_id", null: false
+    t.string "kaiin_code", null: false
+    t.string "sei_kana", null: false
+    t.string "mei_kana", null: false
+    t.string "mobile", null: false
+    t.integer "sex", default: 0, null: false
+    t.date "birthday"
+    t.integer "point"
+    t.date "point_limit"
+    t.datetime "last_visit_store"
+    t.date "nyukaibi"
+    t.date "taikaibi"
+    t.text "memo"
+    t.integer "kaiin_zyotai", default: 0, null: false
+    t.integer "main_use_store", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

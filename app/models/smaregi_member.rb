@@ -1,0 +1,2 @@
+class SmaregiMember < ApplicationRecord
+end
