@@ -1,5 +1,78 @@
 class AnalysesController < AdminController
   before_action :set_analysis, only: %i[ show edit update destroy ]
+  def smaregi_member_group
+    raiten_kaisu_count = SmaregiMember.group(:raiten_kaisu).count.sort.to_h
+    raiten_kaisu_arr = raiten_kaisu_count.keys
+    raiten_count = raiten_kaisu_count.values
+    gon.raiten_kaisu = raiten_kaisu_arr[0..4].push("5回以上")
+    gon.raiten_count = raiten_count[0..4].push(raiten_count[5..-1].sum)
+    member_sex = SmaregiMember.group(:sex).count
+    gon.sex = [member_sex['woman'],member_sex['man'],member_sex[nil]]
+    smaregi_members = SmaregiMember.where.not(birthday: nil)
+    @count_saved_birthday = smaregi_members.count
+    @count_un_saved_birthday = SmaregiMember.where(birthday: nil).count
+    now_year = Time.now.year
+    age_users = [0,0,0,0,0,0,0]
+    smaregi_members.each do |smaregi_member|
+      birth_year = smaregi_member.birthday.year
+      sa = now_year - birth_year
+      if sa < 10
+      elsif sa < 20
+        age_users[0] = age_users[0] + 1
+      elsif sa < 30
+        age_users[1] = age_users[1] + 1
+      elsif sa < 40
+        age_users[2] = age_users[2] + 1
+      elsif sa < 50
+        age_users[3] = age_users[3] + 1
+      elsif sa < 60
+        age_users[4] = age_users[4] + 1
+      elsif sa < 70
+        age_users[5] = age_users[5] + 1
+      else
+        age_users[6] = age_users[6] + 1
+      end
+    end
+    gon.age_users = age_users
+
+  end
+  def orders
+    @uniq_smaregi_trading_histories = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    kaiin_id = params[:kaiin_id]
+    SmaregiTradingHistory.where(torihiki_meisaikubun:1,kaiin_id:kaiin_id).each do |sth|
+      @uniq_smaregi_trading_histories[sth.torihiki_id][sth.id] = sth
+    end
+    @smaregi_member = SmaregiMember.find_by(kaiin_id:params[:kaiin_id])
+  end
+  def smaregi_members
+    @stores = Store.all
+    if params[:stores]
+      checked_store_ids = params['stores'].keys
+    else
+      checked_store_ids = @stores.ids
+      params[:stores] = {}
+      @stores.each do |store|
+        params[:stores][store.id.to_s] = true
+      end
+    end
+    if params[:to]
+      @to = params[:to].to_date
+    else
+      @to = Date.today
+      params[:to] = @to
+    end
+    if params[:from]
+      @from = params[:from].to_date
+    else
+      @from = @to - 30
+      params[:from] = @from
+    end
+    @smaregi_members = SmaregiMember.all
+    if params[:order].present?
+      @smaregi_members = @smaregi_members.order("#{params[:order]} #{params[:sc]}")
+    end
+    @smaregi_members = @smaregi_members.page(params[:page]).per(50)
+  end
   def product_sales
     @stores = Store.all
     @product = Product.find(params[:product_id])

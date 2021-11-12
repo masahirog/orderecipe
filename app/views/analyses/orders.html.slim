@@ -1,0 +1,45 @@
+
+table.table
+  thead
+    tr
+      th 会員名
+      th 性別
+      th 誕生日
+      th ポイント
+      th 最終来店日
+      th 登録店舗
+      th 来店回数
+  tbody
+    tr
+      td = "#{@smaregi_member.sei_kana} #{@smaregi_member.mei_kana}"
+      td = @smaregi_member.sex
+      td = @smaregi_member.birthday
+      td = @smaregi_member.point
+      td = @smaregi_member.last_visit_store.strftime("%-Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@smaregi_member.last_visit_store.wday]})")
+      td = @smaregi_member.main_use_store
+      td = @smaregi_member.raiten_kaisu
+
+
+table.table
+  thead
+    tr
+      th 取引ID
+      th 日付
+      th 時間
+      th 販売員
+      th 購入点数
+      th 購入金額
+      th 購入商品
+
+  tbody
+    - @uniq_smaregi_trading_histories.each do |usth|
+      tr
+        td = usth[0]
+        td = usth[1].values[0].date.strftime("%-Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[usth[1].values[0].date.wday]})")
+        td = usth[1].values[0].time.strftime('%H:%M')
+        td = usth[1].values[0].hanbaiin_mei
+        td = usth[1].values[0].suryo_gokei
+        td = usth[1].values[0].gokei.to_s(:delimited)
+        td
+          - usth[1].values.each do |sth|
+            p = "#{sth.shohinmei} 【#{sth.suryo}】"

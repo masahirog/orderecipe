@@ -1,0 +1,95 @@
+.clearfix
+  .col-md-4 style='float:left;'
+    h3 性別
+    canvas id="sex"
+
+  .col-md-4 style='float:left;'
+    h3 年齢別ユーザー数
+    ="誕生日登録者：#{@count_saved_birthday}、誕生日未登録者：#{@count_un_saved_birthday}"
+    canvas id="age_user_count"
+
+
+  .col-md-4 style='float:left;'
+    h3 来店回数
+    canvas id="myDoughnutChart"
+
+
+javascript:
+  var ctx = document.getElementById("myDoughnutChart");
+  var chart_kaisu = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+        labels: gon.raiten_kaisu,
+        datasets: [{
+            data: gon.raiten_count
+        }]
+    },options: {
+        animation: {
+            animateRotate: false
+        },
+        plugins: {
+            colorschemes: {
+              scheme: 'tableau.Tableau20'
+          }
+        }
+    }
+  });
+  var ctx2 = document.getElementById("sex");
+  var chart_sex = new Chart(ctx2, {
+    type: 'doughnut',
+    data: {
+        labels: ['女性','男性','未回答'],
+        datasets: [{
+            data: gon.sex
+        }]
+    },options: {
+        animation: {
+            animateRotate: false
+        },
+        plugins: {
+            colorschemes: {
+              scheme: 'tableau.Tableau20'
+          }
+        }
+    }
+  });
+  var ctx3 = document.getElementById("age_user_count");
+  var chart_sex = new Chart(ctx3, {
+    type: 'bar',
+    data: {
+      labels:["10代",'20代','30代','40代','50代','60代','70代以上'],
+      datasets: [{
+        label: "会員数",
+        data: gon.age_users,
+        fill: false,
+        stacked: false,
+        yAxisID: "y-axis-1",
+        pointRadius: 0
+      }]
+    },
+    options: {
+      plugins: {
+          colorschemes: {
+            scheme: 'tableau.Tableau20'
+        }
+      },
+      scales: {
+        xAxes: [{
+          stacked: true,
+          scaleLabel: {
+            display: true,
+            fontSize: 16
+          }
+        }],
+        yAxes: [{
+          stacked: false,
+          id: "y-axis-1",
+          type: "linear",
+          position: "left",
+          ticks: {
+            min: 0
+          }
+        }]
+      }
+    }
+  });

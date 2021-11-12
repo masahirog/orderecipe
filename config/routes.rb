@@ -43,6 +43,9 @@ Rails.application.routes.draw do
   resources :analysis_products
   resources :analyses do
     collection do
+      get :smaregi_member_group
+      get :orders
+      get :smaregi_members
       get :product_sales
       get :visitors_time_zone
       post :recalculate_potential

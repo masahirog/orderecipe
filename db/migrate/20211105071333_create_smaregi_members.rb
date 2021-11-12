@@ -17,6 +17,7 @@ class CreateSmaregiMembers < ActiveRecord::Migration[5.2]
       t.integer :kaiin_zyotai,default:0,null:false
       t.integer :main_use_store,null:false
       t.timestamps
+      t.integer :raiten_kaisu,default:0,null:false
     end
   end
 end

@@ -1,0 +1,50 @@
+/ div style='margin-bottom:20px;'
+  = form_tag summary_analyses_path, :method => 'get' do
+    .clearfix
+      label style='float:left;' 店舗選択
+      ul style="list-style:none;float:left;"
+        - @stores.each do |store|
+          li style='float:left;margin-right:10px;'
+            = check_box_tag "stores[#{store.id}]",true,params['stores'][store.id.to_s]
+            = label_tag "stores[#{store.id}]",store.name
+    div
+      label style='float:left;margin-right:10px;' 表示期間
+      = date_field_tag :from, params[:from], class:"form-control float-left",style:'width:200px;float:left;'
+      div style="float:left;padding:8px;" 〜
+      = date_field_tag :to, params[:to], class:"form-control",style:'width:200px;float:left;'
+    = submit_tag "絞り込み" ,class:"btn btn-primary",style:"margin-left:20px;"
+h3 会員一覧
+= paginate @smaregi_members
+table.table
+  thead
+    tr
+      th 会員ID
+      th 会員コード
+      th 会員名
+      th 店舗
+      th 性別
+      th 誕生日
+      th
+        = link_to "▲",smaregi_members_analyses_path(order:'point',sc:"asc")
+        span ポイント
+        = link_to "▼",smaregi_members_analyses_path(order:'point',sc:"desc")
+      th 最新来店日
+      th
+        = link_to "▲",smaregi_members_analyses_path(order:'raiten_kaisu',sc:"asc")
+        span 来店回数
+        = link_to "▼",smaregi_members_analyses_path(order:'raiten_kaisu',sc:"desc")
+      th 履歴
+
+  tbody
+    - @smaregi_members.each do |sm|
+      tr
+        td = sm.kaiin_id
+        td = sm.kaiin_code
+        td = "#{sm.sei_kana} #{sm.mei_kana}"
+        td = sm.main_use_store
+        td = sm.sex
+        td = sm.birthday
+        td = sm.point
+        td = sm.last_visit_store.strftime("%-Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[sm.last_visit_store.wday]})") if sm.last_visit_store.present?
+        td = sm.raiten_kaisu
+        td = link_to '履歴',orders_analyses_path(kaiin_id:sm.kaiin_id)
