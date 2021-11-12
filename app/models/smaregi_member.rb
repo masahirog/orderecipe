@@ -1,6 +1,6 @@
 class SmaregiMember < ApplicationRecord
-  enum sex: {man:1,woman:2}
-  enum main_use_store: {higashi_nakano:1,shin_nakano:3}
+  enum sex: {minyuryoku:0,man:1,woman:2,}
+  enum main_use_store: {nyuryokunasi:0,higashi_nakano:1,test:2,shin_nakano:3}
   def self.smaregidatas_raiten_count_calculate
     update_smaregi_members_arr = []
     sth_arr = []
