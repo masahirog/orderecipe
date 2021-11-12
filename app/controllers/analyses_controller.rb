@@ -7,7 +7,7 @@ class AnalysesController < AdminController
     gon.raiten_kaisu = raiten_kaisu_arr[0..4].push("5回以上")
     gon.raiten_count = raiten_count[0..4].push(raiten_count[5..-1].sum)
     member_sex = SmaregiMember.group(:sex).count
-    gon.sex = [member_sex['woman'],member_sex['man'],member_sex[nil]]
+    gon.sex = [member_sex['woman'],member_sex['man'],member_sex['minyuryoku']]
     smaregi_members = SmaregiMember.where.not(birthday: nil)
     @count_saved_birthday = smaregi_members.count
     @count_un_saved_birthday = SmaregiMember.where(birthday: nil).count
