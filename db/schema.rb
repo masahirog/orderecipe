@@ -76,7 +76,14 @@ ActiveRecord::Schema.define(version: 2021_11_05_071333) do
 
   create_table "customer_opinions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.date "date"
+    t.integer "evaluation"
+    t.integer "taste"
+    t.integer "price"
+    t.integer "service"
+    t.bigint "receipt_number"
     t.text "content"
+    t.string "mail"
+    t.integer "store_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -500,6 +507,9 @@ ActiveRecord::Schema.define(version: 2021_11_05_071333) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.time "time"
+    t.integer "uchikeshi_torihiki_id"
+    t.integer "uchikeshi_kubun"
+    t.bigint "receipt_number"
   end
 
   create_table "stocks", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

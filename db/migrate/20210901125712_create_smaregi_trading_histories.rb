@@ -44,6 +44,9 @@ class CreateSmaregiTradingHistories < ActiveRecord::Migration[5.2]
       t.string :bumonmei
       t.timestamps
       t.time :time
+      t.integer :uchikeshi_torihiki_id
+      t.integer :uchikeshi_kubun
+      t.bigint :receipt_number
     end
   end
 end

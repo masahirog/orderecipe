@@ -5,26 +5,14 @@ class SmaregiMember < ApplicationRecord
     update_smaregi_members_arr = []
     sth_arr = []
     kaiin_kaisu = {}
-    torihiki_ids = []
-    SmaregiTradingHistory.where(torihiki_meisaikubun:1).each do |sth|
-      unless torihiki_ids.include?(sth.torihiki_id)
-        if kaiin_kaisu[sth.kaiin_id].present?
-          kaiin_kaisu[sth.kaiin_id] += 1
-        else
-          kaiin_kaisu[sth.kaiin_id] = 1
-        end
-        torihiki_ids << sth.torihiki_id
-      end
+    smaregi_trading_histories = SmaregiTradingHistory.where.not(kaiin_id:nil).where(torihiki_meisaikubun:1,uchikeshi_kubun:0,torihikimeisai_id:1)
+    last_store_date = smaregi_trading_histories.order(date:'asc').map{|sth|[sth.kaiin_id,sth.date]}.to_h
+    kaiin_id_count = smaregi_trading_histories.group(:kaiin_id).count
+    SmaregiMember.all.each do |sm|
+      sm.raiten_kaisu = kaiin_id_count[sm.kaiin_id] if kaiin_id_count[sm.kaiin_id].present?
+      sm.last_visit_store = last_store_date[sm.kaiin_id] if last_store_date[sm.kaiin_id].present?
+      update_smaregi_members_arr << sm
     end
-    kaiin_kaisu.each do |kk|
-      if kk[0].present?
-        smaregi_member = SmaregiMember.find_by(kaiin_id:kk[0])
-        if smaregi_member.present?
-          smaregi_member.raiten_kaisu = kk[1]
-          update_smaregi_members_arr << smaregi_member
-        end
-      end
-    end
-    SmaregiMember.import update_smaregi_members_arr,on_duplicate_key_update:[:raiten_kaisu]
+    SmaregiMember.import update_smaregi_members_arr,on_duplicate_key_update:[:raiten_kaisu,:last_visit_store]
   end
 end

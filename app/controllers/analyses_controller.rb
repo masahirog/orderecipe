@@ -1,19 +1,33 @@
 class AnalysesController < AdminController
   before_action :set_analysis, only: %i[ show edit update destroy ]
   def smaregi_member_group
-    raiten_kaisu_count = SmaregiMember.group(:raiten_kaisu).count.sort.to_h
+    @all_stores = Store.all
+    if params[:stores]
+      checked_store_ids = params['stores'].keys
+      @stores = @all_stores.where(id:checked_store_ids)
+    else
+      @stores = @all_stores
+      checked_store_ids = @stores.ids
+      params[:stores] = {}
+      checked_store_ids.each do |store_id|
+        params[:stores][store_id.to_s] = true
+      end
+    end
+    smaregi_store_ids = @stores.map{|store|store.smaregi_store_id}
+    smaregi_members = SmaregiMember.where(main_use_store:smaregi_store_ids)
+    raiten_kaisu_count = smaregi_members.group(:raiten_kaisu).count.sort.to_h
     raiten_kaisu_arr = raiten_kaisu_count.keys
     raiten_count = raiten_kaisu_count.values
     gon.raiten_kaisu = raiten_kaisu_arr[0..4].push("5回以上")
     gon.raiten_count = raiten_count[0..4].push(raiten_count[5..-1].sum)
-    member_sex = SmaregiMember.group(:sex).count
+    member_sex = smaregi_members.group(:sex).count
     gon.sex = [member_sex['woman'],member_sex['man'],member_sex['minyuryoku']]
-    smaregi_members = SmaregiMember.where.not(birthday: nil)
-    @count_saved_birthday = smaregi_members.count
-    @count_un_saved_birthday = SmaregiMember.where(birthday: nil).count
+    birthday_done_smaregi_members = smaregi_members.where.not(birthday: nil)
+    @count_saved_birthday = birthday_done_smaregi_members.count
+    @count_un_saved_birthday = smaregi_members.where(birthday: nil).count
     now_year = Time.now.year
     age_users = [0,0,0,0,0,0,0]
-    smaregi_members.each do |smaregi_member|
+    birthday_done_smaregi_members.each do |smaregi_member|
       birth_year = smaregi_member.birthday.year
       sa = now_year - birth_year
       if sa < 10
@@ -34,6 +48,24 @@ class AnalysesController < AdminController
       end
     end
     gon.age_users = age_users
+    month_days = ((Date.today - 30)..Date.today).to_a
+    nyukaibi_count = smaregi_members.where("nyukaibi >= ?",(Date.today - 30)).group(:nyukaibi).count
+    ruikei_menber_count = smaregi_members.where("nyukaibi < ?",(Date.today - 30)).count
+    gon.shinki_torokusu = []
+    gon.ruiei_members = []
+    gon.repeat_members = []
+    month_days.each do |nc|
+      if nyukaibi_count[nc].present?
+        gon.shinki_torokusu << nyukaibi_count[nc]
+        ruikei_menber_count += nyukaibi_count[nc]
+        gon.ruiei_members << ruikei_menber_count
+        # 2回目3回目のユーザーの処理を書く
+      else
+        gon.shinki_torokusu << 0
+        gon.ruiei_members << ruikei_menber_count
+      end
+    end
+    gon.month_days = month_days.map{|day|day.strftime("%-m/%-d")}
 
   end
   def orders

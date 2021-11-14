@@ -16,15 +16,31 @@ span を調理チームのみんなにも届けたいです！
 table.table
   thead
     tr
-      th 日付
-      th 内容
-      th
+      th style='width:8%;'  日付
+      th style='width:5%;' 店舗
+      th style='width:5%;' 総合評価
+      th style='width:5%;' 味
+      th style='width:5%;' 価格
+      th style='width:5%;' 接客
+      th style='width:20%;' コメント
+      th style='width:8%;' レシート番号
+      th style='width:8%;' メール
+      th style='width:20%;' 応対
+
 
   tbody
     - @customer_opinions.each do |customer_opinion|
       tr
-        td = customer_opinion.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[customer_opinion.date.wday]})")
+        td
+          = link_to customer_opinion.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[customer_opinion.date.wday]})"), edit_customer_opinion_path(customer_opinion)
+        td = customer_opinion.store_id
+        td = customer_opinion.evaluation
+        td = customer_opinion.taste
+        td = customer_opinion.price
+        td = customer_opinion.service
         td = customer_opinion.content
-        td = link_to '編集', edit_customer_opinion_path(customer_opinion)
+        td = link_to customer_opinion.receipt_number,''
+        td = customer_opinion.mail
+        td
 
 = paginate @customer_opinions

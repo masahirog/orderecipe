@@ -21,13 +21,15 @@ html
     table.table.table-striped
       thead
         tr
-          th style='width:60%;text-align:right;' 食材名
-          th = "#{(@date).strftime("%-m/%-d #{%w(日 月 火 水 木 金 土)[(@date).wday]}")}在庫"
+          th style='width:20%;' 業者
+          th style='width:40%;text-align:right;' 食材名
+          th style='width:40%;' = "#{(@date).strftime("%-m/%-d #{%w(日 月 火 水 木 金 土)[(@date).wday]}")}在庫"
           th
       tbody
         - @materials.each do |material|
           - stock = Stock.find_by(material_id:material.id,date:@date)
           tr class="inventory_tr_#{material.id}"
+            td style='font-size:10px;' = material.vendor.company_name
             td style='text-align:right;' = material.name
             td
               - if stock.present?

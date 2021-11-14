@@ -4,7 +4,7 @@ class CustomerOpinionsController < ApplicationController
   def index
     @customer_opinion = CustomerOpinion.new
     @customer_opinion.date = Date.today
-    @customer_opinions = CustomerOpinion.all.order(date:"DESC").page(params[:page]).per(10)
+    @customer_opinions = CustomerOpinion.all.order(date:"DESC").page(params[:page]).per(30)
   end
 
   def show

@@ -1,18 +1,41 @@
+div style='margin-bottom:20px;'
+  = form_tag smaregi_member_group_analyses_path, :method => 'get' do
+    .clearfix
+      label style='float:left;' 店舗選択
+      = submit_tag "絞り込み" ,class:"btn btn-primary",style:"margin-left:20px;"
+      ul style="list-style:none;float:left;"
+        - @all_stores.each do |store|
+          li style='float:left;margin-right:10px;'
+            = check_box_tag "stores[#{store.id}]",true,params['stores'][store.id.to_s]
+            = label_tag "stores[#{store.id}]",store.name
+    / div
+    /   label style='float:left;margin-right:10px;' 表示期間
+    /   = date_field_tag :from, params[:from], class:"form-control float-left",style:'width:200px;float:left;'
+    /   div style="float:left;padding:8px;" 〜
+    /   = date_field_tag :to, params[:to], class:"form-control",style:'width:200px;float:left;'
+
 .clearfix
+  .col-md-4 style='float:left;'
+    h3 2回目、3回目 来店者数
+    canvas id="repeat_member"
+  .col-md-4 style='float:left;'
+    h3 新規登録者数
+    canvas id="new_member"
+  .col-md-4 style='float:left;'
+    h3 累計登録者数
+    canvas id="ruikei_member"
+
+.clearfix
+  .col-md-4 style='float:left;'
+    h3 来店回数別 会員数
+    canvas id="myDoughnutChart"
   .col-md-4 style='float:left;'
     h3 性別
     canvas id="sex"
-
   .col-md-4 style='float:left;'
     h3 年齢別会員数
     ="誕生日登録者：#{@count_saved_birthday}、誕生日未登録者：#{@count_un_saved_birthday}"
     canvas id="age_user_count"
-
-
-  .col-md-4 style='float:left;'
-    h3 来店回数
-    canvas id="myDoughnutChart"
-
 
 javascript:
   var ctx = document.getElementById("myDoughnutChart");
@@ -59,7 +82,6 @@ javascript:
     data: {
       labels:["10代",'20代','30代','40代','50代','60代','70代以上'],
       datasets: [{
-        label: "会員数",
         data: gon.age_users,
         fill: false,
         stacked: false,
@@ -68,6 +90,130 @@ javascript:
       }]
     },
     options: {
+      legend: {display: false},
+      plugins: {
+          colorschemes: {
+            scheme: 'tableau.Tableau20'
+        }
+      },
+      scales: {
+        xAxes: [{
+          stacked: true,
+          scaleLabel: {
+            display: true,
+            fontSize: 16
+          }
+        }],
+        yAxes: [{
+          stacked: false,
+          id: "y-axis-1",
+          type: "linear",
+          position: "left",
+          ticks: {
+            min: 0
+          }
+        }]
+      }
+    }
+  });
+
+  var ctx4 = document.getElementById("new_member");
+  var chart = new Chart(ctx4, {
+    type: 'bar',
+    data: {
+      labels:gon.month_days,
+      datasets: [{
+        data: gon.shinki_torokusu,
+        fill: false,
+        stacked: false,
+        yAxisID: "y-axis-1",
+        pointRadius: 0
+      }]
+    },
+    options: {
+      legend: {display: false},
+      plugins: {
+          colorschemes: {
+            scheme: 'tableau.Tableau20'
+        }
+      },
+      scales: {
+        xAxes: [{
+          stacked: true,
+          scaleLabel: {
+            display: true,
+            fontSize: 16
+          }
+        }],
+        yAxes: [{
+          stacked: false,
+          id: "y-axis-1",
+          type: "linear",
+          position: "left",
+          ticks: {
+            min: 0
+          }
+        }]
+      }
+    }
+  });
+
+  var ctx5 = document.getElementById("ruikei_member");
+  var chart = new Chart(ctx5, {
+    type: 'bar',
+    data: {
+      labels:gon.month_days,
+      datasets: [{
+        data: gon.ruiei_members,
+        fill: false,
+        stacked: false,
+        yAxisID: "y-axis-1",
+        pointRadius: 0
+      }]
+    },
+    options: {
+      legend: {display: false},
+      plugins: {
+          colorschemes: {
+            scheme: 'tableau.Tableau20'
+        }
+      },
+      scales: {
+        xAxes: [{
+          stacked: true,
+          scaleLabel: {
+            display: true,
+            fontSize: 16
+          }
+        }],
+        yAxes: [{
+          stacked: false,
+          id: "y-axis-1",
+          type: "linear",
+          position: "left",
+          ticks: {
+            min: 0
+          }
+        }]
+      }
+    }
+  });
+
+  var ctx5 = document.getElementById("repeat_member");
+  var chart = new Chart(ctx5, {
+    type: 'bar',
+    data: {
+      labels:gon.month_days,
+      datasets: [{
+        data: gon.repeat_members,
+        fill: false,
+        stacked: false,
+        yAxisID: "y-axis-1",
+        pointRadius: 0
+      }]
+    },
+    options: {
+      legend: {display: false},
       plugins: {
           colorschemes: {
             scheme: 'tableau.Tableau20'
