@@ -62,21 +62,12 @@ class KurumesiOrder < ApplicationRecord
         kurumesi_order_id = content.at(".boxTtl h2").inner_text[4..11]
         kurumesi_order = KurumesiOrder.find_by(management_id:kurumesi_order_id)
         if kurumesi_order.present?
-          content.search("//*[@id='form_#{kurumesi_order_id}']/select[2]/option").to_a.each do |aa|
-            if aa.to_a[1].present?
-              hour = aa.to_h['value']
-              content.search("//*[@id='form_#{kurumesi_order_id}']/select[3]/option").to_a.each do |aa|
-                if aa.to_a[1].present?
-                  minute = aa.to_h['value']
-                  pick_time = hour + ":" + minute
-                  break
-                end
-              end
-              break
-            end
+          time = content.search("div[2]/table/tr[4]/td/p[2]").inner_text.gsub(/(\s)/,"").slice(-5..-1)
+          if time.include?(":")
+            pick_time = time
+            kurumesi_order.pick_time = pick_time
+            kurumesi_orders_arr << kurumesi_order
           end
-          kurumesi_order.pick_time = pick_time
-          kurumesi_orders_arr << kurumesi_order
         end
       end
       KurumesiOrder.import kurumesi_orders_arr, on_duplicate_key_update: [:pick_time]
