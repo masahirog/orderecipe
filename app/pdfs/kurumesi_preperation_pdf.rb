@@ -202,8 +202,8 @@ class KurumesiPreperationPdf < Prawn::Document
           {content: memo, rowspan: u, size: cook_the_day_before_size},"#{mm.material.name}",
           "#{amount} #{mm.material.recipe_unit}",mm.source_group,check,mm.post,mm.preparation]
       else
-        data << [mm.material.name,{content:"#{amount} #{mm.material.recipe_unit}"},
-          check,mm.source_group,mm.post,mm.preparation]
+        data << [mm.material.name,{content:"#{amount} #{mm.material.recipe_unit}"},mm.source_group,
+          check,mm.post,mm.preparation]
       end
     end
     data
