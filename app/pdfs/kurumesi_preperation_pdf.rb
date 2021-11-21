@@ -149,7 +149,7 @@ class KurumesiPreperationPdf < Prawn::Document
             column(3).padding = [3,8,3,3]
             row(0).size = 9
             self.header = true
-            self.column_widths = [140,200,110,70,30,60,200]
+            self.column_widths = [130,200,110,70,30,30,60,180]
             grayout = []
             menuline = []
             values = cells.columns(5).rows(1..-1)
@@ -171,7 +171,7 @@ class KurumesiPreperationPdf < Prawn::Document
     end
   end
   def line_item_rows(menu,arr_kari_a,menu_name)
-    data = [["メニュー名","調理メモ","食材・資材","分量",'✓',{:content => "仕込み内容", :colspan => 2}]]
+    data = [["メニュー名","調理メモ","食材・資材","分量",'グループ','✓',{:content => "仕込み内容", :colspan => 2}]]
     u = menu.menu_materials.length
     cook_the_day_before_mozi = menu.cook_the_day_before.length
     if cook_the_day_before_mozi<50
@@ -200,10 +200,10 @@ class KurumesiPreperationPdf < Prawn::Document
         memo = "【 前日 】\n#{menu.cook_the_day_before}\n―・―・―・―・―・―・―・―・―・―\n【 当日 】\n#{menu.cook_on_the_day}"
         data << [{content: "#{menu_name}", rowspan: u},
           {content: memo, rowspan: u, size: cook_the_day_before_size},"#{mm.material.name}",
-          "#{amount} #{mm.material.recipe_unit}",check,mm.post,mm.preparation]
+          "#{amount} #{mm.material.recipe_unit}",mm.source_group,check,mm.post,mm.preparation]
       else
         data << [mm.material.name,{content:"#{amount} #{mm.material.recipe_unit}"},
-          check,mm.post,mm.preparation]
+          check,mm.source_group,mm.post,mm.preparation]
       end
     end
     data
