@@ -46,6 +46,12 @@ class KurumesiPreperationPdf < Prawn::Document
       table(arr, :column_widths => [150,500, 100], :cell_style =>{:border_width =>0.1,size:9 },:row_colors => ["f5f5f5", "FFFFFF"])
       move_down 1
       table_content(hash,'切出し')
+    elsif mochiba == 'tare'
+      text "タレ  #{date}"
+      move_down 2
+      table(arr, :column_widths => [150,500, 100], :cell_style =>{:border_width =>0.1,size:9 },:row_colors => ["f5f5f5", "FFFFFF"])
+      move_down 1
+      table_content(hash,'タレ')
     else
       text "調理場  #{date}"
       move_down 2
