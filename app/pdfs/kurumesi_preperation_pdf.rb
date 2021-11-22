@@ -152,7 +152,7 @@ class KurumesiPreperationPdf < Prawn::Document
             self.column_widths = [130,200,110,70,30,30,60,180]
             grayout = []
             menuline = []
-            values = cells.columns(5).rows(1..-1)
+            values = cells.columns(6).rows(1..-1)
             values.each do |cell|
               if mochiba == "調理場"
                 grayout << cell.row unless cell.content == mochiba || cell.content == "切出/調理"
