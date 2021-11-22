@@ -133,8 +133,8 @@ class KurumesiPreperationPdf < Prawn::Document
             cells.borders = [:bottom]
             cells.border_width = 0.1
             column(3).align = :right
-            column(4).align = :center
-            column(4).text_color = '808080'
+            column(5).align = :center
+            column(5).text_color = '808080'
             row(0).border_color = "000000"
             row(0).background_color = 'dcdcdc'
             row(0).text_color = "000000"
@@ -156,8 +156,10 @@ class KurumesiPreperationPdf < Prawn::Document
             values.each do |cell|
               if mochiba == "調理場"
                 grayout << cell.row unless cell.content == mochiba || cell.content == "切出/調理"
-              else
+              elsif  mochiba == "切出し"
                 grayout << cell.row unless cell.content == mochiba || cell.content == "切出/調理" || cell.content == "切出/スチ"
+              else
+                grayout << cell.row unless cell.content == mochiba
               end
             end
             grayout.map{|num|row(num).column(2..-1).background_color = "dcdcdc"}
@@ -171,7 +173,7 @@ class KurumesiPreperationPdf < Prawn::Document
     end
   end
   def line_item_rows(menu,arr_kari_a,menu_name)
-    data = [["メニュー名","調理メモ","食材・資材","分量",'グループ','✓',{:content => "仕込み内容", :colspan => 2}]]
+    data = [["メニュー名","調理メモ","食材・資材","分量",'G','✓',{:content => "仕込み内容", :colspan => 2}]]
     u = menu.menu_materials.length
     cook_the_day_before_mozi = menu.cook_the_day_before.length
     if cook_the_day_before_mozi<50
