@@ -45,7 +45,7 @@ class KurumesiOrdersController < AdminController
     date = params[:date]
     @kurumesi_orders = KurumesiOrder.where(start_time:date,canceled_flag:false).order(:pick_time)
     @kurumesi_orders_num_h = @kurumesi_orders.joins(kurumesi_order_details:[:product]).where(:products => {product_category:5}).group('kurumesi_order_details.kurumesi_order_id').sum('kurumesi_order_details.number')
-    @products_num_h = @kurumesi_orders.joins(kurumesi_order_details:[:product]).group('kurumesi_order_details.product_id').sum('kurumesi_order_details.number')
+    @products_num_h = KurumesiOrderDetail.where(kurumesi_order_id:@kurumesi_orders.ids).joins(:product).group(:product_id).sum(:number)
     @brand_ids = @kurumesi_orders.map{|kurumesi_order|kurumesi_order.brand_id}.uniq
     respond_to do |format|
       format.html
@@ -63,7 +63,7 @@ class KurumesiOrdersController < AdminController
     date = params[:date]
     @kurumesi_orders = KurumesiOrder.where(start_time:date,canceled_flag:false).order(:pick_time)
     @kurumesi_orders_num_h = @kurumesi_orders.joins(kurumesi_order_details:[:product]).where(:products => {product_category:5}).group('kurumesi_order_details.kurumesi_order_id').sum('kurumesi_order_details.number')
-    @products_num_h = @kurumesi_orders.joins(kurumesi_order_details:[:product]).group('kurumesi_order_details.product_id').sum('kurumesi_order_details.number')
+    @products_num_h = KurumesiOrderDetail.where(kurumesi_order_id:@kurumesi_orders.ids).joins(:product).group(:product_id).sum(:number)
     @brand_ids = @kurumesi_orders.map{|kurumesi_order|kurumesi_order.brand_id}.uniq
     respond_to do |format|
       format.html
@@ -81,7 +81,7 @@ class KurumesiOrdersController < AdminController
     date = params[:date]
     @kurumesi_orders = KurumesiOrder.where(start_time:date,canceled_flag:false).order(:pick_time)
     @kurumesi_orders_num_h = @kurumesi_orders.joins(kurumesi_order_details:[:product]).where(:products => {product_category:5}).group('kurumesi_order_details.kurumesi_order_id').sum('kurumesi_order_details.number')
-    @products_num_h = @kurumesi_orders.joins(kurumesi_order_details:[:product]).group('kurumesi_order_details.product_id').sum('kurumesi_order_details.number')
+    @products_num_h = KurumesiOrderDetail.where(kurumesi_order_id:@kurumesi_orders.ids).joins(:product).group(:product_id).sum(:number)
     @brand_ids = @kurumesi_orders.map{|kurumesi_order|kurumesi_order.brand_id}.uniq
     respond_to do |format|
       format.html
@@ -217,33 +217,16 @@ class KurumesiOrdersController < AdminController
 
 
   def date
-    # Dotenv.overload
-    # s3 = Aws::S3::Resource.new(
-    #   region: 'ap-northeast-1',
-    #   credentials: Aws::Credentials.new(
-    #     ENV['ACCESS_KEY_ID'],
-    #     ENV['SECRET_ACCESS_KEY']
-    #   )
-    # )
-    # signer = Aws::S3::Presigner.new(client: s3.client)
-    # @presigned_url = {}
-    # @accounting_url = {}
     date = params[:date]
     @year = date[0..3]
     @month = date[5..6]
     @day = date[8..9]
     @kurumesi_orders = KurumesiOrder.where(start_time:date,canceled_flag:false).order(:pick_time,:created_at)
     @canceled_kurumesi_orders = KurumesiOrder.where(start_time:date,canceled_flag:true).order(:pick_time)
-    @bentos_num_h = @kurumesi_orders.joins(kurumesi_order_details:[:product]).group('products.brand_id').group('kurumesi_order_details.product_id').sum('kurumesi_order_details.number').sort {|(k1, v1), (k2, v2)| k1[0] <=> k2[0] }
+    kurumesi_order_ids = @kurumesi_orders.ids
+    @bentos_num_h = KurumesiOrderDetail.where(kurumesi_order_id:kurumesi_order_ids).joins(:product).group('products.brand_id').group(:product_id).sum(:number).sort {|(k1, v1), (k2, v2)| k1[0] <=> k2[0] }
     @kurumesi_orders_num_h = @kurumesi_orders.where(:products => {product_category:5}).joins(kurumesi_order_details:[:product]).group('kurumesi_order_details.kurumesi_order_id').sum('kurumesi_order_details.number')
     @brands = Brand.all
-    # arr = []
-    # @kurumesi_orders.includes(:brand).each do |ko|
-    #   arr << [ko.brand.store_id,ko.management_id,ko.payment]
-    #   @presigned_url[ko.id] = signer.presigned_url(:get_object,bucket: 'kurumesi-check', key: "#{ko.management_id}.jpg", expires_in: 60)
-    #   @accounting_url[ko.id] = signer.presigned_url(:get_object,bucket: 'accounting-screenshot', key: "#{ko.management_id}.pdf", expires_in: 60)
-    # end
-    # gon.order_arr = arr
   end
   def show
     @kurumesi_order = KurumesiOrder.includes(kurumesi_order_details:[:product]).find(params[:id])
@@ -253,7 +236,7 @@ class KurumesiOrdersController < AdminController
     mochiba = params[:mochiba]
     date = params[:date]
     kurumesi_orders = KurumesiOrder.includes(kurumesi_order_details:[:product]).where(start_time:date,canceled_flag:false).order(:pick_time)
-    @bentos_num_h = kurumesi_orders.joins(kurumesi_order_details:[:product]).where(:products => {product_category:5}).group('kurumesi_order_details.product_id').sum('kurumesi_order_details.number')
+    @bentos_num_h = KurumesiOrderDetail.where(kurumesi_order_id:kurumesi_orders.ids).joins(:product).where(:products => {product_category:5}).group(:product_id).sum(:number)
     respond_to do |format|
       format.html
       format.pdf do
@@ -292,7 +275,7 @@ class KurumesiOrdersController < AdminController
     date = params[:date]
     sort = params[:sort].to_i
     kurumesi_orders = KurumesiOrder.includes(kurumesi_order_details:[:product]).where(start_time:date,canceled_flag:false).order(:pick_time)
-    @bentos_num_h = kurumesi_orders.joins(kurumesi_order_details:[:product]).where(:products => {product_category:5}).group('kurumesi_order_details.product_id').sum('kurumesi_order_details.number')
+    @bentos_num_h = KurumesiOrderDetail.where(kurumesi_order_id:kurumesi_orders.ids).joins(:product).where(:products => {product_category:5}).group(:product_id).sum(:number)
     respond_to do |format|
       format.html
       format.pdf do
