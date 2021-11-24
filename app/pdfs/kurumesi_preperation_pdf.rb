@@ -100,10 +100,12 @@ class KurumesiPreperationPdf < Prawn::Document
         if mochiba == '調理場'
           post1 = '調理場'
           post2 = '切出/調理'
-        else
+        elsif  mochiba == '切出し'
           post1 = '切出し'
           post2 = '切出/スチ'
           post3 = '切出/調理'
+        else
+          post1 = 'タレ'
         end
         if base_menu.menu_materials.map{|mm|mm.post}.include?(post1) || base_menu.menu_materials.map{|mm|mm.post}.include?(post2) || base_menu.menu_materials.map{|mm|mm.post}.include?(post3)
           menus = same_base_menu_hash[base_menu.id]
