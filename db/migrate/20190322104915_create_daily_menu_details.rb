@@ -8,7 +8,6 @@ class CreateDailyMenuDetails < ActiveRecord::Migration[4.2][5.2]
       t.integer :total_cost_price, default: 0, null: false
       t.integer :row_order, default: 0, null: false
       t.integer :serving_plate_id
-      t.integer :place_showcase_id
       t.boolean :signboard_flag, default: 0, null: false
       t.boolean :window_pop_flag, default: 0, null: false
       t.time :sold_outed
