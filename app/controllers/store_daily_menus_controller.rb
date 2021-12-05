@@ -19,6 +19,22 @@ class StoreDailyMenusController < ApplicationController
     @product_sales_potentials = product_sales_potentials.map{|psp|[psp.product_id,psp.sales_potential]}.to_h
     sozai_ids = Product.where(id:@uniq_product_ids).where(bejihan_sozai_flag:true).ids
     @sozai_total_sales_potential = product_sales_potentials.where(product_id:sozai_ids).sum(:sales_potential)
+    min_date = @store_daily_menus.map{|sdm|sdm.start_time}.min
+    @analyses = Analysis.where(store_id:@store_id).where('date > ?',min_date-35)
+    @date_sales_sozai_number = []
+    @weekday_sales_sozai_number = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    @analyses.map do |analysis|
+      @date_sales_sozai_number << [analysis.date,analysis.total_number_sales_sozai]
+      if @weekday_sales_sozai_number[analysis.date.wday].present?
+        @weekday_sales_sozai_number[analysis.date.wday]['total_num'] += analysis.total_number_sales_sozai
+        @weekday_sales_sozai_number[analysis.date.wday]['count'] += 1
+      else
+        @weekday_sales_sozai_number[analysis.date.wday]['total_num'] = analysis.total_number_sales_sozai
+        @weekday_sales_sozai_number[analysis.date.wday]['count'] = 1
+      end
+      @weekday_sales_sozai_number[analysis.date.wday]['rireki'][analysis.date] = analysis.total_number_sales_sozai
+    end
+    @date_sales_sozai_number = @date_sales_sozai_number.to_h
   end
   def input_multi_number
     update_arr = []

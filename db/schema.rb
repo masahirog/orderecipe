@@ -96,8 +96,9 @@ ActiveRecord::Schema.define(version: 2021_11_05_071333) do
     t.integer "total_cost_price", default: 0, null: false
     t.integer "row_order", default: 0, null: false
     t.integer "serving_plate_id"
+    t.integer "place_showcase_id"
     t.boolean "signboard_flag", default: false, null: false
-    t.boolean "window_pop_flag", default: false, null: false
+    t.boolean "window_pop_flag", default: false, null: false, unsigned: true
     t.time "sold_outed"
     t.integer "for_single_item_number", default: 0, null: false
     t.integer "for_sub_item_number", default: 0, null: false
@@ -352,6 +353,12 @@ ActiveRecord::Schema.define(version: 2021_11_05_071333) do
     t.string "staff_name"
   end
 
+  create_table "place_showcases", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "product_menus", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "product_id", null: false
     t.integer "menu_id", null: false
@@ -376,7 +383,6 @@ ActiveRecord::Schema.define(version: 2021_11_05_071333) do
     t.string "unit", null: false
     t.string "memo"
     t.integer "container", default: 0, null: false
-    t.boolean "sticker_print_flag", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -423,7 +429,6 @@ ActiveRecord::Schema.define(version: 2021_11_05_071333) do
     t.integer "main_serving_plate_id"
     t.integer "sub_serving_plate_id"
     t.integer "container_id"
-    t.boolean "freezing_able_flag", default: false, null: false
   end
 
   create_table "serving_plates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -533,6 +538,7 @@ ActiveRecord::Schema.define(version: 2021_11_05_071333) do
     t.integer "actual_inventory", default: 0, null: false
     t.boolean "sold_out_flag", default: false, null: false
     t.integer "serving_plate_id"
+    t.integer "place_showcase_id"
     t.boolean "signboard_flag", default: false, null: false
     t.boolean "window_pop_flag", default: false, null: false
     t.integer "stock_deficiency_excess", default: 0, null: false
