@@ -11,7 +11,7 @@ class StoreDailyMenusController < ApplicationController
     store_daily_menu_details = StoreDailyMenuDetail.where(store_daily_menu_id:@store_daily_menus.ids)
     store_daily_menu_details.each do |sdmd|
       @store_daily_menu_detail_ids_hash[[sdmd.store_daily_menu_id,sdmd.product_id]]= sdmd.id
-      @store_daily_menu_details_hash[[sdmd.store_daily_menu_id,sdmd.product_id]]= sdmd.number
+      @store_daily_menu_details_hash[[sdmd.store_daily_menu_id,sdmd.product_id]]= sdmd.sozai_number
     end
     @uniq_product_store_daily_menu_details = store_daily_menu_details.select(:product_id).distinct
     @uniq_product_ids = @uniq_product_store_daily_menu_details.map{|sdmd|sdmd.product_id}
