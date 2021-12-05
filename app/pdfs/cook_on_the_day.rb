@@ -24,7 +24,7 @@ class CookOnTheDay < Prawn::Document
           cells.border_width = 0.1
           columns(-2).align = :center
           self.header = true
-          self.column_widths = [180,100,100]
+          self.column_widths = [180,100,120,60,60]
         end
         move_down 10
         text "朝調理個数一覧："
@@ -33,9 +33,9 @@ class CookOnTheDay < Prawn::Document
           self.row_colors = ["FFFFFF","E5E5E5"]
           cells.size = 7
           cells.border_width = 0.1
-          columns(-2).align = :center
+          columns(1..-1).align = :center
           self.header = true
-          self.column_widths = [180,50,50,50,50,50,50]
+          self.column_widths = [180,50,50,100,100]
         end
         move_down 10
         text "その他メモ："
@@ -57,11 +57,17 @@ class CookOnTheDay < Prawn::Document
 
 
   def line_item_rows(sdm)
-    data = [['商品名',sdm.store.name,'朝調理分']]
+    data = [['商品名','翌日繰越','冷凍保存',sdm.store.name,'朝調理分']]
     sdm.store_daily_menu_details.each do |sdmd|
       if sdmd.product.carryover_able_flag == true
+        if sdmd.product.freezing_able_flag == true
+          reito = '○'
+        else
+          reito = ''
+        end
         morning_number = "※　" + (sdmd.number/2.0).ceil.to_s
-        data << [sdmd.product.name,sdmd.number,morning_number]
+        data << [sdmd.product.name,'○',reito,sdmd.number,morning_number]
+      else
       end
     end
     data
