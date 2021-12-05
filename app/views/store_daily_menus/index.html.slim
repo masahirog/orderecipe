@@ -1,7 +1,7 @@
 h1
   = "献立　#{@store.name}"
 - if current_user.admin?
-  button type="button" class="btn btn-default" data-toggle="modal" data-target="#upload" style='float:right;' 食数CSV登録
+  button type="button" class="btn btn-default" data-toggle="modal" data-target="#upload" style='float:right;' 副菜食数のcsv登録
   #upload.modal.fade tabindex="-1"
     = form_tag upload_number_store_daily_menus_path, multipart: true do
       = hidden_field_tag :store_id,@store.id

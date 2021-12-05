@@ -39,36 +39,8 @@ div style='float:left;padding:15px 20px;'
   label 最高気温
   p = @store_daily_menu.max_temperature
 div style='float:left;padding:15px 20px;'
-  label 最高気温
+  label 最低気温
   p = @store_daily_menu.min_temperature
-.clearfix.col-md-12
-  table.show_case_table style='float:left;width:14%;margin-right:5px;'
-    thead
-      tr
-        th 煮込み台
-    tbody
-      - [191,201,211].each do |i|
-        tr
-          td = @hash[i]
-  table.show_case_table style='float:left;width:34%;margin-right:5px;'
-    thead
-      tr
-        th 小ショーケース
-    tbody
-      - [11,21,31,41,51,61].each_slice(2) do |arr|
-        tr
-          - arr.each do |i|
-            td = @hash[i]
-  table.show_case_table style='float:left;width:50%'
-    thead
-      tr
-        th 大ショーケース
-
-    tbody
-      - [71,81,91,101,111,121,131,141,151,161,171,181].each_slice(4) do |arr|
-        tr
-          - arr.each do |i|
-            td = @hash[i]
 .form-group.col-md-12.clearfix style='padding-top:10px;'
   - @store_daily_menu.store_daily_menu_photos.each do |sdmp|
     div style='float:left;width:350px;'

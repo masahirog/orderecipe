@@ -353,12 +353,6 @@ ActiveRecord::Schema.define(version: 2021_11_05_071333) do
     t.string "staff_name"
   end
 
-  create_table "place_showcases", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
   create_table "product_menus", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "product_id", null: false
     t.integer "menu_id", null: false
@@ -429,6 +423,7 @@ ActiveRecord::Schema.define(version: 2021_11_05_071333) do
     t.integer "main_serving_plate_id"
     t.integer "sub_serving_plate_id"
     t.integer "container_id"
+    t.boolean "freezing_able_flag", default: false, null: false
   end
 
   create_table "serving_plates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

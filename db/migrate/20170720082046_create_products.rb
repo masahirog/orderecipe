@@ -25,6 +25,7 @@ class CreateProducts < ActiveRecord::Migration[4.2]
       t.integer :main_serving_plate_id
       t.integer :sub_serving_plate_id
       t.integer :container_id
+      t.boolean :freezing_able_flag, null: false, default: false
     end
   end
 end

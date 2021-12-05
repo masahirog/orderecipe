@@ -138,12 +138,7 @@ class DailyMenusController < AdminController
     @date = @daily_menu.start_time
     @tommoroww = DailyMenu.find_by(start_time:@date+1)
     @yesterday = DailyMenu.find_by(start_time:@date-1)
-    @place_showcases = PlaceShowcase.all
     @daily_menu_details = @daily_menu.products
-    @hash = @daily_menu.daily_menu_details.map do |dmd|
-      [dmd.place_showcase_id,dmd.product_id] if dmd.place_showcase_id.present?
-    end
-    @hash = @hash.compact.to_h
 
     @products = Product.where(brand_id:111)
     respond_to do |format|
@@ -326,6 +321,6 @@ class DailyMenusController < AdminController
     def daily_menu_params
       params.require(:daily_menu).permit(:start_time,:total_manufacturing_number,:sozai_manufacturing_number,:weather,:max_temperature,:min_temperature,daily_menu_photos_attributes: [:id,:daily_menu_id,:image],
         daily_menu_details_attributes: [:id,:daily_menu_id,:product_id,:manufacturing_number,:row_order,:_destroy,
-          :serving_plate_id,:place_showcase_id,:signboard_flag,:window_pop_flag,:sold_outed,:for_single_item_number,:for_sub_item_number])
+          :serving_plate_id,:signboard_flag,:window_pop_flag,:sold_outed,:for_single_item_number,:for_sub_item_number])
     end
 end

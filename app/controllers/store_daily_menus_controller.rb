@@ -64,10 +64,6 @@ class StoreDailyMenusController < ApplicationController
     @tommoroww = StoreDailyMenu.find_by(store_id:store_id,start_time:@date+1)
     @yesterday = StoreDailyMenu.find_by(store_id:store_id,start_time:@date-1)
     @store_daily_menu_details = @store_daily_menu.store_daily_menu_details.order("row_order ASC").includes(product:[:container,:product_ozara_serving_informations])
-    @hash = @store_daily_menu_details.map do |sdmd|
-      [sdmd.place_showcase_id,sdmd.product.name] if sdmd.place_showcase_id.present?
-    end
-    @hash = @hash.compact.to_h
     @after_store_daily_menus = StoreDailyMenu.where('start_time >= ?',date).where(store_id:store_id)
     respond_to do |format|
       format.html
@@ -96,14 +92,8 @@ class StoreDailyMenusController < ApplicationController
     @date = @store_daily_menu.start_time
     @tommoroww = DailyMenu.find_by(start_time:@date+1)
     @yesterday = DailyMenu.find_by(start_time:@date-1)
-
     @products = Product.where(brand_id:111)
-    @place_showcases = PlaceShowcase.all
     @store_daily_menu_details = @store_daily_menu.products
-    @hash = @store_daily_menu.store_daily_menu_details.map do |sdmd|
-      [sdmd.place_showcase_id,sdmd.product_id] if sdmd.place_showcase_id.present?
-    end
-    @hash = @hash.compact.to_h
 
   end
 
@@ -196,21 +186,25 @@ class StoreDailyMenusController < ApplicationController
       sdmd = StoreDailyMenuDetail.find(sdmd_id)
       daily_menu_ids << sdmd.store_daily_menu.daily_menu_id
       store_daily_menu_ids << sdmd.store_daily_menu_id
-      sdmd.number = num
+      sdmd.bento_fukusai_number = num
+      sdmd.number = num + sdmd.sozai_number
       sdmds_arr << sdmd
     end
-    StoreDailyMenuDetail.import sdmds_arr, :on_duplicate_key_update => [:number]
+    StoreDailyMenuDetail.import sdmds_arr, :on_duplicate_key_update => [:bento_fukusai_number,:number]
     daily_menu_ids = daily_menu_ids.uniq
     DailyMenu.where(id:daily_menu_ids).each do |daily_menu|
       sdmds = StoreDailyMenuDetail.where(store_daily_menu_id:daily_menu.store_daily_menus.ids)
       product_num_hash = sdmds.group(:product_id).sum(:number)
+      sozai_num_hash = sdmds.group(:product_id).sum(:sozai_number)
+      fukusai_num_hash = sdmds.group(:product_id).sum(:bento_fukusai_number)
       daily_menu.daily_menu_details.each do |dmd|
-        dmd.for_single_item_number = product_num_hash[dmd.product_id]
-        dmd.manufacturing_number = product_num_hash[dmd.product_id] + dmd.for_sub_item_number
+        dmd.for_single_item_number = sozai_num_hash[dmd.product_id]
+        dmd.for_sub_item_number = fukusai_num_hash[dmd.product_id]
+        dmd.manufacturing_number = product_num_hash[dmd.product_id]
         update_dmds << dmd
       end
     end
-    DailyMenuDetail.import update_dmds, :on_duplicate_key_update => [:for_single_item_number,:manufacturing_number]
+    DailyMenuDetail.import update_dmds, :on_duplicate_key_update => [:for_single_item_number,:manufacturing_number,:for_sub_item_number]
     redirect_to store_daily_menus_path(store_id:store_id)
   end
 

@@ -72,7 +72,7 @@
             .vendor_company_name style="padding-top:3px;color:#gray;"
               span = @b_hash[m.object.material_id]['vendor_name']
               - if m.object.material_id.present?
-                span ="｜納品：#{@b_hash[m.object.material_id]['vendor_info']}" 
+                span ="｜納品：#{@b_hash[m.object.material_id]['vendor_info']}"
           td class="quantity_#{m.object.material_id}" style="min-width:500px;"
             .clearfix.text-right
               div style="float:left;width:50%;"
@@ -135,7 +135,7 @@
 
           td.order_material_memo style='width:999px;'
             = m.text_field :order_material_memo,class:'form-control'
-            / div style="padding:3px 0 0 8px;color:gray;font-size:10px;"
+            div style="padding:3px 0 0 8px;color:gray;font-size:10px;"
               - if controller.action_name == "new"
                 = m.object.menu_name
                 = m.hidden_field :menu_name

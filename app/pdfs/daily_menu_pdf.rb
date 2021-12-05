@@ -46,7 +46,7 @@ class DailyMenuPdf < Prawn::Document
   end
 
   def line_item_rows(sdm)
-    data = [['商品名','東中野','当日分残','追加調理','残（冷凍）','完売']]
+    data = [['商品名','東中野','当日分残','追加調理','残（繰越）','完売']]
     sdm.store_daily_menu_details.each do |sdmd|
       if sdmd.product.carryover_able_flag == true
         morning_number = "※　" + (sdmd.number/2.0).floor.to_s
