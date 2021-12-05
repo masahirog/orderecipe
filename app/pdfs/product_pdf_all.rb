@@ -38,8 +38,18 @@ class ProductPdfAll < Prawn::Document
 
   def header_table(product,num,date)
     bounding_box([0, 525], :width => 650) do
-      data = [["日付","商品名","製造数"],
-              ["#{Date.parse(date.to_s).strftime("%Y年%-m月%-d日(#{%w(日 月 火 水 木 金 土)[Date.parse(date.to_s).wday]})")}","#{product.name}","#{num}人分"]]
+      if product.carryover_able_flag == true
+        kurikoshi = '○'
+      else
+        kurikoshi = '×'
+      end
+      if product.freezing_able_flag == true
+        reito = '○'
+      else
+        reito = '×'
+      end
+      data = [["日付","商品名","製造数",'翌日繰越','冷凍'],
+              ["#{Date.parse(date.to_s).strftime("%Y年%-m月%-d日(#{%w(日 月 火 水 木 金 土)[Date.parse(date.to_s).wday]})")}","#{product.name}","#{num}人分",kurikoshi,reito]]
       table data, cell_style: { size: 9 } do
       cells.padding = 2
 
@@ -50,7 +60,7 @@ class ProductPdfAll < Prawn::Document
       cells.border_width = 0.2
       cells.height = 14
       self.header = true
-      self.column_widths = [100,250,100]
+      self.column_widths = [100,250,100,100,100]
       end
     end
   end

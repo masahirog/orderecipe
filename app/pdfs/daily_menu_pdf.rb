@@ -26,7 +26,7 @@ class DailyMenuPdf < Prawn::Document
           # cells.valign = :center
           columns(-2).align = :center
           self.header = true
-          self.column_widths = [180,50,50,50,50,50,50,50]
+          self.column_widths = [180,50,50,80,50,50,50,50,50]
         end
         move_down 10
 
@@ -46,14 +46,21 @@ class DailyMenuPdf < Prawn::Document
   end
 
   def line_item_rows(sdm)
-    data = [['商品名','東中野','当日分残','追加調理','残（繰越）','完売']]
+    data = [['商品名','翌日繰越','冷凍保存','製造数（朝調理数）','追加調理','残（繰越）','完売']]
     sdm.store_daily_menu_details.each do |sdmd|
       if sdmd.product.carryover_able_flag == true
-        morning_number = "※　" + (sdmd.number/2.0).floor.to_s
-        data << [sdmd.product.name,sdmd.number,morning_number,'','','']
+        kurikoshi = '○'
+        morning_number = "（ #{(sdmd.number/2.0).ceil.to_s} ）"
       else
-        data << [sdmd.product.name,sdmd.number,'','','ー','']
+        kurikoshi = ''
+        morning_number = ''
       end
+      if sdmd.product.freezing_able_flag == true
+        reito = '○'
+      else
+        reito = ''
+      end
+      data << [sdmd.product.name,kurikoshi,reito,"#{sdmd.number}#{morning_number}",'','','']
     end
     data
   end
