@@ -1,31 +1,18 @@
 class KurumesiOrdersController < AdminController
   before_action :set_kurumesi_order, only: [ :edit, :update, :destroy]
-  # def collation_sheet
-  #   date = params[:date]
-  #   Dotenv.overload
-  #   s3 = Aws::S3::Resource.new(
-  #     region: 'ap-northeast-1',
-  #     credentials: Aws::Credentials.new(
-  #       ENV['ACCESS_KEY_ID'],
-  #       ENV['SECRET_ACCESS_KEY']
-  #     )
-  #   )
-  #   signer = Aws::S3::Presigner.new(client: s3.client)
-  #   kurumesi_orders = {}
-  #   KurumesiOrder.includes(:brand).where(start_time:date,canceled_flag:false).order(:pick_time).each do |ko|
-  #     kurumesi_orders[ko.management_id] = [ko,signer.presigned_url(:get_object,bucket: 'kurumesi-delivery-note', key: "#{ko.management_id}.png", expires_in: 60)]
-  #   end
-  #   respond_to do |format|
-  #     format.html
-  #     format.pdf do
-  #       pdf = KurumesiCollation.new(date,kurumesi_orders)
-  #       send_data pdf.render,
-  #       filename:    "#{date}.pdf",
-  #       type:        "application/pdf",
-  #       disposition: "inline"
-  #     end
-  #   end
-  # end
+  def sources
+    @date = params[:date]
+    kurumesi_orders = KurumesiOrder.where(start_time:@date,canceled_flag:false)
+    @products_num_h = KurumesiOrderDetail.where(kurumesi_order_id:kurumesi_orders.ids).joins(:product).group(:product_id).sum(:number)
+
+    respond_to do |format|
+      format.html
+      format.csv do
+        send_data render_to_string, filename: "#{@date}_くるめしオーダー_タレ.csv", type: :csv
+      end
+    end
+  end
+
   def delivery_note
     date = params[:date]
     kurumesi_orders = KurumesiOrder.includes(:brand).where(start_time:date,canceled_flag:false).order(:pick_time)

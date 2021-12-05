@@ -7,7 +7,7 @@ class CreateProductParts < ActiveRecord::Migration[5.2]
       t.string :unit,null:false
       t.string :memo
       t.integer :container,null:false,default:0
-
+      t.boolean :sticker_print_flag, null: false, default: true
       t.timestamps
     end
   end

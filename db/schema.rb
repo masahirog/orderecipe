@@ -376,6 +376,7 @@ ActiveRecord::Schema.define(version: 2021_11_05_071333) do
     t.string "unit", null: false
     t.string "memo"
     t.integer "container", default: 0, null: false
+    t.boolean "sticker_print_flag", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

@@ -69,6 +69,7 @@ Rails.application.routes.draw do
   resources :wiki_items
   resources :kurumesi_orders do
     collection do
+      get :sources
       get :delivery_note
       get :collation_sheet
       get :mail_check

@@ -48,7 +48,10 @@
     .col-md-1
       = f.label :carryover_able_flag, "翌日繰越可"
       = f.check_box :carryover_able_flag, class: "form-control"
-    .col-md-2
+    .col-md-1
+      = f.label :freezing_able_flag, "冷凍可"
+      = f.check_box :freezing_able_flag, class: "form-control"
+    .col-md-1
       = f.label :product_category, "カテゴリー"
       = f.select :product_category, options_for_select(Product.product_categories.keys.to_a,@product.product_category), {}, class: 'form-control'
 
@@ -117,6 +120,7 @@
           th.col-md-1 1人前の分量
           th.col-md-1 単位
           th.col-md-2 パッキング
+          th.col-md-1 シール印刷
           th メモ
           th.col-md-1
       tbody#product_parts-add-point

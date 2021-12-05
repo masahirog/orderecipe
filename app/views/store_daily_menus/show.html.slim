@@ -1,4 +1,3 @@
-= link_to '製造数入力', input_manufacturing_number_store_daily_menus_path(store_daily_menu_id:@store_daily_menu.id),class:'pull-right btn btn-primary'
 button type="button" class="btn btn-default" data-toggle="modal" data-target="#store_once_reflect" style='margin-right:10px;float:right;' 製造数入力
 #store_once_reflect.modal.fade tabindex="-1"
   = form_tag input_manufacturing_number_store_daily_menus_path, method: :get do
@@ -73,6 +72,8 @@ table.table.table-list
       tr
         td
           = link_to sdmd.product.name,product_path(sdmd.product)
+          span style='color:blue;' = "【冷】" if sdmd.product.freezing_able_flag == true
+          span style='color:red;' = "【繰】" if sdmd.product.carryover_able_flag == true
         td
           - if sdmd.product.product_ozara_serving_informations.present? || sdmd.product.display_image.present?
             button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#ozara_serving_#{sdmd.product_id}" style='' 大皿
