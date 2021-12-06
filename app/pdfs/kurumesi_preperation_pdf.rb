@@ -147,6 +147,7 @@ class KurumesiPreperationPdf < Prawn::Document
             column(0).row(1).borders = [:left,:bottom]
             column(0).row(1).borders = [:left,:bottom]
             column(1).row(1).borders = [:bottom]
+
             # column(4).background_color = 'dcdcdc'
             column(3).padding = [3,8,3,3]
             row(0).size = 9
@@ -169,6 +170,7 @@ class KurumesiPreperationPdf < Prawn::Document
             menu_values.each do |cell|
               menuline << cell.row if cell.content.present?
             end
+            row(1..-1).column(5).background_color = 'ffffff'
           end
         end
       end
