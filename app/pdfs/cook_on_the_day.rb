@@ -65,7 +65,7 @@ class CookOnTheDay < Prawn::Document
         else
           reito = ''
         end
-        morning_number = "※　" + (sdmd.number/2.0).ceil.to_s
+        morning_number = "※　" + (sdmd.number/1.4).ceil.to_s
         data << [sdmd.product.name,'○',reito,sdmd.number,morning_number]
       else
       end

@@ -50,7 +50,7 @@ class DailyMenuPdf < Prawn::Document
     sdm.store_daily_menu_details.each do |sdmd|
       if sdmd.product.carryover_able_flag == true
         kurikoshi = '○'
-        morning_number = "（ #{(sdmd.number/2.0).ceil.to_s} ）"
+        morning_number = "（ #{(sdmd.number/1.4).ceil.to_s} ）"
       else
         kurikoshi = ''
         morning_number = ''
