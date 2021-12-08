@@ -604,7 +604,7 @@ class AnalysesController < AdminController
     @store_daily_menu = StoreDailyMenu.find_by(start_time:date,store_id:store_id)
     @store_daily_menu_details = @store_daily_menu.store_daily_menu_details.includes([:product]).order(:row_order)
     sdmd_arr = @store_daily_menu_details.map{|sdmd|sdmd.product_id}
-    @analysis.analysis_products.each do |ap|
+    @analysis.analysis_products.includes(:product).each do |ap|
       if sdmd_arr.include?(ap.product_id)
         if @or_ari_analysis_products[ap.product_id].present?
           @or_nashi_analysis_products << ap

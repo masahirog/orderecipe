@@ -43,12 +43,14 @@ table.table
       th 廃棄数
       th 廃棄金額
       th 14時まで
-      th ポテンシャル
+      th 完売
 
   tbody
     - @store_daily_menu_details.each do |sdmd|
       - ap = @or_ari_analysis_products[sdmd.product_id]
-      tr
+      - bgcolor = "white"
+      - bgcolor = 'lightpink' if sdmd.sold_out_flag == true && ap.loss_number > 0
+      tr style="background-color:#{bgcolor}"
         td = link_to sdmd.product.name,store_product_sales_analyses_path(store_id:@analysis.store_id,product_id:sdmd.product_id)
         td = sdmd.product.sell_price
         td = ap.smaregi_shohin_name if ap.present?
@@ -61,7 +63,7 @@ table.table
         td = ap.loss_number if ap.present?
         td = ap.loss_amount.to_s(:delimited) if ap.present? && ap.loss_amount.present?
         td = ap.early_sales_number if ap.present?
-        td = ap.potential if ap.present?
+        td = '○' if sdmd.sold_out_flag == true
     tr style="background-color:gainsboro;"
       th Orderecipe 献立外 メニュー
       th OR単価
