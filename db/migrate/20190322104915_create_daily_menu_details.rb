@@ -14,6 +14,7 @@ class CreateDailyMenuDetails < ActiveRecord::Migration[4.2][5.2]
       t.integer :for_single_item_number, default: 0, null: false
       t.integer :for_sub_item_number, default: 0, null: false
       t.timestamps
+      t.integer :adjustments, default: 0, null: false
     end
   end
 end
