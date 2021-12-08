@@ -55,7 +55,7 @@ class DailyMenu < ApplicationRecord
 
   def total_check
     self.daily_menu_details.each do |dmd|
-      dmd.manufacturing_number = dmd.for_single_item_number + dmd.for_sub_item_number
+      dmd.manufacturing_number = dmd.for_single_item_number + dmd.for_sub_item_number + dmd.adjustments
     end
   end
 

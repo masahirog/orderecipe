@@ -50,9 +50,8 @@
           .calculate_number style='border:1px solid;padding:2px 4px;border-radius:8px;float:right;' 店舗合計
 
         th 弁当等副菜分
+        th 調整数
         th 合計製造数
-        / th 盛付皿
-        / th 配置
         th
     tbody#daily_menu_details_area
       = f.fields_for :daily_menu_details do |dmd|
@@ -61,35 +60,16 @@
 
 javascript:
   $(function () {
-    $('.calculate_number').on('click',function(){
-      $('.daily_menu_detail_tr').each(function(){
-        var higasinakano = Number($(this).find('.higasinakano').text());
-        var koenji = Number($(this).find('.koenji').text());
-        var total = higasinakano + koenji
-        $(this).find('.single_item_number').val(total)
-      });
-    });
-    $(".show_case_table td select").each(function(index, element){
-      var val = $(element).val();
-      if (val) {
-        $('.show_case_table td select').not(this).children('option[value='+ val +']').attr("disabled", "disabled");
-      }
-    });
-    var previous;
-    $(".show_case_table td select").on('click', function () {
-      // Store the current value on focus and on change
-      previous = $(this).val();
-    }).change(function() {
-      var val = $(this).val();
-      var id = $(this).attr('id');
-      var show_case_place_id = id.replace("place_", "");
-      $(".tr_"+val).find('.show_case_place').val(show_case_place_id);
-      if (val){
-        $('.show_case_table td select').not(this).children('option[value='+ val +']').attr("disabled", "disabled");
-      }
-      if (previous) {
-        $('.show_case_table td select').children('option[value='+ previous +']').removeAttr('disabled');
-      }
+    $('.adjustments').on('change',function(){
+      var chosei = Number($(this).val());
+      var sozai = Number($(this).parents('tr').find(".single_item_number").val());
+      var fukusai = Number($(this).parents('tr').find(".sub_item_number").val());
+      var manufacturing_number = sozai + fukusai + chosei
+      console.log(manufacturing_number);
+      $(this).parents('tr').find(".manufacturing_number").val(manufacturing_number);
+      // var koenji = Number($(this).find('.koenji').text());
+      // var total = higasinakano + koenji
+      // $(this).find('.single_item_number').val(total)
     });
   });
 

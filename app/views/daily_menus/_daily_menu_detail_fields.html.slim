@@ -15,20 +15,17 @@ tr.nested-fields.item.daily_menu_detail_tr class=class_name
     td
       = f.collection_select :product_id, @products, :id, :name, {include_blank:true},class:'form-control input_select_product'
     td.bejihan_sozai_flag_td
-  td.higasinakano
+  td
     = @store_daily_menus[9][f.object.product_id][:number] if @store_daily_menus[9][f.object.product_id]
-  td.koenji
+  td
     = @store_daily_menus[19][f.object.product_id][:number] if @store_daily_menus[19][f.object.product_id]
   td
     = f.number_field :for_single_item_number, class: 'form-control single_item_number input_num', min: 0,readonly:true
   td
     = f.number_field :for_sub_item_number, class: 'form-control sub_item_number input_num', min: 0,readonly:true
   td
-    = f.number_field :manufacturing_number, class: 'form-control manufacturing_number',readonly:true
-
-  / td
-    = f.collection_select :serving_plate_id,ServingPlate.all, :id, :name,{include_blank:true},class:'form-control'
-  / td
+    = f.number_field :adjustments, class: 'form-control adjustments'
   td
-
+    = f.number_field :manufacturing_number, class: 'form-control manufacturing_number',readonly:true
+  td
     = link_to_remove_association '削除', f, class: 'btn btn-default'

@@ -42,12 +42,12 @@ class StoreDailyMenu < ApplicationRecord
       if product_num_hash[dmd.product_id].present?
         dmd.for_single_item_number = sozai_num_hash[dmd.product_id]
         dmd.for_sub_item_number = bento_fukusai_num_hash[dmd.product_id]
-        dmd.manufacturing_number = dmd.for_single_item_number + dmd.for_sub_item_number
+        dmd.manufacturing_number = dmd.for_single_item_number + dmd.for_sub_item_number + dmd.adjustments
         update_dmds << dmd
       else
         dmd.for_single_item_number = 0
         dmd.for_sub_item_number = 0
-        dmd.manufacturing_number = 0
+        dmd.manufacturing_number = 0 + dmd.adjustments
         update_dmds << dmd
       end
       total_manufacturing_number += dmd.manufacturing_number

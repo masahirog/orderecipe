@@ -15,7 +15,9 @@ class ProductPdfAll < Prawn::Document
         product = dmd.product
         menus = product.menus
         num = dmd.manufacturing_number
-        header_table(product,num,daily_menu.start_time)
+        chosei = dmd.adjustments
+        store_order_number = StoreDailyMenuDetail.joins(:store_daily_menu).where(:store_daily_menus => {daily_menu_id:daily_menu.id}).where(product_id:product.id).sum(:number)
+        header_table(product,num,chosei,daily_menu.start_time,store_order_number,max_i,i)
         table_content(menus,num)
         start_new_page if i<max_i-1
       end
@@ -36,8 +38,8 @@ class ProductPdfAll < Prawn::Document
 
 
 
-  def header_table(product,num,date)
-    bounding_box([0, 525], :width => 650) do
+  def header_table(product,num,chosei,date,store_order_number,max_i,i)
+    bounding_box([0, 525], :width => 770) do
       if product.carryover_able_flag == true
         kurikoshi = '○'
       else
@@ -48,19 +50,18 @@ class ProductPdfAll < Prawn::Document
       else
         reito = '×'
       end
-      data = [["日付","商品名","製造数",'翌日繰越','冷凍'],
-              ["#{Date.parse(date.to_s).strftime("%Y年%-m月%-d日(#{%w(日 月 火 水 木 金 土)[Date.parse(date.to_s).wday]})")}","#{product.name}","#{num}人分",kurikoshi,reito]]
+      data = [["日付","商品名",'店舗発注合計','製造調整数',"製造数",'翌日繰越','冷凍','発行','ページ'],
+              ["#{Date.parse(date.to_s).strftime("%Y年%-m月%-d日(#{%w(日 月 火 水 木 金 土)[Date.parse(date.to_s).wday]})")}","#{product.name}",store_order_number,chosei,num,kurikoshi,reito,DateTime.now.strftime("%m/%d %H:%M"),"#{i+1}/#{max_i}"]]
       table data, cell_style: { size: 9 } do
       cells.padding = 2
 
       row(0).borders = [:bottom]
-      columns(0..3).borders = []
-      row(0).columns(0..3).borders = [:bottom]
-      row(1).columns(4).borders = [:top]
+      columns(0..-1).borders = []
+      row(0).columns(0..-1).borders = [:bottom]
       cells.border_width = 0.2
       cells.height = 14
       self.header = true
-      self.column_widths = [100,250,100,100,100]
+      self.column_widths = [100,240,70,70,70,50,40,80,40]
       end
     end
   end
