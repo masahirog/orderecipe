@@ -1,19 +1,17 @@
-/ div style='margin-bottom:20px;'
-  = form_tag summary_analyses_path, :method => 'get' do
-    .clearfix
-      label style='float:left;' 店舗選択
-      ul style="list-style:none;float:left;"
-        - @stores.each do |store|
-          li style='float:left;margin-right:10px;'
-            = check_box_tag "stores[#{store.id}]",true,params['stores'][store.id.to_s]
-            = label_tag "stores[#{store.id}]",store.name
-    div
-      label style='float:left;margin-right:10px;' 表示期間
-      = date_field_tag :from, params[:from], class:"form-control float-left",style:'width:200px;float:left;'
-      div style="float:left;padding:8px;" 〜
-      = date_field_tag :to, params[:to], class:"form-control",style:'width:200px;float:left;'
-    = submit_tag "絞り込み" ,class:"btn btn-primary",style:"margin-left:20px;"
 h3 会員一覧
+button type="button" class="pull-right btn btn-sm btn-primary" data-toggle="modal" data-target="#sampleModal" スマレジメンバーUpload
+#sampleModal.modal.fade tabindex="-1"
+  = form_tag upload_smaregi_members_analyses_path, multipart: true do
+    .modal-dialog
+      .modal-content
+        .modal-header
+          h4.modal-title データのアップロード
+        .modal-body
+          = file_field_tag :file,class:'form-control',style:'padding:10px;height:100%;'
+        .modal-footer
+          button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
+          = submit_tag "アップロード",class:'btn btn-primary'
+
 = paginate @smaregi_members
 table.table
   thead

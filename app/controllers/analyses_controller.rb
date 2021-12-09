@@ -1,5 +1,9 @@
 class AnalysesController < AdminController
   before_action :set_analysis, only: %i[ show edit update destroy ]
+  def upload_smaregi_members
+    SmaregiMember.upload_data(params[:file])
+    redirect_to smaregi_members_analyses_path, :notice => "スマレジ会員情報を更新しました"
+  end
   def smaregi_member_group
     @all_stores = Store.all
     if params[:stores]

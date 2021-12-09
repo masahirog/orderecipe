@@ -43,6 +43,7 @@ Rails.application.routes.draw do
   resources :analysis_products
   resources :analyses do
     collection do
+      post :upload_smaregi_members
       get :smaregi_member_group
       get :orders
       get :smaregi_members

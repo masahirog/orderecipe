@@ -164,10 +164,10 @@ class CookingRicesController < AdminController
                 @kurumesi_mazekomi[menu.base_menu_id][mm.material_id][1] += value
                 @kurumesi_mazekomi[menu.base_menu_id][mm.material_id][2] += (mm.amount_used * value).round
               else
-                @kurumesi_mazekomi[menu.base_menu_id][mm.material_id] = ["#{mm.material.name} #{mm.material.roma_name}",value,(mm.amount_used * value).round,mm.material.recipe_unit]
+                @kurumesi_mazekomi[menu.base_menu_id][mm.material_id] = ["#{mm.material.name}",value,(mm.amount_used * value).round,mm.material.recipe_unit]
               end
             else
-              @kurumesi_mazekomi[menu.base_menu_id] = {mm.material_id => ["#{mm.material.name} #{mm.material.roma_name}",value,(mm.amount_used * value).round,mm.material.recipe_unit]}
+              @kurumesi_mazekomi[menu.base_menu_id] = {mm.material_id => ["#{mm.material.name}",value,(mm.amount_used * value).round,mm.material.recipe_unit]}
             end
           end
         end
