@@ -42,14 +42,13 @@ table.table
       th 販売金額
       th 廃棄数
       th 廃棄金額
-      th 14時まで
       th 完売
 
   tbody
     - @store_daily_menu_details.each do |sdmd|
       - ap = @or_ari_analysis_products[sdmd.product_id]
       - bgcolor = "white"
-      - bgcolor = 'lightpink' if sdmd.sold_out_flag == true && ap.loss_number > 0
+      - bgcolor = 'lightpink' if ap.present? && ap.loss_number.present? && sdmd.sold_out_flag == true && ap.loss_number > 0
       tr style="background-color:#{bgcolor}"
         td = link_to sdmd.product.name,store_product_sales_analyses_path(store_id:@analysis.store_id,product_id:sdmd.product_id)
         td = sdmd.product.sell_price
@@ -62,7 +61,6 @@ table.table
         td = ap.total_sales_amount.to_s(:delimited) if ap.present? && ap.total_sales_amount.present?
         td = ap.loss_number if ap.present?
         td = ap.loss_amount.to_s(:delimited) if ap.present? && ap.loss_amount.present?
-        td = ap.early_sales_number if ap.present?
         td = '○' if sdmd.sold_out_flag == true
     tr style="background-color:gainsboro;"
       th Orderecipe 献立外 メニュー
@@ -133,7 +131,9 @@ table.table
       th 販売者
       th 商品ID
       th OR_ID
-      th 商品名
+      th
+        |商品名
+        = link_to '▲', analysis_path(@analysis.id,row_order:'asc')
       th 商品単価
       th 数量
       th 単価値引き計

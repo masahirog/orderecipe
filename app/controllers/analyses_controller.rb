@@ -582,8 +582,6 @@ class AnalysesController < AdminController
   def show
     @or_ari_analysis_products = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @or_nashi_analysis_products = []
-
-
     @shohin_id = params[:shohin_id]
     @hinban = params[:hinban]
     @shohinmei = params[:shohinmei]
@@ -595,6 +593,7 @@ class AnalysesController < AdminController
     @smaregi_trading_histories = @smaregi_trading_histories.where(shohin_id:@shohin_id) if @shohin_id.present?
     @smaregi_trading_histories = @smaregi_trading_histories.where(hinban:@hinban) if @hinban.present?
     @smaregi_trading_histories = @smaregi_trading_histories.where(shohinmei:@shohinmei) if @shohinmei.present?
+    @smaregi_trading_histories = @smaregi_trading_histories.order(shohinmei:'asc') if params[:row_order] == 'asc'
     # @date_counts = @smaregi_trading_histories.group(:date).count()
 
     @smaregi_trading_histories = @smaregi_trading_histories.page(params[:page]).per(50)
