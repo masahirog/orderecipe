@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_05_071333) do
+ActiveRecord::Schema.define(version: 2021_12_10_000410) do
 
   create_table "analyses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "store_id"
@@ -431,6 +431,20 @@ ActiveRecord::Schema.define(version: 2021_11_05_071333) do
     t.integer "sub_serving_plate_id"
     t.integer "container_id"
     t.boolean "freezing_able_flag", default: false, null: false
+  end
+
+  create_table "sales_reports", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "analysis_id", null: false
+    t.integer "store_id", null: false
+    t.date "date", null: false
+    t.integer "staff_id", null: false
+    t.integer "sales_amount"
+    t.integer "sales_count"
+    t.text "good"
+    t.text "issue"
+    t.text "other_memo"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "serving_plates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

@@ -6,6 +6,7 @@ class ApplicationController < ActionController::Base
 
   protect_from_forgery with: :exception
   before_action :stock_alert_materials
+  add_flash_types :success, :info, :warning, :danger
 
   def aaa
 

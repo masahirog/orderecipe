@@ -1,0 +1,31 @@
+= form_for @sales_report do |f|
+  = f.hidden_field :analysis_id
+  .form-group
+    p = "売上：#{@analysis.sales_amount.to_s(:delimited)}円"
+    p = "来店数：#{@analysis.transaction_count}"
+    p = "廃棄金額：#{@analysis.loss_amount.to_s(:delimited)}円"
+    p = "廃棄率：#{((@analysis.loss_amount.to_f/@analysis.sales_amount)*100).round(1)}%"
+
+  .form-group
+    = f.label :date, "日付"
+    p = "#{@sales_report.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@sales_report.date.wday]})")}"
+    = f.hidden_field :date
+  .form-group
+    = f.label :store_id, "店舗"
+    p = Store.find(@sales_report.store_id).name
+    = f.hidden_field :store_id
+  .form-group
+    = f.label :staff_id, "スタッフ名"
+    = f.select :staff_id, options_for_select_from_enum(SalesReport, :staff_id),{}, { class: "form-control", required:true}
+  .form-group
+    = f.label :good, "良かった点"
+    = f.text_area :good, class: "form-control", size: "10x7"
+  .form-group
+    = f.label :issue, "課題点・改善点"
+    = f.text_area :issue, class: "form-control", size: "10x7"
+  .form-group
+    = f.label :other_memo, "その他"
+    = f.text_area :other_memo, class: "form-control", size: "10x7"
+
+  .actions
+  = f.submit '送信する', data: { confirm: "送信してよろしいですか？"} , class:"btn btn-primary"

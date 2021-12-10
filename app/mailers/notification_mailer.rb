@@ -1,6 +1,15 @@
 class NotificationMailer < ActionMailer::Base
   default from: "m.yamashita@jfd.co.jp"
-
+  def sales_report_send(sales_report,analysis)
+    @sales_report = sales_report
+    @analysis = analysis
+    mail(
+      subject: "べじはんフォーム", #メールのタイトル
+      to: 'kitchen@taberu.co.jp',
+    ) do |format|
+      format.text
+    end
+  end
   def send_order(order,vendor)
     @vendor = vendor
     @materials_this_vendor = Material.get_material_this_vendor(order.id,@vendor.id)

@@ -1,0 +1,32 @@
+h1 レポート
+= paginate @sales_reports
+button.btn.btn-primary type="button" data-toggle="modal" data-target="#newReport" 作成
+#newReport.modal.fade tabindex="-1"
+  = form_tag(new_sales_report_path,method: :get) do
+    .modal-dialog
+      .modal-content
+        .modal-header
+          span 選択してください
+        .modal-body
+          .form-group
+            label 日付
+            = date_field_tag :date,{}, required: true, class:"form-control"
+          .form-group
+            label 店舗
+            = select_tag "store_id", options_from_collection_for_select(Store.all,:id,:name),include_blank:'店舗を選択',required: true, class: "form-control"
+        .modal-footer
+          button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
+          = submit_tag "レポート作成する" ,class:"btn btn-primary"
+table.table
+  thead
+    tr
+      th 店舗
+      th 日付
+      th スタッフ名
+
+  tbody
+    - @sales_reports.each do |sales_report|
+      tr
+        td = sales_report.analysis.store.name
+        td = link_to sales_report.date, sales_report_path(sales_report)
+        td = t("enums.sales_report.staff_id.#{sales_report.staff_id}")

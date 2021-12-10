@@ -33,6 +33,7 @@ Rails.application.routes.draw do
       post :hand_reflect
     end
   end
+  resources :sales_reports
   resources :wikis
   resources :containers
   resources :product_sales_potentials do

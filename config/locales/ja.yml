@@ -27,3 +27,11 @@ ja:
         done: 完了
         cancel: キャンセル
         carry_forward: 翌日へ繰越
+    sales_report:
+      staff_id:
+        kamiharako: 上原子
+        t_sato: 佐藤孝
+        komaki: 駒木
+        terada: 寺田
+        furukawa: 布留川
+        ooshimizu: 大清水

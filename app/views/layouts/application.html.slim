@@ -50,6 +50,7 @@ html
                       span.caret
                     ul.dropdown-menu role="menu" style='width:250px;'
                       li = link_to "店舗",stores_path
+                      li = link_to '販売レポート',sales_reports_path
                       li = link_to "お客さまの声",customer_opinions_path
                       li = link_to "Wiki",wikis_path
                       li = link_to 'シフト','/shift'
@@ -122,8 +123,9 @@ html
                       = link_to "ログアウト", destroy_user_session_path, :method => :delete
 
     .all_body
+
       - flash.each do |name, msg|
-        .col-md-12 class="alert alert-success" role="alert"
+        .col-md-12 class="alert alert-#{name}" role="alert"
           = content_tag :div, raw(msg), :id => name
 
       = yield

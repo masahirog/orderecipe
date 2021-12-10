@@ -1,0 +1,18 @@
+今日も1日お疲れさまでした！
+
+店舗名: <%= @analysis.store.name %>
+日付: <%= @analysis.date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[@analysis.date.wday]})") %>
+担当者: <%= t("enums.sales_report.staff_id.#{@sales_report.staff_id}") %>
+売上: <%= @analysis.sales_amount.to_s(:delimited) %> 円
+来店者数: <%= @analysis.transaction_count %> 組
+廃棄金額: <%= @analysis.loss_amount.to_s(:delimited) %> 円
+廃棄率: <%= ((@analysis.loss_amount.to_f/@analysis.sales_amount)*100).round(1) %> %
+
+良かった点:
+<%= @sales_report.good %>
+
+課題に感じた点:
+<%= @sales_report.issue %>
+
+その他共有事項など:
+<%= @sales_report.other_memo %>
