@@ -49,18 +49,20 @@ class MaterialPreparation < Prawn::Document
           base_menu_material_id = mm.base_menu_material_id
           machine = "○" if mm.machine_flag == true
           first = "○" if mm.first_flag == true
+          group = mm.source_group if mm.source_group.present?
+          amount = ActiveSupport::NumberHelper.number_to_rounded((mm.amount_used*num), strip_insignificant_zeros: true)
           if test_hash[base_menu_material_id]
-            test_hash[base_menu_material_id][2] =(test_hash[base_menu_material_id][2] + mm.amount_used * num).round(1)
-            if lang == "1"
-              test_hash[base_menu_material_id][6] += "、#{menu.name}（#{num}）"
-            else
-              test_hash[base_menu_material_id][6] += "、#{menu.roma_name}（#{num}）"
-            end
+            # test_hash[base_menu_material_id][2] =(test_hash[base_menu_material_id][2] + mm.amount_used * num).round(1)
+            # if lang == "1"
+            #   test_hash[base_menu_material_id][6] += "、#{menu.name}（#{num}）"
+            # else
+            #   test_hash[base_menu_material_id][6] += "、#{menu.roma_name}（#{num}）"
+            # end
           else
             if lang == "1"
-              test_hash[base_menu_material_id] = ["#{mm.material.category_before_type_cast}-#{mm.material.name}",mm.material.name,(mm.amount_used*num).round(1),mm.material.recipe_unit,mm.post,mm.preparation,"#{menu.name} (#{num})",first,machine]
+              test_hash[base_menu_material_id] = ["#{mm.material.category_before_type_cast}-#{mm.material.name}",mm.material.name,amount,"#{amount} #{mm.material.recipe_unit}",mm.post,mm.preparation,"#{menu.name} (#{num})",first,machine,group]
             else
-              test_hash[base_menu_material_id] = ["#{mm.material.category_before_type_cast}-#{mm.material.name}",mm.material.roma_name,(mm.amount_used*num).round(1),mm.material.recipe_unit,mm.post,mm.preparation,"#{menu.roma_name} (#{num})",first,machine]
+              test_hash[base_menu_material_id] = ["#{mm.material.category_before_type_cast}-#{mm.material.name}",mm.material.roma_name,amount,mm.material.recipe_unit,mm.post,mm.preparation,"#{menu.roma_name} (#{num})",first,machine,group]
             end
           end
         end
@@ -88,39 +90,33 @@ class MaterialPreparation < Prawn::Document
     menu_materials_arr_cook = menu_materials_arr_cook.sort { |a, b| a[0] <=> b[0]}.sort { |a, b| a[i] <=> b[i]}
     start_page_count = 0
     if mochiba == "0"
-      text "切り出し  #{date}"
-      move_down 2
-      table_content(menu_materials_arr_cut,mochiba,start_page_count)
+      mochiba = '切り出し'
+      table_content(menu_materials_arr_cut,mochiba,start_page_count,date)
       start_page_count = page_count
       start_new_page
-      text "調理場  #{date}"
-      move_down 2
-      table_content(menu_materials_arr_cook,mochiba,start_page_count)
+      mochiba = '調理場'
+      table_content(menu_materials_arr_cook,mochiba,start_page_count,date)
     elsif mochiba == "1"
-      text "切り出し  #{date}"
-      move_down 2
-      table_content(menu_materials_arr_cut,mochiba,start_page_count)
+      mochiba = '切り出し'
+      table_content(menu_materials_arr_cut,mochiba,start_page_count,date)
     elsif mochiba == "2"
-      text "調理場  #{date}"
-      move_down 2
+      mochiba = '調理場'
       table_content(menu_materials_arr_cook,mochiba,start_page_count)
     end
   end
 
-  def table_content(menu_materials_arr,mochiba,start_page_count)
-    move_down 10
-    table line_item_rows(menu_materials_arr) do
+  def table_content(menu_materials_arr,mochiba,start_page_count,date)
+    table line_item_rows(menu_materials_arr,date,mochiba) do
       self.row_colors = ["f5f5f5", "FFFFFF"]
       cells.padding = 6
       cells.size = 8
       cells.border_width = 0.1
       cells.valign = :center
-      column(1).align = :right
-      columns(4).size = 7
-      columns(5).size = 6
+      column(3).align = :right
+      columns(7).size = 6
       row(0).column(2).align = :left
       self.header = true
-      self.column_widths = [140,20,30,60,30,60,250,230]
+      self.column_widths = [140,20,20,60,60,20,230,230]
     end
     page_count.times do |i|
       unless i < start_page_count
@@ -132,10 +128,10 @@ class MaterialPreparation < Prawn::Document
     end
   end
 
-  def line_item_rows(menu_materials_arr)
-    data = [['食材名','先','機械',{:content => "分量", :colspan => 2},{:content => "仕込み", :colspan => 2},'メニュー名']]
+  def line_item_rows(menu_materials_arr,date,mochiba)
+    data = [["#{mochiba}  #{date}",'F','M',"分量", {:content => "仕込み", :colspan => 3},'メニュー名']]
     menu_materials_arr.each do |mma|
-        data << [mma[1],mma[7],mma[8],mma[2],mma[3],mma[4],mma[5],mma[6]]
+        data << [mma[1],mma[7],mma[8],mma[3],mma[4],mma[9],mma[5],mma[6]]
     end
     data
   end

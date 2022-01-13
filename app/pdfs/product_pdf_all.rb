@@ -113,17 +113,18 @@ class ProductPdfAll < Prawn::Document
         else
           cook_memo = ''
         end
+        amount = ActiveSupport::NumberHelper.number_to_rounded((mm.amount_used*num), strip_insignificant_zeros: true, :delimiter => ',')
         if i == 0
           data << [{:content => "#{menu.name}", :rowspan => u, size: cook_the_day_before_size},{:content => "#{cook_memo}", :rowspan => u, size: cook_the_day_before_size},'□',
             {:content => "#{mm.material.name}", size: cook_the_day_before_size },
-            {:content => "#{((mm.amount_used * num.to_i).round(1)).to_s(:delimited)} #{mm.material.recipe_unit}", size: cook_the_day_before_size },
+            {:content => "#{amount} #{mm.material.recipe_unit}", size: cook_the_day_before_size },
             {:content => "#{mm.post}", size: cook_the_day_before_size },
             {:content => "#{mm.source_group}", size: cook_the_day_before_size },
             {:content => "#{mm.preparation}", size: cook_the_day_before_size },
             {:content => "#{mm.amount_used} #{mm.material.recipe_unit}", size: cook_the_day_before_size }]
         else
           data << ['□',{:content => "#{mm.material.name}", size: cook_the_day_before_size },
-            {:content => "#{((mm.amount_used * num.to_i).round(1)).to_s(:delimited)} #{mm.material.recipe_unit}", size: cook_the_day_before_size },
+            {:content => "#{amount} #{mm.material.recipe_unit}", size: cook_the_day_before_size },
             {:content => "#{mm.post}", size: cook_the_day_before_size },
             {:content => "#{mm.source_group}", size: cook_the_day_before_size },
             {:content => "#{mm.preparation}", size: cook_the_day_before_size },
