@@ -50,7 +50,7 @@ class MaterialPreparation < Prawn::Document
           machine = "○" if mm.machine_flag == true
           first = "○" if mm.first_flag == true
           group = mm.source_group if mm.source_group.present?
-          amount = ActiveSupport::NumberHelper.number_to_rounded((mm.amount_used*num), strip_insignificant_zeros: true)
+          amount = ActiveSupport::NumberHelper.number_to_rounded((mm.amount_used*num), strip_insignificant_zeros: true, :delimiter => ',')
           if test_hash[base_menu_material_id]
             # test_hash[base_menu_material_id][2] =(test_hash[base_menu_material_id][2] + mm.amount_used * num).round(1)
             # if lang == "1"
