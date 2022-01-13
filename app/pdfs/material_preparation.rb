@@ -101,7 +101,7 @@ class MaterialPreparation < Prawn::Document
       table_content(menu_materials_arr_cut,mochiba,start_page_count,date)
     elsif mochiba == "2"
       mochiba = '調理場'
-      table_content(menu_materials_arr_cook,mochiba,start_page_count)
+      table_content(menu_materials_arr_cook,mochiba,start_page_count,date)
     end
   end
 
