@@ -445,6 +445,7 @@ ActiveRecord::Schema.define(version: 2021_12_10_000410) do
     t.text "other_memo"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "cash_error"
   end
 
   create_table "serving_plates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -666,23 +667,6 @@ ActiveRecord::Schema.define(version: 2021_12_10_000410) do
     t.text "memo"
     t.string "delivery_date"
     t.integer "status", default: 0, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "wiki_items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "wiki_id"
-    t.integer "row_order"
-    t.string "title"
-    t.text "content"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "wikis", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.string "name"
-    t.text "summary"
-    t.integer "row_order"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

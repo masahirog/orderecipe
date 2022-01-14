@@ -14,7 +14,7 @@ class SalesReportsController < ApplicationController
     store_id = params[:store_id]
     @analysis = Analysis.find_by(date:date,store_id:store_id)
     if @analysis.present?
-      @sales_report = SalesReport.new(date:date,store_id:store_id,analysis_id:@analysis.id)
+      @sales_report = SalesReport.new(date:date,store_id:store_id,analysis_id:@analysis.id,cash_error:0)
     else
       redirect_to sales_reports_path,danger: "日付を確認するか、先にスマレジの情報をアップロードしてください。"
     end
@@ -65,6 +65,6 @@ class SalesReportsController < ApplicationController
     end
 
     def sales_report_params
-      params.require(:sales_report).permit(:store_id,:date,:staff_id,:sales_amount,:sales_count,:good,:issue,:other_memo,:analysis_id)
+      params.require(:sales_report).permit(:store_id,:date,:staff_id,:sales_amount,:sales_count,:good,:issue,:other_memo,:analysis_id,:cash_error)
     end
 end

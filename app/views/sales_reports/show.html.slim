@@ -1,6 +1,13 @@
 .form-group
   = link_to "一覧へ戻る",sales_reports_path
 .form-group
+  label 日付：
+  p = "#{@sales_report.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@sales_report.date.wday]})")}"
+.form-group
+  label 店舗：
+  p = Store.find(@sales_report.store_id).name
+
+.form-group
   label 売上：
   p = "#{@analysis.sales_amount.to_s(:delimited)}円"
   label 来店数：
@@ -9,13 +16,9 @@
   p = "#{@analysis.loss_amount.to_s(:delimited)}円"
   label 廃棄率：
   p = "#{((@analysis.loss_amount.to_f/@analysis.sales_amount)*100).round(1)}%"
+  label 現金誤差：
+  p = "#{@sales_report.cash_error} 円"
 
-.form-group
-  label 日付：
-  p = "#{@sales_report.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@sales_report.date.wday]})")}"
-.form-group
-  label 店舗：
-  p = Store.find(@sales_report.store_id).name
 .form-group
   label スタッフ名：
   p = t("enums.sales_report.staff_id.#{@sales_report.staff_id}")
