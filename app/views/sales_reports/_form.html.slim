@@ -17,7 +17,7 @@
     p = "廃棄率：#{((@analysis.loss_amount.to_f/@analysis.sales_amount)*100).round(1)}%"
   .form-group
     = f.label :cash_error, "現金誤差"
-    = f.number_field :cash_error,class:'form-control'
+    = f.number_field :cash_error,class:'form-control', required: true
 
   .form-group
     = f.label :staff_id, "スタッフ名"

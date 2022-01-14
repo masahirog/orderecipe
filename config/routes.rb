@@ -34,7 +34,6 @@ Rails.application.routes.draw do
     end
   end
   resources :sales_reports
-  resources :wikis
   resources :containers
   resources :product_sales_potentials do
     collection do
@@ -68,7 +67,6 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :wiki_items
   resources :kurumesi_orders do
     collection do
       get :sources
