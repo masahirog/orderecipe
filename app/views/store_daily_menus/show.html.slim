@@ -58,7 +58,9 @@ table.table.table-list
       th 大皿盛り
       th 1人前盛り
       th 販売価格
-      th 盛り皿
+      th
+        |盛り皿
+        span data-html="true" style='margin-left:10px;' class="glyphicon glyphicon-eye-open" aria-hidden="true"  data-toggle="tooltip" data-placement="bottom" title="#{@pack_used_amount}"
       th 容器
       th 合計数
       th 副菜分
@@ -172,3 +174,20 @@ css:
       border: none;
       display: block;
   }
+sass:
+  .tooltip
+    width: 400px
+    font-size: 14px
+
+  .tooltip-inner
+    max-width: 1000px
+
+  .tooltip .tooltip-inner
+    background-color: white
+    opacity: 1.0
+    border: 2px solid black
+    color: black
+    filter: alpha(opacity=100)
+  .tooltip.in
+    opacity: 1 !important
+    filter: alpha(opacity=100)

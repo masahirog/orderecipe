@@ -81,6 +81,19 @@ class StoreDailyMenusController < ApplicationController
     @yesterday = StoreDailyMenu.find_by(store_id:store_id,start_time:@date-1)
     @store_daily_menu_details = @store_daily_menu.store_daily_menu_details.order("row_order ASC").includes(product:[:container,:product_ozara_serving_informations])
     @after_store_daily_menus = StoreDailyMenu.where('start_time >= ?',date).where(store_id:store_id)
+    pack_number = StoreDailyMenuDetail.where(store_daily_menu_id:params[:id]).joins(:product).group('products.container_id').sum(:number)
+    @pack_used_amount = "<table class='table' style='text-align:left;'><thead><tr><th>容器名</th><th>個数</th></tr></thead><tbody>"
+    pack_number.each do |pn|
+      if pn[0].present?
+        name = Container.find(pn[0]).name
+        number = pn[1]
+      else
+        name = '不明'
+        number = pn[1]
+      end
+      @pack_used_amount += "<tr><td>#{name}</td><td>#{number}</td></tr>"
+    end
+    @pack_used_amount += "</tbody></table>"
     respond_to do |format|
       format.html
       format.csv do
