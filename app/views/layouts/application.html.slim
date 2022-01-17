@@ -39,7 +39,11 @@ html
                     ul.dropdown-menu role="menu" style='width:250px;'
                       li = link_to "べじはん献立",daily_menus_path
                       li = link_to "くるめしオーダー",kurumesi_orders_path(start_date:Date.today)
-                      li = link_to 'リマインダー', store_tasks_path(store_id:29)
+                      li.clearfix
+                        = link_to '改善リスト', kaizen_lists_path, style:'float:left;'
+                        span style='float:left;margin-top:3px;' [
+                        span style='float:left;margin-top:3px;color:red;' = "　#{@kaizen_list_counts}　"
+                        span style='float:left;margin-top:3px;' ]
                       li = link_to "くるめし領収書",receipt_kurumesi_orders_path,target:'_blank'
                       li = link_to "くるめし請求書",'https://docs.google.com/spreadsheets/d/1BBs1RL8ojynO-MW14mH49ejwaTP7pWeHuvfjs-aX_4Y/edit#gid=737319184',target:'_blank'
 

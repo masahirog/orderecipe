@@ -208,4 +208,5 @@ Rails.application.routes.draw do
       get :stock
     end
   end
+  resources :kaizen_lists
 end

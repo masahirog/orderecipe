@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_12_10_000410) do
+ActiveRecord::Schema.define(version: 2022_01_17_144309) do
 
   create_table "analyses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "store_id"
@@ -165,6 +165,20 @@ ActiveRecord::Schema.define(version: 2021_12_10_000410) do
     t.float "copper"
     t.float "folic_acid"
     t.float "vitamin_d"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "kaizen_lists", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "product_id"
+    t.string "author"
+    t.string "kaizen_staff"
+    t.text "kaizen_point"
+    t.integer "priority", default: 0, null: false
+    t.integer "status", default: 0, null: false
+    t.text "kaizen_result"
+    t.boolean "or_change_flag", default: false, null: false
+    t.boolean "share_flag", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

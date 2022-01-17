@@ -111,7 +111,7 @@ class AnalysesController < AdminController
   end
   def product_sales
     @stores = Store.all
-    @product = Product.find(params[:product_id])
+
     if params[:stores]
       checked_store_ids = params['stores'].keys
     else
@@ -130,38 +130,19 @@ class AnalysesController < AdminController
     if params[:from]
       @from = params[:from].to_date
     else
-      @from = @to - 30
+      @from = @to - 180
       params[:from] = @from
     end
     analyses = Analysis.where(date:@from..@to).where(store_id:checked_store_ids)
-    gon.time_zones = []
-    gon.visitors_time_zone = []
-    gon.average_visitors_time_zone = []
-    ruikei = 0
-    @dates = []
-    @hours = []
-    all_smaregi_trading_histories = SmaregiTradingHistory.where(analysis_id:analyses.ids,hinban:@product.id)
-    @dates_visitors = all_smaregi_trading_histories.select(:torihiki_id).distinct.group(:date).count
-    @date_time_zorn_visitors = all_smaregi_trading_histories.select(:torihiki_id).distinct.group(:date).group("time_format(time, '%H')").count
-    @date_time_zorn_visitors.keys.map do |date_hour|
-      @dates << date_hour[0]
-      @hours << date_hour[1]
+    @analysis_products = AnalysisProduct.where(analysis_id:analyses.ids,product_id:params[:product_id])
+    @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    @analysis_products.each do |ap|
+      store_id = ap.analysis.store_id
+      date = ap.analysis.date
+      @hash[store_id][date]['early'] = ap.early_sales_number
+      @hash[store_id][date]['total'] = ap.sales_number
     end
-    @dates.uniq!
-    @hours.uniq!
-    @time_zone_visitors = all_smaregi_trading_histories.select(:torihiki_id).distinct.group("time_format(time, '%H')").count
-    @time_zone_visitors.each do |tz|
-      gon.time_zones << tz[0]
-      gon.visitors_time_zone << tz[1]
-      if tz[1].present?
-        ruikei += tz[1]
-        gon.average_visitors_time_zone << ((ruikei.to_f/@time_zone_visitors.values.sum)*100).round(1)
-      else
-        gon.average_visitors_time_zone << (ruikei.to_f/@dates.count)
-        # gon.average_visitors_time_zone << ''
-      end
-    end
-
+    @dates = @analysis_products.map{|ap|ap.analysis.date}.uniq.sort
   end
   def visitors_time_zone
     @stores = Store.all
@@ -572,15 +553,18 @@ class AnalysesController < AdminController
       @from = @to - 30
       params[:from] = @from
     end
-    @date_analyses = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    analyses = Analysis.where(date:@from..@to).where(store_id:checked_store_ids)
-    analyses.each do |analysis|
-      @date_analyses[analysis.date][analysis.store_id] = analysis
+    @period = (@to - @from).to_i
+    @analyses = Analysis.includes([:store,analysis_products:[:product]]).where(date:@from..@to).where(store_id:checked_store_ids).order(:date)
+    @date_sales_amount = @analyses.group(:date).sum(:sales_amount)
+    @date_loss_amount = @analyses.group(:date).sum(:loss_amount)
+    @date_transaction_count = @analyses.group(:date).sum(:transaction_count)
+    @date_sales_number = @analyses.group(:date).sum(:transaction_count)
+    respond_to do |format|
+      format.html
+      format.csv do
+        send_data render_to_string, filename: "べじはん販売データ.csv", type: :csv
+      end
     end
-    @date_sales_amount = analyses.group(:date).sum(:sales_amount)
-    @date_loss_amount = analyses.group(:date).sum(:loss_amount)
-    @date_transaction_count = analyses.group(:date).sum(:transaction_count)
-    @date_sales_number = analyses.group(:date).sum(:transaction_count)
   end
 
   def show

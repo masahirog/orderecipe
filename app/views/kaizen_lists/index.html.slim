@@ -1,0 +1,31 @@
+h1 改善リスト
+= link_to '改善追加', new_kaizen_list_path,class:'btn btn-primary'
+table.table
+  thead
+    tr
+      th 作成日
+      th 作者
+      th ステータス
+      th 優先度
+      th 商品名
+      th.col-md-3 内容
+      th 担当
+      th.col-md-3 改善案
+
+  tbody
+    - @kaizen_lists.each do |kaizen_list|
+      - if kaizen_list.status =='done' || kaizen_list.status =='cancel'
+        - color = 'silver'
+      - else
+        - color = 'white'
+      tr style="background-color:#{color};"
+        td = link_to kaizen_list.created_at.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[kaizen_list.created_at.wday]})"),edit_kaizen_list_path(kaizen_list)
+        td = kaizen_list.author
+        td = t("enums.kaizen_list.status.#{kaizen_list.status}")
+        td = kaizen_list.priority
+        td
+          - if kaizen_list.product_id.present?
+            = link_to kaizen_list.product.name,kaizen_list.product
+        td = kaizen_list.kaizen_point
+        td = kaizen_list.kaizen_staff
+        td = kaizen_list.kaizen_result

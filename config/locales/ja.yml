@@ -36,3 +36,10 @@ ja:
         furukawa: 布留川
         ooshimizu: 大清水
         nishino: 西野
+    kaizen_list:
+      status:
+        yet: 未着手
+        do: 取組中
+        done: 完了
+        skip: スキップ
+        cancel: キャンセル

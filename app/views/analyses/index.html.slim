@@ -17,13 +17,15 @@ h3 販売データ
     = date_field_tag :to, params[:to], class:"form-control",style:'width:200px;float:left;'
   .kensaku.col-md-1
     = submit_tag "絞り込み" ,class:"btn btn-primary"
-
+- if @period < 93
+  = link_to "CSV",analyses_path(from:params[:from],to:params[:to], :format => :csv),class:"btn btn-primary",style:'float:right;'
+- else
+  p style='float:right;' CSVをダウンロードする場合は、期間を3ヶ月以内に指定してください
 
 table.table
   thead
     tr
       th 日付
-      th 店舗数
       th 来客組数
       th 売上
       th 廃棄
@@ -35,7 +37,6 @@ table.table
     - (@from..@to).each do |date|
       tr
         td = link_to date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})"),date_analyses_path(date:date)
-        td = @date_analyses[date].length if @date_analyses[date].present?
         td = @date_transaction_count[date] if @date_transaction_count[date]
         td = @date_sales_amount[date].to_s(:delimited) if @date_sales_amount[date]
         td = @date_loss_amount[date].to_s(:delimited) if @date_loss_amount[date]
