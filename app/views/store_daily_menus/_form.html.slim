@@ -26,7 +26,7 @@
       .col-md-3 style='float:left;'
         = f.label :weather,"天気　", class: 'text-right'
         = link_to 'tenki.jp','https://tenki.jp/forecast/3/16/4410/13114/',target:'_blank'
-        = f.select :weather, options_for_select_from_enum(StoreDailyMenu, :weather),{}, { class: "form-control", required:true}
+        = f.select :weather, options_for_select_from_enum(StoreDailyMenu, :weather),{include_blank:true}, { class: "form-control"}
       .col-md-3 style='float:left;'
         = f.label :max_temperature,"最高気温", class: 'text-right'
         = f.select :max_temperature,(-10..40),{include_blank:true}, class: 'col-md-10 form-control'

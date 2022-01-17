@@ -20,7 +20,7 @@ class StoreDailyMenusController < ApplicationController
     sozai_ids = Product.where(id:@uniq_product_ids).where(bejihan_sozai_flag:true).ids
     @sozai_total_sales_potential = product_sales_potentials.where(product_id:sozai_ids).sum(:sales_potential)
     min_date = @store_daily_menus.map{|sdm|sdm.start_time}.min
-    @analyses = Analysis.where(store_id:@store_id).where('date > ?',min_date-35)
+    @analyses = Analysis.where(store_id:@store_id).where('date > ?',min_date-60)
     @date_sales_sozai_number = []
     @weekday_sales_sozai_number = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @analyses.map do |analysis|
@@ -32,7 +32,8 @@ class StoreDailyMenusController < ApplicationController
         @weekday_sales_sozai_number[analysis.date.wday]['total_num'] = analysis.total_number_sales_sozai
         @weekday_sales_sozai_number[analysis.date.wday]['count'] = 1
       end
-      @weekday_sales_sozai_number[analysis.date.wday]['rireki'][analysis.date] = analysis.total_number_sales_sozai
+      weather = StoreDailyMenu.find_by(start_time:analysis.date,store_id:analysis.store_id).weather
+      @weekday_sales_sozai_number[analysis.date.wday]['rireki'][analysis.date] = [analysis.total_number_sales_sozai,weather]
     end
     @date_sales_sozai_number = @date_sales_sozai_number.to_h
   end

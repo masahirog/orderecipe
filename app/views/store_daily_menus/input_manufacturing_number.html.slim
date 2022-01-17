@@ -10,14 +10,22 @@ h3 = "#{@store.name}店 献立組み"
         th 惣菜
         th ポテンシャル
         - @store_daily_menus.each do |sdm|
-          th = sdm.start_time.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[sdm.start_time.wday]})")
+          - holiday = HolidayJapan.name(sdm.start_time)
+          - if holiday.present?
+            th style='background-color:pink;text-align:center;'
+              = sdm.start_time.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[sdm.start_time.wday]})")
+              br
+              span style='font-size:10px;' = holiday
+          - else
+            th style='text-align:center;'
+              = sdm.start_time.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[sdm.start_time.wday]})")
     tbody#store_daily_menu_details_area
       tr
         td.text-right colspan=2 直近の曜日別 平均惣菜販売点数
         - @store_daily_menus.each do |sdm|
           td
-            - tbody = @weekday_sales_sozai_number[sdm.start_time.wday]['rireki'].map{|date_num|"<tr><td>#{date_num[0].strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[date_num[0].wday]})")}</td><td>#{date_num[1]}</td></tr>"}.join
-            button type="button" class="btn btn-secondary" data-container="body" data-html="true" data-toggle="popover" data-placement="left" data-content="<table class='table'><thead><tr><th>日付</th><th>販売数</th></tr></thead><tbody>#{tbody}</tbody></table>"
+            - tbody = @weekday_sales_sozai_number[sdm.start_time.wday]['rireki'].map{|date_num_weather|"<tr><td>#{date_num_weather[0].strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[date_num_weather[0].wday]})")}</td><td>#{t("enums.store_daily_menu.weather.#{date_num_weather[1][1]}")}</td><td>#{date_num_weather[1][0]}</td></tr>"}.join
+            button type="button" class="btn btn-secondary" data-container="body" data-html="true" data-toggle="popover" data-placement="left" data-content="<table class='table'><thead><tr><th>日付</th><th>天気</th><th>販売数</th></tr></thead><tbody>#{tbody}</tbody></table>"
               = (@weekday_sales_sozai_number[sdm.start_time.wday]['total_num']/@weekday_sales_sozai_number[sdm.start_time.wday]['count'])
 
       tr

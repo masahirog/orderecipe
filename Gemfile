@@ -49,6 +49,7 @@ gem 'font-awesome-sass'
 gem 'redcarpet', '~> 2.3.0'
 gem 'coderay'
 gem 'chartkick'
+gem 'holiday_japan'
 
 
 group :development, :test do

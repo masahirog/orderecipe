@@ -1278,6 +1278,7 @@ GEM
       signet (~> 0.14)
     heapy (0.2.0)
       thor
+    holiday_japan (1.4.4)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
     httpclient (2.8.3)
@@ -1555,6 +1556,7 @@ DEPENDENCIES
   font-awesome-sass
   gon
   google_drive
+  holiday_japan
   jbuilder (~> 2.5)
   jquery-rails
   jquery-turbolinks
