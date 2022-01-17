@@ -11,6 +11,9 @@ class CreateKaizenLists < ActiveRecord::Migration[5.2]
       t.boolean :or_change_flag,default:0,null:false
       t.boolean :share_flag,default:0,null:false
       t.timestamps
+      t.string :before_image
+      t.string :after_image
+
     end
   end
 end

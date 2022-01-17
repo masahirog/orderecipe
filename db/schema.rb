@@ -181,6 +181,8 @@ ActiveRecord::Schema.define(version: 2022_01_17_144309) do
     t.boolean "share_flag", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "before_image"
+    t.string "after_image"
   end
 
   create_table "kurumesi_mails", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

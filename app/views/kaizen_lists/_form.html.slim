@@ -9,6 +9,16 @@
     = f.label :kaizen_point, "内容"
     = f.text_area :kaizen_point, class:"form-control", size: "20x7"
   .form-group
+    = f.label :before_image, "改善前写真"
+    = f.file_field :before_image
+    = f.hidden_field :before_image_cache
+    .form-group
+      - if @kaizen_list.before_image?
+        = image_tag @kaizen_list.before_image.to_s,class:"img-responsive",style:'max-height:450px;'
+        div
+          = f.label :remove_before_image,"削除する"
+          = f.check_box :remove_before_image
+  .form-group
     = f.label :priority, "優先度　低 1〜7 高"
     = f.select :priority,[1,2,3,4,5,6,7],{}, class:"form-control"
   .form-group
@@ -19,9 +29,18 @@
     = f.text_field :kaizen_staff, class:"form-control"
 
   .form-group
-    = f.label :kaizen_result, "結果"
+    = f.label :kaizen_result, "改善結果"
     = f.text_area :kaizen_result, class:"form-control", size: "20x7"
-
+  .form-group
+    = f.label :after_image, "改善後写真"
+    = f.file_field :after_image
+    = f.hidden_field :after_image_cache
+    .form-group
+      - if @kaizen_list.after_image?
+        = image_tag @kaizen_list.after_image.to_s,class:"img-responsive",style:'max-height:450px;'
+        div
+          = f.label :remove_after_image,"削除する"
+          = f.check_box :remove_after_image
   .form-group
     = f.label :or_change_flag, "オーダーレシピ反映"
     = f.select :or_change_flag,[['完了',true],['未完了',false]],{}, class:"form-control"
