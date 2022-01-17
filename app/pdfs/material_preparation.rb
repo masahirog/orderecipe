@@ -50,17 +50,18 @@ class MaterialPreparation < Prawn::Document
           machine = "○" if mm.machine_flag == true
           first = "○" if mm.first_flag == true
           group = mm.source_group if mm.source_group.present?
-          amount = ActiveSupport::NumberHelper.number_to_rounded((mm.amount_used*num), strip_insignificant_zeros: true, :delimiter => ',')
+          amount = mm.amount_used*num
+          # amount = ActiveSupport::NumberHelper.number_to_rounded((mm.amount_used*num), strip_insignificant_zeros: true, :delimiter => ',')
           if test_hash[base_menu_material_id]
-            # test_hash[base_menu_material_id][2] =(test_hash[base_menu_material_id][2] + mm.amount_used * num).round(1)
-            # if lang == "1"
-            #   test_hash[base_menu_material_id][6] += "、#{menu.name}（#{num}）"
-            # else
-            #   test_hash[base_menu_material_id][6] += "、#{menu.roma_name}（#{num}）"
-            # end
+            test_hash[base_menu_material_id][2] = test_hash[base_menu_material_id][2] + mm.amount_used * num
+            if lang == "1"
+              test_hash[base_menu_material_id][6] += "、#{menu.name}（#{num}）"
+            else
+              test_hash[base_menu_material_id][6] += "、#{menu.roma_name}（#{num}）"
+            end
           else
             if lang == "1"
-              test_hash[base_menu_material_id] = ["#{mm.material.category_before_type_cast}-#{mm.material.name}",mm.material.name,amount,"#{amount} #{mm.material.recipe_unit}",mm.post,mm.preparation,"#{menu.name} (#{num})",first,machine,group]
+              test_hash[base_menu_material_id] = ["#{mm.material.category_before_type_cast}-#{mm.material.name}",mm.material.name,amount,mm.material.recipe_unit,mm.post,mm.preparation,"#{menu.name} (#{num})",first,machine,group]
             else
               test_hash[base_menu_material_id] = ["#{mm.material.category_before_type_cast}-#{mm.material.name}",mm.material.roma_name,amount,mm.material.recipe_unit,mm.post,mm.preparation,"#{menu.roma_name} (#{num})",first,machine,group]
             end
@@ -131,7 +132,8 @@ class MaterialPreparation < Prawn::Document
   def line_item_rows(menu_materials_arr,date,mochiba)
     data = [["#{mochiba}  #{date}",'F','M',"分量", {:content => "仕込み", :colspan => 3},'メニュー名']]
     menu_materials_arr.each do |mma|
-        data << [mma[1],mma[7],mma[8],mma[3],mma[4],mma[9],mma[5],mma[6]]
+      amount = ActiveSupport::NumberHelper.number_to_rounded(mma[2], strip_insignificant_zeros: true, :delimiter => ',', precision: 1)
+      data << [mma[1],mma[7],mma[8],"#{amount} #{mma[3]}",mma[4],mma[9],mma[5],mma[6]]
     end
     data
   end
