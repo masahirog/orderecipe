@@ -3,14 +3,14 @@ h1 改善リスト
 table.table
   thead
     tr
-      th 作成日
-      th 作者
-      th ステータス
-      th 優先度
-      th 商品名
-      th.col-md-3 内容
+      th style='width:140px;' 作成日
+      th style='width:100px;' 作者
+      th style='width:100px;' ステータス
+      th style='width:100px;' 優先度
+      th style='width:200px;' 商品名
+      th.col-md-3 改善内容
       th 担当
-      th.col-md-3 改善案
+      th.col-md-3 改善結果
 
   tbody
     - @kaizen_lists.each do |kaizen_list|
@@ -26,6 +26,6 @@ table.table
         td
           - if kaizen_list.product_id.present?
             = link_to kaizen_list.product.name,kaizen_list.product
-        td = kaizen_list.kaizen_point
+        td = text_url_to_link(simple_format(h(kaizen_list.kaizen_point))).html_safe
         td = kaizen_list.kaizen_staff
-        td = kaizen_list.kaizen_result
+        td = text_url_to_link(simple_format(h(kaizen_list.kaizen_result))).html_safe
