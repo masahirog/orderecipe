@@ -55,6 +55,7 @@ class KaizenListsController < ApplicationController
     end
 
     def kaizen_list_params
-      params.require(:kaizen_list).permit(:id,:product_id,:author,:kaizen_staff,:kaizen_point,:priority,:status,:kaizen_result,:or_change_flag,:share_flag,:after_image,:before_image)
+      params.require(:kaizen_list).permit(:id,:product_id,:author,:kaizen_staff,:kaizen_point,:priority,:status,:kaizen_result,:or_change_flag,:share_flag,:after_image,:before_image,
+      :before_image_cache,:remove_before_image,:after_image_cache,:remove_after_image)
     end
 end
