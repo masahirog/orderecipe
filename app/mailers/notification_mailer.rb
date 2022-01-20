@@ -48,6 +48,16 @@ class NotificationMailer < ActionMailer::Base
       format.text
     end
   end
+  def kaizen_list_create_send_mail(kaizen_list)
+    @kaizen_list = kaizen_list
+    mail(
+      subject: "kaizen_list_create",
+      to: 'kitchen@taberu.co.jp',
+
+    ) do |format|
+      format.text
+    end
+  end
 
   def send_error_notice(recieved_datetime,body)
     @recieved_datetime = recieved_datetime.strftime("%Y/%m/%d/%H:%M")
