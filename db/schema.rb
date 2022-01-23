@@ -261,6 +261,7 @@ ActiveRecord::Schema.define(version: 2022_01_17_144309) do
     t.boolean "need_inventory_flag", default: false, null: false
     t.string "image"
     t.string "short_name"
+    t.integer "storage_place", default: 0, null: false
   end
 
   create_table "menu_last_processes", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

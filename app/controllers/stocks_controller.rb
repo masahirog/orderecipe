@@ -1,4 +1,18 @@
 class StocksController < AdminController
+  def inventory_sheet
+    date = params[:date]
+    respond_to do |format|
+      format.html
+      format.pdf do
+        pdf = InventorySheetPdf.new(date)
+        send_data pdf.render,
+        filename:    "#{date}_棚卸し.pdf",
+        type:        "application/pdf",
+        disposition: "inline"
+      end
+    end
+  end
+
   def mobile_inventory
     vendor_ids = params[:vendor_id]
     if params[:date].present?
@@ -191,21 +205,12 @@ class StocksController < AdminController
 
   def inventory
     if params[:date]
-      @date = DateTime.parse(params[:date])
+      to = DateTime.parse(params[:date])
     else
-      @date = Date.today
+      to = Date.today
     end
-    if params[:category] == '食材'
-      category = ['食材（肉・魚）','食材（その他）']
-    else
-      category = params[:category]
-    end
-    @stocks = Stock.where(date:@date).uniq(&:material_id)
-    materials = Material.all
-    materials = materials.where(name:params[:name]) if params[:name].present?
-    materials = materials.where(category:category) if params[:category].present?
-    ids = materials.ids
-    stocks = Stock.where(material_id:ids).where("date <= ?", @date).order(date: :desc)
+    from = to - 60
+    stocks = Stock.where("date >= ?", from).where("date <= ?", to).order(date: :desc)
     @stocks_h = []
     stocks.uniq(&:material_id).each do |stock|
       if stock.end_day_stock == 0 && stock.inventory_flag == true
@@ -230,7 +235,7 @@ class StocksController < AdminController
         @stock_hash ={}
         @materials.each do |material|
           stocks_arr = stocks.where(material_id:material.id).first(5)
-          aaa(material,@date,stocks_arr)
+          aaa(material,to,stocks_arr)
         end
       end
       format.csv do

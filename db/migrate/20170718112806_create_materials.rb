@@ -26,6 +26,7 @@ class CreateMaterials < ActiveRecord::Migration[4.2]
       t.boolean :need_inventory_flag,:null => false,:default => false
       t.string :image
       t.string :short_name
+      t.integer :storage_place,:null => false,:default => 0
     end
   end
 end
