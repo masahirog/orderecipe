@@ -6,7 +6,7 @@ div
   = form_tag upload_inventory_csv_stocks_path, multipart: true do
     = file_field_tag :file,class:'form-control',style:'padding:10px;height:100%;width:300px;float:left;'
     = submit_tag "アップロード",class:'btn btn-primary',style:'float:left;margin:10px;'
-  = link_to "棚卸し表印刷",inventory_sheet_stocks_path(date:Date.today, :format => :pdf),class:'btn btn-primary pull-right',target:"_blank"
+  = link_to "棚卸し表印刷",inventory_stocks_path(date:Date.today, :format => :pdf),class:'btn btn-primary pull-right',target:"_blank"
 table.table
   thead
     tr

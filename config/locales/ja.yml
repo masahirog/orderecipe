@@ -1,5 +1,19 @@
 ja:
   enums:
+    material:
+      category:
+        meat: 食材（肉・魚）
+        vege: 食材（野菜）
+        other_food: 食材（その他）
+        packed: 包材
+        other_packd: その他備品・消耗品
+      storage_place:
+        un_saved: 未登録
+        normal: 常温
+        refrigerate: 冷蔵
+        freezing: 冷凍
+        pack: 包材
+        equipment: 備品
     store_daily_menu:
       weather:
         sunny: 晴れ

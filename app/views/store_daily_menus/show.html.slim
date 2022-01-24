@@ -33,7 +33,7 @@ h2 style='float:left;margin-left:10px;'
 
 div style='float:left;padding:15px 20px 15px 40px;'
   label 天気
-  p = @store_daily_menu.weather
+  p = t("enums.store_daily_menu.weather.#{@store_daily_menu.weather}")
 div style='float:left;padding:15px 20px;'
   label 最高気温
   p = @store_daily_menu.max_temperature

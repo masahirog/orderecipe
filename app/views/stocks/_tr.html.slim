@@ -2,6 +2,10 @@ tr class="inventory_tr_#{material.id}" style="background-color:#{bc}"
   td
     = link_to material.name,edit_material_path(material),target:'_blank',class:'stock-tooltip not_alert'
   td
+    = material.short_name
+  td
+    = t("enums.material.storage_place.#{material.storage_place}")
+  td
     = material.vendor.company_name
   td.rireki
     - if @stock_hash[material.id].present?
@@ -9,13 +13,13 @@ tr class="inventory_tr_#{material.id}" style="background-color:#{bc}"
         span.rireki_span data-html="true" style='color:blue;margin-left:10px;' class="glyphicon glyphicon-new-window" aria-hidden="true"  data-toggle="tooltip" data-original-title="<table class='table tooltip-table'><thead><tr><th style='text-align: center'>日付</th><th style='text-align: center'>納品</th><th style='text-align: center'>使用</th><th style='text-align: center'>在庫</th><th></th></tr></thead><tbody>#{@stock_hash[material.id].flatten.join('')}</tbody></table>"
 
   td.text-right
-    = link_to "#{@stocks_h[material.id][0].floor(1)} #{material.accounting_unit}｜#{@stocks_h[material.id][2]}",history_stocks_path(material_id:material.id),target:'_blank',class:'stock-tooltip not_alert'
+    = "#{@stocks_h[material.id][0].floor(1)} #{material.accounting_unit}｜#{@stocks_h[material.id][2]}"
   td.text-right
     = "#{@stocks_h[material.id][1].round.to_s(:delimited)} 円"
   td
     = @stocks_h[material.id][3]
 
-  - stock = Stock.find_by(material_id:material.id,date:@date)
+  - stock = Stock.find_by(material_id:material.id,date:@to)
   - if stock.present?
     td style='width:170px;'
       = form_with(model: stock, data: {remote: true}) do |f|
@@ -29,7 +33,7 @@ tr class="inventory_tr_#{material.id}" style="background-color:#{bc}"
     td.end_day_stock_td style='width:170px;'
       = form_with(model: Stock.new, data: {remote: true}) do |f|
         = f.hidden_field :material_id,value:material.id
-        = f.hidden_field :date,value:@date
+        = f.hidden_field :date,value:@to
         = f.hidden_field :inventory_flag,value:true
         = f.number_field :end_day_stock_accounting_unit,value:'',class:'input_inventory_stock form-control',style:'width:120px;float:left;margin-right:10px;', :step => 0.01
         span.accounting_unit_span style='float:left;padding-top:10px;' = material.accounting_unit

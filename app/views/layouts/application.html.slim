@@ -83,7 +83,7 @@ html
                       li = link_to "肉類棚卸し",mobile_inventory_stocks_path(date:Date.today,vendor_id:[121,131,509,441,529]),target:'_blank'
                       li = link_to "くるめし備品手配","https://docs.google.com/spreadsheets/d/12VRdyriEK7nqzdMFcdHqPPcs52n_CsZ20nGfbS0X5GI/edit#gid=104376609",target:'_blank'
                       li
-                        a.clearfix href="/stocks/inventory?date=#{Date.today}"
+                        a.clearfix href="/stocks/inventory?to=#{Date.today}"
                           span style='float:left;' 棚卸し
                           span class="badge badge-danger" style='background-color:red;float:left;'
                             = @stock_alert_materials

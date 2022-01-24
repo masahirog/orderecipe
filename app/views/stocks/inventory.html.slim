@@ -1,34 +1,65 @@
 .clearfix.form-group
   = form_tag inventory_stocks_path,class:'invento_material_search', :method => 'get' do
-    = text_field_tag :name, params[:name], class:"form-control material_name_search",placeholder:'食材・資材名',style:'width:200px;float:left;margin-right:20px;', autocomplete: "off"
-    = select_tag :category, options_for_select(Material.categories.keys.to_a,params[:category]), include_blank:true, class:"form-control",style:'width:200px;float:left;margin-right:20px;'
-    = select_tag :order, options_for_select(['金額','業者','棚卸し'],params[:order]), class: "form-control",style:'width:200px;float:left;margin-right:20px;'
+    label style="float:left;margin-right:20px;margin-top:5px;" 日付
+    = date_field_tag :to, params[:to], class: "form-control",style:'width:200px;float:left;margin-right:20px;'
+    label style="float:left;margin-right:20px;margin-top:5px;" 棚卸し分類
+    = select_tag :storage_place, options_for_select(options_for_select_from_enum(Material, :storage_place),params[:storage_place]),include_blank:true, class: "form-control",style:'width:200px;float:left;margin-right:20px;'
+    label style="float:left;margin-right:20px;margin-top:5px;" 並び替え
+    = select_tag :order, options_for_select(['棚卸分類','五十音'],params[:order]),include_blank:true, class: "form-control",style:'width:200px;float:left;margin-right:20px;'
     = submit_tag "検索" ,class:"btn btn-primary",style:'float:left;'
-  = link_to "CSV", inventory_stocks_path(category:params[:category],order:params[:order],date:@date,format:'csv'), class: "btn btn-default",style:'float:right;'
+
+  = form_tag inventory_stocks_path(:format => :csv), :method => 'get' do
+    = hidden_field_tag :to, params[:to]
+    = hidden_field_tag :storage_place,params[:storage_place]
+    = hidden_field_tag :order,params[:order]
+    = submit_tag "CSV" ,class:"btn btn-default",style:'float:right;'
+
+  = form_tag inventory_stocks_path(:format => :pdf), :method => 'get' do
+    = hidden_field_tag :to, params[:to]
+    = hidden_field_tag :storage_place,params[:storage_place]
+    = hidden_field_tag :order,params[:order]
+    = submit_tag "PDF" ,class:"btn btn-primary",style:'float:right;'
 table.table
   thead
     tr
-      th 食材
+      th 食材名
+      th ひらがな
+      th 棚卸分類
       th 業者名
       th 変更履歴
       th.text-right 直近の在庫変動
       th.text-right 価格
       th 直近棚卸し実行日
       th
-        = "#{@date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@date.wday]})")}在庫"
+        = "#{@to.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@to.wday]})")}在庫"
       th
   tbody
     - @materials.each do |material|
       - if @stocks_h[material.id][3].present?
-        - if (@date - @stocks_h[material.id][3]).to_i < 32
+        - if (@to - @stocks_h[material.id][3]).to_i < 32
           - bc = ''
-        - elsif (@date - @stocks_h[material.id][3]).to_i < 63
+        - elsif (@to - @stocks_h[material.id][3]).to_i < 63
           - bc = '#FFFFCC'
         - else
           - bc = 'pink'
       - else
         - bc = 'pink'
       = render partial: "tr", locals: { material:material,bc:bc }
+
+javascript:
+  $(function() {
+    $('.input_inventory_stock').keypress( function ( e ) {
+      var code = e.which ? e.which : e.keyCode;
+      if ( code == 13 ) {
+        var tr = $(this).parents('tr')
+        var index = $('tr').index(tr);
+        console.log(index);
+        $('tr').eq(index + 1).find('.input_inventory_stock').focus().select();
+
+      }
+    });
+  });
+
 
 sass:
   .stock-tooltip

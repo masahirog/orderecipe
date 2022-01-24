@@ -16,7 +16,7 @@ class StocksController < AdminController
   def mobile_inventory
     vendor_ids = params[:vendor_id]
     if params[:date].present?
-      @date = Date.strptime(params[:date])
+      @date = Date.parse(params[:date])
     else
       @date = Date.today
     end
@@ -99,7 +99,7 @@ class StocksController < AdminController
   end
 
   def create
-    @date = Date.today
+    @to = Date.parse(params[:stock][:date])
     @mobile = false
     @mobile = true if params[:stock][:mobile_flag].present?
     update_stocks = []
@@ -112,7 +112,7 @@ class StocksController < AdminController
       @stock.end_day_stock = params[:stock][:end_day_stock_accounting_unit].to_f*@material.accounting_unit_quantity
       respond_to do |format|
         if @stock.save
-          material_update(@date)
+          material_update(@to)
           @class_name = ".inventory_tr_#{@material.id}"
           Stock.change_stock(update_stocks,@material.id,@stock.date,@stock.end_day_stock)
           Stock.import update_stocks, on_duplicate_key_update:[:end_day_stock,:start_day_stock,:inventory_flag] if update_stocks.present?
@@ -137,7 +137,7 @@ class StocksController < AdminController
     update_stocks = []
     @stock_hash = {}
     @stock = Stock.find(params[:id])
-    @date = @stock.date
+    @to = @stock.date
     @material = @stock.material
     end_day_stock_accounting_unit = params[:stock][:end_day_stock_accounting_unit].to_f
     new_end_day_stock = end_day_stock_accounting_unit*@stock.material.accounting_unit_quantity
@@ -145,7 +145,7 @@ class StocksController < AdminController
     inventory_flag = params[:stock][:inventory_flag]
     respond_to do |format|
       if @stock.update(end_day_stock:new_end_day_stock,inventory_flag:inventory_flag,start_day_stock:new_start_day_stock)
-        material_update(@date)
+        material_update(@to)
         Stock.change_stock(update_stocks,@material.id,@stock.date,new_end_day_stock)
         Stock.import update_stocks, on_duplicate_key_update:[:end_day_stock,:start_day_stock,:inventory_flag] if update_stocks.present?
         @class_name = ".inventory_tr_#{@material.id}"
@@ -204,45 +204,53 @@ class StocksController < AdminController
   end
 
   def inventory
-    if params[:date]
-      to = DateTime.parse(params[:date])
+    if params[:to]
+      @to = Date.parse(params[:to])
     else
-      to = Date.today
+      @to = Date.today
     end
-    from = to - 60
-    stocks = Stock.where("date >= ?", from).where("date <= ?", to).order(date: :desc)
+    from = @to - 60
+    if params[:storage_place].present?
+      material_ids = Material.where(storage_place:params[:storage_place]).ids
+      stocks = Stock.where("date >= ?", from).where("date <= ?", @to).where(material_id:material_ids).order(date: :desc)
+    else
+      stocks = Stock.where("date >= ?", from).where("date <= ?", @to).order(date: :desc)
+    end
     @stocks_h = []
     stocks.uniq(&:material_id).each do |stock|
       if stock.end_day_stock == 0 && stock.inventory_flag == true
       else
-        @stocks_h << [stock.material_id,[(stock.end_day_stock/stock.material.accounting_unit_quantity),(stock.end_day_stock * stock.material.cost_price),stock.date,stock.material.last_inventory_date,stock.material.vendor_id]]
+        @stocks_h << [stock.material_id,[(stock.end_day_stock/stock.material.accounting_unit_quantity),(stock.end_day_stock * stock.material.cost_price),stock.date,stock.material.last_inventory_date,stock.material.vendor_id,stock.material.short_name,stock.material.storage_place,stock.material_id]]
       end
-      # if stock.end_day_stock > 0
-      #   @stocks_h << [stock.material_id,[(stock.end_day_stock/stock.material.accounting_unit_quantity),(stock.end_day_stock * stock.material.cost_price),stock.date,stock.material.last_inventory_date,stock.material.vendor_id]]
-      # end
     end
-    if params[:order] == '業者'
-      @stocks_h = Hash[ @stocks_h.to_h.sort_by{ |_, v| -v[4] } ]
-    elsif params[:order] == '棚卸し'
-      @stocks_h = Hash[ @stocks_h.to_h.sort_by{ |_, v| -v[3].to_s } ]
+    if params[:order] == '棚卸分類'
+      @stocks_h = Hash[ @stocks_h.to_h.sort_by{ |_, v| [-v[6],-v[4]] } ]
+    elsif params[:order] == '五十音'
+      @stocks_h = Hash[ @stocks_h.to_h.sort_by{ |_, v| [-v[5],-v[4]] } ]
     else
-      @stocks_h = Hash[ @stocks_h.to_h.sort_by{ |_, v| -v[1] } ]
+      @stocks_h = Hash[ @stocks_h.to_h.sort_by{ |_, v| [v[7],-v[4]] } ]
     end
+    material_ids = @stocks_h.keys
     respond_to do |format|
       format.html do
-        material_ids = @stocks_h.keys
         @materials = Material.where(id:material_ids).order("field(id, #{material_ids.join(',')})").page(params[:page]).per(50)
         @stock_hash ={}
         @materials.each do |material|
           stocks_arr = stocks.where(material_id:material.id).first(5)
-          aaa(material,to,stocks_arr)
+          aaa(material,@to,stocks_arr)
         end
       end
       format.csv do
-        material_ids = @stocks_h.keys
         @materials = Material.where(id:material_ids).order("field(id, #{material_ids.join(',')})")
-        @stock_hash ={}
         send_data render_to_string, filename: "#{Time.now.strftime('%Y%m%d')}_inventory.csv", type: :csv
+      end
+      format.pdf do
+        @materials = Material.where(id:material_ids).order("field(id, #{material_ids.join(',')})")
+        pdf = InventoryPdf.new(@to,@materials,@stocks_h)
+        send_data pdf.render,
+        filename:    "#{@to}_棚卸し.pdf",
+        type:        "application/pdf",
+        disposition: "inline"
       end
     end
   end
@@ -327,8 +335,9 @@ class StocksController < AdminController
     @stocks_info_hash[@material.id] = [stock.date,stock.end_day_stock,stock.date,stock.material.last_inventory_date]
 
     @stocks_h = []
+
     stocks.uniq(&:material_id).each do |stock|
-      if stock.end_day_stock > 0
+      if stock.end_day_stock >= 0
         @stocks_h << [stock.material_id,[(stock.end_day_stock/stock.material.accounting_unit_quantity),(stock.end_day_stock * stock.material.cost_price),stock.date,stock.material.last_inventory_date]]
       end
     end
