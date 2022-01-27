@@ -218,9 +218,13 @@ class StocksController < AdminController
     end
     @stocks_h = []
     stocks.uniq(&:material_id).each do |stock|
-      if stock.end_day_stock == 0 && stock.inventory_flag == true
-      else
+      if stock.date == @to
         @stocks_h << [stock.material_id,[(stock.end_day_stock/stock.material.accounting_unit_quantity),(stock.end_day_stock * stock.material.cost_price),stock.date,stock.material.last_inventory_date,stock.material.vendor_id,stock.material.short_name,stock.material.storage_place,stock.material_id]]
+      else
+        if stock.end_day_stock == 0 && stock.inventory_flag == true
+        else
+          @stocks_h << [stock.material_id,[(stock.end_day_stock/stock.material.accounting_unit_quantity),(stock.end_day_stock * stock.material.cost_price),stock.date,stock.material.last_inventory_date,stock.material.vendor_id,stock.material.short_name,stock.material.storage_place,stock.material_id]]
+        end
       end
     end
     if params[:order] == '棚卸分類'
