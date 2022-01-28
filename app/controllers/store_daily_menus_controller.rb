@@ -190,7 +190,7 @@ class StoreDailyMenusController < ApplicationController
     end
     @store_daily_menu_details = StoreDailyMenuDetail.includes(:store_daily_menu,:product).joins(:store_daily_menu).where(:store_daily_menus => {start_time:dates,store_id:store_id})
     @store_daily_menu_details.each do |sdmd|
-      @hash[sdmd.store_daily_menu.start_time][sdmd.product_id]['before_number'] = sdmd.number
+      @hash[sdmd.store_daily_menu.start_time][sdmd.product_id]['before_number'] = sdmd.bento_fukusai_number
       @hash[sdmd.store_daily_menu.start_time][sdmd.product_id]['product_name'] = sdmd.product.name
       @hash[sdmd.store_daily_menu.start_time][sdmd.product_id]['sdmd_id'] = sdmd.id
     end
