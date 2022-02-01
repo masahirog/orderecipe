@@ -1,5 +1,15 @@
 class AnalysesController < AdminController
   before_action :set_analysis, only: %i[ show edit update destroy ]
+  def smaregi_member_csv
+    smaregi_members = SmaregiMember.all
+    @sths = SmaregiTradingHistory.where(torihiki_meisaikubun:1,torihikimeisai_id:1).where.not(kaiin_id:nil)
+    respond_to do |format|
+      format.html
+      format.csv do
+        send_data render_to_string, filename: "kaiin.csv", type: :csv
+      end
+    end
+  end
   def upload_smaregi_members
     SmaregiMember.upload_data(params[:file])
     redirect_to smaregi_members_analyses_path, :notice => "スマレジ会員情報を更新しました"
