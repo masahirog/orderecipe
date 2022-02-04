@@ -47,13 +47,13 @@ class StocksController < AdminController
     expendables_amount = 0
     stocks.each do |stock|
       material_price = (stock.end_day_stock * stock.material.cost_price)
-      if stock.material.category == '食材（肉・魚）'||stock.material.category == '食材（その他）'
+      if stock.material.category == 'meat'||stock.material.category == 'other_food'
         foods_amount += material_price
         total_amount += material_price
-      elsif stock.material.category == '包材・商品備品'
+      elsif stock.material.category == 'packed'
         equipments_amount += material_price
         total_amount += material_price
-      elsif stock.material.category == 'その他備品・消耗品'
+      elsif stock.material.category == 'other_packd'
         expendables_amount += material_price
         total_amount += material_price
       end
