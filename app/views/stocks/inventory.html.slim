@@ -3,9 +3,11 @@
     label style="float:left;margin-right:20px;margin-top:5px;" 日付
     = date_field_tag :to, params[:to], class: "form-control",style:'width:200px;float:left;margin-right:20px;'
     label style="float:left;margin-right:20px;margin-top:5px;" 棚卸し分類
-    = select_tag :storage_place, options_for_select(options_for_select_from_enum(Material, :storage_place),params[:storage_place]),include_blank:true, class: "form-control",style:'width:200px;float:left;margin-right:20px;'
+    = select_tag :category, options_for_select(Material.pluck(:category).uniq,params[:category]), include_blank: true,class: "form-control",style:'width:200px;float:left;margin-right:20px;'
+    label style="float:left;margin-right:20px;margin-top:5px;" 棚卸し分類
+    = select_tag :storage_place, options_for_select(options_for_select_from_enum(Material, :storage_place),params[:storage_place]),include_blank:true,class: "form-control",style:'width:200px;float:left;margin-right:20px;'
     label style="float:left;margin-right:20px;margin-top:5px;" 並び替え
-    = select_tag :order, options_for_select(['棚卸分類','五十音'],params[:order]),include_blank:true, class: "form-control",style:'width:200px;float:left;margin-right:20px;'
+    = select_tag :order, options_for_select(['棚卸分類','五十音','金額'],params[:order]),include_blank:true, class: "form-control",style:'width:200px;float:left;margin-right:20px;'
     = submit_tag "検索" ,class:"btn btn-primary",style:'float:left;'
 
   = form_tag inventory_stocks_path(:format => :csv), :method => 'get' do

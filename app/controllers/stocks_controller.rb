@@ -210,12 +210,11 @@ class StocksController < AdminController
       @to = Date.today
     end
     from = @to - 60
-    if params[:storage_place].present?
-      material_ids = Material.where(storage_place:params[:storage_place]).ids
-      stocks = Stock.where("date >= ?", from).where("date <= ?", @to).where(material_id:material_ids).order(date: :desc)
-    else
-      stocks = Stock.where("date >= ?", from).where("date <= ?", @to).order(date: :desc)
-    end
+    materials = Material.all
+    materials = materials.where(storage_place:params[:storage_place]) if params[:storage_place].present?
+    materials = materials.where(category:params[:category]) if params[:category].present?
+    material_ids = materials.map{|material|material.id}
+    stocks = Stock.where("date >= ?", from).where("date <= ?", @to).where(material_id:material_ids).order(date: :desc)
     @stocks_h = []
     stocks.uniq(&:material_id).each do |stock|
       if stock.date == @to
@@ -231,6 +230,8 @@ class StocksController < AdminController
       @stocks_h = Hash[ @stocks_h.to_h.sort_by{ |_, v| [-v[6],-v[4]] } ]
     elsif params[:order] == '五十音'
       @stocks_h = Hash[ @stocks_h.to_h.sort_by{ |_, v| [-v[5],-v[4]] } ]
+    elsif params[:order] == '金額'
+      @stocks_h = Hash[ @stocks_h.to_h.sort_by{ |_, v| [-v[1],-v[4]] } ]
     else
       @stocks_h = Hash[ @stocks_h.to_h.sort_by{ |_, v| [v[7],-v[4]] } ]
     end
