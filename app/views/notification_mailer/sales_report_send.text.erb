@@ -7,7 +7,10 @@
 廃棄率: <%= ((@analysis.loss_amount.to_f/@analysis.sales_amount)*100).round(1) %> %
 現金誤差: <%= @sales_report.cash_error %> 円
 
-良かった点:
+惣菜の売れ行き：<%= @sozai_ureyuki %>
+弁当の売れ行き：<%= @bento_ureyuki %>
+
+親切にできた点（自分・周りのスタッフ）:
 <%= @sales_report.good %>
 
 課題に感じた点:

@@ -23,24 +23,26 @@ button type="button" class="btn btn-default" data-toggle="modal" data-target="#s
           button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
           = submit_tag "登録",class:'btn btn-primary'
 
-h2 style='float:left;' = link_to "#{@store_daily_menu.store.name}店 ", store_daily_menus_path(store_id:@store_daily_menu.store_id),class:''
-h2 style='float:left;margin-left:10px;'
-  - if @yesterday
-    = link_to "＜",@yesterday
-  = @store_daily_menu.start_time.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@store_daily_menu.start_time.wday]})")
-  - if @tommoroww
-    = link_to "＞",@tommoroww
+.clearfix
+  h2 style='float:left;' = link_to "#{@store_daily_menu.store.name}店 ", store_daily_menus_path(store_id:@store_daily_menu.store_id),class:''
+  h2 style='float:left;margin-left:10px;'
+    - if @yesterday
+      = link_to "＜",@yesterday
+    = @store_daily_menu.start_time.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@store_daily_menu.start_time.wday]})")
+    - if @tommoroww
+      = link_to "＞",@tommoroww
 
-div style='float:left;padding:15px 20px 15px 40px;'
-  label 天気
-  p = t("enums.store_daily_menu.weather.#{@store_daily_menu.weather}")
-div style='float:left;padding:15px 20px;'
-  label 最高気温
-  p = @store_daily_menu.max_temperature
-div style='float:left;padding:15px 20px;'
-  label 最低気温
-  p = @store_daily_menu.min_temperature
-.form-group.col-md-12.clearfix style='padding-top:10px;'
+  div style='float:left;padding:15px 20px 15px 40px;'
+    label 天気
+    - if @store_daily_menu.weather.present?
+      p = t("enums.store_daily_menu.weather.#{@store_daily_menu.weather}")
+  div style='float:left;padding:15px 20px;'
+    label 最高気温
+    p = @store_daily_menu.max_temperature
+  div style='float:left;padding:15px 20px;'
+    label 最低気温
+    p = @store_daily_menu.min_temperature
+.form-group.col-md-12.clearfix
   - @store_daily_menu.store_daily_menu_photos.each do |sdmp|
     div style='float:left;width:350px;'
       = link_to sdmp.image.url, "data-lightbox" => sdmp.image.url do
@@ -55,7 +57,7 @@ table.table.table-list
       th
         |メニュー名
         = link_to "編集", edit_store_daily_menu_path(@store_daily_menu),class:'btn btn-primary btn-sm',style:'margin-left:20px;'
-      th 大皿盛り
+      th = link_to "大皿", ikkatsu_store_daily_menus_path(id:@store_daily_menu.id),class:'btn btn-success btn-sm'
       th 1人前盛り
       th 販売価格
       th
@@ -151,15 +153,6 @@ table.table.table-list
           = '◯' if sdmd.sold_out_flag == true
 
 css:
-  .show_case_table td {
-    border: solid 1px silver;
-    width:100px;
-    height:40px;
-    padding:5px;
-  }
-  .show_case_table {
-    border-collapse: collapse;
-  }
   a.p:hover {
     position: relative;
     text-decoration: none;

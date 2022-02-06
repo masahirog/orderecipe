@@ -72,6 +72,10 @@ class StoreDailyMenusController < ApplicationController
       end
     end
   end
+  def ikkatsu
+    @store_daily_menu = StoreDailyMenu.find(params[:id])
+    @store_daily_menu_details = @store_daily_menu.store_daily_menu_details.order("row_order ASC").includes(product:[:container,:product_ozara_serving_informations])
+  end
 
   def show
     @store_daily_menu = StoreDailyMenu.find(params[:id])

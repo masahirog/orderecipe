@@ -1,4 +1,4 @@
-= form_for @sales_report do |f|
+= form_with model: @sales_report do |f|
   = f.hidden_field :analysis_id
   .form-group
     = f.label :date, "日付"
@@ -16,6 +16,13 @@
     p = "廃棄金額：#{@analysis.loss_amount.to_s(:delimited)}円"
     p = "廃棄率：#{((@analysis.loss_amount.to_f/@analysis.sales_amount)*100).round(1)}%"
   .form-group
+    = f.label :sozai_ureyuki, "お惣菜の売れ行き"
+    = f.select :sozai_ureyuki,['もっと売れた（機会ロスが多かった）','在庫もお客様の数も良い感じだった','在庫量が多かった（値引き割合が多かった）'],{include_blank:true},class:'form-control', required: true
+  .form-group
+    = f.label :bento_ureyuki, "弁当の売れ行き"
+    = f.select :bento_ureyuki,['もっと売れた（機会ロスが多かった）','在庫もお客様の数も良い感じだった','在庫量が多かった（値引き割合が多かった）'],{include_blank:true},class:'form-control', required: true
+
+  .form-group
     = f.label :cash_error, "現金誤差"
     = f.number_field :cash_error,class:'form-control', required: true
 
@@ -23,7 +30,7 @@
     = f.label :staff_id, "スタッフ名"
     = f.select :staff_id, options_for_select_from_enum(SalesReport, :staff_id),{}, { class: "form-control", required:true}
   .form-group
-    = f.label :good, "良かった点"
+    = f.label :good, "親切にできた点（自分・周りのスタッフ）"
     = f.text_area :good, class: "form-control", size: "10x7"
   .form-group
     = f.label :issue, "課題点・改善点"
