@@ -493,7 +493,10 @@ class AnalysesController < AdminController
     @late_sales_number = all_smaregi_trading_histories.where(time:'19:00:00'..'23:59:59').group(:hinban).sum(:suryo)
 
     @product_datas.each do |pd|
-      pd[1]['sales_rate'] = ((pd[1]['sales_number'].to_f / pd[1]['actual_inventory'])*100).round
+      if pd[1]['actual_inventory'] == 0
+      else
+        pd[1]['sales_rate'] = ((pd[1]['sales_number'].to_f / pd[1]['actual_inventory'])*100).round
+      end
     end
 
     if params[:sort]
