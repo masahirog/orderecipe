@@ -13,7 +13,7 @@ class ShiftsController < ApplicationController
     Shift.includes([:shift_pattern,:fix_shift_pattern]).where(date:@one_month).each do |shift|
       if shift.fix_shift_pattern_id.present?
         date = shift.date
-        store_id = shift.fix_shift_pattern.store_id
+        store_id = shift.store_id
         section = shift.fix_shift_pattern.section
         if section == 2
           if @hash[store_id][date][0].present?
@@ -66,6 +66,10 @@ class ShiftsController < ApplicationController
       before_fix_shift_pattern_id = @shift.fix_shift_pattern_id_was
       @before_fix_shift_pattern = FixShiftPattern.find(before_fix_shift_pattern_id)
     end
+    if @shift.store_id_was.present?
+      @before_store_id = @shift.store_id_was
+    end
+
     respond_to do |format|
       if @shift.update(shift_params)
         format.html { redirect_to @shift, notice: "Shift was successfully updated." }
@@ -91,6 +95,6 @@ class ShiftsController < ApplicationController
     end
 
     def shift_params
-      params.require(:shift).permit(:date,:staff_id,:shift_pattern_id,:fix_shift_pattern_id,:memo)
+      params.require(:shift).permit(:date,:staff_id,:shift_pattern_id,:fix_shift_pattern_id,:memo,:store_id)
     end
 end

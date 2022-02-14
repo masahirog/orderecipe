@@ -136,7 +136,6 @@ ActiveRecord::Schema.define(version: 2022_02_14_101059) do
   end
 
   create_table "fix_shift_patterns", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "store_id"
     t.integer "section"
     t.string "pattern_name"
     t.datetime "created_at", null: false
@@ -491,6 +490,7 @@ ActiveRecord::Schema.define(version: 2022_02_14_101059) do
 
   create_table "shifts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.date "date"
+    t.integer "store_id"
     t.integer "staff_id"
     t.integer "shift_pattern_id"
     t.integer "fix_shift_pattern_id"
