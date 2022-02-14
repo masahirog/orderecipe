@@ -8,16 +8,13 @@ class ApplicationController < ActionController::Base
   before_action :stock_alert_materials
   add_flash_types :success, :info, :warning, :danger
 
-  def aaa
-
-  end
   def after_sign_in_path_for(resource)
     if current_user.id == 1
       root_url
     elsif  current_user.id == 39
       mobile_inventory_stocks_path
     elsif  current_user.id == 49
-      '/shift'
+      '/shift_check'
     end
   end
   def render_500(e)
@@ -25,7 +22,7 @@ class ApplicationController < ActionController::Base
     render template: 'errors/error_500', status: 500
   end
 
-  def shift
+  def shift_check
     @months = [['1月',1],['2月',2],['3月',3],['4月',4],['5月',5],['6月',6],
               ['7月',7],['8月',8],['9月',9],['10月',10],['11月',11],['12月',12]]
     if params[:month]
@@ -54,7 +51,7 @@ class ApplicationController < ActionController::Base
         end
       end
     else
-      redirect_to '/shift', notice: "#{month}月のシフトが存在しません。" and return
+      redirect_to '/shift_check', notice: "#{month}月のシフトが存在しません。" and return
     end
   end
 

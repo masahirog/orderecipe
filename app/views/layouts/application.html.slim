@@ -56,7 +56,9 @@ html
                       li = link_to "店舗",stores_path
                       li = link_to '販売レポート',sales_reports_path
                       li = link_to "お客さまの声",customer_opinions_path
-                      li = link_to 'シフト','/shift'
+                      li = link_to '旧シフト','/shift_check'
+                      li = link_to '3月シフト',shifts_path(date:'2022/03/01')
+                      li = link_to 'スタッフ',staffs_path
 
                 ul.nav.navbar-nav
                   li.dropdown
@@ -116,7 +118,7 @@ html
               - else
                 ul.nav.navbar-nav
                   li.menu_li = link_to "店舗",stores_path
-                  li.menu_li = link_to 'シフト','/shift'
+                  li.menu_li = link_to 'シフト','/shift_check'
                   li.menu_li = link_to "お客さまの声",customer_opinions_path
 
                 #navbarEexample.collapse.navbar-collapse.navbar-right

@@ -1,0 +1,20 @@
+h1 Listing staffs
+
+table.table
+  thead
+    tr
+      th スタッフ名
+      th 店舗
+      th
+
+  tbody
+    - @staffs.each do |staff|
+      tr
+        td = link_to staff.name, edit_staff_path(staff)
+        td = staff.store.name
+        td
+        / td = link_to 'Destroy', staff, data: { confirm: 'Are you sure?' }, method: :delete
+
+br
+
+= link_to 'New Staff', new_staff_path

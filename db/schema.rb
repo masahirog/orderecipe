@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_17_144309) do
+ActiveRecord::Schema.define(version: 2022_02_14_101059) do
 
   create_table "analyses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "store_id"
@@ -131,6 +131,14 @@ ActiveRecord::Schema.define(version: 2022_01_17_144309) do
     t.integer "status", default: 0
     t.string "subject"
     t.datetime "recieved"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "fix_shift_patterns", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "store_id"
+    t.integer "section"
+    t.string "pattern_name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -475,6 +483,22 @@ ActiveRecord::Schema.define(version: 2022_01_17_144309) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "shift_patterns", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "pattern_name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "shifts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.date "date"
+    t.integer "staff_id"
+    t.integer "shift_pattern_id"
+    t.integer "fix_shift_pattern_id"
+    t.text "memo"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "smaregi_members", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "kaiin_id", null: false
     t.string "kaiin_code", null: false
@@ -544,6 +568,14 @@ ActiveRecord::Schema.define(version: 2022_01_17_144309) do
     t.integer "uchikeshi_torihiki_id"
     t.integer "uchikeshi_kubun"
     t.bigint "receipt_number"
+  end
+
+  create_table "staffs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "store_id"
+    t.string "name"
+    t.text "memo"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "stocks", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
