@@ -1,20 +1,40 @@
-h1 Listing staffs
+h1 一覧
+= link_to '新規登録', new_staff_path,class:'btn btn-primary'
 
-table.table
-  thead
-    tr
-      th スタッフ名
-      th 店舗
-      th
-
-  tbody
-    - @staffs.each do |staff|
+= form_tag(row_order_update_staffs_path,method: :post) do
+  table.table
+    thead
       tr
-        td = link_to staff.name, edit_staff_path(staff)
-        td = staff.store.name
-        td
-        / td = link_to 'Destroy', staff, data: { confirm: 'Are you sure?' }, method: :delete
-
-br
-
-= link_to 'New Staff', new_staff_path
+        th スタッフ名
+        th 雇用形態
+        th 店舗
+        th 状態
+        th
+          |並び順　
+          = submit_tag "登録する" ,class:"btn btn-success btn-sm"
+    tbody.tbody-sortable
+      - @staffs.each do |staff|
+        tr.staff_tr
+          td = link_to staff.name, edit_staff_path(staff)
+          td = staff.employment_status
+          td = staff.store.name
+          td = staff.status
+          td = number_field_tag "row[#{staff.id}]",{},class:'input_row_order form-control',style:'width:60px;',readonly:true
+javascript:
+  $(function () {
+    $(".staff_tr").each(function(i){
+      $(this).find('.input_row_order').val(i)
+    });
+    $(".tbody-sortable").sortable({
+      update: function(){
+        $(".staff_tr").each(function(i){
+          $(this).find('.input_row_order').val(i)
+        });
+      }
+    });
+  });
+  // function reset_row_order({
+  //   $(".staff_tr").each(function(i){
+  //     $(this).find('.input_row_order').val(i)
+  //   });
+  // });

@@ -571,11 +571,14 @@ ActiveRecord::Schema.define(version: 2022_02_14_101059) do
   end
 
   create_table "staffs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "store_id"
-    t.string "name"
+    t.integer "store_id", null: false
+    t.string "name", null: false
     t.text "memo"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "employment_status", default: 0, null: false
+    t.integer "row", default: 0, null: false
+    t.integer "status", default: 0, null: false
   end
 
   create_table "stocks", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

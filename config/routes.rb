@@ -24,7 +24,11 @@ Rails.application.routes.draw do
   # get '/sell_reports' => 'application#sell_reports'
   get '/shift_check' => 'application#shift_check'
   resources :shifts
-  resources :staffs
+  resources :staffs do
+    collection do
+      post :row_order_update
+    end
+  end
   resources :tasks do
     collection do
       get :store

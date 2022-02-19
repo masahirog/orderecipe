@@ -1,8 +1,17 @@
 class StaffsController < ApplicationController
   before_action :set_staff, only: %i[ show edit update destroy ]
-
+  def row_order_update
+    staffs_arr = []
+    staffs = Staff.all
+    staffs.each do |staff|
+      staff.row = params['row'][staff.id.to_s].to_i
+      staffs_arr << staff
+    end
+    Staff.import staffs_arr, :on_duplicate_key_update => [:row]
+    redirect_to staffs_path,notice:'並び更新しました。'
+  end
   def index
-    @staffs = Staff.all
+    @staffs = Staff.includes([:store]).all.order(row:'asc')
   end
 
   def show
@@ -20,7 +29,7 @@ class StaffsController < ApplicationController
 
     respond_to do |format|
       if @staff.save
-        format.html { redirect_to @staff, notice: "Staff was successfully created." }
+        format.html { redirect_to staffs_path, notice: "Staff was successfully created." }
         format.json { render :show, status: :created, location: @staff }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -32,7 +41,7 @@ class StaffsController < ApplicationController
   def update
     respond_to do |format|
       if @staff.update(staff_params)
-        format.html { redirect_to @staff, notice: "Staff was successfully updated." }
+        format.html { redirect_to staffs_path, notice: "Staff was successfully updated." }
         format.json { render :show, status: :ok, location: @staff }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -55,6 +64,6 @@ class StaffsController < ApplicationController
     end
 
     def staff_params
-      params.require(:staff).permit(:store_id,:name,:memo)
+      params.require(:staff).permit(:store_id,:name,:memo,:employment_status,:row,:status)
     end
 end
