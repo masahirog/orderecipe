@@ -26,7 +26,8 @@ h3 = "#{@store.name}店 献立組み"
           td
             - tbody = @weekday_sales_sozai_number[sdm.start_time.wday]['rireki'].map{|date_num_weather|"<tr><td>#{date_num_weather[0].strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[date_num_weather[0].wday]})")}</td><td>#{t("enums.store_daily_menu.weather.#{date_num_weather[1][1]}")}</td><td>#{date_num_weather[1][0]}</td></tr>"}.join
             button type="button" class="btn btn-secondary" data-container="body" data-html="true" data-toggle="popover" data-placement="left" data-content="<table class='table'><thead><tr><th>日付</th><th>天気</th><th>販売数</th></tr></thead><tbody>#{tbody}</tbody></table>"
-              = (@weekday_sales_sozai_number[sdm.start_time.wday]['total_num']/@weekday_sales_sozai_number[sdm.start_time.wday]['count'])
+              - if @weekday_sales_sozai_number[sdm.start_time.wday]['total_num'].present?
+                = (@weekday_sales_sozai_number[sdm.start_time.wday]['total_num']/@weekday_sales_sozai_number[sdm.start_time.wday]['count'])
 
       tr
         td

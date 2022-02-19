@@ -32,7 +32,13 @@ class StoreDailyMenusController < ApplicationController
         @weekday_sales_sozai_number[analysis.date.wday]['total_num'] = analysis.total_number_sales_sozai
         @weekday_sales_sozai_number[analysis.date.wday]['count'] = 1
       end
-      weather = StoreDailyMenu.find_by(start_time:analysis.date,store_id:analysis.store_id).weather
+      sdm = StoreDailyMenu.find_by(start_time:analysis.date,store_id:analysis.store_id)
+      if sdm.present?
+        weather = sdm.weather
+      else
+        weather = ''
+      end
+
       @weekday_sales_sozai_number[analysis.date.wday]['rireki'][analysis.date] = [analysis.total_number_sales_sozai,weather]
     end
     @date_sales_sozai_number = @date_sales_sozai_number.to_h

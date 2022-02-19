@@ -166,16 +166,8 @@ table.table.table-list.table-striped
       th 弁当等副菜分
       th style='color:red;' 製造調整
       th 合計製造数
-      th
-        - if @store_daily_menu_idhash[9].present?
-          = link_to '東中野',store_daily_menu_path(@store_daily_menu_idhash[9])
-        - else
-          |東中野
-      th
-        - if @store_daily_menu_idhash[19].present?
-          = link_to '新中野',store_daily_menu_path(@store_daily_menu_idhash[19])
-        - else
-          |新中野
+      - @store_daily_menu_idhash.each do |store_sdm|
+        th = link_to Store.find(store_sdm[0]).name,store_daily_menu_path(store_sdm[1])
   tbody
     -@daily_menu_details.each do |dmd|
       tr
@@ -192,10 +184,9 @@ table.table.table-list.table-striped
           td
         td
           = dmd.manufacturing_number
-        td
-          = @sdmd_hash[9][dmd.product_id]
-        td
-          = @sdmd_hash[19][dmd.product_id] if @sdmd_hash[19].present? && @sdmd_hash[19][dmd.product_id].present?
+        - @store_daily_menu_idhash.each do |store_sdm|
+          td
+            = @sdmd_hash[store_sdm[0]][dmd.product_id]
 
 css:
   .show_case_table td {
