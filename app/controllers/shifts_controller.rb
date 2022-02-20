@@ -1,5 +1,69 @@
 class ShiftsController < ApplicationController
   before_action :set_shift, only: %i[ show edit update destroy ]
+  def check
+    @date = Date.parse(params[:date])
+    first_day = @date.beginning_of_month
+    last_day = first_day.end_of_month
+    @one_month = [*first_day..last_day]
+    @shifts = Shift.where(date:@one_month).map{|shift|[[shift.staff_id,shift.date],shift]}.to_h
+    @staffs = Staff.includes([:store]).all.order(row:'asc')
+    @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    Shift.includes([:store,:shift_pattern,:fix_shift_pattern]).where(date:@one_month).each do |shift|
+      if shift.fix_shift_pattern_id.present?
+        date = shift.date
+        store_id = shift.store_id
+        section = shift.fix_shift_pattern.section
+        if section == 2
+          if @hash[store_id][date][0].present?
+            @hash[store_id][date][0] += 1
+          else
+            @hash[store_id][date][0] = 1
+          end
+          if @hash[store_id][date][1].present?
+            @hash[store_id][date][1] += 1
+          else
+            @hash[store_id][date][1] = 1
+          end
+
+        else
+          if @hash[store_id][date][section].present?
+            @hash[store_id][date][section] += 1
+          else
+            @hash[store_id][date][section] = 1
+          end
+        end
+      end
+    end
+  end
+  def create_frame
+    @date = Date.parse(params[:date])
+    first_day = @date.beginning_of_month
+    last_day = first_day.end_of_month
+    @one_month = [*first_day..last_day]
+    aaa = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    staff_ids = Staff.ids
+    Shift.where(date:@one_month).each do |shift|
+      if aaa[shift.date].present?
+        aaa[shift.date] << shift.staff_id
+      else
+        aaa[shift.date] = [shift.staff_id]
+      end
+    end
+    new_arr = []
+    @one_month.each do |date|
+      if aaa[date].present?
+        created_staff_ids = aaa[date]
+      else
+        created_staff_ids = []
+      end
+      create_staff_ids = staff_ids - created_staff_ids
+      create_staff_ids.each do |staff_id|
+        new_arr << Shift.new(staff_id:staff_id,date:date)
+      end
+    end
+    Shift.import new_arr
+    redirect_to shifts_path(date:@date),notice:"#{@date.month}月のシフト枠を作成しました"
+  end
 
   def index
     @date = Date.parse(params[:date])
@@ -7,7 +71,7 @@ class ShiftsController < ApplicationController
     last_day = first_day.end_of_month
     @one_month = [*first_day..last_day]
     @shifts = Shift.where(date:@one_month).map{|shift|[[shift.staff_id,shift.date],shift]}.to_h
-    @staffs = Staff.all
+    @staffs = Staff.all.order(row:'asc')
     @stores = Store.all
     @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     Shift.includes([:shift_pattern,:fix_shift_pattern]).where(date:@one_month).each do |shift|
@@ -62,6 +126,9 @@ class ShiftsController < ApplicationController
   end
 
   def update
+    if params['shift']['admin_shinsei_edit_flag'] == 'true'
+      @shinsei_flag = true
+    end
     if @shift.fix_shift_pattern_id_was.present?
       before_fix_shift_pattern_id = @shift.fix_shift_pattern_id_was
       @before_fix_shift_pattern = FixShiftPattern.find(before_fix_shift_pattern_id)

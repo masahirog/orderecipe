@@ -21,7 +21,6 @@ class ApplicationController < ActionController::Base
     ExceptionNotifier.notify_exception(e, :env => request.env, :data => {:message => "your error message"})
     render template: 'errors/error_500', status: 500
   end
-
   def shift_check
     @months = [['1月',1],['2月',2],['3月',3],['4月',4],['5月',5],['6月',6],
               ['7月',7],['8月',8],['9月',9],['10月',10],['11月',11],['12月',12]]

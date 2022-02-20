@@ -23,7 +23,12 @@ Rails.application.routes.draw do
   # get '/kpi' => 'application#kpi'
   # get '/sell_reports' => 'application#sell_reports'
   get '/shift_check' => 'application#shift_check'
-  resources :shifts
+  resources :shifts do
+    collection do
+      get :check
+      post :create_frame
+    end
+  end
   resources :staffs do
     collection do
       post :row_order_update

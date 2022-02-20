@@ -1,15 +1,18 @@
-h2 = "#{@date.year}年#{@date.month}月"
-.table-responsive style='height:700px;overflow: scroll;'
+h2 = "#{@date.year}年#{@date.month}月シフト"
+= link_to "#{@date.last_month.month}月＜＜",shifts_path(date:@date.last_month)
+|　　　
+= link_to "＞＞#{@date.next_month.month}月",shifts_path(date:@date.next_month)
+.table-responsive style='height:800px;overflow: scroll;'
   table.table.layout-fixed
     thead style='position: sticky;top:0;background-color:white;z-index:3;'
       tr
         th style='background-color:white;width:100px;' 店舗名
         th style='width:50px;'
         - @one_month.each do |date|
-          th style='width:120px;' = date.strftime("%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})")
+          th style='width:120px;' = date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})")
       - @stores.each do |store|
         tr
-          td rowspan='2' style='background-color:white;text-align: center;vertical-align: middle;z-index:5;' = store.name
+          td rowspan='2' style='background-color:white;text-align: center;vertical-align: middle;z-index:4;font-weight:bold;' = store.name
           td style='' 早番
           - @one_month.each do |date|
             td class="#{date.day}_store_#{store.id}_section_0" style=""
@@ -21,29 +24,42 @@ h2 = "#{@date.year}年#{@date.month}月"
             td class="#{date.day}_store_#{store.id}_section_1" style=''
               - if @hash[store.id][date][1].present?
                 = @hash[store.id][date][1]
-    thead
-      tr
-        th style='background-color:white;width:100px;' スタッフ名
-        th style='width:50px;'
-        - @one_month.each do |date|
-          th style='width:120px;' = date.strftime("%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})")
-
     tbody
       - @staffs.each do |staff|
-        tr style='color:silver;'
-          td style='background-color:white;' = staff.name
-          td 申請
+        tr.shift_tr style='color:silver;'
+          td rowspan='2' style='color:black;background-color:white;text-align:center;vertical-align:middle;'
+            = staff.name
+            - if staff.memo.present?
+              span.shinsei_shift_memo style='color:pink;font-size:12px;' class="glyphicon glyphicon-book original-tooltip" aria-hidden="true"  data-toggle="tooltip" data-placement="top" data-container="body" title="あああああああああああああああああああああああああああああああああああああああああああああああ"
+            p style='font-size:12px;color:gray;' = staff.store.name
+
+          td
+            span class="edit_shift glyphicon glyphicon-pencil" aria-hidden="true" style=''
+            span class="edit_shift_ok glyphicon glyphicon-ok" aria-hidden="true" style='display:none;'
           - @one_month.each do |date|
-            td = @shifts[[staff.id,date]].shift_pattern.pattern_name if @shifts[[staff.id,date]].shift_pattern.present?
+            - if @shifts[[staff.id,date]].present?
+              td class="td_shinsei_#{@shifts[[staff.id,date]].id}"
+                span.shinsei_shift
+                  = @shifts[[staff.id,date]].shift_pattern.pattern_name if @shifts[[staff.id,date]].present? && @shifts[[staff.id,date]].shift_pattern.present?
+                - if @shifts[[staff.id,date]].present? && @shifts[[staff.id,date]].memo.present?
+                  span.shinsei_shift_memo style='color:pink;font-size:12px;' class="glyphicon glyphicon-book original-tooltip" aria-hidden="true"  data-toggle="tooltip" data-placement="top" title="#{@shifts[[staff.id,date]].memo}"
+                .edit_shift_form style='text-align:center;display:none;'
+                  = form_with(model: @shifts[[staff.id,date]], data: {remote: true},class:"form_#{@shifts[[staff.id,date]].id}") do |f|
+                    = f.hidden_field :id,value:@shifts[[staff.id,date]].id,class:'shift_id'
+                    = f.hidden_field :admin_shinsei_edit_flag,value:true
+                    = f.collection_select :shift_pattern_id, ShiftPattern.all, :id, :pattern_name, {include_blank:true}, { class: "shinsei_shift_select",style:"width:70px;height:30px;text-align:center;border-radius:4px;border-color:silver;"}
+                    = f.text_field :memo,style:'width:100%;margin-top:4px;'
+
         tr style='background-color:#d1f6ff;'
-          td style='background-color:#d1f6ff;' = staff.name
-          td 確定
+          td style='z-index:1;' 確定
           - @one_month.each do |date|
-            td class="td_#{@shifts[[staff.id,date]].id} clearfix"
-              = form_with(model: @shifts[[staff.id,date]], data: {remote: true},class:"form_#{@shifts[[staff.id,date]].id}") do |f|
-                = f.hidden_field :id,value:@shifts[[staff.id,date]].id,class:'shift_id'
-                = f.collection_select :store_id, Store.all, :id, :name, {include_blank:true}, { class: "fix_shift_select",style:"width:50px;height:30px;text-align:center;float:left;border-radius:4px;border-color:silver;"}
-                = f.collection_select :fix_shift_pattern_id, FixShiftPattern.all, :id, :pattern_name, {include_blank:true}, { class: "fix_shift_select",style:"width:50px;height:30px;text-align:center;float:left;border-radius:4px;border-color:silver;"}
+            - if @shifts[[staff.id,date]].present?
+              td class="td_#{@shifts[[staff.id,date]].id} clearfix"
+                = form_with(model: @shifts[[staff.id,date]], data: {remote: true},class:"form_#{@shifts[[staff.id,date]].id}") do |f|
+                  = f.hidden_field :id,value:@shifts[[staff.id,date]].id,class:'shift_id'
+                  = f.collection_select :store_id, Store.all, :id, :name, {include_blank:true}, { class: "fix_shift_select",style:"width:50px;height:30px;text-align:center;float:left;border-radius:4px;border-color:silver;"}
+                  = f.collection_select :fix_shift_pattern_id, FixShiftPattern.all, :id, :pattern_name, {include_blank:true}, { class: "fix_shift_select",style:"width:50px;height:30px;text-align:center;float:left;border-radius:4px;border-color:silver;"}
+= link_to "シフト枠を作成",create_frame_shifts_path(date:params[:date]),{method: :post,class:'btn btn-primary'}
 css:
   select{
     -webkit-appearance: none;
@@ -60,15 +76,36 @@ css:
   .table th:first-child,td:first-child{
     position: sticky;
     left: 0;
-    z-index:1;
+    z-index:2;
   }
   th,td {
     text-align:center;
   }
+  .tooltip-inner {
+      max-width:350px;
+      width: 350px;
+  }
 javascript:
   $(function() {
     $('.fix_shift_select').on( 'change',function(){
-      console.log('aa');
       Rails.fire($(this).parent('form')[0], 'submit');
     });
+    $('.shinsei_shift_select').on( 'change',function(){
+      Rails.fire($(this).parent('form')[0], 'submit');
+    });
+    $(".edit_shift").on("click",function(){
+      $(this).parents('tr').find(".edit_shift_form").show();
+      $(this).parents('tr').find(".shinsei_shift").hide();
+      $(this).parents('tr').find(".shinsei_shift_memo").hide();
+      $(this).parent('td').children(".edit_shift_ok").show();
+      $(this).hide();
+    });
+    $(".edit_shift_ok").on("click",function(){
+      $(this).parents('tr').find(".edit_shift_form").hide();
+      $(this).parents('tr').find(".shinsei_shift").show();
+      $(this).parents('tr').find(".shinsei_shift_memo").show();
+      $(this).parent('td').children(".edit_shift").show();
+      $(this).hide();
+    });
+
   });
