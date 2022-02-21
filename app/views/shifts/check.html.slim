@@ -2,6 +2,20 @@ h2 = "#{@date.year}年#{@date.month}月シフト"
 = link_to "#{@date.last_month.month}月＜＜",check_shifts_path(date:@date.last_month)
 |　　　
 = link_to "＞＞#{@date.next_month.month}月",check_shifts_path(date:@date.next_month)
+button type="button" class="btn btn-sm btn-primary pull-right" data-toggle="modal" data-target="#sampleModal" 提出
+#sampleModal.modal.fade tabindex="-1"
+  = form_tag staff_edit_shifts_path, :method => 'get' do
+    .modal-dialog
+      .modal-content
+        .modal-header
+          h4.modal-title シフト提出
+        .modal-body
+          = select_tag :date, options_for_select(@year_months), class: "form-control"
+          = select_tag :staff_id,options_for_select(@staffs.map{|staff|[staff.name,staff.id]}),include_blank:'スタッフ名',readonly:true, class: "form-control"
+        .modal-footer
+          button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
+          = submit_tag "入力する",class:'btn btn-primary'
+
 .table-responsive style='height:600px;overflow: scroll;'
   table.table.layout-fixed
     thead style='position: sticky;top:0;background-color:white;z-index:3;'

@@ -6,7 +6,7 @@
   <% end %>
 <% else %>
   <% if @before_fix_shift_pattern.present? %>
-    <% if @before_fix_shift_pattern.section == 2 %>
+    <% if @before_fix_shift_pattern.read_attribute_before_type_cast(:section) == 2 %>
       $(".<%= @shift.date.day %>_store_<%= @before_store_id %>_section_0").css("background-color",'#f08080');
       $(".<%= @shift.date.day %>_store_<%= @before_store_id %>_section_1").css("background-color",'#f08080');
       var lunch_count = $(".<%= @shift.date.day %>_store_<%= @before_store_id %>_section_0").text()
@@ -17,16 +17,16 @@
       $(".<%= @shift.date.day %>_store_<%= @before_store_id %>_section_1").text(dinner_count);
 
     <% else %>
-      $(".<%= @shift.date.day %>_store_<%= @before_store_id %>_section_<%= @before_fix_shift_pattern.section %>").css("background-color",'#f08080');
-      var count = $(".<%= @shift.date.day %>_store_<%= @before_store_id %>_section_<%= @before_fix_shift_pattern.section %>").text()
+      $(".<%= @shift.date.day %>_store_<%= @before_store_id %>_section_<%= @before_fix_shift_pattern.read_attribute_before_type_cast(:section) %>").css("background-color",'#f08080');
+      var count = $(".<%= @shift.date.day %>_store_<%= @before_store_id %>_section_<%= @before_fix_shift_pattern.read_attribute_before_type_cast(:section) %>").text()
       count = Number(count) - 1;
-      $(".<%= @shift.date.day %>_store_<%= @before_store_id %>_section_<%= @before_fix_shift_pattern.section %>").text(count);
+      $(".<%= @shift.date.day %>_store_<%= @before_store_id %>_section_<%= @before_fix_shift_pattern.read_attribute_before_type_cast(:section) %>").text(count);
     <% end %>
   <% end %>
 
 
   <% if @shift.fix_shift_pattern.present? %>
-    <% if @shift.fix_shift_pattern.section == 2 %>
+    <% if @shift.fix_shift_pattern.read_attribute_before_type_cast(:section) == 2 %>
       $(".<%= @shift.date.day %>_store_<%= @shift.store_id %>_section_0").css("background-color",'#90ee90');
       $(".<%= @shift.date.day %>_store_<%= @shift.store_id %>_section_1").css("background-color",'#90ee90');
 
@@ -45,14 +45,14 @@
         $(".<%= @shift.date.day %>_store_<%= @shift.store_id %>_section_1").text(dinner_count);
       }
     <% else %>
-      $(".<%= @shift.date.day %>_store_<%= @shift.store_id %>_section_<%= @shift.fix_shift_pattern.section %>").css("background-color",'#90ee90');
-      var count = $(".<%= @shift.date.day %>_store_<%= @shift.store_id %>_section_<%= @shift.fix_shift_pattern.section %>").text();
+      $(".<%= @shift.date.day %>_store_<%= @shift.store_id %>_section_<%= @shift.fix_shift_pattern.read_attribute_before_type_cast(:section) %>").css("background-color",'#90ee90');
+      var count = $(".<%= @shift.date.day %>_store_<%= @shift.store_id %>_section_<%= @shift.fix_shift_pattern.read_attribute_before_type_cast(:section) %>").text();
       if (count=='0' || count=="") {
-        $(".<%= @shift.date.day %>_store_<%= @shift.store_id %>_section_<%= @shift.fix_shift_pattern.section %>").text(1);
+        $(".<%= @shift.date.day %>_store_<%= @shift.store_id %>_section_<%= @shift.fix_shift_pattern.read_attribute_before_type_cast(:section) %>").text(1);
       }else{
         // console.log(count);
         count = Number(count) + 1;
-        $(".<%= @shift.date.day %>_store_<%= @shift.store_id %>_section_<%= @shift.fix_shift_pattern.section %>").text(count);
+        $(".<%= @shift.date.day %>_store_<%= @shift.store_id %>_section_<%= @shift.fix_shift_pattern.read_attribute_before_type_cast(:section) %>").text(count);
       }
     <% end %>
   <% end %>

@@ -1,0 +1,9 @@
+= form_for @fix_shift_pattern do |f|
+  .form-group
+    = f.label :pattern_name, "シフト名"
+    = f.text_field :pattern_name, required: true, class:"form-control"
+  .form-group
+    = f.label :section, "シフトカウント区分"
+    = f.select :section, options_for_select_from_enum(FixShiftPattern, :section),{}, { class: "form-control", required:true}
+  .actions
+    = f.submit '登録する',class:'btn btn-success'

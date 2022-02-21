@@ -23,10 +23,12 @@ Rails.application.routes.draw do
   # get '/kpi' => 'application#kpi'
   # get '/sell_reports' => 'application#sell_reports'
   get '/shift_check' => 'application#shift_check'
+  resources :fix_shift_patterns
   resources :shifts do
     collection do
       get :check
       post :create_frame
+      get :staff_edit
     end
   end
   resources :staffs do

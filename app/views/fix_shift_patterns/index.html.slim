@@ -1,0 +1,15 @@
+h1 確定シフトパターン
+= link_to '新規作成', new_fix_shift_pattern_path,class:'btn btn-primary'
+
+table.table
+  thead
+    tr
+      th
+      th シフト名
+      th カウント区分
+  tbody
+    - @fix_shift_patterns.each do |fix_shift_pattern|
+      tr
+        td = link_to 'Edit', edit_fix_shift_pattern_path(fix_shift_pattern),class:'btn btn-primary'
+        td = fix_shift_pattern.pattern_name
+        td = fix_shift_pattern.section

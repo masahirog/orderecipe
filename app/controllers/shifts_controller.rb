@@ -1,10 +1,18 @@
 class ShiftsController < ApplicationController
   before_action :set_shift, only: %i[ show edit update destroy ]
+  def staff_edit
+    @date = Date.parse(params[:date])
+    first_day = @date.beginning_of_month
+    last_day = first_day.end_of_month
+    @one_month = [*first_day..last_day]
+  end
+
   def check
     @date = Date.parse(params[:date])
     first_day = @date.beginning_of_month
     last_day = first_day.end_of_month
     @one_month = [*first_day..last_day]
+    @year_months = [["#{@date.year}年#{@date.month}月",@date],["#{@date.next_month.year}年#{@date.next_month.month}月",@date.next_month],["#{@date.next_month.next_month.year}年#{@date.next_month.next_month.month}月",@date.next_month.next_month]]
     @shifts = Shift.where(date:@one_month).map{|shift|[[shift.staff_id,shift.date],shift]}.to_h
     @staffs = Staff.includes([:store]).all.order(row:'asc')
     @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
@@ -71,14 +79,16 @@ class ShiftsController < ApplicationController
     last_day = first_day.end_of_month
     @one_month = [*first_day..last_day]
     @shifts = Shift.where(date:@one_month).map{|shift|[[shift.staff_id,shift.date],shift]}.to_h
-    @staffs = Staff.all.order(row:'asc')
+    @staffs = Staff.includes([:store]).all.order(row:'asc')
     @stores = Store.all
+    @fix_shift_patterns = FixShiftPattern.all.order(section:'asc')
+    @shift_patterns = ShiftPattern.all
     @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     Shift.includes([:shift_pattern,:fix_shift_pattern]).where(date:@one_month).each do |shift|
       if shift.fix_shift_pattern_id.present?
         date = shift.date
         store_id = shift.store_id
-        section = shift.fix_shift_pattern.section
+        section = shift.fix_shift_pattern.read_attribute_before_type_cast(:section)
         if section == 2
           if @hash[store_id][date][0].present?
             @hash[store_id][date][0] += 1
