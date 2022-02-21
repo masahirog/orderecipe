@@ -83,6 +83,16 @@ class ShiftsController < ApplicationController
     @stores = Store.all
     @fix_shift_patterns = FixShiftPattern.all.order(section:'asc')
     @shift_patterns = ShiftPattern.all
+
+    @options = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    FixShiftPattern.all.each do |fsp|
+      if @options[fsp.section].present?
+        @options[fsp.section] << [fsp.pattern_name,fsp.id]
+      else
+        @options[fsp.section] = [[fsp.pattern_name,fsp.id]]
+      end
+    end
+
     @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     Shift.includes([:shift_pattern,:fix_shift_pattern]).where(date:@one_month).each do |shift|
       if shift.fix_shift_pattern_id.present?
