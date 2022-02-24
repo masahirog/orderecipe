@@ -122,6 +122,7 @@ html
                   li.menu_li = link_to 'シフト','/shift_check'
                   li.menu_li = link_to '3月以降シフト',check_shifts_path(date:Date.today)
                   li.menu_li = link_to "お客さまの声",customer_opinions_path
+                  li.menu_li = link_to "ログアウト", destroy_user_session_path, :method => :delete
 
                 #navbarEexample.collapse.navbar-collapse.navbar-right
                   ul.nav.navbar-nav
