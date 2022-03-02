@@ -41,5 +41,12 @@
   .form-group
     = f.label :user_id, "管理アカウント"
     = f.collection_select :user_id, User.all, :id, :email, {}, { class: "form-control"}
+  .form-group
+    = f.label :lunch_default_shift, "ランチシフト"
+    = f.number_field :lunch_default_shift, class:"form-control"
+  .form-group
+    = f.label :dinner_default_shift, "ディナーシフト"
+    = f.number_field :dinner_default_shift, class:"form-control"
+
 
   .actions = f.submit

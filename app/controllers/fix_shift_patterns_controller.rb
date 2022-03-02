@@ -54,6 +54,6 @@ class FixShiftPatternsController < ApplicationController
     end
 
     def fix_shift_pattern_params
-      params.require(:fix_shift_pattern).permit(:section,:pattern_name)
+      params.require(:fix_shift_pattern).permit(:section,:pattern_name,:working_hour)
     end
 end

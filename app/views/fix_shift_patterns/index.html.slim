@@ -7,9 +7,11 @@ table.table
       th
       th シフト名
       th カウント区分
+      th 勤務時間
   tbody
     - @fix_shift_patterns.each do |fix_shift_pattern|
       tr
         td = link_to 'Edit', edit_fix_shift_pattern_path(fix_shift_pattern),class:'btn btn-primary'
         td = fix_shift_pattern.pattern_name
         td = fix_shift_pattern.section
+        td = fix_shift_pattern.working_hour

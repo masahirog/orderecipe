@@ -20,12 +20,11 @@ Rails.application.routes.draw do
   post "versions/:id/revert" => "versions#revert", :as => "revert_version"
   post'menus/include_update' => 'menus#include_update'
   post 'materials/change_additives' => 'materials#change_additives'
-  # get '/kpi' => 'application#kpi'
-  # get '/sell_reports' => 'application#sell_reports'
   get '/shift_check' => 'application#shift_check'
   resources :fix_shift_patterns
   resources :shifts do
     collection do
+      get :get_fix_shift_pattern
       get :check
       post :create_frame
       get :staff_edit

@@ -4,6 +4,7 @@ class CreateFixShiftPatterns < ActiveRecord::Migration[5.2]
       t.integer :section
       t.string :pattern_name
       t.timestamps
+      t.float :working_hour
     end
   end
 end

@@ -5,5 +5,9 @@
   .form-group
     = f.label :section, "シフトカウント区分"
     = f.select :section, options_for_select_from_enum(FixShiftPattern, :section),{}, { class: "form-control", required:true}
+  .form-group
+    = f.label :working_hour, "勤務時間（例 6時間→6、5時間半→5.5）"
+    = f.number_field :working_hour, class: "form-control", required:true,step:0.1
+
   .actions
     = f.submit '登録する',class:'btn btn-success'

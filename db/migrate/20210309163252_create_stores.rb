@@ -15,6 +15,8 @@ class CreateStores < ActiveRecord::Migration[5.2]
       t.integer :user_id
       t.integer :smaregi_store_id
       t.timestamps
+      t.integer :lunch_default_shift
+      t.integer :dinner_default_shift
     end
   end
 end

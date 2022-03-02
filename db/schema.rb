@@ -140,6 +140,7 @@ ActiveRecord::Schema.define(version: 2022_02_14_101059) do
     t.string "pattern_name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.float "working_hour"
   end
 
   create_table "food_additives", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -579,6 +580,7 @@ ActiveRecord::Schema.define(version: 2022_02_14_101059) do
     t.integer "employment_status", default: 0, null: false
     t.integer "row", default: 0, null: false
     t.integer "status", default: 0, null: false
+    t.integer "jobcan_staff_code"
   end
 
   create_table "stocks", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -649,6 +651,8 @@ ActiveRecord::Schema.define(version: 2022_02_14_101059) do
     t.integer "smaregi_store_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "lunch_default_shift"
+    t.integer "dinner_default_shift"
   end
 
   create_table "task_template_stores", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

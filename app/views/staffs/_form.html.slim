@@ -21,5 +21,8 @@
   .form-group
     = f.label :memo, "メモ"
     = f.text_area :memo, class:"form-control",style:"height:10em;"
+  .form-group
+    = f.label :jobcan_staff_code, "ジョブカンスタッフコード"
+    = f.text_field :jobcan_staff_code, class:"form-control"
 
   .actions = f.submit

@@ -8,6 +8,7 @@ class CreateStaffs < ActiveRecord::Migration[5.2]
       t.integer :employment_status,default:0,null:false
       t.integer :row,default:0,null:false
       t.integer :status,default:0,null:false
+      t.integer :jobcan_staff_code
     end
   end
 end

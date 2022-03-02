@@ -1,5 +1,6 @@
 class ShiftsController < ApplicationController
   before_action :set_shift, only: %i[ show edit update destroy ]
+
   def staff_edit
     @date = Date.parse(params[:date])
     first_day = @date.beginning_of_month
@@ -118,6 +119,12 @@ class ShiftsController < ApplicationController
             @hash[store_id][date][section] = 1
           end
         end
+      end
+    end
+    respond_to do |format|
+      format.html
+      format.csv do
+        send_data render_to_string, filename: "#{@date.year}_#{@date.month}_shift.csv", type: :csv
       end
     end
   end
