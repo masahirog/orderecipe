@@ -79,7 +79,10 @@ class ShiftsController < ApplicationController
     first_day = @date.beginning_of_month
     last_day = first_day.end_of_month
     @one_month = [*first_day..last_day]
-    @shifts = Shift.where(date:@one_month).map{|shift|[[shift.staff_id,shift.date],shift]}.to_h
+    shifts = Shift.where(date:@one_month)
+    @shifts = shifts.map{|shift|[[shift.staff_id,shift.date],shift]}.to_h
+    @staff_shinsei_count = shifts.where.not(shift_pattern_id: nil).group(:staff_id).count
+    @staff_syukkin_count = shifts.where.not(fix_shift_pattern_id: nil).group(:staff_id).count
     @staffs = Staff.includes([:store]).all.order(row:'asc')
     @stores = Store.all
     @fix_shift_patterns = FixShiftPattern.all.order(section:'asc')
@@ -162,6 +165,7 @@ class ShiftsController < ApplicationController
     end
     if @shift.store_id_was.present?
       @before_store_id = @shift.store_id_was
+      @before_store = Store.find(@before_store_id)
     end
 
     respond_to do |format|

@@ -5,29 +5,34 @@ h2 = "#{@date.year}年#{@date.month}月シフト"
 = link_to "＞＞#{@date.next_month.month}月",shifts_path(date:@date.next_month)
 
 .table-responsive style='height:800px;overflow: scroll;'
-  table.table.layout-fixed
+  table.table.layout-fixed style='border-collapse:separate;'
     thead style='position: sticky;top:0;background-color:white;z-index:3;'
       tr
         th style='background-color:white;width:100px;' 店舗名
-        th style='width:50px;'
+        th style='width:70px;'
         - @one_month.each do |date|
           - holiday = HolidayJapan.name(date)
           - if holiday.present?
-            th style='width:120px;background-color:pink;' = date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})")
+            th style='width:120px;background-color:#f06060;color:white;' = date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})")
           - else
             th style='width:120px;' = date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})")
       - @stores.each do |store|
-        tr
-          td rowspan='2' style='background-color:white;text-align: center;vertical-align: middle;z-index:4;font-weight:bold;' = store.name
-          td style='' 早番
+        tr.shift_amount_tr
+          td rowspan='2' style='background-color:white;text-align: center;vertical-align: middle;z-index:4;font-weight:bold;'
+            = store.name
+          td style=''
+            = "早番：#{store.lunch_default_shift}"
+            input.default_shift_value value="#{store.lunch_default_shift}" style='display:none;'
           - @one_month.each do |date|
-            td class="#{date.day}_store_#{store.id}_section_0" style=""
+            td class="#{date.day}_store_#{store.id}_section_0 fix_shift_amount" style=""
               - if @hash[store.id][date][0].present?
                 = @hash[store.id][date][0]
-        tr
-          td style="" 遅番
+        tr.shift_amount_tr
+          td style=""
+            ="遅番：#{store.dinner_default_shift}"
+            input.default_shift_value value="#{store.dinner_default_shift}" style='display:none;'
           - @one_month.each do |date|
-            td class="#{date.day}_store_#{store.id}_section_1" style=''
+            td class="#{date.day}_store_#{store.id}_section_1 fix_shift_amount" style=''
               - if @hash[store.id][date][1].present?
                 = @hash[store.id][date][1]
     tbody
@@ -41,8 +46,10 @@ h2 = "#{@date.year}年#{@date.month}月シフト"
             p class="working_hours_#{staff.id}" style='font-size:12px;color:gray;margin:0;'
 
           td
-            span class="edit_shift glyphicon glyphicon-pencil" aria-hidden="true" style=''
+            span class="edit_shift" 申
             span class="edit_shift_ok glyphicon glyphicon-ok" aria-hidden="true" style='display:none;'
+            = "：#{@staff_shinsei_count[staff.id]}"
+
           - @one_month.each do |date|
             - if @shifts[[staff.id,date]].present?
               td class="td_shinsei_#{@shifts[[staff.id,date]].id}"
@@ -58,7 +65,9 @@ h2 = "#{@date.year}年#{@date.month}月シフト"
                     = f.text_field :memo,style:'width:100%;margin-top:4px;'
 
         tr.fix_shift_tr class="fix_shift_tr_#{staff.id}" style='background-color:#d1f6ff;'
-          td style='z-index:1;' 確定
+          td style='z-index:1;'
+            |確：
+            = @staff_syukkin_count[staff.id]
           - @one_month.each do |date|
             - if @shifts[[staff.id,date]].present?
               td class="td_shift_form td_#{@shifts[[staff.id,date]].id} clearfix"
@@ -145,5 +154,13 @@ javascript:
       $('.working_hours_'+ staff_id).text(total);
     });
 
+    $(".shift_amount_tr").each(function(){
+      var default_amount = Number($(this).find(".default_shift_value").val());
+      $(this).find('.fix_shift_amount').each(function(){
+        if (default_amount > Number($(this).text())) {
+          $(this).css("background-color",'#f0c0c0 ');
+        }
+      });
+    });
 
   });
