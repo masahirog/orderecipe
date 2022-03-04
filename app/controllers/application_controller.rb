@@ -14,45 +14,45 @@ class ApplicationController < ActionController::Base
     elsif  current_user.id == 39
       mobile_inventory_stocks_path
     elsif  current_user.id == 49
-      '/shift_check'
+      '/shifts/check'
     end
   end
   def render_500(e)
     ExceptionNotifier.notify_exception(e, :env => request.env, :data => {:message => "your error message"})
     render template: 'errors/error_500', status: 500
   end
-  def shift_check
-    @months = [['1月',1],['2月',2],['3月',3],['4月',4],['5月',5],['6月',6],
-              ['7月',7],['8月',8],['9月',9],['10月',10],['11月',11],['12月',12]]
-    if params[:month]
-      month = params[:month]
-    else
-      month = Date.today.month
-      params[:month] = month
-    end
-    sheet_name = "#{month}月"
-    session = GoogleDrive::Session.from_config("config.json")
-    sheet = session.spreadsheet_by_key("1ekgHswr8Pg9H0eTYvXGiDGLA7Vog2BJv5ftZ04jwn18").worksheet_by_title(sheet_name)
-    if sheet.present?
-      last_row = sheet.num_rows
-      @tables = []
-      for i in 1..last_row do
-        if sheet[i,2] == ""
-        else
-          row = []
-          for ii in 2..36 do
-            if ii == 5
-            else
-              row << sheet[i, ii]
-            end
-          end
-          @tables << row
-        end
-      end
-    else
-      redirect_to '/shift_check', notice: "#{month}月のシフトが存在しません。" and return
-    end
-  end
+  # def shift_check
+  #   @months = [['1月',1],['2月',2],['3月',3],['4月',4],['5月',5],['6月',6],
+  #             ['7月',7],['8月',8],['9月',9],['10月',10],['11月',11],['12月',12]]
+  #   if params[:month]
+  #     month = params[:month]
+  #   else
+  #     month = Date.today.month
+  #     params[:month] = month
+  #   end
+  #   sheet_name = "#{month}月"
+  #   session = GoogleDrive::Session.from_config("config.json")
+  #   sheet = session.spreadsheet_by_key("1ekgHswr8Pg9H0eTYvXGiDGLA7Vog2BJv5ftZ04jwn18").worksheet_by_title(sheet_name)
+  #   if sheet.present?
+  #     last_row = sheet.num_rows
+  #     @tables = []
+  #     for i in 1..last_row do
+  #       if sheet[i,2] == ""
+  #       else
+  #         row = []
+  #         for ii in 2..36 do
+  #           if ii == 5
+  #           else
+  #             row << sheet[i, ii]
+  #           end
+  #         end
+  #         @tables << row
+  #       end
+  #     end
+  #   else
+  #     redirect_to '/shift_check', notice: "#{month}月のシフトが存在しません。" and return
+  #   end
+  # end
 
   protected
     def revert_link

@@ -1,0 +1,25 @@
+= form_tag(once_update_shifts_path,method: :get) do
+  = hidden_field_tag :date,@date
+  table.table
+    thead
+      tr
+        th 日付
+        th シフト
+        th メモ
+    tbody
+      - @shifts.each do |shift|
+        - holiday = HolidayJapan.name(shift.date)
+        - if holiday.present? || shift.date.wday == 0
+          - color = "red"
+        - elsif shift.date.wday == 6
+          - color = "blue"
+        - else
+          - color = "black"
+        = fields_for "shifts[]", shift do |fs|
+          tr
+            td style="color:#{color};" = shift.date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[shift.date.wday]})")
+            td = fs.collection_select :shift_pattern_id, @shift_patterns, :id, :pattern_name, {include_blank:true}, { class: "",style:"width:80px;height:25px;text-align:center;"}
+            td
+              = fs.text_field :memo,style:'width:150px;'
+              = fs.hidden_field :id,value:shift.id
+  = submit_tag '送信する',class:'btn btn-primary'

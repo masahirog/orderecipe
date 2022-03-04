@@ -1,15 +1,46 @@
 class ShiftsController < ApplicationController
   before_action :set_shift, only: %i[ show edit update destroy ]
 
+  def once_update
+    date = params["date"]
+    shinsei_shift_hash = params["shifts"]
+    shift_ids = shinsei_shift_hash.keys
+    shifts = Shift.where(id:shift_ids)
+    update_shifts = []
+    shifts.each do |shift|
+      shinsei_shift = shinsei_shift_hash[shift.id.to_s]
+      shift.shift_pattern_id = shinsei_shift['shift_pattern_id']
+      shift.memo = shinsei_shift['memo']
+      update_shifts << shift
+    end
+    updated_shifts = Shift.import update_shifts, on_duplicate_key_update:[:memo,:shift_pattern_id]
+    redirect_to check_shifts_path(date:date),:notice => "シフトを申請しました。"
+  end
   def staff_edit
-    @date = Date.parse(params[:date])
-    first_day = @date.beginning_of_month
-    last_day = first_day.end_of_month
-    @one_month = [*first_day..last_day]
+    staff_id = params[:staff_id]
+    date = params[:date]
+    if staff_id.present? && date.present?
+      @date = Date.parse(params[:date])
+      first_day = @date.beginning_of_month
+      last_day = first_day.end_of_month
+      @one_month = [*first_day..last_day]
+      @shifts = Shift.where(staff_id:staff_id,date:@one_month)
+      @shift_patterns = ShiftPattern.all.order(pattern_name:'DESC')
+      if @shifts.present?
+      else
+        redirect_to check_shifts_path, :alert => 'シフトの申請枠が無いため、社員に連絡をしてください。'
+      end
+    else
+      redirect_to check_shifts_path, :alert => '頂いた情報では、シフトの申請は出来ません。'
+    end
   end
 
   def check
-    @date = Date.parse(params[:date])
+    if params[:date].present?
+      @date = Date.parse(params[:date])
+    else
+      @date = Date.today
+    end
     first_day = @date.beginning_of_month
     last_day = first_day.end_of_month
     @one_month = [*first_day..last_day]
