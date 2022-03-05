@@ -14,7 +14,7 @@ class ApplicationController < ActionController::Base
     elsif  current_user.id == 39
       mobile_inventory_stocks_path
     elsif  current_user.id == 49
-      '/shifts/check'
+      check_shifts_path
     end
   end
   def render_500(e)

@@ -7,7 +7,7 @@ class AdminController < ApplicationController
     if current_user.admin?
     else
       if current_user.id == 49
-        redirect_to 'check_shifts_path'
+        redirect_to '/shifts/check'
       else
         redirect_to '/store/store_daily_menus'
       end

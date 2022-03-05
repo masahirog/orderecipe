@@ -11,7 +11,7 @@ button type="button" class="btn btn-sm btn-primary pull-right" data-toggle="moda
           h4.modal-title シフト提出
         .modal-body
           = select_tag :date, options_for_select(@year_months), class: "form-control"
-          = select_tag :staff_id,options_for_select(@staffs.map{|staff|[staff.name,staff.id]}),include_blank:'スタッフ名', class: "form-control",style:'margin-top:10px;'
+          = select_tag :staff_id,options_for_select(@staffs.map{|staff|[staff.name,staff.id]}),{include_blank:'スタッフ名', class: "form-control",style:'margin-top:10px;', :required => true}
         .modal-footer
           button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
           = submit_tag "入力",class:'btn btn-primary'

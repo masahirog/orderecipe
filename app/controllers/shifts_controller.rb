@@ -18,6 +18,7 @@ class ShiftsController < ApplicationController
   end
   def staff_edit
     staff_id = params[:staff_id]
+    @staff = Staff.find(staff_id)
     date = params[:date]
     if staff_id.present? && date.present?
       @date = Date.parse(params[:date])
@@ -44,7 +45,8 @@ class ShiftsController < ApplicationController
     first_day = @date.beginning_of_month
     last_day = first_day.end_of_month
     @one_month = [*first_day..last_day]
-    @year_months = [["#{@date.year}年#{@date.month}月",@date],["#{@date.next_month.year}年#{@date.next_month.month}月",@date.next_month],["#{@date.next_month.next_month.year}年#{@date.next_month.next_month.month}月",@date.next_month.next_month]]
+    today = Date.today
+    @year_months = [["#{today.year}年#{today.month}月",today],["#{today.next_month.year}年#{today.next_month.month}月",today.next_month],["#{today.next_month.next_month.year}年#{today.next_month.next_month.month}月",today.next_month.next_month]]
     @shifts = Shift.where(date:@one_month).map{|shift|[[shift.staff_id,shift.date],shift]}.to_h
     @staffs = Staff.includes([:store]).all.order(row:'asc')
     @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
@@ -106,7 +108,11 @@ class ShiftsController < ApplicationController
   end
 
   def index
-    @date = Date.parse(params[:date])
+    if params[:date]
+      @date = Date.parse(params[:date])
+    else
+      @date = Date.today
+    end
     first_day = @date.beginning_of_month
     last_day = first_day.end_of_month
     @one_month = [*first_day..last_day]

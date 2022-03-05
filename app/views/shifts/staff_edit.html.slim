@@ -1,3 +1,4 @@
+h4 = "#{@staff.name}さん シフト申請"
 = form_tag(once_update_shifts_path,method: :get) do
   = hidden_field_tag :date,@date
   table.table
@@ -22,4 +23,4 @@
             td
               = fs.text_field :memo,style:'width:150px;'
               = fs.hidden_field :id,value:shift.id
-  = submit_tag '送信する',class:'btn btn-primary'
+  = submit_tag '送信する',class:'btn btn-primary',data:{confirm:"#{@staff.name}さんの#{@date.month}月のシフト申請でお間違い無いですか？"}
