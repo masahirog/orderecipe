@@ -29,7 +29,7 @@ class CreateSmaregiTradingHistories < ActiveRecord::Migration[5.2]
       t.integer :torihikimeisai_id
       t.integer :torihiki_meisaikubun
       t.integer :shohin_id
-      t.integer :shohin_code
+      t.bigint :shohin_code
       t.integer :hinban
       t.string :shohinmei
       t.integer :shohintanka

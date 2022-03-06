@@ -3,8 +3,12 @@
     .form-group.col-md-2
       = date_field_tag :date,@date, class:"form-control"
     .form-group.col-md-2
+      = select_tag :vendor_id, options_from_collection_for_select(Vendor.all, :id, :company_name,params[:vendor_id]),include_blank: true, class: "form-control"
+    .form-group.col-md-2
       = submit_tag "検索" ,class:"btn btn-primary"
+  = link_to "PDF",deliveried_list_orders_path(vendor_id:params[:vendor_id],date:params[:date],format:'pdf'),class:'btn btn-primary pull-right'
 h4 納品商品リスト
+
 table.table
   thead
     tr

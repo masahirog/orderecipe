@@ -24,7 +24,7 @@ class CookOnTheDay < Prawn::Document
           cells.border_width = 0.1
           columns(-2).align = :center
           self.header = true
-          self.column_widths = [180,100,120,60,60]
+          self.column_widths = [180,100,40,120,60,60]
         end
         move_down 10
         text "朝調理個数一覧："
@@ -44,11 +44,16 @@ class CookOnTheDay < Prawn::Document
     end
   end
   def cook_on_the_day(sdm)
-    data = [['商品名','品目','工程','調理チェック','積載チェック']]
+    data = [['商品名','品目','朝数','工程','調理チェック','積載チェック']]
     sdm.store_daily_menu_details.each do |sdmd|
+      if sdmd.product.carryover_able_flag == true
+        number = "※　" + (sdmd.number/1.4).ceil.to_s
+      else
+        number = sdmd.number
+      end
       sdmd.product.menus.each do |menu|
         menu.menu_last_processes.each do |mlp|
-          data << [sdmd.product.name,mlp.content,mlp.memo,'','']
+          data << [sdmd.product.name,mlp.content,number,mlp.memo,'','']
         end
       end
     end

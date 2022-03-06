@@ -18,7 +18,22 @@ class OrdersController < AdminController
     else
       @date = Date.today
     end
-    @order_materials = OrderMaterial.includes(:order,material:[:vendor]).where(delivery_date:@date,un_order_flag:false).order("vendors.id")
+    if params[:vendor_id]
+      vendor_id = params[:vendor_id]
+      @order_materials = OrderMaterial.includes(:order,material:[:vendor]).where(delivery_date:@date,un_order_flag:false).where(:materials => {vendor_id:vendor_id})
+    else
+      @order_materials = OrderMaterial.includes(:order,material:[:vendor]).where(delivery_date:@date,un_order_flag:false).order("vendors.id")
+    end
+    respond_to do |format|
+      format.html
+      format.pdf do
+        pdf = DeliveriedList.new(@order_materials)
+        send_data pdf.render,
+        filename:    "納品リスト.pdf",
+        type:        "application/pdf",
+        disposition: "inline"
+      end
+    end
   end
 
   def edit
