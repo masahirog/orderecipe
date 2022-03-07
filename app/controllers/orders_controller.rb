@@ -29,7 +29,7 @@ class OrdersController < AdminController
       if @hash[om.material_id].present?
         @hash[om.material_id][1] += om.order_quantity.to_f
       else
-        @hash[om.material_id] = [om.material.recipe_unit_quantity,om.order_quantity.to_f,om.material.order_name,om.material.order_unit,om.order_material_memo,om.order_id,om.material.vendor.company_name]
+        @hash[om.material_id] = [om.material.recipe_unit_quantity,om.order_quantity.to_f,om.material.order_name,om.material.order_unit,om.order_material_memo,om.order_id,om.material.vendor.company_name,om.material.order_unit_quantity]
       end
     end
     respond_to do |format|

@@ -22,7 +22,7 @@ class DeliveriedList < Prawn::Document
     data << ["品名","数量","単位","メモ"]
     hash.each do |material_order_quantity|
       # amount = (om.order_quantity.to_f / om.material.recipe_unit_quantity)
-      amount = ActiveSupport::NumberHelper.number_to_rounded((material_order_quantity[1][1] / material_order_quantity[1][0]), strip_insignificant_zeros: true, :delimiter => ',')
+      amount = ActiveSupport::NumberHelper.number_to_rounded(((material_order_quantity[1][1] / material_order_quantity[1][0])*material_order_quantity[1][7]), strip_insignificant_zeros: true, :delimiter => ',')
       data << [material_order_quantity[1][2],amount,material_order_quantity[1][3],material_order_quantity[1][4]]
     end
     data
