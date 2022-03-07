@@ -18,16 +18,24 @@ class OrdersController < AdminController
     else
       @date = Date.today
     end
-    if params[:vendor_id]
+    if params[:vendor_id].present?
       vendor_id = params[:vendor_id]
       @order_materials = OrderMaterial.includes(:order,material:[:vendor]).where(delivery_date:@date,un_order_flag:false).where(:materials => {vendor_id:vendor_id})
     else
       @order_materials = OrderMaterial.includes(:order,material:[:vendor]).where(delivery_date:@date,un_order_flag:false).order("vendors.id")
     end
+    @hash = {}
+    @order_materials.each do |om|
+      if @hash[om.material_id].present?
+        @hash[om.material_id][1] += om.order_quantity.to_f
+      else
+        @hash[om.material_id] = [om.material.recipe_unit_quantity,om.order_quantity.to_f,om.material.order_name,om.material.order_unit,om.order_material_memo,om.order_id,om.material.vendor.company_name]
+      end
+    end
     respond_to do |format|
       format.html
       format.pdf do
-        pdf = DeliveriedList.new(@order_materials)
+        pdf = DeliveriedList.new(@hash)
         send_data pdf.render,
         filename:    "納品リスト.pdf",
         type:        "application/pdf",
