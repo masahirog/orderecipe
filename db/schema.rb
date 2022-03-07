@@ -550,7 +550,7 @@ ActiveRecord::Schema.define(version: 2022_02_14_101059) do
     t.integer "torihikimeisai_id"
     t.integer "torihiki_meisaikubun"
     t.integer "shohin_id"
-    t.bigint "shohin_code"
+    t.string "shohin_code"
     t.integer "hinban"
     t.string "shohinmei"
     t.integer "shohintanka"
