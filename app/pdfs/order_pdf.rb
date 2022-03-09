@@ -34,10 +34,11 @@ class OrderPdf < Prawn::Document
   end
 
   def header_adress(vendor,order)
-    bounding_box([280, 700], :width => 200, :height =>70) do
-        font_size 10
+    bounding_box([280, 700], :width => 240, :height =>100) do
+        font_size 11
         text "拠点ID：#{order.store.orikane_store_code}", :leading => 3 if vendor.id == 171
         text "#{order.store.name}", :leading => 3
+        font_size 9
         text "#{order.store.address}", :leading => 3
         text "TEL：#{order.store.phone}", :leading => 3
         text "FAX：03-6700-9848", :leading => 3
@@ -55,7 +56,7 @@ class OrderPdf < Prawn::Document
   end
 
   def table_content(arr,date)
-    bounding_box([0,630], :width => 530) do
+    bounding_box([0,620], :width => 530) do
       table line_item_rows(arr,date), cell_style: { size: 9 ,height: 20,:overflow => :shrink_to_fit } do
         row(0).size = 12
         cells.padding = 4
