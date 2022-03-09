@@ -31,19 +31,19 @@
     .col-md-2
       label.text-right
         | 発注店舗：
-      = f.collection_select :store_id, Store.all, :id, :name, {include_blank:true}, { class: "form-control"}
+      = f.collection_select :store_id, Store.all, :id, :name, {include_blank:true}, { class: "form-control store_id_input"}
     .col-md-2
       label.text-right
         | 発注者名：
-      = f.text_field :staff_name,class:'form-control',placeholder:'発注者名を入力してください'
+      = f.text_field :staff_name,class:'form-control staff_name_input',placeholder:'発注者名を入力してください'
 
     .col-md-2 style="padding-top:25px;"
       = f.select :fixed_flag, options_for_select([['確定：在庫が変動します', true], ['未確定：在庫に影響しません', false]], f.object.fixed_flag),{},class:'form-control fixed_flag'
     .col-md-2 style="padding-top:25px;"
       - if f.object.fixed_flag == true
-        = f.submit '確定で保存する',class:'btn btn-success pull-right save-btn order_submit', data: {disable_with: '保存中'}
+        = f.submit '確定で保存する',class:'btn btn-success pull-right save-btn order_submit', data: {disable_with: '保存中'},disabled:true
       -else
-        = f.submit '未確定で保存する',class:'btn btn-danger pull-right save-btn order_submit', data: {disable_with: '保存中'}
+        = f.submit '未確定で保存する',class:'btn btn-danger pull-right save-btn order_submit', data: {disable_with: '保存中'},disabled:true
 
   table.table
     thead.order_materials_thead
@@ -152,6 +152,31 @@ javascript:
     $(document).on("keypress", "input:not(.allow_submit)", function(event) {
       return event.which !== 13;
     });
+    $(".store_id_input").on('change',function(){
+      if ($(this).val() == null || $(this).val() == '') {
+        $(".order_submit").prop("disabled", true);
+      }else{
+        if ($(".staff_name_input").val() == null || $(".staff_name_input").val() == '') {
+          $(".order_submit").prop("disabled", true);
+        }else{
+          $(".order_submit").prop("disabled", false);
+        }
+      }
+    });
+    $(".staff_name_input").on('keyup',function(){
+      if ($(this).val() == null || $(this).val() == '') {
+        $(".order_submit").prop("disabled", true);
+      }else{
+        if ($(".staff_name_input").val() == null || $(".staff_name_input").val() == '') {
+          $(".order_submit").prop("disabled", true);
+        }else{
+          $(".order_submit").prop("disabled", false);
+        }
+      }
+    });
+
+
+
   });
 
 
