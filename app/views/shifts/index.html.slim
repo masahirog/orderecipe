@@ -1,9 +1,10 @@
 h2 = "#{@date.year}年#{@date.month}月シフト"
+
 = link_to "CSV", shifts_path(date:params[:date],format:'csv'), class: "btn btn-default",style:'margin-right:20px;'
 = link_to "#{@date.last_month.month}月＜＜",shifts_path(date:@date.last_month)
 |　　　
 = link_to "＞＞#{@date.next_month.month}月",shifts_path(date:@date.next_month)
-
+.btn.btn-primary.pull-right.all_edit_btn 全員編集
 .table-responsive style='height:800px;overflow: scroll;'
   table.table.layout-fixed style='border-collapse:separate;'
     thead style='position: sticky;top:0;background-color:white;z-index:3;'
@@ -19,7 +20,7 @@ h2 = "#{@date.year}年#{@date.month}月シフト"
       - @stores.each do |store|
         tr.shift_amount_tr
           td rowspan='2' style='background-color:white;text-align: center;vertical-align: middle;z-index:4;font-weight:bold;'
-            = store.name
+            = store.short_name
           td style=''
             = "早番：#{store.lunch_default_shift}"
             input.default_shift_value value="#{store.lunch_default_shift}" style='display:none;'
@@ -42,7 +43,7 @@ h2 = "#{@date.year}年#{@date.month}月シフト"
             = staff.name
             - if staff.memo.present?
               span.shinsei_shift_memo style='color:pink;font-size:12px;' class="glyphicon glyphicon-book original-tooltip" aria-hidden="true"  data-toggle="tooltip" data-placement="top" data-container="body" title="#{staff.memo}"
-            p style='font-size:12px;color:gray;margin:0;' = staff.store.name
+            p style='font-size:12px;color:gray;margin:0;' = staff.store.short_name
             p class="working_hours_#{staff.id}" style='font-size:12px;color:gray;margin:0;'
 
           td
@@ -66,21 +67,31 @@ h2 = "#{@date.year}年#{@date.month}月シフト"
 
         tr.fix_shift_tr class="fix_shift_tr_#{staff.id}" style='background-color:#d1f6ff;'
           td style='z-index:1;'
-            |確：
+            span class="edit_fix_shift" 確：
+            span class="edit_fix_shift_ok glyphicon glyphicon-ok" aria-hidden="true" style='display:none;' ：
             = @staff_syukkin_count[staff.id]
           - @one_month.each do |date|
             - if @shifts[[staff.id,date]].present?
-              td class="td_shift_form td_#{@shifts[[staff.id,date]].id} clearfix"
+              td class="td_shift_form td_#{@shifts[[staff.id,date]].id} clearfix" style='padding:3px;'
                 input.staff_id value="#{staff.id}" style='display:none;'
                 - if @shifts[[staff.id,date]].fix_shift_pattern.present?
                   input.working_hour style='display:none;' value="#{@shifts[[staff.id,date]].fix_shift_pattern.working_hour}"
                 - else
                   input.working_hour value=0 style='display:none;'
-                = form_with(model: @shifts[[staff.id,date]], data: {remote: true},class:"form_#{@shifts[[staff.id,date]].id}") do |f|
-                  = f.hidden_field :id,value:@shifts[[staff.id,date]].id,class:'shift_id'
-                  = f.collection_select :store_id, @stores, :id, :name, {include_blank:true}, { class: "fix_shift_select fix_shift_select_store_id",style:"width:50px;height:30px;text-align:center;float:left;border-radius:4px;border-color:silver;"}
-                  / = f.collection_select :fix_shift_pattern_id, @fix_shift_patterns, :id, :pattern_name, {include_blank:true}, { class: "fix_shift_select",style:"width:50px;height:30px;text-align:center;float:left;border-radius:4px;border-color:silver;"}
-                  = f.select :fix_shift_pattern_id, grouped_options_for_select(@options,f.object.fix_shift_pattern_id), {include_blank:true}, { class: "fix_shift_select fix_shift_select_select",style:"width:50px;height:30px;text-align:center;float:left;border-radius:4px;border-color:silver;"}
+                .fix_shift style='font-size:12px;'
+                  span.fix_store_name
+                    - if @shifts[[staff.id,date]].store_id.present?
+                      = @shifts[[staff.id,date]].store.short_name
+                  br
+                  span.fix_shift_pattern
+                    - if @shifts[[staff.id,date]].fix_shift_pattern_id.present?
+                     = @shifts[[staff.id,date]].fix_shift_pattern.pattern_name
+                .edit_fix_shift_form style='text-align:center;display:none;'
+                  = form_with(model: @shifts[[staff.id,date]], data: {remote: true},class:"form_#{@shifts[[staff.id,date]].id}") do |f|
+                    = f.hidden_field :id,value:@shifts[[staff.id,date]].id,class:'shift_id'
+                    = f.collection_select :store_id, @stores, :id, :short_name, {include_blank:true}, { class: "fix_shift_select fix_shift_select_store_id",style:"width:50px;height:30px;text-align:center;float:left;border-radius:4px;border-color:silver;"}
+                    / = f.collection_select :fix_shift_pattern_id, @fix_shift_patterns, :id, :pattern_name, {include_blank:true}, { class: "fix_shift_select",style:"width:50px;height:30px;text-align:center;float:left;border-radius:4px;border-color:silver;"}
+                    = f.select :fix_shift_pattern_id, grouped_options_for_select(@options,f.object.fix_shift_pattern_id), {include_blank:true}, { class: "fix_shift_select fix_shift_select_select",style:"width:50px;height:30px;text-align:center;float:left;border-radius:4px;border-color:silver;"}
 = link_to "シフト枠を作成",create_frame_shifts_path(date:params[:date]),{method: :post,class:'btn btn-primary'}
 css:
   select{
@@ -130,6 +141,18 @@ javascript:
       $(this).parent('td').children(".edit_shift").show();
       $(this).hide();
     });
+    $(".edit_fix_shift").on("click",function(){
+      $(this).parents('tr').find(".edit_fix_shift_form").show();
+      $(this).parents('tr').find(".fix_shift").hide();
+      $(this).parent('td').children(".edit_fix_shift_ok").show();
+      $(this).hide();
+    });
+    $(".edit_fix_shift_ok").on("click",function(){
+      $(this).parents('tr').find(".edit_fix_shift_form").hide();
+      $(this).parents('tr').find(".fix_shift").show();
+      $(this).parent('td').children(".edit_fix_shift").show();
+      $(this).hide();
+    });
 
     $(".fix_shift_tr").each(function(){
       var val = 0;
@@ -161,6 +184,11 @@ javascript:
           $(this).css("background-color",'#f0c0c0 ');
         }
       });
+    });
+
+    $(".all_edit_btn").on("click",function(){
+      $('.fix_shift').hide();
+      $(".edit_fix_shift_form").show();
     });
 
   });

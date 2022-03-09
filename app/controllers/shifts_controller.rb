@@ -121,7 +121,7 @@ class ShiftsController < ApplicationController
     @staff_shinsei_count = shifts.where.not(shift_pattern_id: nil).group(:staff_id).count
     @staff_syukkin_count = shifts.where.not(fix_shift_pattern_id: nil).group(:staff_id).count
     @staffs = Staff.includes([:store]).all.order(row:'asc')
-    @stores = Store.all
+    @stores = Store.where.not(id:39)
     @fix_shift_patterns = FixShiftPattern.all.order(section:'asc')
     @shift_patterns = ShiftPattern.all
 

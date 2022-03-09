@@ -12,7 +12,7 @@ class Order < ApplicationRecord
   has_many :order_products, dependent: :destroy
   has_many :products, through: :order_products
   accepts_nested_attributes_for :order_products, allow_destroy: true, update_only: true
-
+  belongs_to :store
   before_save :initialize_stock
   #納品量の追加
   after_save :input_stock

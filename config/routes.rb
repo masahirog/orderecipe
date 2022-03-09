@@ -164,6 +164,7 @@ Rails.application.routes.draw do
   end
   resources :daily_menus do
     collection do
+      get :ikkatsu_edit
       get :cook_on_the_day
       post :create_1month
       post :upload_menu

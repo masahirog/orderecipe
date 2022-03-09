@@ -19,7 +19,7 @@ class OrderPrintAll < Prawn::Document
       hash.each_with_index do |data,ii|
         header(order)
         header_lead(vendor)
-        header_adress(vendor)
+        header_adress(vendor,order)
         header_hello
         move_down 20
         table_content(data[1],data[0])
@@ -44,14 +44,15 @@ class OrderPrintAll < Prawn::Document
     end
   end
 
-  def header_adress(vendor)
-    bounding_box([330, 700], :width => 200, :height =>70) do
+  def header_adress(vendor,order)
+    bounding_box([280, 700], :width => 200, :height =>70) do
       font_size 10
-      text "日本フードデリバリー株式会社", :leading => 3
+      text "拠点ID：#{order.store.orikane_store_code}", :leading => 3 if vendor.id == 171
+      text "#{order.store.name}", :leading => 3
+      text "#{order.store.address}", :leading => 3
+      text "TEL：#{order.store.phone} FAX：03-6700-9848", :leading => 3
       text "No：#{vendor.management_id}", :leading => 3 if vendor.management_id.present?
-      text "〒164-0003 東京都中野区東中野1-35-1", :leading => 3
-      text "TEL：03-5937-5431", :leading => 3
-      text "FAX：03-6700-9848", :leading => 3
+      text "日本フードデリバリー株式会社", :leading => 3
     end
   end
 

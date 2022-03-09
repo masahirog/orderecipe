@@ -6,15 +6,15 @@
 tr.nested-fields.item.daily_menu_detail_tr class=class_name
   td.row_order
     = f.number_field :row_order, class: 'form-control',readonly:true
-  - if f.object.id.present?
-    td
-      = f.object.product.name
-    td.bejihan_sozai_flag_td
-      = "true" if f.object.product.bejihan_sozai_flag == true
-  - else
-    td
-      = f.collection_select :product_id, @products, :id, :name, {include_blank:true},class:'form-control input_select_product'
-    td.bejihan_sozai_flag_td
+  / - if f.object.id.present?
+  /   td
+  /     = f.object.product.name
+  /   td.bejihan_sozai_flag_td
+  /     = "true" if f.object.product.bejihan_sozai_flag == true
+  / - else
+  td
+    = f.collection_select :product_id, @products, :id, :name, {include_blank:true},class:'form-control input_select_product'
+  td.bejihan_sozai_flag_td
   - @store_daily_menus.each do |sdm_hash|
     td = sdm_hash[1][f.object.product_id][:number] if sdm_hash[1][f.object.product_id]
   td

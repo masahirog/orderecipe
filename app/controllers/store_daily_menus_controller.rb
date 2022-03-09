@@ -51,9 +51,11 @@ class StoreDailyMenusController < ApplicationController
     params[:store_daily_menu_details].each do |sdmd|
       store_daily_menu_detail = store_daily_menu_details_hash[sdmd[0].to_i]
       store_daily_menu_detail.sozai_number = sdmd[1].to_i
+      store_daily_menu_detail.number = store_daily_menu_detail.sozai_number + store_daily_menu_detail.bento_fukusai_number
+
       update_arr << store_daily_menu_detail
     end
-    StoreDailyMenuDetail.import update_arr,on_duplicate_key_update:[:sozai_number]
+    StoreDailyMenuDetail.import update_arr,on_duplicate_key_update:[:sozai_number,:number]
     redirect_to input_manufacturing_number_store_daily_menus_path(store_id:params['store_id'],store_daily_menu_ids:params['store_daily_menu_ids'].split(" ")),notice:'更新OK！'
   end
   def stock

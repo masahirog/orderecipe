@@ -376,6 +376,7 @@ ActiveRecord::Schema.define(version: 2022_02_14_101059) do
     t.datetime "updated_at", null: false
     t.boolean "fixed_flag", default: false, null: false
     t.string "staff_name"
+    t.integer "store_id"
   end
 
   create_table "place_showcases", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -653,6 +654,8 @@ ActiveRecord::Schema.define(version: 2022_02_14_101059) do
     t.datetime "updated_at", null: false
     t.integer "lunch_default_shift"
     t.integer "dinner_default_shift"
+    t.string "orikane_store_code"
+    t.string "short_name"
   end
 
   create_table "task_template_stores", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

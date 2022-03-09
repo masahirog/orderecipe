@@ -625,7 +625,7 @@ class OrdersController < AdminController
         om[1]['order_quantity'] = 0
       end
     end
-    params.require(:order).permit(:staff_name,:fixed_flag,order_materials_attributes: [:id,:calculated_quantity,:order_quantity_order_unit,:order_quantity,
+    params.require(:order).permit(:store_id,:staff_name,:fixed_flag,order_materials_attributes: [:id,:calculated_quantity,:order_quantity_order_unit,:order_quantity,
       :menu_name, :order_id, :material_id,:order_material_memo,:delivery_date, :un_order_flag,:_destroy],
       order_products_attributes: [:id,:make_date, :serving_for, :order_id, :product_id, :_destroy])
   end

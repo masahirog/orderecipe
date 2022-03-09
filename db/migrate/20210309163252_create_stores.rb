@@ -17,6 +17,8 @@ class CreateStores < ActiveRecord::Migration[5.2]
       t.timestamps
       t.integer :lunch_default_shift
       t.integer :dinner_default_shift
+      t.string :orikane_store_code
+      t.string :short_name
     end
   end
 end

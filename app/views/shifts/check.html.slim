@@ -29,7 +29,7 @@ button type="button" class="btn btn-sm btn-primary pull-right" data-toggle="moda
         tr.shift_tr style='color:silver;'
           td rowspan='2' style='color:black;background-color:white;text-align:center;vertical-align:middle;'
             = staff.name
-            p style='font-size:12px;color:gray;' = staff.store.name
+            p style='font-size:12px;color:gray;' = staff.store.short_name
 
           td style='font-size:11px;' 申請
           - @one_month.each do |date|
@@ -45,7 +45,7 @@ button type="button" class="btn btn-sm btn-primary pull-right" data-toggle="moda
           - @one_month.each do |date|
             - if @shifts[[staff.id,date]].present?
               td style='font-size:12px;'
-                span = @shifts[[staff.id,date]].store.name if @shifts[[staff.id,date]].store_id.present?
+                span = @shifts[[staff.id,date]].store.short_name if @shifts[[staff.id,date]].store_id.present?
                 p style='margin:0;'= @shifts[[staff.id,date]].fix_shift_pattern.pattern_name if @shifts[[staff.id,date]].fix_shift_pattern_id.present?
 css:
   .table-responsive th {
