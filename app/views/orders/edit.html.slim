@@ -25,16 +25,25 @@
         .col-md-2
           = m.date_field(:make_date,value: (m.object.make_date || Time.now.strftime("%Y-%m-%d")),class:"form-control input_make_date",readonly:true)
   .col-md-12 style="padding-bottom:10px;"
-    .col-md-2.text-center style="font-size:20px;"
-      strong 発注食材・資材一覧
-    .col-md-3
+    .col-md-2
       label.text-right 企業絞込：
       = select_tag "vendor_id",options_for_select(@vendors),include_blank:true,class:'vendor_select form-control'
     .col-md-2
       label.text-right 納品日一括変更：
       = date_field("all", "date_change", value: Time.now.strftime("%Y-%m-%d"),class:"form-control")
-    .col-md-3 style="padding-top:25px;"
+
+    .col-md-2
+      label.text-right
+        | 発注店舗：
+      = f.collection_select :store_id, Store.all, :id, :name, {include_blank:true}, { class: "form-control store_id_input"}
+    .col-md-2
+      label.text-right
+        | 発注者名：
+      = f.text_field :staff_name,class:'form-control staff_name_input',placeholder:'発注者名を入力してください'
+
+    .col-md-2 style="padding-top:25px;"
       = f.select :fixed_flag, options_for_select([['確定：在庫が変動します', true], ['未確定：在庫に影響しません', false]], f.object.fixed_flag),{},class:'form-control fixed_flag'
+
 
     .col-md-2 style="padding-top:25px;"
       - if f.object.fixed_flag == true
