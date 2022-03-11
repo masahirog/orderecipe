@@ -270,6 +270,7 @@ ActiveRecord::Schema.define(version: 2022_02_14_101059) do
     t.string "image"
     t.string "short_name"
     t.integer "storage_place", default: 0, null: false
+    t.boolean "subdivision_able", default: false, null: false
   end
 
   create_table "menu_last_processes", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
