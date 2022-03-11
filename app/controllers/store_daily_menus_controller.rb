@@ -52,10 +52,24 @@ class StoreDailyMenusController < ApplicationController
       store_daily_menu_detail = store_daily_menu_details_hash[sdmd[0].to_i]
       store_daily_menu_detail.sozai_number = sdmd[1].to_i
       store_daily_menu_detail.number = store_daily_menu_detail.sozai_number + store_daily_menu_detail.bento_fukusai_number
-
       update_arr << store_daily_menu_detail
     end
     StoreDailyMenuDetail.import update_arr,on_duplicate_key_update:[:sozai_number,:number]
+    update_dmds = []
+    daily_menu_ids = store_daily_menu_details.map{|sdmd|sdmd.store_daily_menu.daily_menu_id}.uniq
+    DailyMenu.where(id:daily_menu_ids).each do |daily_menu|
+      sdmds = StoreDailyMenuDetail.where(store_daily_menu_id:daily_menu.store_daily_menus.ids)
+      product_num_hash = sdmds.group(:product_id).sum(:number)
+      sozai_num_hash = sdmds.group(:product_id).sum(:sozai_number)
+      fukusai_num_hash = sdmds.group(:product_id).sum(:bento_fukusai_number)
+      daily_menu.daily_menu_details.each do |dmd|
+        dmd.for_single_item_number = sozai_num_hash[dmd.product_id]
+        dmd.for_sub_item_number = fukusai_num_hash[dmd.product_id]
+        dmd.manufacturing_number = product_num_hash[dmd.product_id]
+        update_dmds << dmd
+      end
+    end
+    DailyMenuDetail.import update_dmds, :on_duplicate_key_update => [:for_single_item_number,:manufacturing_number,:for_sub_item_number]
     redirect_to input_manufacturing_number_store_daily_menus_path(store_id:params['store_id'],store_daily_menu_ids:params['store_daily_menu_ids'].split(" ")),notice:'更新OK！'
   end
   def stock
