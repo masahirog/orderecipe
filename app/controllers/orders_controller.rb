@@ -227,6 +227,30 @@ class OrdersController < AdminController
         hash['order_unit'] = material.order_unit
         hash['delivery_deadline'] = material.delivery_deadline
         hash['order_material_memo'] =''
+        hash["vendor_info"] = material.vendor.delivery_date
+        @arr << hash
+      end
+    elsif params[:np_flag] == 'true'
+      order_products = []
+      make_date = Date.today
+      materials = Material.where(vendor_id:549,unused_flag:false)
+      materials.each do |material|
+        hash = {}
+        hash['material'] = material
+        hash['make_num'] = 0
+        hash['product_id'] = ''
+        hash['menu_num'] = {'なし' => 0}
+        hash['material_id'] = material.id
+        hash['calculated_order_amount'] = 0
+        hash["recipe_unit_quantity"] = material.recipe_unit_quantity
+        hash["order_unit_quantity"] = material.order_unit_quantity
+        hash["vendor_id"] = material.vendor_id
+        hash["vendor_name"] = material.vendor.company_name.truncate(10)
+        hash['recipe_unit'] = material.recipe_unit
+        hash['order_unit'] = material.order_unit
+        hash['delivery_deadline'] = material.delivery_deadline
+        hash['order_material_memo'] =''
+        hash["vendor_info"] = material.vendor.delivery_date
         @arr << hash
       end
     elsif params[:make_date].present?
@@ -498,8 +522,11 @@ class OrdersController < AdminController
       respond_to do |format|
        format.html
        format.pdf do
-         pdf = OrderPdf.new(@materials_this_vendor,@vendor,@order)
-
+         if vendor_id == '549'
+           pdf = NpOrderPdf.new(@materials_this_vendor,@vendor,@order)
+         else
+           pdf = OrderPdf.new(@materials_this_vendor,@vendor,@order)
+         end
          send_data pdf.render,
            filename:    "#{@order.id}_#{@vendor.company_name}.pdf",
            type:        "application/pdf",

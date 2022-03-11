@@ -19,6 +19,7 @@ class CreateStores < ActiveRecord::Migration[5.2]
       t.integer :dinner_default_shift
       t.string :orikane_store_code
       t.string :short_name
+      t.string :np_store_code
     end
   end
 end

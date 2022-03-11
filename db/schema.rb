@@ -656,6 +656,7 @@ ActiveRecord::Schema.define(version: 2022_02_14_101059) do
     t.integer "dinner_default_shift"
     t.string "orikane_store_code"
     t.string "short_name"
+    t.string "np_store_code"
   end
 
   create_table "task_template_stores", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

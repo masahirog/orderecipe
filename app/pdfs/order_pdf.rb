@@ -34,7 +34,7 @@ class OrderPdf < Prawn::Document
   end
 
   def header_adress(vendor,order)
-    bounding_box([280, 700], :width => 240, :height =>100) do
+    bounding_box([280, 710], :width => 240, :height =>100) do
         font_size 11
         text "拠点ID：#{order.store.orikane_store_code}", :leading => 3 if vendor.id == 171
         text "#{order.store.name}", :leading => 3
