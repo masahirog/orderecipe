@@ -347,6 +347,7 @@ ActiveRecord::Schema.define(version: 2022_02_14_101059) do
     t.integer "expendables_amount"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "store_id", null: false
   end
 
   create_table "order_materials", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -595,7 +596,8 @@ ActiveRecord::Schema.define(version: 2022_02_14_101059) do
     t.boolean "inventory_flag", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["date", "material_id"], name: "index_stocks_on_date_and_material_id", unique: true
+    t.integer "store_id", null: false
+    t.index ["date", "material_id", "store_id"], name: "index_stocks_on_date_and_material_id_and_store_id", unique: true
   end
 
   create_table "store_daily_menu_details", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

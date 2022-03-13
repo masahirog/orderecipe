@@ -6,6 +6,8 @@ ja:
         vege: 食材（野菜）
         other_food: 食材（その他）
         packed: 包材
+        consumable_item: 消耗品
+        cooking_item: 調理用品
         other_packd: その他備品・消耗品
       storage_place:
         un_saved: 未登録

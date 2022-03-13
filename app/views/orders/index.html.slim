@@ -1,49 +1,49 @@
+h3 style='margin-right:40px;float:left;'
+  ="#{@store.name}　発注一覧"
+= form_tag orders_path, :method => 'get',class:"pull-right" do
+  = hidden_field_tag :store_id,params[:store_id]
+  = select_tag :material_id, options_from_collection_for_select(@materials, :id, :name,params[:material_id]),include_blank: '食材検索', class: "form-control material_search",style:"width:300px;"
+  = submit_tag "検索" ,class:"btn btn-primary btn-sm",style:'margin-left:20px;'
 .col-md-12.clearfix
-  h4 style='margin-right:40px;float:left;' 過去の発注一覧
-  = form_tag orders_path, :method => 'get' do
-    .col-md-4
-      = select_tag :material_id, options_from_collection_for_select(@materials, :id, :name,params[:material_id]),include_blank: '食材を選択して過去オーダーを検索する', class: "form-control material_search"
-    .col-md-1
-      = submit_tag "検索" ,class:"btn btn-primary btn-sm"
-.col-md-12.clearfix
-  = link_to "単品発注", new_order_path(),class:"order btn btn-primary",style:"float:left;"
-  button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newOrder" style='float:left;margin-left:10px;' 日付を選んで発注
-  #newOrder.modal.fade tabindex="-1"
-    .modal-dialog style='width:95%;'
-      .modal-content
-        .modal-header
-          h4.modal-title 発注する日付を選択してください
-          h4.modal-title ※発注開始する前に、該当日のくるめしオーダーとべじはん献立をよく確認してください。
-          span くるめしのカッコ内の数字は確認チェックがついていないオーダーの件数です。
-        .modal-body
-          = week_calendar(number_of_weeks: 2) do |date|
-            div
-              div style='padding-top:5px;padding-bottom:10px;font-size:16px;'
-                p = date.strftime("%-m月%-d日")
-                p = link_to 'すべて',new_order_path(make_date:date,filter:"none"),class:'btn btn-primary btn-sm'
-                p = link_to '野菜',new_order_path(make_date:date,filter:"veg"),class:'btn btn-default btn-sm'
-                p = link_to '肉・米',new_order_path(make_date:date,filter:"meat"),class:'btn btn-default btn-sm'
-                p = link_to 'その他',new_order_path(make_date:date,filter:"not_veg_meat"),class:'btn btn-default btn-sm'
-              div style=''
-                p
-                  = link_to 'くるめし',date_kurumesi_orders_path(date:date)
-                  = "：#{@date_confirm_order_count[date]} 件"
-                  - if @date_notconfirm_order_count[date]
-                    span （
-                    span style='color:red;' = "#{@date_notconfirm_order_count[date]}"
-                    span ）
-                p
-                  - if @date_daily_menu[date].present?
-                    = link_to 'べじはん',daily_menu_path(@date_daily_menu[date])
-                  - else
-                    span べじはん
-                  = "：#{@date_daily_menu_count[date]} 食"
+  = link_to "単品発注", new_order_path(store_id:params[:store_id]),class:"order btn btn-primary",style:"float:left;"
+  - if @store.id == 39
+    button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newOrder" style='float:left;margin-left:10px;' 日付を選んで発注
+    #newOrder.modal.fade tabindex="-1"
+      .modal-dialog style='width:95%;'
+        .modal-content
+          .modal-header
+            h4.modal-title 発注する日付を選択してください
+            h4.modal-title ※発注開始する前に、該当日のくるめしオーダーとべじはん献立をよく確認してください。
+            span くるめしのカッコ内の数字は確認チェックがついていないオーダーの件数です。
+          .modal-body
+            = week_calendar(number_of_weeks: 2) do |date|
+              div
+                div style='padding-top:5px;padding-bottom:10px;font-size:16px;'
+                  p = date.strftime("%-m月%-d日")
+                  p = link_to 'すべて',new_order_path(make_date:date,filter:"none",store_id:params[:store_id]),class:'btn btn-primary btn-sm'
+                  p = link_to '野菜',new_order_path(make_date:date,filter:"veg",store_id:params[:store_id]),class:'btn btn-default btn-sm'
+                  p = link_to '肉・米',new_order_path(make_date:date,filter:"meat",store_id:params[:store_id]),class:'btn btn-default btn-sm'
+                  p = link_to 'その他',new_order_path(make_date:date,filter:"not_veg_meat",store_id:params[:store_id]),class:'btn btn-default btn-sm'
+                div style=''
+                  p
+                    = link_to 'くるめし',date_kurumesi_orders_path(date:date)
+                    = "：#{@date_confirm_order_count[date]} 件"
+                    - if @date_notconfirm_order_count[date]
+                      span （
+                      span style='color:red;' = "#{@date_notconfirm_order_count[date]}"
+                      span ）
+                  p
+                    - if @date_daily_menu[date].present?
+                      = link_to 'べじはん',daily_menu_path(@date_daily_menu[date])
+                    - else
+                      span べじはん
+                    = "：#{@date_daily_menu_count[date]} 食"
 
-        .modal-footer
-          button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
+          .modal-footer
+            button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
 
-  = link_to "備品発注", new_order_path(bihin_flag:true),class:"order btn btn-primary",style:"float:left;margin-left:10px;"
-  = link_to "べじはん包材発注", new_order_path(np_flag:true),class:"order btn btn-primary",style:"float:left;margin-left:10px;"
+  = link_to "備品発注", new_order_path(bihin_flag:true,store_id:params[:store_id]),class:"order btn btn-primary",style:"float:left;margin-left:10px;"
+  = link_to "べじはん包材発注", new_order_path(np_flag:true,store_id:params[:store_id]),class:"order btn btn-primary",style:"float:left;margin-left:10px;"
 
   / = form_tag new_order_path, method: :get do
     = select_tag "vendor_id", options_from_collection_for_select(Vendor.all,:id,:company_name),include_blank:'企業を選択して', class: "form-control",style:'width:200px;float:left;'
@@ -56,8 +56,8 @@ table.table
       th
       th.text-center style="width:100px;" ステータス
       th style="width:130px;" 商品製造日
-      th style="width:100px;"
-      th
+      th style="width:100px;" 担当者
+      th 業者
   tbody
     - @orders.each do |order|
       - if order.fixed_flag == true

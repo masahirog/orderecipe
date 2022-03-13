@@ -1,23 +1,17 @@
-h3
-  |店舗一覧
-  / = link_to new_store_path do
-    i class="text-primary fas fa-plus-circle" style="cursor: pointer;" data-toggle="modal" data-target="#sampleModal"
-
-
+h3 店舗一覧
 table.table
   thead
     tr
       th 店名
+      th 献立
+      th リマインダー
+      th 発注
       th
-      th
-      / th 商品別販売データ
-      th
-
   tbody
     - @stores.each do |store|
       tr
         td = store.name
-        td = link_to '献立', store_daily_menus_path(store_id:store.id),class:'btn btn-sm btn-primary'
-        td = link_to 'リマインダー', store_tasks_path(store_id:store.id,status:'yet'),class:'btn btn-sm btn-primary'
-        / td = link_to '販売データ', store_products_sales_analyses_path(store_id:store.id),class:'btn btn-sm btn-primary'
-        td = link_to '編集', edit_store_path(store)
+        td = link_to '献立', store_daily_menus_path(store_id:store.id),class:'btn btn-sm btn-default'
+        td = link_to 'リマインダー', store_tasks_path(store_id:store.id,status:'yet'),class:'btn btn-sm btn-default'
+        td = link_to store.short_name, orders_path(store_id:store.id),class:"order btn btn-default btn-sm"
+        td = link_to '編集', edit_store_path(store),class:'btn btn-sm btn-default'

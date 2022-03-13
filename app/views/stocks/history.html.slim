@@ -27,6 +27,7 @@ table.table
             td.text-right
               = form_with(model: Stock.new, data: {remote: true}) do |f|
                 = f.hidden_field :history_flag,value:true
+                = f.hidden_field :store_id,value:params[:store_id]
                 = f.hidden_field :material_id,value:@material.id
                 = f.hidden_field :date,value:date
                 = f.hidden_field :inventory_flag,value:true

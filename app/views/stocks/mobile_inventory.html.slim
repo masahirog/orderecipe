@@ -40,6 +40,7 @@ html
                   span.accounting_unit_span style='float:left;padding-top:10px;' = material.accounting_unit
               - else
                 = form_with(model: Stock.new, data: {remote: true}) do |f|
+                  = f.hidden_field :store_id,value:@store.id
                   = f.hidden_field :mobile_flag,value:true
                   = f.hidden_field :material_id,value:material.id
                   = f.hidden_field :date,value:@date

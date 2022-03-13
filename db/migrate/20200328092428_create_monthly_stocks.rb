@@ -7,8 +7,8 @@ class CreateMonthlyStocks < ActiveRecord::Migration[5.2]
       t.integer :foods_amount
       t.integer :equipments_amount
       t.integer :expendables_amount
-
       t.timestamps
+      t.integer :store_id,null:false
     end
   end
 end

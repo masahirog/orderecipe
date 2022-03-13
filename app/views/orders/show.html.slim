@@ -1,7 +1,6 @@
+h4.pull-left = "#{@order.store.name}の発注"
 - if @order.order_products[0].present?
-  h4 = "製造日：#{@order.order_products[0].make_date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@order.order_products[0].make_date.wday]})")}"
-- else
-  h4 単品発注
+  h4.pull-right = "製造日：#{@order.order_products[0].make_date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@order.order_products[0].make_date.wday]})")}"
 ul.list-group.col-md-12.form-group
   - @order.order_products.each_slice(3) do |op1,op2,op3|
     li.list-group-item.col-md-12 style='padding:5px 15px;'

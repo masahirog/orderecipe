@@ -2,7 +2,8 @@ class OrdersController < AdminController
   def material_reload
     @material = Material.find(params[:material_id])
     date = params[:date]
-    @prev_stock = Stock.where("date <= ?", date).where(material_id:params[:material_id]).order("date DESC").first
+    store_id = params[:store_id]
+    @prev_stock = Stock.where(store_id:store_id).where("date <= ?", date).where(material_id:params[:material_id]).order("date DESC").first
   end
   def material_info
     @material = Material.find(params[:id])
@@ -18,11 +19,12 @@ class OrdersController < AdminController
     else
       @date = Date.today
     end
+    store_id = params[:store_id]
     if params[:vendor_id].present?
       vendor_id = params[:vendor_id]
-      @order_materials = OrderMaterial.includes(:order,material:[:vendor]).where(delivery_date:@date,un_order_flag:false).where(:materials => {vendor_id:vendor_id})
+      @order_materials = OrderMaterial.includes(:order,material:[:vendor]).where(:orders => {store_id:store_id}).where(delivery_date:@date,un_order_flag:false).where(:materials => {vendor_id:vendor_id})
     else
-      @order_materials = OrderMaterial.includes(:order,material:[:vendor]).where(delivery_date:@date,un_order_flag:false).order("vendors.id")
+      @order_materials = OrderMaterial.includes(:order,material:[:vendor]).where(:orders => {store_id:store_id}).where(delivery_date:@date,un_order_flag:false).order("vendors.id")
     end
     @hash = {}
     @order_materials.each do |om|
@@ -66,13 +68,13 @@ class OrdersController < AdminController
     materials = Product.includes(:product_menus,[menus: [menu_materials: :material]]).where(id:product_ids).map{|product| product.menus.map{|pm| pm.menu_materials.map{|mm|[mm.material.id, product.name]}}}.flatten(2)
     if @order.order_products.present?
       make_date = @order.order_products[0].make_date
-      stocks_hash = Stock.where("date < ?", make_date).order("date ASC").map{|stock|[stock.material_id,stock]}.to_h
+      stocks_hash = Stock.where(store_id:@order.store_id).where("date < ?", make_date).order("date ASC").map{|stock|[stock.material_id,stock]}.to_h
       @order.order_materials.each do |om|
         @prev_stocks[om.material_id] = stocks_hash[om.material_id]
       end
     end
     stock_hash = {}
-    @stocks = Stock.includes(:material).where(date:(today - 5)..(today + 10)).order('date ASC').map do |stock|
+    @stocks = Stock.includes(:material).where(store_id:@order.store_id).where(date:(today - 5)..(today + 10)).order('date ASC').map do |stock|
       if stock_hash[stock.material_id].present?
         stock_hash[stock.material_id] << stock
       else
@@ -122,10 +124,11 @@ class OrdersController < AdminController
     @materials = Material.all
     if params[:material_id]
       material_id = params[:material_id]
-      @orders = Order.includes(:order_products).joins(:order_materials).where(:order_materials => {material_id:material_id,un_order_flag:false}).order("id DESC").page(params[:page]).per(20)
+      @orders = Order.where(store_id:params[:store_id]).includes(:order_products).joins(:order_materials).where(:order_materials => {material_id:material_id,un_order_flag:false}).order("id DESC").page(params[:page]).per(20)
     else
-      @orders = Order.includes(:order_products).order("id DESC").page(params[:page]).per(20)
+      @orders = Order.where(store_id:params[:store_id]).includes(:order_products).order("id DESC").page(params[:page]).per(20)
     end
+    @store = Store.find(params[:store_id])
     @vendors_hash = Hash.new { |h,k| h[k] = {} }
     order_ids = @orders.map{|order|order.id}
     OrderMaterial.includes(material:[:vendor]).where(order_id:order_ids,un_order_flag:false).each do |om|
@@ -182,7 +185,7 @@ class OrdersController < AdminController
     material_ids = []
     @product_hash = {}
     @arr = []
-    @order = Order.new
+    @order = Order.new(store_id:params[:store_id])
     if params[:daily_menu_start_time]
       order_products = []
       date = params[:daily_menu_start_time]
@@ -355,14 +358,14 @@ class OrdersController < AdminController
     material_ids = material_ids.uniq
     @prev_stocks = {}
     @stock_hash = {}
-    stocks_hash = Stock.where(material_id:material_ids).where("date < ?", make_date).order("date ASC").map{|stock|[stock.material_id,stock]}.to_h
+    stocks_hash = Stock.where(store_id:params[:store_id],material_id:material_ids).where("date < ?", make_date).order("date ASC").map{|stock|[stock.material_id,stock]}.to_h
     # stocks_hash_short = Stock.joins(:material).where(:materials => {vendor_id:[151,121,131]}).where("date < ?", make_date+1).order("date ASC").map{|stock|[stock.material_id,stock]}.to_h
     # stocks_hash_long = Stock.joins(:material).where.not(:materials => {vendor_id:[151,121,131]}).where("date < ?", make_date+5).order("date ASC").map{|stock|[stock.material_id,stock]}.to_h
     # stocks_hash = stocks_hash_short.merge(stocks_hash_long)
     date = make_date - 1
     stock_hash = {}
     @latest_material_used_amount = {}
-    Stock.includes(:material).where(material_id:@b_hash.keys,date:(date - 10)..(date + 10)).order('date ASC').map do |stock|
+    Stock.includes(:material).where(store_id:params[:store_id],material_id:@b_hash.keys,date:(date - 10)..(date + 10)).order('date ASC').map do |stock|
       @latest_material_used_amount[stock.material_id] = 0 unless @latest_material_used_amount[stock.material_id].present?
       if stock_hash[stock.material_id].present?
         stock_hash[stock.material_id] << stock

@@ -37,35 +37,37 @@ html
                       |キッチン
                       span.caret
                     ul.dropdown-menu role="menu" style='width:250px;'
+                      h5 style='padding:0 10px;font-weight:bold;' べじはん
                       li = link_to "べじはん献立",daily_menus_path
-                      li = link_to "くるめしオーダー",kurumesi_orders_path(start_date:Date.today)
-                      li.clearfix
-                        = link_to '改善リスト', kaizen_lists_path, style:'float:left;'
-                        span style='float:left;margin-top:3px;' [
-                        span style='float:left;margin-top:3px;color:red;' = "　#{@kaizen_list_counts}　"
-                        span style='float:left;margin-top:3px;' ]
-                      li = link_to "くるめし領収書",receipt_kurumesi_orders_path,target:'_blank'
-                      li = link_to "くるめし請求書",'https://docs.google.com/spreadsheets/d/1BBs1RL8ojynO-MW14mH49ejwaTP7pWeHuvfjs-aX_4Y/edit#gid=737319184',target:'_blank'
-
-                ul.nav.navbar-nav
+                      h5 style='padding:0 10px;font-weight:bold;' くるめし
+                      li = link_to "オーダー",kurumesi_orders_path(start_date:Date.today)
+                      li = link_to "領収書",receipt_kurumesi_orders_path,target:'_blank'
+                      li = link_to "請求書",'https://docs.google.com/spreadsheets/d/1BBs1RL8ojynO-MW14mH49ejwaTP7pWeHuvfjs-aX_4Y/edit#gid=737319184',target:'_blank'
+                      h5 style='padding:0 10px;font-weight:bold;' 発注・在庫
+                      li = link_to "発注",orders_path(store_id:39)
+                      li = link_to "納品確認",deliveried_list_orders_path(store_id:39)
+                      li = link_to "野菜棚卸し",mobile_inventory_stocks_path(date:Date.today,vendor_id:[151,489],store_id:39),target:'_blank'
+                      li = link_to "肉類棚卸し",mobile_inventory_stocks_path(date:Date.today,vendor_id:[121,131,509,441,529],store_id:39),target:'_blank'
+                      li = link_to "くるめし備品手配","https://docs.google.com/spreadsheets/d/12VRdyriEK7nqzdMFcdHqPPcs52n_CsZ20nGfbS0X5GI/edit#gid=104376609",target:'_blank'
+                      li
+                        a.clearfix href="/stocks/inventory?to=#{Date.today}&store_id=39"
+                          span style='float:left;' 棚卸し
+                          span class="badge badge-danger" style='background-color:red;float:left;'
+                            = @stock_alert_materials
+                      li = link_to "月次棚卸し在庫",stocks_path(store_id:39)
                   li.dropdown
                     a.dropdown-toggle href="#" data-toggle="dropdown" role="button"
                       |販売店舗
                       span.caret
                     ul.dropdown-menu role="menu" style='width:250px;'
+                      h5 style='padding:0 10px;font-weight:bold;' 運営
                       li = link_to "店舗",stores_path
                       li = link_to '販売レポート',sales_reports_path
                       li = link_to "お客さまの声",customer_opinions_path
-                      li = link_to 'シフト作成',shifts_path(date:'2022/03/01')
+                      li = link_to 'シフト作成',shifts_path(date:Date.today)
                       li = link_to 'スタッフ',staffs_path
                       li = link_to '確定シフトパターン',fix_shift_patterns_path
-
-                ul.nav.navbar-nav
-                  li.dropdown
-                    a.dropdown-toggle href="#" data-toggle="dropdown" role="button"
-                      |データ
-                      span.caret
-                    ul.dropdown-menu role="menu" style='width:250px;'
+                      h5 style='padding:0 10px;font-weight:bold;' データ
                       li = link_to "売上・廃棄",summary_analyses_path
                       li = link_to "時間帯別来客数",visitors_time_zone_analyses_path
                       li = link_to "商品販売数推移",product_sales_analyses_path
@@ -76,27 +78,16 @@ html
 
                   li.dropdown
                     a.dropdown-toggle href="#" data-toggle="dropdown" role="button"
-                      |発注・棚卸
-                      span.caret
-                    ul.dropdown-menu role="menu" style='width:250px;'
-                      li = link_to "発注",orders_path
-                      li = link_to "納品確認",deliveried_list_orders_path
-                      li = link_to "野菜棚卸し",mobile_inventory_stocks_path(date:Date.today,vendor_id:[151,489]),target:'_blank'
-                      li = link_to "肉類棚卸し",mobile_inventory_stocks_path(date:Date.today,vendor_id:[121,131,509,441,529]),target:'_blank'
-                      li = link_to "くるめし備品手配","https://docs.google.com/spreadsheets/d/12VRdyriEK7nqzdMFcdHqPPcs52n_CsZ20nGfbS0X5GI/edit#gid=104376609",target:'_blank'
-                      li
-                        a.clearfix href="/stocks/inventory?to=#{Date.today}"
-                          span style='float:left;' 棚卸し
-                          span class="badge badge-danger" style='background-color:red;float:left;'
-                            = @stock_alert_materials
-                      li = link_to "月次棚卸し在庫",stocks_path()
-
-                  li.dropdown
-                    a.dropdown-toggle href="#" data-toggle="dropdown" role="button"
                       |レシピ
                       span.caret
                     ul.dropdown-menu role="menu" style='width:250px;'
                       li = link_to "商品一覧",products_path
+                      li.clearfix
+                        = link_to '改善リスト', kaizen_lists_path, style:'float:left;'
+                        span style='float:left;margin-top:3px;' [
+                        span style='float:left;margin-top:3px;color:red;' = "　#{@kaizen_list_counts}　"
+                        span style='float:left;margin-top:3px;' ]
+
                       li = link_to "メニュー",menus_path
                       li = link_to "食材・資材",materials_path
                       li = link_to "食材月間使用確認",monthly_used_amount_materials_path
@@ -111,6 +102,7 @@ html
                       li = link_to "炊飯シート",cooking_rices_path
                       li = link_to "盛り付け皿設定",serving_plates_path
                       li = link_to "盛り付け包材設定",containers_path
+
                 #navbarEexample.collapse.navbar-collapse.navbar-right
                   ul.nav.navbar-nav
                     li.user_nav.grid-6
@@ -135,3 +127,42 @@ html
 
       = yield
     .col-md-12.footer style="height:20px;"
+
+css:
+  .navbar {
+    position: relative;
+    z-index: 9999;
+  }
+
+  .dropdown_multilayer_menu_sub {
+    border:1px solid rgba(0,0,0,.15);
+    position: absolute;
+    background: white;
+    width: 210px;
+    visibility: hidden;
+  }
+
+  .dropdown_multilayer_menu_third_sub {
+    position: absolute;
+    border:1px solid rgba(0,0,0,.15);
+    top: 0;
+    left: 210px;
+    width: 100%;
+    background: white;
+    visibility: hidden;
+  }
+
+
+  .dropdown_multilayer_menu_third {
+    position: relative;
+    background: white;
+  }
+
+  .dropdown_multilayer_menu_third:hover .dropdown_multilayer_menu_third_sub {
+    visibility: visible;
+  }
+
+
+  .dropdown_multilayer:hover .dropdown_multilayer_menu_sub {
+    visibility: visible;
+  }

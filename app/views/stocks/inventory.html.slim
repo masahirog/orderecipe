@@ -1,5 +1,7 @@
+h2= "#{@store.name} 棚卸し"
 .clearfix.form-group
   = form_tag inventory_stocks_path,class:'invento_material_search', :method => 'get' do
+    = hidden_field_tag :store_id, params[:store_id]
     label style="float:left;margin-right:20px;margin-top:5px;" 日付
     = date_field_tag :to, params[:to], class: "form-control",style:'width:200px;float:left;margin-right:20px;'
     label style="float:left;margin-right:20px;margin-top:5px;" 棚卸し分類
@@ -11,12 +13,14 @@
     = submit_tag "検索" ,class:"btn btn-primary",style:'float:left;'
 
   = form_tag inventory_stocks_path(:format => :csv), :method => 'get' do
+    = hidden_field_tag :store_id, params[:store_id]
     = hidden_field_tag :to, params[:to]
     = hidden_field_tag :storage_place,params[:storage_place]
     = hidden_field_tag :order,params[:order]
     = submit_tag "CSV" ,class:"btn btn-default",style:'float:right;'
 
   = form_tag inventory_stocks_path(:format => :pdf), :method => 'get' do
+    = hidden_field_tag :store_id, params[:store_id]
     = hidden_field_tag :to, params[:to]
     = hidden_field_tag :storage_place,params[:storage_place]
     = hidden_field_tag :order,params[:order]
@@ -46,7 +50,7 @@ table.table
           - bc = 'pink'
       - else
         - bc = 'pink'
-      = render partial: "tr", locals: { material:material,bc:bc }
+      = render partial: "tr", locals: { material:material,store_id:params[:store_id],bc:bc }
 
 javascript:
   $(function() {

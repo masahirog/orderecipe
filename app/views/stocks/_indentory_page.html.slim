@@ -1,18 +1,18 @@
-table.table
-  thead
-    tr
-      th 食材名
-      th 業者名
-      th 直近棚卸し
-      th 変更履歴
-      th 日初在庫
-      th 使用量
-      th 納品量
-      th 日終在庫
-      th
-      th
-  tbody.materials_tbody
-    - @materials.each do |material|
-      = render partial: "tr", locals: { material:material }
-
-= paginate @materials, remote: true
+/ table.table
+/   thead
+/     tr
+/       th 食材名
+/       th 業者名
+/       th 直近棚卸し
+/       th 変更履歴
+/       th 日初在庫
+/       th 使用量
+/       th 納品量
+/       th 日終在庫
+/       th
+/       th
+/   tbody.materials_tbody
+/     - @materials.each do |material|
+/       = render partial: "tr", locals: { material:material }
+/
+/ = paginate @materials, remote: true

@@ -1,46 +1,46 @@
-= form_for @stock do |f|
-  - if @stock.errors.any?
-    #error_explanation
-      h2 = "#{pluralize(@stock.errors.count, "error")} prohibited this brand from being saved:"
-      ul
-        - @stock.errors.full_messages.each do |message|
-          li = message
-
-  = f.hidden_field :material_id
-  = f.hidden_field :date
-  = f.hidden_field :start_day_stock
-  = f.hidden_field :used_amount
-  = f.hidden_field :delivery_amount
-  h2
-    = @stock.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@stock.date.wday]})")
-  table.table
-    thead
-      tr
-        th 食材名
-        th 業者名
-        th 使用量
-        th 納品量
-        th 在庫（日初時）
-        th 棚卸しチェック
-        th 在庫（日終時）
-    tbody
-      tr
-        td
-          = @stock.material.name
-        td
-          = @stock.material.vendor.company_name
-        td
-          = (@stock.used_amount/@stock.material.accounting_unit_quantity).ceil(1)
-        td
-          = (@stock.delivery_amount/@stock.material.accounting_unit_quantity).ceil(1)
-        td
-          = "#{(@stock.start_day_stock/@stock.material.accounting_unit_quantity).ceil(1)} #{@stock.material.accounting_unit}"
-        td
-          = f.check_box :inventory_flag, class:"form-control"
-        td.clear_fix
-          = number_field_tag 'end_day_stock_accounting_unit',(@stock.end_day_stock/@stock.material.accounting_unit_quantity).floor(2),
-           class:"form-control",required:true,style:'width:120px;float:left;', :step => 0.01
-          span style='padding:10px 0 0 5px;float:left;' = @stock.material.accounting_unit
-
-  .actions
-    = f.submit '登録する',class:'btn btn-success'
+/ = form_for @stock do |f|
+/   - if @stock.errors.any?
+/     #error_explanation
+/       h2 = "#{pluralize(@stock.errors.count, "error")} prohibited this brand from being saved:"
+/       ul
+/         - @stock.errors.full_messages.each do |message|
+/           li = message
+/
+/   = f.hidden_field :material_id
+/   = f.hidden_field :date
+/   = f.hidden_field :start_day_stock
+/   = f.hidden_field :used_amount
+/   = f.hidden_field :delivery_amount
+/   h2
+/     = @stock.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@stock.date.wday]})")
+/   table.table
+/     thead
+/       tr
+/         th 食材名
+/         th 業者名
+/         th 使用量
+/         th 納品量
+/         th 在庫（日初時）
+/         th 棚卸しチェック
+/         th 在庫（日終時）
+/     tbody
+/       tr
+/         td
+/           = @stock.material.name
+/         td
+/           = @stock.material.vendor.company_name
+/         td
+/           = (@stock.used_amount/@stock.material.accounting_unit_quantity).ceil(1)
+/         td
+/           = (@stock.delivery_amount/@stock.material.accounting_unit_quantity).ceil(1)
+/         td
+/           = "#{(@stock.start_day_stock/@stock.material.accounting_unit_quantity).ceil(1)} #{@stock.material.accounting_unit}"
+/         td
+/           = f.check_box :inventory_flag, class:"form-control"
+/         td.clear_fix
+/           = number_field_tag 'end_day_stock_accounting_unit',(@stock.end_day_stock/@stock.material.accounting_unit_quantity).floor(2),
+/            class:"form-control",required:true,style:'width:120px;float:left;', :step => 0.01
+/           span style='padding:10px 0 0 5px;float:left;' = @stock.material.accounting_unit
+/
+/   .actions
+/     = f.submit '登録する',class:'btn btn-success'

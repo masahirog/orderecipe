@@ -27,7 +27,7 @@ class Order < ApplicationRecord
     before_dates = self.order_materials.map{|om|om.delivery_date_was}.uniq
     after_dates = self.order_materials.map{|om|om.delivery_date}.uniq
     @dates = (before_dates + after_dates).uniq
-    stocks = Stock.where(date:@dates)
+    stocks = Stock.where(store_id:self.store_id,date:@dates)
     # stocks.update_all(delivery_amount:0)
     stocks.each do |stock|
       stock.end_day_stock = stock.start_day_stock - stock.used_amount
@@ -59,7 +59,7 @@ class Order < ApplicationRecord
     @dates = @dates.uniq
     Stock.import stocks_arr,on_duplicate_key_update:[:delivery_amount,:end_day_stock] if stocks_arr.present?
     Stock.where(id:stock_ids).each do |stock|
-      Stock.change_stock(update_stocks,stock.material_id,stock.date,stock.end_day_stock)
+      Stock.change_stock(update_stocks,stock.material_id,stock.date,stock.end_day_stock,self.store_id)
     end
     Stock.import update_stocks, on_duplicate_key_update:[:end_day_stock,:start_day_stock] if update_stocks.present?
   end
@@ -68,7 +68,7 @@ class Order < ApplicationRecord
   def input_stock
     new_stocks = []
     update_stocks = []
-    order_materials_group = OrderMaterial.where(un_order_flag:false).joins(:order).where(:orders => {fixed_flag:true}).where(delivery_date:@dates).group('delivery_date').group('material_id').sum(:order_quantity)
+    order_materials_group = OrderMaterial.where(un_order_flag:false).joins(:order).where(:orders => {fixed_flag:true,store_id:self.store_id}).where(delivery_date:@dates).group('delivery_date').group('material_id').sum(:order_quantity)
     order_materials_group.each do |omg|
       date = omg[0][0]
       material_id = omg[0][1]
@@ -76,24 +76,24 @@ class Order < ApplicationRecord
       #レシピ単位で計上する!
       # delivery_amount = omg[1].to_f * material.recipe_unit_quantity
       delivery_amount = omg[1].to_f
-      stock = Stock.find_by(date:date,material_id:material_id)
+      stock = Stock.find_by(date:date,material_id:material_id,store_id:self.store_id)
       if stock
         stock.delivery_amount = delivery_amount
         end_day_stock = stock.start_day_stock - stock.used_amount + delivery_amount
         stock.end_day_stock = end_day_stock
         update_stocks << stock
       else
-        prev_stock = Stock.where("date < ?", date).where(material_id:material_id).order("date DESC").first
+        prev_stock = Stock.where(store_id:self.store_id).where("date < ?", date).where(material_id:material_id).order("date DESC").first
         if prev_stock.present?
           start_day_stock = prev_stock.end_day_stock
           end_day_stock = start_day_stock + delivery_amount
-          new_stocks << Stock.new(material_id:material_id,date:date,end_day_stock:end_day_stock,start_day_stock:start_day_stock,delivery_amount:delivery_amount)
+          new_stocks << Stock.new(material_id:material_id,date:date,end_day_stock:end_day_stock,start_day_stock:start_day_stock,delivery_amount:delivery_amount,store_id:self.store_id)
         else
           end_day_stock = delivery_amount
-          new_stocks << Stock.new(material_id:material_id,date:date,end_day_stock:end_day_stock,delivery_amount:delivery_amount)
+          new_stocks << Stock.new(material_id:material_id,date:date,end_day_stock:end_day_stock,delivery_amount:delivery_amount,store_id:self.store_id)
         end
       end
-      Stock.change_stock(update_stocks,material_id,date,end_day_stock)
+      Stock.change_stock(update_stocks,material_id,date,end_day_stock,self.store_id)
 
       # stocks = Stock.where(material_id:material_id).where('date > ?', date).where(inventory_flag:true)
       # if stocks.present?

@@ -17,11 +17,12 @@ class KurumesiOrder < ApplicationRecord
   after_save :input_stock
 
   def input_stock
+    store_id = 39
     if @change_flag == true
       #saveされたdailymenuの日付を取得
       date = self.start_time
       previous_day = self.start_time - 1
-      Stock.calculate_stock(date,previous_day)
+      Stock.calculate_stock(date,previous_day,store_id)
     end
   end
 

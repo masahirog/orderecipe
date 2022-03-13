@@ -1,29 +1,29 @@
-= form_tag '/orders/monthly', :method => 'get',class:'form-inline' do
-  .form-group style='margin-right:5px;'
-    = select_tag :year,options_for_select(2018..2019,params[:year]), class:"form-control",style:'width:150px;'
-  .form-group style='margin-right:10px;'
-    |年
-  .form-group style='margin-right:5px;'
-    = select_tag :month,options_for_select(1..12,params[:month]), class:"form-control",style:'width:100px;'
-  .form-group style='margin-right:10px;'
-    |月
-
-  .form-group
-    = submit_tag "表示" ,class:"btn btn-primary"
-table.table
-  thead
-    tr
-      th 会社名
-      th.text-right 合計価格
-      th.text-right 使用食材数
-  thead
-    tr
-      th 合計
-      th.text-right = "#{@total_cost.round.to_s(:delimited)}円"
-      th.text-right
-  tbody
-    - @vendor_sum.each do |hash|
-      tr
-        td = Vendor.find(hash['vendor_id']).company_name
-        td.text-right = "#{hash['cost_price'].round.to_s(:delimited)}円"
-        td.text-right = @ar[hash['vendor_id']].length
+/ = form_tag '/orders/monthly', :method => 'get',class:'form-inline' do
+/   .form-group style='margin-right:5px;'
+/     = select_tag :year,options_for_select(2018..2019,params[:year]), class:"form-control",style:'width:150px;'
+/   .form-group style='margin-right:10px;'
+/     |年
+/   .form-group style='margin-right:5px;'
+/     = select_tag :month,options_for_select(1..12,params[:month]), class:"form-control",style:'width:100px;'
+/   .form-group style='margin-right:10px;'
+/     |月
+/
+/   .form-group
+/     = submit_tag "表示" ,class:"btn btn-primary"
+/ table.table
+/   thead
+/     tr
+/       th 会社名
+/       th.text-right 合計価格
+/       th.text-right 使用食材数
+/   thead
+/     tr
+/       th 合計
+/       th.text-right = "#{@total_cost.round.to_s(:delimited)}円"
+/       th.text-right
+/   tbody
+/     - @vendor_sum.each do |hash|
+/       tr
+/         td = Vendor.find(hash['vendor_id']).company_name
+/         td.text-right = "#{hash['cost_price'].round.to_s(:delimited)}円"
+/         td.text-right = @ar[hash['vendor_id']].length

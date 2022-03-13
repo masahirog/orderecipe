@@ -8,10 +8,9 @@ class CreateStocks < ActiveRecord::Migration[4.2][5.0]
       t.float :used_amount,null:false,default:0
       t.float :delivery_amount,null:false,default:0
       t.boolean :inventory_flag,null:false,default:false
-
-      t.index [:date, :material_id], unique: true
-
+      t.index [:date, :material_id,:store_id], unique: true
       t.timestamps
+      t.integer :store_id,null:false
     end
   end
 end

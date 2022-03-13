@@ -1,12 +1,4 @@
 = form_for @order do |f|
-  - if @order.errors.any?
-    #error_explanation
-      b
-        = pluralize(@order.errors.count, "箇所")
-        | 入力に不備があります
-      ul style="list-style:none;"
-        - @order.errors.full_messages.each do |message|
-          li = message
   ul.list-group.col-md-12
     = f.fields_for :order_products do |op|
       li.list-group-item.col-md-12 style="padding:5px;"
@@ -31,7 +23,9 @@
     .col-md-2
       label.text-right
         | 発注店舗：
-      = f.collection_select :store_id, Store.all, :id, :name, {include_blank:true}, { class: "form-control store_id_input"}
+      input.form-control value="#{f.object.store.name}" readonly=true
+      = f.hidden_field :store_id
+      / = f.collection_select :store_id, Store.all, :id, :name, {include_blank:true}, { class: "form-control store_id_input"}
     .col-md-2
       label.text-right
         | 発注者名：
@@ -111,7 +105,7 @@
                     = link_to edit_material_path(material),target:'_blank',class:'stock-tooltip' do
                       span style='color:green;margin-left:10px;' class="glyphicon glyphicon-pencil" aria-hidden="true"  data-toggle="tooltip" data-placement="bottom" title="食材の編集"
                     -if @prev_stocks.first[1].present?
-                      = link_to material_reload_orders_path(material_id:m.object.material_id,date:@prev_stocks.first[1].date), method: :post, remote: true
+                      = link_to material_reload_orders_path(material_id:m.object.material_id,date:@prev_stocks.first[1].date,store_id:params[:store_id]), method: :post, remote: true
                         span style='color:red;margin-left:10px;' class="glyphicon glyphicon-refresh" aria-hidden="true"
 
               .text-right.change_unit.memo-tooltip style="float:left;width:40%;padding-left:5px;color:gray;"
@@ -152,27 +146,8 @@ javascript:
     $(document).on("keypress", "input:not(.allow_submit)", function(event) {
       return event.which !== 13;
     });
-    $(".store_id_input").on('change',function(){
-      if ($(this).val() == null || $(this).val() == '') {
-        $(".order_submit").prop("disabled", true);
-      }else{
-        if ($(".staff_name_input").val() == null || $(".staff_name_input").val() == '') {
-          $(".order_submit").prop("disabled", true);
-        }else{
-          $(".order_submit").prop("disabled", false);
-        }
-      }
-    });
     $(".staff_name_input").on('keyup',function(){
-      if ($(this).val() == null || $(this).val() == '') {
-        $(".order_submit").prop("disabled", true);
-      }else{
-        if ($(".store_id_input").val() == null || $(".store_id_input").val() == '') {
-          $(".order_submit").prop("disabled", true);
-        }else{
-          $(".order_submit").prop("disabled", false);
-        }
-      }
+      $(".order_submit").prop("disabled", false);
     });
 
 
