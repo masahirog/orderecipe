@@ -91,7 +91,7 @@
                     span style='margin-right:10px;color:white;' 棚卸し！
                 - if m.object.material_id.present?
                   - if @stock_hash[m.object.material_id].present?
-                    = link_to history_stocks_path(material_id:m.object.material_id),target:'_blank',class:'stock-tooltip' do
+                    = link_to history_stocks_path(material_id:m.object.material_id,store_id:params[:store_id]),target:'_blank',class:'stock-tooltip' do
                       span data-html="true" style='color:blue;margin-left:10px;' class="" aria-hidden="true"  data-toggle="tooltip" data-placement="bottom" title="<div style='padding:10px;'><span style='font-size:16px;'>直近10日間の使用量合計は： 約 #{(@latest_material_used_amount[material.id]/material.recipe_unit_quantity).ceil(1) if @latest_material_used_amount[material.id] > 0} #{material.order_unit}です</span></div><table class='table tooltip-table table-striped'>#{@stock_hash[m.object.material_id].flatten.join('')}</table>"
                         - if m.object.material_id.present?
                           - if @prev_stocks[m.object.material_id]
