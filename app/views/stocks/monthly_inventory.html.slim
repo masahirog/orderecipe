@@ -1,21 +1,21 @@
-= link_to "CSV", inventory_stocks_path(category:params[:category],date:params[:date],store_id:39,format:'csv'), class: "btn btn-default",style:'float:right;'
-
-table.table
-  thead
-    tr
-      th 食材
-      th.text-right 在庫
-      th.text-right 価格
-      th.text-right 最終変動日
-  tbody
-    - @materials.each do |material|
-      tr
-        td
-          = link_to material.name,edit_material_path(material),target:'_blank',class:'stock-tooltip not_alert'
-        td.text-right
-          = link_to "#{@stocks_h[material.id][0].floor(1)} #{material.accounting_unit}",history_stocks_path(material_id:material.id),target:'_blank',class:'stock-tooltip not_alert'
-        td.text-right
-          = "#{@stocks_h[material.id][1].round.to_s(:delimited)} 円"
-        td.text-right
-          = @stocks_h[material.id][2]
-= paginate @materials
+/ = link_to "CSV", inventory_stocks_path(category:params[:category],date:params[:date],store_id:39,format:'csv'), class: "btn btn-default",style:'float:right;'
+/
+/ table.table
+/   thead
+/     tr
+/       th 食材
+/       th.text-right 在庫
+/       th.text-right 価格
+/       th.text-right 最終変動日
+/   tbody
+/     - @materials.each do |material|
+/       tr
+/         td
+/           = link_to material.name,edit_material_path(material),target:'_blank',class:'stock-tooltip not_alert'
+/         td.text-right
+/           = link_to "#{@stocks_h[material.id][0].floor(1)} #{material.accounting_unit}",history_stocks_path(material_id:material.id),target:'_blank',class:'stock-tooltip not_alert'
+/         td.text-right
+/           = "#{@stocks_h[material.id][1].round.to_s(:delimited)} 円"
+/         td.text-right
+/           = @stocks_h[material.id][2]
+/ = paginate @materials

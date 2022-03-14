@@ -43,7 +43,8 @@ h3 style='margin-right:40px;float:left;'
             button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
 
   = link_to "備品発注", new_order_path(bihin_flag:true,store_id:params[:store_id]),class:"order btn btn-primary",style:"float:left;margin-left:10px;"
-  = link_to "べじはん包材発注", new_order_path(np_flag:true,store_id:params[:store_id]),class:"order btn btn-primary",style:"float:left;margin-left:10px;"
+  - unless @store.id == 39
+    = link_to "べじはん包材発注", new_order_path(np_flag:true,store_id:params[:store_id]),class:"order btn btn-primary",style:"float:left;margin-left:10px;"
 
   / = form_tag new_order_path, method: :get do
     = select_tag "vendor_id", options_from_collection_for_select(Vendor.all,:id,:company_name),include_blank:'企業を選択して', class: "form-control",style:'width:200px;float:left;'
