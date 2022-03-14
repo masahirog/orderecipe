@@ -51,7 +51,7 @@ class OrdersController < AdminController
     today = Date.today
     vendor_name = {}
     all_materials = Material.includes(:vendor).where(unused_flag:false)
-    @vendor_name =all_materials.map{|material|[material.id,material.vendor.company_name]}.to_h
+    # @vendor_name =all_materials.map{|material|[material.id,material.vendor.company_name]}.to_h
     @stock_hash ={}
     @hash = {}
     @prev_stocks = {}
@@ -122,6 +122,8 @@ class OrdersController < AdminController
   end
 
   def index
+    @today_wday = Date.today.wday
+    @wdays = [['月曜日',1],['火曜日',2],['水曜日',3],['木曜日',4],['金曜日',5],['土曜日',6],['日曜日',7]]
     @materials = Material.all
     if params[:material_id]
       material_id = params[:material_id]
@@ -255,6 +257,34 @@ class OrdersController < AdminController
         hash['delivery_deadline'] = material.delivery_deadline
         hash['order_material_memo'] =''
         hash["vendor_info"] = material.vendor.delivery_date
+        @arr << hash
+      end
+    elsif params[:wday_new_order] == 'true'
+      order_products = []
+      make_date = Date.today
+      @hash = {"1"=>'mon',"2"=>'tue',"3"=>'wed',"4"=>'thu',"5"=>'fri',"6"=>'sat',"7"=>'sun'}
+      wday_nihongo_hash = {"1"=>'月曜日',"2"=>'火曜日',"3"=>'水曜日',"4"=>'木曜日',"5"=>'金曜日',"6"=>'土曜日',"7"=>'日曜日'}
+      @youbi = wday_nihongo_hash[params[:wday]]
+      @material_store_orderables = MaterialStoreOrderable.includes(material:[:vendor]).where(@hash[params[:wday]]=>'true',store_id:params[:store_id],orderable_flag:true)
+      @material_store_orderables.each do |mso|
+        hash = {}
+        material = mso.material
+        hash['material'] = material
+        hash['make_num'] = 0
+        hash['product_id'] = ''
+        hash['menu_num'] = {'なし' => 0}
+        hash['material_id'] = mso.material_id
+        hash['calculated_order_amount'] = 0
+        hash["recipe_unit_quantity"] = material.recipe_unit_quantity
+        hash["order_unit_quantity"] = material.order_unit_quantity
+        hash["vendor_id"] = material.vendor_id
+        hash["vendor_name"] = material.vendor.company_name.truncate(10)
+        hash['recipe_unit'] = material.recipe_unit
+        hash['order_unit'] = material.order_unit
+        hash['delivery_deadline'] = material.delivery_deadline
+        hash['order_material_memo'] =''
+        hash["vendor_info"] = material.vendor.delivery_date
+        hash["order_criterion"] = mso.order_criterion
         @arr << hash
       end
     elsif params[:make_date].present?

@@ -11,7 +11,11 @@
             |  人分
         .col-md-2
           = op.date_field(:make_date,value: (op.object.make_date || Time.now.strftime("%Y-%m-%d")),class:"form-control input_make_date",readonly:true)
-  h4 発注食材・資材一覧
+  - if params[:wday_new_order] == 'true'
+    h3 = "#{@youbi} 発注商品一覧"
+  - else
+    h4 発注食材・資材一覧
+
   .col-md-12 style="padding-bottom:10px;"
     .col-md-2
       label.text-right 企業絞込：
@@ -68,7 +72,8 @@
             - else
               = m.collection_select :material_id, @materials, :id, :name,{include_blank: true}, class:'select_order_materials',style:"width:250px;"
             .vendor_company_name style="padding-top:3px;color:#gray;"
-              span = @b_hash[m.object.material_id]['vendor_name']
+              input value="#{@b_hash[m.object.material_id]['vendor_id']}" style='display:none;'
+              span  = @b_hash[m.object.material_id]['vendor_name']
               - if m.object.material_id.present?
                 span ="｜納品：#{@b_hash[m.object.material_id]['vendor_info']}"
           td class="quantity_#{m.object.material_id}" style="min-width:500px;"
@@ -133,10 +138,13 @@
 
           td.order_material_memo style='width:999px;'
             = m.text_field :order_material_memo,class:'form-control'
-            div style="padding:3px 0 0 8px;color:gray;font-size:10px;"
+            div style="padding:3px 0 0 8px;color:gray;font-size:11px;"
               - if controller.action_name == "new"
-                = m.object.menu_name
-                = m.hidden_field :menu_name
+                - if params[:wday_new_order] == 'true'
+                  span = "目安：#{@b_hash[m.object.material_id]['order_criterion']}"
+                - else
+                  = m.object.menu_name
+                  = m.hidden_field :menu_name
               - else
                 = m.object.menu_name
   - if params[:store_id] == '39'
@@ -150,15 +158,8 @@ javascript:
     $(".staff_name_input").on('keyup',function(){
       $(".order_submit").prop("disabled", false);
     });
-
-
-
   });
-
-
 sass:
-
-
   .stock-tooltip
     .tooltip
       width: 100%

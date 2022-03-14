@@ -62,6 +62,11 @@ class Order < ApplicationRecord
       Stock.change_stock(update_stocks,stock.material_id,stock.date,stock.end_day_stock,self.store_id)
     end
     Stock.import update_stocks, on_duplicate_key_update:[:end_day_stock,:start_day_stock] if update_stocks.present?
+    self.order_materials.each do |om|
+      if om.order_quantity == "0"
+        om.un_order_flag = true
+      end
+    end
   end
 
 
@@ -113,6 +118,9 @@ class Order < ApplicationRecord
 
   def reject_material_blank(attributes)
     attributes.merge!(_destroy: "1") if attributes[:material_id].blank?
+    # if attributes[:order_quantity]==0 || attributes[:order_quantity]==''
+    #   attributes[:un_order_flag] = true
+    # end
   end
 
   def self.fax_send_check

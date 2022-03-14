@@ -56,6 +56,7 @@ $(document).on('turbolinks:load', function() {
       $(this).css('background-color','white');
     }else{
       $(this).css('background-color','red');
+      $(this).val(0);
     }
     function isNumber(val){
       var regex = new RegExp(/^[0-9]+(\.[0-9]+)?$/);
@@ -153,13 +154,13 @@ $(document).on('turbolinks:load', function() {
   $(".vendor_select").on("change",function(){
     $(".all_delete").prop('checked', false);
     $(".order_materials_tr").show();
-      var chosen_company = $.trim($(".vendor_select option:selected").text());
+    var chosen_id = $(".vendor_select option:selected").val();
     $(".order_materials_tr").each(function(){
-      var company_name = $.trim($(this).find(".vendor_company_name").text());
-      if(chosen_company=="") {
+      var vendor_id = $(this).find(".vendor_company_name").children('input').val();
+      if(chosen_id=="") {
         $(this).show();
       } else {
-      if (chosen_company == company_name) {
+      if (chosen_id == vendor_id) {
       }else {
         $(this).hide();
       }};
@@ -249,29 +250,24 @@ $(document).on('turbolinks:load', function() {
   //送信前のバリデーション
   $('.order_submit').on('click', function check(){
     //発注しないチェックがはいっていた場合は、inputの検証をスルーする
-      destroy_check = 0
-      $('.order_materials_tr').each(function(){
-        var material_id = $(this).find(".select_order_materials").val();
-        var order_quantity = $(this).find(".order_quantity").val();
-        var destroy_flag = $(this).find(".destroy_order_materials").prop('checked');
-        console.log(destroy_flag);
-        if (material_id=="" || order_quantity== ""){
-          destroy_check = 1
-          alert("入力が不完全です");
-          return false;
-        }else if (order_quantity== 0 && destroy_flag == false ) {
-          destroy_check = 1
-          alert("発注量が0の商品があります！");
-          return false;
-        };
-      });
-      if (destroy_check == 1){
+    destroy_check = 0
+    $('.order_materials_tr').each(function(){
+      var material_id = $(this).find(".select_order_materials").val();
+      var order_quantity = $(this).find(".order_quantity").val();
+      var destroy_flag = $(this).find(".destroy_order_materials").prop('checked');
+      if (material_id=="" || order_quantity== ""){
+        destroy_check = 1
+        alert("空欄があります");
         return false;
-      }else{
-        $('.edit_order').submit();
-        $('.new_order').submit();
-      }
+      };
     });
+    if (destroy_check == 1){
+      return false;
+    }else{
+      $('.edit_order').submit();
+      $('.new_order').submit();
+    }
+  });
 
 
     $("#all_date_change").on("change", function(){

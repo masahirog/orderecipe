@@ -64,7 +64,7 @@ html
                       li = link_to "店舗",stores_path
                       li = link_to '販売レポート',sales_reports_path
                       li = link_to "お客さまの声",customer_opinions_path
-                      li = link_to 'シフト作成',shifts_path(date:Date.today)
+                      li = link_to 'シフト',shifts_path(date:Date.today)
                       li = link_to 'スタッフ',staffs_path
                       li = link_to '確定シフトパターン',fix_shift_patterns_path
                       h5 style='padding:0 10px;font-weight:bold;' データ
@@ -127,42 +127,3 @@ html
 
       = yield
     .col-md-12.footer style="height:20px;"
-
-css:
-  .navbar {
-    position: relative;
-    z-index: 9999;
-  }
-
-  .dropdown_multilayer_menu_sub {
-    border:1px solid rgba(0,0,0,.15);
-    position: absolute;
-    background: white;
-    width: 210px;
-    visibility: hidden;
-  }
-
-  .dropdown_multilayer_menu_third_sub {
-    position: absolute;
-    border:1px solid rgba(0,0,0,.15);
-    top: 0;
-    left: 210px;
-    width: 100%;
-    background: white;
-    visibility: hidden;
-  }
-
-
-  .dropdown_multilayer_menu_third {
-    position: relative;
-    background: white;
-  }
-
-  .dropdown_multilayer_menu_third:hover .dropdown_multilayer_menu_third_sub {
-    visibility: visible;
-  }
-
-
-  .dropdown_multilayer:hover .dropdown_multilayer_menu_sub {
-    visibility: visible;
-  }

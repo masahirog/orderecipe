@@ -1,6 +1,11 @@
 class MaterialsController < AdminController
   protect_from_forgery :except => [:change_additives]
   def index
+    if params[:store_id]
+      @store_id = params[:store_id]
+    else
+      @store_id = 39
+    end
     @search = Material.includes(:vendor).search(params).page(params[:page]).per(50)
     @materials_order_quantity = OrderMaterial.joins(:order).where(un_order_flag:false,orders:{fixed_flag:1}).where(delivery_date:(Date.today - 31)..Date.today,material_id:@search.ids).group(:material_id).sum(:order_quantity)
     respond_to do |format|
@@ -34,10 +39,20 @@ class MaterialsController < AdminController
     end
   end
   def show
+    if params[:store_id]
+      @store_id = params[:store_id]
+    else
+      @store_id = 39
+    end
     @material = Material.includes(material_food_additives:[:food_additive]).find(params[:id])
   end
 
   def edit
+    if params[:store_id]
+      @store_id = params[:store_id]
+    else
+      @store_id = 39
+    end
     @material = Material.find(params[:id])
     store_ids = @material.material_store_orderables.pluck(:store_id)
     @stores_hash = Store.all.map{|store|[store.id,store.name]}.to_h
@@ -58,6 +73,7 @@ class MaterialsController < AdminController
   end
 
   def update
+    @stores_hash = Store.all.map{|store|[store.id,store.name]}.to_h
     @material = Material.find(params[:id])
     if params[:material][:inventory_flag] == 'true'
       @class_name = ".inventory_tr_#{@material.id}"

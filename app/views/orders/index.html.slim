@@ -34,15 +34,33 @@
                     = "：#{@date_daily_menu_count[date]} 食"
           .modal-footer
             button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
+  - unless @store.id == 39
+    button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#newOrder" style='float:left;margin-top:15px;' 曜日発注
+    #newOrder.modal.fade tabindex="-1"
+      = form_tag new_order_path, :method => 'get' do
+        = hidden_field_tag :wday_new_order,true
+        = hidden_field_tag :store_id,params[:store_id]
+        .modal-dialog
+          .modal-content
+            .modal-header
+              h4.modal-title 曜日別発注商品の一覧を表示する
+            .modal-body.clearfix
+              = select_tag :wday,options_for_select(@wdays,@today_wday), class:"form-control",style:'width:200px;float:left;'
+              = submit_tag "発注開始" ,class:"btn btn-primary",style:'float:left;margin-left:20px;'
+            .modal-footer
+              button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
+
+
+
 
   = link_to "備品発注", new_order_path(bihin_flag:true,store_id:params[:store_id]),class:"order btn btn-primary btn-sm",style:"float:left;margin-top:15px;margin-left:10px;"
   - unless @store.id == 39
     = link_to "べじはん包材発注", new_order_path(np_flag:true,store_id:params[:store_id]),class:"order btn btn-primary btn-sm",style:"float:left;margin-top:15px;margin-left:10px;"
-  = link_to "納品確認",deliveried_list_orders_path(store_id:params[:store_id]),class:'btn btn-primary btn-sm',style:'float:left;margin-top:15px;margin-left:10px;'
+  = link_to "納品確認",deliveried_list_orders_path(store_id:params[:store_id]),class:'btn btn-default btn-sm',style:'float:left;margin-top:15px;margin-left:10px;'
   = form_tag orders_path, :method => 'get',style:"float:left;margin-top:15px;margin-left:10px;" do
     = hidden_field_tag :store_id,params[:store_id]
     = select_tag :material_id, options_from_collection_for_select(@materials, :id, :name,params[:material_id]),include_blank: '食材検索', class: "form-control material_search",style:"width:300px;"
-    = submit_tag "検索" ,class:"btn btn-primary btn-sm",style:'margin-left:10px;'
+    = submit_tag "検索" ,class:"btn btn-default btn-sm",style:'margin-left:10px;'
 
   / = form_tag new_order_path, method: :get do
     = select_tag "vendor_id", options_from_collection_for_select(Vendor.all,:id,:company_name),include_blank:'企業を選択して', class: "form-control",style:'width:200px;float:left;'
