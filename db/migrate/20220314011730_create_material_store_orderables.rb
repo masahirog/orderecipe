@@ -7,6 +7,13 @@ class CreateMaterialStoreOrderables < ActiveRecord::Migration[5.2]
       t.timestamps
       t.index [:material_id,:store_id], unique: true
       t.string :order_criterion
+      t.boolean :mon,null:false,default:false
+      t.boolean :tue,null:false,default:false
+      t.boolean :wed,null:false,default:false
+      t.boolean :thu,null:false,default:false
+      t.boolean :fri,null:false,default:false
+      t.boolean :sat,null:false,default:false
+      t.boolean :sun,null:false,default:false
     end
   end
 end

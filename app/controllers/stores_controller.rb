@@ -3,6 +3,8 @@ class StoresController < ApplicationController
   def materials
     store_id = params[:store_id]
     @material_store_orderables = MaterialStoreOrderable.includes(material:[:vendor]).where(store_id:store_id,orderable_flag:true)
+    @hash = {'mon'=>"2",'tue'=>"3",'wed'=>"4",'thu'=>"5",'fri'=>"6",'sat'=>"7",'sun'=>"8"}
+    @wdays = {'mon'=>"月",'tue'=>"火",'wed'=>"水",'thu'=>"木",'fri'=>"金",'sat'=>"土",'sun'=>"日"}
   end
   def products
     @store = Store.find(params[:store_id])

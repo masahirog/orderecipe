@@ -21,6 +21,7 @@ Rails.application.routes.draw do
   post'menus/include_update' => 'menus#include_update'
   post 'materials/change_additives' => 'materials#change_additives'
   resources :fix_shift_patterns
+  resources :material_store_orderables
   resources :shifts do
     collection do
       get :once_update

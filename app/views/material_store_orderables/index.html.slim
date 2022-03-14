@@ -1,0 +1,19 @@
+h1 Listing material_store_orderables
+
+table
+  thead
+    tr
+      th
+      th
+      th
+
+  tbody
+    - @material_store_orderables.each do |material_store_orderable|
+      tr
+        td = link_to 'Show', material_store_orderable
+        td = link_to 'Edit', edit_material_store_orderable_path(material_store_orderable)
+        td = link_to 'Destroy', material_store_orderable, data: { confirm: 'Are you sure?' }, method: :delete
+
+br
+
+= link_to 'New Material store orderable', new_material_store_orderable_path

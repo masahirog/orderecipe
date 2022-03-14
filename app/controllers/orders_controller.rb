@@ -20,6 +20,7 @@ class OrdersController < AdminController
       @date = Date.today
     end
     store_id = params[:store_id]
+    @store = Store.find(store_id)
     if params[:vendor_id].present?
       vendor_id = params[:vendor_id]
       @order_materials = OrderMaterial.includes(:order,material:[:vendor]).where(:orders => {store_id:store_id}).where(delivery_date:@date,un_order_flag:false).where(:materials => {vendor_id:vendor_id})

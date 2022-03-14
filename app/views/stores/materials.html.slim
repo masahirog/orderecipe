@@ -3,20 +3,57 @@ table.table
   thead
     tr
       th 食材名
+      th カテゴリ
       th 発注ロット
-      th 発注目安
       th 業者名
-      th
+      th style='width:300px;' 発注目安
+      th style='width:450px;' 発注曜日
   tbody
     - @material_store_orderables.each do |mso|
       - material = mso.material
       - ouq = ActiveSupport::NumberHelper.number_to_rounded(material.order_unit_quantity, strip_insignificant_zeros: true, :delimiter => ',')
       - ruq = ActiveSupport::NumberHelper.number_to_rounded(material.recipe_unit_quantity, strip_insignificant_zeros: true, :delimiter => ',')
-      tr
-        td = link_to material.name,edit_material_path(material)
+      tr class="tr_#{mso.id}"
+        td = material.name
+        td = t("enums.material.category.#{material.category}")
         td = "#{ouq}#{material.order_unit} #{ruq}#{material.recipe_unit} "
-        td = mso.order_criterion
-        td = link_to material.vendor.company_name,edit_vendor_path(material.vendor)
+        td = material.vendor.company_name.slice(0..8)
         td
+          = form_with(model:mso, data: {remote: true}) do |f|
+            = f.hidden_field :id,value:mso.id,class:'shift_id'
+            = f.text_field :order_criterion,style:'',class:'form-control'
         td
-        td
+          = form_with(model:mso, data: {remote: true}) do |f|
+            = f.hidden_field :id,value:mso.id,class:'shift_id'
+            - @hash.each do |wday|
+              label
+                = f.check_box wday[0],class:"wday_check"
+                span = @wdays[wday[0]]
+javascript:
+  $('.wday_check').on( 'change',function(){
+    Rails.fire($(this).parent().parent('form')[0], 'submit');
+  });
+  // $('input[name="check_box"]').change(function() {
+  //   // チェックボックスの親要素 = フォームを送信
+  //   $('#check_box').parent().submit();
+  // });
+
+css:
+  label {
+      margin-right: 5px; /* ボタン同士の間隔 */
+  }
+  label input {
+      display: none; /* デフォルトのinputは非表示にする */
+  }
+  label span {
+      color: #333; /* 文字色を黒に */
+      font-size: 14px; /* 文字サイズを14pxに */
+      border: 1px solid silver; /* 淵の線を指定 */
+      border-radius: 20px; /* 角丸を入れて、左右が丸いボタンにする */
+      padding: 5px 20px; /* 上下左右に余白をトル */
+  }
+  label input:checked + span {
+      color: #FFF; /* 文字色を白に */
+      background: #FBB; /* 背景色を薄い赤に */
+      border: 1px solid #FBB; /* 淵の線を薄い赤に */
+  }

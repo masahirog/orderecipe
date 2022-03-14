@@ -249,6 +249,13 @@ ActiveRecord::Schema.define(version: 2022_03_14_011730) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "order_criterion"
+    t.boolean "mon", default: false, null: false
+    t.boolean "tue", default: false, null: false
+    t.boolean "wed", default: false, null: false
+    t.boolean "thu", default: false, null: false
+    t.boolean "fri", default: false, null: false
+    t.boolean "sat", default: false, null: false
+    t.boolean "sun", default: false, null: false
     t.index ["material_id", "store_id"], name: "index_material_store_orderables_on_material_id_and_store_id", unique: true
   end
 

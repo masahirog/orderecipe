@@ -1,0 +1,9 @@
+= form_for @material_store_orderable do |f|
+  - if @material_store_orderable.errors.any?
+    #error_explanation
+      h2 = "#{pluralize(@material_store_orderable.errors.count, "error")} prohibited this material_store_orderable from being saved:"
+      ul
+        - @material_store_orderable.errors.full_messages.each do |message|
+          li = message
+
+  .actions = f.submit
