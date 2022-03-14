@@ -208,7 +208,7 @@ Rails.application.routes.draw do
   resources :serving_plates
   resources :stores do
     collection do
-      :products
+      get :materials
     end
   end
   resources :store_daily_menus do

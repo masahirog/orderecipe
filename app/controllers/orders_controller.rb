@@ -213,7 +213,7 @@ class OrdersController < AdminController
     elsif params[:bihin_flag] == 'true'
       order_products = []
       make_date = Date.today
-      materials = Material.includes([:vendor]).joins(:material_store_orderables).where(category:5,unused_flag:false).where(:material_store_orderables => {store_id:params[:store_id],orderable_flag:true})
+      materials = Material.includes([:vendor]).joins(:material_store_orderables).where(category:5,unused_flag:false).where(:material_store_orderables => {store_id:params[:store_id],orderable_flag:true}).order(short_name:'asc')
       materials.each do |material|
         hash = {}
         hash['material'] = material
@@ -236,7 +236,7 @@ class OrdersController < AdminController
     elsif params[:np_flag] == 'true'
       order_products = []
       make_date = Date.today
-      materials = Material.joins(:material_store_orderables).where(vendor_id:549,unused_flag:false).where(:material_store_orderables => {store_id:params[:store_id],orderable_flag:true})
+      materials = Material.joins(:material_store_orderables).where(vendor_id:549,unused_flag:false).where(:material_store_orderables => {store_id:params[:store_id],orderable_flag:true}).order(short_name:'asc')
       materials.each do |material|
         hash = {}
         hash['material'] = material

@@ -6,6 +6,7 @@ class CreateMaterialStoreOrderables < ActiveRecord::Migration[5.2]
       t.boolean :orderable_flag,null:false,default:false
       t.timestamps
       t.index [:material_id,:store_id], unique: true
+      t.string :order_criterion
     end
   end
 end

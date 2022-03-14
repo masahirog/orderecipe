@@ -1,0 +1,22 @@
+h3 発注可能商品一覧
+table.table
+  thead
+    tr
+      th 食材名
+      th 発注ロット
+      th 発注目安
+      th 業者名
+      th
+  tbody
+    - @material_store_orderables.each do |mso|
+      - material = mso.material
+      - ouq = ActiveSupport::NumberHelper.number_to_rounded(material.order_unit_quantity, strip_insignificant_zeros: true, :delimiter => ',')
+      - ruq = ActiveSupport::NumberHelper.number_to_rounded(material.recipe_unit_quantity, strip_insignificant_zeros: true, :delimiter => ',')
+      tr
+        td = link_to material.name,edit_material_path(material)
+        td = "#{ouq}#{material.order_unit} #{ruq}#{material.recipe_unit} "
+        td = mso.order_criterion
+        td = link_to material.vendor.company_name,edit_vendor_path(material.vendor)
+        td
+        td
+        td

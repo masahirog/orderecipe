@@ -248,6 +248,7 @@ ActiveRecord::Schema.define(version: 2022_03_14_011730) do
     t.boolean "orderable_flag", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "order_criterion"
     t.index ["material_id", "store_id"], name: "index_material_store_orderables_on_material_id_and_store_id", unique: true
   end
 

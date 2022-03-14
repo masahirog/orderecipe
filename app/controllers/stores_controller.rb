@@ -1,6 +1,9 @@
 class StoresController < ApplicationController
   before_action :set_store, only: [:show, :edit, :update, :destroy]
-
+  def materials
+    store_id = params[:store_id]
+    @material_store_orderables = MaterialStoreOrderable.includes(material:[:vendor]).where(store_id:store_id,orderable_flag:true)
+  end
   def products
     @store = Store.find(params[:store_id])
   end
