@@ -11,6 +11,15 @@ class MaterialsController < AdminController
 
   def new
     @material = Material.new
+    @stores_hash = {}
+    Store.all.each do |store|
+      @stores_hash[store.id]=store.name
+      if store.id == 39
+        @material.material_store_orderables.build(store_id:store.id,orderable_flag:true)
+      else
+        @material.material_store_orderables.build(store_id:store.id)
+      end
+    end
     @material.material_food_additives.build
     @material.measurement_flag=true
     @food_additive = FoodAdditive.new
@@ -29,13 +38,21 @@ class MaterialsController < AdminController
   end
 
   def edit
+    @material = Material.find(params[:id])
+    store_ids = @material.material_store_orderables.pluck(:store_id)
+    @stores_hash = Store.all.map{|store|[store.id,store.name]}.to_h
+    all_store_ids = @stores_hash.keys
+    new_store_ids = all_store_ids - store_ids
+    new_store_ids.each do |store_id|
+      @material.material_store_orderables.build(store_id:store_id)
+    end
+
     if request.referer.nil?
     elsif request.referer.include?("products")
       @back_to = request.referer
     elsif request.referer.include?("menus")
       @back_to = request.referer
     end
-    @material = Material.find(params[:id])
     @material.material_food_additives.build if @material.material_food_additives.length == 0
     @food_additive = FoodAdditive.new
   end
@@ -184,6 +201,6 @@ class MaterialsController < AdminController
   def material_params
     params.require(:material).permit(:name, :order_name, :recipe_unit_quantity, :recipe_unit,:vendor_stock_flag,:image,:image_cache,:remove_image,:short_name,:storage_place,
      :recipe_unit_price, :cost_price, :category, :order_code, :order_unit, :memo, :unused_flag, :vendor_id,:order_unit_quantity,:delivery_deadline,:accounting_unit,:accounting_unit_quantity,:measurement_flag,
-     {allergy:[]},material_food_additives_attributes:[:id,:material_id,:food_additive_id,:_destroy])
+     {allergy:[]},material_store_orderables_attributes:[:id,:store_id,:material_id,:orderable_flag],material_food_additives_attributes:[:id,:material_id,:food_additive_id,:_destroy])
   end
 end

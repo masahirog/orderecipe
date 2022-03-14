@@ -1,5 +1,7 @@
 class Material < ApplicationRecord
   # 単価は税抜ですべて保存する、表示時に税追加
+  has_many :material_store_orderables, dependent: :destroy
+  accepts_nested_attributes_for :material_store_orderables, allow_destroy: true
 
   serialize :allergy
   has_many :menu_materials, dependent: :destroy

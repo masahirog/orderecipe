@@ -179,6 +179,17 @@
     .col-md-6
       = f.label :memo, "メモ"
       = f.text_area :memo, class:'form-control', style:"height:10em;"
+
+  .form-group
+    label 発注可能店舗
+    ul.list-group.clearfix
+      = f.fields_for :material_store_orderables do |mso|
+        = mso.hidden_field :store_id
+        li.list-group-item style='float:left;'
+          = mso.label :orderable_flag, @stores_hash[mso.object.store_id]
+          = mso.check_box :orderable_flag
+
+
   = f.hidden_field :back_to, :value => @back_to
   - if local_assigns[:locals][:edit_flag] == true
     .action.col-md-12 style="margin-bottom:20px;"

@@ -145,8 +145,9 @@
               - else
                 = m.object.menu_name
         - i += 1
-  = link_to_add_association '発注食材追加',f, :order_materials,class:'btn btn-primary add_order_material',
-    data: {association_insertion_node: '#order_materials_table',association_insertion_method: 'append'}, render_options: {locals: { date: date }}
+  - if params[:store_id] == '39'
+    = link_to_add_association '発注食材追加',f, :order_materials,class:'btn btn-primary add_order_material',
+      data: {association_insertion_node: '#order_materials_table',association_insertion_method: 'append'}, render_options: {locals: { date: date }}
 
 javascript:
   $(function() {

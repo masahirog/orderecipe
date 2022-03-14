@@ -139,8 +139,9 @@
                 = m.hidden_field :menu_name
               - else
                 = m.object.menu_name
-  = link_to_add_association '発注食材追加',f, :order_materials,class:'btn btn-primary add_order_material',style:'margin-bottom:200px;',
-    data: {association_insertion_node: '#order_materials_table',association_insertion_method: 'append'}, render_options: {locals: { date: Date.today }}
+  - if params[:store_id] == '39'
+    = link_to_add_association '発注食材追加',f, :order_materials,class:'btn btn-primary add_order_material',style:'margin-bottom:200px;',
+      data: {association_insertion_node: '#order_materials_table',association_insertion_method: 'append'}, render_options: {locals: { date: Date.today }}
 javascript:
   $(function() {
     $(document).on("keypress", "input:not(.allow_submit)", function(event) {

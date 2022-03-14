@@ -8,4 +8,5 @@ class Store < ApplicationRecord
   has_many :staffs
   has_many :shifts
   has_many :orders
+  has_many :material_store_orderables
 end
