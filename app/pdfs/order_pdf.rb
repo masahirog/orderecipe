@@ -39,11 +39,11 @@ class OrderPdf < Prawn::Document
         text "拠点ID：#{order.store.orikane_store_code}", :leading => 3 if vendor.id == 171
         text "#{order.store.name}", :leading => 3
         font_size 9
-        text "#{order.store.address}", :leading => 3
-        text "TEL：#{order.store.phone}", :leading => 3
-        text "FAX：03-6700-9848", :leading => 3
-        text "No：#{vendor.management_id}", :leading => 3 if vendor.management_id.present?
         text "日本フードデリバリー株式会社", :leading => 3
+        text "#{order.store.address}", :leading => 3
+        text "注文担当者：#{order.staff_name}", :leading => 3
+        text "TEL：#{order.store.phone}　　FAX：03-6700-9848", :leading => 3
+        text "No：#{vendor.management_id}", :leading => 3 if vendor.management_id.present?
     end
   end
   def header_hello
