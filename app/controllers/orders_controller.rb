@@ -1,4 +1,33 @@
 class OrdersController < AdminController
+  def bejihan_store_orders_list
+    if params[:date]
+      @date = Date.parse(params[:date])
+    else
+      @date = Date.today
+    end
+    store_id = params[:store_id]
+    @store = Store.find(store_id)
+    @order_materials = OrderMaterial.includes(:order,material:[:vendor]).where(:materials => {vendor_id:559}).where(:orders => {store_id:store_id}).where(delivery_date:@date,un_order_flag:false).order("vendors.id")
+    @hash = {}
+    @order_materials.each do |om|
+      if @hash[om.material_id].present?
+        @hash[om.material_id][1] += om.order_quantity.to_f
+      else
+        @hash[om.material_id] = [om.material.recipe_unit_quantity,om.order_quantity.to_f,om.material.order_name,om.material.order_unit,om.order_material_memo,om.order_id,om.material.vendor.company_name,om.material.order_unit_quantity,om.order.staff_name]
+      end
+    end
+    respond_to do |format|
+      format.html
+      format.pdf do
+        pdf = BejihanStoreOrdersDeliveryList.new(@hash,@store,@date)
+        send_data pdf.render,
+        filename:    "納品リスト.pdf",
+        type:        "application/pdf",
+        disposition: "inline"
+      end
+    end
+  end
+
   def material_reload
     @material = Material.find(params[:material_id])
     date = params[:date]
@@ -215,7 +244,7 @@ class OrdersController < AdminController
       make_date = Date.parse(date)
     elsif params[:bihin_flag] == 'true'
       order_products = []
-      make_date = Date.today
+      make_date = (Date.today+2)
       materials = Material.includes([:vendor]).joins(:material_store_orderables).where(category:5,unused_flag:false).where(:material_store_orderables => {store_id:params[:store_id],orderable_flag:true}).order(short_name:'asc')
       materials.each do |material|
         hash = {}
@@ -238,7 +267,7 @@ class OrdersController < AdminController
       end
     elsif params[:np_flag] == 'true'
       order_products = []
-      make_date = Date.today
+      make_date = (Date.today+2)
       materials = Material.joins(:material_store_orderables).where(vendor_id:549,unused_flag:false).where(:material_store_orderables => {store_id:params[:store_id],orderable_flag:true}).order(short_name:'asc')
       materials.each do |material|
         hash = {}
@@ -261,7 +290,7 @@ class OrdersController < AdminController
       end
     elsif params[:wday_new_order] == 'true'
       order_products = []
-      make_date = Date.today
+      make_date = (Date.today+2)
       @hash = {"1"=>'mon',"2"=>'tue',"3"=>'wed',"4"=>'thu',"5"=>'fri',"6"=>'sat',"7"=>'sun'}
       wday_nihongo_hash = {"1"=>'月曜日',"2"=>'火曜日',"3"=>'水曜日',"4"=>'木曜日',"5"=>'金曜日',"6"=>'土曜日',"7"=>'日曜日'}
       @youbi = wday_nihongo_hash[params[:wday]]
