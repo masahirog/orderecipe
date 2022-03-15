@@ -1,9 +1,20 @@
 require 'csv'
 CSV.generate do |csv|
-  csv_column_names = %w(スタッフコード 日付 グル―プ名 ポジション名 出勤時刻 退勤時刻 休憩開始時間 終了時間 非公開メモ 公開メモ)
+  csv_column_names = %w(スタッフID スタッフ名 日付 出勤店舗 出勤シフト メモ)
   csv << csv_column_names
   @shifts.each do |shift|
-    csv_column_values = [shift[1].staff.id, shift[1].date,'','',shift[1]]
+    shift = shift[1]
+    if shift.store_id.present?
+      store_name = shift.store.name
+    else
+      store_name = ""
+    end
+    if shift.fix_shift_pattern_id.present?
+      pattern_name = shift.fix_shift_pattern.pattern_name
+    else
+      pattern_name = ''
+    end
+    csv_column_values = [shift.staff_id,shift.staff.name,shift.date,store_name,pattern_name,shift.memo]
     csv << csv_column_values
   end
 end
