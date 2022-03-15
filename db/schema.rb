@@ -191,6 +191,7 @@ ActiveRecord::Schema.define(version: 2022_03_14_011730) do
     t.datetime "updated_at", null: false
     t.string "before_image"
     t.string "after_image"
+    t.integer "store_id", null: false
   end
 
   create_table "kurumesi_mails", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

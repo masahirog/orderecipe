@@ -1,5 +1,8 @@
 = form_for @kaizen_list do |f|
   .form-group
+    = f.label :store_id, "店舗名"
+    = f.collection_select :store_id, Store.all, :id, :name, {include_blank:true}, { class: "form-control store_id_input"}
+  .form-group
     = f.label :product_id, "商品名"
     = f.collection_select :product_id,Product.all, :id, :name,{include_blank:true},class:'form-control name_search'
   .form-group

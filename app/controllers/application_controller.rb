@@ -66,6 +66,6 @@ class ApplicationController < ActionController::Base
     end
     def stock_alert_materials
       @stock_alert_materials = Material.where(need_inventory_flag:true).count
-      @kaizen_list_counts = KaizenList.where.not(status:['done','cancel']).count
+      # @kaizen_list_counts = KaizenList.where.not(status:['done','cancel']).count
     end
 end

@@ -2,14 +2,15 @@ class KaizenListsController < ApplicationController
   before_action :set_kaizen_list, only: %i[ show edit update destroy ]
 
   def index
-    @kaizen_lists = KaizenList.includes([:product]).all.order('priority desc')
+    @store = Store.find(params[:store_id])
+    @kaizen_lists = KaizenList.includes([:product]).where(store_id:params[:store_id]).order('priority desc')
   end
 
   def show
   end
 
   def new
-    @kaizen_list = KaizenList.new
+    @kaizen_list = KaizenList.new(store_id:params[:store_id])
   end
 
   def edit
@@ -20,7 +21,7 @@ class KaizenListsController < ApplicationController
     respond_to do |format|
       if @kaizen_list.save
         NotificationMailer.kaizen_list_create_send_mail(@kaizen_list).deliver
-        format.html { redirect_to kaizen_lists_path, notice: "Kaizen list was successfully created." }
+        format.html { redirect_to kaizen_lists_path(store_id:@kaizen_list.store_id), notice: "Kaizen list was successfully created." }
         format.json { render :show, status: :created, location: @kaizen_list }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -32,7 +33,7 @@ class KaizenListsController < ApplicationController
   def update
     respond_to do |format|
       if @kaizen_list.update(kaizen_list_params)
-        format.html { redirect_to kaizen_lists_path, notice: "Kaizen list was successfully updated." }
+        format.html { redirect_to kaizen_lists_path(store_id:@kaizen_list.store_id), notice: "Kaizen list was successfully updated." }
         format.json { render :show, status: :ok, location: @kaizen_list }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -56,6 +57,6 @@ class KaizenListsController < ApplicationController
 
     def kaizen_list_params
       params.require(:kaizen_list).permit(:id,:product_id,:author,:kaizen_staff,:kaizen_point,:priority,:status,:kaizen_result,:or_change_flag,:share_flag,:after_image,:before_image,
-      :before_image_cache,:remove_before_image,:after_image_cache,:remove_after_image)
+      :before_image_cache,:remove_before_image,:after_image_cache,:remove_after_image,:store_id)
     end
 end

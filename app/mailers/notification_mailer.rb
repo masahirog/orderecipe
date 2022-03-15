@@ -23,7 +23,7 @@ class NotificationMailer < ActionMailer::Base
       attachments[filename] = OrderPdf.new(@materials_this_vendor,@vendor,order).render
     end
     mail(
-      subject: "オーダーID：#{order.id},担当：#{order.staff_name},計：#{num}枚", #メールのタイトル
+      subject: "#{@vendor.company_name}様 オーダーID：#{order.id} 計：#{num}枚 担当：#{order.staff_name}",
       to: @vendor.efax_address
     ) do |format|
       format.text
@@ -56,8 +56,13 @@ class NotificationMailer < ActionMailer::Base
   end
   def kaizen_list_create_send_mail(kaizen_list)
     @kaizen_list = kaizen_list
+    if @kaizen_list.store_id == 39
+      subject = "kaizen_list_create"
+    else
+      subject = "kaizen_list_create_sales"
+    end
     mail(
-      subject: "kaizen_list_create",
+      subject: subject,
       to: 'kitchen@taberu.co.jp',
 
     ) do |format|

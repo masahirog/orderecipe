@@ -1,5 +1,5 @@
-h1 改善リスト
-= link_to '改善追加', new_kaizen_list_path,class:'btn btn-primary'
+h1 ="#{@store.name}　改善リスト"
+= link_to '改善追加', new_kaizen_list_path(store_id:@store.id),class:'btn btn-primary'
 table.table
   thead
     tr

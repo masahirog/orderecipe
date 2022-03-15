@@ -13,7 +13,7 @@ class CreateKaizenLists < ActiveRecord::Migration[5.2]
       t.timestamps
       t.string :before_image
       t.string :after_image
-
+      t.integer :store_id,null:false
     end
   end
 end
