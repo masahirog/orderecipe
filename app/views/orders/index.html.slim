@@ -1,7 +1,8 @@
 .clearfix
   h3 style='margin-right:40px;float:left;font-size:20px;' ="#{@store.name}　発注一覧"
   - if @store.id == 39
-    button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#newOrder" style='float:left;margin-top:15px;' 日付を選んで発注
+    = link_to "単品発注", new_order_path(store_id:params[:store_id]),class:"order btn btn-primary btn-sm",style:"float:left;margin-top:15px;"
+    button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#newOrder" style='float:left;margin-top:15px;margin-left:10px;' 日付を選んで発注
     #newOrder.modal.fade tabindex="-1"
       .modal-dialog style='width:95%;'
         .modal-content
