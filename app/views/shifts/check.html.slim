@@ -1,8 +1,7 @@
-h2 = "#{@date.year}年#{@date.month}月シフト"
-= link_to "#{@date.last_month.month}月＜＜",check_shifts_path(date:@date.last_month)
-|　　　
-= link_to "＞＞#{@date.next_month.month}月",check_shifts_path(date:@date.next_month)
-button type="button" class="btn btn-sm btn-primary pull-right" data-toggle="modal" data-target="#sampleModal" 提出
+= link_to "#{@date.last_month.month}月＜＜",check_shifts_path(date:@date.last_month),class:'btn btn-default btn-sm'
+|　　
+= link_to "＞＞#{@date.next_month.month}月",check_shifts_path(date:@date.next_month),class:'btn btn-default btn-sm'
+button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#sampleModal" style='margin-bottom:5px;float:right;' 提 出
 #sampleModal.modal.fade tabindex="-1"
   = form_tag staff_edit_shifts_path, :method => 'get' do
     .modal-dialog
@@ -17,13 +16,44 @@ button type="button" class="btn btn-sm btn-primary pull-right" data-toggle="moda
           = submit_tag "入力",class:'btn btn-primary'
 
 .table-responsive style='height:600px;overflow: scroll;'
-  table.table.layout-fixed
+  table.table.layout-fixed style='border-collapse:separate;'
     thead style='position: sticky;top:0;background-color:white;z-index:3;'
       tr
-        th style='background-color:white;width:100px;' スタッフ名
-        th style='width:50px;'
+        th style='background-color:white;width:100px;' 店舗名
+        th style='width:70px;'
         - @one_month.each do |date|
-          th style='width:80px;' = date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})")
+          - holiday = HolidayJapan.name(date)
+          - if holiday.present?
+            th style='width:120px;background-color:#f06060;color:white;' = date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})")
+          - else
+            th style='width:120px;' = date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})")
+      - @stores.each do |store|
+        tr.shift_amount_tr
+          td rowspan='2' style='background-color:white;text-align: center;vertical-align: middle;z-index:4;font-weight:bold;padding:5px;'
+            = store.short_name
+          td style="padding:5px;"
+            = "早番：#{store.lunch_default_shift}"
+            input.default_shift_value value="#{store.lunch_default_shift}" style='display:none;'
+          - @one_month.each do |date|
+            td class="#{date.day}_store_#{store.id}_section_0 fix_shift_amount" style="padding:5px;"
+              - if @hash[store.id][date][0].present?
+                = @hash[store.id][date][0]
+        tr.shift_amount_tr
+          td style="padding:5px;"
+            ="遅番：#{store.dinner_default_shift}"
+            input.default_shift_value value="#{store.dinner_default_shift}" style='display:none;'
+          - @one_month.each do |date|
+            td class="#{date.day}_store_#{store.id}_section_1 fix_shift_amount" style='padding:5px;'
+              - if @hash[store.id][date][1].present?
+                = @hash[store.id][date][1]
+
+
+    / thead style='position: sticky;top:0;background-color:white;z-index:3;'
+    /   tr
+    /     th style='background-color:white;width:100px;' スタッフ名
+    /     th style='width:50px;'
+    /     - @one_month.each do |date|
+    /       th style='width:80px;' = date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})")
     tbody
       - @staffs.each do |staff|
         tr.shift_tr style='color:silver;'
@@ -67,3 +97,14 @@ css:
       max-width:350px;
       width: 350px;
   }
+javascript:
+  $(function() {
+    $(".shift_amount_tr").each(function(){
+      var default_amount = Number($(this).find(".default_shift_value").val());
+      $(this).find('.fix_shift_amount').each(function(){
+        if (default_amount > Number($(this).text())) {
+          $(this).css("background-color",'#f0c0c0 ');
+        }
+      });
+    });
+  });

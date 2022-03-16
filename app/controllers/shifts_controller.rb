@@ -49,12 +49,14 @@ class ShiftsController < ApplicationController
     @year_months = [["#{today.year}年#{today.month}月",today],["#{today.next_month.year}年#{today.next_month.month}月",today.next_month],["#{today.next_month.next_month.year}年#{today.next_month.next_month.month}月",today.next_month.next_month]]
     @shifts = Shift.where(date:@one_month).map{|shift|[[shift.staff_id,shift.date],shift]}.to_h
     @staffs = Staff.includes([:store]).all.order(row:'asc')
+    @stores = Store.where.not(id:39)
     @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    Shift.includes([:store,:shift_pattern,:fix_shift_pattern]).where(date:@one_month).each do |shift|
+
+    Shift.includes([:shift_pattern,:fix_shift_pattern]).where(date:@one_month).each do |shift|
       if shift.fix_shift_pattern_id.present?
         date = shift.date
         store_id = shift.store_id
-        section = shift.fix_shift_pattern.section
+        section = shift.fix_shift_pattern.read_attribute_before_type_cast(:section)
         if section == 2
           if @hash[store_id][date][0].present?
             @hash[store_id][date][0] += 1
