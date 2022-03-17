@@ -144,7 +144,6 @@ class Order < ApplicationRecord
         m = Mail.new(mail.attr["RFC822"])
         subject = m.subject.gsub(" ", "").gsub("　","")
         recieved_datetime = m.date
-        binding.pry
         if subject.include?("オーダーID")
           unless FaxMail.find_by(subject:subject,recieved:recieved_datetime).present?
             @fax_mail = FaxMail.new
