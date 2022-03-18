@@ -131,6 +131,7 @@ class StocksController < AdminController
       @stock.end_day_stock = params[:stock][:end_day_stock_accounting_unit].to_f*@material.accounting_unit_quantity
       respond_to do |format|
         if @stock.save
+          @end_day_stock = (@stock.end_day_stock / @material.accounting_unit_quantity).round(1)
           material_update(@to)
           @class_name = ".inventory_tr_#{@material.id}"
           Stock.change_stock(update_stocks,@material.id,@stock.date,@stock.end_day_stock,store_id)
