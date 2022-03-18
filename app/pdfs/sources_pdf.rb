@@ -80,25 +80,29 @@ class SourcesPdf < Prawn::Document
         cook_the_day_before_size = 7
       end
       menu.menu_materials.each_with_index do |mm,i|
-        if menu.cook_the_day_before.present? || menu.cook_on_the_day.present?
-          cook_memo = "【前日】\n#{menu.cook_the_day_before}\n―・―・―・―・―・―\n【当日】\n#{menu.cook_on_the_day}"
+        if menu.category == "容器"
         else
-          cook_memo = ''
-        end
-        if i == 0
-          data << [{:content => "#{menu.name}", :rowspan => u, size: 9},{:content => "#{cook_memo}", :rowspan => u, size: cook_the_day_before_size},
-            {:content => "#{mm.post}", size: 8 },
-            {:content => "#{mm.material.name}", size: 9 },
-            {:content => "#{ActiveSupport::NumberHelper.number_to_rounded((mm.amount_used * num.to_i), strip_insignificant_zeros: true, :delimiter => ',')} #{mm.material.recipe_unit}", size: 9 },
-            {:content => "#{mm.source_group}", size:9,:align => :center },
-            {:content => "#{mm.preparation}", size:9 },
-            {:content => "#{mm.amount_used} #{mm.material.recipe_unit}", size: 9 }]
-        else
-          data << [{:content => "#{mm.post}", size: 8 },{:content => "#{mm.material.name}", size: 9 },
-            {:content => "#{ActiveSupport::NumberHelper.number_to_rounded((mm.amount_used * num.to_i), strip_insignificant_zeros: true, :delimiter => ',')} #{mm.material.recipe_unit}"},
-            {:content => "#{mm.source_group}", size:9,:align => :center },
-            {:content => "#{mm.preparation}", size: 9 },
-            {:content => "#{mm.amount_used} #{mm.material.recipe_unit}", size: 9 }]
+          if menu.cook_the_day_before.present? || menu.cook_on_the_day.present?
+            cook_memo = "【前日】\n#{menu.cook_the_day_before}\n―・―・―・―・―・―\n【当日】\n#{menu.cook_on_the_day}"
+          else
+            cook_memo = ''
+          end
+          if i == 0
+            data << [{:content => "#{menu.name}", :rowspan => u, size: 9},{:content => "#{cook_memo}", :rowspan => u, size: cook_the_day_before_size},
+              {:content => "#{mm.post}", size: 8 },
+              {:content => "#{mm.material.name}", size: 9 },
+              {:content => "#{ActiveSupport::NumberHelper.number_to_rounded((mm.amount_used * num.to_i), strip_insignificant_zeros: true, :delimiter => ',')} #{mm.material.recipe_unit}", size: 9 },
+              {:content => "#{mm.source_group}", size:9,:align => :center },
+              {:content => "#{mm.preparation}", size:7 },
+              {:content => "#{mm.amount_used} #{mm.material.recipe_unit}", size: 9 }]
+          else
+            data << [{:content => "#{mm.post}", size: 8 },{:content => "#{mm.material.name}", size: 9 },
+              {:content => "#{ActiveSupport::NumberHelper.number_to_rounded((mm.amount_used * num.to_i), strip_insignificant_zeros: true, :delimiter => ',')} #{mm.material.recipe_unit}"},
+              {:content => "#{mm.source_group}", size:9,:align => :center },
+              {:content => "#{mm.preparation}", size: 7 },
+              {:content => "#{mm.amount_used} #{mm.material.recipe_unit}", size: 9 }]
+          end
+
         end
       end
     end

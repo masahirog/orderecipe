@@ -111,7 +111,8 @@ html
                   ul.nav.navbar-nav
                     li.user_nav.grid-6
                       = link_to "ログアウト", destroy_user_session_path, :method => :delete
-
+    .col-md-12 style='margin:auto;'
+      h3 ="#{Date.today.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[Date.today.wday]})")}　棚卸し"
     table.table.table-striped.layout-fixed style='font-size:1vw;max-width:1000px;margin:auto;'
       thead
         tr

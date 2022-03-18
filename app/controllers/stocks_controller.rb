@@ -23,7 +23,17 @@ class StocksController < AdminController
     from = @date - 5
     to = @date + 1
     stocks = Stock.joins(:material).where(store_id:store_id).where(:materials => {vendor_id:vendor_ids}).where(date:from..to)
-    material_ids = stocks.map{|stock|stock.material_id}.uniq
+    material_ids = []
+    stocks.each do |stock|
+      if stock.inventory_flag == true && stock.end_day_stock == 0
+      else
+        if stock.used_amount == 0
+        else
+          material_ids << stock.material_id
+        end
+      end
+    end
+    material_ids = material_ids.uniq
     stock_hash = {}
     @latest_material_endstock = {}
     stocks.where("date <= ?",@date).order('date ASC').map do |stock|
