@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   end
   devise_for :users
   root 'analyses#summary'
+  get '/outside_view' => 'application#outside_view'
   post 'orders/new' => 'orders#new'
   post'orders/order_print/:id' => 'orders#order_print'
   post "products/henkan" => "products#henkan"
@@ -192,6 +193,7 @@ Rails.application.routes.draw do
   resources :food_additives
   resources :stocks do
     collection do
+      get :outside_view
       get :material_search
       get :monthly_inventory
       get :mobile_inventory

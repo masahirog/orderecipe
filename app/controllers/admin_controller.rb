@@ -8,8 +8,9 @@ class AdminController < ApplicationController
     else
       if current_user.id == 49
         redirect_to '/shifts/check'
-      else
-        redirect_to '/store/store_daily_menus'
+      elsif current_user.id == 59
+        redirect_to '/outside_view'
+        # redirect_to '/store/store_daily_menus'
       end
     end
   end

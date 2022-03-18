@@ -16,5 +16,13 @@
   <% end %>
 <% else %>
   $("<%= @class_name %>").css('background-color','#ffffe0');
-  $("<%= @class_name %>").find('.inventory_flag').html('<span class="label label-success">棚卸し</span>')
+  var calculate = Number($("<%= @class_name %>").find(".latest_material_endstock").val());
+  var input = Number("<%= @end_day_stock %>");
+  var rate = (calculate / input)
+  if (rate >= 2 || rate <= 0.5) {
+    console.log("<%= @class_name %>_alert");
+    $("<%= @class_name %>_alert").show();
+  }else{
+    $("<%= @class_name %>_alert").hide();
+  }
 <% end %>

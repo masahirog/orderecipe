@@ -15,44 +15,55 @@ class ApplicationController < ActionController::Base
       mobile_inventory_stocks_path
     elsif  current_user.id == 49
       check_shifts_path
+    elsif  current_user.id == 59
+      '/outside_view'
     end
   end
   def render_500(e)
     ExceptionNotifier.notify_exception(e, :env => request.env, :data => {:message => "your error message"})
     render template: 'errors/error_500', status: 500
   end
-  # def shift_check
-  #   @months = [['1月',1],['2月',2],['3月',3],['4月',4],['5月',5],['6月',6],
-  #             ['7月',7],['8月',8],['9月',9],['10月',10],['11月',11],['12月',12]]
-  #   if params[:month]
-  #     month = params[:month]
-  #   else
-  #     month = Date.today.month
-  #     params[:month] = month
-  #   end
-  #   sheet_name = "#{month}月"
-  #   session = GoogleDrive::Session.from_config("config.json")
-  #   sheet = session.spreadsheet_by_key("1ekgHswr8Pg9H0eTYvXGiDGLA7Vog2BJv5ftZ04jwn18").worksheet_by_title(sheet_name)
-  #   if sheet.present?
-  #     last_row = sheet.num_rows
-  #     @tables = []
-  #     for i in 1..last_row do
-  #       if sheet[i,2] == ""
-  #       else
-  #         row = []
-  #         for ii in 2..36 do
-  #           if ii == 5
-  #           else
-  #             row << sheet[i, ii]
-  #           end
-  #         end
-  #         @tables << row
-  #       end
-  #     end
-  #   else
-  #     redirect_to '/shift_check', notice: "#{month}月のシフトが存在しません。" and return
-  #   end
-  # end
+  def outside_view
+    if params[:from].present?
+      @from = Date.parse(params[:from])
+    else
+      @from = Date.today + 1
+    end
+    if params[:to].present?
+      @to = Date.parse(params[:to])
+    else
+      @to = @from + 6
+    end
+    @dates =(@from..@to).to_a
+    if @dates.count > 7
+      @from = Date.today
+      @to = @from + 6
+      @dates =(@from..@to).to_a
+      flash[:alert] = '期間は7日以内で選択してください。'
+    end
+    store_id = 39
+    vendor_ids = [151,489]
+    stocks = Stock.joins(:material).where(store_id:store_id).where(:materials => {vendor_id:vendor_ids}).where(date:@from..@to)
+    @hash = {}
+    stocks.each do |stock|
+      amount = ActiveSupport::NumberHelper.number_to_rounded((stock.used_amount/stock.material.accounting_unit_quantity), strip_insignificant_zeros: true, :delimiter => ',', precision: 1)
+      @hash[[stock.material_id,stock.date]] = amount
+    end
+    material_ids = stocks.map{|stock|stock.material_id}.uniq
+    stock_hash = {}
+    @materials = Material.where(id:material_ids).order(short_name:'asc')
+    @used_amounts = {}
+    Stock.where(material_id:material_ids).where(date:@from..@to).each do |stock|
+      if @used_amounts[stock.material_id].present?
+        @used_amounts[stock.material_id] += (stock.used_amount / stock.material.accounting_unit_quantity)
+      else
+        @used_amounts[stock.material_id] = (stock.used_amount / stock.material.accounting_unit_quantity)
+      end
+    end
+    render :layout => false
+
+  end
+
 
   protected
     def revert_link

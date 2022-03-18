@@ -1,0 +1,16 @@
+td.input_end_day_stock style='padding:4px;'
+  - if stock.present?
+    = form_with(model: stock, data: {remote: true}) do |f|
+      = f.hidden_field :mobile_flag,value:true
+      = f.hidden_field :inventory_flag,value:true
+      = f.number_field :end_day_stock_accounting_unit,class:'input_inventory_stock form-control',style:'width:70px;float:left;margin-right:3px;', :step => 0.01,value:(stock.end_day_stock / material.accounting_unit_quantity).round(1)
+      span.accounting_unit_span style='float:left;padding-top:10px;' = material.accounting_unit
+  - else
+    = form_with(model: Stock.new, data: {remote: true}) do |f|
+      = f.hidden_field :store_id,value:@store.id
+      = f.hidden_field :mobile_flag,value:true
+      = f.hidden_field :material_id,value:material.id
+      = f.hidden_field :date,value:@date
+      = f.hidden_field :inventory_flag,value:true
+      = f.number_field :end_day_stock_accounting_unit,value:'',class:'input_inventory_stock form-control',style:'width:70px;float:left;margin-right:3px;', :step => 0.01
+      span.accounting_unit_span style='float:left;padding-top:10px;' = material.accounting_unit

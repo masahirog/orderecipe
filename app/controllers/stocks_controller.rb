@@ -14,19 +14,32 @@ class StocksController < AdminController
   #   end
   # end
 
+
   def mobile_inventory
     store_id = params[:store_id]
     @store = Store.find(store_id)
     vendor_ids = params[:vendor_id]
-    if params[:date].present?
-      @date = Date.parse(params[:date])
-    else
-      @date = Date.today
-    end
+    @date = Date.today
     from = @date - 5
-    to = @date + 5
-    material_ids = Stock.joins(:material).where(store_id:store_id).where(:materials => {vendor_id:vendor_ids}).where(date:from..to).map{|stock|stock.material_id}.uniq
-    @materials = Material.where(id:material_ids).order(name:'asc')
+    to = @date + 1
+    stocks = Stock.joins(:material).where(store_id:store_id).where(:materials => {vendor_id:vendor_ids}).where(date:from..to)
+    material_ids = stocks.map{|stock|stock.material_id}.uniq
+    stock_hash = {}
+    @latest_material_endstock = {}
+    stocks.where("date <= ?",@date).order('date ASC').map do |stock|
+      val = (stock.end_day_stock / stock.material.accounting_unit_quantity).round(1)
+      @latest_material_endstock[stock.material_id] = val
+    end
+    @materials = Material.where(id:material_ids).order(short_name:'asc')
+
+    @used_amounts = {}
+    Stock.where(material_id:material_ids).where(date:to..(to+2)).each do |stock|
+      if @used_amounts[stock.material_id].present?
+        @used_amounts[stock.material_id] += (stock.used_amount / stock.material.accounting_unit_quantity)
+      else
+        @used_amounts[stock.material_id] = (stock.used_amount / stock.material.accounting_unit_quantity)
+      end
+    end
     render :layout => false
   end
   def upload_inventory_csv
@@ -152,6 +165,7 @@ class StocksController < AdminController
     inventory_flag = params[:stock][:inventory_flag]
     respond_to do |format|
       if @stock.update(end_day_stock:new_end_day_stock,inventory_flag:inventory_flag,start_day_stock:new_start_day_stock)
+        @end_day_stock = (@stock.end_day_stock / @material.accounting_unit_quantity).round(1)
         material_update(@to)
         Stock.change_stock(update_stocks,@material.id,@stock.date,new_end_day_stock,store_id)
         Stock.import update_stocks, on_duplicate_key_update:[:end_day_stock,:start_day_stock,:inventory_flag] if update_stocks.present?

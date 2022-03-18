@@ -17,37 +17,137 @@ html
     header
       nav.navbar.navbar-default
         .container-fluid
-          b style='font-size:22px;' = "#{@date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@date.wday]})")}"
-    table.table.table-striped
+          .navbar-header
+            button.navbar-toggle.collapsed[type="button" data-toggle="collapse" data-target="#navbarEexample"]
+              span.sr-only
+                | Toggle navigation
+              span.icon-bar
+              span.icon-bar
+              span.icon-bar
+            a.navbar-brand style="padding:12px 10px 8px 20px;" href="/"
+              = image_tag 'orderecipe.png',height:'85%'
+          #navbarEexample.collapse.navbar-collapse
+            - if user_signed_in?
+              - if current_user.admin?
+                ul.nav.navbar-nav
+                  li.dropdown
+                    a.dropdown-toggle href="#" data-toggle="dropdown" role="button"
+                      |キッチン
+                      span.caret
+                    ul.dropdown-menu role="menu" style='width:250px;'
+                      h5 style='padding:0 10px;font-weight:bold;' べじはん
+                      li = link_to "べじはん献立",daily_menus_path
+                      li = link_to "各店舗発注品",bejihan_store_orders_list_orders_path(date:Date.today,store_id:19)
+                      li.clearfix
+                        = link_to '改善リスト', kaizen_lists_path(store_id:39), style:'float:left;'
+                        span style='float:left;margin-top:3px;color:red;' = "#{KaizenList.where(store_id:39).where.not(status:['done','cancel']).count}"
+
+                      h5 style='padding:0 10px;font-weight:bold;' くるめし
+                      li = link_to "オーダー",kurumesi_orders_path(start_date:Date.today)
+                      li = link_to "領収書",receipt_kurumesi_orders_path,target:'_blank'
+                      li = link_to "請求書",'https://docs.google.com/spreadsheets/d/1BBs1RL8ojynO-MW14mH49ejwaTP7pWeHuvfjs-aX_4Y/edit#gid=737319184',target:'_blank'
+                      h5 style='padding:0 10px;font-weight:bold;' 発注・在庫
+                      li = link_to "発注",orders_path(store_id:39)
+                      li = link_to "納品確認",deliveried_list_orders_path(store_id:39)
+                      li = link_to "野菜棚卸し",mobile_inventory_stocks_path(vendor_id:[151,489],store_id:39),target:'_blank'
+                      li = link_to "肉類棚卸し",mobile_inventory_stocks_path(vendor_id:[121,131,509,441,529],store_id:39),target:'_blank'
+                      li = link_to "くるめし備品手配","https://docs.google.com/spreadsheets/d/12VRdyriEK7nqzdMFcdHqPPcs52n_CsZ20nGfbS0X5GI/edit#gid=104376609",target:'_blank'
+                      li
+                        a.clearfix href="/stocks/inventory?to=#{Date.today}&store_id=39"
+                          span style='float:left;' 棚卸し
+                          span class="badge badge-danger" style='background-color:red;float:left;'
+                            = @stock_alert_materials
+                      li = link_to "月次棚卸し在庫",stocks_path(store_id:39)
+                  li.dropdown
+                    a.dropdown-toggle href="#" data-toggle="dropdown" role="button"
+                      |販売店舗
+                      span.caret
+                    ul.dropdown-menu role="menu" style='width:250px;'
+                      h5 style='padding:0 10px;font-weight:bold;' 運営
+                      li = link_to "店舗",stores_path
+                      li = link_to '販売レポート',sales_reports_path
+                      li = link_to "お客さまの声",customer_opinions_path
+                      li = link_to 'シフト',shifts_path(date:Date.today)
+                      li = link_to 'スタッフ',staffs_path
+                      li = link_to '確定シフトパターン',fix_shift_patterns_path
+                      h5 style='padding:0 10px;font-weight:bold;' データ
+                      li = link_to "売上・廃棄",summary_analyses_path
+                      li = link_to "時間帯別来客数",visitors_time_zone_analyses_path
+                      li = link_to "商品販売数推移",product_sales_analyses_path
+                      li = link_to "販売データ",analyses_path
+                      li = link_to "会員属性",smaregi_member_group_analyses_path
+                      li = link_to "会員一覧",smaregi_members_analyses_path
+                      li = link_to "お客さまの声",customer_opinions_path
+
+                  li.dropdown
+                    a.dropdown-toggle href="#" data-toggle="dropdown" role="button"
+                      |レシピ
+                      span.caret
+                    ul.dropdown-menu role="menu" style='width:250px;'
+                      li = link_to "商品一覧",products_path
+                      li = link_to "メニュー",menus_path
+                      li = link_to "食材・資材",materials_path
+                      li = link_to "食材月間使用確認",monthly_used_amount_materials_path
+
+                  li.dropdown
+                    a.dropdown-toggle href="#" data-toggle="dropdown" role="button"
+                      |その他設定
+                      span.caret
+                    ul.dropdown-menu role="menu"
+                      li = link_to "仕入先",vendors_path
+                      li = link_to "ブランド",brands_path
+                      li = link_to "炊飯シート",cooking_rices_path
+                      li = link_to "盛り付け皿設定",serving_plates_path
+                      li = link_to "盛り付け包材設定",containers_path
+                      li = link_to "ログアウト", destroy_user_session_path, :method => :delete
+              - else
+                ul.nav.navbar-nav
+                  li.menu_li = link_to "店舗",stores_path
+                  li.menu_li = link_to 'シフト',check_shifts_path(date:Date.today)
+                  li.menu_li = link_to "お客さまの声",customer_opinions_path
+                  li.menu_li = link_to "ログアウト", destroy_user_session_path, :method => :delete
+
+                #navbarEexample.collapse.navbar-collapse.navbar-right
+                  ul.nav.navbar-nav
+                    li.user_nav.grid-6
+                      = link_to "ログアウト", destroy_user_session_path, :method => :delete
+
+    table.table.table-striped.layout-fixed style='font-size:1vw;max-width:1000px;margin:auto;'
       thead
         tr
-          th style='width:20%;' 業者
-          th style='width:40%;text-align:right;' 食材名
-          th style='width:40%;' = "#{(@date).strftime("%-m/%-d #{%w(日 月 火 水 木 金 土)[(@date).wday]}")}在庫"
-          th
+          th style=''
+          th style='width:30%;text-align:right;' 食材名
+          th.text-right style='width:20%;' 在庫計算
+          th style='width:30%;' 在庫
+          th style='width:20%;' 3日内使用
       tbody
         - @materials.each do |material|
           - stock = Stock.find_by(material_id:material.id,date:@date)
-          tr class="inventory_tr_#{material.id}"
-            td style='font-size:10px;' = material.vendor.company_name
-            td style='text-align:right;' = material.name
-            td
-              - if stock.present?
-                = form_with(model: stock, data: {remote: true}) do |f|
-                  = f.hidden_field :mobile_flag,value:true
-                  = f.hidden_field :inventory_flag,value:true
-                  = f.number_field :end_day_stock_accounting_unit,class:'input_inventory_stock form-control',style:'width:80px;float:left;margin-right:10px;', :step => 0.01,value:(stock.end_day_stock / material.accounting_unit_quantity).round(1)
-                  span.accounting_unit_span style='float:left;padding-top:10px;' = material.accounting_unit
-              - else
-                = form_with(model: Stock.new, data: {remote: true}) do |f|
-                  = f.hidden_field :store_id,value:@store.id
-                  = f.hidden_field :mobile_flag,value:true
-                  = f.hidden_field :material_id,value:material.id
-                  = f.hidden_field :date,value:@date
-                  = f.hidden_field :inventory_flag,value:true
-                  = f.number_field :end_day_stock_accounting_unit,value:'',class:'input_inventory_stock form-control',style:'width:80px;float:left;margin-right:10px;', :step => 0.01
-                  span.accounting_unit_span style='float:left;padding-top:10px;' = material.accounting_unit
-            td.inventory_flag
-              - if stock.present?
-                - if stock.inventory_flag == true
-                  span class="label label-success" 棚卸し
+          - if stock.present? && stock.inventory_flag == true
+            - color = "#ffffe0"
+          - else
+            - color = "white"
+          tr class="inventory_tr_#{material.id}" style="background-color:#{color}"
+            / td style='font-size:10px;padding:10px 0 0 2px;' = material.vendor.company_name.slice(0..4)
+            td style='color:#696969;'
+              - if material.vendor_id == 151
+                |ク
+              - elsif material.vendor_id == 489
+                |地
+            td style='text-align:right;font-size:1vw;'
+              = link_to material.name,edit_material_path(material),target:'_blank'
+            td.text-right style='color:#696969;'
+              = ActiveSupport::NumberHelper.number_to_rounded(@latest_material_endstock[material.id], strip_insignificant_zeros: true, :delimiter => ',')
+              = " #{material.accounting_unit}"
+              input.latest_material_endstock style='display:none;' value= @latest_material_endstock[material.id]
+            = render partial: "td", locals: { material:material,stock:stock }
+            td.text-right style='color:#696969;'
+              = "#{ActiveSupport::NumberHelper.number_to_rounded(@used_amounts[material.id], strip_insignificant_zeros: true, :delimiter => ',', precision: 1)} #{material.accounting_unit}"
+          tr class="inventory_tr_#{material.id}_alert" style='display:none;'
+            td style='text-align:center;background-color:pink;' colspan=5
+              |2倍以上ずれているので確認お願いします。
+              button.alert_ok.btn.btn-sm.btn-default 確認済
+javascript:
+  $(".alert_ok").on('click',function(){
+    $(this).parent().parent('tr').hide();
+  });

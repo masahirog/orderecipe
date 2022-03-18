@@ -1,0 +1,65 @@
+doctype html
+html
+  head
+    title
+      | Order
+    = include_gon
+    = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload'
+    = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
+    = csrf_meta_tags
+    meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no"
+    link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet"
+    link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-rc.2/css/select2.min.css" rel="stylesheet"
+    script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.0/jquery-ui.min.js"
+    script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"
+    script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-rc.2/js/select2.min.js"
+  body data-controller="#{controller_name}" data-action="#{action_name}"
+    header
+      nav.navbar.navbar-default
+        .container-fluid
+          .navbar-header
+            button.navbar-toggle.collapsed[type="button" data-toggle="collapse" data-target="#navbarEexample"]
+              span.sr-only
+                | Toggle navigation
+              span.icon-bar
+              span.icon-bar
+              span.icon-bar
+            a.navbar-brand style="padding:12px 10px 8px 20px;" href="/"
+              = image_tag 'orderecipe.png',height:'85%'
+          #navbarEexample.collapse.navbar-collapse
+            - if user_signed_in?
+              #navbarEexample.collapse.navbar-collapse.navbar-right
+                ul.nav.navbar-nav
+                  li.user_nav.grid-6
+                    = link_to "ログアウト", destroy_user_session_path, :method => :delete
+    .all_body
+      - flash.each do |name, msg|
+        .col-md-12 class="alert alert-#{name}" role="alert"
+          = content_tag :div, raw(msg), :id => name
+
+      .col-md-12
+        h3 ="#{@from.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[@from.wday]})")}〜#{@to.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[@to.wday]})")}"
+        div style='margin-bottom:20px;'
+          = form_tag 'outside_view', :method => 'get' do
+            = date_field_tag :from, @from, class:"form-control float-left",style:'width:200px;float:left;'
+            div style="float:left;padding:8px;" 〜
+            = date_field_tag :to, @to, class:"form-control",style:'width:200px;float:left;'
+            = submit_tag "表 示" ,class:"btn btn-primary",style:"margin-left:20px;"
+
+      table.table.table-striped
+        thead
+          tr
+            th style='text-align:right;' 食材名
+            th.text-right 期間合計量
+            - @dates.each do |date|
+              th.text-right = date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})")
+        tbody
+          - @materials.each do |material|
+            - stock = Stock.find_by(material_id:material.id,date:@date)
+            tr class="inventory_tr_#{material.id}"
+              td style='text-align:right;'
+                = material.name
+              td.text-right style='font-weight:bold;'
+                = "#{ActiveSupport::NumberHelper.number_to_rounded(@used_amounts[material.id], strip_insignificant_zeros: true, :delimiter => ',', precision: 1)} #{material.accounting_unit}"
+              - @dates.each do |date|
+                td.text-right = "#{@hash[[material.id,date]]} #{material.accounting_unit}" if @hash[[material.id,date]].present?

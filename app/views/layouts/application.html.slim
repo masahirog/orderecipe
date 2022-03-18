@@ -51,8 +51,9 @@ html
                       h5 style='padding:0 10px;font-weight:bold;' 発注・在庫
                       li = link_to "発注",orders_path(store_id:39)
                       li = link_to "納品確認",deliveried_list_orders_path(store_id:39)
-                      li = link_to "野菜棚卸し",mobile_inventory_stocks_path(date:Date.today,vendor_id:[151,489],store_id:39),target:'_blank'
-                      li = link_to "肉類棚卸し",mobile_inventory_stocks_path(date:Date.today,vendor_id:[121,131,509,441,529],store_id:39),target:'_blank'
+                      li = link_to "野菜外部公開",'/outside_view'
+                      li = link_to "野菜棚卸し",mobile_inventory_stocks_path(vendor_id:[151,489],store_id:39),target:'_blank'
+                      li = link_to "肉類棚卸し",mobile_inventory_stocks_path(vendor_id:[121,131,509,441,529],store_id:39),target:'_blank'
                       li = link_to "くるめし備品手配","https://docs.google.com/spreadsheets/d/12VRdyriEK7nqzdMFcdHqPPcs52n_CsZ20nGfbS0X5GI/edit#gid=104376609",target:'_blank'
                       li
                         a.clearfix href="/stocks/inventory?to=#{Date.today}&store_id=39"
@@ -115,7 +116,6 @@ html
                       = link_to "ログアウト", destroy_user_session_path, :method => :delete
 
     .all_body
-
       - flash.each do |name, msg|
         .col-md-12 class="alert alert-#{name}" role="alert"
           = content_tag :div, raw(msg), :id => name
