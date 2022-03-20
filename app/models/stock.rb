@@ -215,8 +215,18 @@ class Stock < ApplicationRecord
   end
 
   def self.change_stock(update_stocks,material_id,date,end_day_stock,store_id)
-    stocks = Stock.where(material_id:material_id,store_id:store_id).where('date > ?', date).where(inventory_flag:true)
+    stocks = Stock.where(material_id:material_id,store_id:store_id).where('date >= ?', date).where(inventory_flag:true)
     if stocks.present?
+      stock = stocks.order('date desc').first
+      date = stock.date
+      end_day_stock = stock.end_day_stock
+      date_later_stocks = Stock.where(material_id:material_id,store_id:store_id).where('date > ?', date).order('date ASC')
+      date_later_stocks.each_with_index do |dls,i|
+        dls.start_day_stock = end_day_stock
+        dls.end_day_stock = dls.start_day_stock - dls.used_amount + dls.delivery_amount
+        end_day_stock = dls.end_day_stock
+        update_stocks << dls
+      end
     else
       date_later_stocks = Stock.where(material_id:material_id,store_id:store_id).where('date > ?', date).order('date ASC')
       date_later_stocks.each_with_index do |dls,i|

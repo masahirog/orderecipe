@@ -37,29 +37,61 @@ html
         .col-md-12 class="alert alert-#{name}" role="alert"
           = content_tag :div, raw(msg), :id => name
 
-      .col-md-12
-        h3 ="#{@from.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[@from.wday]})")}〜#{@to.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[@to.wday]})")}"
-        div style='margin-bottom:20px;'
-          = form_tag 'outside_view', :method => 'get' do
-            = date_field_tag :from, @from, class:"form-control float-left",style:'width:200px;float:left;'
-            div style="float:left;padding:8px;" 〜
-            = date_field_tag :to, @to, class:"form-control",style:'width:200px;float:left;'
-            = submit_tag "表 示" ,class:"btn btn-primary",style:"margin-left:20px;"
-
-      table.table.table-striped
-        thead
-          tr
-            th style='text-align:right;' 食材名
-            th.text-right 期間合計量
-            - @dates.each do |date|
-              th.text-right = date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})")
-        tbody
-          - @materials.each do |material|
-            - stock = Stock.find_by(material_id:material.id,date:@date)
-            tr class="inventory_tr_#{material.id}"
-              td style='text-align:right;'
-                = material.name
-              td.text-right style='font-weight:bold;'
-                = "#{ActiveSupport::NumberHelper.number_to_rounded(@used_amounts[material.id], strip_insignificant_zeros: true, :delimiter => ',', precision: 1)} #{material.accounting_unit}"
+      div style='margin-bottom:20px;'
+        = form_tag 'outside_view', :method => 'get' do
+          = date_field_tag :from, @from, class:'date',style:'float:left;'
+          div style="float:left;padding:8px;" 〜
+          = date_field_tag :to, @to, class:"date",style:'float:left;'
+          = submit_tag "表 示" ,class:"btn btn-primary",style:"margin-left:20px;"
+      div style='height:600px;overflow: scroll;'
+        table.table.layout-fixed style='border-collapse:separate;'
+          thead style='position: sticky;top:0;background-color:white;z-index:3;'
+            tr
+              th style='width:150px;text-align:right;background-color:white;' 食材名
+              th.text-right style='width:100px;' 期間合計量
               - @dates.each do |date|
-                td.text-right = "#{@hash[[material.id,date]]} #{material.accounting_unit}" if @hash[[material.id,date]].present?
+                th.text-right style='width:100px;' = date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})")
+
+          tbody
+            - @materials.each do |material|
+              - stock = Stock.find_by(material_id:material.id,date:@date)
+              tr class="inventory_tr_#{material.id}"
+                td style='text-align:right;background-color:white;word-wrap: break-word; '
+                  = material.name
+                td.text-right style='font-weight:bold;'
+                  = "#{ActiveSupport::NumberHelper.number_to_rounded(@used_amounts[material.id], strip_insignificant_zeros: true, :delimiter => ',', precision: 1)} #{material.accounting_unit}"
+                - @dates.each do |date|
+                  td.text-right = "#{@hash[[material.id,date]]} #{material.accounting_unit}" if @hash[[material.id,date]].present?
+
+css:
+  .table-responsive th {
+    white-space: nowrap;
+  }
+  table.layout-fixed {
+    table-layout: fixed;
+    border-collspace:separate;
+  }
+  .table th:first-child,td:first-child{
+    position: sticky;
+    left: 0;
+    z-index:2;
+  }
+  th,td {
+  }
+  input[type="date"]{
+    position: relative;
+  }
+
+  input[type=date]::-webkit-calendar-picker-indicator {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+  }
+  .date{
+    width:100px;
+    height:34px;
+    border:1px solid silver;
+    border-radius:3px;
+    padding:4px 6px;
+  }
