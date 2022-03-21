@@ -24,6 +24,7 @@ div.col-md-12 style='font-size:20px;padding:0 0 7px 0;'
   button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#newOrder" style='float:left;margin-left:20px;margin-top:10px;' 発注開始
   #newOrder.modal.fade tabindex="-1"
     = form_tag(new_order_path,method: :get) do
+      = hidden_field_tag :store_id,39
       = date_field_tag 'kurumesi_order_date',params[:date],style:'display:none;'
       .modal-dialog style='width:1000px;'
         .modal-content
