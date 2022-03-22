@@ -1,5 +1,58 @@
 class DailyMenusController < AdminController
   before_action :set_daily_menu, only: [:show, :update, :destroy]
+  def kiridasi
+    products_arr = []
+    menus = []
+    daily_menu = DailyMenu.find(params[:id])
+    date = daily_menu.start_time
+    @bentos_num_h = daily_menu.daily_menu_details.group(:product_id).sum(:manufacturing_number)
+    @bentos_num_h.each do |prnm|
+      product = Product.find(prnm[0])
+      num = prnm[1]
+      products_arr << [product.name,prnm[1]]
+      product.menus.each do |menu|
+        menus << [menu.base_menu_id,menu.id,num]
+      end
+    end
+    @test_hash = {}
+    base_menu_hash = {}
+    menus.each do |menu|
+      if base_menu_hash[menu[0]]
+        if base_menu_hash[menu[0]][menu[1]]
+          base_menu_hash[menu[0]][menu[1]] += menu[2]
+        else
+          base_menu_hash[menu[0]][menu[1]] = menu[2]
+        end
+      else
+        base_menu_hash[menu[0]] = {menu[1]=>menu[2]}
+      end
+    end
+    @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    base_menu_hash.each do |bmh|
+      bmh[1].each do |menu_num|
+        menu = Menu.find(menu_num[0])
+        num = menu_num[1]
+        menu_materials = menu.menu_materials.includes(:material).order('materials.category').where(:materials => {measurement_flag:true})
+        menu_materials.each do |mm|
+          base_menu_material_id = mm.base_menu_material_id
+          machine = "○" if mm.machine_flag == true
+          first = "○" if mm.first_flag == true
+          group = mm.source_group if mm.source_group.present?
+          amount = mm.amount_used*num
+          # amount = ActiveSupport::NumberHelper.number_to_rounded((mm.amount_used*num), strip_insignificant_zeros: true, :delimiter => ',')
+          if mm.post == '切出/調理' || mm.post == '切出/スチ' ||mm.post == '切出し'
+            if @test_hash[base_menu_material_id]
+              @test_hash[base_menu_material_id][2] = @test_hash[base_menu_material_id][2] + mm.amount_used * num
+              @test_hash[base_menu_material_id][6] += "、#{menu.name}（#{num}）"
+            else
+              @test_hash[base_menu_material_id] = ["#{mm.material.category_before_type_cast}-#{mm.material.name}",mm.material.name,amount,mm.material.recipe_unit,mm.post,mm.preparation,"#{menu.name} (#{num})",first,machine,group,mm.material_id]
+            end
+          end
+        end
+      end
+    end
+  end
+
   def cook_on_the_day
     @daily_menu = DailyMenu.find(params[:id])
     respond_to do |format|

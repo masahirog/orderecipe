@@ -22,7 +22,7 @@
     p = @daily_menu.sozai_manufacturing_number
 
 
-.form-group.col-md-12.clearfix
+.form-group.clearfix
   = link_to "編集する", edit_daily_menu_path(@daily_menu),class:'btn btn-primary',style:'float:left;margin-left:20px;margin-top:10px;'
   / = link_to "発注開始", new_order_path(daily_menu_id:@daily_menu.id),class:'btn btn-success',style:'float:left;margin-left:20px;margin-top:10px;'
     / = link_to "発注開始", new_order_path(kurumesi_order_date:params[:date]),class:'new_order btn btn-success',:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
@@ -54,7 +54,7 @@
   = link_to "積載シール",loading_daily_menus_path(id:@daily_menu.id, :format => :csv),class:"btn btn-default",:target=>"_blank",style:'margin-left:20px;margin-top:10px;'
   = link_to "積載伝票",daily_menu_path(id:@daily_menu.id, :format => :pdf),class:"btn btn-default",:target=>"_blank",style:'margin-left:20px;margin-top:10px;'
   = link_to "当日調理",cook_on_the_day_daily_menus_path(id:@daily_menu.id, :format => :pdf),class:"btn btn-default",:target=>"_blank",style:'margin-left:20px;margin-top:10px;'
-
+  = link_to "タブレット",kiridasi_daily_menus_path(id:@daily_menu.id),class:"btn btn-default",:target=>"_blank",style:'margin-left:20px;margin-top:10px;'
   / = link_to "ラムさん",recipes_roma_daily_menus_path(daily_menu_id:@daily_menu.id, :format => :pdf),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
   / = link_to "切出仕込み",print_preparation_daily_menus_path(daily_menu_id:@daily_menu.id,mochiba:'kiriba',format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
   / = link_to "調理仕込み",print_preparation_daily_menus_path(daily_menu_id:@daily_menu.id,mochiba:'choriba',format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
@@ -103,7 +103,7 @@
                 .col-md-3
                   = radio_button_tag("lang", "2")
                   = label_tag("lang_2", "ローマ字",style:'margin-left:10px;')
-              .col-md-12
+              .col-md-12.form-group
                 .col-md-3 並び
                 .col-md-3
                   = radio_button_tag("sort", "1",{:checked => true})
@@ -111,7 +111,6 @@
                 .col-md-3
                   = radio_button_tag("sort", "2")
                   = label_tag("sort_2", "メニュー順",style:'margin-left:10px;')
-
           .modal-footer
             button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
             = submit_tag "表示する" ,class:"btn btn-primary"
@@ -134,8 +133,8 @@
           .modal-footer
             button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
             = submit_tag "作成する" ,class:"btn btn-primary"
-  button type="button" class="btn btn-success" data-toggle="modal" data-target="#store_reflect_modal" style='float:right;margin-top:10px;margin-right:10px;' 各店舗に献立を反映する
-  #store_reflect_modal.modal.fade tabindex="-1"
+  / button type="button" class="btn btn-success" data-toggle="modal" data-target="#store_reflect_modal" style='float:right;margin-top:10px;margin-right:10px;' 各店舗に献立を反映する
+  / #store_reflect_modal.modal.fade tabindex="-1"
     = form_tag(store_reflect_daily_menus_path,method: :get) do
       = number_field_tag 'daily_menu_id',@daily_menu.id
       .modal-dialog

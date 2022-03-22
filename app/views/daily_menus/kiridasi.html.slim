@@ -1,0 +1,41 @@
+
+table.table
+  thead
+    tr
+      th style='width:150px;' 食材名
+      th style='width:30px;' F
+      th style='width:30px;' M
+      th style='width:70px;' 分量
+      th colspan=3 仕込み
+      th メニュー
+
+  tbody
+    - @test_hash.each do |th|
+      tr class="mm_tr tr_#{th[1][10]}"
+        td.material_name
+          = th[1][1]
+          input value="#{th[1][10]}" style='display:none;'
+        td = th[1][7]
+        td = th[1][8]
+        td = "#{th[1][2].round} #{th[1][3]}"
+        td style='width:80px;'  = th[1][4]
+        td = th[1][9]
+        td = th[1][5]
+        td = th[1][6]
+
+javascript:
+  $("body").on('click','.material_name',function(){
+    var name = String($(this).children().val());
+    name = ".tr_"+name
+    console.log(name);
+    $('.mm_tr').hide();
+    $(name).show();
+    $(name).addClass("shown")
+    $(name).find('.material_name').removeClass("material_name")
+  });
+  $("body").on('click','.shown',function(){
+    $(".shown").find('td').addClass("material_name")
+    $(".shown").removeClass("shown")
+
+    $('.mm_tr').show();
+  });
