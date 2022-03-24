@@ -7,7 +7,7 @@ class MenusController < AdminController
     end
   end
   def get_material
-    @materials = Material.where(unused_flag:false).where("name LIKE ?", "%#{params[:q]}%").first(10)
+    @materials = Material.where.not(vendor_id:559).where(unused_flag:false).where("name LIKE ?", "%#{params[:q]}%").first(10)
     respond_to do |format|
       format.json { render json: @materials }
     end

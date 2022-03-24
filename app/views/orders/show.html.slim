@@ -53,7 +53,10 @@ table.table
         td
           = om.delivery_date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[om.delivery_date.wday]})")
         td.om_fax_td
-          = render partial: "edit_faxsended", locals: { order_material:om }
+          -if om.material.vendor_id == 559
+            span -
+          -else
+            = render partial: "edit_faxsended", locals: { order_material:om }
 #sampleModal.modal.fade tabindex="-1"
   = form_tag(send_order_fax_orders_path,method: :get) do
     = hidden_field_tag 'order_id',@order.id

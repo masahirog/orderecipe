@@ -69,10 +69,6 @@
     tbody#order_materials_table
       - i = 0
       = f.fields_for :order_materials do |m|
-        - if i > 4
-          - position = 'top'
-        - else
-          - position = 'bottom'
         tr.order_materials_tr.nested-fields
           td.order_material_name style="min-width:350px;"
             - if m.object.material_id.present?
@@ -120,21 +116,21 @@
               .text-right style="float:left;width:50%;"
                 span class="stock_yoso_#{m.object.material_id} text-right"
                   - if m.object.material_id.present?
-                    - if @prev_stocks[m.object.material_id]
-                      - if @prev_stocks[m.object.material_id].end_day_stock < 0
-                        span style='color:red;' = "#{(@prev_stocks[m.object.material_id].end_day_stock/m.object.material.accounting_unit_quantity).floor(1)} #{m.object.material.accounting_unit}：不足"
-                      - else
-                        span style='color:lime;' = "残り：#{(@prev_stocks[m.object.material_id].end_day_stock/m.object.material.accounting_unit_quantity).floor(1)} #{m.object.material.accounting_unit} "
-                    - else
-                      |0
+                    = link_to history_stocks_path(material_id:m.object.material_id,store_id:@order.store_id),target:'_blank',class:'stock-tooltip' do
+                      span data-html="true" class="" aria-hidden="true"  data-toggle="tooltip" data-placement="top" title="<div style='padding:10px;'></div><table class='table tooltip-table table-striped'>#{@stock_hash[m.object.material_id].flatten.join('')}</table>"
+                        - if @prev_stocks[m.object.material_id]
+                          - if @prev_stocks[m.object.material_id].end_day_stock < 0
+                            span style='color:red;' = "#{(@prev_stocks[m.object.material_id].end_day_stock/m.object.material.accounting_unit_quantity).floor(1)} #{m.object.material.accounting_unit}：不足"
+                          - else
+                            span style='color:lime;' = "残り：#{(@prev_stocks[m.object.material_id].end_day_stock/m.object.material.accounting_unit_quantity).floor(1)} #{m.object.material.accounting_unit} "
+                        - else
+                          |0
                 - if m.object.material_id.present?
                   - if @stock_hash[m.object.material_id].present?
-                    = link_to history_stocks_path(material_id:m.object.material_id,store_id:@order.store_id),target:'_blank',class:'stock-tooltip' do
-                      span data-html="true" style='color:blue;margin-left:10px;' class="glyphicon glyphicon-eye-open" aria-hidden="true"  data-toggle="tooltip" data-placement="#{position}" title="<table class='table tooltip-table'><thead><tr><th style='text-align: center'>日付</th><th style='text-align: center'>納品</th><th style='text-align: center'>使用</th><th style='text-align: center'>在庫</th><th></th></tr></thead><tbody>#{@stock_hash[m.object.material_id].flatten.join('')}</tbody></table>"
                     = link_to edit_material_path(m.object.material),target:'_blank',class:'stock-tooltip' do
-                      span style='color:green;margin-left:10px;' class="glyphicon glyphicon-pencil" aria-hidden="true"  data-toggle="tooltip" data-placement="#{position}" title="食材の編集"
-                    = link_to material_reload_orders_path(material_id:m.object.material_id,date:@prev_stocks.first[1].date,store_id:@order.store_id), method: :post, remote: true
-                      span style='color:red;margin-left:10px;' class="glyphicon glyphicon-refresh" aria-hidden="true"
+                      span style='color:green;margin-left:10px;' class="glyphicon glyphicon-pencil"
+                    / = link_to material_reload_orders_path(material_id:m.object.material_id,date:@prev_stocks.first[1].date,store_id:@order.store_id), method: :post, remote: true
+                    /   span style='color:red;margin-left:10px;' class="glyphicon glyphicon-refresh" aria-hidden="true"
 
           td.order_material_memo style='width:999px;'
             = m.text_field :order_material_memo,class:'form-control'
@@ -156,10 +152,9 @@ javascript:
     });
   });
 sass:
-
   .stock-tooltip
     .tooltip
-      width: 600px
+      width: 100%
       font-size: 14px
   .memo-tooltip
     .tooltip
@@ -167,7 +162,7 @@ sass:
       font-size: 14px
 
   .tooltip-inner
-    max-width: 1000px
+    max-width: 100%
 
   .tooltip .tooltip-inner
     background-color: white

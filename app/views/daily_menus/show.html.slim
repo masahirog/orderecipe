@@ -29,7 +29,8 @@
   button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newOrder" style='float:left;margin-left:20px;margin-top:10px;' 発注開始
   #newOrder.modal.fade tabindex="-1"
     = form_tag(new_order_path,method: :get) do
-      = date_field_tag 'daily_menu_start_time',@daily_menu.start_time
+      = hidden_field_tag 'daily_menu_start_time',@daily_menu.start_time
+      = hidden_field_tag :store_id,39
       .modal-dialog style='width:1000px;'
         .modal-content
           .modal-header

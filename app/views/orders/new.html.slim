@@ -1,16 +1,22 @@
 = form_for @order do |f|
-  ul.list-group.col-md-12
-    = f.fields_for :order_products do |op|
-      li.list-group-item.col-md-12 style="padding:5px;"
-        = op.hidden_field :product_id,value:op.object.product_id
-        .col-md-4
-          = @product_hash[op.object.product_id]
-        .col-md-2.form-inline
-          = op.text_field :serving_for,value:op.object.serving_for, class:'form-control form-group',style:"width:70%;",readonly:true
-          .form-group
-            |  人分
-        .col-md-2
-          = op.date_field(:make_date,value: (op.object.make_date || Time.now.strftime("%Y-%m-%d")),class:"form-control input_make_date",readonly:true)
+  table.table
+    thead
+      tr
+        th 商品名
+        th 合計
+        - if @dates.present?
+          - @dates.each do |date|
+            th = date
+    tbody
+      = f.fields_for :order_products do |op|
+        tr
+          = op.hidden_field(:make_date,value: (op.object.make_date || Time.now.strftime("%Y-%m-%d")),class:"",readonly:true)
+          = op.hidden_field :product_id,value:op.object.product_id
+          td = @product_hash[op.object.product_id]
+          td = op.text_field :serving_for,value:op.object.serving_for, class:'form-control',readonly:true
+          - if @dates.present?
+            - @dates.each do |date|
+              td = @date_hash[date][op.object.product_id]
   - if params[:wday_new_order] == 'true'
     h3 = "#{@youbi} 発注商品一覧"
   - else
@@ -97,7 +103,7 @@
                 - if m.object.material_id.present?
                   - if @stock_hash[m.object.material_id].present?
                     = link_to history_stocks_path(material_id:m.object.material_id,store_id:params[:store_id]),target:'_blank',class:'stock-tooltip' do
-                      span data-html="true" style='color:blue;margin-left:10px;' class="" aria-hidden="true"  data-toggle="tooltip" data-placement="bottom" title="<div style='padding:10px;'><span style='font-size:16px;'>直近10日間の使用量合計は： 約 #{(@latest_material_used_amount[material.id]/material.recipe_unit_quantity).ceil(1) if @latest_material_used_amount[material.id] > 0} #{material.order_unit}です</span></div><table class='table tooltip-table table-striped'>#{@stock_hash[m.object.material_id].flatten.join('')}</table>"
+                      span data-html="true" style='color:blue;margin-left:10px;' class="" aria-hidden="true"  data-toggle="tooltip" data-placement="top" title="<div style='padding:10px;'><span style='font-size:16px;'>直近10日間の使用量合計は： 約 #{(@latest_material_used_amount[material.id]/material.recipe_unit_quantity).ceil(1) if @latest_material_used_amount[material.id] > 0} #{material.order_unit}です</span></div><table class='table tooltip-table table-striped'>#{@stock_hash[m.object.material_id].flatten.join('')}</table>"
                         - if m.object.material_id.present?
                           - if @prev_stocks[m.object.material_id]
                             - if @prev_stocks[m.object.material_id].end_day_stock < 0
@@ -108,7 +114,7 @@
                             |0
 
                     = link_to edit_material_path(material),target:'_blank',class:'stock-tooltip' do
-                      span style='color:green;margin-left:10px;' class="glyphicon glyphicon-pencil" aria-hidden="true"  data-toggle="tooltip" data-placement="bottom" title="食材の編集"
+                      span style='color:green;margin-left:10px;' class="glyphicon glyphicon-pencil"
                     -if @prev_stocks.first[1].present?
                       = link_to material_reload_orders_path(material_id:m.object.material_id,date:@prev_stocks.first[1].date,store_id:params[:store_id]), method: :post, remote: true
                         span style='color:red;margin-left:10px;' class="glyphicon glyphicon-refresh" aria-hidden="true"
