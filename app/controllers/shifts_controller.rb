@@ -85,7 +85,7 @@ class ShiftsController < ApplicationController
     last_day = first_day.end_of_month
     @one_month = [*first_day..last_day]
     aaa = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    staff_ids = Staff.ids
+    staff_ids = Staff.where(status:0).ids
     Shift.where(date:@one_month).each do |shift|
       if aaa[shift.date].present?
         aaa[shift.date] << shift.staff_id
@@ -122,7 +122,11 @@ class ShiftsController < ApplicationController
     @shifts = shifts.map{|shift|[[shift.staff_id,shift.date],shift]}.to_h
     @staff_shinsei_count = shifts.where.not(shift_pattern_id: nil).group(:staff_id).count
     @staff_syukkin_count = shifts.where.not(fix_shift_pattern_id: nil).group(:staff_id).count
-    @staffs = Staff.includes([:store]).all.order(row:'asc')
+    shift_staff_ids = shifts.map{|shift|shift.staff_id}.uniq
+    un_shift_staff_ids = Staff.where(status:0).ids
+    add_ids = un_shift_staff_ids - shift_staff_ids
+    staff_ids =shift_staff_ids + add_ids
+    @staffs = Staff.includes([:store]).where(id:staff_ids).order(row:'asc')
     @stores = Store.where.not(id:39)
     @fix_shift_patterns = FixShiftPattern.all.order(section:'asc')
     @shift_patterns = ShiftPattern.all
@@ -163,6 +167,25 @@ class ShiftsController < ApplicationController
         end
       end
     end
+    respond_to do |format|
+      format.html
+      format.csv do
+        send_data render_to_string, filename: "#{@date.year}_#{@date.month}_shift.csv", type: :csv
+      end
+    end
+  end
+
+
+  def jobcan_upload
+    if params[:date]
+      @date = Date.parse(params[:date])
+    else
+      @date = Date.today
+    end
+    first_day = @date.beginning_of_month
+    last_day = first_day.end_of_month
+    @one_month = [*first_day..last_day]
+    @shifts = Shift.where(date:@one_month)
     respond_to do |format|
       format.html
       format.csv do

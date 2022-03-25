@@ -141,6 +141,8 @@ ActiveRecord::Schema.define(version: 2022_03_14_011730) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.float "working_hour"
+    t.time "start_time"
+    t.time "end_time"
   end
 
   create_table "food_additives", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

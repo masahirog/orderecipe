@@ -25,6 +25,7 @@ Rails.application.routes.draw do
   resources :material_store_orderables
   resources :shifts do
     collection do
+      get :jobcan_upload
       get :once_update
       get :get_fix_shift_pattern
       get :check

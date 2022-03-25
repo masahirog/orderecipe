@@ -1,10 +1,11 @@
 h2 = "#{@date.year}年#{@date.month}月シフト"
 
-= link_to "CSV", shifts_path(date:params[:date],format:'csv'), class: "btn btn-default",style:'margin-right:20px;'
+.btn.btn-primary.all_edit_btn style='margin-right:20px;' 全員編集
 = link_to "#{@date.last_month.month}月＜＜",shifts_path(date:@date.last_month)
 |　　　
 = link_to "＞＞#{@date.next_month.month}月",shifts_path(date:@date.next_month)
-.btn.btn-primary.pull-right.all_edit_btn 全員編集
+= link_to "交通費CSV", shifts_path(date:params[:date],format:'csv'), class: "btn btn-default pull-right",style:'margin-right:20px;'
+= link_to "ジョブカンCSV", jobcan_upload_shifts_path(date:params[:date],format:'csv'), class: "btn btn-default pull-right",style:'margin-right:20px;'
 .table-responsive style='height:800px;overflow: scroll;'
   table.table.layout-fixed style='border-collapse:separate;'
     thead style='position: sticky;top:0;background-color:white;z-index:3;'

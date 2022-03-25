@@ -14,7 +14,11 @@ h1 一覧
           = submit_tag "登録する" ,class:"btn btn-success btn-sm"
     tbody.tbody-sortable
       - @staffs.each do |staff|
-        tr.staff_tr
+        - if staff.status == 'working'
+          - color = 'white'
+        - else
+          - color = 'silver'
+        tr.staff_tr style="background-color:#{color};"
           td = link_to staff.name, edit_staff_path(staff)
           td = staff.employment_status
           td = staff.store.name
