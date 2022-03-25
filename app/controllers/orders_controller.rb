@@ -118,8 +118,12 @@ class OrdersController < AdminController
       else
         @hash.store(material.id,material)
       end
-      material_stock_hash = stock_hash[material.id].map{|data|[data.date,data]}.to_h
-      # material_stock_hash = stock_hash[key].map{|data|[data.date,data]}.to_h
+
+      if stock_hash[material.id].present?
+        material_stock_hash = stock_hash[material.id].map{|data|[data.date,data]}.to_h
+      else
+        material_stock_hash ={}
+      end
       @thead = ["<th>日付</th>"]
       @tr0 = ["<td>始在庫</td>"]
       @tr1 = ["<td>納品</td>"]
