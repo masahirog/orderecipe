@@ -248,7 +248,8 @@ class StocksController < AdminController
     materials = materials.where(storage_place:params[:storage_place]) if params[:storage_place].present?
     materials = materials.where(category:params[:category]) if params[:category].present?
     material_ids = materials.map{|material|material.id}
-    stocks = Stock.where(store_id:store_id,material_id:material_ids).where("date >= ?", from).where("date <= ?", @to).order(date: :desc)
+    stocks = Stock.where(store_id:store_id,material_id:material_ids).where("date <= ?", @to).order(date: :desc)
+    # stocks = Stock.where(store_id:store_id,material_id:material_ids).where("date >= ?", from).where("date <= ?", @to).order(date: :desc)
     @stocks_h = []
     stocks.uniq(&:material_id).each do |stock|
       if stock.date == @to
