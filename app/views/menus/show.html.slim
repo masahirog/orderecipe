@@ -81,9 +81,10 @@
     tr
       th.active.col-md-4 盛り付けメモ
       td = text_url_to_link(simple_format(h(@menu.serving_memo))).html_safe
-.col-md-6
-  = image_tag @menu.image.to_s ,class:"text-center img-responsive center-block",style:'max-height:450px;'
-.table-responsive
+  .col-md-6
+    = image_tag @menu.image.to_s ,class:"text-center img-responsive center-block",style:'max-height:450px;'
+
+.col-md-12.table-responsive
   table.table
     thead
       tr
