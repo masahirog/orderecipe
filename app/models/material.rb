@@ -1,5 +1,8 @@
 class Material < ApplicationRecord
   # 単価は税抜ですべて保存する、表示時に税追加
+  has_many :material_cut_patterns, dependent: :destroy
+  accepts_nested_attributes_for :material_cut_patterns, allow_destroy: true
+
   has_many :material_store_orderables, dependent: :destroy
   accepts_nested_attributes_for :material_store_orderables, allow_destroy: true
 

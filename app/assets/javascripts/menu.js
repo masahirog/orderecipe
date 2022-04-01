@@ -108,6 +108,16 @@ $(document).on('turbolinks:load', function() {
       });
     }
   });
+  $(".material_ul").on('change','.post', function(){
+    var u = $(".add_li_material").index($(this).parents('.add_li_material'));
+    if ($(this).val().match(/切出/)) {
+      $(".add_li_material").eq(u).find(".div_material_cut_pattern").children().show();
+    }else{
+      $(".add_li_material").eq(u).find(".material_cut_pattern").val('');
+      $(".add_li_material").eq(u).find(".div_material_cut_pattern").children().hide();
+    }
+  });
+
 
   //amount_used変更でprice_used取得
   $(".material_ul").on('change','.amount_used', function(){
@@ -169,31 +179,6 @@ $(document).on('turbolinks:load', function() {
   });
 
 
-//メニュー更新ボタンを押した後、仕込みが両方埋まっているかチェック
-  $('#menu_submit_btn').click(function(){
-    var i = 0
-    if(!confirm('更新すると商品全てに反映されますが、よろしいですか？')){
-      /* キャンセルの時の処理 */
-      return false;
-    }else{
-      /*　OKの時の処理 */
-      $('form').submit();
-      // $(".add_li_material").each(function(){
-      //   if ($(this).find('.remove_material').children().val()=='false') {
-      //     if ($(this).children(".preparation").children().val()=="" && $(this).children(".select_post").children().val()==""){
-      //     }else if($(this).children(".preparation").children().val().length > 0  && $(this).children(".select_post").children().val().length > 0){
-      //     }else{
-      //       i += 1
-      //     };
-      //   }else{};
-      // });
-      // if (i==0) {
-      //   $('form').submit();
-      // }else{
-      //   alert("仕込みが埋まっていないものがあります。")
-      // };
-    };
-  });
 
   $('.material_ul').on('change','.input_food_ingredient',function(){
     var id = $(this).val();
@@ -294,14 +279,27 @@ $(document).on('turbolinks:load', function() {
 
   function get_material_info(data,u){
     var amount_used = $(".add_li_material").eq(u).find(".amount_used_input").val();
+    var id = data.material.id;
     var cost = data.material.cost_price;
     var unit = data.material.recipe_unit;
     var vendor = data.material.vendor_company_name;
     var eos = data.material.unused_flag;
+    var material_cut_patterns = data.material.material_cut_patterns
+    // console.log(material_cut_patterns);
     $(".add_li_material").eq(u).children(".sales_check").text(eos);
     $(".add_li_material").eq(u).children(".vendor").text(vendor);
     $(".add_li_material").eq(u).children(".cost_price").text(cost);
     $(".add_li_material").eq(u).find(".recipe_unit").text(unit);
+    $(".add_li_material").eq(u).find(".div_material_cut_pattern").children('a').attr("href", "/materials/"+id+"/edit");
+    $(".add_li_material").eq(u).find(".material_cut_pattern option").remove();
+    $(".add_li_material").eq(u).find('.material_cut_pattern').append($('<option>').val('').text(''));
+    material_cut_patterns.forEach(function(mcp, idx) {
+      var $option_tag = $('<option>').val(mcp.id).text(mcp.name);
+      $(".add_li_material").eq(u).find('.material_cut_pattern').append($option_tag);
+    });
+
+
+
     //終売のアラートon
     eos_check(eos,u)
     if (isNaN(amount_used) == true){

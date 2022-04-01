@@ -32,6 +32,7 @@ class CreateMenuMaterials < ActiveRecord::Migration[4.2]
       t.boolean :first_flag,default:false,null:false
       t.boolean :machine_flag,default:false,null:false
       t.timestamps
+      t.integer :material_cut_pattern_id
     end
   end
 end

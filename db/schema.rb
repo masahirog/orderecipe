@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_14_011730) do
+ActiveRecord::Schema.define(version: 2022_03_29_091559) do
 
   create_table "analyses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "store_id"
@@ -238,6 +238,13 @@ ActiveRecord::Schema.define(version: 2022_03_14_011730) do
     t.text "kitchen_memo"
   end
 
+  create_table "material_cut_patterns", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "material_id", null: false
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "material_food_additives", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "material_id", null: false
     t.integer "food_additive_id", null: false
@@ -334,6 +341,7 @@ ActiveRecord::Schema.define(version: 2022_03_14_011730) do
     t.boolean "machine_flag", default: false, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer "material_cut_pattern_id"
   end
 
   create_table "menus", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

@@ -4,7 +4,7 @@ h3 リマインダー定期自動作成の一覧
 .form-group.clearfix
   = form_tag task_templates_path, :method => 'get' do
     .col-md-1
-      = select_tag :store_id,options_for_select(Store.all.map{|store|[store.name,store.id]},params[:store_id]),include_blank:true , class: "task_status form-control"
+      = select_tag :store_id,options_for_select(Store.all.map{|store|[store.short_name,store.id]},params[:store_id]),include_blank:true , class: "task_status form-control"
     .col-md-1
       = select_tag :repeat_type,options_for_select(options_for_select_from_enum(TaskTemplate,:repeat_type),params[:repeat_type]),include_blank:true , class: "task_repeat_type form-control"
 
@@ -18,7 +18,7 @@ table.table.table-striped
   thead
     tr
       th
-      th リピート
+      th style='width:80px;' リピート
       th 時間
       th 内容
       th メモ
@@ -35,5 +35,5 @@ table.table.table-striped
         td = task_template.content
         td = task_template.memo
         td = task_template.status
-        td = task_template.stores.pluck(:name).join(',')
+        td = task_template.stores.pluck(:short_name).join(',')
         td = link_to "削除", task_template, method: :delete,class:'btn btn-danger btn-sm',data: { confirm: "ホンマに削除するで？" }
