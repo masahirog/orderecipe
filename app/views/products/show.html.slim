@@ -72,7 +72,7 @@ table.table
             = image_tag @product.display_image.to_s ,class:"text-center img-responsive center-block",style:'max-height:150px;'
         td
           - if @product.product_pops.present?
-            object data="#{@product.product_pops[0].image.to_s}" type="application/pdf"
+            object data="#{@product.product_pops[0].image.to_s}" type="application/pdf" style='max-height:150px;'
             = link_to "ダウンロード", download_products_path(:file_name => @product.product_pops[0].image,:key => @product.product_pops[0].image.path, :type => 'pdf'),target:'_blank',class:'col-md-12'
         td
           = link_to @product.image_for_one_person.to_s, "data-lightbox" => @product.image_for_one_person.to_s do

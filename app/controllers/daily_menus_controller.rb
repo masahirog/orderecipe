@@ -1,5 +1,22 @@
 class DailyMenusController < AdminController
   before_action :set_daily_menu, only: [:show, :update, :destroy]
+
+  def cut_list
+    daily_menu = DailyMenu.find(params[:daily_menu_id])
+    date = daily_menu.start_time
+    @bentos_num_h = daily_menu.daily_menu_details.group(:product_id).sum(:manufacturing_number)
+    respond_to do |format|
+      format.html
+      format.pdf do
+        pdf = CutList.new(@bentos_num_h,date)
+        send_data pdf.render,
+        filename:    "#{date}.pdf",
+        type:        "application/pdf",
+        disposition: "inline"
+      end
+    end
+  end
+
   def kiridasi
     products_arr = []
     menus = []

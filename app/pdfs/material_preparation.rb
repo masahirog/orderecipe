@@ -117,7 +117,7 @@ class MaterialPreparation < Prawn::Document
       columns(7).size = 6
       row(0).column(2).align = :left
       self.header = true
-      self.column_widths = [140,20,20,60,60,20,230,230]
+      self.column_widths = [25,140,20,20,60,60,20,230,230]
     end
     page_count.times do |i|
       unless i < start_page_count
@@ -130,10 +130,10 @@ class MaterialPreparation < Prawn::Document
   end
 
   def line_item_rows(menu_materials_arr,date,mochiba)
-    data = [["#{mochiba}  #{date}",'F','M',"分量", {:content => "仕込み", :colspan => 3},'メニュー名']]
-    menu_materials_arr.each do |mma|
+    data = [["","#{mochiba}  #{date}",'F','M',"分量", {:content => "仕込み", :colspan => 3},'メニュー名']]
+    menu_materials_arr.each_with_index do |mma,i|
       amount = ActiveSupport::NumberHelper.number_to_rounded(mma[2], strip_insignificant_zeros: true, :delimiter => ',', precision: 1)
-      data << [mma[1],mma[7],mma[8],"#{amount} #{mma[3]}",mma[4],mma[9],mma[5],mma[6]]
+      data << ["#{i+1}",mma[1],mma[7],mma[8],"#{amount} #{mma[3]}",mma[4],mma[9],mma[5],mma[6]]
     end
     data
   end

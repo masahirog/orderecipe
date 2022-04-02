@@ -26,8 +26,8 @@
   = link_to "編集する", edit_daily_menu_path(@daily_menu),class:'btn btn-primary',style:'float:left;margin-left:20px;margin-top:10px;'
   / = link_to "発注開始", new_order_path(daily_menu_id:@daily_menu.id),class:'btn btn-success',style:'float:left;margin-left:20px;margin-top:10px;'
     / = link_to "発注開始", new_order_path(kurumesi_order_date:params[:date]),class:'new_order btn btn-success',:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
-  button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newOrder" style='float:left;margin-left:20px;margin-top:10px;' 発注開始
-  #newOrder.modal.fade tabindex="-1"
+  / button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newOrder" style='float:left;margin-left:20px;margin-top:10px;' 発注開始
+  / #newOrder.modal.fade tabindex="-1"
     = form_tag(new_order_path,method: :get) do
       = hidden_field_tag 'daily_menu_start_time',@daily_menu.start_time
       = hidden_field_tag :store_id,39
@@ -47,7 +47,6 @@
           .modal-footer
             button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
             = submit_tag "発注する" ,class:"btn btn-primary"
-
   = link_to "レシピ印刷",products_pdfs_daily_menus_path(daily_menu_id:@daily_menu.id, :format => :pdf),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
   = link_to "タレレシピ",sources_daily_menus_path(daily_menu_id:@daily_menu.id, :format => :pdf),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
   = link_to "タレシール",sources_daily_menus_path(daily_menu_id:@daily_menu.id, :format => :csv),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
@@ -56,6 +55,7 @@
   = link_to "積載伝票",daily_menu_path(id:@daily_menu.id, :format => :pdf),class:"btn btn-default",:target=>"_blank",style:'margin-left:20px;margin-top:10px;'
   = link_to "当日調理",cook_on_the_day_daily_menus_path(id:@daily_menu.id, :format => :pdf),class:"btn btn-default",:target=>"_blank",style:'margin-left:20px;margin-top:10px;'
   = link_to "タブレット",kiridasi_daily_menus_path(id:@daily_menu.id),class:"btn btn-default",:target=>"_blank",style:'margin-left:20px;margin-top:10px;'
+  = link_to "カット",cut_list_daily_menus_path(daily_menu_id:@daily_menu.id, :format => :pdf),class:"btn btn-default",:target=>"_blank",style:'margin-left:20px;margin-top:10px;'
   / = link_to "ラムさん",recipes_roma_daily_menus_path(daily_menu_id:@daily_menu.id, :format => :pdf),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
   / = link_to "切出仕込み",print_preparation_daily_menus_path(daily_menu_id:@daily_menu.id,mochiba:'kiriba',format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
   / = link_to "調理仕込み",print_preparation_daily_menus_path(daily_menu_id:@daily_menu.id,mochiba:'choriba',format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
@@ -116,8 +116,8 @@
             button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
             = submit_tag "表示する" ,class:"btn btn-primary"
   = link_to '献立の削除', daily_menu_path(@daily_menu), method: :delete,class:"btn btn-danger",style:'float:right;margin-top:10px;margin-left:10px;', data: { confirm: "献立を削除してよろしいですか？" }
-  button type="button" class="btn btn-default" data-toggle="modal" data-target="#copy_menu" style='float:right;margin-top:10px;' 同じ献立を別日に反映
-  #copy_menu.modal.fade tabindex="-1"
+  / button type="button" class="btn btn-default" data-toggle="modal" data-target="#copy_menu" style='float:right;margin-top:10px;' 同じ献立を別日に反映
+  / #copy_menu.modal.fade tabindex="-1"
     = form_tag(copy_daily_menus_path,method: :get) do
       = number_field_tag 'daily_menu_id',@daily_menu.id
       .modal-dialog
