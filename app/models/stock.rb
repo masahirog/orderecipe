@@ -129,7 +129,6 @@ class Stock < ApplicationRecord
       end
     end
 
-
     @hash.each do |data|
       material_id = data[0]
       used_amount = data[1]
@@ -138,8 +137,12 @@ class Stock < ApplicationRecord
       prev_stock = prev_stocks_hash[material_id]
       if stock
         stock.used_amount = used_amount
-        end_day_stock = stock.start_day_stock - used_amount + stock.delivery_amount
-        stock.end_day_stock = end_day_stock
+        if stock.inventory_flag == true
+          end_day_stock = stock.end_day_stock
+        else
+          end_day_stock = stock.start_day_stock - used_amount + stock.delivery_amount
+          stock.end_day_stock = end_day_stock
+        end
         update_stocks << stock
       else
         if prev_stock.present?
@@ -172,8 +175,12 @@ class Stock < ApplicationRecord
     update_stocks = []
     onday_stock.each do |stock|
       stock.used_amount = 0
-      end_day_stock = stock.start_day_stock + stock.delivery_amount
-      stock.end_day_stock = end_day_stock
+      if stock.inventory_flag == true
+        end_day_stock = stock.end_day_stock
+      else
+        end_day_stock = stock.start_day_stock + stock.delivery_amount
+        stock.end_day_stock = end_day_stock
+      end
       calculate_change_stock(update_stocks,stock.material_id,end_day_stock,inventory_materials,recent_stocks_hash)
       update_stocks << stock
     end
@@ -215,7 +222,7 @@ class Stock < ApplicationRecord
   end
 
   def self.change_stock(update_stocks,material_id,date,end_day_stock,store_id)
-    stocks = Stock.where(material_id:material_id,store_id:store_id).where('date >= ?', date).where(inventory_flag:true)
+    stocks = Stock.where(material_id:material_id,store_id:store_id).where('date > ?', date).where(inventory_flag:true)
     if stocks.present?
       stock = stocks.order('date desc').first
       date = stock.date

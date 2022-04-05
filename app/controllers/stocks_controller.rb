@@ -19,7 +19,12 @@ class StocksController < AdminController
     store_id = params[:store_id]
     @store = Store.find(store_id)
     vendor_ids = params[:vendor_id]
-    @date = Date.today
+
+    if params[:date].present?
+      @date = Date.parse(params[:date])
+    else
+      @date = Date.today
+    end
     from = @date - 5
     to = @date + 1
     stocks = Stock.joins(:material).where(store_id:store_id).where(:materials => {vendor_id:vendor_ids}).where(date:from..to)
@@ -139,6 +144,7 @@ class StocksController < AdminController
       store_id = @stock.store_id
       @material = Material.find(params[:stock][:material_id])
       @stock.end_day_stock = params[:stock][:end_day_stock_accounting_unit].to_f*@material.accounting_unit_quantity
+      @stock.start_day_stock = @stock.end_day_stock
       respond_to do |format|
         if @stock.save
           @end_day_stock = (@stock.end_day_stock / @material.accounting_unit_quantity).round(1)
