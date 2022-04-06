@@ -10,7 +10,8 @@ h2 = "#{@date.year}年#{@date.month}月シフト"
   table.table.layout-fixed style='border-collapse:separate;'
     thead style='position: sticky;top:0;background-color:white;z-index:3;'
       tr
-        th style='background-color:white;width:100px;' 店舗名
+        th style='background-color:white;width:100px;'
+          = link_to "店舗名",store_shifts_path(date:@date)
         th style='width:70px;'
         - @one_month.each do |date|
           - holiday = HolidayJapan.name(date)
@@ -56,7 +57,7 @@ h2 = "#{@date.year}年#{@date.month}月シフト"
             - if @shifts[[staff.id,date]].present?
               td class="td_shinsei_#{@shifts[[staff.id,date]].id}"
                 span.shinsei_shift
-                  = @shifts[[staff.id,date]].shift_pattern.pattern_name if @shifts[[staff.id,date]].present? && @shifts[[staff.id,date]].shift_pattern.present?
+                  = @shifts[[staff.id,date]].shift_pattern.pattern_name if @shifts[[staff.id,date]].present? && @shifts[[staff.id,date]].shift_pattern_id.present?
                 - if @shifts[[staff.id,date]].present? && @shifts[[staff.id,date]].memo.present?
                   span.shinsei_shift_memo style='color:pink;font-size:12px;' class="glyphicon glyphicon-book original-tooltip" aria-hidden="true"  data-toggle="tooltip" data-placement="top" title="#{@shifts[[staff.id,date]].memo}"
                 .edit_shift_form style='text-align:center;display:none;'
@@ -75,7 +76,7 @@ h2 = "#{@date.year}年#{@date.month}月シフト"
             - if @shifts[[staff.id,date]].present?
               td class="td_shift_form td_#{@shifts[[staff.id,date]].id} clearfix" style='padding:3px;'
                 input.staff_id value="#{staff.id}" style='display:none;'
-                - if @shifts[[staff.id,date]].fix_shift_pattern.present?
+                - if @shifts[[staff.id,date]].fix_shift_pattern_id.present?
                   input.working_hour style='display:none;' value="#{@shifts[[staff.id,date]].fix_shift_pattern.working_hour}"
                 - else
                   input.working_hour value=0 style='display:none;'

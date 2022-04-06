@@ -1,6 +1,41 @@
 class ShiftsController < ApplicationController
   before_action :set_shift, only: %i[ show edit update destroy ]
-
+  def store
+    if params[:date]
+      @date = Date.parse(params[:date])
+    else
+      @date = Date.today
+    end
+    first_day = @date.beginning_of_month
+    last_day = first_day.end_of_month
+    @one_month = [*first_day..last_day]
+    @shifts = Shift.includes([:staff,:fix_shift_pattern]).where(date:@one_month).where.not(fix_shift_pattern_id:nil)
+    @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    @shifts.each do |shift|
+      if @hash[shift.store_id][shift.date].present?
+        if shift.fix_shift_pattern.section == 'lunch'
+          @hash[shift.store_id][shift.date]['lunch'] << shift.staff.name
+        elsif shift.fix_shift_pattern.section == 'dinner'
+          @hash[shift.store_id][shift.date]['dinner'] << shift.staff.name
+        elsif shift.fix_shift_pattern.section == 'all_day'
+          @hash[shift.store_id][shift.date]['lunch'] << shift.staff.name
+          @hash[shift.store_id][shift.date]['dinner'] << shift.staff.name
+        end
+      else
+        if shift.fix_shift_pattern.section == 'lunch'
+          @hash[shift.store_id][shift.date]['lunch'] = [shift.staff.name]
+          @hash[shift.store_id][shift.date]['dinner'] = []
+        elsif shift.fix_shift_pattern.section == 'dinner'
+          @hash[shift.store_id][shift.date]['lunch'] = []
+          @hash[shift.store_id][shift.date]['dinner'] = [shift.staff.name]
+        elsif shift.fix_shift_pattern.section == 'all_day'
+          @hash[shift.store_id][shift.date]['lunch'] = [shift.staff.name]
+          @hash[shift.store_id][shift.date]['dinner'] = [shift.staff.name]
+        end
+      end
+    end
+    @stores = Store.where.not(id:39)
+  end
   def once_update
     date = params["date"]
     shinsei_shift_hash = params["shifts"]
@@ -118,7 +153,7 @@ class ShiftsController < ApplicationController
     first_day = @date.beginning_of_month
     last_day = first_day.end_of_month
     @one_month = [*first_day..last_day]
-    shifts = Shift.where(date:@one_month)
+    shifts = Shift.includes([:store,:fix_shift_pattern,:shift_pattern]).where(date:@one_month)
     @shifts = shifts.map{|shift|[[shift.staff_id,shift.date],shift]}.to_h
     @staff_shinsei_count = shifts.where.not(shift_pattern_id: nil).group(:staff_id).count
     @staff_syukkin_count = shifts.where.not(fix_shift_pattern_id: nil).group(:staff_id).count

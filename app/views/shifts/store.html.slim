@@ -1,0 +1,132 @@
+h2 = "#{@date.year}年#{@date.month}月シフト"
+
+= link_to "#{@date.last_month.month}月＜＜",shifts_path(date:@date.last_month)
+|　　　
+= link_to "＞＞#{@date.next_month.month}月",shifts_path(date:@date.next_month)
+.table-responsive style='height:800px;overflow: scroll;'
+  table.table.layout-fixed style='border-collapse:separate;'
+    thead style='position: sticky;top:0;background-color:white;z-index:3;'
+      tr
+        th style='background-color:white;width:100px;' 店舗名
+        th
+        - @one_month.each do |date|
+          - holiday = HolidayJapan.name(date)
+          - if holiday.present?
+            th style='width:150px;background-color:#f06060;color:white;' = date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})")
+          - else
+            th style='width:150px;' = date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})")
+      - @stores.each do |store|
+        tr.shift_amount_tr
+          td rowspan="2" style='background-color:white;text-align: center;vertical-align: middle;z-index:4;font-weight:bold;'
+            = store.short_name
+          td 昼
+          - @one_month.each do |date|
+            td class="#{date.day}_store_#{store.id}_section_0 fix_shift_amount" style=""
+              - @hash[store.id][date]['lunch'].each do |staff_name|
+                div = staff_name
+        tr.shift_amount_tr
+          td 夜
+          - @one_month.each do |date|
+            td class="#{date.day}_store_#{store.id}_section_0 fix_shift_amount" style=""
+              - @hash[store.id][date]['dinner'].each do |staff_name|
+                div = staff_name
+
+css:
+  select{
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+  .table-responsive th {
+    white-space: nowrap;
+  }
+  table.layout-fixed {
+    table-layout: fixed;
+    border-collspace:separate;
+  }
+  .table th:first-child,td:first-child{
+    position: sticky;
+    left: 0;
+    z-index:2;
+  }
+  th,td {
+    text-align:center;
+  }
+  .tooltip-inner {
+      max-width:350px;
+      width: 350px;
+  }
+javascript:
+  $(function() {
+    $('.fix_shift_select').on( 'change',function(){
+      Rails.fire($(this).parent('form')[0], 'submit');
+    });
+
+    $('.shinsei_shift_select').on( 'change',function(){
+      Rails.fire($(this).parent('form')[0], 'submit');
+    });
+    $(".edit_shift").on("click",function(){
+      $(this).parents('tr').find(".edit_shift_form").show();
+      $(this).parents('tr').find(".shinsei_shift").hide();
+      $(this).parents('tr').find(".shinsei_shift_memo").hide();
+      $(this).parent('td').children(".edit_shift_ok").show();
+      $(this).hide();
+    });
+    $(".edit_shift_ok").on("click",function(){
+      $(this).parents('tr').find(".edit_shift_form").hide();
+      $(this).parents('tr').find(".shinsei_shift").show();
+      $(this).parents('tr').find(".shinsei_shift_memo").show();
+      $(this).parent('td').children(".edit_shift").show();
+      $(this).hide();
+    });
+    $(".edit_fix_shift").on("click",function(){
+      $(this).parents('tr').find(".edit_fix_shift_form").show();
+      $(this).parents('tr').find(".fix_shift").hide();
+      $(this).parent('td').children(".edit_fix_shift_ok").show();
+      $(this).hide();
+    });
+    $(".edit_fix_shift_ok").on("click",function(){
+      $(this).parents('tr').find(".edit_fix_shift_form").hide();
+      $(this).parents('tr').find(".fix_shift").show();
+      $(this).parent('td').children(".edit_fix_shift").show();
+      $(this).hide();
+    });
+
+    $(".fix_shift_tr").each(function(){
+      var val = 0;
+      var total = 0;
+      $(this).find('.working_hour').each(function(){
+        val = Number($(this).val());
+        total = total + val
+      });
+      $(this).find('.td_shift_form').each(function(){
+        if ($(this).find(".fix_shift_select_select").val()==""){
+          if ($(this).find(".fix_shift_select_store_id").val()==""){
+          }else{
+            $(this).find(".fix_shift_select_select").css('background-color','pink')
+          };
+        }else{
+          if ($(this).find(".fix_shift_select_store_id").val()=="") {
+            $(this).find(".fix_shift_select_store_id").css('background-color','pink')
+          };
+        };
+      });
+      var staff_id = $(this).find(".staff_id").val();
+      $('.working_hours_'+ staff_id).text(total);
+    });
+
+    $(".shift_amount_tr").each(function(){
+      var default_amount = Number($(this).find(".default_shift_value").val());
+      $(this).find('.fix_shift_amount').each(function(){
+        if (default_amount > Number($(this).text())) {
+          $(this).css("background-color",'#f0c0c0 ');
+        }
+      });
+    });
+
+    $(".all_edit_btn").on("click",function(){
+      $('.fix_shift').hide();
+      $(".edit_fix_shift_form").show();
+    });
+
+  });
