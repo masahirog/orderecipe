@@ -85,7 +85,7 @@ class Material < ApplicationRecord
 
   def self.get_material_this_vendor(order_id,vendor_id)
     order = Order.includes(order_materials: :material).find(order_id)
-    ordermaterials = order.order_materials.where(un_order_flag:false)
+    ordermaterials = order.order_materials.where(un_order_flag:false).joins(:material).order('materials.order_code asc')
     materials_this_vendor = []
     ordermaterials.each do |om|
       if vendor_id.to_i == om.material.vendor_id

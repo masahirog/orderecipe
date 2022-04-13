@@ -40,6 +40,17 @@ class CutList < Prawn::Document
       end
     end
     table_content(material_cut_hash)
+    page_count.times do |i|
+      unless i < 0
+        go_to_page(i+1)
+        bounding_box([bounds.right-200, bounds.top - 5], :width => 185) {
+          text "#{date.strftime("%-m/%d (#{%w(日 月 火 水 木 金 土)[date.wday]})")} 製造分　枚数：#{i+ 1 -0} / #{page_count - 0}",size:9,:align =>:right
+        }
+        bounding_box([bounds.right-200, 15], :width => 190) {
+          text "印刷：#{Time.now.strftime("%Y-%m-%d %H:%M")}",size:9,:align =>:right
+        }
+      end
+    end
   end
 
   def table_content(material_cut_hash)
@@ -53,6 +64,7 @@ class CutList < Prawn::Document
       column(5).align = :right
       columns(4).size = 6
       columns(6).size = 7
+      row(0).size = 8
       row(0).column(2).align = :left
       self.header = true
       self.column_widths = [25,120,150,50,150,50,270]
@@ -60,7 +72,7 @@ class CutList < Prawn::Document
   end
 
   def line_item_rows(material_cut_hash)
-    data = [["","食材",'カット',"分量",'メニュー名','量','仕込み']]
+    data = [["","",'カット',"分量",'メニュー名','量',"仕込み"]]
     material_cut_hash = material_cut_hash.sort { |a, b| a[1][1] <=> b[1][1]}
     i = 0
     material_cut_hash.each do |mch|
@@ -79,8 +91,5 @@ class CutList < Prawn::Document
       end
     end
     data
-  end
-  def sen
-    stroke_axis
   end
 end
