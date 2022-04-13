@@ -70,8 +70,8 @@ class NpOrderPdf < Prawn::Document
     text "TEL：#{vendor.company_phone}", :leading => 6, size: 11
     move_up 50
     text "＜リードタイム＞　月 〜11:00 ご注文 → 火 納品", :leading => 5, size: 10,:align => :right
-    text "月 〜11:00 ご注文 → 火 納品", :leading => 5, size: 10,:align => :right
-    text "月 〜11:00 ご注文 → 火 納品", :leading => 5, size: 10,:align => :right
+    text "水 〜11:00 ご注文 → 木 納品", :leading => 5, size: 10,:align => :right
+    text "金 〜11:00 ご注文 → 土 納品", :leading => 5, size: 10,:align => :right
     move_down 5
     text "発注日：#{Time.now.strftime("%-m月%-d日(#{%w(日 月 火 水 木 金 土)[Time.now.wday]})")}", :leading => 7, size: 14,:align => :right
     text "納品日：#{date.strftime("%-m月%-d日(#{%w(日 月 火 水 木 金 土)[date.wday]})")}", :leading => 7, size: 14,:align => :right
