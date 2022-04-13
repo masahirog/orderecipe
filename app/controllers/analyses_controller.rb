@@ -410,7 +410,7 @@ class AnalysesController < AdminController
         analysis_product.total_sales_amount = product_day_sales_amount[sdmd.product_id]
         analysis_product.loss_number = analysis_product.actual_inventory - analysis_product.sales_number
         loss_amount = ((analysis_product.list_price * analysis_product.loss_number)*1.08).floor(1)
-        if loss_amount < 0 || analysis_product.product_id == 10459
+        if loss_amount < 0 || analysis_product.product_id == 10459 || analysis_product.product_id == 12899
           analysis_product.loss_amount = 0
         else
           analysis_product.loss_amount = loss_amount
