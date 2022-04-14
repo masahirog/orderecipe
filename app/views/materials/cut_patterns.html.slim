@@ -1,0 +1,31 @@
+h3 ="#{@material.name}：#{@material_cut_pattern.name}"
+div.pull-right
+  label 一括変更
+  = select :material_cut_pattern_id,:material_cut_pattern_id, MaterialCutPattern.where(material_id:@material.id).pluck(:name, :id),{}, class:'all_select_material_cut_pattern_id form-control'
+= form_tag(:controller => "materials", :action => "material_cut_patterns_once_update") do
+  = hidden_field_tag "material_cut_pattern_id",params[:material_cut_pattern_id]
+  table.table
+    thead
+      tr
+        th メニュー名
+        th 仕込み内容
+        th カットパターン
+    tbody
+      - @menu_materials.each do |mm|
+        tr
+          td = mm.menu.name
+          td = mm.preparation
+          td
+            = hidden_field_tag :menu_material_id,mm.id, name:"post[][menu_material_id]"
+            = select_tag(:material_cut_pattern_id, options_from_collection_for_select(@material_cut_patterns,:id,:name, :selected => mm.material_cut_pattern_id), include_blank: true,class:"form-control material_cut_pattern_id", name:"post[][material_cut_pattern_id]")
+  = submit_tag "保存", class:"btn btn-primary pull-right", data: { confirm: "変更してよろしいですか？"}
+
+
+javascript:
+  $(".all_select_material_cut_pattern_id").on("change",function(){
+    var id = $(this).val();
+    var name = $(".all_select_material_cut_pattern_id option:selected").text();
+    $(".material_cut_pattern_id").each(function(){
+      $(this).val(id);
+    });
+  });

@@ -1,19 +1,12 @@
-.col-md-12.form-group
-  .col-md-2
-    = link_to '新規作成', new_material_path,class:'btn btn-primary float-left'
+.col-md-12.form-group.clearfix
+  = link_to '新規作成', new_material_path,class:'btn btn-primary',style:'float:left;margin-right:100px;'
   = form_tag materials_path, :method => 'get' do
-    .col-md-2
-      = text_field_tag :name, params[:name], class:"form-control",placeholder:'食材・資材名'
-    .col-md-2
-      = select_tag :vendor_id, options_from_collection_for_select(Vendor.all, :id, :company_name,params[:vendor_id]),include_blank: true, class: "form-control"
-    .col-md-1
-      = select_tag :unused_flag, options_for_select([["使用中", false], ["使用停止", true]],params[:unused_flag]), include_blank: true, class:"form-control"
-    .col-md-1
-      = select_tag :order_quantity_order, options_for_select([["1ヶ月発注量", true]],params[:order_quantity_order]), include_blank: true, class:"form-control"
-
-    .kensaku.col-md-1
-      label 　
-      = submit_tag "検索" ,class:"btn btn-primary"
+    = text_field_tag :name, params[:name], class:"form-control",placeholder:'食材・資材名',style:"width:300px;float:left;margin-right:10px;"
+    = select_tag :vendor_id, options_from_collection_for_select(Vendor.all, :id, :company_name,params[:vendor_id]),include_blank: true, class: "form-control",style:"width:200px;float:left;margin-right:10px;"
+    = select_tag :unused_flag, options_for_select([["使用中", false], ["使用停止", true]],params[:unused_flag]), include_blank: true, class:"form-control",style:"width:100px;float:left;margin-right:10px;"
+    = select_tag :order_quantity_order, options_for_select([["1ヶ月発注量", true]],params[:order_quantity_order]), include_blank: true, class:"form-control",style:"width:100px;float:left;margin-right:10px;"
+    = submit_tag "検索" ,class:"btn btn-primary",style:"float:left;"
+  = link_to 'カットパターン一覧', new_material_path,class:'btn btn-primary',style:'float:right;'
 .col-md-12
   = paginate @search
 table.table
