@@ -336,7 +336,7 @@ ActiveRecord::Schema.define(version: 2022_03_29_091559) do
     t.float "vitamin_d"
     t.integer "base_menu_material_id"
     t.boolean "source_flag", default: false, null: false
-    t.integer "source_group", default: 0, null: false
+    t.integer "source_group"
     t.boolean "first_flag", default: false, null: false
     t.boolean "machine_flag", default: false, null: false
     t.datetime "created_at"
