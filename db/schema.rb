@@ -241,6 +241,7 @@ ActiveRecord::Schema.define(version: 2022_03_29_091559) do
   create_table "material_cut_patterns", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "material_id", null: false
     t.string "name"
+    t.integer "machine"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

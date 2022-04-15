@@ -1,0 +1,16 @@
+div.pull-right
+= form_tag(:controller => "materials", :action => "material_cut_patterns_once_update") do
+  = hidden_field_tag "material_cut_pattern_id",params[:material_cut_pattern_id]
+  table.table
+    thead
+      tr
+        th 食材名
+        th 仕込み内容
+        th カットパターン
+    tbody
+      - @material_cut_patterns.each do |mcp|
+        tr
+          td = mcp.material.name
+          td = mcp.name
+          td = mcp.machine
+  = submit_tag "保存", class:"btn btn-primary pull-right", data: { confirm: "変更してよろしいですか？"}

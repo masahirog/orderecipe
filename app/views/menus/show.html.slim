@@ -91,19 +91,18 @@
         th 食材
         th 原価
         th 仕入先
-        th タレ
         th 分量
-        th 使用価格
-        th 仕込み内容
+        th グループ
         th 持ち場
+        th 仕込み内容
+
     tbody
       - @menu.menu_materials.each do |mm|
         tr
           td = link_to mm.material.name, edit_material_path(mm.material)
-          td = "#{mm.material.cost_price}円"
+          td = ActiveSupport::NumberHelper.number_to_rounded((mm.amount_used * mm.material.cost_price), strip_insignificant_zeros: true, :delimiter => ',', precision: 1)
           td = mm.material.vendor.company_name
-          td = "○" if mm.source_flag == true
-          td = "#{mm.amount_used} #{mm.material.recipe_unit}"
-          td = "#{(mm.amount_used * mm.material.cost_price).round(1)}円"
-          td = mm.preparation
+          td = "#{ActiveSupport::NumberHelper.number_to_rounded(mm.amount_used, strip_insignificant_zeros: true, :delimiter => ',', precision: 1)} #{mm.material.recipe_unit}"
+          td = mm.source_group
           td = mm.post
+          td = mm.preparation

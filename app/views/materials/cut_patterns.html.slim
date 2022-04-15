@@ -13,8 +13,9 @@ div.pull-right
     tbody
       - @menu_materials.each do |mm|
         tr
-          td = mm.menu.name
-          td = mm.preparation
+          td = link_to mm.menu.name,edit_menu_path(mm.menu),target:"_blank"
+          td
+            = text_field_tag :preparation,mm.preparation,class:"form-control", name:"post[][preparation]"
           td
             = hidden_field_tag :menu_material_id,mm.id, name:"post[][menu_material_id]"
             = select_tag(:material_cut_pattern_id, options_from_collection_for_select(@material_cut_patterns,:id,:name, :selected => mm.material_cut_pattern_id), include_blank: true,class:"form-control material_cut_pattern_id", name:"post[][material_cut_pattern_id]")

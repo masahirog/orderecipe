@@ -2,13 +2,56 @@ class DailyMenusController < AdminController
   before_action :set_daily_menu, only: [:show, :update, :destroy]
 
   def cut_list
-    daily_menu = DailyMenu.find(params[:daily_menu_id])
-    date = daily_menu.start_time
-    @bentos_num_h = daily_menu.daily_menu_details.group(:product_id).sum(:manufacturing_number)
+    date = params[:date]
+    year = date[0..3]
+    month = date[5..6]
+    day = date[8..9]
+    date = Date.parse(date)
+    @bentos_num_h = {}
+    if params['beji_kuru'] == "0"
+      daily_menu = DailyMenu.find(params[:daily_menu_id])
+      daily_menu.daily_menu_details.each do |dmd|
+        if @bentos_num_h[dmd.product_id].present?
+          @bentos_num_h[dmd.product_id][0] += dmd.manufacturing_number
+        else
+          @bentos_num_h[dmd.product_id] = [dmd.manufacturing_number,'bejihan']
+        end
+      end
+      @kurumesi_orders = KurumesiOrder.where(start_time:date,canceled_flag:false).order(:pick_time,:created_at)
+      kurumesi_order_ids = @kurumesi_orders.ids
+      @k_bentos_num_h = KurumesiOrderDetail.where(kurumesi_order_id:kurumesi_order_ids).group(:product_id).sum(:number)
+      @k_bentos_num_h.each do |pn|
+        if @bentos_num_h[pn[0]].present?
+          @bentos_num_h[pn[0]][0] += pn[1]
+        else
+          @bentos_num_h[pn[0]] = [pn[1],'kurumesi']
+        end
+      end
+    elsif params['beji_kuru'] == "1"
+      daily_menu = DailyMenu.find(params[:daily_menu_id])
+      daily_menu.daily_menu_details.each do |dmd|
+        if @bentos_num_h[dmd.product_id].present?
+          @bentos_num_h[dmd.product_id][0] += dmd.manufacturing_number
+        else
+          @bentos_num_h[dmd.product_id] = [dmd.manufacturing_number,'bejihan']
+        end
+      end
+    elsif params['beji_kuru'] == "2"
+      @kurumesi_orders = KurumesiOrder.where(start_time:date,canceled_flag:false).order(:pick_time,:created_at)
+      kurumesi_order_ids = @kurumesi_orders.ids
+      @k_bentos_num_h = KurumesiOrderDetail.where(kurumesi_order_id:kurumesi_order_ids).group(:product_id).sum(:number)
+      @k_bentos_num_h.each do |pn|
+        if @bentos_num_h[pn[0]].present?
+          @bentos_num_h[pn[0]][0] += pn[1]
+        else
+          @bentos_num_h[pn[0]] = [pn[1],'kurumesi']
+        end
+      end
+    end
     respond_to do |format|
       format.html
       format.pdf do
-        pdf = CutList.new(@bentos_num_h,date)
+        pdf = CutList.new(@bentos_num_h,date,params[:list_pattern])
         send_data pdf.render,
         filename:    "#{date}.pdf",
         type:        "application/pdf",

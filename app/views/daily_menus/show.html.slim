@@ -24,29 +24,6 @@
 
 .form-group.clearfix
   = link_to "編集する", edit_daily_menu_path(@daily_menu),class:'btn btn-primary',style:'float:left;margin-left:20px;margin-top:10px;'
-  / = link_to "発注開始", new_order_path(daily_menu_id:@daily_menu.id),class:'btn btn-success',style:'float:left;margin-left:20px;margin-top:10px;'
-    / = link_to "発注開始", new_order_path(kurumesi_order_date:params[:date]),class:'new_order btn btn-success',:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
-  / button type="button" class="btn btn-primary" data-toggle="modal" data-target="#newOrder" style='float:left;margin-left:20px;margin-top:10px;' 発注開始
-  / #newOrder.modal.fade tabindex="-1"
-    = form_tag(new_order_path,method: :get) do
-      = hidden_field_tag 'daily_menu_start_time',@daily_menu.start_time
-      = hidden_field_tag :store_id,39
-      .modal-dialog style='width:1000px;'
-        .modal-content
-          .modal-header
-            h4.modal-title 以下内容で発注する
-          table.table
-            - @daily_menu.daily_menu_details.includes(:product).each_with_index do |dmd,i|
-              - product = dmd.product
-              tr
-                td.col-md-7
-                  = product.name
-                  = text_field_tag "products[#{i}][id]",product.id,readonly:true,class:'form-control',style:'display:none;'
-                td.col-md-3
-                  = number_field_tag "products[#{i}][num]",dmd.manufacturing_number,class:'form-control',min:0
-          .modal-footer
-            button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
-            = submit_tag "発注する" ,class:"btn btn-primary"
   = link_to "レシピ印刷",products_pdfs_daily_menus_path(daily_menu_id:@daily_menu.id, :format => :pdf),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
   = link_to "タレレシピ",sources_daily_menus_path(daily_menu_id:@daily_menu.id, :format => :pdf),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
   = link_to "タレシール",sources_daily_menus_path(daily_menu_id:@daily_menu.id, :format => :csv),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
@@ -55,11 +32,43 @@
   = link_to "積載伝票",daily_menu_path(id:@daily_menu.id, :format => :pdf),class:"btn btn-default",:target=>"_blank",style:'margin-left:20px;margin-top:10px;'
   = link_to "当日調理",cook_on_the_day_daily_menus_path(id:@daily_menu.id, :format => :pdf),class:"btn btn-default",:target=>"_blank",style:'margin-left:20px;margin-top:10px;'
   = link_to "タブレット",kiridasi_daily_menus_path(id:@daily_menu.id),class:"btn btn-default",:target=>"_blank",style:'margin-left:20px;margin-top:10px;'
-  = link_to "カット",cut_list_daily_menus_path(daily_menu_id:@daily_menu.id, :format => :pdf),class:"btn btn-default",:target=>"_blank",style:'margin-left:20px;margin-top:10px;'
-  / = link_to "ラムさん",recipes_roma_daily_menus_path(daily_menu_id:@daily_menu.id, :format => :pdf),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
-  / = link_to "切出仕込み",print_preparation_daily_menus_path(daily_menu_id:@daily_menu.id,mochiba:'kiriba',format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
-  / = link_to "調理仕込み",print_preparation_daily_menus_path(daily_menu_id:@daily_menu.id,mochiba:'choriba',format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
-  / = link_to "ALL仕込み",print_preparation_daily_menus_path(daily_menu_id:@daily_menu.id,format:'pdf'),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
+  button type="button" class="btn btn-default" data-toggle="modal" data-target="#cut_list_modal" style='margin-left:20px;margin-top:10px;'
+    |カット
+  .modal.fade id="cut_list_modal" tabindex=-1
+    = form_tag(cut_list_daily_menus_path(format: :pdf),method: :get,target:'_blank') do
+      = hidden_field_tag :date,@daily_menu.start_time
+      = hidden_field_tag :daily_menu_id,@daily_menu.id
+      .modal-dialog style='width:1000px;'
+        .modal-content
+          .modal-body.clearfix
+            h4 表示する方を選択してください
+            .col-md-12.form-group
+              .col-md-2 計算範囲
+              .col-md-3
+                = radio_button_tag("beji_kuru", "0",{:checked => true})
+                = label_tag("beji_kuru_0", "べじはん＋くるめし",style:'margin-left:10px;')
+              .col-md-3
+                = radio_button_tag("beji_kuru", "1")
+                = label_tag("beji_kuru_1", "べじはん",style:'margin-left:10px;')
+              .col-md-3
+                = radio_button_tag("beji_kuru", "2")
+                = label_tag("beji_kuru_2", "くるめし",style:'margin-left:10px;')
+
+            .col-md-12.form-group
+              .col-md-2 出力パターン
+              .col-md-3
+                = radio_button_tag("list_pattern", "0",{:checked => true})
+                = label_tag("list_pattern_0", "切出リスト＋機械リスト",style:'margin-left:10px;')
+              .col-md-3
+                = radio_button_tag("list_pattern", "1")
+                = label_tag("list_pattern_1", "切出リスト",style:'margin-left:10px;')
+              .col-md-3
+                = radio_button_tag("list_pattern", "2")
+                = label_tag("list_pattern_2", "機械リスト",style:'margin-left:10px;')
+          .modal-footer
+            button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
+            = submit_tag "表示する" ,class:"btn btn-primary"
+
   button type="button" class="btn btn-default" data-toggle="modal" data-target="#rice_sheet_modal" style='float:left;margin-left:20px;margin-top:10px;'
     |食材別シート
   .modal.fade id="rice_sheet_modal" tabindex=-1
@@ -116,47 +125,6 @@
             button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
             = submit_tag "表示する" ,class:"btn btn-primary"
   = link_to '献立の削除', daily_menu_path(@daily_menu), method: :delete,class:"btn btn-danger",style:'float:right;margin-top:10px;margin-left:10px;', data: { confirm: "献立を削除してよろしいですか？" }
-  / button type="button" class="btn btn-default" data-toggle="modal" data-target="#copy_menu" style='float:right;margin-top:10px;' 同じ献立を別日に反映
-  / #copy_menu.modal.fade tabindex="-1"
-    = form_tag(copy_daily_menus_path,method: :get) do
-      = number_field_tag 'daily_menu_id',@daily_menu.id
-      .modal-dialog
-        .modal-content
-          .modal-header
-            h4.modal-title 反映させる日付を選択してください
-          .modal-body
-            table.table
-              tbody
-                - 6.times do |i|
-                  tr
-                    td = "日付 #{i+1}"
-                    td = date_field_tag 'dates[]',{},class:'form-control'
-          .modal-footer
-            button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
-            = submit_tag "作成する" ,class:"btn btn-primary"
-  / button type="button" class="btn btn-success" data-toggle="modal" data-target="#store_reflect_modal" style='float:right;margin-top:10px;margin-right:10px;' 各店舗に献立を反映する
-  / #store_reflect_modal.modal.fade tabindex="-1"
-    = form_tag(store_reflect_daily_menus_path,method: :get) do
-      = number_field_tag 'daily_menu_id',@daily_menu.id
-      .modal-dialog
-        .modal-content
-          .modal-header
-            h4.modal-title 反映させる店舗を選択してください
-          .modal-body
-            table.table
-              tbody
-                - @stores.each_with_index do |store,i|
-                  tr
-                    td
-                      = store.name
-                      = hidden_field_tag "stores[#{i}][id]",store.id
-                    td
-                      = hidden_field_tag "stores[#{i}][reflect]", false
-                      = check_box_tag "stores[#{i}][reflect]",true,false, {}
-
-          .modal-footer
-            button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
-            = submit_tag "作成する" ,class:"btn btn-primary"
 
 table.table.table-list.table-striped
   thead

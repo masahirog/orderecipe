@@ -63,6 +63,18 @@
       th.col-md-4 メモ
       td
         = markdown(@material.memo).html_safe
+    tr
+      th.col-md-4 カットパターン
+      td
+        ul
+          -@material.material_cut_patterns.each do |mcp|
+            li.list-group-item.clearfix
+              span style='float:left;' = mcp.name
+              = link_to "#{mcp.menu_materials.count}件",cut_patterns_materials_path(material_cut_pattern_id:mcp.id), class:'btn btn-sm btn-primary',style:'float:right;'
 
 .col-md-6
   = image_tag @material.image.to_s ,class:"text-center img-responsive center-block",style:'max-height:450px;'
+
+.col-md-12
+  / table.table
+  / = link_to "#{f.object.menu_materials.count}件",cut_patterns_materials_path(material_cut_pattern_id:f.object.id), class:'btn btn-sm btn-primary',style:'float:left;'

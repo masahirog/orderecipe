@@ -114,13 +114,14 @@ class MaterialsController < AdminController
     params[:post].each do |data|
       menu_material_id = data[:menu_material_id].to_i
       menu_material = menu_materials_hash[menu_material_id]
+      menu_material.preparation = data[:preparation]
       if menu_material.material_cut_pattern_id.to_s == data[:material_cut_pattern_id]
       else
         menu_material.material_cut_pattern_id = data[:material_cut_pattern_id]
-        mm_arr << menu_material
       end
+      mm_arr << menu_material
     end
-    MenuMaterial.import mm_arr, on_duplicate_key_update:[:material_cut_pattern_id]
+    MenuMaterial.import mm_arr, on_duplicate_key_update:[:preparation,:material_cut_pattern_id]
     redirect_to cut_patterns_materials_path(material_cut_pattern_id:material_cut_pattern.id), notice: "食材を変更しました。"
   end
 
@@ -236,12 +237,14 @@ class MaterialsController < AdminController
     @menu_materials = MenuMaterial.where(material_cut_pattern_id:@material_cut_pattern.id)
     @material_cut_patterns = @material.material_cut_patterns
   end
-
+  def all_cut_patterns
+    @material_cut_patterns = MaterialCutPattern.all.joins(:material).order("materials.short_name asc")
+  end
   private
   def material_params
     params.require(:material).permit(:name, :order_name, :recipe_unit_quantity, :recipe_unit,:vendor_stock_flag,:image,:image_cache,:remove_image,:short_name,:storage_place,
      :recipe_unit_price, :cost_price, :category, :order_code, :order_unit, :memo, :unused_flag, :vendor_id,:order_unit_quantity,:delivery_deadline,:accounting_unit,:accounting_unit_quantity,:measurement_flag,
      {allergy:[]},material_store_orderables_attributes:[:id,:store_id,:material_id,:orderable_flag],material_food_additives_attributes:[:id,:material_id,:food_additive_id,:_destroy],
-   material_cut_patterns_attributes:[:id,:material_id,:name,:_destroy])
+   material_cut_patterns_attributes:[:id,:material_id,:name,:machine,:_destroy])
   end
 end

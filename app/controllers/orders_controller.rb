@@ -113,12 +113,6 @@ class OrdersController < AdminController
       end
     end
     materials.each do |material|
-      if @hash[material.id].present?
-        @hash.store(material.id,@hash[material.id] + "、" + material[1])
-      else
-        @hash.store(material.id,material)
-      end
-
       if stock_hash[material.id].present?
         material_stock_hash = stock_hash[material.id].map{|data|[data.date,data]}.to_h
       else

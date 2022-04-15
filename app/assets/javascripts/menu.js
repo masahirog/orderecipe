@@ -287,7 +287,7 @@ $(document).on('turbolinks:load', function() {
     var material_cut_patterns = data.material.material_cut_patterns
     // console.log(material_cut_patterns);
     $(".add_li_material").eq(u).children(".sales_check").text(eos);
-    $(".add_li_material").eq(u).children(".vendor").text(vendor);
+    $(".add_li_material").eq(u).find(".vendor").text(vendor);
     $(".add_li_material").eq(u).children(".cost_price").text(cost);
     $(".add_li_material").eq(u).find(".recipe_unit").text(unit);
     $(".add_li_material").eq(u).find(".div_material_cut_pattern").children('a').attr("href", "/materials/"+id+"/edit");

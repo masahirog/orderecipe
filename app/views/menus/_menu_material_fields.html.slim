@@ -66,13 +66,13 @@ li.add_li_material.col-md-12.list-group-item.item.nested-fields.field.table-stri
     / .col-md-3.input_nutritions style="padding:0;"
       span.view_food_ingredient
         = "カロリー:#{f.object.calorie}kcal" if f.object.calorie
-    .vendor.col-md-1 style='font-size:12px;'
+    .vendor.col-md-3
       = f.object.material.vendor.company_name if f.object.material.present?
 
-    .select_source_group.col-md-1
+    / .select_source_group.col-md-1
       span style="margin:8px 8px 0 0;float:left;" 急：
       = f.check_box :first_flag,class:'form-control',style:'width:20px;'
-    .select_source_group.col-md-1
+    / .select_source_group.col-md-1
       span style="margin:8px 0px 0 0;float:left;" 機：
       = f.check_box :machine_flag,class:'form-control',style:'width:20px;'
     .select_source_group.col-md-2.text-right
