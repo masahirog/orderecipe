@@ -172,6 +172,7 @@ Rails.application.routes.draw do
   end
   resources :daily_menus do
     collection do
+      post :once_change_numbers
       get :cut_list
       get :kiridasi
       get :ikkatsu_edit

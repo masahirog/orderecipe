@@ -1,6 +1,47 @@
 class DailyMenusController < AdminController
   before_action :set_daily_menu, only: [:show, :update, :destroy]
 
+  def once_change_numbers
+    sozai_num_hash = {}
+    bento_fukusai_num_hash = {}
+    sdmds = []
+    rate = params["rate"].to_f
+    daily_menu = DailyMenu.find(params['daily_menu_id'])
+    daily_menu.store_daily_menus.each do |sdm|
+      sdm.store_daily_menu_details.each do |sdmd|
+        sdmd.sozai_number = (sdmd.sozai_number * rate).ceil
+        sdmd.bento_fukusai_number = (sdmd.bento_fukusai_number * rate).ceil
+        sdmd.number = sdmd.sozai_number + sdmd.bento_fukusai_number
+        sdmds << sdmd
+        if sozai_num_hash[sdmd.product_id].present?
+          sozai_num_hash[sdmd.product_id] += sdmd.sozai_number
+        else
+          sozai_num_hash[sdmd.product_id] = sdmd.sozai_number
+        end
+        if bento_fukusai_num_hash[sdmd.product_id].present?
+          bento_fukusai_num_hash[sdmd.product_id] += sdmd.bento_fukusai_number
+        else
+          bento_fukusai_num_hash[sdmd.product_id] = sdmd.bento_fukusai_number
+        end
+      end
+    end
+    StoreDailyMenuDetail.import sdmds, on_duplicate_key_update:[:number,:sozai_number,:bento_fukusai_number]
+    update_dmds = []
+    total_manufacturing_number = 0
+    daily_menu.daily_menu_details.each do |dmd|
+      dmd.for_single_item_number = sozai_num_hash[dmd.product_id] if sozai_num_hash[dmd.product_id].present?
+      dmd.for_sub_item_number = bento_fukusai_num_hash[dmd.product_id] if bento_fukusai_num_hash[dmd.product_id].present?
+      if sozai_num_hash[dmd.product_id].present? && bento_fukusai_num_hash[dmd.product_id].present?
+        dmd.manufacturing_number = dmd.for_single_item_number + dmd.for_sub_item_number + dmd.adjustments
+        total_manufacturing_number += dmd.manufacturing_number
+        update_dmds << dmd
+      end
+    end
+    DailyMenuDetail.import update_dmds, on_duplicate_key_update:[:for_single_item_number,:for_sub_item_number,:manufacturing_number]
+    daily_menu.update_attributes(total_manufacturing_number:total_manufacturing_number)
+
+    redirect_to daily_menu, :alert => "惣菜数を#{rate*100}%掛けに変更しました"
+  end
   def cut_list
     date = params[:date]
     year = date[0..3]

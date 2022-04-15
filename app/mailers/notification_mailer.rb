@@ -23,7 +23,7 @@ class NotificationMailer < ActionMailer::Base
       attachments[filename] = OrderPdf.new(@materials_this_vendor,@vendor,order).render
     end
     mail(
-      subject: "#{@vendor.company_name}様 オーダーID：#{order.id} 計：#{num}枚 担当：#{order.staff_name}",
+      subject: "企業ID：#{@vendor.id} #{@vendor.company_name}様 オーダーID：#{order.id} 計：#{num}枚 担当：#{order.staff_name}",
       to: @vendor.efax_address
     ) do |format|
       format.text

@@ -128,8 +128,12 @@ class Order < ApplicationRecord
             @fax_mail = FaxMail.new
             @fax_mail.subject = subject
             @fax_mail.recieved = recieved_datetime
-            vendor_company_name = subject[(subject.index('［件名:')+4)..(subject.index('様')-1)]
-            vendor_id = Vendor.find_by(company_name:vendor_company_name).id
+            if subject.include?("企業ID")
+              vendor_id = subject[(subject.index('企業ID：')+5)..(subject.index(' ')-1)]
+            else
+              vendor_company_name = subject[(subject.index('［件名:')+4)..(subject.index('様')-1)]
+              vendor_id = Vendor.find_by(company_name:vendor_company_name).id
+            end
             order_id = subject[(subject.index('オーダーID：')+7)..(subject.index('計：')-1)].to_i
             order = Order.find(order_id)
             if order.present? && vendor_id.present?

@@ -121,7 +121,6 @@ class AnalysesController < AdminController
   end
   def product_sales
     @stores = Store.all
-
     if params[:stores]
       checked_store_ids = params['stores'].keys
     else
@@ -149,8 +148,8 @@ class AnalysesController < AdminController
     @analysis_products.each do |ap|
       store_id = ap.analysis.store_id
       date = ap.analysis.date
-      @hash[store_id][date]['early'] = ap.early_sales_number
-      @hash[store_id][date]['total'] = ap.sales_number
+      @hash[date][store_id]['early'] = ap.early_sales_number
+      @hash[date][store_id]['total'] = ap.sales_number
     end
     @dates = @analysis_products.map{|ap|ap.analysis.date}.uniq.sort
   end
