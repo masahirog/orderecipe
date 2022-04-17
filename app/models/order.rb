@@ -129,7 +129,7 @@ class Order < ApplicationRecord
             @fax_mail.subject = subject
             @fax_mail.recieved = recieved_datetime
             if subject.include?("企業ID")
-              vendor_id = subject[(subject.index('企業ID：')+5)..(subject.index(' ')-1)]
+              vendor_id = subject[(subject.index('企業ID：')+5)..(subject.index('企業ID：')+7)]
             else
               vendor_company_name = subject[(subject.index('［件名:')+4)..(subject.index('様')-1)]
               vendor_id = Vendor.find_by(company_name:vendor_company_name).id
