@@ -20,6 +20,7 @@ class CreateStores < ActiveRecord::Migration[5.2]
       t.string :orikane_store_code
       t.string :short_name
       t.string :np_store_code
+      t.integer :group_id
     end
   end
 end

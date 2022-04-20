@@ -115,13 +115,18 @@ class ShiftsController < ApplicationController
     end
   end
   def create_frame
+    if params[:place] == 'kitchen'
+      store_ids = Store.where(id:39).ids
+    else
+      store_ids = Store.where.not(id:39).ids
+    end
     @date = Date.parse(params[:date])
     first_day = @date.beginning_of_month
     last_day = first_day.end_of_month
     @one_month = [*first_day..last_day]
     aaa = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    staff_ids = Staff.where(status:0).ids
-    Shift.where(date:@one_month).each do |shift|
+    staff_ids = Staff.where(status:0,store_id:store_ids).ids
+    Shift.where(date:@one_month,staff_id:staff_ids).each do |shift|
       if aaa[shift.date].present?
         aaa[shift.date] << shift.staff_id
       else
@@ -141,7 +146,7 @@ class ShiftsController < ApplicationController
       end
     end
     Shift.import new_arr
-    redirect_to shifts_path(date:@date),notice:"#{@date.month}月のシフト枠を作成しました"
+    redirect_to shifts_path(date:@date,place:params[:place]),notice:"#{@date.month}月のシフト枠を作成しました"
   end
 
   def index
@@ -150,21 +155,29 @@ class ShiftsController < ApplicationController
     else
       @date = Date.today
     end
+    if params[:place] == 'kitchen'
+      @stores = Store.where(id:39)
+      @place = "キッチンスタッフ"
+    else
+      @stores = Store.where.not(id:39)
+      @place = "店舗スタッフ"
+    end
+    store_ids = @stores.ids
+    place_staff_ids = Staff.where(store_id:store_ids)
     first_day = @date.beginning_of_month
     last_day = first_day.end_of_month
     @one_month = [*first_day..last_day]
-    shifts = Shift.includes([:store,:fix_shift_pattern,:shift_pattern]).where(date:@one_month)
+    shifts = Shift.includes([:store,:fix_shift_pattern,:shift_pattern]).where(staff_id:place_staff_ids,date:@one_month)
     @shifts = shifts.map{|shift|[[shift.staff_id,shift.date],shift]}.to_h
     @staff_shinsei_count = shifts.where.not(shift_pattern_id: nil).group(:staff_id).count
     @staff_syukkin_count = shifts.where.not(fix_shift_pattern_id: nil).group(:staff_id).count
     shift_staff_ids = shifts.map{|shift|shift.staff_id}.uniq
-    un_shift_staff_ids = Staff.where(status:0).ids
-    add_ids = un_shift_staff_ids - shift_staff_ids
+    add_ids = place_staff_ids - shift_staff_ids
     staff_ids =shift_staff_ids + add_ids
     @staffs = Staff.includes([:store]).where(id:staff_ids).order(row:'asc')
-    @stores = Store.where.not(id:39)
-    @fix_shift_patterns = FixShiftPattern.all.order(section:'asc')
-    @shift_patterns = ShiftPattern.all
+
+    @fix_shift_patterns = FixShiftPattern.where(group_id:group_id).order(section:'asc')
+    @shift_patterns = ShiftPattern.where(group_id:group_id)
 
     @options = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     FixShiftPattern.all.each do |fsp|

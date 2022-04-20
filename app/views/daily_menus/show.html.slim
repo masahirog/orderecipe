@@ -148,6 +148,7 @@ table.table.table-list.table-striped
   thead
     tr
       th 商品名
+      th 原価率
       th 単品惣菜分
       th 弁当等副菜分
       th style='color:red;' 製造調整
@@ -159,6 +160,16 @@ table.table.table-list.table-striped
       tr
         td
           = link_to dmd.product.name,product_path(dmd.product)
+        - if (dmd.product.cost_price/dmd.product.sell_price) > 0.35
+          - color = 'red'
+        - elsif (dmd.product.cost_price/dmd.product.sell_price) > 0.3
+          - color = 'orange'
+        - elsif (dmd.product.cost_price/dmd.product.sell_price) > 0.25
+          - color = 'black'
+        - else
+          - color = 'blue'
+        td style="color:#{color}"
+          = "#{((dmd.product.cost_price/dmd.product.sell_price)*100).round(1)}%"
         td
           = dmd.for_single_item_number
         td

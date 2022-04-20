@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_29_091559) do
+ActiveRecord::Schema.define(version: 2022_04_20_025320) do
 
   create_table "analyses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "store_id"
@@ -175,6 +175,12 @@ ActiveRecord::Schema.define(version: 2022_03_29_091559) do
     t.float "copper"
     t.float "folic_acid"
     t.float "vitamin_d"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "groups", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -689,6 +695,7 @@ ActiveRecord::Schema.define(version: 2022_03_29_091559) do
     t.string "orikane_store_code"
     t.string "short_name"
     t.string "np_store_code"
+    t.integer "group_id"
   end
 
   create_table "task_template_stores", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

@@ -1,5 +1,5 @@
 h1 一覧
-= link_to '新規登録', new_staff_path,class:'btn btn-primary'
+= link_to '新規登録', new_staff_path(place:params[:place]),class:'btn btn-primary'
 
 = form_tag(row_order_update_staffs_path,method: :post) do
   table.table

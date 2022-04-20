@@ -11,14 +11,22 @@ class StaffsController < ApplicationController
     redirect_to staffs_path,notice:'並び更新しました。'
   end
   def index
-    @staffs = Staff.includes([:store]).all.order(row:'asc')
+    if params[:place] == 'kitchen'
+      @staffs = Staff.includes([:store]).where(store_id:39).order(row:'asc')
+    else
+      @staffs = Staff.includes([:store]).where.not(store_id:39).order(row:'asc')
+    end
   end
 
   def show
   end
 
   def new
-    @staff = Staff.new
+    if params[:place] == 'kitchen'
+      @staff = Staff.new(store_id:39)
+    else
+      @staff = Staff.new
+    end
   end
 
   def edit

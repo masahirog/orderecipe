@@ -9,7 +9,7 @@
     = f.label :status, "勤務状況"
     = f.select :status, options_for_select_from_enum(Staff, :status),{}, { class: "form-control", required:true}
   .form-group
-    = f.label :store_id, "所属店舗"
+    = f.label :store_id, "所属"
     = f.collection_select :store_id, Store.all, :id, :name, {}, { class: "form-control"}
   .form-group
     = f.label :employment_status, "雇用形態"

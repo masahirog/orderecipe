@@ -21,6 +21,7 @@ Rails.application.routes.draw do
   post "versions/:id/revert" => "versions#revert", :as => "revert_version"
   post'menus/include_update' => 'menus#include_update'
   post 'materials/change_additives' => 'materials#change_additives'
+  resources :groups
   resources :fix_shift_patterns
   resources :material_store_orderables
   resources :shifts do
@@ -59,6 +60,7 @@ Rails.application.routes.draw do
   resources :analysis_products
   resources :analyses do
     collection do
+      get :repeat
       get :smaregi_member_csv
       post :upload_smaregi_members
       get :smaregi_member_group

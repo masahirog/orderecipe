@@ -1,5 +1,26 @@
 class AnalysesController < AdminController
   before_action :set_analysis, only: %i[ show edit update destroy ]
+  def repeat
+    params[:date]='2022-03-31'
+    @date = Date.parse(params[:date])
+    # month_days = ((date - 30)..date).to_a
+    nyukai_members = SmaregiMember.where(nyukaibi:(@date - 30)..@date)
+    nyukai_member_kaiin_ids = nyukai_members.map{|nm|nm.kaiin_id}
+
+    @sths = SmaregiTradingHistory.where(torihiki_meisaikubun:1,torihikimeisai_id:1).where(kaiin_id:nyukai_member_kaiin_ids)
+    @smaregi_member_counts = @sths.group(:kaiin_id).count
+    @total_nyukaisyasu = @smaregi_member_counts.count
+    @hash = {}
+    @smaregi_member_counts.each do |smc|
+      if @hash[smc[1]].present?
+        @hash[smc[1]] += 1
+      else
+        @hash[smc[1]] = 1
+      end
+    end
+    @hash = @hash.sort{|a, b|b[0] <=> a[0]}
+  end
+
   def smaregi_member_csv
     smaregi_members = SmaregiMember.all
     @sths = SmaregiTradingHistory.where(torihiki_meisaikubun:1,torihikimeisai_id:1).where.not(kaiin_id:nil)

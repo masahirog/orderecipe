@@ -6,6 +6,10 @@
         - @store.errors.full_messages.each do |message|
           li = message
   .form-group
+    = f.label :group_id, "所属のグループ"
+    = f.collection_select :group_id, Group.all, :id, :name, {}, { class: "form-control"}
+
+  .form-group
     = f.label :name, "店名"
     = f.text_field :name, required: true, class:"form-control"
   .form-group
