@@ -46,11 +46,13 @@
     = f.label :user_id, "管理アカウント"
     = f.collection_select :user_id, User.all, :id, :email, {}, { class: "form-control"}
   .form-group
-    = f.label :lunch_default_shift, "ランチシフト"
-    = f.number_field :lunch_default_shift, class:"form-control"
-  .form-group
-    = f.label :dinner_default_shift, "ディナーシフト"
-    = f.number_field :dinner_default_shift, class:"form-control"
+    label シフト枠のデフォルト人数設定
+    ul.list-group.clearfix
+      = f.fields_for :store_shift_frames do |ssf|
+        = ssf.hidden_field :shift_frame_id
+        li.list-group-item
+          = ssf.label :default_number,"#{ssf.object.shift_frame.name}"
+          = ssf.number_field :default_number, class:'form-control',style:'width:200px;'
 
 
   .actions = f.submit

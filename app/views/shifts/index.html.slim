@@ -1,4 +1,4 @@
-h2 = "#{@place}　#{@date.year}年#{@date.month}月シフト"
+h2 = "#{@group.name}　#{@date.year}年#{@date.month}月シフト"
 
 .btn.btn-primary.all_edit_btn style='margin-right:20px;' 全員編集
 = link_to "#{@date.last_month.month}月＜＜",shifts_path(date:@date.last_month)
@@ -12,7 +12,7 @@ h2 = "#{@place}　#{@date.year}年#{@date.month}月シフト"
       tr
         th style='background-color:white;width:100px;'
           = link_to "店舗名",store_shifts_path(date:@date)
-        th style='width:70px;'
+        th style='width:100px;'
         - @one_month.each do |date|
           - holiday = HolidayJapan.name(date)
           - if holiday.present?
@@ -20,24 +20,19 @@ h2 = "#{@place}　#{@date.year}年#{@date.month}月シフト"
           - else
             th style='width:120px;' = date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})")
       - @stores.each do |store|
-        tr.shift_amount_tr
-          td rowspan='2' style='background-color:white;text-align: center;vertical-align: middle;z-index:4;font-weight:bold;'
-            = store.short_name
-          td style=''
-            = "早番：#{store.lunch_default_shift}"
-            input.default_shift_value value="#{store.lunch_default_shift}" style='display:none;'
-          - @one_month.each do |date|
-            td class="#{date.day}_store_#{store.id}_section_0 fix_shift_amount" style=""
-              - if @hash[store.id][date][0].present?
-                = @hash[store.id][date][0]
-        tr.shift_amount_tr
-          td style=""
-            ="遅番：#{store.dinner_default_shift}"
-            input.default_shift_value value="#{store.dinner_default_shift}" style='display:none;'
-          - @one_month.each do |date|
-            td class="#{date.day}_store_#{store.id}_section_1 fix_shift_amount" style=''
-              - if @hash[store.id][date][1].present?
-                = @hash[store.id][date][1]
+        - @shift_frames.each_with_index do |sf,i|
+          - default_number = store.store_shift_frames.find_by(shift_frame_id:sf.id).default_number
+          tr.shift_amount_tr
+            - if i == 0
+              td rowspan="#{@rowspan}" style='background-color:white;text-align: center;vertical-align: middle;z-index:4;font-weight:bold;'
+                = store.short_name
+            td style='text-align:right;'
+              = "#{sf.name}：#{default_number}"
+              input.default_shift_value value="#{default_number}" style='display:none;'
+            - @one_month.each do |date|
+              td class="#{date.day}_store_#{store.id}_section_0 fix_shift_amount" style=""
+                - if @hash[store.id][date][sf.id].present?
+                  = @hash[store.id][date][sf.id]
     tbody
       - @staffs.each do |staff|
         tr.shift_tr style='color:silver;'
@@ -92,9 +87,10 @@ h2 = "#{@place}　#{@date.year}年#{@date.month}月シフト"
                   = form_with(model: @shifts[[staff.id,date]], data: {remote: true},class:"form_#{@shifts[[staff.id,date]].id}") do |f|
                     = f.hidden_field :id,value:@shifts[[staff.id,date]].id,class:'shift_id'
                     = f.collection_select :store_id, @stores, :id, :short_name, {include_blank:true}, { class: "fix_shift_select fix_shift_select_store_id",style:"width:50px;height:30px;text-align:center;float:left;border-radius:4px;border-color:silver;"}
-                    / = f.collection_select :fix_shift_pattern_id, @fix_shift_patterns, :id, :pattern_name, {include_blank:true}, { class: "fix_shift_select",style:"width:50px;height:30px;text-align:center;float:left;border-radius:4px;border-color:silver;"}
-                    = f.select :fix_shift_pattern_id, grouped_options_for_select(@options,f.object.fix_shift_pattern_id), {include_blank:true}, { class: "fix_shift_select fix_shift_select_select",style:"width:50px;height:30px;text-align:center;float:left;border-radius:4px;border-color:silver;"}
-= link_to "シフト枠を作成",create_frame_shifts_path(date:params[:date],place:params[:place]),{method: :post,class:'btn btn-primary'}
+                    = f.collection_select :fix_shift_pattern_id, @fix_shift_patterns, :id, :pattern_name, {include_blank:true}, { class: "fix_shift_select",style:"width:50px;height:30px;text-align:center;float:left;border-radius:4px;border-color:silver;"}
+                    / = f.select :fix_shift_pattern_id, grouped_options_for_select(@options,f.object.fix_shift_pattern_id), {include_blank:true}, { class: "fix_shift_select fix_shift_select_select",style:"width:50px;height:30px;text-align:center;float:left;border-radius:4px;border-color:silver;"}
+
+= link_to "シフト枠を作成",create_frame_shifts_path(date:params[:date],group_id:params[:group_id]),{method: :post,class:'btn btn-primary'}
 css:
   select{
     -webkit-appearance: none;

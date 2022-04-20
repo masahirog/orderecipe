@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_20_025320) do
+ActiveRecord::Schema.define(version: 2022_04_20_085131) do
 
   create_table "analyses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "store_id"
@@ -135,14 +135,21 @@ ActiveRecord::Schema.define(version: 2022_04_20_025320) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "fix_shift_pattern_shift_frames", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "fix_shift_pattern_id"
+    t.integer "shift_frame_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "fix_shift_patterns", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "section"
     t.string "pattern_name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.float "working_hour"
     t.time "start_time"
     t.time "end_time"
+    t.integer "group_id"
   end
 
   create_table "food_additives", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -521,10 +528,18 @@ ActiveRecord::Schema.define(version: 2022_04_20_025320) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "shift_frames", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "group_id"
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "shift_patterns", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "pattern_name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "group_id"
   end
 
   create_table "shifts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -670,6 +685,14 @@ ActiveRecord::Schema.define(version: 2022_04_20_025320) do
     t.integer "weather"
     t.integer "max_temperature"
     t.integer "min_temperature"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "store_shift_frames", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "store_id"
+    t.integer "shift_frame_id"
+    t.integer "default_number"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

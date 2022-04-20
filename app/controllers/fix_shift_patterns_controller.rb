@@ -2,7 +2,7 @@ class FixShiftPatternsController < ApplicationController
   before_action :set_fix_shift_pattern, only: %i[ show edit update destroy ]
 
   def index
-    @fix_shift_patterns = FixShiftPattern.order(section:'asc').all
+    @fix_shift_patterns = FixShiftPattern.includes([:group,fix_shift_pattern_shift_frames:[:shift_frame]]).all
   end
 
   def show
@@ -54,6 +54,7 @@ class FixShiftPatternsController < ApplicationController
     end
 
     def fix_shift_pattern_params
-      params.require(:fix_shift_pattern).permit(:section,:pattern_name,:working_hour,:end_time,:start_time)
+      params.require(:fix_shift_pattern).permit(:shift_frame_id,:group_id,:pattern_name,:working_hour,:end_time,:start_time,
+      fix_shift_pattern_shift_frames_attributes: [:id, :fix_shift_pattern_id,:shift_frame_id,:_destroy])
     end
 end

@@ -5,13 +5,18 @@ table.table
   thead
     tr
       th
+      th グループ名
       th シフト名
-      th カウント区分
       th 勤務時間
+      th カウント区分
   tbody
     - @fix_shift_patterns.each do |fix_shift_pattern|
       tr
         td = link_to 'Edit', edit_fix_shift_pattern_path(fix_shift_pattern),class:'btn btn-primary'
+        td = fix_shift_pattern.group.name
         td = fix_shift_pattern.pattern_name
-        td = fix_shift_pattern.section
         td = fix_shift_pattern.working_hour
+        td
+          - if fix_shift_pattern.fix_shift_pattern_shift_frames.present?
+            - fix_shift_pattern.fix_shift_pattern_shift_frames.each do |fspsf|
+              span = "#{fspsf.shift_frame.name}/"

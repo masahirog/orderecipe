@@ -3,9 +3,6 @@
     = f.label :pattern_name, "シフト名"
     = f.text_field :pattern_name, required: true, class:"form-control"
   .form-group
-    = f.label :section, "シフトカウント区分"
-    = f.select :section, options_for_select_from_enum(FixShiftPattern, :section),{}, { class: "form-control", required:true}
-  .form-group
     = f.label :working_hour, "勤務時間（例 6時間→6、5時間半→5.5）"
     = f.number_field :working_hour, class: "form-control", required:true,step:0.1
   .form-group
@@ -15,5 +12,12 @@
     = f.label :end_time, "勤務終了時間（ジョブカンへのシフトアップロードの際に使用します）"
     = f.time_field :end_time, class: "form-control"
 
-  .actions
+  label 店舗選択
+  ul.list-group.clearfix#add_fspsf
+    = f.fields_for :fix_shift_pattern_shift_frames do |fspsf|
+      = render 'fix_shift_pattern_shift_frame_fields', f: fspsf
+  = link_to_add_association 'シフト枠追加', f, :fix_shift_pattern_shift_frames,class: 'btn btn-default add_menu_details',data: {association_insertion_node: '#add_fspsf',association_insertion_method: 'append' }
+
+
+  .actions.text-center
     = f.submit '登録する',class:'btn btn-success'

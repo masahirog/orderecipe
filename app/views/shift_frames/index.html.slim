@@ -1,0 +1,17 @@
+h1 シフト枠
+
+table.table
+  thead
+    tr
+      th シフト枠
+      th グループ
+
+  tbody
+    - @shift_frames.each do |shift_frame|
+      tr
+        td = link_to shift_frame.name, edit_shift_frame_path(shift_frame)
+        td = shift_frame.group.name
+
+br
+
+= link_to 'New Shift frame', new_shift_frame_path
