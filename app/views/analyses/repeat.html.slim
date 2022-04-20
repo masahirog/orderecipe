@@ -1,0 +1,24 @@
+= "#{@date - 30}〜#{@date} の期間に会員登録したお客様"
+table.table
+  thead
+    tr
+      th 回数
+      th 人数
+      th %
+  tbody
+    - @hash.each do |kaisu_ninzu|
+      tr
+        td = kaisu_ninzu[0]
+        td = kaisu_ninzu[1]
+        td = ((kaisu_ninzu[1].to_f/@total_nyukaisyasu)*100).round(1)
+
+table.table
+  thead
+    tr
+      th 会員ID
+      th 回数
+  tbody
+    - @smaregi_member_counts.each do |smc|
+      tr
+        td = smc[0]
+        td = smc[1]
