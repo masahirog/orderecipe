@@ -1,5 +1,6 @@
 h3 シフトテンプレート一覧
-= link_to "シフト枠を作成",create_frame_default_shifts_path(group_id:params[:group_id]),{method: :post,class:'btn btn-primary pull-right'}
+.text-right
+  = link_to "シフト枠を作成",create_frame_default_shifts_path(group_id:params[:group_id]),{method: :post,class:'btn btn-primary'}
 .table-responsive style='height:800px;overflow: scroll;'
   table.table.layout-fixed style='border-collapse:separate;'
     thead style='position: sticky;top:0;background-color:white;z-index:3;'
@@ -7,7 +8,7 @@ h3 シフトテンプレート一覧
         th style='background-color:white;width:150px;' 店舗名
         th.fixed_second_thtd style='width:120px;'
         - @wdays.each do |wday|
-          th style='width:120px;' = wday[1]
+          th style='width:160px;' = wday[1]
       - @stores.each do |store|
         - @shift_frames.each_with_index do |sf,i|
           - if store.store_shift_frames.find_by(shift_frame_id:sf.id)
