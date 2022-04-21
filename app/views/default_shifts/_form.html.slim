@@ -1,0 +1,9 @@
+= form_for @default_shift do |f|
+  - if @default_shift.errors.any?
+    #error_explanation
+      h2 = "#{pluralize(@default_shift.errors.count, "error")} prohibited this default_shift from being saved:"
+      ul
+        - @default_shift.errors.full_messages.each do |message|
+          li = message
+
+  .actions = f.submit

@@ -1,5 +1,38 @@
 class ShiftsController < ApplicationController
   before_action :set_shift, only: %i[ show edit update destroy ]
+  def reflect_default_shifts
+    if params[:date]
+      @date = Date.parse(params[:date])
+    else
+      @date = Date.today
+    end
+    first_day = @date.beginning_of_month
+    last_day = first_day.end_of_month
+    @one_month = [*first_day..last_day]
+    @group = Group.find(params[:group_id])
+    store_ids = @group.stores.ids
+    @staffs = Staff.where(store_id:store_ids,status:0)
+    default_shift_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    DefaultShift.where(staff_id:@staffs.ids).each do |default_shift|
+      default_shift_hash[default_shift.staff_id][default_shift.weekday] = default_shift
+    end
+    update_shifts = []
+    Shift.where(date:@one_month,staff_id:@staffs.ids).each do |shift|
+      wday = shift.date.wday
+      default_shift = default_shift_hash[shift.staff_id][wday]
+      if default_shift.present?
+        shift.store_id = default_shift.store_id
+        shift.fix_shift_pattern = default_shift.fix_shift_pattern
+      else
+        shift.store_id = nil
+        shift.fix_shift_pattern = nil
+      end
+      update_shifts << shift
+    end
+    Shift.import update_shifts, on_duplicate_key_update:[:store_id,:fix_shift_pattern_id]
+    redirect_to shifts_path(date:@date,group_id:params[:group_id]),notice:"#{@date.month}月のシフト枠を作成しました"
+
+  end
   def store
     if params[:date]
       @date = Date.parse(params[:date])
@@ -178,11 +211,14 @@ class ShiftsController < ApplicationController
       if shift.fix_shift_pattern_id.present?
         date = shift.date
         store_id = shift.store_id
+        working_hour = shift.fix_shift_pattern.working_hour
         shift.fix_shift_pattern.shift_frames.each do |sf|
           if @hash[store_id][date][sf.id].present?
-            @hash[store_id][date][sf.id] += 1
+            @hash[store_id][date][sf.id]['working_number'] += 1
+            @hash[store_id][date][sf.id]['working_hour'] += working_hour
           else
-            @hash[store_id][date][sf.id] = 1
+            @hash[store_id][date][sf.id]['working_number'] = 1
+            @hash[store_id][date][sf.id]['working_hour'] = working_hour
           end
         end
       end

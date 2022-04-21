@@ -8,6 +8,7 @@ class Store < ApplicationRecord
   has_many :product_sales_potentials
   has_many :staffs
   has_many :shifts
+  has_many :default_shifts
   has_many :orders
   has_many :material_store_orderables
   has_many :store_shift_frames, dependent: :destroy

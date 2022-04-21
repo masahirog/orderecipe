@@ -21,12 +21,18 @@ Rails.application.routes.draw do
   post "versions/:id/revert" => "versions#revert", :as => "revert_version"
   post'menus/include_update' => 'menus#include_update'
   post 'materials/change_additives' => 'materials#change_additives'
+  resources :default_shifts do
+    collection do
+      post :create_frame
+    end
+  end
   resources :shift_frames
   resources :groups
   resources :fix_shift_patterns
   resources :material_store_orderables
   resources :shifts do
     collection do
+      post :reflect_default_shifts
       get :store
       get :jobcan_upload
       get :once_update

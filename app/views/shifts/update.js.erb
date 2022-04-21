@@ -7,9 +7,12 @@
 <% else %>
   <% if @before_fix_shift_pattern.present? && @before_store_id.present? %>
     <% @before_shift_frames.each do |sf| %>
-      var count = $(".<%= @shift.date.day %>_store_<%= @before_store_id %>_sf_<%= sf.id %>").text()
+      var count = $(".<%= @shift.date.day %>_store_<%= @before_store_id %>_sf_<%= sf.id %>").find(".fix_shift_count").text()
       count = Number(count) - 1;
-      $(".<%= @shift.date.day %>_store_<%= @before_store_id %>_sf_<%= sf.id %>").text(count);
+      var working_hour = $(".<%= @shift.date.day %>_store_<%= @before_store_id %>_sf_<%= sf.id %>").find(".working_hour").text()
+      working_hour = Number(working_hour) - <%= @before_fix_shift_pattern.working_hour %>;
+      $(".<%= @shift.date.day %>_store_<%= @before_store_id %>_sf_<%= sf.id %>").find(".fix_shift_count").text(count);
+      $(".<%= @shift.date.day %>_store_<%= @before_store_id %>_sf_<%= sf.id %>").find(".working_hour").text(working_hour);
       var default_number = "<%= @before_store.store_shift_frames.find_by(shift_frame_id:sf.id).default_number %>"
       if (count < default_number) {
         $(".<%= @shift.date.day %>_store_<%= @before_store_id %>_sf_<%= sf.id %>").css("background-color",'#f0c0c0 ');
@@ -23,13 +26,18 @@
   var total = 0
   <% if @shift.fix_shift_pattern.present? && @store.present? %>
     <% @shift_frames.each do |sf| %>
-      var count = $(".<%= @shift.date.day %>_store_<%= @store.id %>_sf_<%= sf.id %>").text()
+      var count = $(".<%= @shift.date.day %>_store_<%= @store.id %>_sf_<%= sf.id %>").find(".fix_shift_count").text();
       if (count=='0' || count=="") {
         count = 1;
       }else{
         count = Number(count) + 1;
       }
-      $(".<%= @shift.date.day %>_store_<%= @store.id %>_sf_<%= sf.id %>").text(count);
+      $(".<%= @shift.date.day %>_store_<%= @store.id %>_sf_<%= sf.id %>").find(".fix_shift_count").text(count);
+      var working_hour = $(".<%= @shift.date.day %>_store_<%= @store.id %>_sf_<%= sf.id %>").find(".working_hour").text();
+      working_hour = Number(working_hour) + <%= @shift.fix_shift_pattern.working_hour %>;
+      $(".<%= @shift.date.day %>_store_<%= @store.id %>_sf_<%= sf.id %>").find(".working_hour").text(working_hour);
+
+
       var default_number = "<%= @store.store_shift_frames.find_by(shift_frame_id:sf.id).default_number %>"
       if (count < default_number) {
         $(".<%= @shift.date.day %>_store_<%= @store.id %>_sf_<%= sf.id %>").css("background-color",'#f0c0c0 ');

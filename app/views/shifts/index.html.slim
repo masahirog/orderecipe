@@ -4,16 +4,17 @@ h2 = "#{@group.name}　#{@date.year}年#{@date.month}月シフト"
 = link_to "#{@date.last_month.month}月＜＜",shifts_path(date:@date.last_month)
 |　　　
 = link_to "＞＞#{@date.next_month.month}月",shifts_path(date:@date.next_month)
-button class='btn btn-default hide_shinsei' style='margin-left:20px;' 申請シフトを隠す
 = link_to "交通費CSV", shifts_path(date:params[:date],format:'csv'), class: "btn btn-default pull-right",style:'margin-right:20px;'
 = link_to "ジョブカンCSV", jobcan_upload_shifts_path(date:params[:date],format:'csv'), class: "btn btn-default pull-right",style:'margin-right:20px;'
+button class='btn btn-default hide_shinsei pull-right' style='margin-right:20px;' 申請シフトを隠す
+= link_to "テンプレシフト反映", reflect_default_shifts_shifts_path(date:params[:date],group_id:@group.id), method: :post, data: { confirm: 'デフォルトシフトで上書きされます。よろしいですか？' }, class: "btn btn-default pull-right",style:'margin-right:20px;' if params[:group_id]=='39'
 .table-responsive style='height:800px;overflow: scroll;'
   table.table.layout-fixed style='border-collapse:separate;'
     thead style='position: sticky;top:0;background-color:white;z-index:3;'
       tr
         th style='background-color:white;width:150px;'
           = link_to "店舗名",store_shifts_path(date:@date)
-        th style='width:120px;'
+        th.fixed_second_thtd style='width:120px;'
         - @one_month.each do |date|
           - holiday = HolidayJapan.name(date)
           - if holiday.present?
@@ -29,17 +30,25 @@ button class='btn btn-default hide_shinsei' style='margin-left:20px;' 申請シ�
               - if i == 0
                 td rowspan="#{@rowspan}" style='background-color:white;text-align: center;vertical-align: middle;z-index:4;font-weight:bold;'
                   = store.short_name
-              td style='text-align:right;'
+              td.fixed_second_thtd style='text-align:right;'
                 = "#{sf.name}：#{default_number}｜#{default_working_hour}"
                 input.default_shift_value value="#{default_number}" style='display:none;'
               - @one_month.each do |date|
                 td class="#{date.day}_store_#{store.id}_sf_#{sf.id} fix_shift_amount" style=""
                   - if @hash[store.id][date][sf.id].present?
-                    = @hash[store.id][date][sf.id]
+                    span.fix_shift_count = "#{@hash[store.id][date][sf.id]['working_number']}"
+                    span = " ("
+                    span.working_hour = "#{ActiveSupport::NumberHelper.number_to_rounded(@hash[store.id][date][sf.id]['working_hour'], strip_insignificant_zeros: true, :delimiter => ',')}"
+                    span = ")"
+                  - else
+                    span.fix_shift_count = ""
+                    span = " ("
+                    span.working_hour = ""
+                    span = ")"
     tbody
       - @staffs.each do |staff|
         tr.fix_shift_tr class="fix_shift_tr_#{staff.id}" style='background-color:#d1f6ff;'
-          td.staff_name rowspan='2' style='line-height:0.9em;color:black;background-color:white;text-align:center;vertical-align:middle;'
+          td.staff_name rowspan='2' style='line-height:0.9em;color:black;background-color:white;text-align:center;vertical-align:middle;z-index:3;'
             = staff.name
             - if staff.memo.present?
               span.shinsei_shift_memo style='color:pink;font-size:12px;' class="glyphicon glyphicon-book original-tooltip" aria-hidden="true"  data-toggle="tooltip" data-placement="top" data-container="body" title="#{staff.memo}"
@@ -47,7 +56,7 @@ button class='btn btn-default hide_shinsei' style='margin-left:20px;' 申請シ�
             span style='font-size:10px;color:gray;margin:0;' = "#{staff.store.short_name} "
             span class="working_hours_#{staff.id}" style='font-size:10px;color:gray;margin:0;'
 
-          td style='z-index:1;'
+          td.fixed_second_thtd style='z-index:1;'
             span class="edit_fix_shift" 確：
             span class="edit_fix_shift_ok glyphicon glyphicon-ok" aria-hidden="true" style='display:none;' ：
             = @staff_syukkin_count[staff.id]
@@ -74,7 +83,7 @@ button class='btn btn-default hide_shinsei' style='margin-left:20px;' 申請シ�
                     = f.collection_select :fix_shift_pattern_id, @fix_shift_patterns, :id, :pattern_name, {include_blank:true}, { class: "fix_shift_select",style:"width:50px;height:30px;text-align:center;float:left;border-radius:4px;border-color:silver;"}
                     / = f.select :fix_shift_pattern_id, grouped_options_for_select(@options,f.object.fix_shift_pattern_id), {include_blank:true}, { class: "fix_shift_select fix_shift_select_select",style:"width:50px;height:30px;text-align:center;float:left;border-radius:4px;border-color:silver;"}
         tr.shift_tr style='color:silver;'
-          td
+          td.fixed_second_thtd
             span class="edit_shift" 申
             span class="edit_shift_ok glyphicon glyphicon-ok" aria-hidden="true" style='display:none;'
             = "：#{@staff_shinsei_count[staff.id]}"
@@ -111,6 +120,12 @@ css:
     position: sticky;
     left: 0;
     z-index:2;
+  }
+  .table .fixed_second_thtd {
+    position: sticky;
+    z-index:2;
+    left:150px;
+    background-color:white;
   }
   th,td {
     text-align:center;
@@ -199,7 +214,7 @@ javascript:
     $(".shift_amount_tr").each(function(){
       var default_amount = Number($(this).find(".default_shift_value").val());
       $(this).find('.fix_shift_amount').each(function(){
-        if (default_amount > Number($(this).text())) {
+        if (default_amount > Number($(this).children(".fix_shift_count").text())) {
           $(this).css("background-color",'#f0c0c0 ');
         }
       });

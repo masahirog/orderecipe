@@ -1,0 +1,2 @@
+module DefaultShiftsHelper
+end

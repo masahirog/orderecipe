@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_20_085131) do
+ActiveRecord::Schema.define(version: 2022_04_21_125832) do
 
   create_table "analyses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "store_id"
@@ -121,6 +121,16 @@ ActiveRecord::Schema.define(version: 2022_04_20_085131) do
     t.date "date"
     t.integer "num"
     t.boolean "notified_flag", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "default_shifts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "weekday"
+    t.integer "store_id"
+    t.integer "staff_id"
+    t.integer "fix_shift_pattern_id"
+    t.text "memo"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
