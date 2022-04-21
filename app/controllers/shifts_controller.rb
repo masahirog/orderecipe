@@ -245,14 +245,20 @@ class ShiftsController < ApplicationController
     if @shift.fix_shift_pattern_id_was.present?
       before_fix_shift_pattern_id = @shift.fix_shift_pattern_id_was
       @before_fix_shift_pattern = FixShiftPattern.find(before_fix_shift_pattern_id)
+      @before_shift_frames = @before_fix_shift_pattern.shift_frames
     end
     if @shift.store_id_was.present?
       @before_store_id = @shift.store_id_was
       @before_store = Store.find(@before_store_id)
     end
-
     respond_to do |format|
       if @shift.update(shift_params)
+        if @shift.store_id.present?
+          @store = @shift.store
+        end
+        if @shift.fix_shift_pattern.present?
+          @shift_frames = @shift.fix_shift_pattern.shift_frames
+        end
         format.html { redirect_to @shift, notice: "Shift was successfully updated." }
         format.js
       else

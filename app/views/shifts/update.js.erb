@@ -5,84 +5,36 @@
     $(".td_shinsei_<%= @shift.id %>").children(".shinsei_shift").text("");
   <% end %>
 <% else %>
-  <% if @before_fix_shift_pattern.present? %>
-    <% if @before_fix_shift_pattern.read_attribute_before_type_cast(:section) == 2 %>
-      var lunch_count = $(".<%= @shift.date.day %>_store_<%= @before_store_id %>_section_0").text()
-      lunch_count = Number(lunch_count) - 1;
-      $(".<%= @shift.date.day %>_store_<%= @before_store_id %>_section_0").text(lunch_count);
-      var dinner_count = $(".<%= @shift.date.day %>_store_<%= @before_store_id %>_section_1").text()
-      dinner_count = Number(dinner_count) - 1;
-      $(".<%= @shift.date.day %>_store_<%= @before_store_id %>_section_1").text(dinner_count);
-
-      if (lunch_count < "<%= @before_store.lunch_default_shift %>") {
-        $(".<%= @shift.date.day %>_store_<%= @before_store_id %>_section_0").css("background-color",'#f0c0c0 ');
-      }else{
-        $(".<%= @shift.date.day %>_store_<%= @before_store_id %>_section_0").css("background-color",'white');
-      };
-
-      if (dinner_count < "<%= @before_store.dinner_default_shift %>") {
-        $(".<%= @shift.date.day %>_store_<%= @before_store_id %>_section_1").css("background-color",'#f0c0c0 ');
-      }else{
-        $(".<%= @shift.date.day %>_store_<%= @before_store_id %>_section_1").css("background-color",'white');
-      };
-
-
-    <% else %>
-      var count = $(".<%= @shift.date.day %>_store_<%= @before_store_id %>_section_<%= @before_fix_shift_pattern.read_attribute_before_type_cast(:section) %>").text()
+  <% if @before_fix_shift_pattern.present? && @before_store_id.present? %>
+    <% @before_shift_frames.each do |sf| %>
+      var count = $(".<%= @shift.date.day %>_store_<%= @before_store_id %>_sf_<%= sf.id %>").text()
       count = Number(count) - 1;
-      $(".<%= @shift.date.day %>_store_<%= @before_store_id %>_section_<%= @before_fix_shift_pattern.read_attribute_before_type_cast(:section) %>").text(count);
-      if (count < "<%= @before_store.lunch_default_shift %>") {
-        $(".<%= @shift.date.day %>_store_<%= @before_store_id %>_section_<%= @before_fix_shift_pattern.read_attribute_before_type_cast(:section) %>").css("background-color",'#f0c0c0 ');
+      $(".<%= @shift.date.day %>_store_<%= @before_store_id %>_sf_<%= sf.id %>").text(count);
+      var default_number = "<%= @before_store.store_shift_frames.find_by(shift_frame_id:sf.id).default_number %>"
+      if (count < default_number) {
+        $(".<%= @shift.date.day %>_store_<%= @before_store_id %>_sf_<%= sf.id %>").css("background-color",'#f0c0c0 ');
       }else{
-        $(".<%= @shift.date.day %>_store_<%= @before_store_id %>_section_<%= @before_fix_shift_pattern.read_attribute_before_type_cast(:section) %>").css("background-color",'white');
+        $(".<%= @shift.date.day %>_store_<%= @before_store_id %>_sf_<%= sf.id %>").css("background-color",'white');
       };
-
     <% end %>
   <% end %>
 
   var val = 0
   var total = 0
-  <% if @shift.fix_shift_pattern.present? %>
-    <% if @shift.fix_shift_pattern.read_attribute_before_type_cast(:section) == 2 %>
-      var lunch_count = $(".<%= @shift.date.day %>_store_<%= @shift.store_id %>_section_0").text();
-      if (lunch_count=='0' || lunch_count=="") {
-        $(".<%= @shift.date.day %>_store_<%= @shift.store_id %>_section_0").text(1);
-      }else{
-        lunch_count = Number(lunch_count) + 1;
-        $(".<%= @shift.date.day %>_store_<%= @shift.store_id %>_section_0").text(lunch_count);
-      }
-      var dinner_count = $(".<%= @shift.date.day %>_store_<%= @shift.store_id %>_section_1").text();
-      if (dinner_count=='0' || dinner_count=="") {
-        $(".<%= @shift.date.day %>_store_<%= @shift.store_id %>_section_1").text(1);
-      }else{
-        dinner_count = Number(dinner_count) + 1;
-        $(".<%= @shift.date.day %>_store_<%= @shift.store_id %>_section_1").text(dinner_count);
-      }
-
-      if (lunch_count < "<%= @shift.store.lunch_default_shift %>") {
-        $(".<%= @shift.date.day %>_store_<%= @shift.store_id %>_section_0").css("background-color",'#f0c0c0 ');
-      }else{
-        $(".<%= @shift.date.day %>_store_<%= @shift.store_id %>_section_0").css("background-color",'white');
-      };
-
-      if (dinner_count < "<%= @shift.store.dinner_default_shift %>") {
-        $(".<%= @shift.date.day %>_store_<%= @shift.store_id %>_section_1").css("background-color",'#f0c0c0 ');
-      }else{
-        $(".<%= @shift.date.day %>_store_<%= @shift.store_id %>_section_1").css("background-color",'white');
-      };
-
-    <% else %>
-      var count = $(".<%= @shift.date.day %>_store_<%= @shift.store_id %>_section_<%= @shift.fix_shift_pattern.read_attribute_before_type_cast(:section) %>").text();
+  <% if @shift.fix_shift_pattern.present? && @store.present? %>
+    <% @shift_frames.each do |sf| %>
+      var count = $(".<%= @shift.date.day %>_store_<%= @store.id %>_sf_<%= sf.id %>").text()
       if (count=='0' || count=="") {
         count = 1;
       }else{
         count = Number(count) + 1;
       }
-      $(".<%= @shift.date.day %>_store_<%= @shift.store_id %>_section_<%= @shift.fix_shift_pattern.read_attribute_before_type_cast(:section) %>").text(count);
-      if (count < "<%= @shift.store.lunch_default_shift %>") {
-        $(".<%= @shift.date.day %>_store_<%= @shift.store_id %>_section_<%= @shift.fix_shift_pattern.read_attribute_before_type_cast(:section) %>").css("background-color",'#f0c0c0 ');
+      $(".<%= @shift.date.day %>_store_<%= @store.id %>_sf_<%= sf.id %>").text(count);
+      var default_number = "<%= @store.store_shift_frames.find_by(shift_frame_id:sf.id).default_number %>"
+      if (count < default_number) {
+        $(".<%= @shift.date.day %>_store_<%= @store.id %>_sf_<%= sf.id %>").css("background-color",'#f0c0c0 ');
       }else{
-        $(".<%= @shift.date.day %>_store_<%= @shift.store_id %>_section_<%= @shift.fix_shift_pattern.read_attribute_before_type_cast(:section) %>").css("background-color",'white');
+        $(".<%= @shift.date.day %>_store_<%= @store.id %>_sf_<%= sf.id %>").css("background-color",'white');
       };
     <% end %>
     var working_hour = <%= @shift.fix_shift_pattern.working_hour %>
