@@ -29,18 +29,19 @@ button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-tar
             th style='width:120px;' = date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})")
       - @stores.each do |store|
         - @shift_frames.each_with_index do |sf,i|
-          - default_number = store.store_shift_frames.find_by(shift_frame_id:sf.id).default_number
-          tr.shift_amount_tr
-            - if i == 0
-              td rowspan="#{@rowspan}" style='background-color:white;text-align: center;vertical-align: middle;z-index:4;font-weight:bold;'
-                = store.short_name
-            td style='text-align:right;'
-              = "#{sf.name}：#{default_number}"
-              input.default_shift_value value="#{default_number}" style='display:none;'
-            - @one_month.each do |date|
-              td class="#{date.day}_store_#{store.id}_section_0 fix_shift_amount" style=""
-                - if @hash[store.id][date][sf.id].present?
-                  = @hash[store.id][date][sf.id]
+          - if store.store_shift_frames.find_by(shift_frame_id:sf.id)
+            - default_number = store.store_shift_frames.find_by(shift_frame_id:sf.id).default_number
+            tr.shift_amount_tr
+              - if i == 0
+                td rowspan="#{@rowspan}" style='background-color:white;text-align: center;vertical-align: middle;z-index:4;font-weight:bold;'
+                  = store.short_name
+              td style='text-align:right;'
+                = "#{sf.name}：#{default_number}"
+                input.default_shift_value value="#{default_number}" style='display:none;'
+              - @one_month.each do |date|
+                td class="#{date.day}_store_#{store.id}_section_0 fix_shift_amount" style=""
+                  - if @hash[store.id][date][sf.id].present?
+                    = @hash[store.id][date][sf.id]
 
 
 

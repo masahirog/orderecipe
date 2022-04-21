@@ -73,6 +73,6 @@ class StoresController < ApplicationController
     def store_params
       params.require(:store).permit(:name,:phone,:fax,:email,:zip,:address,:staff_name,:orikane_store_code,
         :staff_phone,:staff_email,:memo,:jfd,:user_id,:lunch_default_shift,:dinner_default_shift,:group_id,
-      store_shift_frames_attributes:[:id,:store_id,:shift_frame_id,:default_number,:_destroy])
+      store_shift_frames_attributes:[:id,:store_id,:shift_frame_id,:default_number,:default_working_hour,:_destroy])
     end
 end

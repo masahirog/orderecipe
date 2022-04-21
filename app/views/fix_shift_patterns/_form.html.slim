@@ -1,5 +1,10 @@
 = form_for @fix_shift_pattern do |f|
   .form-group
+    = f.label :group_id, "グループ名"
+    p = "#{@group.name}"
+    = f.hidden_field :group_id
+
+  .form-group
     = f.label :pattern_name, "シフト名"
     = f.text_field :pattern_name, required: true, class:"form-control"
   .form-group
@@ -12,7 +17,7 @@
     = f.label :end_time, "勤務終了時間（ジョブカンへのシフトアップロードの際に使用します）"
     = f.time_field :end_time, class: "form-control"
 
-  label 店舗選択
+  label 計算対象シフト選択
   ul.list-group.clearfix#add_fspsf
     = f.fields_for :fix_shift_pattern_shift_frames do |fspsf|
       = render 'fix_shift_pattern_shift_frame_fields', f: fspsf

@@ -9,10 +9,15 @@ class FixShiftPatternsController < ApplicationController
   end
 
   def new
-    @fix_shift_pattern = FixShiftPattern.new
+    group_id = params[:group_id]
+    @group = Group.find(group_id)
+    @shift_frames = ShiftFrame.where(group_id:group_id)
+    @fix_shift_pattern = FixShiftPattern.new(group_id:group_id)
   end
 
   def edit
+    @group = @fix_shift_pattern.group
+    @shift_frames = ShiftFrame.where(group_id:@group.id)
   end
 
   def create
@@ -54,7 +59,7 @@ class FixShiftPatternsController < ApplicationController
     end
 
     def fix_shift_pattern_params
-      params.require(:fix_shift_pattern).permit(:shift_frame_id,:group_id,:pattern_name,:working_hour,:end_time,:start_time,
+      params.require(:fix_shift_pattern).permit(:shift_frame_id,:group_id,:pattern_name,:working_hour,:end_time,:start_time,:group_id,
       fix_shift_pattern_shift_frames_attributes: [:id, :fix_shift_pattern_id,:shift_frame_id,:_destroy])
     end
 end

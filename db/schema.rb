@@ -690,11 +690,12 @@ ActiveRecord::Schema.define(version: 2022_04_20_085131) do
   end
 
   create_table "store_shift_frames", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "store_id"
-    t.integer "shift_frame_id"
-    t.integer "default_number"
+    t.integer "store_id", null: false
+    t.integer "shift_frame_id", null: false
+    t.integer "default_number", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "default_working_hour", default: 0, null: false
   end
 
   create_table "stores", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
