@@ -77,6 +77,7 @@ class OrdersController < AdminController
   end
 
   def edit
+    gon.holidays = HolidayJapan.list_year(Date.today.year).map{|data|data[0].to_s.delete('-')}
     today = Date.today
     vendor_name = {}
     all_materials = Material.includes(:vendor).where(unused_flag:false)
@@ -126,6 +127,13 @@ class OrdersController < AdminController
       @tr4 = ["<td>棚卸</td>"]
 
       (today-10..today+10).each do |day|
+        if day.wday == 0 || HolidayJapan.name(day).present?
+          color = "color:red;"
+        elsif day.wday == 6
+          color = "color:blue;"
+        else
+          color = ""
+        end
         if material_stock_hash[day].present?
           stock = material_stock_hash[day]
           zero = "<td style='color:silver;'>0</td>"
@@ -162,14 +170,14 @@ class OrdersController < AdminController
           else
             bc = ""
           end
-          @thead << "<th style='text-align:center;#{bc}'>#{day.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[day.wday]})")}</th>"
+          @thead << "<th style='text-align:center;#{bc}#{color}'>#{day.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[day.wday]})")}</th>"
           @tr0 << start_day_stock
           @tr1 << delivery_amount
           @tr2 << used_amount
           @tr3 << end_day_stock
           @tr4 << inventory
         else
-          @thead << "<th style='text-align:center;background-color:white;'>#{day.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[day.wday]})")}</th>"
+          @thead << "<th style='text-align:center;background-color:white;#{color}'>#{day.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[day.wday]})")}</th>"
           @tr0 << "<td></td>"
           @tr1 << "<td></td>"
           @tr2 << "<td></td>"
@@ -247,6 +255,7 @@ class OrdersController < AdminController
 
 
   def new
+    gon.holidays = HolidayJapan.list_year(Date.today.year).map{|data|data[0].to_s.delete('-')}
     material_ids = []
     @product_hash = {}
     @arr = []
@@ -614,6 +623,14 @@ class OrdersController < AdminController
         @tr4 = ["<td>棚卸</td>"]
 
         (date-10..date+10).each do |day|
+          if day.wday == 0 || HolidayJapan.name(day).present?
+            color = "color:red;"
+          elsif day.wday == 6
+            color = "color:blue;"
+          else
+            color = ""
+          end
+
           if material_stock_hash[day].present?
             stock = material_stock_hash[day]
             zero = "<td style='color:silver;'>0</td>"
@@ -650,14 +667,14 @@ class OrdersController < AdminController
             else
               bc = ""
             end
-            @thead << "<th style='text-align:center;#{bc}'>#{day.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[day.wday]})")}</th>"
+            @thead << "<th style='text-align:center;#{bc}#{color}'>#{day.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[day.wday]})")}</th>"
             @tr0 << start_day_stock
             @tr1 << delivery_amount
             @tr2 << used_amount
             @tr3 << end_day_stock
             @tr4 << inventory
           else
-            @thead << "<th style='text-align:center;'>#{day.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[day.wday]})")}</th>"
+            @thead << "<th style='text-align:center;#{color}'>#{day.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[day.wday]})")}</th>"
             @tr0 << "<td></td>"
             @tr1 << "<td></td>"
             @tr2 << "<td></td>"

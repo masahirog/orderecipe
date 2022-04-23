@@ -50,6 +50,8 @@ gem 'redcarpet', '~> 2.3.0'
 gem 'coderay'
 gem 'chartkick'
 gem 'holiday_japan'
+gem 'jquery-datetimepicker-rails'
+
 
 
 group :development, :test do

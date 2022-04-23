@@ -287,7 +287,7 @@ $(document).on('turbolinks:load', function() {
       var date_arr = []
       $('.order_materials_tr').each(function(){
         var date = $(this).find(".input_delivery_date").val()
-        $(this).find(".input_delivery_date").removeClass().addClass("form-control input_delivery_date "+date);
+        $(this).find(".input_delivery_date").removeClass().addClass("form-control input_delivery_date date_input "+date);
         date_arr.push(date)
       });
       var countDuplicate = function(arr){

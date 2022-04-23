@@ -11,12 +11,30 @@
  * It is generally better to create a new file per style scope.
  *
  *= require select2
+ *= require jquery.datetimepicker
  */
 
 @import "print.scss";
 @import 'jquery-ui';
 @import "font-awesome-sprockets";
 @import "font-awesome";
+
+
+  .class-holiday > .ui-state-default {
+  background: #FFFFCC !important;
+  color: red !important;
+  }
+  .class-sunday > .ui-state-default {
+  background: #FFCCCC !important;
+  color: red !important;
+  }
+  .class-saturday > .ui-state-default {
+  background: #CCCCFF !important;
+  color: blue !important;
+  }
+  .is-holiday{
+    background-color:red;
+  }
 
 .ui-helper-hidden-accessible {
   display: none;

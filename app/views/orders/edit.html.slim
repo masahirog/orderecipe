@@ -30,7 +30,7 @@
       = select_tag "vendor_id",options_for_select(@vendors),include_blank:true,class:'vendor_select form-control'
     .col-md-2
       label.text-right 納品日一括変更：
-      = date_field("all", "date_change", value: Time.now.strftime("%Y-%m-%d"),class:"form-control")
+      = date_field("all", "date_change", value: Time.now.strftime("%Y-%m-%d"),class:"form-control date_input")
 
     .col-md-2
       label.text-right
@@ -83,9 +83,9 @@
                 span style='color:red;font-weight:bold;' = "【受注品】" if m.object.material.vendor_stock_flag == false
           td.delivery_date style="min-width:186px;"
             - if m.object.delivery_date
-              = m.date_field(:delivery_date,value:m.object.delivery_date,class:"form-control input_delivery_date")
+              = m.date_field(:delivery_date,value:m.object.delivery_date,class:"form-control input_delivery_date date_input")
             - else
-              = m.date_field(:delivery_date,value:m.object.delivery_date,class:"form-control input_delivery_date")
+              = m.date_field(:delivery_date,value:m.object.delivery_date,class:"form-control input_delivery_date date_input")
             - if m.object.material_id.present?
               span.delivery_deadline_span style='color:red;font-weight:bold;' = "#{m.object.material.delivery_deadline} 営業日前に必要！" if m.object.material.delivery_deadline > 1
             - else
@@ -150,8 +150,34 @@ javascript:
     $(document).on("keypress", "input:not(.allow_submit)", function(event) {
       return event.which !== 13;
     });
+    var holidays = gon.holidays;
+    $('.date_input').datetimepicker({
+      format: 'Y-m-d',
+      timepicker:false,
+      beforeShowDay: function (date) {
+        var ymd = date.getFullYear() + ('0' + (date.getMonth() + 1)).slice(-2) + ('0' +  date.getDate()).slice(-2);
+        if (holidays.indexOf(ymd) != -1 ||date.getDay() == 0 ) {
+          return [true, 'class-sunday-holiday',''];
+        } else if (date.getDay() == 6) {
+          return [true, 'class-saturday'];
+        } else {
+          return [true, ''];
+        }
+      }
+     });
   });
 sass:
+  input[type="time"]::-webkit-calendar-picker-indicator
+    display: none
+
+  input[type="date"]::-webkit-calendar-picker-indicator
+    display: none
+
+  .class-sunday-holiday
+    color: red !important
+  .class-saturday
+    color: #1e90ff !important
+
   .stock-tooltip
     .tooltip
       width: 100%

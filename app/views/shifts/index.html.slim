@@ -10,17 +10,18 @@ button class='btn btn-default hide_shinsei pull-right' style='margin-right:20px;
 = link_to "テンプレシフト反映", reflect_default_shifts_shifts_path(date:params[:date],group_id:@group.id), method: :post, data: { confirm: 'デフォルトシフトで上書きされます。よろしいですか？' }, class: "btn btn-default pull-right",style:'margin-right:20px;' if params[:group_id]=='19'
 .table-responsive style='height:800px;overflow: scroll;'
   table.table.layout-fixed style='border-collapse:separate;'
-    thead style='position: sticky;top:0;background-color:white;z-index:3;'
+    thead style='position: sticky;top:0;background-color:white;z-index:5;'
       tr
         th style='background-color:white;width:150px;'
           = link_to "店舗名",store_shifts_path(date:@date)
+          button.show_tr.btn.btn-default.btn-sm style='padding:2px 4px;font-size:10px;display:none;margin-left:2px;' 表示
         th.fixed_second_thtd style='width:120px;'
         - @one_month.each do |date|
           - holiday = HolidayJapan.name(date)
           - if holiday.present?
-            th style='width:120px;background-color:#f06060;color:white;' = date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})")
+            th style='width:130px;background-color:#f06060;color:white;' = date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})")
           - else
-            th style='width:120px;' = date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})")
+            th style='width:130px;' = date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})")
       - @stores.each do |store|
         - @shift_frames.each_with_index do |sf,i|
           - if store.store_shift_frames.find_by(shift_frame_id:sf.id)
@@ -30,6 +31,8 @@ button class='btn btn-default hide_shinsei pull-right' style='margin-right:20px;
               - if i == 0
                 td rowspan="#{@rowspan}" style='background-color:white;text-align: center;vertical-align: middle;z-index:4;font-weight:bold;'
                   = store.short_name
+                  br
+                  button.hide_tr.btn.btn-default.btn-sm style='padding:2px 4px;font-size:10px;' 非表示
               td.fixed_second_thtd style='text-align:right;'
                 = "#{sf.name}：#{default_number}｜#{default_working_hour}"
                 input.default_shift_value value="#{default_number}" style='display:none;'
@@ -79,8 +82,8 @@ button class='btn btn-default hide_shinsei pull-right' style='margin-right:20px;
                 .edit_fix_shift_form style='text-align:center;display:none;'
                   = form_with(model: @shifts[[staff.id,date]], data: {remote: true},class:"form_#{@shifts[[staff.id,date]].id}") do |f|
                     = f.hidden_field :id,value:@shifts[[staff.id,date]].id,class:'shift_id'
-                    = f.collection_select :store_id, @stores, :id, :short_name, {include_blank:true}, { class: "fix_shift_select_store_id",style:"width:50px;height:30px;text-align:center;float:left;border-radius:4px;border-color:silver;"}
-                    = f.collection_select :fix_shift_pattern_id, @fix_shift_patterns, :id, :pattern_name, {include_blank:true}, { class: "fix_shift_select",style:"width:50px;height:30px;text-align:center;float:left;border-radius:4px;border-color:silver;"}
+                    = f.collection_select :store_id, @stores, :id, :short_name, {include_blank:true}, { class: "fix_shift_select_store_id",style:"width:60px;height:30px;text-align:center;float:left;border-radius:4px;border-color:silver;"}
+                    = f.collection_select :fix_shift_pattern_id, @fix_shift_patterns, :id, :pattern_name, {include_blank:true}, { class: "fix_shift_select",style:"width:63px;height:30px;text-align:center;float:left;border-radius:4px;border-color:silver;"}
                     / = f.select :fix_shift_pattern_id, grouped_options_for_select(@options,f.object.fix_shift_pattern_id), {include_blank:true}, { class: "fix_shift_select fix_shift_select_select",style:"width:50px;height:30px;text-align:center;float:left;border-radius:4px;border-color:silver;"}
         tr.shift_tr style='color:silver;'
           td.fixed_second_thtd
@@ -225,4 +228,12 @@ javascript:
       $(".edit_fix_shift_form").show();
     });
 
+    $(".hide_tr").on('click',function(){
+      $(this).parents('thead').children('tr:nth-child(n+2)').hide();
+      $('.show_tr').show();
+    });
+    $(".show_tr").on('click',function(){
+      $(this).parents('thead').children('tr').show();
+      $(this).hide();
+    });
   });

@@ -10,6 +10,8 @@ table.table
       th
       th グループ名
       th シフト名
+      th 文字色
+      th 背景色
       th 勤務時間
       th カウント区分
   tbody
@@ -18,6 +20,8 @@ table.table
         td = link_to 'Edit', edit_fix_shift_pattern_path(fix_shift_pattern),class:'btn btn-primary'
         td = fix_shift_pattern.group.name
         td = fix_shift_pattern.pattern_name
+        td = fix_shift_pattern.color_code
+        td = fix_shift_pattern.bg_color_code
         td = fix_shift_pattern.working_hour
         td
           - if fix_shift_pattern.fix_shift_pattern_shift_frames.present?

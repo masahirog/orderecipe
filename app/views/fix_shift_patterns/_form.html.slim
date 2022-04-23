@@ -3,10 +3,16 @@
     = f.label :group_id, "グループ名"
     p = "#{@group.name}"
     = f.hidden_field :group_id
-
   .form-group
     = f.label :pattern_name, "シフト名"
     = f.text_field :pattern_name, required: true, class:"form-control"
+  .form-group
+    = f.label :color_code, "文字色コード"
+    = f.text_field :color_code, required: true, class:"form-control"
+  .form-group
+    = f.label :bg_color_code, "背景色カラーコード"
+    = f.text_field :bg_color_code, required: true, class:"form-control"
+
   .form-group
     = f.label :working_hour, "勤務時間（例 6時間→6、5時間半→5.5）"
     = f.number_field :working_hour, class: "form-control", required:true,step:0.1

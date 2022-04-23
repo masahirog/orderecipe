@@ -160,6 +160,8 @@ ActiveRecord::Schema.define(version: 2022_04_21_125832) do
     t.time "start_time"
     t.time "end_time"
     t.integer "group_id"
+    t.string "color_code", default: "#000000"
+    t.string "bg_color_code", default: "#ffffff"
   end
 
   create_table "food_additives", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

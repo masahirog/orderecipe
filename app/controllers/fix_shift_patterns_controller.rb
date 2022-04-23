@@ -59,7 +59,7 @@ class FixShiftPatternsController < ApplicationController
     end
 
     def fix_shift_pattern_params
-      params.require(:fix_shift_pattern).permit(:shift_frame_id,:group_id,:pattern_name,:working_hour,:end_time,:start_time,:group_id,
+      params.require(:fix_shift_pattern).permit(:shift_frame_id,:group_id,:pattern_name,:working_hour,:end_time,:start_time,:group_id,:color_code,:bg_color_code,
       fix_shift_pattern_shift_frames_attributes: [:id, :fix_shift_pattern_id,:shift_frame_id,:_destroy])
     end
 end
