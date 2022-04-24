@@ -1,5 +1,48 @@
 class AnalysesController < AdminController
   before_action :set_analysis, only: %i[ show edit update destroy ]
+  def onceupload
+    first_day = Date.parse(params[:from])
+    last_day = Date.parse(params[:to])
+    store_id = params[:store_id]
+    update_datas_count = SmaregiTradingHistory.once_uploads_data(params[:file],first_day,last_day,store_id)
+    redirect_to smaregi_trading_histories_path()
+  end
+  def sales
+    @stores = Store.all
+    if params[:stores]
+      checked_store_ids = params['stores'].keys
+    else
+      checked_store_ids = @stores.ids
+      params[:stores] = {}
+      @stores.each do |store|
+        params[:stores][store.id.to_s] = true
+      end
+    end
+    if params[:to]
+      @to = params[:to].to_date
+    else
+      @to = Date.today
+      params[:to] = @to
+    end
+    if params[:from]
+      @from = params[:from].to_date
+    else
+      @from = @to - 30
+      params[:from] = @from
+    end
+    @period = (@to - @from).to_i
+    @analyses = Analysis.where(date:@from..@to).where(store_id:checked_store_ids).order(:date)
+    @date_sales_amount = @analyses.group(:date).sum(:total_sales_amount)
+    @date_loss_amount = @analyses.group(:date).sum(:loss_amount)
+    @date_transaction_count = @analyses.group(:date).sum(:transaction_count)
+    @date_sales_number = @analyses.group(:date).sum(:transaction_count)
+    respond_to do |format|
+      format.html
+      format.csv do
+        send_data render_to_string, filename: "べじはん販売データ.csv", type: :csv
+      end
+    end
+  end
   def repeat
     params[:date]='2022-03-31'
     @date = Date.parse(params[:date])
@@ -413,7 +456,6 @@ class AnalysesController < AdminController
     @store_daily_menu.store_daily_menu_details.each do |sdmd|
       analysis_product = @analysis.analysis_products.find_by(product_id:sdmd.product_id)
       if analysis_product.present?
-        analysis_product.list_price = sdmd.product.sell_price
         analysis_product.manufacturing_number = sdmd.number
         analysis_product.carry_over = sdmd.carry_over
         analysis_product.actual_inventory = sdmd.actual_inventory
@@ -429,7 +471,7 @@ class AnalysesController < AdminController
         end
         analysis_product.total_sales_amount = product_day_sales_amount[sdmd.product_id]
         analysis_product.loss_number = analysis_product.actual_inventory - analysis_product.sales_number
-        loss_amount = ((analysis_product.list_price * analysis_product.loss_number)*1.08).floor(1)
+        loss_amount = (analysis_product.orderecipe_sell_price * analysis_product.loss_number).floor(1)
         if loss_amount < 0 || analysis_product.product_id == 10459 || analysis_product.product_id == 12899
           analysis_product.loss_amount = 0
         else
@@ -438,14 +480,14 @@ class AnalysesController < AdminController
         end
         update_analysis_products_arr << analysis_product
       else
-        new_analysis_product = AnalysisProduct.new(analysis_id:analysis_id,product_id:sdmd.product_id,list_price:sdmd.product.sell_price,
+        new_analysis_product = AnalysisProduct.new(analysis_id:analysis_id,product_id:sdmd.product_id,orderecipe_sell_price:sdmd.product.sell_price,
           manufacturing_number:sdmd.number, carry_over:sdmd.carry_over,actual_inventory:sdmd.actual_inventory,loss_amount:0,loss_number:0)
         new_analysis_products_arr << new_analysis_product
       end
     end
 
     AnalysisProduct.import new_analysis_products_arr
-    AnalysisProduct.import update_analysis_products_arr, on_duplicate_key_update:[:list_price,:manufacturing_number,:carry_over,:actual_inventory,
+    AnalysisProduct.import update_analysis_products_arr, on_duplicate_key_update:[:orderecipe_sell_price,:manufacturing_number,:carry_over,:actual_inventory,
       :sales_number,:loss_number,:total_sales_amount,:loss_amount,:early_sales_number] if update_analysis_products_arr.present?
     @analysis.update(loss_amount:total_loass_amount)
     redirect_to @analysis
@@ -539,7 +581,7 @@ class AnalysesController < AdminController
       @date_analyses[analysis.date][analysis.store_id] = analysis
     end
     @date_transaction_count = analyses.group(:date).sum(:transaction_count)
-    @date_sales_amount = analyses.group(:date).sum(:sales_amount)
+    @date_sales_amount = analyses.group(:date).sum(:total_sales_amount)
     @date_loss_amount = analyses.group(:date).sum(:loss_amount)
     date_arr = []
     data_arr = []
@@ -587,8 +629,8 @@ class AnalysesController < AdminController
       params[:from] = @from
     end
     @period = (@to - @from).to_i
-    @analyses = Analysis.includes([:store,analysis_products:[:product]]).where(date:@from..@to).where(store_id:checked_store_ids).order(:date)
-    @date_sales_amount = @analyses.group(:date).sum(:sales_amount)
+    @analyses = Analysis.where(date:@from..@to).where(store_id:checked_store_ids).order(:date)
+    @date_sales_amount = @analyses.group(:date).sum(:total_sales_amount)
     @date_loss_amount = @analyses.group(:date).sum(:loss_amount)
     @date_transaction_count = @analyses.group(:date).sum(:transaction_count)
     @date_sales_number = @analyses.group(:date).sum(:transaction_count)

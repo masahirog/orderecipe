@@ -9,13 +9,13 @@
 
 .form-group
   label 売上：
-  p = "#{@analysis.sales_amount.to_s(:delimited)}円"
+  p = "#{@analysis.total_sales_amount.to_s(:delimited)}円"
   label 来店数：
   p = "#{@analysis.transaction_count}"
   label 廃棄金額：
   p = "#{@analysis.loss_amount.to_s(:delimited)}円"
   label 廃棄率：
-  p = "#{((@analysis.loss_amount.to_f/@analysis.sales_amount)*100).round(1)}%"
+  p = "#{((@analysis.loss_amount.to_f/@analysis.total_sales_amount)*100).round(1)}%"
   label 現金誤差：
   p = "#{@sales_report.cash_error} 円"
 

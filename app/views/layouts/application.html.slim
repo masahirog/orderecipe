@@ -77,14 +77,6 @@ html
                       li = link_to '販売レポート',sales_reports_path
                       li = link_to "お客さまの声",customer_opinions_path
                       li = link_to 'シフト',shifts_path(date:Date.today,group_id:9)
-                      h5 style='padding:0 10px;font-weight:bold;' データ
-                      li = link_to "売上・廃棄",summary_analyses_path
-                      li = link_to "時間帯別来客数",visitors_time_zone_analyses_path
-                      li = link_to "商品販売数推移",product_sales_analyses_path
-                      li = link_to "販売データ",analyses_path
-                      li = link_to "会員属性",smaregi_member_group_analyses_path
-                      li = link_to "会員一覧",smaregi_members_analyses_path
-                      li = link_to "お客さまの声",customer_opinions_path
 
                   li.dropdown
                     a.dropdown-toggle href="#" data-toggle="dropdown" role="button"
@@ -95,6 +87,16 @@ html
                       li = link_to "メニュー",menus_path
                       li = link_to "食材・資材",materials_path
                       li = link_to "食材月間使用確認",monthly_used_amount_materials_path
+                  li.dropdown
+                    a.dropdown-toggle href="#" data-toggle="dropdown" role="button"
+                      |データ
+                      span.caret
+                    ul.dropdown-menu role="menu" style='width:250px;'
+                      li = link_to "売上",sales_analyses_path
+                      li = link_to "会員",member_analyses_path
+                      li = link_to "商品",product_analyses_path
+                      li = link_to "継続",repeat_analyses_path
+                      li = link_to "フィードバック",feedback_analyses_path
 
                   li.dropdown
                     a.dropdown-toggle href="#" data-toggle="dropdown" role="button"

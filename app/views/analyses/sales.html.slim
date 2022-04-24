@@ -1,0 +1,54 @@
+h3 販売データ
+
+
+= form_tag onceupload_analyses_path, multipart: true do
+  = date_field_tag :from,class:'form-control',style:'padding:10px;height:100%;'
+  = date_field_tag :to,class:'form-control',style:'padding:10px;height:100%;'
+  = number_field_tag :store_id,class:'form-control',style:'padding:10px;height:100%;'
+  = file_field_tag :file,class:'form-control',style:'padding:10px;height:100%;'
+  = submit_tag "アップロード",class:'btn btn-primary'
+
+
+= form_tag analyses_path, :method => 'get' do
+  .clearfix
+    label style='float:left;' 店舗選択
+    ul style="list-style:none;float:left;"
+      - @stores.each do |store|
+        li style='float:left;margin-right:10px;'
+          = check_box_tag "stores[#{store.id}]",true,params['stores'][store.id.to_s]
+          = label_tag "stores[#{store.id}]",store.name
+
+
+  div
+    label style='float:left;margin-right:10px;' 表示期間
+    = date_field_tag :from, params[:from], class:"form-control float-left",style:'width:200px;float:left;'
+    div style="float:left;padding:8px;" 〜
+    = date_field_tag :to, params[:to], class:"form-control",style:'width:200px;float:left;'
+  .kensaku.col-md-1
+    = submit_tag "絞り込み" ,class:"btn btn-primary"
+- if @period < 93
+  = link_to "CSV",analyses_path(from:params[:from],to:params[:to], :format => :csv),class:"btn btn-primary",style:'float:right;'
+- else
+  p style='float:right;' CSVをダウンロードする場合は、期間を3ヶ月以内に指定してください
+
+table.table
+  thead
+    tr
+      th 日付
+      th 来客組数
+      th 売上
+      th 廃棄
+      th 廃棄率
+      th 合計人件費
+      th 営業利益
+
+  tbody
+    - (@from..@to).each do |date|
+      tr
+        td = link_to date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})"),date_analyses_path(date:date)
+        td = @date_transaction_count[date] if @date_transaction_count[date]
+        td = @date_sales_amount[date].to_s(:delimited) if @date_sales_amount[date]
+        td = @date_loss_amount[date].to_s(:delimited) if @date_loss_amount[date]
+        td = "#{((@date_loss_amount[date].to_f/@date_sales_amount[date])*100).round(1)}%" if @date_loss_amount[date] && @date_sales_amount[date]
+        td
+        td

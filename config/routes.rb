@@ -67,14 +67,18 @@ Rails.application.routes.draw do
   resources :analysis_products
   resources :analyses do
     collection do
+      post :onceupload
+      get :sales
+      get :member
+      get :product
       get :repeat
+      get :feedback
+
       get :smaregi_member_csv
       post :upload_smaregi_members
       get :smaregi_member_group
       get :orders
       get :smaregi_members
-      get :product_sales
-      get :visitors_time_zone
       post :recalculate_potential
       get :store_products_sales
       get :store_product_sales

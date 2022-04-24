@@ -8,7 +8,6 @@ class CreateAnalysisProducts < ActiveRecord::Migration[5.2]
       t.integer :product_id
       t.integer :orderecipe_sell_price
       t.float :cost_price
-      t.integer :list_price
       t.integer :manufacturing_number
       t.integer :carry_over
       t.integer :actual_inventory
@@ -20,7 +19,13 @@ class CreateAnalysisProducts < ActiveRecord::Migration[5.2]
       t.integer :early_sales_number,default:0,null:false
       t.boolean :exclusion_flag,default:0,null:false
       t.float :potential
-      t.index [:analysis_id, :product_id], unique: true
+      t.integer :bumon_id
+      t.integer :bumon_mei
+      t.integer :discount_amount
+      t.integer :net_sales_amount
+      t.integer :ex_tax_sales_amount
+      t.float :discount_rate
+      t.boolean :loss_ignore,default:false,null:false
     end
   end
 end

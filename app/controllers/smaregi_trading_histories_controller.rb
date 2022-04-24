@@ -41,8 +41,20 @@ class SmaregiTradingHistoriesController < AdminController
     else
       redirect_to analysis_path(id:analysis_id), :notice => "#{update_datas_count}件の取引履歴をアップロードしました。"
     end
-
   end
+
+  def once_upload_salesdatas
+    date = params[:date]
+    smaregi_store_id = params[:smaregi_store_id]
+    analysis_id = params[:analysis_id]
+    update_datas_count = SmaregiTradingHistory.upload_data(date,smaregi_store_id,analysis_id,params[:file])
+    if update_datas_count == 'false'
+      redirect_to smaregi_trading_histories_path(), :alert => 'csvデータが正しいかどうか確認してください'
+    else
+      redirect_to analysis_path(id:analysis_id), :notice => "#{update_datas_count}件の取引履歴をアップロードしました。"
+    end
+  end
+
   # def index
   #   @analysis_id = params[:analysis_id]
   #   @analysis = Analysis.find(@analysis_id) if @analysis_id

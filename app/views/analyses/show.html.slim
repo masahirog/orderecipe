@@ -1,29 +1,40 @@
-p#notice = notice
-
 table.table
   thead
     tr
       th 日付
       th 店舗名
-      th 総来客数
-      th 14時来客数
-      th 惣菜総販売数
-      th 惣菜14時販売数
-      th 合計売上
-      th 廃棄
+      th 総売上
+      th 値引き合計
+      th 順売上
+      th 消費税
+      th 税抜売上
+      th 店舗売上
+      th デリバリー売上
+      th 廃棄金額
       th 廃棄率
+      th 来客数
+      th ~14客数
+      th 惣菜販売数
+      th ~14販売数
 
   tbody
     tr
       td = @analysis.date.strftime("%-m月%-d日(#{%w(日 月 火 水 木 金 土)[@analysis.date.wday]})")
       td = @analysis.store.name
+      td = "#{@analysis.total_sales_amount.to_s(:delimited)}円" if @analysis.total_sales_amount
+      td = "#{@analysis.discount_amount.to_s(:delimited)}円" if @analysis.discount_amount
+      td = "#{@analysis.net_sales_amount.to_s(:delimited)}円" if @analysis.net_sales_amount
+      td = "#{@analysis.tax_amount.to_s(:delimited)}円" if @analysis.tax_amount
+      td = "#{@analysis.ex_tax_sales_amount.to_s(:delimited)}円" if @analysis.ex_tax_sales_amount
+      td = "#{@analysis.store_sales_amount.to_s(:delimited)}円" if @analysis.store_sales_amount
+      td = "#{@analysis.delivery_sales_amount.to_s(:delimited)}円" if @analysis.delivery_sales_amount
+      td = "#{@analysis.loss_amount.to_s(:delimited)}円" if @analysis.loss_amount
+      td = "#{((@analysis.loss_amount.to_f/@analysis.total_sales_amount)*100).round(1)}%" if @analysis.total_sales_amount && @analysis.loss_amount
       td = "#{@analysis.transaction_count}組"
       td = "#{@analysis.fourteen_transaction_count}組"
       td = @analysis.total_number_sales_sozai
       td = @analysis.fourteen_number_sales_sozai
-      td = "#{@analysis.sales_amount.to_s(:delimited)}円" if @analysis.sales_amount
-      td = "#{@analysis.loss_amount.to_s(:delimited)}円" if @analysis.loss_amount
-      td = "#{((@analysis.loss_amount.to_f/@analysis.sales_amount)*100).round(1)}%" if @analysis.sales_amount && @analysis.loss_amount
+
 - if @analysis.analysis_products.present?
   = link_to 'OR＜＞スマレジ計算', products_analyses_path(analysis: {analysis_id:@analysis.id}), method: :post,class:'btn btn-sm btn-primary'
 = link_to 'Orderecipeデータリセット',bulk_delete_analysis_products_analyses_path(analysis_id:@analysis.id), {method: :post, data: { confirm: '削除しますか？' },class:'btn btn-sm btn-danger pull-right'}
@@ -77,8 +88,16 @@ table.table
 
     - @or_nashi_analysis_products.each do |ap|
       tr style="background-color:whitesmoke;"
-        td = link_to ap.product.name,ap.product,target:'_blank' if ap.product_id
-        td = ap.product.sell_price if ap.product_id
+        td
+          - if ap.product.present?
+            = link_to ap.product.name,edit_product_path(id:ap.product_id),target:'_blank'
+          - else
+            |unkown
+        td
+          - if ap.product.present?
+            = ap.product.sell_price
+          - else
+            |
         td = ap.smaregi_shohin_name
         td = ap.smaregi_shohintanka
         td = ap.manufacturing_number

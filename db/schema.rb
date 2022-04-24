@@ -15,7 +15,7 @@ ActiveRecord::Schema.define(version: 2022_04_21_125832) do
   create_table "analyses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "store_id"
     t.date "date"
-    t.integer "sales_amount"
+    t.integer "total_sales_amount"
     t.integer "loss_amount"
     t.integer "labor_cost"
     t.datetime "created_at", null: false
@@ -24,6 +24,12 @@ ActiveRecord::Schema.define(version: 2022_04_21_125832) do
     t.integer "fourteen_transaction_count", default: 0, null: false
     t.integer "fourteen_number_sales_sozai", default: 0, null: false
     t.integer "total_number_sales_sozai", default: 0, null: false
+    t.integer "discount_amount"
+    t.integer "net_sales_amount"
+    t.integer "tax_amount"
+    t.integer "ex_tax_sales_amount"
+    t.integer "store_sales_amount"
+    t.integer "delivery_sales_amount"
     t.index ["date", "store_id"], name: "index_analyses_on_date_and_store_id", unique: true
   end
 
@@ -35,7 +41,6 @@ ActiveRecord::Schema.define(version: 2022_04_21_125832) do
     t.integer "product_id"
     t.integer "orderecipe_sell_price"
     t.float "cost_price"
-    t.integer "list_price"
     t.integer "manufacturing_number"
     t.integer "carry_over"
     t.integer "actual_inventory"
@@ -48,6 +53,13 @@ ActiveRecord::Schema.define(version: 2022_04_21_125832) do
     t.integer "early_sales_number", default: 0, null: false
     t.boolean "exclusion_flag", default: false, null: false
     t.float "potential"
+    t.integer "bumon_id"
+    t.integer "bumon_mei"
+    t.integer "discount_amount"
+    t.integer "net_sales_amount"
+    t.integer "ex_tax_sales_amount"
+    t.float "discount_rate"
+    t.boolean "loss_ignore", default: false, null: false
   end
 
   create_table "brands", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -634,6 +646,10 @@ ActiveRecord::Schema.define(version: 2022_04_21_125832) do
     t.integer "uchikeshi_torihiki_id"
     t.integer "uchikeshi_kubun"
     t.bigint "receipt_number"
+    t.integer "shiharaihouhou"
+    t.integer "uchishohizei"
+    t.integer "uchizeianbun"
+    t.integer "zeinuki_uriage"
   end
 
   create_table "staffs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
