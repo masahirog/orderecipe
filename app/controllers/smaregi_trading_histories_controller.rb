@@ -14,7 +14,7 @@ class SmaregiTradingHistoriesController < AdminController
     orderecipe_saved_smaregi_members_kaiin_ids = orderecipe_saved_smaregi_members.map{|ossm|ossm.kaiin_id}
     last_store_date = SmaregiTradingHistory.where.not(analysis_id:analysis_id).where(kaiin_id:orderecipe_saved_smaregi_members_kaiin_ids).where(torihiki_meisaikubun:1,torihikimeisai_id:1,uchikeshi_kubun:0).order(date:"asc").map{|sth|[sth.kaiin_id,sth.date]}.to_h
     orderecipe_saved_smaregi_members.each do |sm|
-      sm.raiten_kaisu = sm.raiten_kaisu - kaiin_raitensu_hash[sm.kaiin_id]
+      sm.raiten_kaisu = sm.raiten_kaisu - kaiin_raitensu_hash[sm.kaiin_id].to_i
       sm.last_visit_store = last_store_date[sm.kaiin_id]
       update_smaregi_members_arr << sm
     end
