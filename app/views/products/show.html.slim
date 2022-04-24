@@ -16,7 +16,7 @@
   /   = number_field(:volume,:num,class:"form-control text-right",id:"amount_number_input",placeholder:"食数を入力")
   /   input.btn.btn-primary[type="button" onclick="submit();" value="仕込表を表示" style="margin:0 0 0 10px;"]
 
-  = link_to '販売データ', product_sales_analyses_path(product_id:@product.id),class:'btn btn-primary', style:"margin:0 0 0 10px;float:left;"
+  / = link_to '販売データ', product_sales_analyses_path(product_id:@product.id),class:'btn btn-primary', style:"margin:0 0 0 10px;float:left;"
 
   - if @delete_flag == true
     = link_to "削除", @product, method: :delete,class:'btn btn-danger pull-right',data: { confirm: "ほんまに削除してええの？" },style:''
