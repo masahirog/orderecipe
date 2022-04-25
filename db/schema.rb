@@ -30,6 +30,8 @@ ActiveRecord::Schema.define(version: 2022_04_21_125832) do
     t.integer "ex_tax_sales_amount"
     t.integer "store_sales_amount"
     t.integer "delivery_sales_amount"
+    t.integer "used_point_amount"
+    t.integer "used_coupon_amount"
     t.index ["date", "store_id"], name: "index_analyses_on_date_and_store_id", unique: true
   end
 

@@ -17,6 +17,8 @@ class CreateAnalyses < ActiveRecord::Migration[5.2]
       t.integer :ex_tax_sales_amount
       t.integer :store_sales_amount
       t.integer :delivery_sales_amount
+      t.integer :used_point_amount
+      t.integer :used_coupon_amount
       t.index [:date, :store_id], unique: true
     end
   end

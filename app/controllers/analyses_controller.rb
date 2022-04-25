@@ -1,12 +1,12 @@
 class AnalysesController < AdminController
   before_action :set_analysis, only: %i[ show edit update destroy ]
-  def onceupload
-    first_day = Date.parse(params[:from])
-    last_day = Date.parse(params[:to])
-    store_id = params[:store_id]
-    update_datas_count = SmaregiTradingHistory.once_uploads_data(params[:file],first_day,last_day,store_id)
-    redirect_to smaregi_trading_histories_path()
-  end
+  # def onceupload
+  #   first_day = Date.parse(params[:from])
+  #   last_day = Date.parse(params[:to])
+  #   store_id = params[:store_id]
+  #   update_datas_count = SmaregiTradingHistory.once_uploads_data(params[:file],first_day,last_day,store_id)
+  #   redirect_to smaregi_trading_histories_path()
+  # end
   def sales
     @stores = Store.all
     if params[:stores]
@@ -411,86 +411,10 @@ class AnalysesController < AdminController
     redirect_to @analysis
   end
   def products
-    #データ検証の商品情報を更新する
-    total_loass_amount = 0
-    analysis_id = params[:analysis]["analysis_id"]
-    @analysis = Analysis.find(analysis_id)
-    @store_daily_menu = StoreDailyMenu.find_by(start_time:@analysis.date,store_id:@analysis.store_id)
-    smaregi_trading_histories = SmaregiTradingHistory.where(analysis_id:@analysis.id)
-    product_day_sales_number = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    product_day_sales_amount = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    product_fourteen_sales_number = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    # product_day_sales_number = smaregi_trading_histories.group(:hinban).sum(:suryo)
-    # product_early_sales_number = smaregi_trading_histories.where(time:'00:00:00'..'13:59:59').where(bumon_id:1).group(:hinban).sum(:suryo)
-    update_analysis_products_arr = []
-    new_analysis_products_arr = []
-
-    smaregi_trading_histories.each do |sth|
-      if sth.torihiki_meisaikubun == 1
-        number = sth.suryo.to_i
-        salse = sth.nebikigokei.to_i
-      else
-        number = -1 * sth.suryo.to_i
-        salse = -1 * sth.nebikigokei.to_i
-      end
-      if product_day_sales_number[sth.hinban].present?
-        product_day_sales_number[sth.hinban] += number
-      else
-        product_day_sales_number[sth.hinban] = number
-      end
-      if product_day_sales_amount[sth.hinban].present?
-        product_day_sales_amount[sth.hinban] += salse
-      else
-        product_day_sales_amount[sth.hinban] = salse
-      end
-      if sth.time.strftime('%H%M').to_i < 1400
-        if product_fourteen_sales_number[sth.hinban].present?
-          product_fourteen_sales_number[sth.hinban] += number
-        else
-          product_fourteen_sales_number[sth.hinban] = number
-        end
-      end
-    end
-
-
-    @store_daily_menu.store_daily_menu_details.each do |sdmd|
-      analysis_product = @analysis.analysis_products.find_by(product_id:sdmd.product_id)
-      if analysis_product.present?
-        analysis_product.manufacturing_number = sdmd.number
-        analysis_product.carry_over = sdmd.carry_over
-        analysis_product.actual_inventory = sdmd.actual_inventory
-        if product_day_sales_number[sdmd.product_id].present?
-          analysis_product.sales_number = product_day_sales_number[sdmd.product_id]
-        else
-          analysis_product.sales_number = 0
-        end
-        if product_fourteen_sales_number[sdmd.product_id].present?
-          analysis_product.early_sales_number = product_fourteen_sales_number[sdmd.product_id]
-        else
-          analysis_product.early_sales_number = 0
-        end
-        analysis_product.total_sales_amount = product_day_sales_amount[sdmd.product_id]
-        analysis_product.loss_number = analysis_product.actual_inventory - analysis_product.sales_number
-        loss_amount = (analysis_product.orderecipe_sell_price * analysis_product.loss_number).floor(1)
-        if loss_amount < 0 || analysis_product.product_id == 10459 || analysis_product.product_id == 12899
-          analysis_product.loss_amount = 0
-        else
-          analysis_product.loss_amount = loss_amount
-          total_loass_amount += loss_amount
-        end
-        update_analysis_products_arr << analysis_product
-      else
-        new_analysis_product = AnalysisProduct.new(analysis_id:analysis_id,product_id:sdmd.product_id,orderecipe_sell_price:sdmd.product.sell_price,
-          manufacturing_number:sdmd.number, carry_over:sdmd.carry_over,actual_inventory:sdmd.actual_inventory,loss_amount:0,loss_number:0)
-        new_analysis_products_arr << new_analysis_product
-      end
-    end
-
-    AnalysisProduct.import new_analysis_products_arr
-    AnalysisProduct.import update_analysis_products_arr, on_duplicate_key_update:[:orderecipe_sell_price,:manufacturing_number,:carry_over,:actual_inventory,
-      :sales_number,:loss_number,:total_sales_amount,:loss_amount,:early_sales_number] if update_analysis_products_arr.present?
-    @analysis.update(loss_amount:total_loass_amount)
-    redirect_to @analysis
+    analysis_id = params[:analysis_id]
+    analysis = Analysis.find(analysis_id)
+    update_datas_count = SmaregiTradingHistory.recalculate(analysis_id)
+    redirect_to analysis
   end
   def date
     @date = params[:date]
