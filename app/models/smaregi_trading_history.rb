@@ -255,6 +255,14 @@ class SmaregiTradingHistory < ApplicationRecord
     return (2)
   end
 
+  def self.oncerecalculate(from,to,store_id)
+    analyses = Analysis.where(date:from..to).where(store_id:store_id)
+    analyses.each do |analysis|
+      sleep(5)
+      recalculate(analysis.id)
+    end
+  end
+
 
   def self.recalculate(analysis_id)
     analysis = Analysis.find(analysis_id)
