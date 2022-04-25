@@ -301,26 +301,26 @@ class SmaregiTradingHistory < ApplicationRecord
     SmaregiTradingHistory.where(analysis_id:analysis_id).each do |smaregi_trading_history|
       torihiki_id = smaregi_trading_history.torihiki_id
       shohinmei = smaregi_trading_history.shohinmei
-      tanka_nebikimae_shokei = smaregi_trading_history.tanka_nebikimae_shokei
-      tanka_nebiki_shokei = smaregi_trading_history.tanka_nebiki_shokei
-      shokei = smaregi_trading_history.shokei
-      shikei_nebiki = smaregi_trading_history.shikei_nebiki
-      point_nebiki = smaregi_trading_history.point_nebiki
-      gokei = smaregi_trading_history.gokei
+      tanka_nebikimae_shokei = smaregi_trading_history.tanka_nebikimae_shokei.to_i
+      tanka_nebiki_shokei = smaregi_trading_history.tanka_nebiki_shokei.to_i
+      shokei = smaregi_trading_history.shokei.to_i
+      shikei_nebiki = smaregi_trading_history.shikei_nebiki.to_i
+      point_nebiki = smaregi_trading_history.point_nebiki.to_i
+      gokei = smaregi_trading_history.gokei.to_i
       tenpo_id = smaregi_trading_history.tenpo_id
       torihiki_meisaikubun = smaregi_trading_history.torihiki_meisaikubun
       shohin_id = smaregi_trading_history.shohin_id
       hinban = smaregi_trading_history.hinban
-      shohintanka = smaregi_trading_history.shohintanka
-      tanka_nebikikei = smaregi_trading_history.tanka_nebikikei
-      suryo = smaregi_trading_history.suryo
+      shohintanka = smaregi_trading_history.shohintanka.to_i
+      tanka_nebikikei = smaregi_trading_history.tanka_nebikikei.to_i
+      suryo = smaregi_trading_history.suryo.to_i
       nebikigokei = smaregi_trading_history.nebikigokei.to_i
       time = "#{smaregi_trading_history.time.hour}:#{smaregi_trading_history.time.min}"
       shiharaihouhou = smaregi_trading_history.shiharaihouhou
       bumonmei = smaregi_trading_history.bumonmei
       bumon_id = smaregi_trading_history.bumon_id
-      nebikimaekei = smaregi_trading_history.nebikimaekei
-      uchishohizei = smaregi_trading_history.uchishohizei
+      nebikimaekei = smaregi_trading_history.nebikimaekei.to_i
+      uchishohizei = smaregi_trading_history.uchishohizei.to_i
       uchizeianbun = smaregi_trading_history.uchizeianbun.to_i
       product_zeinuki_uriage = nebikigokei - uchizeianbun
       if hinban == 10459 ||hinban == 12899
