@@ -1,9 +1,9 @@
 h2 = "#{@group.name}　#{@date.year}年#{@date.month}月シフト"
 
 .btn.btn-primary.all_edit_btn style='margin-right:20px;' 全員編集
-= link_to "#{@date.last_month.month}月＜＜",shifts_path(date:@date.last_month)
+= link_to "#{@date.last_month.month}月＜＜",shifts_path(date:@date.last_month,group_id:@group.id)
 |　　　
-= link_to "＞＞#{@date.next_month.month}月",shifts_path(date:@date.next_month)
+= link_to "＞＞#{@date.next_month.month}月",shifts_path(date:@date.next_month,group_id:@group.id)
 = link_to "交通費CSV", shifts_path(date:params[:date],format:'csv'), class: "btn btn-default pull-right",style:'margin-right:20px;'
 = link_to "ジョブカンCSV", jobcan_upload_shifts_path(date:params[:date],format:'csv'), class: "btn btn-default pull-right",style:'margin-right:20px;'
 button class='btn btn-default hide_shinsei pull-right' style='margin-right:20px;' 申請シフトを隠す

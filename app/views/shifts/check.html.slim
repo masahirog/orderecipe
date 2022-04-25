@@ -1,6 +1,6 @@
-= link_to "#{@date.last_month.month}月＜＜",check_shifts_path(date:@date.last_month),class:'btn btn-default btn-sm'
+= link_to "#{@date.last_month.month}月＜＜",check_shifts_path(date:@date.last_month,group_id:9),class:'btn btn-default btn-sm'
 |　　
-= link_to "＞＞#{@date.next_month.month}月",check_shifts_path(date:@date.next_month),class:'btn btn-default btn-sm'
+= link_to "＞＞#{@date.next_month.month}月",check_shifts_path(date:@date.next_month,group_id:9),class:'btn btn-default btn-sm'
 button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#sampleModal" style='margin-bottom:5px;float:right;' 提 出
 #sampleModal.modal.fade tabindex="-1"
   = form_tag staff_edit_shifts_path, :method => 'get' do
