@@ -166,6 +166,8 @@ javascript:
     });
     var holidays = gon.holidays;
     $('.date_input').datetimepicker({
+      scrollMonth : false,
+      scrollInput : false,
       format: 'Y-m-d',
       timepicker:false,
       beforeShowDay: function (date) {
