@@ -17,7 +17,6 @@ table.table
       th ~14客数
       th 惣菜販売数
       th ~14販売数
-
   tbody
     tr
       td = @analysis.date.strftime("%-m月%-d日(#{%w(日 月 火 水 木 金 土)[@analysis.date.wday]})")
@@ -37,10 +36,8 @@ table.table
       td = @analysis.total_number_sales_sozai
       td = @analysis.fourteen_number_sales_sozai
 
-- if @analysis.analysis_products.present?
+= link_to '計算', products_analyses_path(analysis_id:@analysis.id), method: :post,class:'btn btn-sm btn-primary'
 
-
-= link_to '再計算', products_analyses_path(analysis_id:@analysis.id), method: :post,class:'btn btn-sm btn-default pull-right'
 = link_to 'Orderecipeデータリセット',bulk_delete_analysis_products_analyses_path(analysis_id:@analysis.id), {method: :post, data: { confirm: '削除しますか？' },class:'btn btn-sm btn-danger pull-right'}
 table.table
   thead

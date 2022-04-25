@@ -258,7 +258,7 @@ class SmaregiTradingHistory < ApplicationRecord
   def self.oncerecalculate(from,to,store_id)
     analyses = Analysis.where(date:from..to).where(store_id:store_id)
     analyses.each do |analysis|
-      sleep(5)
+      sleep(1)
       recalculate(analysis.id)
     end
   end
@@ -451,24 +451,7 @@ class SmaregiTradingHistory < ApplicationRecord
 
 
   def self.upload_data(form_date,smaregi_store_id,analysis_id,file)
-    torihiki_ids = []
-    fourteen_transaction_count = 0
-    transaction_count = 0
-    total_sales = 0
-    total_early_sales_number = 0
-    total_number_sales_sozai = 0
-    fourteen_number_sales_sozai = 0
     smaregi_trading_histories_arr = []
-    analysis_products_arr = []
-    update_analysis_products_arr = []
-    hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    product_sales_number = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    product_early_sales_number = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    product_sales_amount = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    analysis = Analysis.find(analysis_id)
-    smaregi_shohin_ids = analysis.analysis_products.map{|ap|ap.smaregi_shohin_id.to_s}
-    kaiin_raitensu_hash = {}
-    update_smaregi_members_arr = []
     CSV.foreach file.path, {encoding: 'BOM|UTF-8', headers: true} do |row|
       row = row.to_hash
       torihiki_id = row["取引ID"]
@@ -519,11 +502,6 @@ class SmaregiTradingHistory < ApplicationRecord
       uchishohizei = row["内消費税"]
       uchizeianbun = row["内税按分"]
       zeinuki_uriage = nebikigokei.to_i - uchizeianbun.to_i
-      if hinban == '10459' ||hinban == '12899'
-        loss_ignore = true
-      else
-        loss_ignore = false
-      end
       if date == form_date.to_date && smaregi_store_id == tenpo_id
         new_smaregi_trading_history = SmaregiTradingHistory.new(date:date,analysis_id:analysis_id,torihiki_id:torihiki_id,torihiki_nichiji:torihiki_nichiji,tanka_nebikimae_shokei:tanka_nebikimae_shokei,
           tanka_nebiki_shokei:tanka_nebiki_shokei,shokei:shokei,shikei_nebiki:shikei_nebiki,shokei_waribikiritsu:shokei_waribikiritsu,
@@ -536,166 +514,9 @@ class SmaregiTradingHistory < ApplicationRecord
           uchikeshi_torihiki_id:uchikeshi_torihiki_id,uchikeshi_kubun:uchikeshi_kubun,receipt_number:receipt_number,shiharaihouhou:shiharaihouhou,
           uchishohizei:uchishohizei,uchizeianbun:uchizeianbun,zeinuki_uriage:zeinuki_uriage)
         smaregi_trading_histories_arr << new_smaregi_trading_history
-        if smaregi_shohin_ids.include?(shohin_id)
-        else
-          new_analysis_product = AnalysisProduct.new(analysis_id:analysis_id,smaregi_shohin_id:shohin_id,smaregi_shohin_name:shohinmei,smaregi_shohintanka:shohintanka,
-          product_id:hinban,total_sales_amount:0,sales_number:0,loss_amount:0,early_sales_number:0,bumon_id:bumon_id,bumon_mei:bumonmei,
-          discount_amount:0,net_sales_amount:0,ex_tax_sales_amount:0,discount_rate:0,loss_ignore:loss_ignore)
-
-          analysis_products_arr << new_analysis_product
-          smaregi_shohin_ids << shohin_id
-          hash[shohin_id]={sales_number:0,total_sales_amount:0,discount_amount:0,net_sales_amount:0,ex_tax_sales_amount:0,early_sales_number:0,delivery_sales_amount:0,store_sales_amount:0,tax_amount:0,loss_amount:0}
-        end
-
-        number = suryo.to_i #販売数
-
-
-        unless torihiki_ids.include?(torihiki_id)
-          gokei = gokei.to_i #純売上
-          nebikimaekei = tanka_nebikimae_shokei.to_i #総売上
-          nebiki = tanka_nebiki_shokei.to_i + shikei_nebiki.to_i
-          ex_tax_sales_amount = gokei.to_i - uchishohizei.to_i #税抜売上
-          tax_amount = uchishohizei.to_i
-          if shiharaihouhou == '3'
-            delivery_sales_amount = ex_tax_sales_amount
-            store_sales_amount = 0
-          else
-            delivery_sales_amount = 0
-            store_sales_amount = ex_tax_sales_amount
-          end
-        else
-          gokei = 0
-          nebikimaekei = 0
-          nebiki = 0
-          ex_tax_sales_amount = 0
-          tax_amount = 0
-          store_sales_amount = 0
-          delivery_sales_amount = 0
-        end
-        if torihiki_meisaikubun == '1'||torihiki_meisaikubun == '3'
-          transaction_count += 1 unless torihiki_ids.include?(torihiki_id)
-          total_number_sales_sozai += number if bumon_id == "1"
-          hash[shohin_id][:sales_number] += number
-          hash[shohin_id][:total_sales_amount] += nebikimaekei
-          hash[shohin_id][:discount_amount] += nebiki
-          hash[shohin_id][:net_sales_amount] += gokei
-          hash[shohin_id][:ex_tax_sales_amount] += ex_tax_sales_amount
-          hash[shohin_id][:delivery_sales_amount] += delivery_sales_amount
-          hash[shohin_id][:store_sales_amount] += store_sales_amount
-          hash[shohin_id][:tax_amount] += tax_amount
-
-          if Time.parse(time) < Time.parse('14:00')
-            hash[shohin_id][:early_sales_number] += number
-            fourteen_number_sales_sozai += number if bumon_id == "1"
-            fourteen_transaction_count += 1 unless torihiki_ids.include?(torihiki_id)
-          end
-
-          # 会員情報の来店数更新
-          if kaiin_id.present?
-            unless torihiki_ids.include?(torihiki_id)
-              if kaiin_raitensu_hash[kaiin_id].present?
-                kaiin_raitensu_hash[kaiin_id] += 1
-              else
-                kaiin_raitensu_hash[kaiin_id] = 1
-              end
-            end
-          end
-        elsif torihiki_meisaikubun == '2'
-          total_number_sales_sozai -= number if bumon_id == "1"
-          hash[shohin_id][:sales_number] -= number
-          hash[shohin_id][:total_sales_amount] -= nebikimaekei
-          hash[shohin_id][:discount_amount] -= nebiki
-          hash[shohin_id][:net_sales_amount] -= gokei
-          hash[shohin_id][:ex_tax_sales_amount] -= ex_tax_sales_amount
-          hash[shohin_id][:delivery_sales_amount] -= delivery_sales_amount
-          hash[shohin_id][:store_sales_amount] -= store_sales_amount
-          hash[shohin_id][:tax_amount] -= tax_amount
-          if Time.parse(time) < Time.parse('14:00')
-            hash[shohin_id][:early_sales_number] -= number
-            fourteen_number_sales_sozai -= number if bumon_id == "1"
-            unless torihiki_ids.include?(torihiki_id)
-              fourteen_transaction_count -= 1
-            end
-          end
-
-          # 会員情報の来店数更新
-          if kaiin_id.present?
-            unless torihiki_ids.include?(torihiki_id)
-              if kaiin_raitensu_hash[kaiin_id].present?
-                kaiin_raitensu_hash[kaiin_id] -= 1
-              else
-                kaiin_raitensu_hash[kaiin_id] = 0
-              end
-            end
-          end
-        end
-      end
-      torihiki_ids << torihiki_id
-    end
-    store_id = analysis.store_id
-    store_daily_menu = StoreDailyMenu.find_by(store_id:store_id,start_time:form_date)
-    sdmd_hash = store_daily_menu.store_daily_menu_details.map{|sdmd|[sdmd.product_id,sdmd]}.to_h
-
-    analysis_products_arr.each do |analysis_product|
-      shohin_id = analysis_product.smaregi_shohin_id.to_s
-      analysis_product.sales_number = hash[shohin_id][:sales_number]
-      analysis_product.total_sales_amount = hash[shohin_id][:total_sales_amount]
-      analysis_product.early_sales_number = hash[shohin_id][:early_sales_number]
-      analysis_product.discount_amount = hash[shohin_id][:discount_amount]
-      analysis_product.net_sales_amount = hash[shohin_id][:net_sales_amount]
-      analysis_product.ex_tax_sales_amount = hash[shohin_id][:ex_tax_sales_amount]
-      if analysis_product.total_sales_amount > 0
-        analysis_product.discount_rate = (analysis_product.discount_amount/analysis_product.total_sales_amount).round(3)
-      else
-        analysis_product.discount_rate = 0
-      end
-
-      if hash[shohin_id][:early_sales_number] == 0
-        analysis_product.potential = 0
-      else
-        analysis_product.potential = ((total_number_sales_sozai.to_f/fourteen_number_sales_sozai)*hash[shohin_id][:early_sales_number]).round(1)
-      end
-
-      if sdmd_hash[analysis_product.product_id].present?
-        sdmd = sdmd_hash[analysis_product.product_id]
-        analysis_product.cost_price = sdmd.product.cost_price
-        analysis_product.orderecipe_sell_price = sdmd.product.sell_price
-        analysis_product.manufacturing_number = sdmd.number
-        analysis_product.carry_over = sdmd.carry_over
-        analysis_product.actual_inventory = sdmd.actual_inventory
-        analysis_product.loss_number = analysis_product.actual_inventory - analysis_product.sales_number
-        if analysis_product.loss_number <= 0 ||analysis_product.loss_ignore==true
-          analysis_product.loss_amount = 0
-        else
-          analysis_product.loss_amount = analysis_product.loss_number * analysis_product.orderecipe_sell_price
-        end
-        hash[shohin_id][:loss_amount] = analysis_product.loss_amount
       end
     end
-
-
-    # 会員の来店数更新
-    kaiin_ids = kaiin_raitensu_hash.keys
-    orderecipe_saved_smaregi_members = SmaregiMember.where(kaiin_id:kaiin_ids)
-    orderecipe_saved_smaregi_members.each do |sm|
-      sm.raiten_kaisu = sm.raiten_kaisu + kaiin_raitensu_hash[sm.kaiin_id.to_s]
-      sm.last_visit_store = form_date.to_date
-      update_smaregi_members_arr << sm
-    end
-    total_sales_amount = hash.values.sum { |data| data[:total_sales_amount]}
-    discount_amount = hash.values.sum { |data| data[:discount_amount]}
-    net_sales_amount = hash.values.sum { |data| data[:net_sales_amount]}
-    ex_tax_sales_amount = hash.values.sum { |data| data[:ex_tax_sales_amount]}
-    tax_amount = hash.values.sum { |data| data[:tax_amount]}
-    store_sales_amount = hash.values.sum { |data| data[:store_sales_amount]}
-    delivery_sales_amount = hash.values.sum { |data| data[:delivery_sales_amount]}
-    loss_amount = hash.values.sum { |data| data[:loss_amount]}
-    analysis.update(total_sales_amount:total_sales_amount,transaction_count:transaction_count,fourteen_transaction_count:fourteen_transaction_count,
-      total_number_sales_sozai:total_number_sales_sozai,fourteen_number_sales_sozai:fourteen_number_sales_sozai,discount_amount:discount_amount,loss_amount:loss_amount,
-      net_sales_amount:net_sales_amount,tax_amount:tax_amount,ex_tax_sales_amount:ex_tax_sales_amount,store_sales_amount:store_sales_amount,delivery_sales_amount:delivery_sales_amount)
     SmaregiTradingHistory.import smaregi_trading_histories_arr
-    AnalysisProduct.import analysis_products_arr
-    SmaregiMember.import update_smaregi_members_arr, on_duplicate_key_update:[:raiten_kaisu,:last_visit_store]
     return (smaregi_trading_histories_arr.count)
   end
 end
