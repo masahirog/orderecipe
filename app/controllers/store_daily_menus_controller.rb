@@ -248,8 +248,8 @@ class StoreDailyMenusController < ApplicationController
       sdmd.showcase_type = showcase_type
       sdmds_arr << sdmd
     end
-    StoreDailyMenuDetail.import sdmds_arr, :on_duplicate_key_update => [:showcase_type]
-    # StoreDailyMenuDetail.import sdmds_arr, :on_duplicate_key_update => [:bento_fukusai_number,:number,:showcase_type]
+    # StoreDailyMenuDetail.import sdmds_arr, :on_duplicate_key_update => [:showcase_type]
+    StoreDailyMenuDetail.import sdmds_arr, :on_duplicate_key_update => [:bento_fukusai_number,:number,:showcase_type]
     daily_menu_ids = daily_menu_ids.uniq
     DailyMenu.where(id:daily_menu_ids).each do |daily_menu|
       sdmds = StoreDailyMenuDetail.where(store_daily_menu_id:daily_menu.store_daily_menus.ids)
