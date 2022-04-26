@@ -138,7 +138,7 @@ class StoreDailyMenusController < ApplicationController
 
   def edit
     daily_menu = @store_daily_menu.daily_menu
-    default_product_ids = [11429,9331,9411]
+    default_product_ids = [11429,13059]
     dmd_product_ids = daily_menu.products.ids + default_product_ids - @store_daily_menu.products.ids
     @dmd_products = Product.where(id:dmd_product_ids)
     saveble_photo_nums = 3 - @store_daily_menu.store_daily_menu_photos.length
