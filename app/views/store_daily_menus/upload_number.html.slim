@@ -8,6 +8,7 @@ h3 = @store.name
       thead
         tr
           th 商品名
+          th ショーケース
           th 更新前
           th 更新後
       tbody
@@ -15,7 +16,9 @@ h3 = @store.name
           tr
             - if product_number[1]["product_name"].present?
               = hidden_field_tag "update_sdmds[#{product_number[1]['sdmd_id']}][after_number]",product_number[1]['after_number']
+              = hidden_field_tag "update_sdmds[#{product_number[1]['sdmd_id']}][showcase_type]",product_number[1]['showcase_type']
               td = product_number[1]["product_name"]
+              td = product_number[1]["showcase_type"]
               td = product_number[1]["before_number"]
             - else
               td

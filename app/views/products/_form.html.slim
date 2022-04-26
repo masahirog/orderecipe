@@ -63,11 +63,8 @@
       = f.collection_select :container_id, Container.all, :id, :name, {include_blank:true}, { class: "form-control"}
 
     .col-md-2
-      = f.label :main_serving_plate_id, "大皿候補第１"
+      = f.label :main_serving_plate_id, "大皿"
       = f.collection_select :main_serving_plate_id, ServingPlate.all, :id, :name, {include_blank:true}, { class: "form-control"}
-    .col-md-2
-      = f.label :sub_serving_plate_id, "大皿候補第２"
-      = f.collection_select :sub_serving_plate_id, ServingPlate.all, :id, :name, {include_blank:true}, { class: "form-control"}
 
     / .col-md-12.form-group
       .col-md-4

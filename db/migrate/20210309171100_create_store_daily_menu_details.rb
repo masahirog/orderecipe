@@ -17,6 +17,7 @@ class CreateStoreDailyMenuDetails < ActiveRecord::Migration[5.2]
       t.integer :stock_deficiency_excess, default: 0, null: false
       t.integer :sozai_number, default: 0, null: false
       t.integer :bento_fukusai_number, default: 0, null: false
+      t.integer :showcase_type
     end
   end
 end

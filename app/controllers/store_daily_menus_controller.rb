@@ -211,21 +211,21 @@ class StoreDailyMenusController < ApplicationController
     file = params[:file]
     dates = []
     CSV.foreach(file.path,liberal_parsing:true, headers: true) do |row|
-      row = row.to_hash
-      dates <<  row["date"] if row["date"].present?
+      date = Date.parse(row["date"])
+      dates <<  row["date"]
+      product_id = row["product_id"].to_i
+      number = row[store_id].to_i
+      showcase_type = row['showcase_type'].to_i
+      @hash[date][product_id]['after_number'] = number
+      @hash[date][product_id]['showcase_type'] = showcase_type
     end
+
+    dates = dates.uniq
     @store_daily_menu_details = StoreDailyMenuDetail.includes(:store_daily_menu,:product).joins(:store_daily_menu).where(:store_daily_menus => {start_time:dates,store_id:store_id})
     @store_daily_menu_details.each do |sdmd|
       @hash[sdmd.store_daily_menu.start_time][sdmd.product_id]['before_number'] = sdmd.bento_fukusai_number
       @hash[sdmd.store_daily_menu.start_time][sdmd.product_id]['product_name'] = sdmd.product.name
       @hash[sdmd.store_daily_menu.start_time][sdmd.product_id]['sdmd_id'] = sdmd.id
-    end
-
-    CSV.foreach(file.path,liberal_parsing:true, headers: true) do |row|
-      date = Date.parse(row["date"])
-      product_id = row["product_id"].to_i
-      number = row[store_id].to_i
-      @hash[date][product_id]['after_number'] = number
     end
     render :upload_number
   end
@@ -239,14 +239,17 @@ class StoreDailyMenusController < ApplicationController
     params["update_sdmds"].each do |update_sdmd|
       sdmd_id = update_sdmd[0]
       num = update_sdmd[1]["after_number"].to_i
+      showcase_type = update_sdmd[1]["showcase_type"].to_i
       sdmd = StoreDailyMenuDetail.find(sdmd_id)
       daily_menu_ids << sdmd.store_daily_menu.daily_menu_id
       store_daily_menu_ids << sdmd.store_daily_menu_id
       sdmd.bento_fukusai_number = num
       sdmd.number = num + sdmd.sozai_number
+      sdmd.showcase_type = showcase_type
       sdmds_arr << sdmd
     end
-    StoreDailyMenuDetail.import sdmds_arr, :on_duplicate_key_update => [:bento_fukusai_number,:number]
+    StoreDailyMenuDetail.import sdmds_arr, :on_duplicate_key_update => [:showcase_type]
+    # StoreDailyMenuDetail.import sdmds_arr, :on_duplicate_key_update => [:bento_fukusai_number,:number,:showcase_type]
     daily_menu_ids = daily_menu_ids.uniq
     DailyMenu.where(id:daily_menu_ids).each do |daily_menu|
       sdmds = StoreDailyMenuDetail.where(store_daily_menu_id:daily_menu.store_daily_menus.ids)

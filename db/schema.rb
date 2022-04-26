@@ -698,6 +698,7 @@ ActiveRecord::Schema.define(version: 2022_04_21_125832) do
     t.integer "stock_deficiency_excess", default: 0, null: false
     t.integer "sozai_number", default: 0, null: false
     t.integer "bento_fukusai_number", default: 0, null: false
+    t.integer "showcase_type"
   end
 
   create_table "store_daily_menu_photos", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

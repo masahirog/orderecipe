@@ -1,7 +1,7 @@
 button type="button" class="btn btn-default" data-toggle="modal" data-target="#store_once_reflect" style='margin-right:10px;float:right;' 製造数入力
 #store_once_reflect.modal.fade tabindex="-1"
   = form_tag input_manufacturing_number_store_daily_menus_path, method: :get do
-    = number_field_tag 'store_id',@store_daily_menu.store_id
+    = hidden_field_tag 'store_id',@store_daily_menu.store_id
     .modal-dialog style='width:1000px;'
       .modal-content
         .modal-header
@@ -60,6 +60,7 @@ table.table.table-list
       th = link_to "大皿", ikkatsu_store_daily_menus_path(id:@store_daily_menu.id),class:'btn btn-success btn-sm'
       th 1人前盛り
       th 販売価格
+      th
       th
         |盛り皿
         span data-html="true" style='margin-left:10px;' class="glyphicon glyphicon-eye-open" aria-hidden="true"  data-toggle="tooltip" data-placement="bottom" title="#{@pack_used_amount}"
@@ -124,6 +125,8 @@ table.table.table-list
 
         td
           = "#{sdmd.product.sell_price}円"
+        td
+          = "冷蔵" if sdmd.showcase_type == 1
         td
           - if sdmd.product.main_serving_plate_id.present?
             - serving_plate = ServingPlate.find(sdmd.product.main_serving_plate_id)
