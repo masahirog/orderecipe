@@ -29,7 +29,7 @@ table.table
       td = "#{@analysis.store_sales_amount.to_s(:delimited)}円" if @analysis.store_sales_amount
       td = "#{@analysis.delivery_sales_amount.to_s(:delimited)}円" if @analysis.delivery_sales_amount
       td = "#{@analysis.loss_amount.to_s(:delimited)}円" if @analysis.loss_amount
-      td = "#{((@analysis.loss_amount.to_f/@analysis.total_sales_amount)*100).round(1)}%" if @analysis.total_sales_amount && @analysis.loss_amount
+      td = "#{((@analysis.loss_amount.to_f/@analysis.ex_tax_sales_amount)*100).round(1)}%" if @analysis.ex_tax_sales_amount && @analysis.loss_amount
       td = "#{@analysis.used_point_amount.to_s(:delimited)}円"  if @analysis.used_point_amount
       td = "#{@analysis.transaction_count}組"
       td = "#{@analysis.fourteen_transaction_count}組"
@@ -69,7 +69,7 @@ table.table
         td = ap.carry_over if ap.present?
         td = ap.actual_inventory if ap.present?
         td = ap.sales_number if ap.present?
-        td = ap.total_sales_amount.to_s(:delimited) if ap.present? && ap.total_sales_amount.present?
+        td = ap.ex_tax_sales_amount.to_s(:delimited) if ap.present? && ap.ex_tax_sales_amount.present?
         td = ap.loss_number if ap.present?
         td = ap.loss_amount.to_s(:delimited) if ap.present? && ap.loss_amount.present?
         td = '○' if sdmd.sold_out_flag == true

@@ -1,10 +1,10 @@
 店舗名: <%= @analysis.store.name %>
 日付: <%= @analysis.date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[@analysis.date.wday]})") %>
 担当者: <%= t("enums.sales_report.staff_id.#{@sales_report.staff_id}") %>
-売上: <%= @analysis.total_sales_amount.to_s(:delimited) %> 円
+純売上(税抜): <%= @analysis.ex_tax_sales_amount.to_s(:delimited) %> 円
 来店者数: <%= @analysis.transaction_count %> 組
 廃棄金額: <%= @analysis.loss_amount.to_s(:delimited) %> 円
-廃棄率: <%= ((@analysis.loss_amount.to_f/@analysis.total_sales_amount)*100).round(1) %> %
+廃棄率: <%= ((@analysis.loss_amount.to_f/@analysis.ex_tax_sales_amount)*100).round(1) %> %
 現金誤差: <%= @sales_report.cash_error %> 円
 
 惣菜の売れ行き：<%= @sozai_ureyuki %>

@@ -32,7 +32,7 @@ class AnalysesController < AdminController
     end
     @period = (@to - @from).to_i
     @analyses = Analysis.where(date:@from..@to).where(store_id:checked_store_ids).order(:date)
-    @date_sales_amount = @analyses.group(:date).sum(:total_sales_amount)
+    @date_sales_amount = @analyses.group(:date).sum(:ex_tax_sales_amount)
     @date_loss_amount = @analyses.group(:date).sum(:loss_amount)
     @date_transaction_count = @analyses.group(:date).sum(:transaction_count)
     @date_sales_number = @analyses.group(:date).sum(:transaction_count)
@@ -505,7 +505,7 @@ class AnalysesController < AdminController
       @date_analyses[analysis.date][analysis.store_id] = analysis
     end
     @date_transaction_count = analyses.group(:date).sum(:transaction_count)
-    @date_sales_amount = analyses.group(:date).sum(:total_sales_amount)
+    @date_sales_amount = analyses.group(:date).sum(:ex_tax_sales_amount)
     @date_loss_amount = analyses.group(:date).sum(:loss_amount)
     date_arr = []
     data_arr = []
@@ -554,7 +554,7 @@ class AnalysesController < AdminController
     end
     @period = (@to - @from).to_i
     @analyses = Analysis.where(date:@from..@to).where(store_id:checked_store_ids).order(:date)
-    @date_sales_amount = @analyses.group(:date).sum(:total_sales_amount)
+    @date_sales_amount = @analyses.group(:date).sum(:ex_tax_sales_amount)
     @date_loss_amount = @analyses.group(:date).sum(:loss_amount)
     @date_transaction_count = @analyses.group(:date).sum(:transaction_count)
     @date_sales_number = @analyses.group(:date).sum(:transaction_count)

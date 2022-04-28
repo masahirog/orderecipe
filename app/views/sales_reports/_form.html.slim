@@ -11,10 +11,10 @@
 
 
   .form-group
-    p = "売上：#{@analysis.total_sales_amount.to_s(:delimited)}円"
+    p = "売上：#{@analysis.ex_tax_sales_amount.to_s(:delimited)}円"
     p = "来店数：#{@analysis.transaction_count}"
     p = "廃棄金額：#{@analysis.loss_amount.to_s(:delimited)}円"
-    p = "廃棄率：#{((@analysis.loss_amount.to_f/@analysis.total_sales_amount)*100).round(1)}%"
+    p = "廃棄率：#{((@analysis.loss_amount.to_f/@analysis.ex_tax_sales_amount)*100).round(1)}%"
   .form-group
     = f.label :sozai_ureyuki, "お惣菜の売れ行き"
     = f.select :sozai_ureyuki,['もっと売れた（機会ロスが多かった）','在庫もお客様の数も良い感じだった','在庫量が多かった（値引き割合が多かった）'],{include_blank:true},class:'form-control', required: true

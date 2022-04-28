@@ -20,9 +20,9 @@ table.table
           td = store.name
           td = link_to '詳細', analysis_path(analysis),class:"btn btn-sm btn-primary",style:'margin-right:10px;'
           td = link_to '商品別', store_products_sales_analyses_path(store_id:store.id),class:'btn btn-sm btn-primary'
-          td = "#{analysis.total_sales_amount.to_s(:delimited)}円" if analysis.total_sales_amount.present?
+          td = "#{analysis.ex_tax_sales_amount.to_s(:delimited)}円" if analysis.ex_tax_sales_amount.present?
           td = "#{analysis.loss_amount.to_s(:delimited)}円" if analysis.loss_amount.present?
-          td = "#{((analysis.loss_amount.to_f/analysis.total_sales_amount)*100).round(1)}%" if analysis.total_sales_amount.present? && analysis.loss_amount.present?
+          td = "#{((analysis.loss_amount.to_f/analysis.ex_tax_sales_amount)*100).round(1)}%" if analysis.ex_tax_sales_amount.present? && analysis.loss_amount.present?
           td
           td
 
