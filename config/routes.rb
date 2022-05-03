@@ -245,6 +245,7 @@ Rails.application.routes.draw do
   end
   resources :store_daily_menus do
     collection do
+      get :description
       get :ikkatsu
       post :input_multi_number
       get :input_manufacturing_number

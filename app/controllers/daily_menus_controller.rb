@@ -1,6 +1,5 @@
 class DailyMenusController < AdminController
   before_action :set_daily_menu, only: [:show, :update, :destroy]
-
   def once_change_numbers
     sozai_num_hash = {}
     bento_fukusai_num_hash = {}
