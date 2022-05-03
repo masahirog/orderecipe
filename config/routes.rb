@@ -1,4 +1,11 @@
 Rails.application.routes.draw do
+  namespace :crew do
+    get '/products' => 'products#index'
+    get '/product/:id' => 'products#show'
+    post'products/description_update' => 'products#description_update'
+
+  end
+
   namespace :store do
     resources :store_daily_menus do
       collection do

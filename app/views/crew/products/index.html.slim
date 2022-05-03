@@ -1,0 +1,13 @@
+h2 = "#{@date.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[@date.wday]})")}メニュー"
+= link_to "#{@yesterday.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[@yesterday.wday]})")}",crew_products_path(start_date:@yesterday),class:'btn btn-default btn-sm'
+|　
+= link_to "#{@tommoroww.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[@tommoroww.wday]})")}",crew_products_path(start_date:@tommoroww),class:'btn btn-default btn-sm'
+
+table.table
+  thead
+    tr
+      th 商品名
+  - @daily_menu.daily_menu_details.includes(:product).each do |dmd|
+    tr
+      td
+        = link_to dmd.product.name,"product/#{dmd.product_id}"
