@@ -33,7 +33,7 @@ class SmaregiMember < ApplicationRecord
       end
       update_arr << smaregi_member
     end
-    SmaregiMember.import update_arr, on_duplicate_key_update:[:raiten_kaisu]
+    SmaregiMember.import update_arr, on_duplicate_key_update:[:raiten_kaisu,:last_visit_store]
   end
 
   def self.upload_data(file)
