@@ -74,6 +74,7 @@ Rails.application.routes.draw do
   resources :analysis_products
   resources :analyses do
     collection do
+      post :update_sales_data_smaregi_members
       post :onceupload
       get :sales
       get :member
@@ -83,7 +84,7 @@ Rails.application.routes.draw do
 
       get :smaregi_member_csv
       post :upload_smaregi_members
-      get :smaregi_member_group
+      get :member
       get :orders
       get :smaregi_members
       post :recalculate_potential

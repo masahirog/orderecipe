@@ -1,5 +1,48 @@
+div style='margin-bottom:20px;'
+  = form_tag member_analyses_path, :method => 'get' do
+    .clearfix
+      label style='float:left;' 店舗選択
+      = submit_tag "絞り込み" ,class:"btn btn-primary",style:"margin-left:20px;"
+      ul style="list-style:none;float:left;"
+        - @stores.each do |store|
+          li style='float:left;margin-right:10px;'
+            = check_box_tag "stores[#{store.id}]",true,params['stores'][store.id.to_s]
+            = label_tag "stores[#{store.id}]",store.name
+    / div
+    /   label style='float:left;margin-right:10px;' 表示期間
+    /   = date_field_tag :from, params[:from], class:"form-control float-left",style:'width:200px;float:left;'
+    /   div style="float:left;padding:8px;" 〜
+    /   = date_field_tag :to, params[:to], class:"form-control",style:'width:200px;float:left;'
+
+.clearfix
+  .col-md-4 style='float:left;'
+    h3 2回目、3回目 来店者数
+    canvas id="repeat_member"
+  .col-md-4 style='float:left;'
+    h3 新規登録者数
+    canvas id="new_member"
+  .col-md-4 style='float:left;'
+    h3 累計登録者数
+    canvas id="ruikei_member"
+
+.clearfix
+  .col-md-4 style='float:left;'
+    h3 来店回数別 会員数
+    canvas id="myDoughnutChart"
+  .col-md-4 style='float:left;'
+    h3 性別
+    canvas id="sex"
+  .col-md-4 style='float:left;'
+    h3 年齢別会員数
+    ="誕生日登録者：#{@count_saved_birthday}、誕生日未登録者：#{@count_un_saved_birthday}"
+    canvas id="age_user_count"
+
+
 h3 会員一覧
-button type="button" class="pull-right btn btn-sm btn-primary" data-toggle="modal" data-target="#sampleModal" スマレジメンバーUpload
+= link_to '販売データ更新',update_sales_data_smaregi_members_analyses_path,class:'btn btn-primary btn-sm pull-right',style:'margin-left:10px;', method: :post
+= link_to '会員データCSV',smaregi_member_csv_analyses_path(format: :csv),class:'btn btn-primary btn-sm pull-right',style:'margin-left:10px;'
+
+button type="button" class="pull-right btn btn-sm btn-primary" data-toggle="modal" data-target="#sampleModal" 会員データアップロード
 #sampleModal.modal.fade tabindex="-1"
   = form_tag upload_smaregi_members_analyses_path, multipart: true do
     .modal-dialog
@@ -26,6 +69,7 @@ table.table
         = link_to "▲",smaregi_members_analyses_path(order:'point',sc:"asc")
         span ポイント
         = link_to "▼",smaregi_members_analyses_path(order:'point',sc:"desc")
+      th 入会日
       th 最新来店日
       th
         = link_to "▲",smaregi_members_analyses_path(order:'raiten_kaisu',sc:"asc")
@@ -43,6 +87,210 @@ table.table
         td = sm.sex
         td = sm.birthday
         td = sm.point
+        td = sm.nyukaibi.strftime("%-Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[sm.nyukaibi.wday]})") if sm.nyukaibi.present?
         td = sm.last_visit_store.strftime("%-Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[sm.last_visit_store.wday]})") if sm.last_visit_store.present?
         td = sm.raiten_kaisu
         td = link_to '履歴',orders_analyses_path(kaiin_id:sm.kaiin_id)
+
+javascript:
+  var ctx = document.getElementById("myDoughnutChart");
+  var chart_kaisu = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+        labels: gon.raiten_kaisu,
+        datasets: [{
+            data: gon.raiten_count
+        }]
+    },options: {
+        animation: {
+            animateRotate: false
+        },
+        plugins: {
+            colorschemes: {
+              scheme: 'tableau.Tableau20'
+          }
+        }
+    }
+  });
+  var ctx2 = document.getElementById("sex");
+  var chart_sex = new Chart(ctx2, {
+    type: 'doughnut',
+    data: {
+        labels: ['女性','男性','未回答'],
+        datasets: [{
+            data: gon.sex
+        }]
+    },options: {
+        animation: {
+            animateRotate: false
+        },
+        plugins: {
+            colorschemes: {
+              scheme: 'tableau.Tableau20'
+          }
+        }
+    }
+  });
+  var ctx3 = document.getElementById("age_user_count");
+  var chart_sex = new Chart(ctx3, {
+    type: 'bar',
+    data: {
+      labels:["10代",'20代','30代','40代','50代','60代','70代以上'],
+      datasets: [{
+        data: gon.age_users,
+        fill: false,
+        stacked: false,
+        yAxisID: "y-axis-1",
+        pointRadius: 0
+      }]
+    },
+    options: {
+      legend: {display: false},
+      plugins: {
+          colorschemes: {
+            scheme: 'tableau.Tableau20'
+        }
+      },
+      scales: {
+        xAxes: [{
+          stacked: true,
+          scaleLabel: {
+            display: true,
+            fontSize: 16
+          }
+        }],
+        yAxes: [{
+          stacked: false,
+          id: "y-axis-1",
+          type: "linear",
+          position: "left",
+          ticks: {
+            min: 0
+          }
+        }]
+      }
+    }
+  });
+
+  var ctx4 = document.getElementById("new_member");
+  var chart = new Chart(ctx4, {
+    type: 'bar',
+    data: {
+      labels:gon.month_days,
+      datasets: [{
+        data: gon.shinki_torokusu,
+        fill: false,
+        stacked: false,
+        yAxisID: "y-axis-1",
+        pointRadius: 0
+      }]
+    },
+    options: {
+      legend: {display: false},
+      plugins: {
+          colorschemes: {
+            scheme: 'tableau.Tableau20'
+        }
+      },
+      scales: {
+        xAxes: [{
+          stacked: true,
+          scaleLabel: {
+            display: true,
+            fontSize: 16
+          }
+        }],
+        yAxes: [{
+          stacked: false,
+          id: "y-axis-1",
+          type: "linear",
+          position: "left",
+          ticks: {
+            min: 0
+          }
+        }]
+      }
+    }
+  });
+
+  var ctx5 = document.getElementById("ruikei_member");
+  var chart = new Chart(ctx5, {
+    type: 'bar',
+    data: {
+      labels:gon.month_days,
+      datasets: [{
+        data: gon.ruiei_members,
+        fill: false,
+        stacked: false,
+        yAxisID: "y-axis-1",
+        pointRadius: 0
+      }]
+    },
+    options: {
+      legend: {display: false},
+      plugins: {
+          colorschemes: {
+            scheme: 'tableau.Tableau20'
+        }
+      },
+      scales: {
+        xAxes: [{
+          stacked: true,
+          scaleLabel: {
+            display: true,
+            fontSize: 16
+          }
+        }],
+        yAxes: [{
+          stacked: false,
+          id: "y-axis-1",
+          type: "linear",
+          position: "left",
+          ticks: {
+            min: 0
+          }
+        }]
+      }
+    }
+  });
+
+  var ctx5 = document.getElementById("repeat_member");
+  var chart = new Chart(ctx5, {
+    type: 'bar',
+    data: {
+      labels:gon.month_days,
+      datasets: [{
+        data: gon.repeat_members,
+        fill: false,
+        stacked: false,
+        yAxisID: "y-axis-1",
+        pointRadius: 0
+      }]
+    },
+    options: {
+      legend: {display: false},
+      plugins: {
+          colorschemes: {
+            scheme: 'tableau.Tableau20'
+        }
+      },
+      scales: {
+        xAxes: [{
+          stacked: true,
+          scaleLabel: {
+            display: true,
+            fontSize: 16
+          }
+        }],
+        yAxes: [{
+          stacked: false,
+          id: "y-axis-1",
+          type: "linear",
+          position: "left",
+          ticks: {
+            min: 0
+          }
+        }]
+      }
+    }
+  });

@@ -6,10 +6,8 @@ CSV.generate do |csv|
     start_time = ''
     end_time = ''
     if shift.fix_shift_pattern.present?
-      unless shift.fix_shift_pattern.section=='rest'
-        start_time = shift.fix_shift_pattern.start_time.strftime('%-H:%M')
-        end_time = shift.fix_shift_pattern.end_time.strftime('%-H:%M')
-      end
+      start_time = shift.fix_shift_pattern.start_time.strftime('%-H:%M') if shift.fix_shift_pattern.start_time.present?
+      end_time = shift.fix_shift_pattern.end_time.strftime('%-H:%M') if shift.fix_shift_pattern.start_time.present?
     end
     csv_column_values = [shift.staff.jobcan_staff_code,shift.date.strftime("%Y/%-m/%-d"),'べじはん','',start_time,end_time,'','','','']
     csv << csv_column_values

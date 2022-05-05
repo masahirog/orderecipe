@@ -1,6 +1,6 @@
 = link_to "aa",smaregi_member_csv_analyses_path(format:'csv')
 div style='margin-bottom:20px;'
-  = form_tag smaregi_member_group_analyses_path, :method => 'get' do
+  = form_tag member_analyses_path, :method => 'get' do
     .clearfix
       label style='float:left;' 店舗選択
       = submit_tag "絞り込み" ,class:"btn btn-primary",style:"margin-left:20px;"

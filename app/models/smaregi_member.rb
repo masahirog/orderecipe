@@ -1,6 +1,41 @@
 class SmaregiMember < ApplicationRecord
   enum sex: {minyuryoku:0,man:1,woman:2}
   enum main_use_store: {nyuryokunasi:0,higashi_nakano:1,test:2,shin_nakano:3}
+  def self.update_sales_data
+    smaregi_members = SmaregiMember.all.map{|sm|[sm.kaiin_id,sm]}.to_h
+    smaregi_trading_histories = SmaregiTradingHistory.where.not(kaiin_id:nil).select(:torihiki_id,:torihiki_meisaikubun,:kaiin_id,:date,:gokei_point).order("date ASC").distinct(:torihiki_id)
+    kaisu = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    smaregi_trading_histories.each do |sth|
+      if sth[:torihiki_meisaikubun]==1
+        kaisu[sth[:kaiin_id]][:last_date] = sth[:date]
+        if kaisu[sth[:kaiin_id]][:raiten_kaisu].present?
+          kaisu[sth[:kaiin_id]][:raiten_kaisu] += 1
+        else
+          kaisu[sth[:kaiin_id]][:raiten_kaisu] = 1
+        end
+      elsif sth[:torihiki_meisaikubun]==2
+        if kaisu[sth[:kaiin_id]][:raiten_kaisu].present?
+          kaisu[sth[:kaiin_id]][:raiten_kaisu] -= 1
+        else
+          kaisu[sth[:kaiin_id]][:raiten_kaisu] = -1
+        end
+      end
+    end
+    update_arr = []
+    smaregi_members.each do |id,sm|
+      smaregi_member = sm
+      if kaisu[id].present?
+        smaregi_member.raiten_kaisu = kaisu[id][:raiten_kaisu]
+        smaregi_member.last_visit_store = kaisu[id][:last_date]
+      else
+        smaregi_member.raiten_kaisu = 0
+        smaregi_member.last_visit_store = nil
+      end
+      update_arr << smaregi_member
+    end
+    SmaregiMember.import update_arr, on_duplicate_key_update:[:raiten_kaisu]
+  end
+
   def self.upload_data(file)
     new_members = []
     update_members = []

@@ -34,6 +34,7 @@ class ShiftsController < ApplicationController
 
   end
   def store
+    @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     if params[:date]
       @date = Date.parse(params[:date])
     else
@@ -42,32 +43,26 @@ class ShiftsController < ApplicationController
     first_day = @date.beginning_of_month
     last_day = first_day.end_of_month
     @one_month = [*first_day..last_day]
-    @shifts = Shift.includes([:staff,:fix_shift_pattern]).where(date:@one_month).where.not(fix_shift_pattern_id:nil)
-    @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    @shifts.each do |shift|
-      if @hash[shift.store_id][shift.date].present?
-        if shift.fix_shift_pattern.section == 'lunch'
-          @hash[shift.store_id][shift.date]['lunch'] << shift.staff.name
-        elsif shift.fix_shift_pattern.section == 'dinner'
-          @hash[shift.store_id][shift.date]['dinner'] << shift.staff.name
-        elsif shift.fix_shift_pattern.section == 'all_day'
-          @hash[shift.store_id][shift.date]['lunch'] << shift.staff.name
-          @hash[shift.store_id][shift.date]['dinner'] << shift.staff.name
-        end
-      else
-        if shift.fix_shift_pattern.section == 'lunch'
-          @hash[shift.store_id][shift.date]['lunch'] = [shift.staff.name]
-          @hash[shift.store_id][shift.date]['dinner'] = []
-        elsif shift.fix_shift_pattern.section == 'dinner'
-          @hash[shift.store_id][shift.date]['lunch'] = []
-          @hash[shift.store_id][shift.date]['dinner'] = [shift.staff.name]
-        elsif shift.fix_shift_pattern.section == 'all_day'
-          @hash[shift.store_id][shift.date]['lunch'] = [shift.staff.name]
-          @hash[shift.store_id][shift.date]['dinner'] = [shift.staff.name]
+    @group = Group.find(params[:group_id])
+    @shift_frames = @group.shift_frames
+    @stores = @group.stores
+    store_ids = @stores.ids
+    group_staff_ids = Staff.where(store_id:store_ids)
+    shifts = Shift.includes([:staff,fix_shift_pattern:[:shift_frames]]).where(staff_id:group_staff_ids,date:@one_month)
+    @rowspan = @group.shift_frames.count
+    shifts.each do |shift|
+      if shift.fix_shift_pattern_id.present?
+        date = shift.date
+        store_id = shift.store_id
+        shift.fix_shift_pattern.shift_frames.each do |sf|
+          if @hash[store_id][sf.id][date].present?
+            @hash[store_id][sf.id][date] += "\n#{shift.staff.name}"
+          else
+            @hash[store_id][sf.id][date] = shift.staff.name
+          end
         end
       end
     end
-    @stores = Store.where.not(id:39)
   end
   def once_update
     date = params["date"]
@@ -239,10 +234,13 @@ class ShiftsController < ApplicationController
     else
       @date = Date.today
     end
+    group = Group.find(params[:group_id])
+    store_ids = group.stores.ids
+    staffs = Staff.where(store_id:store_ids)
     first_day = @date.beginning_of_month
     last_day = first_day.end_of_month
     @one_month = [*first_day..last_day]
-    @shifts = Shift.where(date:@one_month)
+    @shifts = Shift.where(date:@one_month,staff_id:staffs.ids)
     respond_to do |format|
       format.html
       format.csv do

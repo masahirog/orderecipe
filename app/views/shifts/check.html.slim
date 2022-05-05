@@ -43,26 +43,6 @@ button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-tar
                   - if @hash[store.id][date][sf.id].present?
                     = @hash[store.id][date][sf.id]
 
-
-
-        / tr.shift_amount_tr
-          td rowspan='2' style='background-color:white;text-align: center;vertical-align: middle;z-index:4;font-weight:bold;padding:5px;'
-            = store.short_name
-          td style="padding:5px;"
-            = "早番：#{store.lunch_default_shift}"
-            input.default_shift_value value="#{store.lunch_default_shift}" style='display:none;'
-          - @one_month.each do |date|
-            td class="#{date.day}_store_#{store.id}_section_0 fix_shift_amount" style="padding:5px;"
-              - if @hash[store.id][date][0].present?
-                = @hash[store.id][date][0]
-
-
-    / thead style='position: sticky;top:0;background-color:white;z-index:3;'
-    /   tr
-    /     th style='background-color:white;width:100px;' スタッフ名
-    /     th style='width:50px;'
-    /     - @one_month.each do |date|
-    /       th style='width:80px;' = date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})")
     tbody
       - @staffs.each do |staff|
         tr.shift_tr style='color:silver;'

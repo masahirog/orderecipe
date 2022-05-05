@@ -7,6 +7,10 @@ class AnalysesController < AdminController
   #   update_datas_count = SmaregiTradingHistory.once_uploads_data(params[:file],first_day,last_day,store_id)
   #   redirect_to smaregi_trading_histories_path()
   # end
+  def update_sales_data_smaregi_members
+    SmaregiMember.update_sales_data
+    redirect_to smaregi_members_analyses_path,notice:'更新しました。'
+  end
   def sales
     @stores = Store.all
     if params[:stores]
@@ -65,8 +69,17 @@ class AnalysesController < AdminController
   end
 
   def smaregi_member_csv
-    smaregi_members = SmaregiMember.all
-    @sths = SmaregiTradingHistory.where(torihiki_meisaikubun:1,torihikimeisai_id:1).where.not(kaiin_id:nil)
+    @smaregi_members = SmaregiMember.all
+    # @sths = SmaregiTradingHistory.where(torihiki_meisaikubun:1,torihikimeisai_id:1).where.not(kaiin_id:nil)
+    respond_to do |format|
+      format.html
+      format.csv do
+        send_data render_to_string, filename: "kaiin.csv", type: :csv
+      end
+    end
+  end
+  def smaregi_sales_csv
+    @sths = SmaregiTradingHistory.where.not(kaiin_id:nil).select(:torihiki_id,:torihiki_meisaikubun,:kaiin_id,:date).order("date ASC").distinct(:torihiki_id)
     respond_to do |format|
       format.html
       format.csv do
@@ -78,19 +91,32 @@ class AnalysesController < AdminController
     SmaregiMember.upload_data(params[:file])
     redirect_to smaregi_members_analyses_path, :notice => "スマレジ会員情報を更新しました"
   end
-  def smaregi_member_group
-    @all_stores = Store.all
+  def member
+
+
+  end
+  def orders
+    @uniq_smaregi_trading_histories = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    kaiin_id = params[:kaiin_id]
+    SmaregiTradingHistory.where(torihiki_meisaikubun:1,kaiin_id:kaiin_id).each do |sth|
+      @uniq_smaregi_trading_histories[sth.torihiki_id][sth.id] = sth
+    end
+    @smaregi_member = SmaregiMember.find_by(kaiin_id:params[:kaiin_id])
+  end
+
+  def smaregi_members
+
+    @stores = Store.all
     if params[:stores]
       checked_store_ids = params['stores'].keys
-      @stores = @all_stores.where(id:checked_store_ids)
     else
-      @stores = @all_stores
       checked_store_ids = @stores.ids
       params[:stores] = {}
-      checked_store_ids.each do |store_id|
-        params[:stores][store_id.to_s] = true
+      @stores.each do |store|
+        params[:stores][store.id.to_s] = true
       end
     end
+
     smaregi_store_ids = @stores.map{|store|store.smaregi_store_id}
     smaregi_members = SmaregiMember.where(main_use_store:smaregi_store_ids)
     raiten_kaisu_count = smaregi_members.group(:raiten_kaisu).count.sort.to_h
@@ -145,44 +171,13 @@ class AnalysesController < AdminController
     end
     gon.month_days = month_days.map{|day|day.strftime("%-m/%-d")}
 
-  end
-  def orders
-    @uniq_smaregi_trading_histories = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    kaiin_id = params[:kaiin_id]
-    SmaregiTradingHistory.where(torihiki_meisaikubun:1,kaiin_id:kaiin_id).each do |sth|
-      @uniq_smaregi_trading_histories[sth.torihiki_id][sth.id] = sth
-    end
-    @smaregi_member = SmaregiMember.find_by(kaiin_id:params[:kaiin_id])
-  end
-  def smaregi_members
-    @stores = Store.all
-    if params[:stores]
-      checked_store_ids = params['stores'].keys
-    else
-      checked_store_ids = @stores.ids
-      params[:stores] = {}
-      @stores.each do |store|
-        params[:stores][store.id.to_s] = true
-      end
-    end
-    if params[:to]
-      @to = params[:to].to_date
-    else
-      @to = Date.today
-      params[:to] = @to
-    end
-    if params[:from]
-      @from = params[:from].to_date
-    else
-      @from = @to - 30
-      params[:from] = @from
-    end
     @smaregi_members = SmaregiMember.all
     if params[:order].present?
       @smaregi_members = @smaregi_members.order("#{params[:order]} #{params[:sc]}")
     end
     @smaregi_members = @smaregi_members.page(params[:page]).per(50)
   end
+
   def product_sales
     @stores = Store.all
     if params[:stores]

@@ -4,8 +4,8 @@ h2 = "#{@group.name}　#{@date.year}年#{@date.month}月シフト"
 = link_to "#{@date.last_month.month}月＜＜",shifts_path(date:@date.last_month,group_id:@group.id)
 |　　　
 = link_to "＞＞#{@date.next_month.month}月",shifts_path(date:@date.next_month,group_id:@group.id)
-= link_to "交通費CSV", shifts_path(date:params[:date],format:'csv'), class: "btn btn-default pull-right",style:'margin-right:20px;'
-= link_to "ジョブカンCSV", jobcan_upload_shifts_path(date:params[:date],format:'csv'), class: "btn btn-default pull-right",style:'margin-right:20px;'
+= link_to "交通費CSV", shifts_path(date:params[:date],group_id:@group.id,format:'csv'), class: "btn btn-default pull-right",style:'margin-right:20px;'
+= link_to "ジョブカンCSV", jobcan_upload_shifts_path(date:params[:date],group_id:@group.id,format:'csv'), class: "btn btn-default pull-right",style:'margin-right:20px;'
 button class='btn btn-default hide_shinsei pull-right' style='margin-right:20px;' 申請シフトを隠す
 = link_to "テンプレシフト反映", reflect_default_shifts_shifts_path(date:params[:date],group_id:@group.id), method: :post, data: { confirm: 'デフォルトシフトで上書きされます。よろしいですか？' }, class: "btn btn-default pull-right",style:'margin-right:20px;' if params[:group_id]=='19'
 .table-responsive style='height:800px;overflow: scroll;'
@@ -13,7 +13,7 @@ button class='btn btn-default hide_shinsei pull-right' style='margin-right:20px;
     thead style='position: sticky;top:0;background-color:white;z-index:5;'
       tr
         th style='background-color:white;width:150px;'
-          = link_to "店舗名",store_shifts_path(date:@date)
+          = link_to "店舗名",store_shifts_path(date:@date,group_id:@group.id)
           button.show_tr.btn.btn-default.btn-sm style='padding:2px 4px;font-size:10px;display:none;margin-left:2px;' 表示
         th.fixed_second_thtd style='width:120px;'
         - @one_month.each do |date|

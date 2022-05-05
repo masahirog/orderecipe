@@ -15,7 +15,6 @@ class SourcesPdf < Prawn::Document
       hash[dmd.product_id][dmd.daily_menu.start_time] = dmd.manufacturing_number
     end
     hash.each_with_index do |data,i|
-      binding.pry
       product = Product.find(data[0])
       menus = product.menus
       dates_num = data[1]

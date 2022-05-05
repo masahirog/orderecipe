@@ -1,14 +1,14 @@
 h2 = "#{@date.year}年#{@date.month}月シフト"
 
-= link_to "#{@date.last_month.month}月＜＜",shifts_path(date:@date.last_month)
+= link_to "#{@date.last_month.month}月＜＜",shifts_path(date:@date.last_month,group_id:@group.id)
 |　　　
-= link_to "＞＞#{@date.next_month.month}月",shifts_path(date:@date.next_month)
+= link_to "＞＞#{@date.next_month.month}月",shifts_path(date:@date.next_month,group_id:@group.id)
 .table-responsive style='height:800px;overflow: scroll;'
   table.table.layout-fixed style='border-collapse:separate;'
     thead style='position: sticky;top:0;background-color:white;z-index:3;'
       tr
-        th style='background-color:white;width:100px;' 店舗名
-        th
+        th style='background-color:white;width:80px;' 店舗名
+        th.fixed_second_thtd style='width:60px;' シフト
         - @one_month.each do |date|
           - holiday = HolidayJapan.name(date)
           - if holiday.present?
@@ -16,20 +16,19 @@ h2 = "#{@date.year}年#{@date.month}月シフト"
           - else
             th style='width:150px;' = date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})")
       - @stores.each do |store|
-        tr.shift_amount_tr
-          td rowspan="2" style='background-color:white;text-align: center;vertical-align: middle;z-index:4;font-weight:bold;'
-            = store.short_name
-          td 昼
-          - @one_month.each do |date|
-            td class="#{date.day}_store_#{store.id}_section_0 fix_shift_amount" style=""
-              - @hash[store.id][date]['lunch'].each do |staff_name|
-                div = staff_name
-        tr.shift_amount_tr
-          td 夜
-          - @one_month.each do |date|
-            td class="#{date.day}_store_#{store.id}_section_0 fix_shift_amount" style=""
-              - @hash[store.id][date]['dinner'].each do |staff_name|
-                div = staff_name
+        - @shift_frames.each_with_index do |sf,i|
+          - if store.store_shift_frames.find_by(shift_frame_id:sf.id)
+            tr.shift_amount_tr
+              - if i == 0
+                td rowspan="#{@rowspan}" style='background-color:white;text-align: center;vertical-align: middle;z-index:4;font-weight:bold;'
+                  = store.short_name
+              td.fixed_second_thtd
+                = sf.name
+              - @one_month.each do |date|
+                td class="#{date.day}_store_#{store.id}_sf_#{sf.id} fix_shift_amount" style=""
+                  = simple_format(@hash[store.id][sf.id][date], {}, wrapper_tag: "div")
+
+
 
 css:
   select{
@@ -44,11 +43,20 @@ css:
     table-layout: fixed;
     border-collspace:separate;
   }
+
   .table th:first-child,td:first-child{
     position: sticky;
     left: 0;
     z-index:2;
   }
+  .table .fixed_second_thtd {
+    position: sticky;
+    z-index:2;
+    left:80px;
+    background-color:white;
+  }
+
+
   th,td {
     text-align:center;
   }
