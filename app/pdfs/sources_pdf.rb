@@ -14,26 +14,51 @@ class SourcesPdf < Prawn::Document
     daily_menu_details.each do |dmd|
       hash[dmd.product_id][dmd.daily_menu.start_time] = dmd.manufacturing_number
     end
-    hash.each_with_index do |data,i|
+    index = 0
+    hash.each do |data|
       product = Product.find(data[0])
       menus = product.menus
-      dates_num = data[1]
-      table_content(menus,dates_num,product)
-      start_new_page if i<hash.count-1
+      if MenuMaterial.where(menu_id:menus.ids).pluck(:post).include?("タレ")
+        dates_num = data[1]
+        start_new_page unless index == 0
+        table_content(menus,dates_num,product)
+        index += 1
+      end
     end
+    start_page_count = 0
+    page_count.times do |i|
+      unless i < start_page_count
+        go_to_page(i+1)
+        bounding_box([bounds.right-30, bounds.top+15], :width => 50) {
+          text "#{i+ 1 -start_page_count} / #{page_count - start_page_count}"
+        }
+      end
+    end
+
   end
 
   def table_content(menus,dates_num,product)
     bounding_box([-15, 540], :width => 800) do
       table line_item_rows(menus,dates_num,product) do
+        mm_counts = menus.map{|menu|menu.materials.count}.sum
+        if mm_counts > 30
+          size = 6
+        elsif mm_counts > 25
+          size = 7
+        elsif mm_counts > 20
+          size = 8
+        else
+          size = 9
+        end
+        cells.size = size
+        column(1).size = 7
+        column(-1).size = 7
         cells.leading = 2
         cells.borders = [:bottom]
         cells.border_width = 0.2
         column(2).align = :right
         column(3).align = :center
         row(0).border_width = 1
-        row(0).size = 9
-        column(-1).size = 7
         self.header = true
         row_count = [80]*dates_num.count
         self.column_widths = [100,40,140,50,row_count,150].flatten
@@ -45,7 +70,6 @@ class SourcesPdf < Prawn::Document
         end
         grayout.each do |num|
           row(num).column(1..-1).background_color = "dcdcdc"
-          row(num).column(2..-2).size = 8
         end
       end
     end
@@ -57,7 +81,7 @@ class SourcesPdf < Prawn::Document
       num = date_num[1]
       row_0 << "#{date}\n#{num}人"
     end
-    data= [[{:content => "商品名：#{product.name}",colspan:3},"グループ",row_0,"仕込み内容"].flatten]
+    data= [[{:content => "#{product.name}",colspan:3},"グループ",row_0,"仕込み内容"].flatten]
     menus.includes(:materials).each do |menu|
       u = menu.materials.length
       menu.menu_materials.each_with_index do |mm,i|
@@ -75,18 +99,18 @@ class SourcesPdf < Prawn::Document
             amount_data << "#{ActiveSupport::NumberHelper.number_to_rounded((mm.amount_used * num.to_i), strip_insignificant_zeros: true, :delimiter => ',', precision: 1)} #{mm.material.recipe_unit}"
           end
           if i == 0
-            data << [{:content => "#{menu.name}", :rowspan => u, size: 9},
-              {:content => "#{mm.post.slice(0..3)}", size: 7 },
-              {:content => "#{mm.material.name}", size: 8 },
-              {:content => "#{mm.source_group}", size:9,:align => :center },
+            data << [{:content => "#{menu.name}\n\n#{menu.short_name}", :rowspan => u},
+              {:content => "#{mm.post.slice(0..3)}" },
+              {:content => "#{mm.material.name}" },
+              {:content => "#{mm.source_group}",:align => :center },
               amount_data,
-              {:content => "#{preparation}", size:7 }].flatten
+              {:content => "#{preparation}"}].flatten
           else
-            data << [{:content => "#{mm.post.slice(0..3)}", size: 7 },
-              {:content => "#{mm.material.name}", size: 9 },
-              {:content => "#{mm.source_group}", size:9,:align => :center },
+            data << [{:content => "#{mm.post.slice(0..3)}" },
+              {:content => "#{mm.material.name}" },
+              {:content => "#{mm.source_group}",:align => :center },
               amount_data,
-              {:content => "#{preparation}", size: 7 }].flatten
+              {:content => "#{preparation}" }].flatten
           end
 
         end

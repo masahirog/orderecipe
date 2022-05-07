@@ -16,7 +16,7 @@ class ProductPdf < Prawn::Document
 
 
   def header_table(product,num)
-    bounding_box([0, 525], :width => 650) do
+    bounding_box([0, 530], :width => 650) do
       data = [["商品名","management_id","原価","製造数"],
               ["#{product.name}","#{product.management_id}","#{product.cost_price} 円","#{num}人分"]]
       table data, cell_style: { size: 9 } do
@@ -35,21 +35,21 @@ class ProductPdf < Prawn::Document
   end
 
   def table_content(menus,num)
-    bounding_box([0, 490], :width => 765) do
+    bounding_box([0, 500], :width => 780) do
       table line_item_rows(menus,num) do
-      cells.padding = 2
-      cells.borders = [:bottom]
-      cells.border_width = 0.2
-      column(-2..-1).align = :right
-      row(0).border_width = 1
-      row(0).size = 9
-      self.header = true
-      self.column_widths = [100,100,100,120,60,100,70,40,5,65]
+        cells.padding = 2
+        cells.borders = [:bottom]
+        cells.border_width = 0.2
+        column(-2..-1).align = :right
+        row(0).border_width = 1
+        row(0).size = 9
+        self.header = true
+        self.column_widths = [100,150,150,80,40,30,120,40,65]
       end
     end
   end
   def line_item_rows(menus,num)
-    data= [["メニュー名","調理メモ","盛付メモ","食材・資材",{:content => "仕込み内容", :colspan => 2},"1人分","使用原価","","#{num}人分"]]
+    data= [["メニュー名","レシピ","食材","#{num}人分",'G',{:content => "仕込み内容", :colspan => 2},"使用原価","1人分"]]
     menus.each do |menu|
       u = menu.materials.length
       cook_the_day_before_mozi = menu.cook_the_day_before.length
@@ -64,15 +64,28 @@ class ProductPdf < Prawn::Document
       end
       menu.menu_materials.each_with_index do |mm,i|
         if i == 0
+          recipe = ""
+          if menu.cook_the_day_before.present?
+            recipe = "【 前 日 】\n#{menu.cook_the_day_before}\n\n"
+          end
+          if menu.cook_on_the_day.present?
+            recipe += "【 当 日 】\n#{menu.cook_on_the_day}"
+          end
+
           data << [{content: "#{menu.name}", rowspan: u,size: 9},
-            {content: "#{menu.cook_the_day_before}", rowspan: u, size: cook_the_day_before_size},
-            {content: "#{menu.serving_memo}", rowspan: u, size: 9},{content:"#{mm.material.name}", size: 9},{content: "#{mm.post}", size: 9},{content:"#{mm.preparation}", size: 9},
-            {content:"#{mm.amount_used} #{mm.material.recipe_unit}", size: 9},{content:"#{(mm.material.cost_price * mm.amount_used).round(1)}", size: 9},"",
-            {content:"#{((mm.amount_used * num.to_i).round(1)).to_s(:delimited)} #{mm.material.recipe_unit}",size:9}]
+            {content: recipe, rowspan: u, size: cook_the_day_before_size},
+            {content:"#{mm.material.name}", size: 9},
+            {content:"#{((mm.amount_used * num.to_i).round(1)).to_s(:delimited)} #{mm.material.recipe_unit}",size:9},
+            {content:mm.source_group, size: 8},
+            {content: "#{mm.post}", size: 7},{content:"#{mm.preparation}", size: 7},
+            {content:"#{(mm.material.cost_price * mm.amount_used).round(1)}", size: 8},{content:"#{mm.amount_used} #{mm.material.recipe_unit}", size: 8}
+            ]
         else
-          data << [{content:"#{mm.material.name}", size: 9},{content:"#{mm.post}", size: 9},{content:"#{mm.preparation}", size: 9},
-            {content:"#{mm.amount_used} #{mm.material.recipe_unit}", size: 9},{content:"#{(mm.material.cost_price * mm.amount_used).round(1)}", size: 9},"",
-          {content:"#{((mm.amount_used * num.to_i).round(1)).to_s(:delimited)} #{mm.material.recipe_unit}",size:9}]
+          data << [{content:"#{mm.material.name}", size: 9},{content:"#{((mm.amount_used * num.to_i).round(1)).to_s(:delimited)} #{mm.material.recipe_unit}",size:9},
+            {content:mm.source_group, size: 8},
+            {content:"#{mm.post}", size: 7},{content:"#{mm.preparation}", size: 7},
+            {content:"#{(mm.material.cost_price * mm.amount_used).round(1)}", size: 8},
+          {content:"#{mm.amount_used} #{mm.material.recipe_unit}", size: 8}]
         end
       end
     end
