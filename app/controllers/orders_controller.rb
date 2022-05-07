@@ -52,9 +52,9 @@ class OrdersController < AdminController
     @store = Store.find(store_id)
     if params[:vendor_id].present?
       vendor_id = params[:vendor_id]
-      @order_materials = OrderMaterial.includes(:order,material:[:vendor]).where(:orders => {store_id:store_id}).where(delivery_date:@date,un_order_flag:false).where(:materials => {vendor_id:vendor_id})
+      @order_materials = OrderMaterial.includes(:order,material:[:vendor]).where(:orders => {fixed_flag:true,store_id:store_id}).where(delivery_date:@date,un_order_flag:false).where(:materials => {vendor_id:vendor_id})
     else
-      @order_materials = OrderMaterial.includes(:order,material:[:vendor]).where(:orders => {store_id:store_id}).where(delivery_date:@date,un_order_flag:false).order("vendors.id")
+      @order_materials = OrderMaterial.includes(:order,material:[:vendor]).where(:orders => {fixed_flag:true,store_id:store_id}).where(delivery_date:@date,un_order_flag:false).order("vendors.id")
     end
     @hash = {}
     @order_materials.each do |om|
