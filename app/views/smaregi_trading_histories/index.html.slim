@@ -1,46 +1,48 @@
-= form_tag smaregi_trading_histories_path, :method => 'get' do
-  - if @analysis.present?
-    .col-md-2
-      = "#{@analysis.date}｜#{@analysis.store.name}店"
-  .col-md-2
-    = hidden_field_tag :analysis_id,params[:analysis_id]
-    = select_tag :shohin_id, options_for_select(@shohin_ids,params[:shohin_id]),include_blank: true, class: "form-control",placeholder:'商品ID'
-  .col-md-2
-    = select_tag :hinban, options_for_select(@product_ids,params[:hinban]),include_blank: true, class: "form-control",placeholder:'ORID'
-  .col-md-2
-    = select_tag :shohinmei, options_for_select(@shohinmeis,params[:shohinmei]),include_blank: true, class: "form-control",placeholder:'ORID'
-  .col-md-1
-    label 　
-    = submit_tag "絞り込む" ,class:"btn btn-primary"
-
-
+.clearfix
+  = form_tag smaregi_trading_histories_path, :method => 'get' do
+    = text_field_tag :shohin_id, params[:shohin_id], class:"form-control",style:'width:200px;float:left;margin-right:20px;',placeholder:'商品ID'
+    div style='float:left;margin-right:20px;'
+      = select_tag :shohinmei, options_for_select(@shohinmeis,params[:shohinmei]),include_blank: true, class:"select2 form-control"
+    = date_field_tag :from, @from, class:"form-control float-left",style:'width:200px;float:left;margin-right:20px;'
+    div style="float:left;padding:8px;margin-right:20px;" 〜
+    = date_field_tag :to, @to, class:"form-control",style:'width:200px;float:left;margin-right:20px;'
+    = submit_tag "絞り込む" ,class:"btn btn-primary",style:'float:left;'
+  = link_to "CSV",smaregi_trading_histories_path(from:@from,to:@to,shohin_id:params[:shohin_id],shohinmei:params[:shohinmei], :format => :csv),class:"btn btn-primary",style:'float:right;'
+- if @smaregi_trading_histories.present?
+  = paginate @smaregi_trading_histories
+  h5 = "#{@count}件のスマレジ履歴データがあります。"
 table.table
   thead
     tr
       th 取引ID
       th 取引日時
-      th 販売者
+      th 会員ID
       th 商品ID
       th OR_ID
       th 商品名
       th 商品単価
       th 数量
-      th 単価値引き計
       th 値引き後計
 
   tbody
-    - @smaregi_trading_histories.each do |smaregi_trading_history|
-      tr class="sth_#{smaregi_trading_history.id}"
-        td = smaregi_trading_history.torihiki_id
-        td = smaregi_trading_history.torihiki_nichiji.strftime("%Y/%m/%d %H:%M")
-        td = smaregi_trading_history.hanbaiin_mei
-        td
-          = form_with(model: smaregi_trading_history, data: {remote: true}) do |f|
-            = f.number_field :shohin_id,class:'input_inventory_stock form-control',style:'width:80px;float:left;margin-right:10px;',value:smaregi_trading_history.shohin_id
+    - if @smaregi_trading_histories.present?
+      - @smaregi_trading_histories.each do |smaregi_trading_history|
+        tr class="sth_#{smaregi_trading_history.id}"
+          td = smaregi_trading_history.torihiki_id
+          td = smaregi_trading_history.torihiki_nichiji.strftime("%Y/%m/%d %H:%M")
+          td = smaregi_trading_history.kaiin_id
+          td = smaregi_trading_history.shohin_id
+          td = link_to smaregi_trading_history.hinban,"/products/#{smaregi_trading_history.hinban}" if smaregi_trading_history.hinban.present?
+          td = smaregi_trading_history.shohinmei
+          td = smaregi_trading_history.shohintanka
+          td = smaregi_trading_history.suryo
+          td = smaregi_trading_history.nebikigokei
+- unless @smaregi_trading_histories.present?
+  .col-md-12
+    h4 検索結果が0件、もしくは10,000件以上ある為、検索条件を変更してください
 
-        td = smaregi_trading_history.hinban
-        td = smaregi_trading_history.shohinmei
-        td = smaregi_trading_history.shohintanka
-        td = smaregi_trading_history.suryo
-        td = smaregi_trading_history.tanka_nebikikei
-        td = smaregi_trading_history.nebikigokei
+
+javascript:
+  $(".select2").select2({
+    width:"300px"
+  });

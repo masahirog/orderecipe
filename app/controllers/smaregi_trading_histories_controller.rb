@@ -55,22 +55,36 @@ class SmaregiTradingHistoriesController < AdminController
     end
   end
 
-  # def index
-  #   @analysis_id = params[:analysis_id]
-  #   @analysis = Analysis.find(@analysis_id) if @analysis_id
-  #   @shohin_id = params[:shohin_id]
-  #   @hinban = params[:hinban]
-  #   @shohinmei = params[:shohinmei]
-  #   @smaregi_trading_histories = SmaregiTradingHistory.all
-  #   @smaregi_trading_histories = @smaregi_trading_histories.where(analysis_id:@analysis_id) if @analysis_id.present?
-  #   @shohin_ids = @smaregi_trading_histories.map{|sth|sth.shohin_id}.uniq
-  #   @product_ids = @smaregi_trading_histories.map{|sth|sth.hinban}.uniq
-  #   @shohinmeis = @smaregi_trading_histories.map{|sth|sth.shohinmei}.uniq
-  #   @smaregi_trading_histories = @smaregi_trading_histories.where(shohin_id:@shohin_id) if @shohin_id.present?
-  #   @smaregi_trading_histories = @smaregi_trading_histories.where(hinban:@hinban) if @hinban.present?
-  #   @smaregi_trading_histories = @smaregi_trading_histories.where(shohinmei:@shohinmei) if @shohinmei.present?
-  #   @date_counts = @smaregi_trading_histories.group(:date).count()
-  # end
+  def index
+    @shohinmeis = SmaregiTradingHistory.pluck(:shohinmei).uniq
+    @to = Date.today
+    @from = Date.today - 30
+    @to = Date.parse(params[:to]) if params[:to]
+    @from = Date.parse(params[:from]) if params[:from]
+    @smaregi_trading_histories = SmaregiTradingHistory.where(date:@from..@to)
+    @smaregi_trading_histories = @smaregi_trading_histories.where(shohin_id:params[:shohin_id]) if params[:shohin_id].present?
+    @smaregi_trading_histories = @smaregi_trading_histories.where(shohinmei:params[:shohinmei]) if params[:shohinmei].present?
+    respond_to do |format|
+      format.html do
+        @count = @smaregi_trading_histories.count
+        if @count > 10000
+          @smaregi_trading_histories = []
+        else
+          @smaregi_trading_histories = @smaregi_trading_histories.page(params[:page]).per(100)
+        end
+      end
+      format.csv do
+        if @smaregi_trading_histories.count > 10000
+          #1万件以上のときはhtmlにリダイレクト
+          redirect_to smaregi_trading_histories_path
+        else
+          @smaregi_trading_histories = @smaregi_trading_histories
+          send_data render_to_string, filename: "smaregi_trading_histories.csv", type: :csv
+        end
+      end
+    end
+
+  end
 
   def show
   end
