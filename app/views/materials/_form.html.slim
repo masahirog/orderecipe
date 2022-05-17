@@ -68,7 +68,7 @@
     .box26.clearfix
       span class="box-title" 発注最小ロット、単位と価格（税抜き）
       = f.text_field :order_unit_quantity,class:"input_order_unit_quantity form-control text-right",placeholder:1,style:'width:140px;float:left;margin-right:5px;'
-      = f.select :order_unit, ["kg","p/c", "c/s","箱","缶", "束", "枚","個","本","ポリ"],{}, { class: "form-control input_order_unit",style:'width:70px;float:left;'}
+      = f.select :order_unit, ["kg","p/c", "c/s","箱","缶", "束", "枚","個","本","ポリ","人前"],{}, { class: "form-control input_order_unit",style:'width:70px;float:left;'}
       span style='padding:15px 15px 0 15px;float:left;' あたり
       = f.text_field :recipe_unit_price, class:'form-control',style:'width:140px;float:left;'
       span style='padding:15px 0 0 15px;float:left;' 円（税別）
@@ -79,7 +79,7 @@
       - if action_name == 'edit'
         div.edit_recipe_unit style='float:left;width:150px;border: 1px solid silver;border-radius:3px;padding:5px 10px;background-color:#EEEEEE' = f.object.recipe_unit
       - else
-        = f.select :recipe_unit, ["ml","g","袋","本","枚","個"],{}, { class: "input_recipe_unit form-control",style:'float:left;width:150px;'}
+        = f.select :recipe_unit, ["ml","g","袋","本","枚","個","人前"],{}, { class: "input_recipe_unit form-control",style:'float:left;width:150px;'}
       span.recipe_unit_quantity_label style='padding:13px 5px 0 50px;float:left;'
       span style='padding:15px 10px 0 0;float:left;'  あたり
       = f.text_field :recipe_unit_quantity, class:'form-control',style:'float:left;width:150px;'
@@ -96,7 +96,7 @@
 
     .box26.clearfix
       span class="box-title" 計上時の使用単位（在庫管理時の単位）
-      = f.select :accounting_unit, ["p/c","kg","袋","本","枚","個", "c/s","箱","缶", "束","ml","g","ポリ"],{}, { class: "input_accounting_unit form-control",style:'float:left;width:150px;'}
+      = f.select :accounting_unit, ["p/c","kg","袋","本","枚","個", "c/s","箱","缶", "束","ml","g","ポリ","人前"],{}, { class: "input_accounting_unit form-control",style:'float:left;width:150px;'}
       span.accounting_unit_quantity_label style='float:left;padding:13px 5px 0 50px;'
       span style='float:left;padding:15px 10px 0 0;' あたり
       = f.text_field :accounting_unit_quantity, class:'form-control',style:'float:left;width:150px;'
