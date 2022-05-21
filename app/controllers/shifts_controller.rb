@@ -185,7 +185,7 @@ class ShiftsController < ApplicationController
     @shift_frames = @group.shift_frames
     @stores = @group.stores
     store_ids = @stores.ids
-    group_staff_ids = Staff.where(store_id:store_ids)
+    group_staff_ids = Staff.where(store_id:store_ids,status:0)
     first_day = @date.beginning_of_month
     last_day = first_day.end_of_month
     @one_month = [*first_day..last_day]

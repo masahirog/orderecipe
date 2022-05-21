@@ -246,6 +246,7 @@ Rails.application.routes.draw do
   end
   resources :store_daily_menus do
     collection do
+      get :barcode
       get :description
       get :ikkatsu
       post :input_multi_number

@@ -9,6 +9,7 @@ table.table
       th 業者名
       th style='width:300px;' 発注目安
       th style='width:450px;' 発注曜日
+      th
   tbody
     - @material_store_orderables.each do |mso|
       - material = mso.material
@@ -30,6 +31,8 @@ table.table
               label
                 = f.check_box wday[0],class:"wday_check"
                 span = @wdays[wday[0]]
+        td
+          = link_to '削除', material_store_orderable_path(mso.id), method: :delete, data: { confirm: '削除して良いですか?' }
 javascript:
   $('.wday_check').on( 'change',function(){
     Rails.fire($(this).parent().parent('form')[0], 'submit');

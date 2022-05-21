@@ -43,9 +43,11 @@ class MaterialStoreOrderablesController < ApplicationController
   end
 
   def destroy
+    store_id = @material_store_orderable.store_id
+    material = @material_store_orderable.material
     @material_store_orderable.destroy
     respond_to do |format|
-      format.html { redirect_to material_store_orderables_url, notice: "Material store orderable was successfully destroyed." }
+      format.html { redirect_to materials_stores_path(store_id:store_id), notice: "#{material.name}を発注リストから削除しました。" }
       format.json { head :no_content }
     end
   end
