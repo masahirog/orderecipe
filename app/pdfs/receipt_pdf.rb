@@ -15,7 +15,7 @@ class ReceiptPdf < Prawn::Document
       move_down 10
       text "領　収　書", size: 20, :align => :center,styles: :bold
       move_down 10
-      text "発行日：#{data[0]}　　", size:11, :align => :right
+      text "発行日：#{data[0]}　　", size:11, :align => :right if data[0].present?
       text "　　#{data[1]} #{data[2]}", size: 16,styles: :bold
       move_down 10
       text "￥　#{data[3]} -", size: 16,styles: :bold, :align => :center
