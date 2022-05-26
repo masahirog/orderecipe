@@ -76,7 +76,7 @@ class SmaregiTradingHistory < ApplicationRecord
           uchishohizei = row["内消費税"]
           uchizeianbun = row["内税按分"]
           zeinuki_uriage = nebikigokei.to_i - uchizeianbun.to_i
-          if hinban == '10459' ||hinban == '12899'
+          if hinban == '10459' ||hinban == '12899'||hinban == '13179'
             loss_ignore = true
           else
             loss_ignore = false
@@ -323,7 +323,7 @@ class SmaregiTradingHistory < ApplicationRecord
       uchishohizei = smaregi_trading_history.uchishohizei.to_i
       uchizeianbun = smaregi_trading_history.uchizeianbun.to_i
       product_zeinuki_uriage = nebikigokei - uchizeianbun
-      if hinban == 10459 ||hinban == 12899
+      if hinban == 10459 ||hinban == 12899 ||hinban == 13179
         loss_ignore = true
       else
         loss_ignore = false
