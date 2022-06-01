@@ -33,28 +33,6 @@
           = f.number_field :cost_price, :readonly => 'readonly',class: "menu_cost_price form-control"
           .form-group
             |  円
-  / .form-group.col-md-12
-    .col-md-4
-      .co-md-6
-        = f.label :daybefore_20_cut ,'前日切出（20人前の分）'
-        = f.select :daybefore_20_cut,@range,{}, { class: "form-control",style:"width:100%;"}
-      .co-md-6
-        = f.label :daybefore_60_cut ,'前日切出（60人前の分）'
-        = f.select :daybefore_60_cut,@range,{}, { class: "form-control",style:"width:100%;"}
-    .col-md-4
-      .co-md-6
-        = f.label :daybefore_20_cook ,'前日調理（20人前の分）'
-        = f.select :daybefore_20_cook,@range,{}, { class: "form-control",style:"width:100%;"}
-      .co-md-6
-        = f.label :daybefore_60_cook ,'前日調理（60人前の分）'
-        = f.select :daybefore_60_cook,@range,{}, { class: "form-control",style:"width:100%;"}
-    .col-md-4
-      .co-md-6
-        = f.label :onday_20_cook ,'当日調理（20人前の分）',style:'color:red;'
-        = f.select :onday_20_cook,@range,{}, { class: "form-control",style:"width:100%;"}
-      .col-md-6
-        = f.label :onday_60_cook ,'当日調理（60人前の分）',style:'color:red;'
-        = f.select :onday_60_cook,@range,{}, { class: "form-control",style:"width:100%;"}
 
   .col-md-4.form-group
     = f.label :cook_the_day_before ,'前日調理'
@@ -62,9 +40,6 @@
   .col-md-4.form-group
     = f.label :cook_on_the_day ,'当日調理'
     = f.text_area :cook_on_the_day,style:"height:10em;width:100%;", class: "form-control"
-  / .col-md-4.form-group
-    = f.label :serving_memo ,'盛付'
-    = f.text_area :serving_memo,style:"height:10em;width:100%;", class: "form-control"
   .col-md-12
     table.table
       thead
@@ -78,6 +53,19 @@
       tbody#menu_last_process-add-point
         = f.fields_for :menu_last_processes do |mlp|
           = render 'menu_last_process_fields', f:mlp
+  .col-md-12
+    table.table
+      thead
+        tr
+          th
+            span 調理チェックリスト
+            = link_to_add_association '追加', f, :menu_cook_checks,class:'btn btn-primary add_menu_cook_check_fields',style:'margin-left:20px;',
+            data: {association_insertion_node: '#menu_cook_check-add-point',association_insertion_method: 'append' }
+          th
+      tbody#menu_cook_check-add-point
+        = f.fields_for :menu_cook_checks do |mcc|
+          = render 'menu_cook_check_fields', f:mcc
+
   .col-md-12
     = f.label :image, "写真"
     = f.file_field :image

@@ -71,7 +71,7 @@
   = link_to "積載シール",loading_daily_menus_path(id:@daily_menu.id, :format => :csv),class:"btn btn-default",:target=>"_blank",style:'margin-left:20px;margin-top:10px;'
   = link_to "積載伝票",daily_menu_path(id:@daily_menu.id, :format => :pdf),class:"btn btn-default",:target=>"_blank",style:'margin-left:20px;margin-top:10px;'
   = link_to "当日調理",cook_on_the_day_daily_menus_path(id:@daily_menu.id, :format => :pdf),class:"btn btn-default",:target=>"_blank",style:'margin-left:20px;margin-top:10px;'
-  = link_to "タブレット",kiridasi_daily_menus_path(id:@daily_menu.id),class:"btn btn-default",:target=>"_blank",style:'margin-left:20px;margin-top:10px;'
+  / = link_to "タブレット",kiridasi_daily_menus_path(id:@daily_menu.id),class:"btn btn-default",:target=>"_blank",style:'margin-left:20px;margin-top:10px;'
   button type="button" class="btn btn-default" data-toggle="modal" data-target="#cut_list_modal" style='margin-left:20px;margin-top:10px;'
     |カット
   .modal.fade id="cut_list_modal" tabindex=-1
@@ -166,7 +166,7 @@
             = submit_tag "表示する" ,class:"btn btn-primary"
   / = link_to '献立の削除', daily_menu_path(@daily_menu), method: :delete,class:"btn btn-danger",style:'float:right;margin-top:10px;margin-left:10px;', data: { confirm: "献立を削除してよろしいですか？" }
   / = link_to '惣菜数の一括変更', daily_menu_path(@daily_menu),class:"btn btn-primary",style:'float:right;margin-top:10px;margin-left:10px;', data: { confirm: "献立を削除してよろしいですか？" }
-
+  = link_to "チェックリスト",cook_check_daily_menus_path(id:@daily_menu.id, :format => :pdf),class:"btn btn-default",:target=>"_blank",style:'margin-left:20px;margin-top:10px;'
   button.btn.btn-default type="button" data-toggle="modal" data-target="#sampleModal" style="float:right;margin-top:10px;" 惣菜数の一括変更
   #sampleModal.modal.fade[tabindex="-1"]
     = form_tag(once_change_numbers_daily_menus_path) do

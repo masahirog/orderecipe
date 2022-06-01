@@ -8,6 +8,10 @@ class Menu < ApplicationRecord
   has_many :products, through: :product_menus
   has_many :menu_last_processes, dependent: :destroy
   accepts_nested_attributes_for :menu_last_processes, allow_destroy: true
+  has_many :menu_cook_checks, dependent: :destroy
+  accepts_nested_attributes_for :menu_cook_checks, allow_destroy: true
+
+
 
   # after_update :update_product_cost_price
 

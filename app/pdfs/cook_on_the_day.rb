@@ -47,7 +47,7 @@ class CookOnTheDay < Prawn::Document
     data = [['商品名','品目','合計','朝数','工程','調理✓','積載✓']]
     sdm.store_daily_menu_details.each do |sdmd|
       if sdmd.product.carryover_able_flag == true
-        number = "※ " + (sdmd.number/1.4).ceil.to_s
+        number = "※ " + (sdmd.number*0.7).ceil.to_s
       else
         number = sdmd.number
       end
@@ -70,7 +70,7 @@ class CookOnTheDay < Prawn::Document
         else
           reito = ''
         end
-        morning_number = "※　" + (sdmd.number/1.4).ceil.to_s
+        morning_number = "※　" + (sdmd.number*0.7).ceil.to_s
         data << [sdmd.product.name,'○',reito,sdmd.number,morning_number]
       else
       end

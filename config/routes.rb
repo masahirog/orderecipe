@@ -194,6 +194,7 @@ Rails.application.routes.draw do
   end
   resources :daily_menus do
     collection do
+      get :cook_check
       post :once_change_numbers
       get :cut_list
       get :kiridasi
