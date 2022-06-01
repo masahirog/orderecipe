@@ -7,24 +7,31 @@ class SourcesPdf < Prawn::Document
       page_layout: :landscape)
     #日本語のフォント
     font "vendor/assets/fonts/ipaexg.ttf"
-    # daily_menu = DailyMenu.find_by(start_time:date)
     daily_menus = DailyMenu.where(start_time:from..to)
     daily_menu_details = DailyMenuDetail.includes([:daily_menu]).where(daily_menu_id:daily_menus.ids)
     hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     daily_menu_details.each do |dmd|
-      hash[dmd.product_id][dmd.daily_menu.start_time] = dmd.manufacturing_number
-    end
-    index = 0
-    hash.each do |data|
-      product = Product.find(data[0])
-      menus = product.menus
-      if MenuMaterial.where(menu_id:menus.ids).pluck(:post).include?("タレ")
-        dates_num = data[1]
-        start_new_page unless index == 0
-        table_content(menus,dates_num,product)
-        index += 1
+      dmd.product.menus.each do |menu|
+        if hash[menu.id][dmd.daily_menu.start_time].present?
+          hash[menu.id][dmd.daily_menu.start_time] += dmd.manufacturing_number
+        else
+          hash[menu.id][dmd.daily_menu.start_time] = dmd.manufacturing_number
+        end
       end
     end
+    index = 0
+    bounding_box([-5,540], :width => 880) {
+      hash.each do |data|
+        menu = Menu.find(data[0])
+        if MenuMaterial.where(menu_id:menu.id).pluck(:post).include?("タレ")
+          dates_num = data[1]
+          start_new_page unless index == 0
+          table_content(menu,dates_num)
+          move_down 10
+          index += 1
+        end
+      end
+    }
     start_page_count = 0
     page_count.times do |i|
       unless i < start_page_count
@@ -37,83 +44,80 @@ class SourcesPdf < Prawn::Document
 
   end
 
-  def table_content(menus,dates_num,product)
-    bounding_box([-15, 540], :width => 800) do
-      table line_item_rows(menus,dates_num,product) do
-        mm_counts = menus.map{|menu|menu.materials.count}.sum
-        if mm_counts > 30
-          size = 6
-        elsif mm_counts > 25
-          size = 7
-        elsif mm_counts > 20
-          size = 8
-        else
-          size = 9
-        end
-        cells.size = size
-        column(1).size = 7
-        column(-1).size = 7
-        cells.leading = 2
-        cells.borders = [:bottom]
-        cells.border_width = 0.2
-        column(2).align = :right
-        column(3).align = :center
-        row(0).border_width = 1
-        self.header = true
-        row_count = [80]*dates_num.count
-        self.column_widths = [100,40,140,50,row_count,150].flatten
-        grayout = []
-        menuline = []
-        values = cells.columns(1).rows(1..-1)
-        values.each do |cell|
-          grayout << cell.row unless cell.content == 'タレ'
-        end
-        grayout.each do |num|
-          row(num).column(1..-1).background_color = "dcdcdc"
-        end
+  def table_content(menu,dates_num)
+    table line_item_rows(menu,dates_num) do
+      mm_counts = menu.materials.count
+      if mm_counts > 30
+        size = 6
+      elsif mm_counts > 25
+        size = 7
+      elsif mm_counts > 20
+        size = 8
+      else
+        size = 9
+      end
+      cells.size = size
+      column(0).size = 7
+      column(0).row(0).size = 8
+      column(-1).size = 7
+      cells.leading = 2
+      cells.borders = [:bottom]
+      cells.border_width = 0.2
+      column(1).align = :right
+      column(2).align = :center
+      column(3..-2).align = :center
+      row(0).border_width = 1
+      self.header = true
+      row_count = [80]*dates_num.count
+      self.column_widths = [40,140,50,row_count,150].flatten
+      grayout = []
+      menuline = []
+      values = cells.columns(0).rows(1..-1)
+      values.each do |cell|
+        grayout << cell.row unless cell.content == 'タレ'
+      end
+      grayout.each do |num|
+        row(num).background_color = "dcdcdc"
       end
     end
   end
-  def line_item_rows(menus,dates_num,product)
+  def line_item_rows(menu,dates_num)
     row_0 = []
     dates_num.each do |date_num|
       date = date_num[0].strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[date_num[0].wday]})")
       num = date_num[1]
       row_0 << "#{date}\n#{num}人"
     end
-    data= [[{:content => "#{product.name}",colspan:3},"グループ",row_0,"仕込み内容"].flatten]
-    menus.includes(:materials).each do |menu|
-      u = menu.materials.length
-      menu.menu_materials.each_with_index do |mm,i|
-        if menu.category == "容器"
+    data= [[{:content => "#{menu.short_name}\n(#{menu.name})",colspan:2},"グループ",row_0,"仕込み内容"].flatten]
+    u = menu.materials.length
+    menu.menu_materials.each_with_index do |mm,i|
+      if menu.category == "容器"
+      else
+        if mm.post == 'タレ'
+          preparation = mm.preparation
         else
-          if mm.post == 'タレ'
-            preparation = mm.preparation
-          else
-            preparation = ''
-          end
-
-          amount_data = []
-          dates_num.each do |date_num|
-            num = date_num[1]
-            amount_data << "#{ActiveSupport::NumberHelper.number_to_rounded((mm.amount_used * num.to_i), strip_insignificant_zeros: true, :delimiter => ',', precision: 1)} #{mm.material.recipe_unit}"
-          end
-          if i == 0
-            data << [{:content => "#{menu.name}\n\n#{menu.short_name}", :rowspan => u},
-              {:content => "#{mm.post.slice(0..3)}" },
-              {:content => "#{mm.material.name}" },
-              {:content => "#{mm.source_group}",:align => :center },
-              amount_data,
-              {:content => "#{preparation}"}].flatten
-          else
-            data << [{:content => "#{mm.post.slice(0..3)}" },
-              {:content => "#{mm.material.name}" },
-              {:content => "#{mm.source_group}",:align => :center },
-              amount_data,
-              {:content => "#{preparation}" }].flatten
-          end
-
+          preparation = ''
         end
+
+        amount_data = []
+        dates_num.each do |date_num|
+          num = date_num[1]
+          amount_data << "#{ActiveSupport::NumberHelper.number_to_rounded((mm.amount_used * num.to_i), strip_insignificant_zeros: true, :delimiter => ',', precision: 1)} #{mm.material.recipe_unit}"
+        end
+        if i == 0
+          data << [{:content => "#{mm.post.slice(0..3)}" },
+            {:content => "#{mm.material.name}" },
+            {:content => "#{mm.source_group}",:align => :center },
+            amount_data,
+            {:content => "#{preparation}"}].flatten
+        else
+          data << [{:content => "#{mm.post.slice(0..3)}" },
+            {:content => "#{mm.material.name}" },
+            {:content => "#{mm.source_group}",:align => :center },
+            amount_data,
+            {:content => "#{preparation}" }].flatten
+        end
+
       end
     end
     data

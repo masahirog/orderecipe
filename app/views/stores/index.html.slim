@@ -5,6 +5,7 @@ table.table
       th 店名
       th 献立
       th リマインダー
+      th 返金対応
       th 発注
       th 発注可能商品
       th 改善リスト
@@ -14,6 +15,7 @@ table.table
         td = link_to store.name, edit_store_path(store)
         td = link_to '献立', store_daily_menus_path(store_id:store.id),class:'btn btn-sm btn-default'
         td = link_to 'リマインダー', store_tasks_path(store_id:store.id,status:'yet'),class:'btn btn-sm btn-default'
+        td = link_to '返金対応', refund_supports_path(store_id:store.id),class:'btn btn-sm btn-default'
         td = link_to store.short_name, orders_path(store_id:store.id),class:"order btn btn-default btn-sm"
         td = link_to '一覧', materials_stores_path(store_id:store.id),class:"order btn btn-default btn-sm"
         td

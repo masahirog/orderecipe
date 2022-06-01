@@ -146,7 +146,7 @@
             = m.text_field :order_material_memo,class:'form-control'
             div style="padding:3px 0 0 8px;color:gray;font-size:11px;"
               - if controller.action_name == "new"
-                - if params[:wday_new_order] == 'true'
+                - if params[:wday_new_order] == 'true' || params[:store_orderable_all_flag].present?
                   span = "目安：#{@b_hash[m.object.material_id]['order_criterion']}"
                 - else
                   = m.object.menu_name

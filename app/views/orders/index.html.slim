@@ -15,7 +15,7 @@
               div
                 div style='padding-top:5px;padding-bottom:10px;font-size:16px;'
                   p = date.strftime("%-m月%-d日")
-                  p = link_to 'すべて',new_order_path(make_date:date,filter:"none",store_id:params[:store_id]),class:'btn btn-primary btn-sm'
+                  p = link_to 'すべて',new_order_path(make_date:date,store_id:params[:store_id]),class:'btn btn-primary btn-sm'
                   p = link_to '野菜',new_order_path(make_date:date,filter:"veg",store_id:params[:store_id]),class:'btn btn-default btn-sm'
                   p = link_to '肉・米',new_order_path(make_date:date,filter:"meat",store_id:params[:store_id]),class:'btn btn-default btn-sm'
                   p = link_to 'その他',new_order_path(make_date:date,filter:"not_veg_meat",store_id:params[:store_id]),class:'btn btn-default btn-sm'
@@ -73,17 +73,11 @@
 
   - if @store.id == 39
     = link_to "備品発注", new_order_path(bihin_flag:true,store_id:params[:store_id]),class:"order btn btn-primary btn-sm",style:"float:left;margin-top:15px;margin-left:10px;"
-  / - unless @store.id == 39
-    = link_to "べじはん包材発注", new_order_path(np_flag:true,store_id:params[:store_id]),class:"order btn btn-primary btn-sm",style:"float:left;margin-top:15px;margin-left:10px;"
   = form_tag orders_path, :method => 'get',style:"float:right;margin-top:15px;margin-left:10px;" do
     = hidden_field_tag :store_id,params[:store_id]
     = select_tag :material_id, options_from_collection_for_select(@materials, :id, :name,params[:material_id]),include_blank: '食材検索', class: "form-control material_search",style:"width:300px;"
     = submit_tag "検索" ,class:"btn btn-default btn-sm",style:'margin-left:10px;'
   = link_to "納品確認",deliveried_list_orders_path(store_id:params[:store_id]),class:'btn btn-primary btn-sm',style:'float:right;margin-top:15px;margin-left:10px;'
-
-  / = form_tag new_order_path, method: :get do
-    = select_tag "vendor_id", options_from_collection_for_select(Vendor.all,:id,:company_name),include_blank:'企業を選択して', class: "form-control",style:'width:200px;float:left;'
-    = submit_tag '発注',class:'btn btn-default',style:'float:left;'
 
 
 table.table

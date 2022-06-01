@@ -13,6 +13,7 @@ class Store < ApplicationRecord
   has_many :material_store_orderables
   has_many :store_shift_frames, dependent: :destroy
   has_many :shift_frames, through: :store_shift_frames
+  has_many :refund_supports
   accepts_nested_attributes_for :store_shift_frames, allow_destroy: true
 
 end

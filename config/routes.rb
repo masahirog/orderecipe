@@ -33,6 +33,7 @@ Rails.application.routes.draw do
       post :create_frame
     end
   end
+  resources :refund_supports
   resources :shift_frames
   resources :groups
   resources :fix_shift_patterns

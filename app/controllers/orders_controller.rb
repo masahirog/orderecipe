@@ -256,6 +256,7 @@ class OrdersController < AdminController
 
   def new
     gon.holidays = HolidayJapan.list_year(Date.today.year).map{|data|data[0].to_s.delete('-')}
+    orderable_material_ids = MaterialStoreOrderable.where(store_id:params[:store_id],orderable_flag:true).map{|mso|mso.material_id}
     material_ids = []
     @product_hash = {}
     @arr = []
@@ -300,29 +301,6 @@ class OrdersController < AdminController
         hash["order_unit_quantity"] = material.order_unit_quantity
         hash["vendor_id"] = material.vendor_id
         hash["vendor_name"] = material.vendor.company_name.truncate(5)
-        hash['recipe_unit'] = material.recipe_unit
-        hash['order_unit'] = material.order_unit
-        hash['delivery_deadline'] = material.delivery_deadline
-        hash['order_material_memo'] =''
-        hash["vendor_info"] = material.vendor.delivery_date
-        @arr << hash
-      end
-    elsif params[:np_flag] == 'true'
-      order_products = []
-      make_date = (Date.today+2)
-      materials = Material.joins(:material_store_orderables).where(vendor_id:549,unused_flag:false).where(:material_store_orderables => {store_id:params[:store_id],orderable_flag:true}).order(short_name:'asc')
-      materials.each do |material|
-        hash = {}
-        hash['material'] = material
-        hash['make_num'] = 0
-        hash['product_id'] = ''
-        hash['menu_num'] = {'なし' => 0}
-        hash['material_id'] = material.id
-        hash['calculated_order_amount'] = 0
-        hash["recipe_unit_quantity"] = material.recipe_unit_quantity
-        hash["order_unit_quantity"] = material.order_unit_quantity
-        hash["vendor_id"] = material.vendor_id
-        hash["vendor_name"] = material.vendor.company_name.truncate(10)
         hash['recipe_unit'] = material.recipe_unit
         hash['order_unit'] = material.order_unit
         hash['delivery_deadline'] = material.delivery_deadline
@@ -392,7 +370,6 @@ class OrdersController < AdminController
         redirect_to orders_path(store_id:params[:store_id]),:alert => '期間は7日以内で選択してください。'
       end
       date = params[:make_date]
-      orderable_material_ids = MaterialStoreOrderable.where(store_id:params[:store_id],orderable_flag:true).map{|mso|mso.material_id}
       @date_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
       @product_hash = {}
       @dates.each do |date|
@@ -428,22 +405,23 @@ class OrdersController < AdminController
         order_products << hash
       end
       make_date = Date.parse(date)
+      #vendor絞り込み
+      if params[:filter] == "none" || params[:filter].nil?
+        vendor_ids = Vendor.all.ids
+      elsif params[:filter] == "veg"
+        # vendor_ids = [151,489]
+        category = ['vege']
+      elsif params[:filter] == "meat"
+        # vendor_ids = [121,131,21,441,529,509]
+        category = ['meat']
+      elsif params[:filter] == "not_veg_meat"
+        category = ["other_vege","other_food","packed","consumable_item","cooking_item"]
+        # vendor_ids = Vendor.where.not(id:[121,131,21,441,529,509,151,489]).ids
+      end
     else
       order_products = []
       make_date = Date.today
     end
-
-    #vendor絞り込み
-    if params[:filter] == "none" || params[:filter].nil?
-      vendor_ids = Vendor.all.ids
-    elsif params[:filter] == "veg"
-      vendor_ids = [151,489]
-    elsif params[:filter] == "meat"
-      vendor_ids = [121,131,21,441,529,509]
-    elsif params[:filter] == "not_veg_meat"
-      vendor_ids = Vendor.where.not(id:[121,131,21,441,529,509,151,489]).ids
-    end
-
     product_ids = order_products.map{|op|op[:product_id]}
     product_hash = Product.includes(:product_menus,[menus: [menu_materials: [material:[:vendor]]]]).where(id:product_ids).map{|product|[product.id,product]}.to_h
     order_products.each do |po|
@@ -457,47 +435,13 @@ class OrdersController < AdminController
         end
         product.menus.each do |menu|
           menu.menu_materials.each do |menu_material|
-            if params[:calculat_used_pack_order] == 'true'
-              if orderable_material_ids.include?(menu_material.material_id)
-                hash = {}
-                hash['material'] = menu_material.material
-                hash['make_num'] = po[:num]
-                hash['product_id'] = [product.id]
-                hash['menu_num'] = {menu.name => po[:num].to_i}
-                hash['material_id'] = menu_material.material_id
-                hash['calculated_order_amount'] = (po[:num].to_f * menu_material.amount_used)
-                hash["recipe_unit_quantity"] = menu_material.material.recipe_unit_quantity
-                hash["order_unit_quantity"] = menu_material.material.order_unit_quantity
-                hash["vendor_id"] = menu_material.material.vendor_id
-                hash["vendor_name"] = menu_material.material.vendor.company_name.first(5)
-                hash["vendor_info"] = menu_material.material.vendor.delivery_date
-                hash['recipe_unit'] = menu_material.material.recipe_unit
-                hash['order_unit'] = menu_material.material.order_unit
-                hash['delivery_deadline'] = menu_material.material.delivery_deadline
-                hash['order_material_memo'] =''
-                @arr << hash
-                material_ids << menu_material.material_id
-              end
-            else
-              if vendor_ids.include?(menu_material.material.vendor_id)
-                hash = {}
-                hash['material'] = menu_material.material
-                hash['make_num'] = po[:num]
-                hash['product_id'] = [product.id]
-                hash['menu_num'] = {menu.name => po[:num].to_i}
-                hash['material_id'] = menu_material.material_id
-                hash['calculated_order_amount'] = (po[:num].to_f * menu_material.amount_used)
-                hash["recipe_unit_quantity"] = menu_material.material.recipe_unit_quantity
-                hash["order_unit_quantity"] = menu_material.material.order_unit_quantity
-                hash["vendor_id"] = menu_material.material.vendor_id
-                hash["vendor_name"] = menu_material.material.vendor.company_name.first(5)
-                hash["vendor_info"] = menu_material.material.vendor.delivery_date
-                hash['recipe_unit'] = menu_material.material.recipe_unit
-                hash['order_unit'] = menu_material.material.order_unit
-                hash['delivery_deadline'] = menu_material.material.delivery_deadline
-                hash['order_material_memo'] =''
-                @arr << hash
-                material_ids << menu_material.material_id
+            if orderable_material_ids.include?(menu_material.material_id)
+              if category.present?
+                if category.include?(menu_material.material.category)
+                  make_hash(menu_material,material_ids,po,product,menu)
+                end
+              else
+                make_hash(menu_material,material_ids,po,product,menu)
               end
             end
           end
@@ -840,6 +784,26 @@ class OrdersController < AdminController
      @vendor_sum.map{|hash| @total_cost += hash["cost_price"]}
   end
   private
+  def make_hash(menu_material,material_ids,po,product,menu)
+    hash = {}
+    hash['material'] = menu_material.material
+    hash['make_num'] = po[:num]
+    hash['product_id'] = [product.id]
+    hash['menu_num'] = {menu.name => po[:num].to_i}
+    hash['material_id'] = menu_material.material_id
+    hash['calculated_order_amount'] = (po[:num].to_f * menu_material.amount_used)
+    hash["recipe_unit_quantity"] = menu_material.material.recipe_unit_quantity
+    hash["order_unit_quantity"] = menu_material.material.order_unit_quantity
+    hash["vendor_id"] = menu_material.material.vendor_id
+    hash["vendor_name"] = menu_material.material.vendor.company_name.first(5)
+    hash["vendor_info"] = menu_material.material.vendor.delivery_date
+    hash['recipe_unit'] = menu_material.material.recipe_unit
+    hash['order_unit'] = menu_material.material.order_unit
+    hash['delivery_deadline'] = menu_material.material.delivery_deadline
+    hash['order_material_memo'] =''
+    @arr << hash
+    material_ids << menu_material.material_id
+  end
   def order_create_update
     params[:order][:order_materials_attributes].each do |om|
       material = Material.find(om[1]['material_id'])

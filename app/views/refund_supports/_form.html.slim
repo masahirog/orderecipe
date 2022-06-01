@@ -1,0 +1,29 @@
+= form_for @refund_support do |f|
+  .form-group
+    = f.hidden_field :store_id
+    = f.label :store_id, "店舗名"
+    p = @refund_support.store.name
+
+
+  .form-group
+    = f.label :occurred_at, "発生日時"
+    = f.datetime_field :occurred_at,class:'form-control', required:true
+
+
+  .form-group
+    = f.label :status, "状況"
+    = f.select :status, options_for_select_from_enum(RefundSupport, :status),{}, { class: "form-control", required:true}
+  .form-group
+    = f.label :staff_name, "対応者"
+    = f.text_field :staff_name, class:"form-control", required:true
+
+  .form-group
+    = f.label :content, "内容"
+    = f.text_area :content, class:"form-control",style:"height:10em;", required:true
+
+  .form-group
+    = f.label :visit_date, "来店予定日（ない場合は空欄で）"
+    = f.date_field :visit_date,class:'form-control'
+
+
+  .actions = f.submit '保存する',class:'btn btn-primary'

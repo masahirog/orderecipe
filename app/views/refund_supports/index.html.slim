@@ -1,0 +1,23 @@
+h3 = "#{@store.name} 返金対応一覧"
+= link_to '新規作成', new_refund_support_path(store_id:@store.id),class:'btn btn-default'
+table.table
+  thead
+    tr
+      th style='width:150px;' 発生日時
+      th style='width:100px;' 状況
+      th style='width:80px;' 対応者
+      th 内容
+      th style='width:90px;' 来店予定
+
+  tbody
+    - @refund_supports.each do |refund_support|
+      tr
+        td = link_to refund_support.occurred_at.strftime("%Y年%m月%d日 %H:%M"), edit_refund_support_path(refund_support)
+        td = refund_support.status
+        td = refund_support.staff_name
+        td = text_url_to_link(simple_format(h(refund_support.content))).html_safe
+        td
+          - if refund_support.visit_date.present?
+            = refund_support.visit_date.strftime("%Y/%m/%d")
+          - else
+            |未定

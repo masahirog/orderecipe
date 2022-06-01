@@ -18,8 +18,8 @@
     - if copy > 0
       = link_to "分量違いメニュー：#{copy}件",menus_path(base_menu_id:@menu.base_menu_id),class:"btn btn-default", style:"margin:0 10px 0 10px;"
   - unless @base_menu.present?
-    button.btn.btn-default type="button" data-toggle="modal" data-target="#sampleModal" style="margin:0 10px 0 10px;" 分量違いメニュー作成
-    #sampleModal.modal.fade[tabindex="-1"]
+    / button.btn.btn-default type="button" data-toggle="modal" data-target="#sampleModal" style="margin:0 10px 0 10px;" 分量違いメニュー作成
+    / #sampleModal.modal.fade[tabindex="-1"]
       = form_tag(new_menu_path,method: :get) do
         .modal-dialog
           .modal-content.col-md-12

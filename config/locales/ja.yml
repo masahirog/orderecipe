@@ -2,13 +2,13 @@ ja:
   enums:
     material:
       category:
-        meat: 食材（肉・魚）
-        vege: 食材（野菜）
-        other_food: 食材（その他）
-        packed: 包材
+        meat: 生肉・生魚
+        vege: 生野菜
+        other_food: 調味料・既製品
+        packed: 包材・容器
         consumable_item: 消耗品
         cooking_item: 調理用品
-        other_packd: その他備品・消耗品
+        other_vege: その他野菜（冷凍・調理済み）
       storage_place:
         un_saved: 未登録
         normal: 常温
@@ -59,3 +59,7 @@ ja:
         done: 完了
         skip: スキップ
         cancel: キャンセル
+    refund_support:
+      status:
+        do: 未対応
+        done: 完了
