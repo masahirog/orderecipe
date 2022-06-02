@@ -2,7 +2,7 @@ ja:
   enums:
     material:
       category:
-        meat: 生肉・生魚
+        meat: 肉
         vege: 生野菜
         other_food: 調味料・既製品
         packed: 包材・容器
