@@ -16,8 +16,8 @@
                 div style='padding-top:5px;padding-bottom:10px;font-size:16px;'
                   p = date.strftime("%-m月%-d日")
                   p = link_to 'すべて',new_order_path(make_date:date,store_id:params[:store_id]),class:'btn btn-primary btn-sm'
-                  p = link_to '野菜',new_order_path(make_date:date,filter:"veg",store_id:params[:store_id]),class:'btn btn-default btn-sm'
-                  p = link_to '肉・米',new_order_path(make_date:date,filter:"meat",store_id:params[:store_id]),class:'btn btn-default btn-sm'
+                  p = link_to '野菜カテゴリ',new_order_path(make_date:date,filter:"veg",store_id:params[:store_id]),class:'btn btn-default btn-sm'
+                  p = link_to '肉カテゴリ',new_order_path(make_date:date,filter:"meat",store_id:params[:store_id]),class:'btn btn-default btn-sm'
                   p = link_to 'その他',new_order_path(make_date:date,filter:"not_veg_meat",store_id:params[:store_id]),class:'btn btn-default btn-sm'
                 div style=''
                   p
