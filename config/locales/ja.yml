@@ -9,6 +9,8 @@ ja:
         consumable_item: 消耗品
         cooking_item: 調理用品
         other_vege: その他野菜（冷凍・調理済み）
+        fish: 魚
+        rice: 米
       storage_place:
         un_saved: 未登録
         normal: 常温

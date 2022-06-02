@@ -415,7 +415,7 @@ class OrdersController < AdminController
         # vendor_ids = [121,131,21,441,529,509]
         category = ['meat']
       elsif params[:filter] == "not_veg_meat"
-        category = ["other_vege","other_food","packed","consumable_item","cooking_item"]
+        category = ["other_vege","other_food","packed","consumable_item","cooking_item",'fish','rice']
         # vendor_ids = Vendor.where.not(id:[121,131,21,441,529,509,151,489]).ids
       end
     else
