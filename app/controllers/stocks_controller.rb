@@ -18,7 +18,7 @@ class StocksController < AdminController
   def mobile_inventory
     store_id = params[:store_id]
     @store = Store.find(store_id)
-    vendor_ids = params[:vendor_id]
+    category = params[:category]
 
     if params[:date].present?
       @date = Date.parse(params[:date])
@@ -27,7 +27,7 @@ class StocksController < AdminController
     end
     from = @date - 5
     to = @date + 1
-    stocks = Stock.joins(:material).where(store_id:store_id).where(:materials => {vendor_id:vendor_ids}).where(date:from..to)
+    stocks = Stock.joins(:material).where(store_id:store_id).where(:materials => {category:category}).where(date:from..to)
     material_ids = []
     stocks.each do |stock|
       if stock.inventory_flag == true && stock.end_day_stock == 0

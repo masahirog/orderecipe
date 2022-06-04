@@ -49,8 +49,8 @@ html
                       h5 style='padding:0 10px;font-weight:bold;' 発注・在庫
                       li = link_to "発注",orders_path(store_id:39)
                       li = link_to "納品確認",deliveried_list_orders_path(store_id:39)
-                      li = link_to "野菜棚卸し",mobile_inventory_stocks_path(vendor_id:[151,489],store_id:39),target:'_blank'
-                      li = link_to "肉類棚卸し",mobile_inventory_stocks_path(vendor_id:[121,131,509,441,529],store_id:39),target:'_blank'
+                      li = link_to "野菜棚卸し",mobile_inventory_stocks_path(category:"vege",store_id:39),target:'_blank'
+                      li = link_to "肉類棚卸し",mobile_inventory_stocks_path(category:'meat',store_id:39),target:'_blank'
                       li = link_to "くるめし備品手配","https://docs.google.com/spreadsheets/d/12VRdyriEK7nqzdMFcdHqPPcs52n_CsZ20nGfbS0X5GI/edit#gid=104376609",target:'_blank'
                       li
                         a.clearfix href="/stocks/inventory?to=#{Date.today}&store_id=39"
@@ -108,11 +108,11 @@ html
     table.table.table-striped.layout-fixed style='font-size:1vw;max-width:1000px;margin:auto;'
       thead
         tr
-          th style=''
+          th style='width:100px;'
           th style='width:30%;text-align:right;' 食材名
           th.text-right style='width:20%;' 在庫計算
           th style='width:30%;' 在庫
-          th style='width:20%;' 3日内使用
+          th style='width:10%;' 3日内使用
       tbody
         - @materials.each do |material|
           - stock = Stock.find_by(material_id:material.id,date:@date)
@@ -123,10 +123,7 @@ html
           tr class="inventory_tr_#{material.id}" style="background-color:#{color}"
             / td style='font-size:10px;padding:10px 0 0 2px;' = material.vendor.company_name.slice(0..4)
             td style='color:#696969;'
-              - if material.vendor_id == 151
-                |ク
-              - elsif material.vendor_id == 489
-                |地
+              = material.vendor.company_name.slice(0..1)
             td style='text-align:right;font-size:1vw;'
               = link_to material.name,edit_material_path(material),target:'_blank'
             td.text-right style='color:#696969;'
