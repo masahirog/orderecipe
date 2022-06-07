@@ -41,8 +41,10 @@ class MaterialPreparation < Prawn::Document
         num = menu_num[1]
         if category == "0"
           menu_materials = menu.menu_materials.includes(:material).order('materials.category').where(:materials => {measurement_flag:true})
+        elsif category == "1"
+          menu_materials = menu.menu_materials.includes(:material).order('materials.category').where(:materials => {measurement_flag:true}).where.not(:materials => {category:2})
         else
-          menu_materials = menu.menu_materials.includes(:material).order('materials.category').where(:materials => {measurement_flag:true,category:category})
+          menu_materials = menu.menu_materials.includes(:material).order('materials.category').where(:materials => {measurement_flag:true,category:2})
         end
 
         menu_materials.each do |mm|
