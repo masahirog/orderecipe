@@ -41,9 +41,9 @@ task :pick_time_get => :environment do
 end
 
 task :reminder_bulk_create => :environment do
-  Task.reminder_bulk_create
+  Reminder.reminder_bulk_create
 end
 
-task :yet_task_move_nextday => :environment do
-  Task.yet_task_move_nextday
+task :yet_reminder_move_nextday => :environment do
+  Reminder.yet_reminder_move_nextday
 end

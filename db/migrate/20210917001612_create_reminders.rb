@@ -1,8 +1,8 @@
-class CreateTasks < ActiveRecord::Migration[5.2]
+class CreateReminders < ActiveRecord::Migration[5.2]
   def change
-    create_table :tasks do |t|
+    create_table :reminders do |t|
       t.integer :store_id,null:false
-      t.integer :task_template_id
+      t.integer :reminder_template_id
       t.date :action_date,null:false
       t.time :action_time
       t.string :content,null:false,default:''

@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class TaskTemplateStoreTest < ActiveSupport::TestCase
+class ReminderTemplateStoreTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end

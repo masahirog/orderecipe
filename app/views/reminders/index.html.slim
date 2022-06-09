@@ -1,0 +1,43 @@
+.clearfix style='margin-bottom:10px;'
+  h3 style='float:left;' = "#{@date.strftime("%Y/%-m/%-d(#{%w(日 月 火 水 木 金 土)[@date.wday]})")}ワーク一覧"
+  = link_to '新規登録',new_reminder_path,class:'btn btn-primary btn-sm',style:'margin:18px 0 0 20px;float:left;'
+= form_tag reminders_path, :method => 'get' do
+  = hidden_field_tag :store_id,params[:store_id]
+  .col-md-2
+    = date_field_tag :date,params[:date], class:"form-control"
+  .col-md-2
+    = select_tag :status, options_for_select(Reminder.statuses.keys.to_a,params[:status]), include_blank: true, class:"form-control"
+
+  .kensaku.col-md-1
+    label 　
+    = submit_tag "検索" ,class:"btn btn-primary"
+
+table.table.table-striped
+  thead
+    tr
+      th 日付
+      th 時間
+      th 店舗
+      th ワーク
+      th メモ
+      th ステータス
+
+  tbody
+    - @reminders.each do |reminder|
+      tr class="reminder_tr_#{reminder.id}"
+        td = reminder.action_date.strftime("%-m/%d")
+        td = reminder.action_time.strftime("%H:%M")
+        td = reminder.store.name
+        td = reminder.content
+        td = reminder.memo
+        td
+          = form_with(model: reminder, data: {remote: true},id:"update_reminder_#{reminder.id}") do |f|
+            = f.hidden_field :id,class:'reminder_id'
+            = f.select :status, options_for_select(Reminder.statuses.keys.to_a,f.object.status),{}, { class: "reminder_status form-control"}
+javascript:
+  $(function() {
+    $(document).on("change", ".reminder_status", function(event) {
+      var reminder_id = $(this).parent().find('.reminder_id').val();
+      Rails.fire($('#update_reminder_' + reminder_id)[0], 'submit');
+    });
+  });

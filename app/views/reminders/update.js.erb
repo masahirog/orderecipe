@@ -1,8 +1,8 @@
-<% if @task.status == "yet" %>
+<% if @reminder.status == "yet" %>
   $("<%= @class_name %>").css('background-color','#ffffff');
-<% elsif  @task.status == "done" %>
+<% elsif  @reminder.status == "done" %>
   $("<%= @class_name %>").css('background-color','#d3d3d3');
-  $("<%= @class_name %>").find(".task_status").val('done');
+  $("<%= @class_name %>").find(".reminder_status").val('done');
 
 <% else %>
   $("<%= @class_name %>").css('background-color','#d3d3d3');

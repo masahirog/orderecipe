@@ -26,7 +26,7 @@ ja:
         strong_rain: 大雨
         taihoon: 台風
         snow: 雪
-    task_template:
+    reminder_template:
       repeat_type:
         everyday: 毎日
         every_sales_day: 毎営業日
@@ -39,7 +39,7 @@ ja:
         sun: 毎週日曜
         beg_of_month: 月初
         end_of_month: 月末
-    task:
+    reminder:
       status:
         yet: 未完了
         done: 完了

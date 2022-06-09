@@ -40,14 +40,14 @@ class NotificationMailer < ActionMailer::Base
     end
   end
 
-  def task_create_send_mail(task,store_ids)
-    @task = task
-    @store_names = [@task.store.name]
+  def reminder_create_send_mail(reminder,store_ids)
+    @reminder = reminder
+    @store_names = [@reminder.store.name]
     if store_ids.present?
       @store_names << Store.where(id:store_ids.keys).pluck(:name)
     end
     mail(
-      subject: "task_create", #メールのタイトル
+      subject: "reminder_create", #メールのタイトル
       to: 'kitchen@taberu.co.jp',
 
     ) do |format|

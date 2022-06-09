@@ -1,0 +1,7 @@
+新規リマインダーがセットされました。
+店舗名：<%= @store_names.join('、') %>
+日付：<%= @reminder.action_date.strftime("%m月 %d日") %>
+時間：<%= @reminder.action_time.strftime("%H:%M") if @reminder.action_time.present? %>
+内容：<%= @reminder.content %>
+メモ：<%= @reminder.memo %>
+作者：<%= @reminder.drafter %>

@@ -547,6 +547,39 @@ ActiveRecord::Schema.define(version: 2022_06_04_013148) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "reminder_template_stores", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "reminder_template_id", null: false
+    t.integer "store_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "reminder_templates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "repeat_type", null: false
+    t.time "action_time"
+    t.string "content", null: false
+    t.text "memo"
+    t.integer "status", default: 0, null: false
+    t.string "drafter", default: "", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "reminders", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "store_id", null: false
+    t.integer "reminder_template_id"
+    t.date "action_date", null: false
+    t.time "action_time"
+    t.string "content", default: "", null: false
+    t.text "memo"
+    t.integer "status", default: 0, null: false
+    t.datetime "status_change_datetime"
+    t.string "drafter", default: "", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean "important_flag", default: false, null: false
+  end
+
   create_table "sales_reports", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "analysis_id", null: false
     t.integer "store_id", null: false
@@ -769,40 +802,6 @@ ActiveRecord::Schema.define(version: 2022_06_04_013148) do
     t.string "short_name"
     t.string "np_store_code"
     t.integer "group_id"
-  end
-
-  create_table "task_template_stores", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "task_template_id", null: false
-    t.integer "store_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["task_template_id", "store_id"], name: "index_task_template_stores_on_task_template_id_and_store_id", unique: true
-  end
-
-  create_table "task_templates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "repeat_type", null: false
-    t.time "action_time"
-    t.string "content", null: false
-    t.text "memo"
-    t.integer "status", default: 0, null: false
-    t.string "drafter", default: "", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "tasks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "store_id", null: false
-    t.integer "task_template_id"
-    t.date "action_date", null: false
-    t.time "action_time"
-    t.string "content", default: "", null: false
-    t.text "memo"
-    t.integer "status", default: 0, null: false
-    t.datetime "status_change_datetime"
-    t.string "drafter", default: "", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.boolean "important_flag", default: false, null: false
   end
 
   create_table "users", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

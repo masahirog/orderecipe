@@ -55,12 +55,12 @@ Rails.application.routes.draw do
       post :row_order_update
     end
   end
-  resources :tasks do
+  resources :reminders do
     collection do
       get :store
     end
   end
-  resources :task_templates do
+  resources :reminder_templates do
     collection do
       post :hand_reflect
     end

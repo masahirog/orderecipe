@@ -1,6 +1,6 @@
-class CreateTaskTemplates < ActiveRecord::Migration[5.2]
+class CreateReminderTemplates < ActiveRecord::Migration[5.2]
   def change
-    create_table :task_templates do |t|
+    create_table :reminder_templates do |t|
       t.integer :repeat_type,null:false
       t.time :action_time
       t.string :content,null:false

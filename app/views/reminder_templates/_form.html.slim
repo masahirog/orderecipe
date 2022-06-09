@@ -1,17 +1,17 @@
 
-= form_for @task_template do |f|
-  - if @task_template.errors.any?
+= form_for @reminder_template do |f|
+  - if @reminder_template.errors.any?
     #error_explanation
       h2
-        = pluralize(@task_template.errors.count, "error")
+        = pluralize(@reminder_template.errors.count, "error")
         |  prohibited this recipe from being saved:
       ul
-        - @task_template.errors.full_messages.each do |message|
+        - @reminder_template.errors.full_messages.each do |message|
           li
             = message
   .form-group
     = f.label :repeat_type, "リピートタイプ"
-    = f.select :repeat_type, options_for_select_from_enum(TaskTemplate, :repeat_type),{}, { class: "form-control", required:true}
+    = f.select :repeat_type, options_for_select_from_enum(ReminderTemplate, :repeat_type),{}, { class: "form-control", required:true}
   .form-group
     = f.label :action_time, "時間"
     = f.time_field :action_time,step:900,class:'form-control'
@@ -29,9 +29,9 @@
   .form-group
     label 店舗選択
     ul.list-group.clearfix
-      = f.fields_for :task_template_stores do |tts|
+      = f.fields_for :reminder_template_stores do |tts|
         li.list-group-item style='float:left;'
-          = tts.hidden_field :task_template_id
+          = tts.hidden_field :reminder_template_id
           / = tts.hidden_field :_destroy,value:true
           = tts.label :store_id, @stores_hash[tts.object.store_id]
           - if tts.object.id.present?
@@ -41,7 +41,7 @@
 
             / = tts.check_box :store_id,true,false
 
-      / = f.fields_for :task_template_stores do |tts|
-      /   = render 'task_template_store_fields', f:tts
+      / = f.fields_for :reminder_template_stores do |tts|
+      /   = render 'reminder_template_store_fields', f:tts
   .form-group
     input.btn.btn-success[type="button" onclick="submit();" value="登録する"]
