@@ -1,9 +1,10 @@
 class TasksController < ApplicationController
   before_action :set_task, only: %i[ show edit update destroy ]
   def index
-    @tasks = Task.includes([:task_comments,task_staffs:[:staff]]).all
+    @tasks = Task.includes([:task_comments]).all
     @todos = @tasks.where(status:0)
     @doings = @tasks.where(status:1)
+    @tasks = @tasks.includes(task_staffs:[:staff])
     @checkings = @tasks.where(status:2)
     @dones = @tasks.where(status:3)
   end
@@ -23,9 +24,9 @@ class TasksController < ApplicationController
 
   def create
     @task = Task.new(task_params)
-
     respond_to do |format|
       if @task.save
+        NotificationMailer.task_create_send_mail(@task).deliver
         format.html { redirect_to tasks_path, notice: "タスクを1件作成しました。" }
         format.json { render :show, status: :created, location: @task }
       else
