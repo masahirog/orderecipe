@@ -3,27 +3,60 @@ span プロジェクトや変更点、改善点、タスクなどの進捗や確
 .col-md-12
   .col-md-3
     h4 Todo
-    ul class="list-group list-group-flush"
+    - li_class = 'item'
+    ul class="list-group list-group-flush tasks_ul"
       - @todos.each do |task|
-        = render 'task_list',task:task
+        = render 'task_list',task:task,li_class:li_class
     = link_to 'タスクを追加', new_task_path,class:'btn btn-sm btn-default'
   .col-md-3
     h4 Doing
-    ul class="list-group list-group-flush"
+    - li_class = 'item_do'
+    ul class="list-group list-group-flush tasks_ul ul-sortable"
       - @doings.each do |task|
-        = render 'task_list',task:task
+        = render 'task_list',task:task,li_class:li_class
   .col-md-3
     h4 Checking
-    ul class="list-group list-group-flush"
+    - li_class = 'item_do'
+    ul class="list-group list-group-flush tasks_ul ul-sortable"
       - @checkings.each do |task|
-        = render 'task_list',task:task
+        = render 'task_list',task:task,li_class:li_class
   .col-md-3
     h4 Done
-    ul class="list-group list-group-flush"
+    - li_class = 'item_do'
+    ul class="list-group list-group-flush tasks_ul ul-sortable"
       - @dones.each do |task|
-        = render 'task_list',task:task
+        = render 'task_list',task:task,li_class:li_class
 
 javascript:
   $('.staff_read_check').on( 'change',function(){
     Rails.fire($(this).parent().parent('form')[0], 'submit');
   });
+
+  $(".tasks_ul").sortable({
+    axis: 'y',
+    items: '.item',
+    handle: '.drag',
+    update: function(e, ui) {
+      let item = ui.item;
+      let item_data = item.data();
+      let params = { _method: 'put' };
+      params[item_data.modelName] = { row_order_position: item.index() };
+      $.ajax({
+        type: 'POST',
+        url: item_data.updateUrl,
+        dataType: 'json',
+        data: params,
+      });
+    },
+    stop(e, ui) {
+      return ui.item.effect('highlight');
+    }
+  });
+
+css:
+  .drag{
+    cursor:grab;
+  }
+  .drag:active{
+    cursor:grabbing;
+  }

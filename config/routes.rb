@@ -34,8 +34,7 @@ Rails.application.routes.draw do
     end
   end
   resources :tasks do
-    collection do
-    end
+    put :sort
   end
   resources :task_comments
   resources :task_staffs

@@ -1,7 +1,14 @@
 class TasksController < ApplicationController
+  protect_from_forgery except: :sort
   before_action :set_task, only: %i[ show edit update destroy ]
+  def sort
+    task = Task.find(params[:task_id])
+    task.update(task_params)
+    render body: nil
+  end
+
   def index
-    @tasks = Task.includes([:task_comments]).all
+    @tasks = Task.includes([:task_comments]).rank(:row_order)
     @todos = @tasks.where(status:0)
     @doings = @tasks.where(status:1)
     @tasks = @tasks.includes(task_staffs:[:staff])
@@ -63,6 +70,6 @@ class TasksController < ApplicationController
     end
 
     def task_params
-      params.require(:task).permit(:title,:content,:status,:drafter,:final_decision,task_staffs_attributes:[:id,:task_id,:staff_id,:read_flag,:_destroy])
+      params.require(:task).permit(:title,:content,:status,:drafter,:final_decision,:row_order_position,task_staffs_attributes:[:id,:task_id,:staff_id,:read_flag,:_destroy])
     end
 end

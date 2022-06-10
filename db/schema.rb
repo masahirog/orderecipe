@@ -828,6 +828,7 @@ ActiveRecord::Schema.define(version: 2022_06_09_154612) do
     t.text "final_decision"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "row_order"
   end
 
   create_table "users", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
