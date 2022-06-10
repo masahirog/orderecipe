@@ -1,0 +1,29 @@
+h3 タスク・プロジェクト管理ボード
+span プロジェクトや変更点、改善点、タスクなどの進捗や確認管理する。リマインダーは店舗での定期タスクなので、それとは使い分ける。
+.col-md-12
+  .col-md-3
+    h4 Todo
+    ul class="list-group list-group-flush"
+      - @todos.each do |task|
+        = render 'task_list',task:task
+    = link_to 'タスクを追加', new_task_path,class:'btn btn-sm btn-default'
+  .col-md-3
+    h4 Doing
+    ul class="list-group list-group-flush"
+      - @doings.each do |task|
+        = render 'task_list',task:task
+  .col-md-3
+    h4 Checking
+    ul class="list-group list-group-flush"
+      - @checkings.each do |task|
+        = render 'task_list',task:task
+  .col-md-3
+    h4 Done
+    ul class="list-group list-group-flush"
+      - @dones.each do |task|
+        = render 'task_list',task:task
+
+javascript:
+  $('.staff_read_check').on( 'change',function(){
+    Rails.fire($(this).parent().parent('form')[0], 'submit');
+  });

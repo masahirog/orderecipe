@@ -1,0 +1,2 @@
+$(".task_staff_<%=@task_staff.id%>_read_check_li").css({'background-color':'#99FF99','opacity':'.4'}).animate({'opacity': '1','background-color':'white'}, 'slow');
+$(".task_<%= @task.id %>_read_count").text("<%= @count %>")

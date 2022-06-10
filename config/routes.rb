@@ -33,6 +33,12 @@ Rails.application.routes.draw do
       post :create_frame
     end
   end
+  resources :tasks do
+    collection do
+    end
+  end
+  resources :task_comments
+  resources :task_staffs
   resources :refund_supports
   resources :shift_frames
   resources :groups

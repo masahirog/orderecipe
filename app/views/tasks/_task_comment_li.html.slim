@@ -1,0 +1,5 @@
+li.list-group-item style='margin-bottom:5px;'
+  div
+    = text_url_to_link(simple_format(h(tc.content))).html_safe
+  div.text-right style='color:gray;'
+    = "#{tc.name} #{tc.created_at.strftime("%Y/%m/%d/%H:%M")}"

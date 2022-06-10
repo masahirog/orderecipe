@@ -1,0 +1,9 @@
+= form_for @task_staff do |f|
+  - if @task_staff.errors.any?
+    #error_explanation
+      h2 = "#{pluralize(@task_staff.errors.count, "error")} prohibited this task_staff from being saved:"
+      ul
+        - @task_staff.errors.full_messages.each do |message|
+          li = message
+
+  .actions = f.submit

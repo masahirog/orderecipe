@@ -1,0 +1,19 @@
+h1 Listing task_staffs
+
+table
+  thead
+    tr
+      th
+      th
+      th
+
+  tbody
+    - @task_staffs.each do |task_staff|
+      tr
+        td = link_to 'Show', task_staff
+        td = link_to 'Edit', edit_task_staff_path(task_staff)
+        td = link_to 'Destroy', task_staff, data: { confirm: 'Are you sure?' }, method: :delete
+
+br
+
+= link_to 'New Task staff', new_task_staff_path

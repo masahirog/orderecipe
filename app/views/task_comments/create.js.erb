@@ -1,0 +1,2 @@
+$(".task_<%= @task.id %>_comments").append("<li class='list-group-item' style='margin-bottom:5px;'><div><%= text_url_to_link(simple_format(h(@task_comment.content))).html_safe %></div><div class='text-right' style='color:gray;'><%=@task_comment.name%> <%= @task_comment.created_at.strftime('%Y/%m/%d/%H:%M')%></div></li>");
+$('.task_<%= @task.id %>_comment_form')[0].reset(); // 追加

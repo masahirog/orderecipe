@@ -1,0 +1,34 @@
+= form_for @task do |f|
+  - if @task.errors.any?
+    #error_explanation
+      h2 = "#{pluralize(@task.errors.count, "error")} prohibited this store from being saved:"
+      ul
+        - @task.errors.full_messages.each do |message|
+          li = message
+  .form-group
+    = f.label :title, "タイトル"
+    = f.text_field :title, class: "form-control"
+  .form-group
+    = f.label :content, "内容"
+    = f.text_area :content, class:"form-control",style:"height:10em;"
+  .form-group
+    = f.label :status, "状況"
+    = f.select :status, options_for_select_from_enum(Task, :status),{}, { class: "form-control", required:true}
+  .form-group
+    = f.label :drafter, "投稿者名"
+    = f.text_field :drafter, class:"form-control"
+  .form-group
+    = f.label :final_decision, "最終決定"
+    = f.text_area :final_decision, class:"form-control",style:"height:10em;"
+
+  .form-group
+    label 既読確認チェック
+    ul.list-group.clearfix
+      = f.fields_for :task_staffs do |ts|
+        = ts.hidden_field :task_id
+        = ts.hidden_field :staff_id
+        li.list-group-item style='float:left;'
+          = ts.label :read_flag, ts.object.staff.name
+          = ts.check_box :read_flag
+
+  .actions = f.submit '登録する',class:'btn btn-primary'
