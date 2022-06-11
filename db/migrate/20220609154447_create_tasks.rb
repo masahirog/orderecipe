@@ -8,6 +8,7 @@ class CreateTasks < ActiveRecord::Migration[6.0]
       t.text :final_decision
       t.timestamps
       t.integer :row_order
+      t.integer :category
     end
   end
 end

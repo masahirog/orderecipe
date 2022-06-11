@@ -1,5 +1,5 @@
 h3 タスク・プロジェクト管理ボード
-span プロジェクトや変更点、改善点、タスクなどの進捗や確認管理する。リマインダーは店舗での定期タスクなので、それとは使い分ける。
+span 「不定期タスク、改善点、プロジェクト」の進捗や確認管理する。リマインダーは店舗での定期タスクなので、それとは使い分ける。
 .col-md-12
   .col-md-3
     h4 Todo
@@ -14,7 +14,7 @@ span プロジェクトや変更点、改善点、タスクなどの進捗や確
         .modal-content style='background-color:#f5f5f5;'
           .modal-body
             .clearfix
-              = form_with(model: Task.new,class:'new_task_form', data: {remote: true}) do |f|
+              = form_with(model: @task,class:'new_task_form', data: {remote: true}) do |f|
                 .form-group
                   = f.text_field :title, class:"form-control", required:true
                 hr style='border-top: 1px solid #ccc;'
@@ -24,6 +24,16 @@ span プロジェクトや変更点、改善点、タスクなどの進捗や確
                 .form-group
                   = f.label :final_decision, "最終決定"
                   = f.text_area :final_decision, class:"form-control",style:"height:10em;"
+                .form-group
+                  label 既読確認チェック
+                  ul.list-group.clearfix
+                    = f.fields_for :task_staffs do |ts|
+                      = ts.hidden_field :task_id
+                      = ts.hidden_field :staff_id
+                      li.list-group-item style='float:left;'
+                        = ts.label :read_flag, ts.object.staff.name
+                        = ts.check_box :read_flag
+
                 .clearfix
                   = f.select :status, options_for_select_from_enum(Task, :status),{include_blank:'ステータス'}, { class: "form-control", required:true,style:'float:left;width:150px;'}
                   = f.text_field :drafter, class:"form-control",placeholder:'投稿者名',style:'float:left;width:150px;margin-left:10px;', required:true

@@ -14,6 +14,10 @@ class TasksController < ApplicationController
     @tasks = @tasks.includes(task_staffs:[:staff])
     @checkings = @tasks.where(status:2)
     @dones = @tasks.where(status:3)
+    @task = Task.new
+    Staff.where(employment_status:1).where.not(store_id:39).each do |staff|
+      @task.task_staffs.build(staff_id:staff.id,read_flag:false)
+    end
   end
 
   def show
