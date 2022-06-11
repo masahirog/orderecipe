@@ -12,7 +12,7 @@ class TasksController < ApplicationController
     @todos = @tasks.where(status:0)
     @doings = @tasks.where(status:1)
     @tasks = @tasks.includes(task_staffs:[:staff])
-    @checkings = @tasks.where(status:2)
+    @checks = @tasks.where(status:2)
     @dones = @tasks.where(status:3)
     @task = Task.new
     Staff.where(employment_status:1).where.not(store_id:39).each do |staff|

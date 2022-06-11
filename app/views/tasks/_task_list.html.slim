@@ -2,7 +2,7 @@ li.clearfix.list-group-item.item data={model_name: task.class.name.underscore, u
   i class="drag fa fa-bars" aria-hidden="true" style='float:left;margin-top:4px;margin-right:10px;color:silver;'
   div id="modal_title_task_#{task.id}" data-toggle="modal" data-target="#modal_#{task.id}" style='float:left;cursor: pointer;width:calc(100% - 23px);'
     span.title = "#{task.title}"
-    - if task.status == 'checking'|| task.status == 'done'
+    - if task.status == 'check'|| task.status == 'done'
       span.pull-right class="task_#{task.id}_read_count" = "#{task.task_staffs.where(read_flag:true).count}/#{task.task_staffs.count}" if task.task_staffs.present?
   div.modal.fade id="modal_#{task.id}" tabindex="-1"
     .modal-dialog
@@ -28,7 +28,7 @@ li.clearfix.list-group-item.item data={model_name: task.class.name.underscore, u
                 / = f.text_field :drafter, class:"form-control",placeholder:'投稿者名',style:'float:left;width:200px;margin-left:10px;'
                 = link_to "削除", task, method: :delete,class:'btn btn-default btn-sm pull-right',style:'margin-left:10px;',data: { confirm: "ホンマに削除するで？" }
                 = f.submit '更新する',class:'btn btn-primary pull-right btn-sm'
-          - if task.status == 'checking'|| task.status == 'done'
+          - if task.status == 'check'|| task.status == 'done'
             hr style='border-top: 1px solid #ccc;'
             .form-group
               label 確認チェック

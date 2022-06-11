@@ -1,5 +1,5 @@
-h3 タスク・プロジェクト管理ボード
-span 「不定期タスク、改善点、プロジェクト」の進捗や確認管理する。リマインダーは店舗での定期タスクなので、それとは使い分ける。
+h3 進捗ボードの通知【タスク・改善・プロジェクト】
+span 「不定期タスク、改善点、プロジェクト」の進捗・共有の管理をします。リマインダーは店舗での定期タスクなので、それとは使い分ける。
 .col-md-12
   .col-md-3
     h4 Todo
@@ -8,7 +8,7 @@ span 「不定期タスク、改善点、プロジェクト」の進捗や確認
       - @todos.each do |task|
         = render 'task_list',task:task
     / = link_to 'タスクを追加', new_task_path,class:'btn btn-sm btn-default'
-    button.btn.btn-default.btn-sm data-toggle="modal" data-target="#modal_new_task" タスクを追加
+    button.btn.btn-default.btn-sm data-toggle="modal" data-target="#modal_new_task" カードを追加
     #modal_new_task.modal.fade tabindex="-1"
       .modal-dialog
         .modal-content style='background-color:#f5f5f5;'
@@ -44,19 +44,16 @@ span 「不定期タスク、改善点、プロジェクト」の進捗や確認
 
   .col-md-3
     h4 Doing
-    - li_class = 'item_do'
     ul#tasks_doing_ul class="list-group list-group-flush tasks_ul ul-sortable" style='min-height:100px;'
       - @doings.each do |task|
         = render 'task_list',task:task
   .col-md-3
-    h4 Checking
-    - li_class = 'item_do'
-    ul#tasks_checking_ul class="list-group list-group-flush tasks_ul ul-sortable" style='min-height:100px;'
-      - @checkings.each do |task|
+    h4 Check
+    ul#tasks_check_ul class="list-group list-group-flush tasks_ul ul-sortable" style='min-height:100px;'
+      - @checks.each do |task|
         = render 'task_list',task:task
   .col-md-3
     h4 Done
-    - li_class = 'item_do'
     ul#tasks_done_ul class="list-group list-group-flush tasks_ul ul-sortable" style='min-height:100px;'
       - @dones.each do |task|
         = render 'task_list',task:task
@@ -80,8 +77,8 @@ javascript:
         params[item_data.modelName]['status'] = 'todo';
       }else if (ul_id == 'tasks_doing_ul') {
         params[item_data.modelName]['status'] = 'doing';
-      }else if (ul_id == 'tasks_checking_ul') {
-        params[item_data.modelName]['status'] = 'checking';
+      }else if (ul_id == 'tasks_check_ul') {
+        params[item_data.modelName]['status'] = 'check';
       }else if (ul_id == 'tasks_done_ul') {
         params[item_data.modelName]['status'] = 'done';
       }
