@@ -24,7 +24,7 @@ span 「不定期タスク、改善点、プロジェクト」の進捗・共有
                 .form-group
                   = f.label :final_decision, "最終決定"
                   = f.text_area :final_decision, class:"form-control",style:"height:10em;"
-                .form-group
+                .form-group style='display:none;'
                   label 既読確認チェック
                   ul.list-group.clearfix
                     = f.fields_for :task_staffs do |ts|
