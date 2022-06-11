@@ -1,0 +1,5 @@
+$lastAnimation = $("<%= escape_javascript(render partial: 'tasks/task_list', locals: {task:@task}) %>");
+$("#tasks_<%=@task.status %>_ul").append($lastAnimation);
+$('.new_task_form')[0].reset(); // 追加
+$('#modal_new_task').modal('hide');
+alert('新規追加！');

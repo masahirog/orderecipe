@@ -33,12 +33,12 @@ class TasksController < ApplicationController
     @task = Task.new(task_params)
     respond_to do |format|
       if @task.save
-        NotificationMailer.task_create_send_mail(@task).deliver
+        NotificationMailer.task_create_send_mail(@task).deliver if params["chatwork_notice"]=='true'
         format.html { redirect_to tasks_path, notice: "タスクを1件作成しました。" }
-        format.json { render :show, status: :created, location: @task }
+        format.js
       else
         format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @task.errors, status: :unprocessable_entity }
+        format.js
       end
     end
   end
@@ -47,10 +47,10 @@ class TasksController < ApplicationController
     respond_to do |format|
       if @task.update(task_params)
         format.html { redirect_to tasks_path, notice: "タスクを1件更新しました。" }
-        format.json { render :show, status: :ok, location: @task }
+        format.js
       else
         format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @task.errors, status: :unprocessable_entity }
+        format.js
       end
     end
   end

@@ -1,17 +1,18 @@
 li.clearfix.list-group-item.item data={model_name: task.class.name.underscore, update_url: task_sort_path(task)} style='padding-left:10px;'
   i class="drag fa fa-bars" aria-hidden="true" style='float:left;margin-top:4px;margin-right:10px;color:silver;'
-  div data-toggle="modal" data-target="#modal_#{task.id}" style='float:left;cursor: pointer;width:calc(100% - 23px);'
-    = "#{task.title}"
+  div id="modal_title_task_#{task.id}" data-toggle="modal" data-target="#modal_#{task.id}" style='float:left;cursor: pointer;width:calc(100% - 23px);'
+    span.title = "#{task.title}"
     - if task.status == 'checking'|| task.status == 'done'
       span.pull-right class="task_#{task.id}_read_count" = "#{task.task_staffs.where(read_flag:true).count}/#{task.task_staffs.count}" if task.task_staffs.present?
   div.modal.fade id="modal_#{task.id}" tabindex="-1"
     .modal-dialog
       .modal-content style='background-color:#f5f5f5;'
-        .modal-header
-          h4.modal-title = task.title
         .modal-body
           .clearfix
             = form_with(model: task, data: {remote: true}) do |f|
+              .form-group
+                = f.text_field :title, class:"form-control"
+              hr style='border-top: 1px solid #ccc;'
               .form-group
                 = f.label :content, "内容"
                 = f.text_area :content, class:"form-control",style:"height:10em;"
@@ -19,8 +20,12 @@ li.clearfix.list-group-item.item data={model_name: task.class.name.underscore, u
                 = f.label :final_decision, "最終決定"
                 = f.text_area :final_decision, class:"form-control",style:"height:10em;"
               .clearfix
-                = f.select :status, options_for_select_from_enum(Task, :status),{include_blank:'ステータス'}, { class: "form-control", required:true,style:'float:left;width:200px;'}
-                = f.text_field :drafter, class:"form-control",placeholder:'投稿者名',style:'float:left;width:200px;margin-left:10px;'
+                label ステータス：
+                = f.object.status
+                label 　　投稿：
+                = f.object.drafter
+                / = f.select :status, options_for_select_from_enum(Task, :status),{include_blank:'ステータス'}, { class: "form-control", required:true,style:'float:left;width:200px;'}
+                / = f.text_field :drafter, class:"form-control",placeholder:'投稿者名',style:'float:left;width:200px;margin-left:10px;'
                 = f.submit '更新する',class:'btn btn-primary pull-right'
           - if task.status == 'checking'|| task.status == 'done'
             hr style='border-top: 1px solid #ccc;'

@@ -4,28 +4,52 @@ span プロジェクトや変更点、改善点、タスクなどの進捗や確
   .col-md-3
     h4 Todo
     - li_class = 'item'
-    ul class="list-group list-group-flush tasks_ul"
+    ul#tasks_todo_ul class="list-group list-group-flush tasks_ul"
       - @todos.each do |task|
-        = render 'task_list',task:task,li_class:li_class
-    = link_to 'タスクを追加', new_task_path,class:'btn btn-sm btn-default'
+        = render 'task_list',task:task
+    / = link_to 'タスクを追加', new_task_path,class:'btn btn-sm btn-default'
+    button.btn.btn-default.btn-sm data-toggle="modal" data-target="#modal_new_task" タスクを追加
+    #modal_new_task.modal.fade tabindex="-1"
+      .modal-dialog
+        .modal-content style='background-color:#f5f5f5;'
+          .modal-body
+            .clearfix
+              = form_with(model: Task.new,class:'new_task_form', data: {remote: true}) do |f|
+                .form-group
+                  = f.text_field :title, class:"form-control", required:true
+                hr style='border-top: 1px solid #ccc;'
+                .form-group
+                  = f.label :content, "内容"
+                  = f.text_area :content, class:"form-control",style:"height:10em;"
+                .form-group
+                  = f.label :final_decision, "最終決定"
+                  = f.text_area :final_decision, class:"form-control",style:"height:10em;"
+                .clearfix
+                  = f.select :status, options_for_select_from_enum(Task, :status),{include_blank:'ステータス'}, { class: "form-control", required:true,style:'float:left;width:150px;'}
+                  = f.text_field :drafter, class:"form-control",placeholder:'投稿者名',style:'float:left;width:150px;margin-left:10px;', required:true
+                  div style='width:100px;float:left;padding:5px 10px;'
+                    label 通知
+                    = check_box_tag "chatwork_notice",true,true
+                  = f.submit '更新する',class:'btn btn-primary pull-right'
+
   .col-md-3
     h4 Doing
     - li_class = 'item_do'
-    ul class="list-group list-group-flush tasks_ul ul-sortable"
+    ul#tasks_doing_ul class="list-group list-group-flush tasks_ul ul-sortable"
       - @doings.each do |task|
-        = render 'task_list',task:task,li_class:li_class
+        = render 'task_list',task:task
   .col-md-3
     h4 Checking
     - li_class = 'item_do'
-    ul class="list-group list-group-flush tasks_ul ul-sortable"
+    ul#tasks_checking_ul class="list-group list-group-flush tasks_ul ul-sortable"
       - @checkings.each do |task|
-        = render 'task_list',task:task,li_class:li_class
+        = render 'task_list',task:task
   .col-md-3
     h4 Done
     - li_class = 'item_do'
-    ul class="list-group list-group-flush tasks_ul ul-sortable"
+    ul#tasks_done_ul class="list-group list-group-flush tasks_ul ul-sortable" style='min-height:100px;'
       - @dones.each do |task|
-        = render 'task_list',task:task,li_class:li_class
+        = render 'task_list',task:task
 
 javascript:
   $('.staff_read_check').on( 'change',function(){
@@ -33,14 +57,24 @@ javascript:
   });
 
   $(".tasks_ul").sortable({
-    axis: 'y',
     items: '.item',
     handle: '.drag',
+    connectWith: '.tasks_ul',
     update: function(e, ui) {
       let item = ui.item;
       let item_data = item.data();
+      let ul_id = item.parent().attr('id');
       let params = { _method: 'put' };
       params[item_data.modelName] = { row_order_position: item.index() };
+      if(ul_id == 'tasks_todo_ul'){
+        params[item_data.modelName]['status'] = 'todo';
+      }else if (ul_id == 'tasks_doing_ul') {
+        params[item_data.modelName]['status'] = 'doing';
+      }else if (ul_id == 'tasks_checking_ul') {
+        params[item_data.modelName]['status'] = 'checking';
+      }else if (ul_id == 'tasks_done_ul') {
+        params[item_data.modelName]['status'] = 'done';
+      }
       $.ajax({
         type: 'POST',
         url: item_data.updateUrl,
