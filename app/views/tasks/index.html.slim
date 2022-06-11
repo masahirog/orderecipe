@@ -4,7 +4,7 @@ span プロジェクトや変更点、改善点、タスクなどの進捗や確
   .col-md-3
     h4 Todo
     - li_class = 'item'
-    ul#tasks_todo_ul class="list-group list-group-flush tasks_ul"
+    ul#tasks_todo_ul class="list-group list-group-flush tasks_ul" style='min-height:100px;'
       - @todos.each do |task|
         = render 'task_list',task:task
     / = link_to 'タスクを追加', new_task_path,class:'btn btn-sm btn-default'
@@ -35,13 +35,13 @@ span プロジェクトや変更点、改善点、タスクなどの進捗や確
   .col-md-3
     h4 Doing
     - li_class = 'item_do'
-    ul#tasks_doing_ul class="list-group list-group-flush tasks_ul ul-sortable"
+    ul#tasks_doing_ul class="list-group list-group-flush tasks_ul ul-sortable" style='min-height:100px;'
       - @doings.each do |task|
         = render 'task_list',task:task
   .col-md-3
     h4 Checking
     - li_class = 'item_do'
-    ul#tasks_checking_ul class="list-group list-group-flush tasks_ul ul-sortable"
+    ul#tasks_checking_ul class="list-group list-group-flush tasks_ul ul-sortable" style='min-height:100px;'
       - @checkings.each do |task|
         = render 'task_list',task:task
   .col-md-3
