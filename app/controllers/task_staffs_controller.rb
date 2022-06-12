@@ -32,7 +32,7 @@ class TaskStaffsController < ApplicationController
     @task = @task_staff.task
     respond_to do |format|
       if @task_staff.update(task_staff_params)
-        @count = "#{@task.task_staffs.where(read_flag:true).count}/#{@task.task_staffs.count}"
+        @count = @task.task_staffs.where(read_flag:true).count
         format.html { redirect_to task_staff_url(@task_staff), notice: "Task staff was successfully updated." }
         format.js
       else

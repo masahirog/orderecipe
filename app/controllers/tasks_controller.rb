@@ -8,7 +8,7 @@ class TasksController < ApplicationController
   end
 
   def index
-    @tasks = Task.includes([:task_comments]).rank(:row_order)
+    @tasks = Task.includes([:task_comments,:task_images,:task_staffs]).rank(:row_order)
     @todos = @tasks.where(status:0)
     @doings = @tasks.where(status:1)
     @tasks = @tasks.includes(task_staffs:[:staff])
@@ -74,6 +74,8 @@ class TasksController < ApplicationController
     end
 
     def task_params
-      params.require(:task).permit(:title,:content,:status,:drafter,:final_decision,:row_order_position,task_staffs_attributes:[:id,:task_id,:staff_id,:read_flag,:_destroy])
+      params.require(:task).permit(:title,:content,:status,:drafter,:final_decision,:row_order_position,:category,
+        task_staffs_attributes:[:id,:task_id,:staff_id,:read_flag,:_destroy],
+        task_images_attributes:[:id,:task_id,:image,:image_cache,:_destroy,:remove_image])
     end
 end

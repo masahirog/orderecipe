@@ -1,0 +1,11 @@
+.col-md-4 style='height:130px;'
+  - if f.object.image?
+    = image_tag f.object.image.to_s,class:"img-responsive",style:'height:100px;'
+    = f.label :_destroy,"削除"
+    = f.check_box :_destroy
+  - else
+    label class="upload-task-image-label" style='margin-top:40px;'
+      span 画像アップロード
+      = f.file_field :image,style:'display:none;',class:'image_upload'
+      = f.hidden_field :image_cache
+    = f.hidden_field :image_cache

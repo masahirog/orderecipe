@@ -43,10 +43,9 @@ class TaskCommentsController < ApplicationController
 
   def destroy
     @task_comment.destroy
-
     respond_to do |format|
       format.html { redirect_to task_comments_url, notice: "Task comment was successfully destroyed." }
-      format.json { head :no_content }
+      format.js
     end
   end
 
@@ -56,6 +55,6 @@ class TaskCommentsController < ApplicationController
     end
 
     def task_comment_params
-      params.require(:task_comment).permit(:content,:name,:task_id)
+      params.require(:task_comment).permit(:content,:name,:task_id,:image,:image_cache,:remove_image)
     end
 end

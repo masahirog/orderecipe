@@ -5,6 +5,7 @@ class CreateTaskComments < ActiveRecord::Migration[6.0]
       t.text :content
       t.string :name
       t.timestamps
+      t.string :image
     end
   end
 end

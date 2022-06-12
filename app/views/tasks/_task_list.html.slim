@@ -1,58 +1,108 @@
-li.clearfix.list-group-item.item data={model_name: task.class.name.underscore, update_url: task_sort_path(task)} style='padding-left:10px;'
-  i class="drag fa fa-bars" aria-hidden="true" style='float:left;margin-top:4px;margin-right:10px;color:silver;'
-  div id="modal_title_task_#{task.id}" data-toggle="modal" data-target="#modal_#{task.id}" style='float:left;cursor: pointer;width:calc(100% - 23px);'
-    span.title = "#{task.title}"
-    - if task.status == 'check'|| task.status == 'done'
-      span.pull-right class="task_#{task.id}_read_count" = "#{task.task_staffs.where(read_flag:true).count}/#{task.task_staffs.count}" if task.task_staffs.present?
-  div.modal.fade id="modal_#{task.id}" tabindex="-1"
-    .modal-dialog
-      .modal-content style='background-color:#f5f5f5;'
-        .modal-body
-          .clearfix
-            = form_with(model: task, data: {remote: true}) do |f|
-              .form-group
-                = f.text_field :title, class:"form-control"
+li.clearfix.list-group-item.item class="task_#{task.id}_li" data={model_name: task.class.name.underscore, update_url: task_sort_path(task)} style='padding-left:10px;'
+  div style='float:left;width:calc(100% - 30px);'
+    div id="modal_title_task_#{task.id}" data-toggle="modal" data-target="#modal_#{task.id}" style='cursor: pointer;'
+      h5.title style='margin-top:0;' = "#{task.title}"
+      .clearfix
+        div style='float:left;padding:0px 8px;'
+          i class="fa-solid fa-comment-dots" style='margin-right:3px;font-size:1em;color:#deb887;'
+          span class="task_#{task.id}_read_count" style="color:#a9a9a9;" = "#{task.task_staffs.where(read_flag:true).count}"
+
+        div style='float:left;padding:0px 8px;'
+          i class="fa-solid fa-check" style='margin-right:3px;font-size:.8em;color:#006400;'
+          span class="task_#{task.id}_read_count" style="color:#a9a9a9;" = "#{task.task_staffs.where(read_flag:true).count}"
+        div style='float:left;padding:0px 8px;'
+          - if task.category == 'task'
+            span class="badge bg-blue" = task.category
+          - elsif task.category == 'kaizen'
+            span class="badge bg-green" = task.category
+          - elsif task.category == 'project'
+            span class="badge bg-red" = task.category
+
+
+    .modal.fade id="modal_#{task.id}" tabindex="-1"
+      .modal-dialog
+        .modal-content style='background-color:#f5f5f5;'
+          .modal-body
+            .clearfix.task_edit style='display:none;'
+              = form_with(model: task, data: {remote: true}) do |f|
+                .form-group
+                  = f.text_field :title, class:"form-control"
+                hr style='border-top: 1px solid #ccc;'
+                .form-group
+                  = f.label :content, "内容"
+                  = f.text_area :content, class:"form-control",style:"height:10em;"
+                .form-group
+                  = f.label :final_decision, "最終決定"
+                  = f.text_area :final_decision, class:"form-control",style:"height:10em;"
+                .form-group.clearfix
+                  .task_images_area
+                    = f.fields_for :task_images do |ti|
+                      = render 'task_image_fields', f:ti
+                  .col-md-4 style='text-align:center;margin-top:35px;margin-bottom:35px;color:silver;'
+                    = link_to_add_association f, :task_images,class: 'btn btn-default',data: {association_insertion_node: '.task_images_area',association_insertion_method: 'append' } do
+                      i class="fa-solid fa-file-circle-plus" style='color:gray;font-size:20px;'
+                .clearfix
+                  label ステータス：
+                  = f.object.status
+                  label 　　投稿：
+                  = f.object.drafter
+                  / = f.select :status, options_for_select_from_enum(Task, :status),{include_blank:'ステータス'}, { class: "form-control", required:true,style:'float:left;width:200px;'}
+                  / = f.text_field :drafter, class:"form-control",placeholder:'投稿者名',style:'float:left;width:200px;margin-left:10px;'
+                  = link_to "削除", task, method: :delete,class:'btn btn-default btn-sm pull-right',style:'margin-left:10px;',data: { confirm: "ホンマに削除するで？" }
+                  = f.submit '更新する',class:'btn btn-primary pull-right btn-sm'
+            .clearfix.task_show
+              h4.title = task.title
               hr style='border-top: 1px solid #ccc;'
               .form-group
-                = f.label :content, "内容"
-                = f.text_area :content, class:"form-control",style:"height:10em;"
-              .form-group
-                = f.label :final_decision, "最終決定"
-                = f.text_area :final_decision, class:"form-control",style:"height:10em;"
+                label 内容
+                .content = text_url_to_link(simple_format(h(task.content))).html_safe
+              .form-group.clearfix
+                - task.task_images.each do |ti|
+                  .col-md-4
+                    = link_to ti.image.url, "data-lightbox" => ti.image.url do
+                      = image_tag ti.image.to_s,class:"img-responsive",style:'height:100px;'
+
+              - if task.final_decision.present?
+                .form-group
+                  label 最終決定
+                  .final_decision = text_url_to_link(simple_format(h(task.final_decision))).html_safe
               .clearfix
-                label ステータス：
-                = f.object.status
-                label 　　投稿：
-                = f.object.drafter
-                / = f.select :status, options_for_select_from_enum(Task, :status),{include_blank:'ステータス'}, { class: "form-control", required:true,style:'float:left;width:200px;'}
-                / = f.text_field :drafter, class:"form-control",placeholder:'投稿者名',style:'float:left;width:200px;margin-left:10px;'
-                = link_to "削除", task, method: :delete,class:'btn btn-default btn-sm pull-right',style:'margin-left:10px;',data: { confirm: "ホンマに削除するで？" }
-                = f.submit '更新する',class:'btn btn-primary pull-right btn-sm'
-          - if task.status == 'check'|| task.status == 'done'
+                label カテゴリ：
+                = task.category
+                label 　ステータス：
+                = task.status
+                label 　投稿：
+                = task.drafter
+                button.task_edit_btn.btn.btn-success.btn-sm.pull-right 編集する
+
+            - if task.status == 'check'|| task.status == 'done'
+              hr style='border-top: 1px solid #ccc;'
+              .form-group
+                label 確認チェック
+                ul.list-group.clearfix
+                  - task.task_staffs.each do |ts|
+                    = form_with(model:ts, data: {remote: true}) do |f|
+                      li.list-group-item class="task_staff_#{ts.id}_read_check_li" style='float:left;'
+                        = f.hidden_field :task_id
+                        = f.hidden_field :staff_id
+                        = f.label :read_flag, f.object.staff.name.slice(0..1),style:'font-weight:normal;'
+                        = f.check_box :read_flag,class:'staff_read_check'
+
+
             hr style='border-top: 1px solid #ccc;'
-            .form-group
-              label 確認チェック
-              ul.list-group.clearfix
-                - task.task_staffs.each do |ts|
-                  = form_with(model:ts, data: {remote: true}) do |f|
-                    li.list-group-item class="task_staff_#{ts.id}_read_check_li" style='float:left;'
-                      = f.hidden_field :task_id
-                      = f.hidden_field :staff_id
-                      = f.label :read_flag, f.object.staff.name.slice(0..1),style:'font-weight:normal;'
-                      = f.check_box :read_flag,class:'staff_read_check'
-
-          hr style='border-top: 1px solid #ccc;'
-          ul class="list-group task_#{task.id}_comments"
-            - task.task_comments.each do |tc|
-              = render "task_comment_li",tc:tc
-          = form_with(model: TaskComment.new, data: {remote: true},class:"task_#{task.id}_comment_form") do |f|
-            = f.hidden_field :task_id,value:task.id
-            .form-group
-              = f.text_area :content, class:"form-control",style:"height:5em;",placeholder:'コメントを投稿',required:true
-            .form-group.clearfix
-              = f.submit '投稿',class:'btn btn-primary btn-sm',style:"float:right;margin-left:10px;"
-              = f.text_field :name, class:"form-control",placeholder:'名前',style:"width:200px;float:right;height:30px;",required:true
-
-
-        / .modal-footer
-          / button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
+            ul class="list-group task_#{task.id}_comments"
+              - task.task_comments.each do |tc|
+                = render "task_comment_li",tc:tc
+            = form_with(model: TaskComment.new, data: {remote: true},class:"task_#{task.id}_comment_form") do |f|
+              = f.hidden_field :task_id,value:task.id
+              .form-group
+                = f.text_area :content, class:"form-control",style:"height:5em;",placeholder:'コメントを投稿',required:true
+              .form-group.clearfix
+                .image_div style='float:left;width:160px;'
+                  label class="upload-label"
+                    span 画像アップロード
+                    = f.file_field :image,style:'display:none;',class:'image_upload'
+                    = f.hidden_field :image_cache
+                = f.text_field :name, class:"form-control",placeholder:'名前',style:"width:200px;float:left;height:30px;",required:true
+                = f.submit '投稿',class:'btn btn-primary btn-sm',style:"float:right;"
+  i class="drag fa-solid fa-up-down-left-right" style='float:right;color:#dcdcdc;border:1px solid #dcdcdc;padding:3px;border-radius:3px;'

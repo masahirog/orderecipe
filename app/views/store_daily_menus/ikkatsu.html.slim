@@ -25,7 +25,7 @@ ul.list-group.clearfix style='margin-top:15px;'
                         td
                           = text_url_to_link(simple_format(h(posi.content))).html_safe
                         td
-                          = image_tag posi.image.to_s,class:"img-responsive",style:'max-height:350px;'
+                          = image_tag posi.image.to_s,class:"img-responsive",style:'max-height:350px;' if posi.image?
                     tr
                       td 完成系
                       td

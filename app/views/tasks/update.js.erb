@@ -1,2 +1,6 @@
-alert('更新OK！');
-$("#modal_title_task_<%=@task.id%>").children(".title").text("<%= @task.title %>");
+$lastAnimation = $("<%= escape_javascript(render partial: 'tasks/task_list', locals: {task:@task}) %>");
+$(".task_<%= @task.id %>_li").replaceWith($lastAnimation);
+$(".task_edit").hide();
+$(".task_show").show();
+// alert('更新OK！');
+$("#modal_<%= @task.id %>").modal('show');
