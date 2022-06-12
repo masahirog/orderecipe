@@ -5,7 +5,7 @@ li.clearfix.list-group-item.item class="task_#{task.id}_li" data={model_name: ta
       .clearfix
         div style='float:left;padding:0px 8px;'
           i class="fa-solid fa-comment-dots" style='margin-right:3px;font-size:1em;color:#deb887;'
-          span class="task_#{task.id}_read_count" style="color:#a9a9a9;" = "#{task.task_staffs.where(read_flag:true).count}"
+          span class="task_#{task.id}_read_count" style="color:#a9a9a9;" = "#{task.task_comments.count}"
 
         div style='float:left;padding:0px 8px;'
           i class="fa-solid fa-check" style='margin-right:3px;font-size:.8em;color:#006400;'
@@ -17,7 +17,8 @@ li.clearfix.list-group-item.item class="task_#{task.id}_li" data={model_name: ta
             span class="badge bg-green" = task.category
           - elsif task.category == 'project'
             span class="badge bg-red" = task.category
-
+          - elsif task.category == 'shere'
+            span class="badge bg-yellow" = task.category
 
     .modal.fade id="modal_#{task.id}" tabindex="-1"
       .modal-dialog
