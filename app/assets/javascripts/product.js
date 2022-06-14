@@ -56,8 +56,6 @@ $(document).on('turbolinks:load', function() {
 
 
 
-
-
   //並び替え時のrow_order更新
   $(".used_menu_ul.ul-sortable").sortable({
     update: function(){

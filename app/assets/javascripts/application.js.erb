@@ -28,6 +28,10 @@ $(document).on("turbolinks:before-cache", function() {
   $('.input-stock-materials-name').select2('destroy');
 });
 
+$(document).on('select2:open', () => {
+   document.querySelector('.select2-search__field').focus();
+ });
+
 $(document).on('turbolinks:load', function() {
   var controller = $('body').data('controller');
   var action = $('body').data('action');

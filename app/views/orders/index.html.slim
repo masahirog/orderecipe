@@ -2,6 +2,22 @@
   h3 style='margin-right:40px;float:left;font-size:20px;' ="#{@store.name}　発注一覧"
   - if @store.id == 39
     = link_to "単品発注", new_order_path(store_id:params[:store_id]),class:"order btn btn-primary btn-sm",style:"float:left;margin-top:15px;"
+    button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#kitchen_days_order_modal" style='float:left;margin-top:15px;' 期間発注
+    #kitchen_days_order_modal.modal.fade tabindex="-1"
+      .modal-dialog
+        .modal-content
+          .modal-header
+            h4.modal-title 発注の計算をする期間をえらんでください
+          .modal-body.clearfix
+              = form_tag new_order_path, :method => 'get' do
+                = hidden_field_tag :kitchen_days_order,true
+                = hidden_field_tag :store_id,39
+                = date_field_tag :from, Date.today, class:'date',style:'float:left;'
+                div style="float:left;padding:8px;" 〜
+                = date_field_tag :to, Date.today, class:"date",style:'float:left;'
+                = submit_tag "発注開始" ,class:"btn btn-primary",style:'float:left;margin-left:20px;'
+
+
     button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#newOrder" style='float:left;margin-top:15px;margin-left:10px;' 日付を選んで発注
     #newOrder.modal.fade tabindex="-1"
       .modal-dialog style='width:95%;'

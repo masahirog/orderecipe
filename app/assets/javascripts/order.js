@@ -41,6 +41,7 @@ $(document).on('turbolinks:load', function() {
           return {　q: params.term　};
         },
         processResults: function (data, params) {
+          console.log(data);
           return { results: $.map(data, function(obj) {
               return { id: obj.id, text: obj.name };
             })

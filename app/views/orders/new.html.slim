@@ -1,10 +1,13 @@
+- if @dates.present?
+  h4 = "#{@from.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[@from.wday]})")}〜#{@to.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[@to.wday]})")}までの期間のくるめし、べじはんの製造数を計算しています"
 = form_for @order do |f|
   table.table
     thead
       tr
+        th ブランド
         th 商品名
         th 合計
-        - if @dates.present?
+        - if @date_hash.present?
           - @dates.each do |date|
             th = date
     tbody
@@ -12,9 +15,10 @@
         tr
           = op.hidden_field(:make_date,value: (op.object.make_date || Time.now.strftime("%Y-%m-%d")),class:"",readonly:true)
           = op.hidden_field :product_id,value:op.object.product_id
-          td = @product_hash[op.object.product_id]
+          td = @product_hash[op.object.product_id].brand.name
+          td = @product_hash[op.object.product_id].name
           td = op.text_field :serving_for,value:op.object.serving_for, class:'form-control',readonly:true
-          - if @dates.present?
+          - if @date_hash.present?
             - @dates.each do |date|
               td = @date_hash[date][op.object.product_id]
   - if params[:wday_new_order] == 'true'
@@ -48,10 +52,10 @@
         = f.submit '確定で保存する',class:'btn btn-success pull-right save-btn order_submit', data: {disable_with: '保存中'},disabled:true
       -else
         = f.submit '未確定で保存する',class:'btn btn-danger pull-right save-btn order_submit', data: {disable_with: '保存中'},disabled:true
-
   table.table
     thead.order_materials_thead
       tr
+        th
         th style="min-width:350px;" 食材名
         th style="min-width:500px;"
           div style="float:left;width:50%;"
@@ -69,12 +73,15 @@
       = f.fields_for :order_materials do |m|
         - material = @b_hash[m.object.material_id]['material']
         //編集時はcocoonのパーシャルも変える！パフォーマンスが低下するので、あえてレンダリングは外している
-
         tr.order_materials_tr.nested-fields
+          td
+            i.text-primary.fa-solid.fa-circle-plus.duplicate_material style='font-size:18px;margin-top:10px;'
           td.order_material_name style="min-width:350px;"
+            / = link_to_add_association 'コピー',f, :order_materials,class:'btn btn-primary', render_options: {locals: { date: Date.today }}
+
             - if m.object.material_id.present?
               span style='font-size:16px;font-weight:bold;' = material.name
-              = m.hidden_field :material_id
+              = m.hidden_field :material_id,class:'input_material'
             - else
               = m.collection_select :material_id, @materials, :id, :name,{include_blank: true}, class:'select_order_materials',style:"width:250px;"
             .vendor_company_name style="padding-top:3px;color:#gray;"
@@ -91,14 +98,14 @@
                 = m.text_field :calculated_quantity,class:'recipe_unit_quantity text-right form-control',style:"float:left;width:70%;",readonly:true
                 = m.text_field :recipe_unit, style:'float:left;width:20%;',class:'form-control calculated_material_unit',readonly:true
             .clearfix style="color:#A9A9A9;padding-top:2px;"
-              - if material.need_inventory_flag == true
+              - if  material.present? && material.need_inventory_flag == true
                 - style = 'float:left;width:55%;height:22px;background-color:red;padding-top:2px;margin-right:5%;'
               - else
                 - style = 'float:left;width:55%;height:22px;padding-top:2px;margin-right:5%;'
 
               .text-right style=style
                 span class="stock_yoso_#{m.object.material_id} text-right"
-                  - if material.need_inventory_flag == true
+                  - if material.present? && material.need_inventory_flag == true
                     span style='margin-right:10px;color:white;' 棚卸し！
                 - if m.object.material_id.present?
                   - if @stock_hash[m.object.material_id].present?
@@ -158,6 +165,23 @@
       data: {association_insertion_node: '#order_materials_table',association_insertion_method: 'append'}, render_options: {locals: { date: Date.today }}
 javascript:
   $(function() {
+    $(".duplicate_material").on('click',function(){
+      let clone = $(this).parent().parent('.order_materials_tr').clone();
+      clone.find(".duplicate_material").remove();
+      clone.find(".recipe_unit_quantity").val('');
+      clone.find(".calculated_material_unit").val('');
+      clone.find(".order_material_memo").children('input').val('');
+      clone.find(".order_material_memo").children('div').text('コピーした食材');
+      var num = clone.find('.input_material').attr('id').slice(33,-12)
+      var i = String($(".order_materials_tr").length);
+      var array = ["material_id","order_quantity_order_unit","order_unit","calculated_quantity","recipe_unit","delivery_date","un_order_flag","order_material_memo"];
+      $.each(array, function(index, value) {
+        var name = "order[order_materials_attributes]["+i+"]["+value+"]";
+        var id = "order_order_materials_attributes_"+i+"_"+value;
+        clone.find("#order_order_materials_attributes_"+num+"_"+value).attr('id',id).attr('name',name);
+      });
+      $(this).parent().parent('.order_materials_tr').after(clone);
+    });
     $(document).on("keypress", "input:not(.allow_submit)", function(event) {
       return event.which !== 13;
     });

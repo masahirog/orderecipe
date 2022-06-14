@@ -391,6 +391,44 @@ class OrdersController < AdminController
         order_products << hash
       end
       make_date = @from
+    elsif params[:kitchen_days_order] == 'true'
+      @from = Date.parse(params[:from])
+      @to = Date.parse(params[:to])
+      @dates =(@from..@to).to_a
+      if @dates.count > 7
+        redirect_to orders_path(store_id:params[:store_id]),:alert => '期間は7日以内で選択してください。'
+      end
+      order_products = []
+      kurumesi_orders = KurumesiOrder.where(start_time:@dates,canceled_flag:false)
+      bentos_num_h = kurumesi_orders.joins(kurumesi_order_details:[:product]).group('kurumesi_order_details.product_id').sum('kurumesi_order_details.number')
+      DailyMenuDetail.joins(:daily_menu).where(:daily_menus => {start_time:@dates}).each do|dmd|
+        if bentos_num_h[dmd.product_id].present?
+          bentos_num_h[dmd.product_id]+=dmd.manufacturing_number
+        else
+          bentos_num_h[dmd.product_id]=dmd.manufacturing_number
+        end
+      end
+      bentos_num_h.each do |bn|
+        hash = {}
+        hash[:product_id] = bn[0]
+        hash[:num] = bn[1]
+        hash[:make_date] = @from
+        order_products << hash
+      end
+      make_date = @from
+      #vendor絞り込み
+      if params[:filter] == "none" || params[:filter].nil?
+        vendor_ids = Vendor.all.ids
+      elsif params[:filter] == "veg"
+        # vendor_ids = [151,489]
+        category = ['vege']
+      elsif params[:filter] == "meat"
+        # vendor_ids = [121,131,21,441,529,509]
+        category = ['meat']
+      elsif params[:filter] == "not_veg_meat"
+        category = ["other_vege","other_food","packed","consumable_item","cooking_item",'fish','rice']
+        # vendor_ids = Vendor.where.not(id:[121,131,21,441,529,509,151,489]).ids
+      end
     elsif params[:make_date].present?
       order_products = []
       date = params[:make_date]
@@ -423,11 +461,12 @@ class OrdersController < AdminController
       make_date = Date.today
     end
     product_ids = order_products.map{|op|op[:product_id]}
-    product_hash = Product.includes(:product_menus,[menus: [menu_materials: [material:[:vendor]]]]).where(id:product_ids).map{|product|[product.id,product]}.to_h
+    product_hash = Product.includes(:brand,:product_menus,[menus: [menu_materials: [material:[:vendor]]]]).where(id:product_ids).map{|product|[product.id,product]}.to_h
     order_products.each do |po|
       if po[:product_id].present? && po[:num].to_i > 0
         product = product_hash[po[:product_id]]
-        @product_hash[po[:product_id]] = product.name
+        @product_hash[po[:product_id]] = product
+        # @product_hash[po[:product_id]] = product.name
         if po[:make_date].present?
           @order.order_products.build(product_id:po[:product_id],serving_for:po[:num],make_date:po[:make_date])
         else
