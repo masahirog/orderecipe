@@ -64,7 +64,7 @@ class ProductsController < AdminController
     if params[:copy_flag]=='true'
       original_product = Product.includes(product_menus:[menu:[menu_materials:[:material]]]).find(params[:product_id])
       original_product.name = "#{original_product.name}のコピー"
-      @product = original_product.deep_clone(include: [:product_menus])
+      @product = original_product.deep_clone(include: [:product_menus,:product_parts,:product_ozara_serving_informations])
       flash.now[:notice] = "#{original_product.name}を複製しました。この商品を登録する前に、コピーした元の商品のmanagement_idを消してください。名前も変更してください。"
       @menus = original_product.menus
     else
