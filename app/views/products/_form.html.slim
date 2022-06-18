@@ -10,13 +10,17 @@
           li
             = message
   .col-md-12.form-group
-    .col-md-2
+    .col-md-1
       = f.label :brand_id, "ブランド"
       = f.collection_select :brand_id, Brand.all, :id, :name, {}, { class: "form-control"}
 
     .col-md-3
       = f.label :name, "商品名"
       = f.text_field :name, id: "menu_search", class:"name form-control"
+    .col-md-2
+      = f.label :status, "ステータス"
+      = f.select :status, options_for_select_from_enum(Product, :status),{include_blank:true}, { class: "form-control", required:true}
+
     .col-md-2
       = f.label :sell_price, "販売価格"
       .form-inline
