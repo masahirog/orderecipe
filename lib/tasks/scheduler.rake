@@ -9,11 +9,13 @@ end
 
 # 毎日の0:00にheroku_schedulerをセット
 task :update_product_cost_price => :environment do
-  products = Product.all
+  products = Product.where(status:1)
+  update_products = []
   products.each do |product|
     product.cost_price = (product.product_menus.map{|pm| pm.menu.cost_price }.sum).round(1)
+    update_products << product
   end
-  Product.import products.to_a, :on_duplicate_key_update => [:cost_price]
+  Product.import update_products, :on_duplicate_key_update => [:cost_price], validate: false
 end
 
 #10分毎に実行
