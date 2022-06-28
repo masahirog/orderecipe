@@ -1,4 +1,6 @@
-h3 = link_to "進捗ボード",tasks_path
+.clearfix.form-group
+  = link_to "進捗ボード",tasks_path,style:'float:left;font-size:2em'
+  = link_to 'アーカイブ済',tasks_path(status:'archive'),style:'float:right;margin-top:5px;background-color:#a9a9a9;color:white;',class:'btn btn-sm'
 - if params[:staff_id].present?
   h4 = "#{@staff.name} さんの未読一覧"
 - else
@@ -10,70 +12,11 @@ h3 = link_to "進捗ボード",tasks_path
           span style="color:red;" = @hash[staff.id]
       - else
         = link_to "#{staff.name.slice(0..1)} #{@hash[staff.id]}", tasks_path(staff_id:staff.id), style:'float:left;',class:'btn btn-default btn-sm'
-.col-md-12 style='padding:0;'
+- if params[:status].present?
   .col-md-3 style='padding:0;'
-    h4 Todo
-    - li_class = 'item'
-    ul#tasks_todo_ul class="list-group list-group-flush tasks_ul" style='min-height:100px;'
-      - @todos.each do |task|
-        = render 'task_list',task:task
-    / = link_to 'タスクを追加', new_task_path,class:'btn btn-sm btn-default'
-    button.btn.btn-default.btn-sm data-toggle="modal" data-target="#modal_new_task" カードを追加
-    #modal_new_task.modal.fade tabindex="-1"
-      .modal-dialog
-        .modal-content style='background-color:#f5f5f5;'
-          .modal-body
-            .clearfix
-              = form_with(model: @task,class:'new_task_form', data: {remote: true}) do |f|
-                .form-group
-                  = f.text_field :title, class:"form-control", required:true,placeholder:'タイトル'
-                hr style='border-top: 1px solid #ccc;'
-                .form-group
-                  = f.label :content, "内容"
-                  = f.text_area :content, class:"form-control",style:"height:10em;"
-                .form-group
-                  = f.label :final_decision, "最終決定"
-                  = f.text_area :final_decision, class:"form-control",style:"height:10em;"
-                .form-group style='display:none;'
-                  label 既読確認チェック
-                  ul.list-group.clearfix
-                    = f.fields_for :task_staffs do |ts|
-                      = ts.hidden_field :task_id
-                      = ts.hidden_field :staff_id
-                      li.list-group-item style='float:left;'
-                        = ts.label :read_flag, ts.object.staff.name
-                        = ts.check_box :read_flag
-                .form-group.clearfix
-                  .task_images_area
-                    = f.fields_for :task_images do |ti|
-                      = render 'task_image_fields', f:ti
-                  .col-md-4 style='text-align:center;margin-top:35px;margin-bottom:35px;color:silver;'
-                    = link_to_add_association f, :task_images,class: 'btn btn-default',data: {association_insertion_node: '.task_images_area',association_insertion_method: 'append' } do
-                      i class="fa-solid fa-file-circle-plus" style='color:gray;font-size:20px;'
-
-                .clearfix
-                  = f.select :category, options_for_select_from_enum(Task, :category),{include_blank:'カテゴリ'}, { class: "form-control", required:true,style:'float:left;width:120px;'}
-                  = f.select :status, options_for_select_from_enum(Task, :status),{include_blank:'ステータス'}, { class: "form-control", required:true,style:'float:left;width:120px;margin-left:10px;'}
-                  = f.text_field :drafter, class:"form-control",placeholder:'投稿者名',style:'float:left;width:120px;margin-left:10px;', required:true
-                  div style='width:80px;float:left;padding:5px 10px;'
-                    label 通知
-                    = check_box_tag "chatwork_notice",true,true
-                  = f.submit '更新する',class:'btn btn-primary pull-right'
-
-  .col-md-3 style='padding:0;'
-    h4 Doing
-    ul#tasks_doing_ul class="list-group list-group-flush tasks_ul ul-sortable" style='min-height:100px;'
-      - @doings.each do |task|
-        = render 'task_list',task:task
-  .col-md-3 style='padding:0;'
-    h4 Check
-    ul#tasks_check_ul class="list-group list-group-flush tasks_ul ul-sortable" style='min-height:100px;'
-      - @checks.each do |task|
-        = render 'task_list',task:task
-  .col-md-3 style='padding:0;'
-    h4 Done
+    h4 アーカイブ済みのカード
     ul#tasks_done_ul class="list-group list-group-flush tasks_ul ul-sortable" style='min-height:100px;'
-      - @dones.each do |task|
+      - @archives.each do |task|
         li.clearfix.list-group-item.item class="task_#{task.id}_li" data={model_name: task.class.name.underscore, update_url: task_sort_path(task)} style='padding-left:10px;'
           div style='float:left;width:calc(100% - 30px);'
             div id="modal_title_task_#{task.id}" data-toggle="modal" data-target="#modal_#{task.id}" style='cursor: pointer;'
@@ -96,8 +39,112 @@ h3 = link_to "進捗ボード",tasks_path
                     span class="badge bg-red" = task.category
                   - elsif task.category == 'shere'
                     span class="badge bg-yellow" = task.category
+                  - elsif task.category == 'hikitsugi'
+                    span class="badge bg-silver" = task.category
 
+-else
+  .col-md-12 style='padding:0;'
+    .col-md-3 style='padding:0;'
+      h4 Todo
+      - li_class = 'item'
+      ul#tasks_todo_ul class="list-group list-group-flush tasks_ul" style='min-height:100px;'
+        - @todos.each do |task|
+          = render 'task_list',task:task
+      / = link_to 'タスクを追加', new_task_path,class:'btn btn-sm btn-default'
+      button.btn.btn-default.btn-sm data-toggle="modal" data-target="#modal_new_task" カードを追加
+      #modal_new_task.modal.fade tabindex="-1"
+        .modal-dialog
+          .modal-content style='background-color:#f5f5f5;'
+            .modal-body
+              .clearfix
+                = form_with(model: @task,class:'new_task_form', data: {remote: true}) do |f|
+                  .form-group
+                    = f.text_field :title, class:"form-control", required:true,placeholder:'タイトル'
+                  hr style='border-top: 1px solid #ccc;'
+                  .form-group
+                    = f.label :content, "内容"
+                    = f.text_area :content, class:"form-control",style:"height:10em;"
+                  .form-group
+                    = f.label :final_decision, "最終決定"
+                    = f.text_area :final_decision, class:"form-control",style:"height:10em;"
+                  .form-group style='display:none;'
+                    label 既読確認チェック
+                    ul.list-group.clearfix
+                      = f.fields_for :task_staffs do |ts|
+                        = ts.hidden_field :task_id
+                        = ts.hidden_field :staff_id
+                        li.list-group-item style='float:left;'
+                          = ts.label :read_flag, ts.object.staff.name
+                          = ts.check_box :read_flag
+                  .form-group.clearfix
+                    .task_images_area
+                      = f.fields_for :task_images do |ti|
+                        = render 'task_image_fields', f:ti
+                    .col-md-4 style='text-align:center;margin-top:35px;margin-bottom:35px;color:silver;'
+                      = link_to_add_association f, :task_images,class: 'btn btn-default',data: {association_insertion_node: '.task_images_area',association_insertion_method: 'append' } do
+                        i class="fa-solid fa-file-circle-plus" style='color:gray;font-size:20px;'
+
+                  .clearfix
+                    = f.select :category, options_for_select_from_enum(Task, :category),{include_blank:'カテゴリ'}, { class: "form-control", required:true,style:'float:left;width:120px;'}
+                    = f.select :status, options_for_select_from_enum(Task, :status),{include_blank:'ステータス'}, { class: "form-control", required:true,style:'float:left;width:120px;margin-left:10px;'}
+                    = f.text_field :drafter, class:"form-control",placeholder:'投稿者名',style:'float:left;width:120px;margin-left:10px;', required:true
+                    div style='width:80px;float:left;padding:5px 10px;'
+                      label 通知
+                      = check_box_tag "chatwork_notice",true,true
+                    = f.submit '更新する',class:'btn btn-primary pull-right'
+
+    .col-md-3 style='padding:0;'
+      h4 Doing
+      ul#tasks_doing_ul class="list-group list-group-flush tasks_ul ul-sortable" style='min-height:100px;'
+        - @doings.each do |task|
+          = render 'task_list',task:task
+    .col-md-3 style='padding:0;'
+      h4 Check
+      ul#tasks_check_ul class="list-group list-group-flush tasks_ul ul-sortable" style='min-height:100px;'
+        - @checks.each do |task|
+          = render 'task_list',task:task
+    .col-md-3 style='padding:0;'
+      h4 Done
+      ul#tasks_done_ul class="list-group list-group-flush tasks_ul ul-sortable" style='min-height:100px;'
+        - @dones.each do |task|
+          li.clearfix.list-group-item.item class="task_#{task.id}_li" data={model_name: task.class.name.underscore, update_url: task_sort_path(task)} style='padding-left:10px;'
+            div style='float:left;width:calc(100% - 30px);'
+              div id="modal_title_task_#{task.id}" data-toggle="modal" data-target="#modal_#{task.id}" style='cursor: pointer;'
+                h5.title style='margin-top:0;'
+                  = link_to "#{task.title}",edit_task_path(task),style:'color:gray;'
+                .clearfix
+                  div style='float:left;padding:0px 8px;'
+                    i class="fa-solid fa-comment-dots" style='margin-right:3px;font-size:1em;color:#deb887;'
+                    span class="task_#{task.id}_read_count" style="color:#a9a9a9;" = "#{task.task_comments.count}"
+
+                  div style='float:left;padding:0px 8px;'
+                    i class="fa-solid fa-check" style='margin-right:3px;font-size:.8em;color:#006400;'
+                    span class="task_#{task.id}_read_count" style="color:#a9a9a9;" = "#{task.task_staffs.where(read_flag:true).count}"
+                  div style='float:left;padding:0px 8px;'
+                    - if task.category == 'task'
+                      span class="badge bg-blue" = task.category
+                    - elsif task.category == 'kaizen'
+                      span class="badge bg-green" = task.category
+                    - elsif task.category == 'project'
+                      span class="badge bg-red" = task.category
+                    - elsif task.category == 'shere'
+                      span class="badge bg-yellow" = task.category
+                    - elsif task.category == 'hikitsugi'
+                      span class="badge bg-silver" = task.category
+
+                  div style='float:right;'
+                    = form_with(model: task, data: {remote: true}) do |f|
+                      = f.hidden_field :status,value:'archive'
+                      i class="fa-solid fa-box-archive" style='color:#a9a9a9;font-size:16px;'
 javascript:
+  $(".fa-box-archive").on('click',function(){
+    if (confirm('アーカイブしますか？')) {
+      $(this).parents('li').hide();
+      Rails.fire($(this).parent('form')[0], 'submit');
+    } else {
+      return false
+    }
+  });
   $('.staff_read_check').on( 'change',function(){
     Rails.fire($(this).parent().parent('form')[0], 'submit');
   });

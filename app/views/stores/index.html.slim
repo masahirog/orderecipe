@@ -8,7 +8,6 @@ table.table
       th 返金対応
       th 発注
       th 発注可能商品
-      th 改善リスト
   tbody
     - @stores.each do |store|
       tr
@@ -18,8 +17,3 @@ table.table
         td = link_to '返金対応', refund_supports_path(store_id:store.id),class:'btn btn-sm btn-default'
         td = link_to store.short_name, orders_path(store_id:store.id),class:"order btn btn-default btn-sm"
         td = link_to '一覧', materials_stores_path(store_id:store.id),class:"order btn btn-default btn-sm"
-        td
-          -if KaizenList.where(store_id:store.id).where.not(status:['done','cancel']).count > 0
-            = link_to "#{KaizenList.where(store_id:store.id).where.not(status:['done','cancel']).count}", kaizen_lists_path(store_id:store.id), style:'float:left;width:80px;color:red;',class:'btn btn-default btn-sm'
-          - else
-            = link_to "#{KaizenList.where(store_id:store.id).where.not(status:['done','cancel']).count}", kaizen_lists_path(store_id:store.id), style:'float:left;width:80px;',class:'btn btn-default btn-sm'

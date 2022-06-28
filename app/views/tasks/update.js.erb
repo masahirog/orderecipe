@@ -1,6 +1,10 @@
+<% if @task.status == 'archive'%>
+alert('アーカイブしました');
+<% else %>
 $lastAnimation = $("<%= escape_javascript(render partial: 'tasks/task_list', locals: {task:@task}) %>");
 $(".task_<%= @task.id %>_li").replaceWith($lastAnimation);
 $(".task_edit").hide();
 $(".task_show").show();
 // alert('更新OK！');
 $("#modal_<%= @task.id %>").modal('show');
+<% end %>

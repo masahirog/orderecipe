@@ -23,7 +23,7 @@ class SmaregiTradingHistory < ApplicationRecord
       analysis = Analysis.find_by(date:date,store_id:store_id)
       if analysis.present?
         analysis_id = analysis.id
-        smaregi_shohin_ids = analysis.analysis_products.map{|ap|ap.smaregi_shohin_id.to_s}
+        product_ids = analysis.analysis_products.map{|ap|ap.product_id.to_s}
         kaiin_raitensu_hash = {}
         update_smaregi_members_arr = []
         CSV.foreach file.path, {encoding: 'BOM|UTF-8', headers: true} do |row|
@@ -93,15 +93,15 @@ class SmaregiTradingHistory < ApplicationRecord
               uchikeshi_torihiki_id:uchikeshi_torihiki_id,uchikeshi_kubun:uchikeshi_kubun,receipt_number:receipt_number,shiharaihouhou:shiharaihouhou,
               uchishohizei:uchishohizei,uchizeianbun:uchizeianbun,zeinuki_uriage:zeinuki_uriage)
             smaregi_trading_histories_arr << new_smaregi_trading_history
-            if smaregi_shohin_ids.include?(shohin_id)
+            if product_ids.include?(hinban)
             else
               new_analysis_product = AnalysisProduct.new(analysis_id:analysis_id,smaregi_shohin_id:shohin_id,smaregi_shohin_name:shohinmei,smaregi_shohintanka:shohintanka,
               product_id:hinban,total_sales_amount:0,sales_number:0,loss_amount:0,early_sales_number:0,bumon_id:bumon_id,bumon_mei:bumonmei,
               discount_amount:0,net_sales_amount:0,ex_tax_sales_amount:0,discount_rate:0,loss_ignore:loss_ignore)
 
               analysis_products_arr << new_analysis_product
-              smaregi_shohin_ids << shohin_id
-              hash[shohin_id]={sales_number:0,total_sales_amount:0,discount_amount:0,net_sales_amount:0,ex_tax_sales_amount:0,early_sales_number:0,delivery_sales_amount:0,store_sales_amount:0,tax_amount:0,loss_amount:0}
+              product_ids << hinban
+              hash[hinban]={sales_number:0,total_sales_amount:0,discount_amount:0,net_sales_amount:0,ex_tax_sales_amount:0,early_sales_number:0,delivery_sales_amount:0,store_sales_amount:0,tax_amount:0,loss_amount:0}
             end
 
             number = suryo.to_i #販売数
@@ -129,17 +129,17 @@ class SmaregiTradingHistory < ApplicationRecord
             if torihiki_meisaikubun == '1'
               transaction_count += 1 unless torihiki_ids.include?(torihiki_id)
               total_number_sales_sozai += number if bumon_id == "1"
-              hash[shohin_id][:sales_number] += number
-              hash[shohin_id][:total_sales_amount] += nebikimaekei
-              hash[shohin_id][:discount_amount] += nebiki
-              hash[shohin_id][:net_sales_amount] += nebikigokei
-              hash[shohin_id][:ex_tax_sales_amount] += ex_tax_sales_amount
-              hash[shohin_id][:delivery_sales_amount] += delivery_sales_amount
-              hash[shohin_id][:store_sales_amount] += store_sales_amount
-              hash[shohin_id][:tax_amount] += tax_amount
+              hash[hinban][:sales_number] += number
+              hash[hinban][:total_sales_amount] += nebikimaekei
+              hash[hinban][:discount_amount] += nebiki
+              hash[hinban][:net_sales_amount] += nebikigokei
+              hash[hinban][:ex_tax_sales_amount] += ex_tax_sales_amount
+              hash[hinban][:delivery_sales_amount] += delivery_sales_amount
+              hash[hinban][:store_sales_amount] += store_sales_amount
+              hash[hinban][:tax_amount] += tax_amount
 
               if Time.parse(time) < Time.parse('14:00')
-                hash[shohin_id][:early_sales_number] += number
+                hash[hinban][:early_sales_number] += number
                 fourteen_number_sales_sozai += number if bumon_id == "1"
                 fourteen_transaction_count += 1 unless torihiki_ids.include?(torihiki_id)
               end
@@ -156,16 +156,16 @@ class SmaregiTradingHistory < ApplicationRecord
               end
             else
               total_number_sales_sozai -= number if bumon_id == "1"
-              hash[shohin_id][:sales_number] -= number
-              hash[shohin_id][:total_sales_amount] -= nebikimaekei
-              hash[shohin_id][:discount_amount] -= nebiki
-              hash[shohin_id][:net_sales_amount] -= nebikigokei
-              hash[shohin_id][:ex_tax_sales_amount] -= ex_tax_sales_amount
-              hash[shohin_id][:delivery_sales_amount] -= delivery_sales_amount
-              hash[shohin_id][:store_sales_amount] -= store_sales_amount
-              hash[shohin_id][:tax_amount] -= tax_amount
+              hash[hinban][:sales_number] -= number
+              hash[hinban][:total_sales_amount] -= nebikimaekei
+              hash[hinban][:discount_amount] -= nebiki
+              hash[hinban][:net_sales_amount] -= nebikigokei
+              hash[hinban][:ex_tax_sales_amount] -= ex_tax_sales_amount
+              hash[hinban][:delivery_sales_amount] -= delivery_sales_amount
+              hash[hinban][:store_sales_amount] -= store_sales_amount
+              hash[hinban][:tax_amount] -= tax_amount
               if Time.parse(time) < Time.parse('14:00')
-                hash[shohin_id][:early_sales_number] -= number
+                hash[hinban][:early_sales_number] -= number
                 fourteen_number_sales_sozai -= number if bumon_id == "1"
                 unless torihiki_ids.include?(torihiki_id)
                   fourteen_transaction_count -= 1
@@ -192,22 +192,22 @@ class SmaregiTradingHistory < ApplicationRecord
 
         analysis_products_arr.each do |analysis_product|
           shohin_id = analysis_product.smaregi_shohin_id.to_s
-          analysis_product.sales_number = hash[shohin_id][:sales_number]
-          analysis_product.total_sales_amount = hash[shohin_id][:total_sales_amount]
-          analysis_product.early_sales_number = hash[shohin_id][:early_sales_number]
-          analysis_product.discount_amount = hash[shohin_id][:discount_amount]
-          analysis_product.net_sales_amount = hash[shohin_id][:net_sales_amount]
-          analysis_product.ex_tax_sales_amount = hash[shohin_id][:ex_tax_sales_amount]
+          analysis_product.sales_number = hash[hinban][:sales_number]
+          analysis_product.total_sales_amount = hash[hinban][:total_sales_amount]
+          analysis_product.early_sales_number = hash[hinban][:early_sales_number]
+          analysis_product.discount_amount = hash[hinban][:discount_amount]
+          analysis_product.net_sales_amount = hash[hinban][:net_sales_amount]
+          analysis_product.ex_tax_sales_amount = hash[hinban][:ex_tax_sales_amount]
           if analysis_product.total_sales_amount > 0
             analysis_product.discount_rate = (analysis_product.discount_amount/analysis_product.total_sales_amount).round(3)
           else
             analysis_product.discount_rate = 0
           end
 
-          if hash[shohin_id][:early_sales_number] == 0
+          if hash[hinban][:early_sales_number] == 0
             analysis_product.potential = 0
           else
-            analysis_product.potential = ((total_number_sales_sozai.to_f/fourteen_number_sales_sozai)*hash[shohin_id][:early_sales_number]).round(1)
+            analysis_product.potential = ((total_number_sales_sozai.to_f/fourteen_number_sales_sozai)*hash[hinban][:early_sales_number]).round(1)
           end
 
           if sdmd_hash[analysis_product.product_id].present?
@@ -223,7 +223,7 @@ class SmaregiTradingHistory < ApplicationRecord
             else
               analysis_product.loss_amount = analysis_product.loss_number * analysis_product.orderecipe_sell_price
             end
-            hash[shohin_id][:loss_amount] = analysis_product.loss_amount
+            hash[hinban][:loss_amount] = analysis_product.loss_amount
           end
         end
 
@@ -267,9 +267,7 @@ class SmaregiTradingHistory < ApplicationRecord
   def self.recalculate(analysis_id)
     analysis = Analysis.find(analysis_id)
     date = analysis.date
-
     analysis.analysis_products.destroy_all if analysis.analysis_products
-
     number = 0
     analysis_total_sales_amount = 0
     analysis_discount_amount = 0
@@ -294,7 +292,7 @@ class SmaregiTradingHistory < ApplicationRecord
     product_early_sales_number = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     product_sales_amount = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     analysis = Analysis.find(analysis_id)
-    smaregi_shohin_ids = []
+    product_ids = []
     kaiin_raitensu_hash = {}
     update_smaregi_members_arr = []
 
@@ -328,40 +326,46 @@ class SmaregiTradingHistory < ApplicationRecord
       else
         loss_ignore = false
       end
-      if smaregi_shohin_ids.include?(shohin_id)
+      if product_ids.include?(hinban)
+        if hash[hinban][:smaregi_shohin_id].include?(shohin_id)
+        else
+          hash[hinban][:smaregi_shohin_id] << shohin_id
+          hash[hinban][:smaregi_price] = "#{hash[hinban][:smaregi_price]},#{shohintanka}"
+          hash[hinban][:smaregi_shohin_name] = "#{hash[hinban][:smaregi_shohin_name]},#{shohinmei}"
+        end
       else
         new_analysis_product = AnalysisProduct.new(analysis_id:analysis_id,smaregi_shohin_id:shohin_id,smaregi_shohin_name:shohinmei,smaregi_shohintanka:shohintanka,
         product_id:hinban,total_sales_amount:0,sales_number:0,loss_amount:0,early_sales_number:0,bumon_id:bumon_id,bumon_mei:bumonmei,
         discount_amount:0,net_sales_amount:0,ex_tax_sales_amount:0,discount_rate:0,loss_ignore:loss_ignore)
         analysis_products_arr << new_analysis_product
-        smaregi_shohin_ids << shohin_id
-        hash[shohin_id]={sales_number:0,total_sales_amount:0,discount_amount:0,net_sales_amount:0,ex_tax_sales_amount:0,early_sales_number:0,loss_amount:0}
+        product_ids << hinban
+        hash[hinban]={sales_number:0,total_sales_amount:0,discount_amount:0,net_sales_amount:0,ex_tax_sales_amount:0,early_sales_number:0,loss_amount:0,smaregi_shohin_id:[shohin_id],smaregi_shohin_name:shohinmei,smaregi_price:shohintanka}
       end
       # ▼analysis_productの更新部分
       if torihiki_meisaikubun == 1 ||torihiki_meisaikubun == 3
         transaction_count += 1 unless torihiki_ids.include?(torihiki_id)
         total_number_sales_sozai += suryo if bumon_id == 1
-        hash[shohin_id][:sales_number] += suryo
-        hash[shohin_id][:total_sales_amount] += nebikimaekei
-        hash[shohin_id][:discount_amount] += tanka_nebikikei
-        hash[shohin_id][:net_sales_amount] += nebikigokei
-        hash[shohin_id][:ex_tax_sales_amount] += product_zeinuki_uriage
+        hash[hinban][:sales_number] += suryo
+        hash[hinban][:total_sales_amount] += nebikimaekei
+        hash[hinban][:discount_amount] += tanka_nebikikei
+        hash[hinban][:net_sales_amount] += nebikigokei
+        hash[hinban][:ex_tax_sales_amount] += product_zeinuki_uriage
 
         if Time.parse(time) < Time.parse('14:00')
-          hash[shohin_id][:early_sales_number] += suryo
+          hash[hinban][:early_sales_number] += suryo
           fourteen_number_sales_sozai += suryo if bumon_id == 1
           fourteen_transaction_count += 1 unless torihiki_ids.include?(torihiki_id)
         end
       elsif torihiki_meisaikubun == 2
         transaction_count -= 1 unless torihiki_ids.include?(torihiki_id)
         total_number_sales_sozai -= suryo if bumon_id == 1
-        hash[shohin_id][:sales_number] -= suryo
-        hash[shohin_id][:total_sales_amount] -= nebikimaekei
-        hash[shohin_id][:discount_amount] -= tanka_nebikikei
-        hash[shohin_id][:net_sales_amount] -= nebikigokei
-        hash[shohin_id][:ex_tax_sales_amount] -= product_zeinuki_uriage
+        hash[hinban][:sales_number] -= suryo
+        hash[hinban][:total_sales_amount] -= nebikimaekei
+        hash[hinban][:discount_amount] -= tanka_nebikikei
+        hash[hinban][:net_sales_amount] -= nebikigokei
+        hash[hinban][:ex_tax_sales_amount] -= product_zeinuki_uriage
         if Time.parse(time) < Time.parse('14:00')
-          hash[shohin_id][:early_sales_number] -= suryo
+          hash[hinban][:early_sales_number] -= suryo
           fourteen_number_sales_sozai -= suryo if bumon_id == 1
           fourteen_transaction_count -= 1 unless torihiki_ids.include?(torihiki_id)
         end
@@ -398,23 +402,24 @@ class SmaregiTradingHistory < ApplicationRecord
     store_daily_menu = StoreDailyMenu.find_by(store_id:store_id,start_time:date)
     sdmd_hash = store_daily_menu.store_daily_menu_details.map{|sdmd|[sdmd.product_id,sdmd]}.to_h
     analysis_products_arr.each do |analysis_product|
-      shohin_id = analysis_product.smaregi_shohin_id
-      analysis_product.sales_number = hash[shohin_id][:sales_number]
-      analysis_product.total_sales_amount = hash[shohin_id][:total_sales_amount]
-      analysis_product.early_sales_number = hash[shohin_id][:early_sales_number]
-      analysis_product.discount_amount = hash[shohin_id][:discount_amount]
-      analysis_product.net_sales_amount = hash[shohin_id][:net_sales_amount]
-      analysis_product.ex_tax_sales_amount = hash[shohin_id][:ex_tax_sales_amount]
+      product_id = analysis_product.product_id
+      analysis_product.smaregi_shohin_name = hash[product_id][:smaregi_shohin_name]
+      analysis_product.sales_number = hash[product_id][:sales_number]
+      analysis_product.total_sales_amount = hash[product_id][:total_sales_amount]
+      analysis_product.early_sales_number = hash[product_id][:early_sales_number]
+      analysis_product.discount_amount = hash[product_id][:discount_amount]
+      analysis_product.net_sales_amount = hash[product_id][:net_sales_amount]
+      analysis_product.ex_tax_sales_amount = hash[product_id][:ex_tax_sales_amount]
       if analysis_product.total_sales_amount.present? && analysis_product.total_sales_amount > 0
         analysis_product.discount_rate = (analysis_product.discount_amount/analysis_product.total_sales_amount).round(3)
       else
         analysis_product.discount_rate = 0
       end
 
-      if hash[shohin_id][:early_sales_number] == 0
+      if hash[product_id][:early_sales_number] == 0
         analysis_product.potential = 0
       else
-        analysis_product.potential = ((total_number_sales_sozai.to_f/fourteen_number_sales_sozai)*hash[shohin_id][:early_sales_number]).round(1)
+        analysis_product.potential = ((total_number_sales_sozai.to_f/fourteen_number_sales_sozai)*hash[product_id][:early_sales_number]).round(1)
       end
 
       if sdmd_hash[analysis_product.product_id].present?
@@ -430,7 +435,7 @@ class SmaregiTradingHistory < ApplicationRecord
         else
           analysis_product.loss_amount = analysis_product.loss_number * analysis_product.orderecipe_sell_price
         end
-        hash[shohin_id][:loss_amount] = analysis_product.loss_amount
+        hash[product_id][:loss_amount] = analysis_product.loss_amount
       end
     end
     loss_amount = hash.values.sum { |data| data[:loss_amount]}
