@@ -516,7 +516,7 @@ class AnalysesController < AdminController
       data_lossamount_arr << (@date_discount_amount[date_sales[0]].to_f + @date_loss_amount[date_sales[0]].to_f)
       data_loss_arr << (((@date_discount_amount[date_sales[0]].to_f + @date_loss_amount[date_sales[0]].to_f)/date_sales[1])*100).round(1)
       date_transaction_count_arr << @date_transaction_count[date_sales[0]]
-      haiki_mokuhyo_arr << 6
+      haiki_mokuhyo_arr << 10
     end
     gon.sales_dates = date_arr
     gon.sales_data = data_arr
