@@ -32,3 +32,7 @@
           = ts.check_box :read_flag
 
   .actions = f.submit '登録する',class:'btn btn-primary'
+hr style='border-top: 1px solid #ccc;'
+ul class="list-group task_#{@task.id}_comments"
+  - @task.task_comments.each do |tc|
+    = render "task_comment_li",tc:tc

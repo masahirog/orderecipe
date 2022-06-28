@@ -32,6 +32,7 @@ class SalesReportsController < ApplicationController
     respond_to do |format|
       if @sales_report.save
         NotificationMailer.sales_report_send(@sales_report,@sales_report.analysis,sozai_ureyuki,bento_ureyuki).deliver
+        NotificationMailer.report_kindness_send(@sales_report).deliver
         format.html { redirect_to @sales_report, success: "作成！" }
         format.json { render :show, status: :created, location: @sales_report }
       else

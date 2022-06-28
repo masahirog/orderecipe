@@ -8,14 +8,27 @@ class TasksController < ApplicationController
   end
 
   def index
-    @tasks = Task.includes([:task_comments,:task_images,:task_staffs]).rank(:row_order)
+    if params[:staff_id].present?
+      @staff = Staff.find(params[:staff_id])
+      @tasks = Task.includes([:task_comments,:task_images,:task_staffs]).where(:task_staffs => {staff_id:params[:staff_id],read_flag:false}).rank(:row_order)
+      # @tasks = Task.includes([:task_comments,:task_images,:task_staffs]).rank(:row_order)
+    else
+      @tasks = Task.includes([:task_comments,:task_images]).rank(:row_order)
+    end
     @todos = @tasks.where(status:0)
     @doings = @tasks.where(status:1)
     @tasks = @tasks.includes(task_staffs:[:staff])
     @checks = @tasks.where(status:2)
-    @dones = @tasks.where(status:3)
+    if params[:staff_id].present?
+      @dones = Task.includes(:task_staffs).where(:task_staffs => {staff_id:params[:staff_id],read_flag:false}).where(status:3).rank(:row_order)
+    else
+      @dones = Task.where(status:3).rank(:row_order)
+    end
     @task = Task.new
-    Staff.where(employment_status:1).where.not(store_id:39).each do |staff|
+    @staffs = Staff.where(employment_status:1).where.not(store_id:39)
+    @hash = {}
+    @staffs.each do |staff|
+      @hash[staff.id] = staff.task_staffs.where(read_flag:false,task_id:@checks.ids).count
       @task.task_staffs.build(staff_id:staff.id,read_flag:false)
     end
   end

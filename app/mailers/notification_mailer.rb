@@ -1,5 +1,16 @@
 class NotificationMailer < ActionMailer::Base
   default from: "m.yamashita@jfd.co.jp"
+  def task_comment_send_mail(task_comment)
+    @task_comment = task_comment
+    @task = @task_comment.task
+    mail(
+      subject: "task_comment_new",
+      to: 'kitchen@taberu.co.jp',
+    ) do |format|
+      format.text
+    end
+  end
+
   def sales_report_send(sales_report,analysis,sozai_ureyuki,bento_ureyuki)
     @sales_report = sales_report
     @analysis = analysis
@@ -7,6 +18,15 @@ class NotificationMailer < ActionMailer::Base
     @bento_ureyuki = bento_ureyuki
     mail(
       subject: "べじはんフォーム", #メールのタイトル
+      to: 'kitchen@taberu.co.jp',
+    ) do |format|
+      format.text
+    end
+  end
+  def report_kindness_send(sales_report)
+    @sales_report = sales_report
+    mail(
+      subject: "親切レポート", #メールのタイトル
       to: 'kitchen@taberu.co.jp',
     ) do |format|
       format.text

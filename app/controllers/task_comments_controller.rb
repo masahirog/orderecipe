@@ -20,6 +20,7 @@ class TaskCommentsController < ApplicationController
     @task = @task_comment.task
     respond_to do |format|
       if @task_comment.save
+        NotificationMailer.task_comment_send_mail(@task_comment).deliver
         format.html { redirect_to tasks_path, notice: "コメント投稿" }
         format.js
       else

@@ -1,5 +1,15 @@
-h3 進捗ボード【タスク・改善・プロジェクト】
-span 「不定期タスク、改善点、プロジェクト」の進捗・共有の管理をします。リマインダーは店舗での定期タスクなので、それとは使い分ける。
+h3 = link_to "進捗ボード",tasks_path
+- if params[:staff_id].present?
+  h4 = "#{@staff.name} さんの未読一覧"
+- else
+  .clearfix
+    - @staffs.each do |staff|
+      - if @hash[staff.id] > 0
+        = link_to tasks_path(staff_id:staff.id), style:'float:left;',class:'btn btn-default btn-sm' do
+          span = "#{staff.name.slice(0..1)} "
+          span style="color:red;" = @hash[staff.id]
+      - else
+        = link_to "#{staff.name.slice(0..1)} #{@hash[staff.id]}", tasks_path(staff_id:staff.id), style:'float:left;',class:'btn btn-default btn-sm'
 .col-md-12 style='padding:0;'
   .col-md-3 style='padding:0;'
     h4 Todo
@@ -64,7 +74,28 @@ span 「不定期タスク、改善点、プロジェクト」の進捗・共有
     h4 Done
     ul#tasks_done_ul class="list-group list-group-flush tasks_ul ul-sortable" style='min-height:100px;'
       - @dones.each do |task|
-        = render 'task_list',task:task
+        li.clearfix.list-group-item.item class="task_#{task.id}_li" data={model_name: task.class.name.underscore, update_url: task_sort_path(task)} style='padding-left:10px;'
+          div style='float:left;width:calc(100% - 30px);'
+            div id="modal_title_task_#{task.id}" data-toggle="modal" data-target="#modal_#{task.id}" style='cursor: pointer;'
+              h5.title style='margin-top:0;'
+                = link_to "#{task.title}",edit_task_path(task),style:'color:gray;'
+              .clearfix
+                div style='float:left;padding:0px 8px;'
+                  i class="fa-solid fa-comment-dots" style='margin-right:3px;font-size:1em;color:#deb887;'
+                  span class="task_#{task.id}_read_count" style="color:#a9a9a9;" = "#{task.task_comments.count}"
+
+                div style='float:left;padding:0px 8px;'
+                  i class="fa-solid fa-check" style='margin-right:3px;font-size:.8em;color:#006400;'
+                  span class="task_#{task.id}_read_count" style="color:#a9a9a9;" = "#{task.task_staffs.where(read_flag:true).count}"
+                div style='float:left;padding:0px 8px;'
+                  - if task.category == 'task'
+                    span class="badge bg-blue" = task.category
+                  - elsif task.category == 'kaizen'
+                    span class="badge bg-green" = task.category
+                  - elsif task.category == 'project'
+                    span class="badge bg-red" = task.category
+                  - elsif task.category == 'shere'
+                    span class="badge bg-yellow" = task.category
 
 javascript:
   $('.staff_read_check').on( 'change',function(){
