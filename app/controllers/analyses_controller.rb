@@ -40,6 +40,7 @@ class AnalysesController < AdminController
     @date_loss_amount = @analyses.group(:date).sum(:loss_amount)
     @date_transaction_count = @analyses.group(:date).sum(:transaction_count)
     @date_sales_number = @analyses.group(:date).sum(:transaction_count)
+    @date_discount_amount = @analyses.group(:date).sum(:discount_amount)
     respond_to do |format|
       format.html
       format.csv do
@@ -501,6 +502,7 @@ class AnalysesController < AdminController
     end
     @date_transaction_count = analyses.group(:date).sum(:transaction_count)
     @date_sales_amount = analyses.group(:date).sum(:ex_tax_sales_amount)
+    @date_discount_amount = analyses.group(:date).sum(:discount_amount)
     @date_loss_amount = analyses.group(:date).sum(:loss_amount)
     date_arr = []
     data_arr = []
@@ -511,8 +513,8 @@ class AnalysesController < AdminController
     @date_sales_amount.sort.each do |date_sales|
       date_arr << date_sales[0].strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[date_sales[0].wday]})")
       data_arr << date_sales[1]
-      data_lossamount_arr << @date_loss_amount[date_sales[0]]
-      data_loss_arr << ((@date_loss_amount[date_sales[0]].to_f/date_sales[1])*100).round(1)
+      data_lossamount_arr << (@date_discount_amount[date_sales[0]].to_f + @date_loss_amount[date_sales[0]].to_f)
+      data_loss_arr << (((@date_discount_amount[date_sales[0]].to_f + @date_loss_amount[date_sales[0]].to_f)/date_sales[1])*100).round(1)
       date_transaction_count_arr << @date_transaction_count[date_sales[0]]
       haiki_mokuhyo_arr << 6
     end

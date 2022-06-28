@@ -37,6 +37,7 @@ table.table
       th 日付
       th 来客組数
       th 売上
+      th 値引額
       th 廃棄
       th 廃棄率
       th 合計人件費
@@ -48,7 +49,8 @@ table.table
         td = link_to date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})"),date_analyses_path(date:date)
         td = @date_transaction_count[date] if @date_transaction_count[date]
         td = @date_sales_amount[date].to_s(:delimited) if @date_sales_amount[date]
+        td = @date_discount_amount[date].to_s(:delimited) if @date_discount_amount[date]
         td = @date_loss_amount[date].to_s(:delimited) if @date_loss_amount[date]
-        td = "#{((@date_loss_amount[date].to_f/@date_sales_amount[date])*100).round(1)}%" if @date_loss_amount[date] && @date_sales_amount[date]
+        td = "#{(((@date_loss_amount[date].to_f + @date_discount_amount[date].to_f)/@date_sales_amount[date])*100).round(1)}%" if @date_loss_amount[date] && @date_sales_amount[date]
         td
         td
