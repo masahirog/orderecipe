@@ -19,6 +19,8 @@ li.clearfix.list-group-item.item class="task_#{task.id}_li" data={model_name: ta
             span class="badge bg-red" = task.category
           - elsif task.category == 'shere'
             span class="badge bg-yellow" = task.category
+          - elsif task.category == 'hikitsugi'
+            span class="badge bg-silver" = task.category
 
     .modal.fade id="modal_#{task.id}" tabindex="-1"
       .modal-dialog
