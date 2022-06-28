@@ -1,5 +1,14 @@
 class NotificationMailer < ActionMailer::Base
   default from: "m.yamashita@jfd.co.jp"
+  def refund_support_create_send_mail(refund_support)
+    @refund_support = refund_support
+    mail(
+      subject: "refund_support_new",
+      to: 'kitchen@taberu.co.jp',
+    ) do |format|
+      format.text
+    end
+  end
   def task_comment_send_mail(task_comment)
     @task_comment = task_comment
     @task = @task_comment.task
@@ -26,7 +35,7 @@ class NotificationMailer < ActionMailer::Base
   def report_kindness_send(sales_report)
     @sales_report = sales_report
     mail(
-      subject: "親切レポート", #メールのタイトル
+      subject: "kindness_report", #メールのタイトル
       to: 'kitchen@taberu.co.jp',
     ) do |format|
       format.text

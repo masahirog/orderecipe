@@ -18,9 +18,9 @@ class RefundSupportsController < ApplicationController
 
   def create
     @refund_support = RefundSupport.new(refund_support_params)
-
     respond_to do |format|
       if @refund_support.save
+        NotificationMailer.refund_support_create_send_mail(@refund_support).deliver
         format.html { redirect_to refund_supports_path(store_id:@refund_support.store_id), notice: "作成しました。" }
         format.json { render :show, status: :created, location: @refund_support }
       else
