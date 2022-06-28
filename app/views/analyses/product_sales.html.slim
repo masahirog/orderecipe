@@ -8,31 +8,76 @@ div style='margin-bottom:20px;'
             = check_box_tag "stores[#{store.id}]",true,params['stores'][store.id.to_s]
             = label_tag "stores[#{store.id}]",store.name
     div
-      label style='float:left;margin-right:10px;' 商品
-      = select_tag :product_id, options_for_select(Product.where(brand_id:111).all.map{|product|[product.name,product.id]},params[:product_id]),include_blank: true, class: "form-control",style:'width:400px;float:left;margin-right:20px;'
       label style='float:left;margin-right:10px;' 表示期間
       = date_field_tag :from, params[:from], class:"form-control float-left",style:'width:200px;float:left;'
       div style="float:left;padding:8px;" 〜
       = date_field_tag :to, params[:to], class:"form-control",style:'width:200px;float:left;'
     = submit_tag "絞り込み" ,class:"btn btn-primary",style:"margin-left:20px;"
 
-h3 販売数推移（カッコ内の数字は14時までに販売した数）
-table.table
-  thead
-    tr
-      th 日付
-      th 合計
-      - @stores.each do |store|
-        th = store.name
-
-  tbody
-    - @dates.each do |date|
+.table-responsive style='height:900px;overflow: scroll;'
+  table.table.layout-fixed style='border-collapse:separate;'
+    thead style='position: sticky;top:0;background-color:white;z-index:3;'
       tr
-        td = date.strftime("%Y/%-m/%-d(#{%w(日 月 火 水 木 金 土)[date.wday]})")
-        - total = 0
-        - @hash[date].values.map{|hash|total += hash["total"].to_i}
-        td = total
-        - @stores.each do |store|
-          td
-            - if @hash[date][store.id].present?
-              = "#{@hash[date][store.id]['total']}（#{@hash[date][store.id]['early']}）"
+        th style='background-color:white;width:200px;' 商品名
+        - @dates.each do |date|
+          - holiday = HolidayJapan.name(date)
+          - if holiday.present? || date.wday == 0
+            th colspan=5 style='width:250px;color:#f08080;' = date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})")
+          - elsif date.wday == 6
+            th colspan=5 style='width:250px;color:#87cefa;' = date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})")
+          - else
+            th colspan=5 style='width:250px;' = date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})")
+
+      tr
+        th style='background-color:white;width:200px;'
+        - @dates.each do |date|
+          th.aaa style="" 販売数
+          th.aaa style="" 売上
+          th.aaa style="" 値引
+          th.aaa style="" 廃棄
+          th.aaa style="border-right: 3px solid #ddd;" ロス率
+    tbody
+      - @products.each_with_index do |product,i|
+        - if i.even?
+          - bgcolor = 'white'
+        - else
+          - bgcolor = '#f5f5f5'
+        tr style="background-color:#{bgcolor}"
+          td style='background-color:#{bgcolor};border-right: 3px solid #ddd;'
+            = product.name.slice(0..13)
+          - @dates.each do |date|
+            - if @hash[product.id][date].present?
+              td = "#{@hash[product.id][date][:sales_number]}/#{@hash[product.id][date][:actual_inventory]}"
+              td = @hash[product.id][date][:total_sales_amount].to_s(:delimited)
+              td = @hash[product.id][date][:discount_amount].to_s(:delimited)
+              td = @hash[product.id][date][:loss_amount]
+              td style="border-right: 3px solid #ddd;" = "#{(((@hash[product.id][date][:discount_amount] + @hash[product.id][date][:loss_amount] )/@hash[product.id][date][:total_sales_amount].to_f)*100).round(1)}%"
+            - else
+              td
+              td
+              td
+              td
+              td style="border-right: 3px solid #ddd;"
+
+css:
+  .table-responsive th {
+    white-space: nowrap;
+  }
+  table.layout-fixed {
+    table-layout: fixed;
+    border-collspace:separate;
+  }
+  .table th:first-child,td:first-child{
+    position: sticky;
+    left: 0;
+    z-index:2;
+  }
+  th,td {
+    border-right: 1px solid #ddd;
+    font-size:0.9em;
+    font-weight:normal;
+    text-align:center;
+  }
+  .aaa{
+    width:50px;
+  }

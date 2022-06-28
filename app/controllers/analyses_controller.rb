@@ -199,20 +199,31 @@ class AnalysesController < AdminController
     if params[:from]
       @from = params[:from].to_date
     else
-      @from = @to - 180
+      @from = @to - 30
       params[:from] = @from
     end
     analyses = Analysis.where(date:@from..@to).where(store_id:checked_store_ids)
-    @analysis_products = AnalysisProduct.where(analysis_id:analyses.ids,product_id:params[:product_id])
+    @analysis_products = AnalysisProduct.includes([:analysis]).where(analysis_id:analyses.ids)
     @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    @dates = []
+    product_ids = []
     @analysis_products.each do |ap|
-      store_id = ap.analysis.store_id
-      date = ap.analysis.date
-      @hash[date][store_id]['early'] = ap.early_sales_number
-      @hash[date][store_id]['total'] = ap.sales_number
+      if @hash[ap.product_id][ap.analysis.date].present?
+        @hash[ap.product_id][ap.analysis.date][:actual_inventory] += ap.actual_inventory.to_i
+        @hash[ap.product_id][ap.analysis.date][:sales_number] += ap.sales_number
+        @hash[ap.product_id][ap.analysis.date][:total_sales_amount] += ap.total_sales_amount
+        @hash[ap.product_id][ap.analysis.date][:discount_amount] += ap.discount_amount
+        @hash[ap.product_id][ap.analysis.date][:loss_amount] += ap.loss_amount
+      else
+        @hash[ap.product_id][ap.analysis.date] = {sales_number:ap.sales_number,total_sales_amount:ap.total_sales_amount,discount_amount:ap.discount_amount,loss_amount:ap.loss_amount,actual_inventory:ap.actual_inventory.to_i}
+        product_ids << ap.product_id unless product_ids.include?(ap.product_id)
+        @dates << ap.analysis.date unless @dates.include?(ap.analysis.date)
+      end
     end
-    @dates = @analysis_products.map{|ap|ap.analysis.date}.uniq.sort
+    @dates = @dates.sort
+    @products = Product.where(id:product_ids)
   end
+
   def visitors_time_zone
     @stores = Store.all
     if params[:stores]
@@ -508,7 +519,8 @@ class AnalysesController < AdminController
     data_arr = []
     data_loss_arr = []
     date_transaction_count_arr = []
-    haiki_mokuhyo_arr = []
+    haiki_mokuhyo_min_arr = []
+    haiki_mokuhyo_max_arr = []
     data_lossamount_arr = []
     @date_sales_amount.sort.each do |date_sales|
       date_arr << date_sales[0].strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[date_sales[0].wday]})")
@@ -516,12 +528,14 @@ class AnalysesController < AdminController
       data_lossamount_arr << (@date_discount_amount[date_sales[0]].to_f + @date_loss_amount[date_sales[0]].to_f)
       data_loss_arr << (((@date_discount_amount[date_sales[0]].to_f + @date_loss_amount[date_sales[0]].to_f)/date_sales[1])*100).round(1)
       date_transaction_count_arr << @date_transaction_count[date_sales[0]]
-      haiki_mokuhyo_arr << 10
+      haiki_mokuhyo_min_arr << 9
+      haiki_mokuhyo_max_arr << 11
     end
     gon.sales_dates = date_arr
     gon.sales_data = data_arr
     gon.loss_data = data_loss_arr
-    gon.loss_mokuhyo_data = haiki_mokuhyo_arr
+    gon.loss_mokuhyo_data_min = haiki_mokuhyo_min_arr
+    gon.loss_mokuhyo_data_max = haiki_mokuhyo_max_arr
     gon.transaction_count_date = date_transaction_count_arr
     gon.lossamount_data = data_lossamount_arr
   end

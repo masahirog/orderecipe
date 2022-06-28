@@ -101,14 +101,26 @@ javascript:
         pointRadius: 0
       },{
         type: 'line',
-        label: "廃棄率8%",
-        data: gon.loss_mokuhyo_data,
+        label: "廃棄率",
+        data: gon.loss_mokuhyo_data_min,
         backgroundColor: 'rgba(255,0,0,0.9)',
         borderColor: 'rgba(255,0,0,0.9)',
         fill: false,
         stacked: false,
         yAxisID: "y-axis-2",
-        pointRadius: 0
+        pointRadius: 0,
+        borderWidth: 1
+      },{
+        type: 'line',
+        label: "廃棄率",
+        data: gon.loss_mokuhyo_data_max,
+        backgroundColor: 'rgba(255,0,0,0.9)',
+        borderColor: 'rgba(255,0,0,0.9)',
+        fill: false,
+        stacked: false,
+        yAxisID: "y-axis-2",
+        pointRadius: 0,
+        borderWidth: 1
       },{
         type: 'bar',
         label: "廃棄金額",
