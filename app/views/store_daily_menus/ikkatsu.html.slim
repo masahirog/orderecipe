@@ -5,7 +5,7 @@ ul.list-group.clearfix style='margin-top:15px;'
   -@store_daily_menu_details.each do |sdmd|
     li.list-group-item.float-left style='float:left;width:33%;height:400px;text-align: center;position:relative;'
       = link_to sdmd.product.name,product_path(sdmd.product)
-      = image_tag sdmd.product.display_image.to_s,class:"img-responsive",style:'max-height:378px;margin-top:5px;margin:0 auto;'
+      = image_tag sdmd.product.image_for_one_person.to_s,class:"img-responsive",style:'max-height:378px;margin-top:5px;margin:0 auto;'
       - if sdmd.product.product_ozara_serving_informations.present? || sdmd.product.display_image.present?
         button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#ozara_serving_#{sdmd.product_id}" style='position:absolute;bottom:10px;left:50%;transform:translateX(-50%);' 盛付手順を確認
         .modal.fade tabindex="-1" ID="ozara_serving_#{sdmd.product_id}"

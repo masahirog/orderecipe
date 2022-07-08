@@ -39,7 +39,7 @@ class KurumesiOrder < ApplicationRecord
 
 
   def self.pick_time_scraping
-    date = Date.tomorrow
+    date = Date.today
     year = date.year
     month = date.month
     day = date.day
@@ -60,7 +60,7 @@ class KurumesiOrder < ApplicationRecord
         hour = ""
         minute = ""
         pick_time = ""
-        kurumesi_order_id = content.at(".boxTtl h2").inner_text[4..11]
+        kurumesi_order_id = content.at(".boxTtl-head__txt").inner_text[4..11]
         kurumesi_order = KurumesiOrder.find_by(management_id:kurumesi_order_id)
         if kurumesi_order.present?
           time = content.search("div[2]/table/tr[4]/td/p[2]").inner_text.gsub(/(\s)/,"").slice(-5..-1)

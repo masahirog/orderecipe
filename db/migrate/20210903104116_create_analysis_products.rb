@@ -26,6 +26,7 @@ class CreateAnalysisProducts < ActiveRecord::Migration[5.2]
       t.integer :ex_tax_sales_amount
       t.float :discount_rate
       t.boolean :loss_ignore,default:false,null:false
+      t.integer :discount_number,default:0
     end
   end
 end

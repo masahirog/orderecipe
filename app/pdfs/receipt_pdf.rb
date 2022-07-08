@@ -18,7 +18,7 @@ class ReceiptPdf < Prawn::Document
       if data[0].present?
         text "発行日：#{data[0]}　　", size:11, :align => :right
       else
-        text "発行日：　　　　　　　　　", size:11, :align => :right 
+        text "発行日：　　　　　　　　　", size:11, :align => :right
       end
       text "　　#{data[1]} #{data[2]}", size: 16,styles: :bold
       move_down 10
@@ -45,8 +45,8 @@ class ReceiptPdf < Prawn::Document
       move_down 10
       text "日本フードデリバリー株式会社", size: 11
       text "〒150-0043", size: 11
-      text "東京都渋谷区道玄坂2-10-12", size: 11
-      text "新大宗ビル3号館9階", size: 11
+      text "東京都渋谷区道玄坂2-23-12", size: 11
+      text "フォンティスビル7F", size: 11
       text "TEL：03-5539-6000", size: 11
     end
 

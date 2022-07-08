@@ -62,6 +62,7 @@ ActiveRecord::Schema.define(version: 2022_06_12_033011) do
     t.integer "ex_tax_sales_amount"
     t.float "discount_rate"
     t.boolean "loss_ignore", default: false, null: false
+    t.integer "discount_number", default: 0
   end
 
   create_table "brands", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -804,7 +805,7 @@ ActiveRecord::Schema.define(version: 2022_06_12_033011) do
     t.integer "group_id"
   end
 
-  create_table "task_comments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "task_comments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "task_id", null: false
     t.text "content"
     t.string "name"
@@ -813,7 +814,7 @@ ActiveRecord::Schema.define(version: 2022_06_12_033011) do
     t.string "image"
   end
 
-  create_table "task_images", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "task_images", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "task_id", null: false
     t.string "image"
     t.datetime "created_at", precision: 6, null: false
@@ -828,7 +829,7 @@ ActiveRecord::Schema.define(version: 2022_06_12_033011) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "tasks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "tasks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "title"
     t.text "content"
     t.integer "status"

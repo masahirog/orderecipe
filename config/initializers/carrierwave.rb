@@ -14,6 +14,7 @@ CarrierWave.configure do |config|
     config.fog_directory  = 'bento-orderecipe'
     config.asset_host = 'https://s3-ap-northeast-1.amazonaws.com/bento-orderecipe'
   else
+    config.asset_host = 'https://s3-ap-northeast-1.amazonaws.com/bento-orderecipe'
     config.storage :file
   end
 end

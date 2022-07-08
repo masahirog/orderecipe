@@ -320,6 +320,7 @@ class SmaregiTradingHistory < ApplicationRecord
       nebikimaekei = smaregi_trading_history.nebikimaekei.to_i
       uchishohizei = smaregi_trading_history.uchishohizei.to_i
       uchizeianbun = smaregi_trading_history.uchizeianbun.to_i
+      tanpin_waribiki = smaregi_trading_history.tanpin_waribiki
       product_zeinuki_uriage = nebikigokei - uchizeianbun
       if hinban == 10459 ||hinban == 12899 ||hinban == 13179
         loss_ignore = true
@@ -336,10 +337,10 @@ class SmaregiTradingHistory < ApplicationRecord
       else
         new_analysis_product = AnalysisProduct.new(analysis_id:analysis_id,smaregi_shohin_id:shohin_id,smaregi_shohin_name:shohinmei,smaregi_shohintanka:shohintanka,
         product_id:hinban,total_sales_amount:0,sales_number:0,loss_amount:0,early_sales_number:0,bumon_id:bumon_id,bumon_mei:bumonmei,
-        discount_amount:0,net_sales_amount:0,ex_tax_sales_amount:0,discount_rate:0,loss_ignore:loss_ignore)
+        discount_amount:0,net_sales_amount:0,ex_tax_sales_amount:0,discount_rate:0,loss_ignore:loss_ignore,discount_number:0)
         analysis_products_arr << new_analysis_product
         product_ids << hinban
-        hash[hinban]={sales_number:0,total_sales_amount:0,discount_amount:0,net_sales_amount:0,ex_tax_sales_amount:0,early_sales_number:0,loss_amount:0,smaregi_shohin_id:[shohin_id],smaregi_shohin_name:shohinmei,smaregi_price:shohintanka}
+        hash[hinban]={sales_number:0,total_sales_amount:0,discount_amount:0,net_sales_amount:0,ex_tax_sales_amount:0,early_sales_number:0,loss_amount:0,smaregi_shohin_id:[shohin_id],smaregi_shohin_name:shohinmei,smaregi_price:shohintanka,discount_number:0}
       end
       # ▼analysis_productの更新部分
       if torihiki_meisaikubun == 1 ||torihiki_meisaikubun == 3
@@ -350,7 +351,9 @@ class SmaregiTradingHistory < ApplicationRecord
         hash[hinban][:discount_amount] += tanka_nebikikei
         hash[hinban][:net_sales_amount] += nebikigokei
         hash[hinban][:ex_tax_sales_amount] += product_zeinuki_uriage
-
+        if tanpin_waribiki == 50
+          hash[hinban][:discount_number] += suryo
+        end
         if Time.parse(time) < Time.parse('14:00')
           hash[hinban][:early_sales_number] += suryo
           fourteen_number_sales_sozai += suryo if bumon_id == 1
@@ -364,6 +367,9 @@ class SmaregiTradingHistory < ApplicationRecord
         hash[hinban][:discount_amount] -= tanka_nebikikei
         hash[hinban][:net_sales_amount] -= nebikigokei
         hash[hinban][:ex_tax_sales_amount] -= product_zeinuki_uriage
+        if tanpin_waribiki == 50
+          hash[hinban][:discount_number] -= suryo
+        end
         if Time.parse(time) < Time.parse('14:00')
           hash[hinban][:early_sales_number] -= suryo
           fourteen_number_sales_sozai -= suryo if bumon_id == 1
@@ -410,6 +416,7 @@ class SmaregiTradingHistory < ApplicationRecord
       analysis_product.discount_amount = hash[product_id][:discount_amount]
       analysis_product.net_sales_amount = hash[product_id][:net_sales_amount]
       analysis_product.ex_tax_sales_amount = hash[product_id][:ex_tax_sales_amount]
+      analysis_product.discount_number = hash[product_id][:discount_number]
       if analysis_product.total_sales_amount.present? && analysis_product.total_sales_amount > 0
         analysis_product.discount_rate = (analysis_product.discount_amount/analysis_product.total_sales_amount).round(3)
       else

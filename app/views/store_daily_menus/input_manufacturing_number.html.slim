@@ -24,8 +24,7 @@ h3 = "#{@store.name}店 献立組み"
         td.text-right colspan=2 直近の曜日別 平均惣菜販売点数
         - @store_daily_menus.each do |sdm|
           td
-            - tbody = @weekday_sales_sozai_number[sdm.start_time.wday]['rireki'].map{|date_num_weather|"<tr><td>#{date_num_weather[0].strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[date_num_weather[0].wday]})")}</td><td>#{t("enums.store_daily_menu.weather.#{date_num_weather[1][1]}")}</td><td>#{date_num_weather[1][0]}</td></tr>"}.join
-            button type="button" class="btn btn-secondary" data-container="body" data-html="true" data-toggle="popover" data-placement="left" data-content="<table class='table'><thead><tr><th>日付</th><th>天気</th><th>販売数</th></tr></thead><tbody>#{tbody}</tbody></table>"
+            button type="button" class="btn btn-secondary" data-container="body" data-html="true" data-toggle="popover" data-placement="bottom" data-content="#{render(partial: 'rireki',:locals => {wday:sdm.start_time.wday}).html_safe}"
               - if @weekday_sales_sozai_number[sdm.start_time.wday]['total_num'].present?
                 = (@weekday_sales_sozai_number[sdm.start_time.wday]['total_num']/@weekday_sales_sozai_number[sdm.start_time.wday]['count'])
 
@@ -44,11 +43,6 @@ h3 = "#{@store.name}店 献立組み"
             input style='width:60px;float:left;' class="form-control total_sales_sozai_yoso"
             input style='width:60px;float:left;' class="form-control total_sales_sozai_input" readonly=true
             input style='width:80px;display:none;' class="col" value=i
-      tr
-        td
-        td
-        - @store_daily_menus.each_with_index do |sdm,i|
-          td
       - @uniq_product_store_daily_menu_details.each do |sdmd|
         tr
           td = link_to sdmd.product.name,sdmd.product,target:'_blank'
@@ -79,6 +73,11 @@ h3 = "#{@store.name}店 献立組み"
                 input.col_i value="#{i}" style='display:none;'
                 = f.number_field "store_daily_menu_details[#{@store_daily_menu_detail_ids_hash[[sdm.id,sdmd.product_id]]}]",value:@store_daily_menu_details_hash[[sdm.id,sdmd.product_id]], class:'form-control input-sdmd-number',style:"float:left;width:60px;"
               - else
+
+css:
+  .popover{
+    max-width: 100%; /* Max Width of the popover (depending on the container!) */
+  }
 javascript:
 
   $(".col-base").each(function(i,ele){

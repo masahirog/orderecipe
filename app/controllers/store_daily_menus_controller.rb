@@ -60,14 +60,53 @@ class StoreDailyMenusController < ApplicationController
         @weekday_sales_sozai_number[analysis.date.wday]['total_num'] = analysis.total_number_sales_sozai
         @weekday_sales_sozai_number[analysis.date.wday]['count'] = 1
       end
+      transaction_count = analysis.transaction_count
+      analysis_products = analysis.analysis_products
+      discount_sozai_number = analysis_products.joins(:product).where(:products => {bejihan_sozai_flag:true}).sum(:discount_number)
+      fixed_price_sales_sozai_number = analysis.total_number_sales_sozai - discount_sozai_number
+      loss_sozai_number = analysis_products.joins(:product).where(:products => {bejihan_sozai_flag:true}).where(loss_ignore:false).where('loss_number > ?', 0).sum(:loss_number)
+      total_number_sales_bento =  analysis_products.joins(:product).where(:products => {product_category:5}).sum(:sales_number)
+      discount_bento_number = analysis_products.joins(:product).where(:products => {product_category:5}).sum(:discount_number)
+      fixed_price_sales_bento_number = total_number_sales_bento - discount_bento_number
+      loss_bento_number = analysis_products.joins(:product).where(:products => {product_category:5}).where(loss_ignore:false).where('loss_number > ?', 0).sum(:loss_number)
+
       sdm = StoreDailyMenu.find_by(start_time:analysis.date,store_id:analysis.store_id)
+      sozai_zaiko = analysis_products.joins(:product).where(:products => {bejihan_sozai_flag:true}).sum(:manufacturing_number)
+      sozai_kurikoshi = analysis_products.joins(:product).where(:products => {bejihan_sozai_flag:true}).sum(:carry_over)
+      bento_zaiko = analysis_products.joins(:product).where(:products => {product_category:5}).sum(:manufacturing_number)
       if sdm.present?
         weather = sdm.weather
       else
         weather = ''
       end
-
-      @weekday_sales_sozai_number[analysis.date.wday]['rireki'][analysis.date] = [analysis.total_number_sales_sozai,weather]
+      @weekday_sales_sozai_number[analysis.date.wday]['rireki'][analysis.date] = [fixed_price_sales_sozai_number,weather,transaction_count,discount_sozai_number,
+        loss_sozai_number,discount_bento_number,fixed_price_sales_bento_number,loss_bento_number,sozai_zaiko,sozai_kurikoshi,bento_zaiko]
+    end
+    @tbody_contents = {}
+    @weekday_sales_sozai_number.each do |wday|
+      @tbody_contents[wday[0]] = []
+      wday[1]['rireki'].map do |date_num_weather|
+        if date_num_weather[1][1].present?
+          weather = t("enums.store_daily_menu.weather.#{date_num_weather[1][1]}")
+        else
+          weather = ''
+        end
+        @tbody_contents[wday[0]] << "<tr>
+          <td>#{date_num_weather[0].strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[date_num_weather[0].wday]})")}</td>
+          <td>#{weather}</td>
+          <td>#{date_num_weather[1][2]}</td>
+          <td>#{date_num_weather[1][8]}</td>
+          <td>#{date_num_weather[1][9]}</td>
+          <td style='color:red;'>#{date_num_weather[1][0]}</td>
+          <td>#{date_num_weather[1][3]}</td>
+          <td>#{date_num_weather[1][4]}</td>
+          <td>#{date_num_weather[1][10]}</td>
+          <td style='color:red;'>#{date_num_weather[1][6]}</td>
+          <td>#{date_num_weather[1][5]}</td>
+          <td>#{date_num_weather[1][7]}</td>
+          </tr>"
+      end
+      @tbody_contents[wday[0]] = @tbody_contents[wday[0]].join
     end
     @date_sales_sozai_number = @date_sales_sozai_number.to_h
   end

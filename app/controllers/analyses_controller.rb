@@ -34,6 +34,7 @@ class AnalysesController < AdminController
       @from = @to - 30
       params[:from] = @from
     end
+    @dates =(@from..@to).to_a
     @period = (@to - @from).to_i
     @analyses = Analysis.where(date:@from..@to).where(store_id:checked_store_ids).order(:date)
     @date_sales_amount = @analyses.group(:date).sum(:ex_tax_sales_amount)

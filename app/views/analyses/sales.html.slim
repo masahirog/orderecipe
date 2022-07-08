@@ -1,14 +1,4 @@
 h3 販売データ
-
-
-/ = form_tag onceupload_analyses_path, multipart: true do
-  = date_field_tag :from,class:'form-control',style:'padding:10px;height:100%;'
-  = date_field_tag :to,class:'form-control',style:'padding:10px;height:100%;'
-  = number_field_tag :store_id,class:'form-control',style:'padding:10px;height:100%;'
-  = file_field_tag :file,class:'form-control',style:'padding:10px;height:100%;'
-  = submit_tag "アップロード",class:'btn btn-primary'
-
-
 = form_tag analyses_path, :method => 'get' do
   .clearfix
     label style='float:left;' 店舗選択
@@ -44,7 +34,7 @@ table.table
       th 営業利益
 
   tbody
-    - (@from..@to).each do |date|
+    - @dates.reverse_each do |date|
       tr
         td = link_to date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})"),date_analyses_path(date:date)
         td = @date_transaction_count[date] if @date_transaction_count[date]
