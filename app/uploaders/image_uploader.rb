@@ -67,7 +67,7 @@ class ImageUploader < CarrierWave::Uploader::Base
 
    # jpg,jpeg,gif,pngしか受け付けない
    def extension_white_list
-     %w(jpg jpeg gif png)
+     %w(jpg jpeg gif png pdf)
    end
 
   # 拡張子が同じでないとGIFをJPGとかにコンバートできないので、ファイル名を変更
