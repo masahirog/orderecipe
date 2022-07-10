@@ -1,6 +1,7 @@
 class Reminder < ApplicationRecord
   belongs_to :store
-  enum status: {yet:0,done:1,cancel:2,carry_forward:3}
+  enum status: {yet:0,done:1,cancel:2,carry_forward:3,check:4}
+  enum category: {task:0,clean:1}
   validates :action_date, presence: true
   validates :content, presence: true
   validates :drafter, presence: true
@@ -18,12 +19,15 @@ class Reminder < ApplicationRecord
     ReminderTemplate.where(status:0).each do |reminder_template|
       if reminder_template.repeat_type == 'everyday'
         new_reminder_create(reminder_template,new_reminders_arr,today)
-      elsif reminder_template.repeat_type == 'every_sales_day'
-        new_reminder_create(reminder_template,new_reminders_arr,today) if wday != 0
       elsif reminder_template.repeat_type == 'beg_of_month'
         new_reminder_create(reminder_template,new_reminders_arr,today) if today == today.beginning_of_month
       elsif reminder_template.repeat_type == 'end_of_month'
         new_reminder_create(reminder_template,new_reminders_arr,today) if today == today.end_of_month
+      elsif reminder_template.repeat_type == 'everyweek'
+        new_reminder_create(reminder_template,new_reminders_arr,today) if today == today.beginning_of_week
+      elsif reminder_template.repeat_type == 'everymonth'
+        new_reminder_create(reminder_template,new_reminders_arr,today) if today == today.beginning_of_month
+
       else
         if wday_hash[reminder_template.repeat_type] == wday
           new_reminder_create(reminder_template,new_reminders_arr,today)
@@ -35,7 +39,7 @@ class Reminder < ApplicationRecord
   def self.new_reminder_create(reminder_template,new_reminders_arr,today)
     reminder_template.stores.each do |store|
       new_reminder = Reminder.new(store_id:store.id,reminder_template_id:reminder_template.id,action_date:today,action_time:reminder_template.action_time,
-      content:reminder_template.content,memo:reminder_template.memo,status:0,drafter:reminder_template.drafter)
+      content:reminder_template.content,memo:reminder_template.memo,status:0,drafter:reminder_template.drafter,category:reminder_template.category)
       new_reminders_arr << new_reminder
     end
   end

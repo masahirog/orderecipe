@@ -130,6 +130,7 @@ ActiveRecord::Schema.define(version: 2022_06_12_033011) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "sozai_manufacturing_number", default: 0, null: false
+    t.string "event"
   end
 
   create_table "date_manufacture_numbers", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -555,7 +556,7 @@ ActiveRecord::Schema.define(version: 2022_06_12_033011) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "reminder_templates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+  create_table "reminder_templates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "repeat_type", null: false
     t.time "action_time"
     t.string "content", null: false
@@ -564,9 +565,10 @@ ActiveRecord::Schema.define(version: 2022_06_12_033011) do
     t.string "drafter", default: "", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "category", default: 0, null: false
   end
 
-  create_table "reminders", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+  create_table "reminders", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "store_id", null: false
     t.integer "reminder_template_id"
     t.date "action_date", null: false
@@ -579,6 +581,9 @@ ActiveRecord::Schema.define(version: 2022_06_12_033011) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "important_flag", default: false, null: false
+    t.integer "category", default: 0, null: false
+    t.integer "do_staff"
+    t.integer "check_staff"
   end
 
   create_table "sales_reports", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -829,7 +834,7 @@ ActiveRecord::Schema.define(version: 2022_06_12_033011) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "tasks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+  create_table "tasks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "title"
     t.text "content"
     t.integer "status"
@@ -839,6 +844,7 @@ ActiveRecord::Schema.define(version: 2022_06_12_033011) do
     t.datetime "updated_at", precision: 6, null: false
     t.integer "row_order"
     t.integer "category"
+    t.integer "group_id", null: false
   end
 
   create_table "users", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

@@ -434,111 +434,43 @@ class AnalysesController < AdminController
 
   end
   def summary
-    @stores = Store.all
-    if params[:stores]
-      checked_store_ids = params['stores'].keys
-    else
-      checked_store_ids = @stores.ids
+    @stores = Store.where.not(id:39)
+    unless params[:stores]
       params[:stores] = {}
-      @stores.each do |store|
-        params[:stores][store.id.to_s] = true
+      @stores.each{|store|params[:stores][store.id.to_s] = true}
+    end
+    params[:to] = Date.today unless params[:to]
+    params[:from] = params[:to] - 30 unless params[:from]
+    @dates =(params[:from]..params[:to]).to_a
+    @analyses = Analysis.where(date:params[:from]..params[:to]).where(store_id:params['stores'].keys)
+    @store_analyses = @analyses.map{|analysis|[[analysis.date,analysis.store_id],analysis]}.to_h
+    @date_sales_amount = @analyses.group(:date).sum(:ex_tax_sales_amount)
+    @store_date_sales_amount = @analyses.group(:date,:store_id).sum(:ex_tax_sales_amount)
+    @date_discount_amount = @analyses.group(:date).sum(:discount_amount)
+    @store_date_discount_amount = @analyses.group(:date,:store_id).sum(:discount_amount)
+    @date_loss_amount = @analyses.group(:date).sum(:loss_amount)
+    @store_date_loss_amount = @analyses.group(:date,:store_id).sum(:loss_amount)
+    @date_transaction_count = @analyses.group(:date).sum(:transaction_count)
+    @store_date_transaction_count = @analyses.group(:date,:store_id).sum(:transaction_count)
+    @date_sales_number = @analyses.group(:date).sum(:transaction_count)
+    @store_date_sales_number = @analyses.group(:date,:store_id).sum(:transaction_count)
+    gon.sales_dates = @dates
+    gon.sales_data = []
+    gon.loss_data = []
+    gon.loss_mokuhyo_data_min = []
+    gon.loss_mokuhyo_data_max = []
+    @dates.sort.each do |date|
+      gon.sales_data << @date_sales_amount[date]
+      gon.loss_data << (((@date_discount_amount[date].to_f + @date_loss_amount[date].to_f)/@date_sales_amount[date])*100).round(1) if @date_sales_amount[date].present?
+      gon.loss_mokuhyo_data_min << 9
+      gon.loss_mokuhyo_data_max << 11
+    end
+    respond_to do |format|
+      format.html
+      format.csv do
+        send_data render_to_string, filename: "べじはん販売データ.csv", type: :csv
       end
     end
-    if params[:to]
-      @to = params[:to].to_date
-    else
-      @to = Date.today
-      params[:to] = @to
-    end
-    if params[:from]
-      @from = params[:from].to_date
-    else
-      @from = @to - 30
-      params[:from] = @from
-    end
-    gon.dates = (@from..@to).map{|date|date}
-    @date_analyses = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    analyses = Analysis.where(date:@from..@to).where(store_id:checked_store_ids)
-    analysis_products = AnalysisProduct.includes([:product,:analysis]).where(analysis_id:analyses.ids).where.not(product_id:nil)
-    product_ids = analysis_products.pluck(:product_id).uniq
-    @products = Product.where(id:product_ids).order(:bejihan_sozai_flag)
-    @product_datas = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    analysis_products.each do |ap|
-      if ap.sales_number.present? && ap.actual_inventory.present?
-        if @product_datas[ap.product_id].present?
-          @product_datas[ap.product_id]['sales_number'] += ap.sales_number
-          @product_datas[ap.product_id]['actual_inventory'] += ap.actual_inventory
-          @product_datas[ap.product_id]['count'] += 1
-        else
-          @product_datas[ap.product_id]['name'] = ap.product.name
-          @product_datas[ap.product_id]['sales_number'] = ap.sales_number
-          @product_datas[ap.product_id]['actual_inventory'] = ap.actual_inventory
-          @product_datas[ap.product_id]['count'] = 1
-          @product_datas[ap.product_id]['product_id'] = ap.product_id
-          @product_datas[ap.product_id]['date'] = ap.analysis.date
-        end
-      end
-    end
-    # score計算
-    all_smaregi_trading_histories = SmaregiTradingHistory.where(analysis_id:analyses.ids)
-    @day_sales_number = all_smaregi_trading_histories.group(:hinban).sum(:suryo)
-    @early_sales_number = all_smaregi_trading_histories.where(time:'00:00:00'..'13:59:59').group(:hinban).sum(:suryo)
-    @middle_sales_number = all_smaregi_trading_histories.where(time:'14:00:00'..'18:59:59').group(:hinban).sum(:suryo)
-    @late_sales_number = all_smaregi_trading_histories.where(time:'19:00:00'..'23:59:59').group(:hinban).sum(:suryo)
-
-    @product_datas.each do |pd|
-      if pd[1]['actual_inventory'] == 0
-      else
-        pd[1]['sales_rate'] = ((pd[1]['sales_number'].to_f / pd[1]['actual_inventory'])*100).round
-      end
-    end
-
-    if params[:sort]
-      sort = params[:sort]
-    else
-      sort = 'sales_number'
-    end
-    if params[:sc]
-      if params[:sc]=='asc'
-        @product_datas = @product_datas.values.sort!{|a, b|a[sort] <=> b[sort]}
-      else
-        @product_datas = @product_datas.values.sort!{|a, b|b[sort] <=> a[sort]}
-      end
-    else
-      @product_datas = @product_datas.values.sort!{|a, b|a[sort] <=> b[sort]}
-    end
-
-
-    analyses.each do |analysis|
-      @date_analyses[analysis.date][analysis.store_id] = analysis
-    end
-    @date_transaction_count = analyses.group(:date).sum(:transaction_count)
-    @date_sales_amount = analyses.group(:date).sum(:ex_tax_sales_amount)
-    @date_discount_amount = analyses.group(:date).sum(:discount_amount)
-    @date_loss_amount = analyses.group(:date).sum(:loss_amount)
-    date_arr = []
-    data_arr = []
-    data_loss_arr = []
-    date_transaction_count_arr = []
-    haiki_mokuhyo_min_arr = []
-    haiki_mokuhyo_max_arr = []
-    data_lossamount_arr = []
-    @date_sales_amount.sort.each do |date_sales|
-      date_arr << date_sales[0].strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[date_sales[0].wday]})")
-      data_arr << date_sales[1]
-      data_lossamount_arr << (@date_discount_amount[date_sales[0]].to_f + @date_loss_amount[date_sales[0]].to_f)
-      data_loss_arr << (((@date_discount_amount[date_sales[0]].to_f + @date_loss_amount[date_sales[0]].to_f)/date_sales[1])*100).round(1)
-      date_transaction_count_arr << @date_transaction_count[date_sales[0]]
-      haiki_mokuhyo_min_arr << 9
-      haiki_mokuhyo_max_arr << 11
-    end
-    gon.sales_dates = date_arr
-    gon.sales_data = data_arr
-    gon.loss_data = data_loss_arr
-    gon.loss_mokuhyo_data_min = haiki_mokuhyo_min_arr
-    gon.loss_mokuhyo_data_max = haiki_mokuhyo_max_arr
-    gon.transaction_count_date = date_transaction_count_arr
-    gon.lossamount_data = data_lossamount_arr
   end
 
   def index

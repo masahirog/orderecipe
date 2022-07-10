@@ -63,6 +63,7 @@ Rails.application.routes.draw do
   resources :reminders do
     collection do
       get :store
+      get :clean
     end
   end
   resources :reminder_templates do

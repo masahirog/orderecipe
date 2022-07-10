@@ -8,19 +8,20 @@ class TasksController < ApplicationController
   end
 
   def index
+    group_id = params[:group_id]
     if params[:staff_id].present?
       @staff = Staff.find(params[:staff_id])
-      @tasks = Task.includes([:task_comments,:task_images,:task_staffs]).where(:task_staffs => {staff_id:params[:staff_id],read_flag:false}).rank(:row_order)
+      @tasks = Task.includes([:task_comments,:task_images,:task_staffs]).where(:task_staffs => {staff_id:params[:staff_id],read_flag:false}).where(group_id:group_id).rank(:row_order)
       # @tasks = Task.includes([:task_comments,:task_images,:task_staffs]).rank(:row_order)
     else
-      @tasks = Task.includes([:task_comments,:task_images]).rank(:row_order)
+      @tasks = Task.where(group_id:group_id).includes([:task_comments,:task_images]).rank(:row_order)
     end
-    @task = Task.new
+    @task = Task.new(group_id:group_id)
     @todos = @tasks.where(status:0)
     @doings = @tasks.where(status:1)
     @tasks = @tasks.includes(task_staffs:[:staff])
     @checks = @tasks.where(status:2)
-    @staffs = Staff.where(employment_status:1).where.not(store_id:39)
+    @staffs = Staff.joins(:store).where(:stores => {group_id:group_id}).where(employment_status:1)
     @hash = {}
     @staffs.each do |staff|
       @hash[staff.id] = staff.task_staffs.where(read_flag:false,task_id:@checks.ids).count
@@ -28,12 +29,12 @@ class TasksController < ApplicationController
     end
 
     if params[:status].present?
-      @archives = Task.where(status:4).rank(:row_order)
+      @archives = Task.where(status:4,group_id:group_id).rank(:row_order)
     else
       if params[:staff_id].present?
-        @dones = Task.includes(:task_staffs).where(:task_staffs => {staff_id:params[:staff_id],read_flag:false}).where(status:3).rank(:row_order)
+        @dones = Task.includes(:task_staffs).where(:task_staffs => {staff_id:params[:staff_id],read_flag:false}).where(status:3,group_id:group_id).rank(:row_order)
       else
-        @dones = Task.where(status:3).rank(:row_order)
+        @dones = Task.where(status:3,group_id:group_id).rank(:row_order)
       end
     end
   end
@@ -92,7 +93,7 @@ class TasksController < ApplicationController
     end
 
     def task_params
-      params.require(:task).permit(:title,:content,:status,:drafter,:final_decision,:row_order_position,:category,
+      params.require(:task).permit(:title,:content,:status,:drafter,:final_decision,:row_order_position,:category,:group_id,
         task_staffs_attributes:[:id,:task_id,:staff_id,:read_flag,:_destroy],
         task_images_attributes:[:id,:task_id,:image,:image_cache,:_destroy,:remove_image])
     end

@@ -8,6 +8,7 @@ class CreateReminderTemplates < ActiveRecord::Migration[5.2]
       t.integer :status,null:false,default:0
       t.string :drafter,null:false,default:''
       t.timestamps
+      t.integer :category,null:false,default:0
     end
   end
 end

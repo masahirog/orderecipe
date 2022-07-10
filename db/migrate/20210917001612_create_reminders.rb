@@ -12,6 +12,9 @@ class CreateReminders < ActiveRecord::Migration[5.2]
       t.string :drafter,null:false,default:''
       t.timestamps
       t.boolean :important_flag,null:false,default:0
+      t.integer :category,null:false,default:0
+      t.integer :do_staff
+      t.integer :check_staff
     end
   end
 end

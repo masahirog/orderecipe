@@ -1,5 +1,6 @@
-h1 新規作成
-
-== render 'form'
-
-= link_to 'Back', reminder_templates_path
+- if params[:category]=='clean'
+  h3 新規掃除リスト作成
+  == render 'clean_form'
+- else
+  h3 新規リマインダー作成
+  == render 'form'

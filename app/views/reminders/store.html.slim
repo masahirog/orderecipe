@@ -1,8 +1,12 @@
 h3
   = "#{@store.name} リマインダー "
   i class="text-primary fas fa-plus-circle" style="cursor: pointer;" data-toggle="modal" data-target="#sampleModal"
+.form-group.clearfix
+  = link_to '定期リマインド作成', reminder_templates_path(),class:'pull-right btn btn-primary btn-sm'
+
 #sampleModal.modal.fade tabindex="-1"
   = form_for @reminder do |f|
+    = f.hidden_field :category,value:'task'
     .modal-dialog
       .modal-content
         .modal-header
@@ -96,9 +100,6 @@ table.table
           = form_with(model: reminder, data: {remote: true},id:"update_reminder_2_#{reminder.id}") do |f|
             = f.hidden_field :id,class:'reminder_id'
             = f.select :status, options_for_select_from_enum(Reminder, :status),{}, { class: "reminder_status form-control"}
-
-.form-group.clearfix
-  = link_to '定期リマインド作成', reminder_templates_path(),class:'pull-right btn btn-primary btn-sm'
 
 javascript:
   $(function() {

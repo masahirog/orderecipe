@@ -1,9 +1,15 @@
-<% if @reminder.status == "yet" %>
-  $("<%= @class_name %>").css('background-color','#ffffff');
-<% elsif  @reminder.status == "done" %>
-  $("<%= @class_name %>").css('background-color','#d3d3d3');
-  $("<%= @class_name %>").find(".reminder_status").val('done');
+<% if @reminder.category == "clean" %>
+  $(".clear_reminder_<%= @reminder.id %>").html("<%= escape_javascript(render partial: 'reminders/td', locals: {reminder:@reminder}) %>");
+  // $(".clear_reminder_<%= @reminder.id %>").children().replaceWith($lastAnimation);
 
 <% else %>
-  $("<%= @class_name %>").css('background-color','#d3d3d3');
+  <% if @reminder.status == "yet" %>
+    $("<%= @class_name %>").css('background-color','#ffffff');
+  <% elsif  @reminder.status == "done" %>
+    $("<%= @class_name %>").css('background-color','#d3d3d3');
+    $("<%= @class_name %>").find(".reminder_status").val('done');
+
+  <% else %>
+    $("<%= @class_name %>").css('background-color','#d3d3d3');
+  <% end %>
 <% end %>

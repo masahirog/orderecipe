@@ -10,7 +10,7 @@ class StoresController < ApplicationController
     @store = Store.find(params[:store_id])
   end
   def index
-    @stores = Store.all
+    @stores = Store.where(group_id:params[:group_id])
   end
 
   def show

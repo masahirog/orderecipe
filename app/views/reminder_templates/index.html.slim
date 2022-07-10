@@ -1,12 +1,18 @@
-h3 リマインダー定期自動作成の一覧
-.col-md-1
-  = link_to '新規登録',new_reminder_template_path,class:'btn btn-primary'
+- if params[:category]=='clean'
+  h3 掃除リスト一覧
+  .col-md-1
+    = link_to '新規登録',new_reminder_template_path(category:'clean'),class:'btn btn-primary'
+
+- else
+  h3 リマインダー定期自動作成の一覧
+  .col-md-1
+    = link_to '新規登録',new_reminder_template_path,class:'btn btn-primary'
 .form-group.clearfix
   = form_tag reminder_templates_path, :method => 'get' do
-    .col-md-1
+    .col-md-2
       = select_tag :store_id,options_for_select(Store.all.map{|store|[store.short_name,store.id]},params[:store_id]),include_blank:true , class: "reminder_status form-control"
-    .col-md-1
-      = select_tag :repeat_type,options_for_select(options_for_select_from_enum(ReminderTemplate,:repeat_type),params[:repeat_type]),include_blank:true , class: "reminder_repeat_type form-control"
+    / .col-md-1
+      / = select_tag :repeat_type,options_for_select(options_for_select_from_enum(ReminderTemplate,:repeat_type),params[:repeat_type]),include_blank:true , class: "reminder_repeat_type form-control"
 
 
     div style='float:left;'
@@ -18,7 +24,7 @@ table.table.table-striped
   thead
     tr
       th
-      th style='width:80px;' リピート
+      th style='width:80px;' 頻度
       th 時間
       th 内容
       th メモ
@@ -29,7 +35,8 @@ table.table.table-striped
   tbody
     - @reminder_templates.each do |reminder_template|
       tr
-        td = link_to '編集',edit_reminder_template_path(reminder_template),class:'btn btn-primary btn-sm'
+        td
+          = link_to '編集',edit_reminder_template_path(reminder_template),class:'btn btn-primary btn-sm'
         td = t("enums.reminder_template.repeat_type.#{reminder_template.repeat_type}")
         td = reminder_template.action_time.strftime("%H:%M") if reminder_template.action_time
         td = reminder_template.content

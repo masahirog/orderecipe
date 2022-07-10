@@ -9,6 +9,7 @@ class CreateTasks < ActiveRecord::Migration[6.0]
       t.timestamps
       t.integer :row_order
       t.integer :category
+      t.integer :group_id,null:false
     end
   end
 end

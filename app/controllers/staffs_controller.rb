@@ -3,19 +3,16 @@ class StaffsController < ApplicationController
   def row_order_update
     staffs_arr = []
     staffs = Staff.all
+    group_id = params[:group_id]
     staffs.each do |staff|
       staff.row = params['row'][staff.id.to_s].to_i
       staffs_arr << staff
     end
     Staff.import staffs_arr, :on_duplicate_key_update => [:row]
-    redirect_to staffs_path,notice:'並び更新しました。'
+    redirect_to staffs_path(group_id:group_id),notice:'並び更新しました。'
   end
   def index
-    if params[:place] == 'kitchen'
-      @staffs = Staff.includes([:store]).where(store_id:39).order(row:'asc')
-    else
-      @staffs = Staff.includes([:store]).where.not(store_id:39).order(row:'asc')
-    end
+    @staffs = Staff.includes([:store]).where(:stores => {group_id:params[:group_id]}).order(row:'asc')
   end
 
   def show

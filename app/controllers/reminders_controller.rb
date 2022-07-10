@@ -1,5 +1,23 @@
 class RemindersController < ApplicationController
   before_action :set_reminder, only: %i[ show edit update destroy ]
+  def clean
+    if params[:date]
+      @date = Date.parse(params[:date])
+    else
+      @date = Date.today
+      params[:date]=@date
+    end
+    @staffs = Staff.joins(:store).where(:stores =>{group_id:9},status:0)
+    @stores = Store.where.not(id:39)
+    @weekly_clean_reminder_templates = ReminderTemplate.where(category:1,repeat_type:11)
+    @monthly_clean_reminder_templates = ReminderTemplate.where(category:1,repeat_type:12)
+    @bow = @date.beginning_of_week
+    @bom = @date.beginning_of_month
+    @weekly_clean_reminders = Reminder.where(action_date:@bow,category:1).map{|reminder|[[reminder.reminder_template_id,reminder.store_id],reminder]}.to_h
+    @monthly_clean_reminders = Reminder.where(action_date:@bom,category:1).map{|reminder|[[reminder.reminder_template_id,reminder.store_id],reminder]}.to_h
+    @reminder = Reminder.new
+
+  end
   def store
     if params[:date]
       @date = Date.parse(params[:date])
@@ -8,7 +26,7 @@ class RemindersController < ApplicationController
       params[:date]=@date
     end
     @store = Store.find(params[:store_id])
-    @reminders = @store.reminders.where(action_date:@date).order(:action_time)
+    @reminders = @store.reminders.where(category:0,action_date:@date).order(:action_time)
     @reminders = @reminders.where(status:params[:status]) if params[:status].present?
     @reminder = Reminder.new(store_id:params[:store_id],action_date:params[:date])
   end
@@ -59,7 +77,7 @@ class RemindersController < ApplicationController
 
   def update
     @class_name = ".reminder_tr_#{@reminder.id}"
-
+    @staffs = Staff.joins(:store).where(:stores =>{group_id:9},status:0)
     respond_to do |format|
       if @reminder.update(reminder_params)
         format.html { redirect_to store_reminders_path(store_id:@reminder.store_id,date:@reminder.action_date,status:'yet'), notice: "Reminder was successfully updated." }
@@ -86,6 +104,7 @@ class RemindersController < ApplicationController
     end
 
     def reminder_params
-      params.require(:reminder).permit(:store_id,:reminder_template_id,:action_date,:action_time,:content,:memo,:status,:status_change_datetime,:drafter,:important_flag)
+      params.require(:reminder).permit(:id,:store_id,:reminder_template_id,:action_date,:action_time,:content,:memo,:status,:status_change_datetime,:drafter,
+        :important_flag,:category,:do_staff,:check_staff)
     end
 end

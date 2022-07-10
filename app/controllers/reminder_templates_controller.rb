@@ -13,8 +13,18 @@ class ReminderTemplatesController < ApplicationController
     Reminder.import new_reminders
     redirect_to reminder_templates_path
   end
+  def clean
+    @reminder_templates = ReminderTemplate.where(category:1).order(:action_time)
+    @reminder_templates = @reminder_templates.joins(:reminder_template_stores).where(:reminder_template_stores => {store_id:params[:store_id]}) if params[:store_id].present?
+    @reminder_templates = @reminder_templates.where(repeat_type:params[:repeat_type]) if params[:repeat_type].present?
+  end
   def index
-    @reminder_templates = ReminderTemplate.order(:action_time)
+    if params[:category] == 'clean'
+      category = 1
+    else
+      category = 0
+    end
+    @reminder_templates = ReminderTemplate.where(category:category).order(:action_time)
     @reminder_templates = @reminder_templates.joins(:reminder_template_stores).where(:reminder_template_stores => {store_id:params[:store_id]}) if params[:store_id].present?
     @reminder_templates = @reminder_templates.where(repeat_type:params[:repeat_type]) if params[:repeat_type].present?
   end
@@ -23,7 +33,12 @@ class ReminderTemplatesController < ApplicationController
   end
 
   def new
-    @reminder_template = ReminderTemplate.new
+    if params[:category]
+      category = params[:category]
+    else
+      category = 0
+    end
+    @reminder_template = ReminderTemplate.new(category:category)
     # @reminder_template.reminder_template_stores.build
     new_store_ids = Store.all.ids
     @stores_hash = {}
@@ -36,6 +51,7 @@ class ReminderTemplatesController < ApplicationController
   end
 
   def edit
+    @category = @reminder_template.category
     store_ids = @reminder_template.reminder_template_stores.pluck(:store_id)
     all_store_ids = Store.all.ids
     new_store_ids = all_store_ids - store_ids
@@ -88,7 +104,7 @@ class ReminderTemplatesController < ApplicationController
     end
 
     def reminder_template_params
-      params.require(:reminder_template).permit(:repeat_type,:action_time,:content,:memo,:status,:drafter,
+      params.require(:reminder_template).permit(:repeat_type,:action_time,:content,:memo,:status,:drafter,:category,
       reminder_template_stores_attributes: [:id, :store_id,:reminder_template_id,:_destroy])
     end
 end

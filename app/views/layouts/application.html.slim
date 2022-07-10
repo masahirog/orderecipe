@@ -44,9 +44,9 @@ html
                       h5 style='padding:0 10px;font-weight:bold;' べじはん
                       li = link_to "べじはん献立",daily_menus_path
                       li = link_to "各店舗発注品",bejihan_store_orders_list_orders_path(date:Date.today,store_id:19)
-                      li.clearfix
-                        = link_to '改善リスト', kaizen_lists_path(store_id:39), style:'float:left;'
-                        span style='float:left;margin-top:3px;color:red;' = "#{KaizenList.where(store_id:39).where.not(status:['done','cancel']).count}"
+                      li = link_to "改善ボード",tasks_path(group_id:19)
+                        / = link_to '改善リスト', kaizen_lists_path(store_id:39), style:'float:left;'
+                        / span style='float:left;margin-top:3px;color:red;' = "#{KaizenList.where(store_id:39).where.not(status:['done','cancel']).count}"
 
                       h5 style='padding:0 10px;font-weight:bold;' くるめし
                       li = link_to "オーダー",kurumesi_orders_path(start_date:Date.today)
@@ -76,8 +76,9 @@ html
                       |販売店舗
                       span.caret
                     ul.dropdown-menu role="menu" style='width:250px;'
-                      li = link_to "店舗",stores_path
-                      li = link_to "進捗ボード",tasks_path
+                      li = link_to "店舗",stores_path(group_id:9)
+                      li = link_to "掃除リスト",clean_reminders_path()
+                      li = link_to "進捗ボード",tasks_path(group_id:9)
                       li = link_to '販売レポート',sales_reports_path
                       li = link_to "お客さまの声",customer_opinions_path
                       li = link_to 'シフト',shifts_path(date:Date.today,group_id:9)
@@ -109,7 +110,6 @@ html
                       span.caret
                     ul.dropdown-menu role="menu"
                       li = link_to "グループ",groups_path
-                      li = link_to 'スタッフ',staffs_path
                       li = link_to "シフト枠",shift_frames_path
                       li = link_to '確定シフトパターン',fix_shift_patterns_path
                       li = link_to "仕入先",vendors_path

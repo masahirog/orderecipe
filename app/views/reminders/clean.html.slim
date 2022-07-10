@@ -1,0 +1,71 @@
+.clearfix
+  = link_to 'テンプレート',reminder_templates_path(category:'clean'),class:'btn btn-primary btn-sm',style:'margin:18px 0 0 20px;float:right;'
+  h3 = "#{@bow.strftime("%-m月%-d日（#{%w(日 月 火 水 木 金 土)[@bow.wday]}）")}｜週1掃除リスト"
+.table-responsive style='overflow: scroll;'
+  table.table.layout-fixed style='border-collapse:separate;'
+    thead style='position: sticky;top:0;background-color:white;z-index:3;'
+      tr
+        th style='width:300px;' 掃除箇所
+        th style='width:300px;' 内容
+        - @stores.each do |store|
+          th style='width:240px;' = store.name
+
+
+    tbody
+      - @weekly_clean_reminder_templates.each do |rt|
+        tr
+          td = rt.content
+          td = rt.memo
+          - @stores.each do |store|
+            - if @weekly_clean_reminders[[rt.id,store.id]].present?
+              - reminder =  @weekly_clean_reminders[[rt.id,store.id]]
+              td class="clearfix clear_reminder_#{reminder.id}"
+                = render partial: "td", locals: { reminder:reminder }
+            - else
+              td class=""
+
+
+h3 = "#{@bom.month}月｜月1掃除リスト"
+.table-responsive style='overflow: scroll;'
+  table.table.layout-fixed style='border-collapse:separate;'
+    thead style='position: sticky;top:0;background-color:white;z-index:3;'
+      tr
+        th style='width:300px;' 掃除箇所
+        th style='width:300px;' 内容
+        - @stores.each do |store|
+          th style='width:240px;' = store.name
+
+
+    tbody
+      - @monthly_clean_reminder_templates.each do |rt|
+        tr
+          td = rt.content
+          td = rt.memo
+          - @stores.each do |store|
+            - if @monthly_clean_reminders[[rt.id,store.id]].present?
+              - reminder =  @monthly_clean_reminders[[rt.id,store.id]]
+              td class="clearfix clear_reminder_#{reminder.id}"
+                = render partial: "td", locals: { reminder:reminder }
+            - else
+              td class=""
+
+javascript:
+  $(function() {
+    $(document).on("change", ".reminder_status", function(event) {
+      var reminder_id = $(this).parent().find('.reminder_id').val();
+      Rails.fire($('#update_reminder_' + reminder_id)[0], 'submit');
+    });
+  });
+css:
+  .table-responsive th {
+    white-space: nowrap;
+  }
+  table.layout-fixed {
+    table-layout: fixed;
+    border-collspace:separate;
+  }
+  .table th:first-child,td:first-child{
+    position: sticky;
+    left: 0;
+    z-index:2;
+  }

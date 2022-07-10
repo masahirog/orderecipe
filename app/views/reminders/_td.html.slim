@@ -1,0 +1,16 @@
+- if reminder.status == "yet"
+  = form_with(model: reminder, data: {remote: true},id:"update_reminder_#{reminder.id}") do |f|
+    = f.hidden_field :id,class:'reminder_id'
+    = f.hidden_field :status,value:'check'
+    = f.collection_select :do_staff, @staffs, :id, :name, {include_blank:true}, { class: "form-control",style:'width:130px;float:left;',required:true}
+    = f.submit "掃除完了",style:'float:left;margin-left:5px;',class:'btn btn-primary'
+- elsif reminder.status == "check"
+  p = "担当：#{Staff.find_by(id:reminder.do_staff).name}"
+  = form_with(model: reminder, data: {remote: true},id:"update_reminder_#{reminder.id}") do |f|
+    = f.hidden_field :id,class:'reminder_id'
+    = f.hidden_field :status,value:'done'
+    = f.collection_select :check_staff, @staffs, :id, :name, {include_blank:true}, { class: "form-control",style:'width:130px;float:left;',required:true}
+    = f.submit "チェック",style:'float:left;margin-left:5px;',class:'btn btn-success'
+- elsif reminder.status == "done"
+  p = "担当：#{Staff.find_by(id:reminder.do_staff).name}"
+  p = "確認：#{Staff.find_by(id:reminder.check_staff).name}"

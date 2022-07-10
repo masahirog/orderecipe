@@ -3,13 +3,17 @@ h1 一覧
 table.table
   thead
     tr
+      th グループ名
+      th 所属店舗
+      th 所属スタッフ
       th
-      th
+
 
   tbody
     - @groups.each do |group|
       tr
         td = group.name
+        td = link_to '一覧',stores_path(group_id:group.id)
+        td = link_to '一覧',staffs_path(group_id:group.id)
         td = link_to 'Show', group
-
 = link_to '新規作成', new_group_path
