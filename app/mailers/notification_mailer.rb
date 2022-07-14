@@ -12,8 +12,13 @@ class NotificationMailer < ActionMailer::Base
   def task_comment_send_mail(task_comment)
     @task_comment = task_comment
     @task = @task_comment.task
+    if @task.group_id == 9
+      subject = "sales_task_comment_new"
+    else
+      subject = "kitchen_task_comment_new"
+    end
     mail(
-      subject: "task_comment_new",
+      subject: subject,
       to: 'kitchen@taberu.co.jp',
     ) do |format|
       format.text
@@ -100,7 +105,11 @@ class NotificationMailer < ActionMailer::Base
   end
   def task_create_send_mail(task)
     @task = task
-    subject = "task_create"
+    if @task.group_id == 9
+      subject = "sales_task_create"
+    else
+      subject = "kitchen_task_create"
+    end
     mail(
       subject: subject,
       to: 'kitchen@taberu.co.jp',

@@ -1,17 +1,17 @@
 .clearfix.form-group
-  = link_to "進捗ボード",tasks_path(group_id:9),style:'float:left;font-size:2em'
-  = link_to 'アーカイブ済',tasks_path(status:'archive',group_id:9),style:'float:right;margin-top:5px;background-color:#a9a9a9;color:white;',class:'btn btn-sm'
+  = link_to "進捗ボード",tasks_path(group_id:params[:group_id]),style:'float:left;font-size:2em'
+  = link_to 'アーカイブ済',tasks_path(status:'archive',group_id:params[:group_id]),style:'float:right;margin-top:5px;background-color:#a9a9a9;color:white;',class:'btn btn-sm'
 - if params[:staff_id].present?
   h4 = "#{@staff.name} さんの未読一覧"
 - else
   .clearfix
     - @staffs.each do |staff|
       - if @hash[staff.id] > 0
-        = link_to tasks_path(staff_id:staff.id,group_id:9), style:'float:left;',class:'btn btn-default btn-sm' do
+        = link_to tasks_path(staff_id:staff.id,group_id:params[:group_id]), style:'float:left;',class:'btn btn-default btn-sm' do
           span = "#{staff.name.slice(0..1)} "
           span style="color:red;" = @hash[staff.id]
       - else
-        = link_to "#{staff.name.slice(0..1)} #{@hash[staff.id]}", tasks_path(staff_id:staff.id), style:'float:left;',class:'btn btn-default btn-sm'
+        = link_to "#{staff.name.slice(0..1)} #{@hash[staff.id]}", tasks_path(staff_id:staff.id,group_id:params[:group_id]), style:'float:left;',class:'btn btn-default btn-sm'
 - if params[:status].present?
   .col-md-3 style='padding:0;'
     h4 アーカイブ済みのカード
