@@ -15,7 +15,8 @@
       - @weekly_clean_reminder_templates.each do |rt|
         tr
           td = rt.content
-          td = rt.memo
+          td
+            = text_url_to_link(simple_format(h(rt.memo))).html_safe
           - @stores.each do |store|
             - if @weekly_clean_reminders[[rt.id,store.id]].present?
               - reminder =  @weekly_clean_reminders[[rt.id,store.id]]
@@ -40,7 +41,8 @@ h3 = "#{@bom.month}月｜月1掃除リスト"
       - @monthly_clean_reminder_templates.each do |rt|
         tr
           td = rt.content
-          td = rt.memo
+          td
+            = text_url_to_link(simple_format(h(rt.memo))).html_safe
           - @stores.each do |store|
             - if @monthly_clean_reminders[[rt.id,store.id]].present?
               - reminder =  @monthly_clean_reminders[[rt.id,store.id]]
