@@ -4,7 +4,6 @@ class Reminder < ApplicationRecord
   enum category: {task:0,clean:1}
   validates :action_date, presence: true
   validates :content, presence: true
-  validates :drafter, presence: true
 
 
   def self.chatwork_notice(reminder,store_ids)
@@ -13,7 +12,7 @@ class Reminder < ApplicationRecord
 
   def self.reminder_bulk_create
     new_reminders_arr = []
-    today = Date.today
+    today = Date.today - 1
     wday = today.in_time_zone('Tokyo').wday
     wday_hash = {'mon'=>1,'tue'=>2,'wed'=>3,'thu'=>4,'fri'=>5,'sat'=>6,'sun'=>0}
     ReminderTemplate.where(status:0).each do |reminder_template|

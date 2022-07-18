@@ -39,7 +39,7 @@ class KurumesiOrder < ApplicationRecord
 
 
   def self.pick_time_scraping
-    date = Date.today
+    date = Date.today + 1
     year = date.year
     month = date.month
     day = date.day
