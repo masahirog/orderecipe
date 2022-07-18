@@ -64,8 +64,8 @@
         th 翌日繰越
         th 実在庫
     tbody#store_daily_menu_details_area
-      = f.fields_for :store_daily_menu_details, f.object.store_daily_menu_details.sort_by(&:id) do |dmd|
-        = render 'store_daily_menu_detail_fields', f: dmd
+      = f.fields_for :store_daily_menu_details, f.object.store_daily_menu_details.sort_by(&:row_order) do |sdmd|
+        = render 'store_daily_menu_detail_fields', f: sdmd
   = f.submit '登録する',class:'btn btn-primary', data: {disable_with: '登録中...'},style:'float:right;'
 javascript:
   calculate_num();

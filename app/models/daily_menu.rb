@@ -9,6 +9,7 @@ class DailyMenu < ApplicationRecord
   before_save :total_check
   after_save :input_stock
   after_destroy :input_stock
+  after_update :update_sdmd_row_order
 
   def self.once_1month_create(params_date)
     new_arr = []
@@ -65,5 +66,17 @@ class DailyMenu < ApplicationRecord
     date = self.start_time
     previous_day = self.start_time - 1
     Stock.calculate_stock(date,previous_day,store_id)
+  end
+  def update_sdmd_row_order
+    hash = self.daily_menu_details.map{|dmd|[dmd.product_id,dmd.row_order]}.to_h
+    update_sdmds = []
+    store_daily_menus = self.store_daily_menus
+    store_daily_menus.each do |sdm|
+      sdm.store_daily_menu_details.each do |sdmd|
+        sdmd.row_order = hash[sdmd.product_id]
+        update_sdmds << sdmd
+      end
+    end
+    StoreDailyMenuDetail.import update_sdmds, on_duplicate_key_update:[:row_order]
   end
 end

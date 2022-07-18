@@ -57,7 +57,7 @@ class TasksController < ApplicationController
     respond_to do |format|
       if @task.save
         NotificationMailer.task_create_send_mail(@task).deliver if params["chatwork_notice"]=='true'
-        format.html { redirect_to tasks_path, notice: "タスクを1件作成しました。" }
+        format.html { redirect_to tasks_path(group_id:@task.group_id), notice: "タスクを1件作成しました。" }
         format.js
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -69,7 +69,7 @@ class TasksController < ApplicationController
   def update
     respond_to do |format|
       if @task.update(task_params)
-        format.html { redirect_to tasks_path, notice: "タスクを1件更新しました。" }
+        format.html { redirect_to tasks_path(group_id:@task.group_id), notice: "タスクを1件更新しました。" }
         format.js
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -82,7 +82,7 @@ class TasksController < ApplicationController
     @task.destroy
 
     respond_to do |format|
-      format.html { redirect_to tasks_url, notice: "Task was successfully destroyed." }
+      format.html { redirect_to tasks_path(group_id:@task.group_id), notice: "Task was successfully destroyed." }
       format.json { head :no_content }
     end
   end
