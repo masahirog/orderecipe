@@ -40,17 +40,19 @@ class DailyMenu < ApplicationRecord
       date = row["date"].gsub('/','-')
       product_id = row["product_id"]
       sub_num = row["sub_num"].to_i
+      row_order = row["row_order"].to_i
       dmd = DailyMenuDetail.find_by(daily_menu_id:hash[date],product_id:product_id)
       if dmd.present?
-        dmd.for_sub_item_number = row["sub_num"].to_i
+        dmd.for_sub_item_number = sub_num
         dmd.manufacturing_number = dmd.for_single_item_number + sub_num
+        dmd.row_order = row_order
         update_daily_menu_details_arr << dmd
       else
-        create_daily_menu_details_arr << DailyMenuDetail.new(daily_menu_id:hash[date],product_id:product_id,for_sub_item_number:sub_num,manufacturing_number:sub_num)
+        create_daily_menu_details_arr << DailyMenuDetail.new(daily_menu_id:hash[date],product_id:product_id,for_sub_item_number:sub_num,manufacturing_number:sub_num,row_order:row_order)
       end
     end
     DailyMenuDetail.import create_daily_menu_details_arr if create_daily_menu_details_arr.present?
-    DailyMenuDetail.import update_daily_menu_details_arr, on_duplicate_key_update:[:for_sub_item_number] if update_daily_menu_details_arr.present?
+    DailyMenuDetail.import update_daily_menu_details_arr, on_duplicate_key_update:[:row_order] if update_daily_menu_details_arr.present?
 
   end
 
