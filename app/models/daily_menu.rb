@@ -52,7 +52,7 @@ class DailyMenu < ApplicationRecord
       end
     end
     DailyMenuDetail.import create_daily_menu_details_arr if create_daily_menu_details_arr.present?
-    DailyMenuDetail.import update_daily_menu_details_arr, on_duplicate_key_update:[:row_order] if update_daily_menu_details_arr.present?
+    DailyMenuDetail.import update_daily_menu_details_arr, on_duplicate_key_update:[:for_sub_item_number,:row_order] if update_daily_menu_details_arr.present?
 
   end
 
