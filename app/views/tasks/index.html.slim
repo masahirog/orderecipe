@@ -58,7 +58,7 @@
             .modal-body
               .clearfix
                 = form_with(model: @task,class:'new_task_form', data: {remote: true}) do |f|
-                  = f.hidden_field :group_id,value:9
+                  = f.hidden_field :group_id,value:params[:group_id]
                   .form-group
                     = f.text_field :title, class:"form-control", required:true,placeholder:'タイトル'
                   hr style='border-top: 1px solid #ccc;'
