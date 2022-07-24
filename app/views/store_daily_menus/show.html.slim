@@ -71,8 +71,16 @@ table.table.table-list
       th 実在庫
       th 完売F
   tbody
-    -@store_daily_menu_details.each do |sdmd|
-      tr
+    -@store_daily_menu_details.each_with_index do |sdmd,index|
+      - color = '#fffff'
+      - if index < 5
+        - color = '#ffcccc'
+      - elsif index < 10
+        - color = '#ccffff'
+      - elsif index < 15
+        - color = '#ffffcc'
+
+      tr style="background-color:#{color};"
         td = sdmd.row_order
         td
           = link_to sdmd.product.name,product_path(sdmd.product)
