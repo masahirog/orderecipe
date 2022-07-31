@@ -11,7 +11,11 @@ table.table
   tbody
     - @stores.each do |store|
       tr
-        td = link_to store.name, edit_store_path(store)
+        td
+          - if @store_daily_menus[store.id]
+            = link_to store.name, store_daily_menu_path(@store_daily_menus[store.id])
+          - else
+            = link_to store.name, store_daily_menus_path(store_id:store.id)
         td = link_to '献立', store_daily_menus_path(store_id:store.id),class:'btn btn-sm btn-default'
         td = link_to 'リマインダー', store_reminders_path(store_id:store.id,status:'yet'),class:'btn btn-sm btn-default'
         td = link_to '返金対応', refund_supports_path(store_id:store.id),class:'btn btn-sm btn-default'

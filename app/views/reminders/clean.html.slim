@@ -1,7 +1,7 @@
 .clearfix
   = link_to 'テンプレート',reminder_templates_path(category:'clean'),class:'btn btn-primary btn-sm',style:'margin:18px 0 0 20px;float:right;'
   h3 = "#{@bow.strftime("%-m月%-d日（#{%w(日 月 火 水 木 金 土)[@bow.wday]}）")}｜週1掃除リスト"
-.table-responsive style='overflow: scroll;'
+.table-responsive style='overflow: scroll;height:800px;'
   table.table.layout-fixed style='border-collapse:separate;'
     thead style='position: sticky;top:0;background-color:white;z-index:3;'
       tr
@@ -27,7 +27,7 @@
 
 
 h3 = "#{@bom.month}月｜月1掃除リスト"
-.table-responsive style='overflow: scroll;'
+.table-responsive style='overflow: scroll;height:800px;'
   table.table.layout-fixed style='border-collapse:separate;'
     thead style='position: sticky;top:0;background-color:white;z-index:3;'
       tr
@@ -69,5 +69,7 @@ css:
   .table th:first-child,td:first-child{
     position: sticky;
     left: 0;
+    top:0;
     z-index:2;
+    background-color:white;
   }

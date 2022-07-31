@@ -10,6 +10,8 @@ class StoresController < ApplicationController
     @store = Store.find(params[:store_id])
   end
   def index
+    today = Date.today
+    @store_daily_menus = StoreDailyMenu.where(start_time:today).map{|sdm|[sdm.store_id,sdm]}.to_h
     @stores = Store.where(group_id:params[:group_id])
   end
 
