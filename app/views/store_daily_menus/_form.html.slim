@@ -35,8 +35,26 @@
         = f.select :min_temperature,(-10..40),{include_blank:true}, class: 'col-md-10 form-control'
       .col-md-3 style='float:right;padding-top:25px;text-align:right;'
         = f.submit '登録する',class:'btn btn-primary', data: {disable_with: '登録中...'}
-
   .col-md-12.clearfix style='padding:10px 0;'
+    div style='float:left;width:350px;'
+      label オープン時ショーケース
+      = image_tag f.object.opentime_showcase_photo.url,style:'height:200px;width:300px;object-fit:cover;object-position: 0 0;' if f.object.opentime_showcase_photo.present?
+      = f.file_field :opentime_showcase_photo
+    div style='float:left;width:350px;'
+      label ショーケース1
+      = image_tag f.object.showcase_photo_a.url,style:'height:200px;width:300px;object-fit:cover;object-position: 0 0;' if f.object.showcase_photo_a.present?
+      = f.file_field :showcase_photo_a
+    div style='float:left;width:350px;'
+      label ショーケース2
+      = image_tag f.object.showcase_photo_b.url,style:'height:200px;width:300px;object-fit:cover;object-position: 0 0;' if f.object.showcase_photo_b.present?
+      = f.file_field :showcase_photo_b
+    div style='float:left;width:350px;'
+      label 看板
+      = image_tag f.object.signboard_photo.url,style:'height:200px;width:300px;object-fit:cover;object-position: 0 0;' if f.object.signboard_photo.present?
+      = f.file_field :signboard_photo
+
+
+  / .col-md-12.clearfix style='padding:10px 0;'
     - i = 0
     = f.fields_for :store_daily_menu_photos do |dmp|
       div style='float:left;width:350px;'

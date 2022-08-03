@@ -1,5 +1,9 @@
 require 'csv'
 class StoreDailyMenu < ApplicationRecord
+  mount_uploader :opentime_showcase_photo, ImageUploader
+  mount_uploader :showcase_photo_a, ImageUploader
+  mount_uploader :showcase_photo_b, ImageUploader
+  mount_uploader :signboard_photo, ImageUploader
   belongs_to :daily_menu
   belongs_to :store
   has_many :store_daily_menu_details, ->{order("row_order") }, dependent: :destroy

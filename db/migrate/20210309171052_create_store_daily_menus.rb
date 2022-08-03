@@ -9,6 +9,10 @@ class CreateStoreDailyMenus < ActiveRecord::Migration[5.2]
       t.integer :max_temperature
       t.integer :min_temperature
       t.timestamps
+      t.string :opentime_showcase_photo
+      t.string :showcase_photo_a
+      t.string :showcase_photo_b
+      t.string :signboard_photo
     end
   end
 end

@@ -35,7 +35,7 @@ ActiveRecord::Schema.define(version: 2022_06_12_033011) do
     t.index ["date", "store_id"], name: "index_analyses_on_date_and_store_id", unique: true
   end
 
-  create_table "analysis_products", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "analysis_products", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "analysis_id"
     t.integer "smaregi_shohin_id"
     t.string "smaregi_shohin_name"
@@ -121,7 +121,7 @@ ActiveRecord::Schema.define(version: 2022_06_12_033011) do
     t.integer "adjustments", default: 0, null: false
   end
 
-  create_table "daily_menus", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "daily_menus", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.date "start_time", null: false
     t.integer "total_manufacturing_number", default: 0, null: false
     t.integer "weather"
@@ -556,7 +556,7 @@ ActiveRecord::Schema.define(version: 2022_06_12_033011) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "reminder_templates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "reminder_templates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "repeat_type", null: false
     t.time "action_time"
     t.string "content", null: false
@@ -568,7 +568,7 @@ ActiveRecord::Schema.define(version: 2022_06_12_033011) do
     t.integer "category", default: 0, null: false
   end
 
-  create_table "reminders", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "reminders", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "store_id", null: false
     t.integer "reminder_template_id"
     t.date "action_date", null: false
@@ -775,6 +775,10 @@ ActiveRecord::Schema.define(version: 2022_06_12_033011) do
     t.integer "min_temperature"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "opentime_showcase_photo"
+    t.string "showcase_photo_a"
+    t.string "showcase_photo_b"
+    t.string "signboard_photo"
   end
 
   create_table "store_shift_frames", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -834,7 +838,7 @@ ActiveRecord::Schema.define(version: 2022_06_12_033011) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "tasks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "tasks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "title"
     t.text "content"
     t.integer "status"
