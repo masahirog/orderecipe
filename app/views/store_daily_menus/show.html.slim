@@ -44,6 +44,22 @@ button type="button" class="btn btn-default" data-toggle="modal" data-target="#s
     label 最低気温
     p = @store_daily_menu.min_temperature
 .form-group.col-md-12.clearfix
+  - if @store_daily_menu.opentime_showcase_photo.present?
+    div style='float:left;width:350px;'
+      = link_to @store_daily_menu.opentime_showcase_photo.url, "data-lightbox" => @store_daily_menu.opentime_showcase_photo.url do
+        = image_tag @store_daily_menu.opentime_showcase_photo.url,style:'height:200px;width:300px;object-fit:cover;object-position: 0 0;'
+  - if @store_daily_menu.showcase_photo_a.present?
+    div style='float:left;width:350px;'
+      = link_to @store_daily_menu.showcase_photo_a.url, "data-lightbox" => @store_daily_menu.showcase_photo_a.url do
+        = image_tag @store_daily_menu.showcase_photo_a.url,style:'height:200px;width:300px;object-fit:cover;object-position: 0 0;'
+  - if @store_daily_menu.showcase_photo_b.present?
+    div style='float:left;width:350px;'
+      = link_to @store_daily_menu.showcase_photo_b.url, "data-lightbox" => @store_daily_menu.showcase_photo_b.url do
+        = image_tag @store_daily_menu.showcase_photo_b.url,style:'height:200px;width:300px;object-fit:cover;object-position: 0 0;'
+  - if @store_daily_menu.signboard_photo.present?
+    div style='float:left;width:350px;'
+      = link_to @store_daily_menu.signboard_photo.url, "data-lightbox" => @store_daily_menu.signboard_photo.url do
+        = image_tag @store_daily_menu.signboard_photo.url,style:'height:200px;width:300px;object-fit:cover;object-position: 0 0;'
   - @store_daily_menu.store_daily_menu_photos.each do |sdmp|
     div style='float:left;width:350px;'
       = link_to sdmp.image.url, "data-lightbox" => sdmp.image.url do
