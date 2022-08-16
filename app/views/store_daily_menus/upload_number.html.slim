@@ -2,12 +2,24 @@ h3 = @store.name
 = form_tag once_update_number_store_daily_menus_path, multipart: true do
   = submit_tag "アップロード",class:'btn btn-primary'
   = hidden_field_tag :store_id,@store.id
+  .clearfix
+    h4 更新項目選択
+    div style='float:left;width:150px;'
+      label 見本皿
+      = check_box_tag "serving_plate_update_flag",true,true
+    div style='float:left;width:150px;'
+      label ショーケース
+      = check_box_tag "showcase_type_update_flag",true,true
+    div style='float:left;width:150px;'
+      label 副菜数
+      = check_box_tag "bento_fukusai_number_update_flag",true,true
   - @hash.each do |block|
     h4 = block[0]
     table.table
       thead
         tr
           th 商品名
+          th 見本皿
           th ショーケース
           th 更新前
           th 更新後
@@ -17,7 +29,9 @@ h3 = @store.name
             - if product_number[1]["product_name"].present?
               = hidden_field_tag "update_sdmds[#{product_number[1]['sdmd_id']}][after_number]",product_number[1]['after_number']
               = hidden_field_tag "update_sdmds[#{product_number[1]['sdmd_id']}][showcase_type]",product_number[1]['showcase_type']
+              = hidden_field_tag "update_sdmds[#{product_number[1]['sdmd_id']}][serving_plate_id]",product_number[1]['serving_plate_id']
               td = product_number[1]["product_name"]
+              td = ServingPlate.find(product_number[1]["serving_plate_id"]).name if product_number[1]["serving_plate_id"].present?
               td = product_number[1]["showcase_type"]
               td = product_number[1]["before_number"]
             - else
