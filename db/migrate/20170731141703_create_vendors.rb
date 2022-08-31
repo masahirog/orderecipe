@@ -16,6 +16,7 @@ class CreateVendors < ActiveRecord::Migration[4.2][5.0]
       t.string :delivery_date
       t.integer :status,default:0,null:false
       t.timestamps
+      t.boolean :fax_staff_name_display_flag,default:false,null:false
     end
   end
 end

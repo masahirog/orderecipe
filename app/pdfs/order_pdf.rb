@@ -12,7 +12,7 @@ class OrderPdf < Prawn::Document
       header(order)
       header_lead(vendor)
       header_adress(vendor,order)
-      header_hello
+      # header_hello
       table_content(arr,date)
     end
   end
@@ -25,11 +25,20 @@ class OrderPdf < Prawn::Document
   end
 
   def header_lead(vendor)
-    bounding_box([0, 720], :width => 270, :height => 50) do
+    bounding_box([0, 730], :width => 270, :height => 100) do
       font_size 9
       text "#{vendor.company_name}　御中", size: 15
-      move_down 4
-      text "　　TEL：#{vendor.company_phone}　　FAX：#{vendor.company_fax}"
+      if vendor.fax_staff_name_display_flag == true
+        move_down 5
+        text "ご担当：#{vendor.staff_name} 様"
+      end
+      move_down 5
+      text "TEL：#{vendor.company_phone}　　FAX：#{vendor.company_fax}"
+      move_down 5
+      text "いつも大変お世話になっております。", :leading => 3
+      text "下記の通り発注致します。", :leading => 3
+      text "どうぞよろしくお願い致します。", :leading => 3
+
     end
   end
 
@@ -46,14 +55,10 @@ class OrderPdf < Prawn::Document
         text "No：#{vendor.management_id}", :leading => 3 if vendor.management_id.present?
     end
   end
-  def header_hello
-    bounding_box([20, 685], :width => 200, :height => 50) do
-        font_size 10
-        text "いつも大変お世話になっております。", :leading => 3
-        text "下記の通り発注致します。", :leading => 3
-        text "どうぞよろしくお願い致します。", :leading => 3
-    end
-  end
+  # def header_hello
+  #   bounding_box([20, 675], :width => 200, :height => 50) do
+  #   end
+  # end
 
   def table_content(arr,date)
     bounding_box([0,620], :width => 530) do

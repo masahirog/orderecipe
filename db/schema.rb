@@ -887,6 +887,7 @@ ActiveRecord::Schema.define(version: 2022_06_12_033011) do
     t.integer "status", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "fax_staff_name_display_flag", default: false, null: false
   end
 
 end
