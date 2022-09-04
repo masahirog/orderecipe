@@ -721,6 +721,7 @@ ActiveRecord::Schema.define(version: 2022_06_12_033011) do
     t.integer "row", default: 0, null: false
     t.integer "status", default: 0, null: false
     t.integer "jobcan_staff_code"
+    t.integer "smaregi_hanbaiin_id"
   end
 
   create_table "stocks", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -737,7 +738,7 @@ ActiveRecord::Schema.define(version: 2022_06_12_033011) do
     t.index ["date", "material_id", "store_id"], name: "index_stocks_on_date_and_material_id_and_store_id", unique: true
   end
 
-  create_table "store_daily_menu_details", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "store_daily_menu_details", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "store_daily_menu_id", null: false
     t.integer "product_id", null: false
     t.integer "number", default: 0, null: false
@@ -767,7 +768,7 @@ ActiveRecord::Schema.define(version: 2022_06_12_033011) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "store_daily_menus", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "store_daily_menus", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "daily_menu_id"
     t.integer "store_id"
     t.date "start_time"

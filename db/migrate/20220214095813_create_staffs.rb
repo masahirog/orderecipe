@@ -9,6 +9,7 @@ class CreateStaffs < ActiveRecord::Migration[5.2]
       t.integer :row,default:0,null:false
       t.integer :status,default:0,null:false
       t.integer :jobcan_staff_code
+      t.integer :smaregi_hanbaiin_id
     end
   end
 end

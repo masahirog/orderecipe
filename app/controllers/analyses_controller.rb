@@ -7,6 +7,56 @@ class AnalysesController < AdminController
   #   update_datas_count = SmaregiTradingHistory.once_uploads_data(params[:file],first_day,last_day,store_id)
   #   redirect_to smaregi_trading_histories_path()
   # end
+  def staffs
+    if params[:to]
+      @to = params[:to].to_date
+    else
+      @to = Date.today
+      params[:to] = @to
+    end
+    if params[:from]
+      @from = params[:from].to_date
+    else
+      @from = @to - 30
+      params[:from] = @from
+    end
+    @group = Group.find(9)
+    store_ids = @group.stores.ids
+    @stores = Store.where(id:store_ids)
+    @fix_shift_patterns = FixShiftPattern.where(group_id:@group.id)
+    @staffs = Staff.where(status:0,store_id:store_ids).order(:row)
+    @jobcounts = Shift.where(date:@from..@to).where.not(fix_shift_pattern_id:nil).group(:staff_id).count
+    @clean_done = Reminder.where(category:1).where(action_date:@from..@to).group(:do_staff).count
+    smaregi_members = SmaregiMember.where(nyukaibi:@from..@to)
+    kaiin_ids = smaregi_members.map{|sm|sm.kaiin_id}
+    @hash = {}
+    SmaregiTradingHistory.order("date desc").where(kaiin_id:kaiin_ids).where(date:@from..@to).where(torihikimeisai_id:1).each do |sth|
+      @hash[sth.kaiin_id] = sth
+    end
+    @staff_sinki_kaiin = {}
+    @hash.values.each do |sth|
+      if @staff_sinki_kaiin[sth.hanbaiin_id].present?
+        @staff_sinki_kaiin[sth.hanbaiin_id] += 1
+      else
+        @staff_sinki_kaiin[sth.hanbaiin_id] = 1
+      end
+    end
+  end
+  def stores
+    if params[:date].present?
+      date = params[:date]
+    else
+      date = Date.today
+    end
+    @stores = Store.where(group_id:9)
+    @store_daily_menus = StoreDailyMenu.where(start_time:date)
+    @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    @store_daily_menus.each do |sdm|
+      store_showcase_completion_rate = ((sdm.store_daily_menu_details.where('initial_preparation_done < ?', "18:00").count.to_f / sdm.store_daily_menu_details.count).round(3))*100
+      @hash[sdm.store_id][:store_showcase_completion_rate] = store_showcase_completion_rate
+      @hash[sdm.store_id][:sdm] = sdm
+    end
+  end
   def update_sales_data_smaregi_members
     SmaregiMember.update_sales_data
     redirect_to smaregi_members_analyses_path,notice:'更新しました。'

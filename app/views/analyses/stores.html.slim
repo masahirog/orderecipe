@@ -1,0 +1,46 @@
+table.table
+  thead
+    tr
+      th 店舗名
+      th 売上
+      th ロス率
+      th 来客数
+      th 新規会員数
+      th 残リマインド
+      th 掃除
+      th 開店準備
+      th オープン時ショーケース
+  tbody
+    - @stores.each do |store|
+      tr
+        td = link_to store.name,@hash[store.id][:sdm]
+        td
+          p 月累積：1,000,000円
+          p 前月比：105%
+          p 当日：200,000円
+        td
+          p 月平均：5%
+          p 当日：7%
+        td
+          p 月累積：1,000人
+          p 前月比：105%
+          p 当日：100人
+        td
+          p 月累積：
+          p 前月比：105%
+          p 当日：100人
+        td
+          p DONE
+          p YET
+        td
+          p 週次：2/8
+          p 前週：8/8
+          p 月次：4/10
+        td
+          p 弁当：9:45
+          p = "10時：#{@hash[store.id][:store_showcase_completion_rate]}%"
+          p = "11時：#{@hash[store.id][:store_showcase_completion_rate]}%"
+        td style='position: relative;width:200px;'
+          = link_to @hash[store.id][:sdm].opentime_showcase_photo.url, "data-lightbox" => @hash[store.id][:sdm].opentime_showcase_photo.url do
+            = image_tag @hash[store.id][:sdm].opentime_showcase_photo.url,style:'height:100px;width:200px;object-fit:cover;object-position: 0 0;'
+          p class="top-left" style='position: absolute;bottom:0px;right:15px;background-color:white;padding:0px 4px;' = "#{@hash[store.id][:sdm].opentime_showcase_photo_uploaded.strftime("%H:%M")}" if @hash[store.id][:sdm].opentime_showcase_photo_uploaded.present?
