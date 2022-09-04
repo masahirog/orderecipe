@@ -52,7 +52,7 @@ class AnalysesController < AdminController
     @store_daily_menus = StoreDailyMenu.where(start_time:date)
     @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @store_daily_menus.each do |sdm|
-      store_showcase_completion_rate = ((sdm.store_daily_menu_details.where('initial_preparation_done < ?', "18:00").count.to_f / sdm.store_daily_menu_details.count).round(3))*100
+      store_showcase_completion_rate = ((sdm.store_daily_menu_details.where('initial_preparation_done < ?', "11:00").count.to_f / sdm.store_daily_menu_details.count).round(3))*100
       @hash[sdm.store_id][:store_showcase_completion_rate] = store_showcase_completion_rate
       @hash[sdm.store_id][:sdm] = sdm
     end
