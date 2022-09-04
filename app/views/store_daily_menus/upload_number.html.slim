@@ -5,6 +5,9 @@ h3 = @store.name
   .clearfix
     h4 更新項目選択
     div style='float:left;width:150px;'
+      label 順番
+      = check_box_tag "row_order_update_flag",true,true
+    div style='float:left;width:150px;'
       label 見本皿
       = check_box_tag "serving_plate_update_flag",true,true
     div style='float:left;width:150px;'
@@ -18,6 +21,7 @@ h3 = @store.name
     table.table
       thead
         tr
+          th 順番
           th 商品名
           th 見本皿
           th ショーケース
@@ -30,6 +34,8 @@ h3 = @store.name
               = hidden_field_tag "update_sdmds[#{product_number[1]['sdmd_id']}][after_number]",product_number[1]['after_number']
               = hidden_field_tag "update_sdmds[#{product_number[1]['sdmd_id']}][showcase_type]",product_number[1]['showcase_type']
               = hidden_field_tag "update_sdmds[#{product_number[1]['sdmd_id']}][serving_plate_id]",product_number[1]['serving_plate_id']
+              = hidden_field_tag "update_sdmds[#{product_number[1]['sdmd_id']}][row_order]",product_number[1]['row_order']
+              td = product_number[1]["row_order"]
               td = product_number[1]["product_name"]
               td = ServingPlate.find(product_number[1]["serving_plate_id"]).name if product_number[1]["serving_plate_id"].present?
               td = product_number[1]["showcase_type"]

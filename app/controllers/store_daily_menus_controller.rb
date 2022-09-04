@@ -282,12 +282,14 @@ class StoreDailyMenusController < ApplicationController
       date = Date.parse(row["date"])
       dates <<  row["date"]
       product_id = row["product_id"].to_i
+      row_order = row["row_order"].to_i
       number = row[store_id].to_i
       showcase_type = row['showcase_type'].to_i
       serving_plate_id = row['serving_plate_id']
       @hash[date][product_id]['after_number'] = number
       @hash[date][product_id]['showcase_type'] = showcase_type
       @hash[date][product_id]['serving_plate_id'] = serving_plate_id
+      @hash[date][product_id]['row_order'] = row_order
     end
 
     dates = dates.uniq
@@ -311,6 +313,7 @@ class StoreDailyMenusController < ApplicationController
       num = update_sdmd[1]["after_number"].to_i
       showcase_type = update_sdmd[1]["showcase_type"].to_i
       serving_plate_id = update_sdmd[1]["serving_plate_id"]
+      row_order = update_sdmd[1]["row_order"]
       sdmd = StoreDailyMenuDetail.find(sdmd_id)
       daily_menu_ids << sdmd.store_daily_menu.daily_menu_id
       store_daily_menu_ids << sdmd.store_daily_menu_id
@@ -320,9 +323,10 @@ class StoreDailyMenusController < ApplicationController
       end
       sdmd.showcase_type = showcase_type if params['showcase_type_update_flag'].present?
       sdmd.serving_plate_id = serving_plate_id if params['serving_plate_update_flag'].present?
+      sdmd.row_order = row_order if params['row_order_update_flag'].present?
       sdmds_arr << sdmd
     end
-    StoreDailyMenuDetail.import sdmds_arr, :on_duplicate_key_update => [:bento_fukusai_number,:number,:showcase_type,:serving_plate_id]
+    StoreDailyMenuDetail.import sdmds_arr, :on_duplicate_key_update => [:bento_fukusai_number,:number,:showcase_type,:serving_plate_id,:row_order]
     daily_menu_ids = daily_menu_ids.uniq
     DailyMenu.where(id:daily_menu_ids).each do |daily_menu|
       sdmds = StoreDailyMenuDetail.where(store_daily_menu_id:daily_menu.store_daily_menus.ids)
