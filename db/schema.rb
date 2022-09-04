@@ -756,6 +756,8 @@ ActiveRecord::Schema.define(version: 2022_06_12_033011) do
     t.integer "sozai_number", default: 0, null: false
     t.integer "bento_fukusai_number", default: 0, null: false
     t.integer "showcase_type"
+    t.time "initial_preparation_done"
+    t.integer "initial_showcase_number"
   end
 
   create_table "store_daily_menu_photos", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -765,7 +767,7 @@ ActiveRecord::Schema.define(version: 2022_06_12_033011) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "store_daily_menus", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+  create_table "store_daily_menus", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "daily_menu_id"
     t.integer "store_id"
     t.date "start_time"
@@ -779,6 +781,7 @@ ActiveRecord::Schema.define(version: 2022_06_12_033011) do
     t.string "showcase_photo_a"
     t.string "showcase_photo_b"
     t.string "signboard_photo"
+    t.time "opentime_showcase_photo_uploaded"
   end
 
   create_table "store_shift_frames", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

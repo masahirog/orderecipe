@@ -37,7 +37,9 @@
         = f.submit '登録する',class:'btn btn-primary', data: {disable_with: '登録中...'}
   .col-md-12.clearfix style='padding:10px 0;'
     div style='float:left;width:350px;'
-      label オープン時ショーケース
+      label
+        |オープン時ショーケース
+        = "（#{f.object.opentime_showcase_photo_uploaded.strftime("%H:%M")}）" if f.object.opentime_showcase_photo_uploaded.present?
       = image_tag f.object.opentime_showcase_photo.url,style:'height:200px;width:300px;object-fit:cover;object-position: 0 0;' if f.object.opentime_showcase_photo.present?
       = f.file_field :opentime_showcase_photo
     div style='float:left;width:350px;'

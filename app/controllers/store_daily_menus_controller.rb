@@ -163,7 +163,8 @@ class StoreDailyMenusController < ApplicationController
   end
   def ikkatsu
     @store_daily_menu = StoreDailyMenu.find(params[:id])
-    @store_daily_menu_details = @store_daily_menu.store_daily_menu_details.order("row_order ASC").includes(product:[:container,:product_ozara_serving_informations])
+    @store_daily_menu_details = @store_daily_menu.store_daily_menu_details.includes([:serving_plate]).order("row_order ASC").includes(product:[:container,:product_ozara_serving_informations])
+    @remaining_count = @store_daily_menu_details.where(initial_preparation_done:nil).count
   end
 
   def show
@@ -349,7 +350,7 @@ class StoreDailyMenusController < ApplicationController
 
     def store_daily_menu_params
       params.require(:store_daily_menu).permit(:start_time,:total_num,:weather,:max_temperature,:min_temperature,:opentime_showcase_photo,
-        :showcase_photo_a,:showcase_photo_b,:signboard_photo,
+        :showcase_photo_a,:showcase_photo_b,:signboard_photo,:opentime_showcase_photo_uploaded,
         store_daily_menu_photos_attributes: [:id,:store_daily_menu_id,:image],
         store_daily_menu_details_attributes: [:id,:store_daily_menu_id,:product_id,:number,:row_order,:_destroy,
           :actual_inventory,:carry_over,:sold_out_flag,:serving_plate_id,:signboard_flag,

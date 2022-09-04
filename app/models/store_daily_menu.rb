@@ -15,10 +15,17 @@ class StoreDailyMenu < ApplicationRecord
   enum weather: {sunny:1, cloud:2,rain:3,strong_rain:4,taihoon:5,snow:6}
   validates :daily_menu_id, :uniqueness => {:scope => :store_id}
 
+  before_save :opentime_showcase_photo_upload_check
   before_save :total_check
   after_update :input_stock
   after_destroy :input_stock
 
+
+  def opentime_showcase_photo_upload_check
+    if self.opentime_showcase_photo_changed?
+      self.opentime_showcase_photo_uploaded = Time.now
+    end
+  end
 
   #納品量の追加
   def total_check

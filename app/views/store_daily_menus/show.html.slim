@@ -1,3 +1,4 @@
+
 button type="button" class="btn btn-default" data-toggle="modal" data-target="#store_once_reflect" style='margin-right:10px;float:right;' 製造数入力
 #store_once_reflect.modal.fade tabindex="-1"
   = form_tag input_manufacturing_number_store_daily_menus_path, method: :get do
@@ -23,7 +24,8 @@ button type="button" class="btn btn-default" data-toggle="modal" data-target="#s
           button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
           = submit_tag "登録",class:'btn btn-primary'
 = link_to "商品紹介",description_store_daily_menus_path(store_daily_menu_id:@store_daily_menu.id,format:'pdf'),class:'btn btn-default pull-right',style:'margin-right:20px;'
-= link_to "バーコード",barcode_store_daily_menus_path(store_daily_menu_id:@store_daily_menu.id,format:'pdf'),class:'btn btn-default pull-right',style:'margin-right:20px;'
+/ = link_to "バーコード",barcode_store_daily_menus_path(store_daily_menu_id:@store_daily_menu.id,format:'pdf'),class:'btn btn-default pull-right',style:'margin-right:20px;'
+= link_to "盛付準備", ikkatsu_store_daily_menus_path(id:@store_daily_menu.id),class:'btn btn-success pull-right',style:'margin-right:20px;'
 .clearfix
   h2 style='float:left;' = link_to "#{@store_daily_menu.store.name}店 ", store_daily_menus_path(store_id:@store_daily_menu.store_id),class:''
   h2 style='float:left;margin-left:10px;'
@@ -47,92 +49,57 @@ button type="button" class="btn btn-default" data-toggle="modal" data-target="#s
   - if @store_daily_menu.opentime_showcase_photo.present?
     div style='float:left;width:350px;'
       = link_to @store_daily_menu.opentime_showcase_photo.url, "data-lightbox" => @store_daily_menu.opentime_showcase_photo.url do
-        = image_tag @store_daily_menu.opentime_showcase_photo.url,style:'height:200px;width:300px;object-fit:cover;object-position: 0 0;'
+        = image_tag @store_daily_menu.opentime_showcase_photo.url,style:'height:200px;width:330px;object-fit:cover;object-position: 0 0;'
+      label
+        |オープン時ショーケース
+        = "（#{@store_daily_menu.opentime_showcase_photo_uploaded.strftime("%H:%M")}）" if @store_daily_menu.opentime_showcase_photo_uploaded.present?
+
   - if @store_daily_menu.showcase_photo_a.present?
     div style='float:left;width:350px;'
       = link_to @store_daily_menu.showcase_photo_a.url, "data-lightbox" => @store_daily_menu.showcase_photo_a.url do
-        = image_tag @store_daily_menu.showcase_photo_a.url,style:'height:200px;width:300px;object-fit:cover;object-position: 0 0;'
+        = image_tag @store_daily_menu.showcase_photo_a.url,style:'height:200px;width:330px;object-fit:cover;object-position: 0 0;'
+      label ショーケース1
   - if @store_daily_menu.showcase_photo_b.present?
     div style='float:left;width:350px;'
       = link_to @store_daily_menu.showcase_photo_b.url, "data-lightbox" => @store_daily_menu.showcase_photo_b.url do
-        = image_tag @store_daily_menu.showcase_photo_b.url,style:'height:200px;width:300px;object-fit:cover;object-position: 0 0;'
+        = image_tag @store_daily_menu.showcase_photo_b.url,style:'height:200px;width:330px;object-fit:cover;object-position: 0 0;'
+      label ショーケース2
   - if @store_daily_menu.signboard_photo.present?
     div style='float:left;width:350px;'
       = link_to @store_daily_menu.signboard_photo.url, "data-lightbox" => @store_daily_menu.signboard_photo.url do
-        = image_tag @store_daily_menu.signboard_photo.url,style:'height:200px;width:300px;object-fit:cover;object-position: 0 0;'
+        = image_tag @store_daily_menu.signboard_photo.url,style:'height:200px;width:330px;object-fit:cover;object-position: 0 0;'
+      label ボード
   - @store_daily_menu.store_daily_menu_photos.each do |sdmp|
     div style='float:left;width:350px;'
       = link_to sdmp.image.url, "data-lightbox" => sdmp.image.url do
-        = image_tag sdmp.image.url,style:'height:200px;width:300px;object-fit:cover;object-position: 0 0;'
+        = image_tag sdmp.image.url,style:'height:200px;width:330px;object-fit:cover;object-position: 0 0;'
 / .col-md-12
 
   / = link_to "在庫CSV", stock_store_daily_menus_path(store_daily_menu_id:@store_daily_menu.id,format:'csv'), class: "btn btn-default",style:'float:right;'
 table.table.table-list
   thead
     tr
-      th 順番
-      th
-        |メニュー名
-        = link_to "編集", edit_store_daily_menu_path(@store_daily_menu),class:'btn btn-primary btn-sm',style:'margin-left:20px;'
-      th 販売価格
-      th = link_to "仕上げ", ikkatsu_store_daily_menus_path(id:@store_daily_menu.id),class:'btn btn-success btn-sm'
-      th 1人前盛り
+      th = link_to "編集", edit_store_daily_menu_path(@store_daily_menu),class:'btn btn-primary btn-sm',style:''
+      th 名称
+      th 売価
+      th 1人前
       th style='width:100px;' 見本皿
-      th ショーケース
+      th 温度
       th 容器
       th 合計数
       th 副菜分
       th 惣菜分
-      th 別在庫使用
       th 翌日繰越
       th 実在庫
       th 完売F
   tbody
     -@store_daily_menu_details.includes([:serving_plate]).each_with_index do |sdmd,index|
-      - color = '#fffff'
-      - if index < 5
-        - color = '#ffcccc'
-      - elsif index < 10
-        - color = '#ccffff'
-      - elsif index < 15
-        - color = '#ffffcc'
-
-      tr style="background-color:#{color};"
-        td = sdmd.row_order
+      tr
+        td.text-center = sdmd.row_order
         td
           = link_to sdmd.product.name,product_path(sdmd.product)
-          span style='color:blue;' = "【冷】" if sdmd.product.freezing_able_flag == true
-          span style='color:red;' = "【繰】" if sdmd.product.carryover_able_flag == true
         td
           = "#{sdmd.product.sell_price}円"
-        td
-          - if sdmd.product.product_ozara_serving_informations.present? || sdmd.product.display_image.present?
-            button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#ozara_serving_#{sdmd.product_id}" style='' 工程
-            .modal.fade tabindex="-1" ID="ozara_serving_#{sdmd.product_id}"
-              .modal-dialog style='width:1000px;'
-                .modal-content
-                  .modal-header
-                    h4.modal-title 仕上げ工程
-                  .modal-body
-                    table.table
-                      thead
-                        tr
-                          th.col-md-6 工程
-                          th 画像
-                      tbody
-                        - sdmd.product.product_ozara_serving_informations.each do |posi|
-                          tr
-                            td
-                              = text_url_to_link(simple_format(h(posi.content))).html_safe
-                            td
-                              = image_tag posi.image.to_s,class:"img-responsive",style:'max-height:350px;'
-                        tr
-                          td 完成系
-                          td
-                            = image_tag sdmd.product.display_image.to_s,class:"img-responsive",style:'max-width:250px;height: auto;'
-
-                  .modal-footer
-                    button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
         td
           - if sdmd.product.serving_infomation.present?
             button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#serving_infomation_#{sdmd.product_id}" style='' 1人前
@@ -159,14 +126,10 @@ table.table.table-list
 
         td
           = sdmd.number
-          span style='color:red;' = "（#{(sdmd.number*0.7).ceil.to_s}）" if sdmd.product.carryover_able_flag == true
         td
           = sdmd.bento_fukusai_number if sdmd.bento_fukusai_number > 0
         td
           = sdmd.sozai_number
-
-        td
-          = sdmd.stock_deficiency_excess if sdmd.stock_deficiency_excess > 0
         td
           = sdmd.carry_over if sdmd.carry_over > 0
         td

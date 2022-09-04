@@ -1,0 +1,3 @@
+
+$(".remaining_count").text("<%= @remaining_count %>品")
+$("#sdmd_<%= @store_daily_menu_detail.id %>_form").html("<%= escape_javascript(render partial: 'store_daily_menus/preperation', locals: {sdmd:@store_daily_menu_detail}) %>");

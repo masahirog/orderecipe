@@ -1,0 +1,21 @@
+- if sdmd.initial_preparation_done.present?
+  label style='margin-top:6px;float:left;' 朝準備：
+  .clearfix style='margin-top:6px;float:left;'
+    = form_with(model: sdmd, data: {remote: true}) do |f|
+      = f.hidden_field :id
+      = f.hidden_field :remove_time,value:true
+      span style="float:left;" = "#{sdmd.initial_showcase_number} 食、#{sdmd.initial_preparation_done.strftime('%H:%M')}"
+      = f.submit '編集',class:'btn btn-sm btn-danger',style:'padding:2px 4px;font-size:10px;float:left;margin-left:10px;',data: {confirm: '編集しますか？'}
+
+
+- else
+  - if sdmd.sozai_number < 10 || sdmd.product.product_category == "お弁当"
+    - initial_number = sdmd.sozai_number
+  - else
+    - initial_number = 10
+  = form_with(model: sdmd, data: {remote: true}) do |f|
+    = f.hidden_field :id
+    label style='margin-top:6px;float:left;' 朝準備：
+    = f.select :initial_showcase_number,options_for_select((1..sdmd.sozai_number),initial_number),{},class:"form-control",style:'width:100px;float:left;'
+    label style='margin-top:6px;float:left;'
+    = f.submit "陳列完了",class:'btn btn-primary',style:'float:left;margin-left:10px;',data: {confirm: '陳列完了ですか？'}

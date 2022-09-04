@@ -1,32 +1,73 @@
-h3 = "#{@store_daily_menu.store.name}店 #{@store_daily_menu.start_time.strftime("%-Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@store_daily_menu.start_time.wday]})")}"
-= link_to "献立表", store_daily_menus_path(store_id:@store_daily_menu.store_id),class:'btn btn-default'
-= link_to "#{@store_daily_menu.start_time.strftime("%-Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@store_daily_menu.start_time.wday]})")}", @store_daily_menu,class:'btn btn-default',style:'margin-left:15px;'
+p
+  = link_to "#{@store_daily_menu.store.name}店 #{@store_daily_menu.start_time.strftime("%-Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@store_daily_menu.start_time.wday]})")}", @store_daily_menu,style:'font-size:20px;margin-left:15px;'
+  = link_to "献立表", store_daily_menus_path(store_id:@store_daily_menu.store_id),class:'btn btn-default pull-right'
+  = link_to "写真アップロード", edit_store_daily_menu_path(@store_daily_menu),class:'btn btn-primary pull-right',style:'margin-right:20px;'
 ul.list-group.clearfix style='margin-top:15px;'
   -@store_daily_menu_details.each do |sdmd|
-    li.list-group-item.float-left style='float:left;width:33%;height:400px;text-align: center;position:relative;'
-      = link_to sdmd.product.name,product_path(sdmd.product)
-      = image_tag sdmd.product.image_for_one_person.to_s,class:"img-responsive",style:'max-height:378px;margin-top:5px;margin:0 auto;'
-      - if sdmd.product.product_ozara_serving_informations.present? || sdmd.product.display_image.present?
-        button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#ozara_serving_#{sdmd.product_id}" style='position:absolute;bottom:10px;left:50%;transform:translateX(-50%);' 盛付手順を確認
-        .modal.fade tabindex="-1" ID="ozara_serving_#{sdmd.product_id}"
-          .modal-dialog style='width:1000px;'
-            .modal-content
-              .modal-header
-                h4.modal-title 大皿盛り付け
-              .modal-body
-                table.table
-                  thead
-                    tr
-                      th.col-md-6 工程
-                      th 画像
-                  tbody
-                    - sdmd.product.product_ozara_serving_informations.each do |posi|
+    li.clearfix.list-group-item.float-left style='text-align: center;position:relative;'
+      div style='width:60%;float:left;text-align:left;padding:0 5px;'
+        div
+          = link_to sdmd.product.name,product_path(sdmd.product)
+          span.label.label-info style="margin-left:10px;padding:4px 6px;" = "冷" if sdmd.showcase_type == 1
+        div style='margin-top:6px;'
+          label 包材：
+          = sdmd.product.container.name if sdmd.product.container_id.present?
+          - if sdmd.serving_plate.present?
+            label style='margin-left:10px;' ｜見本皿：
+            = sdmd.serving_plate.name
+        .clearfix
+          span style='float:left;margin-top:6px;margin-right:5px;font-weight:bold;' 在庫数：
+          span style='float:left;margin-top:6px;margin-right:20px;' = "#{sdmd.sozai_number} 食"
+          div style='float:left;' id="sdmd_#{sdmd.id}_form"
+            = render partial: "preperation", locals: { sdmd:sdmd }
+        div.waku style="border:2px solid #ddd;position: relative;margin-top:20px;"
+          span.small-label 1人前
+          = text_url_to_link(simple_format(h(sdmd.product.serving_infomation))).html_safe
+        - if sdmd.product.product_ozara_serving_informations.present? || sdmd.product.display_image.present?
+          button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#ozara_serving_#{sdmd.product_id}" style='margin-top:10px;' 盛付手順を確認
+          .modal.fade tabindex="-1" ID="ozara_serving_#{sdmd.product_id}"
+            .modal-dialog style='width:1000px;'
+              .modal-content
+                .modal-header
+                  h4.modal-title 大皿盛り付け
+                .modal-body
+                  table.table
+                    thead
                       tr
+                        th.col-md-6 工程
+                        th 画像
+                    tbody
+                      - sdmd.product.product_ozara_serving_informations.each do |posi|
+                        tr
+                          td
+                            = text_url_to_link(simple_format(h(posi.content))).html_safe
+                          td
+                            = image_tag posi.image.to_s,class:"img-responsive",style:'max-height:350px;' if posi.image?
+                      tr
+                        td 完成系
                         td
-                          = text_url_to_link(simple_format(h(posi.content))).html_safe
-                        td
-                          = image_tag posi.image.to_s,class:"img-responsive",style:'max-height:350px;' if posi.image?
-                    tr
-                      td 完成系
-                      td
-                        = image_tag sdmd.product.display_image.to_s,class:"img-responsive",style:'max-width:250px;height: auto;'
+                          = image_tag sdmd.product.display_image.to_s,class:"img-responsive",style:'max-width:250px;height: auto;'
+
+      div style='width:40%;height:300px;float:left;'
+        = image_tag sdmd.product.image_for_one_person.to_s,class:"img-responsive",style:'height:300px;margin-top:5px;margin:0 auto;'
+
+div style="position:fixed;right:20px;bottom:20px;width: 80px;height: 80px;border-radius: 50%;background:orangered;text-align: center;margin: 0 auto;display: flex;align-items: center;justify-content: center;"
+  div style='margin-top:-10px;color:white;'
+    span style='font-size:12px;' 残り
+    br
+    span.remaining_count style='font-size:20px;font-weight:bold;' ="#{@remaining_count}品"
+
+
+css:
+  .small-label{
+    background: #fff;
+    padding: 3px 10px;
+    position: absolute;
+    top: -15px;
+    left: 5px;
+    font-weight:bold;
+  }
+
+  .waku p{
+    padding: 15px 5px;
+  }
