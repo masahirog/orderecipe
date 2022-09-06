@@ -44,18 +44,32 @@ class AnalysesController < AdminController
   end
   def stores
     if params[:date].present?
-      date = params[:date]
+      @date = params[:date].to_date
     else
-      date = Date.today
+      @date = Date.today
     end
     @stores = Store.where(group_id:9)
-    @store_daily_menus = StoreDailyMenu.where(start_time:date)
+    @store_daily_menus = StoreDailyMenu.where(start_time:@date)
     @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @store_daily_menus.each do |sdm|
-      store_showcase_completion_rate = ((sdm.store_daily_menu_details.where('initial_preparation_done < ?', "11:00").count.to_f / sdm.store_daily_menu_details.count).round(3))*100
-      @hash[sdm.store_id][:store_showcase_completion_rate] = store_showcase_completion_rate
+      store_showcase_completion_rate_at_ten = ((sdm.store_daily_menu_details.where('initial_preparation_done < ?', "10:00").count.to_f / sdm.store_daily_menu_details.count).round(3))*100
+      store_showcase_completion_rate_at_eleven = ((sdm.store_daily_menu_details.where('initial_preparation_done < ?', "11:00").count.to_f / sdm.store_daily_menu_details.count).round(3))*100
+      @hash[sdm.store_id][:store_showcase_completion_rate_at_ten] = store_showcase_completion_rate_at_ten
+      @hash[sdm.store_id][:store_showcase_completion_rate_at_eleven] = store_showcase_completion_rate_at_eleven
       @hash[sdm.store_id][:sdm] = sdm
+      @hash[sdm.store_id][:bento_finish_time] = sdm.store_daily_menu_details.find_by(product_id:13649).initial_preparation_done
     end
+
+
+    bow = @date.beginning_of_week
+    bom = @date.beginning_of_month
+    @weekly_clean_reminders_count = Reminder.where(action_date:bow,category:1).group(:store_id).count
+    @done_weekly_clean_reminders = Reminder.where(action_date:bow,category:1,status:'done').group(:store_id).count
+    @last_weekly_clean_reminders_count = Reminder.where(action_date:(bow-7),category:1).group(:store_id).count
+    @done_last_weekly_clean_reminders = Reminder.where(action_date:(bow-7),category:1,status:'done').group(:store_id).count
+    @monthly_clean_reminders_count = Reminder.where(action_date:bow,category:1).group(:store_id).count
+    @done_monthly_clean_reminders = Reminder.where(action_date:bom,category:1,status:'done').group(:store_id).count
+
   end
   def update_sales_data_smaregi_members
     SmaregiMember.update_sales_data

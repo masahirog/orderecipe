@@ -1,3 +1,10 @@
+.clearfix
+  .col-md-3 style='float:left;'
+    label
+      = link_to (@date-1).strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[(@date-1).wday]})＜　"),stores_analyses_path(date:@date-1)
+      = @date.strftime("%-Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@date.wday]})")
+      = link_to (@date+1).strftime("　＞%-m/%-d (#{%w(日 月 火 水 木 金 土)[(@date+1).wday]})"),stores_analyses_path(date:@date+1)
+
 table.table
   thead
     tr
@@ -33,13 +40,15 @@ table.table
           p DONE
           p YET
         td
-          p 週次：2/8
-          p 前週：8/8
-          p 月次：4/10
+          p = "週次：#{@done_weekly_clean_reminders[store.id].to_i}/#{@weekly_clean_reminders_count[store.id]}"
+          p = "前週：#{@done_last_weekly_clean_reminders[store.id].to_i}/#{@last_weekly_clean_reminders_count[store.id]}"
+          p = "月次：#{@done_monthly_clean_reminders[store.id].to_i}/#{@monthly_clean_reminders_count[store.id]}"
         td
-          p 弁当：9:45
-          p = "10時：#{@hash[store.id][:store_showcase_completion_rate]}%"
-          p = "11時：#{@hash[store.id][:store_showcase_completion_rate]}%"
+          p
+            |弁当：
+            = @hash[store.id][:bento_finish_time].strftime('%H:%M') if @hash[store.id][:bento_finish_time]
+          p = "10時：#{@hash[store.id][:store_showcase_completion_rate_at_ten]}%"
+          p = "11時：#{@hash[store.id][:store_showcase_completion_rate_at_eleven]}%"
         td style='position: relative;width:200px;'
           - if @hash[store.id][:sdm].opentime_showcase_photo.present?
             = link_to @hash[store.id][:sdm].opentime_showcase_photo.url, "data-lightbox" => @hash[store.id][:sdm].opentime_showcase_photo.url do
