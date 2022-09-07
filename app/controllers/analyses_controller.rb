@@ -60,7 +60,7 @@ class AnalysesController < AdminController
       @hash[sdm.store_id][:bento_finish_time] = sdm.store_daily_menu_details.find_by(product_id:13649).initial_preparation_done
     end
 
-
+    #掃除
     bow = @date.beginning_of_week
     bom = @date.beginning_of_month
     @weekly_clean_reminders_count = Reminder.where(action_date:bow,category:1).group(:store_id).count
@@ -69,6 +69,31 @@ class AnalysesController < AdminController
     @done_last_weekly_clean_reminders = Reminder.where(action_date:(bow-7),category:1,status:'done').group(:store_id).count
     @monthly_clean_reminders_count = Reminder.where(action_date:bow,category:1).group(:store_id).count
     @done_monthly_clean_reminders = Reminder.where(action_date:bom,category:1,status:'done').group(:store_id).count
+    #会員
+    @today_new_user = SmaregiMember.where(nyukaibi:@date).group(:main_use_store).count.map{|k,v|[SmaregiMember.main_use_stores[k],v]}.to_h
+    @month_new_user = SmaregiMember.where(nyukaibi:bom..@date).group(:main_use_store).count.map{|k,v|[SmaregiMember.main_use_stores[k],v]}.to_h
+    @last_month_new_user = SmaregiMember.where(nyukaibi:@date.last_month.all_month).group(:main_use_store).count.map{|k,v|[SmaregiMember.main_use_stores[k],v]}.to_h
+    @total_user = SmaregiMember.all.group(:main_use_store).count.map{|k,v|[SmaregiMember.main_use_stores[k],v]}.to_h
+
+    #来客
+    @today_raikyakusu = SmaregiTradingHistory.where(date:@date,torihiki_meisaikubun:1,torihikimeisai_id:1).group(:tenpo_id).count
+    @yesterday_raikyakusu = SmaregiTradingHistory.where(date:@date-1,torihiki_meisaikubun:1,torihikimeisai_id:1).group(:tenpo_id).count
+    @month_raikyakusu = SmaregiTradingHistory.where(date:bom..@date,torihiki_meisaikubun:1,torihikimeisai_id:1).group(:tenpo_id).count
+    @last_month_raikyakusu = SmaregiTradingHistory.where(date:@date.last_month.all_month,torihiki_meisaikubun:1,torihikimeisai_id:1).group(:tenpo_id).count
+
+    #廃棄
+    # analyses = Analysis.where(date:date)
+    @date_sales_amount = Analysis.where(date:@date).group(:store_id).sum(:ex_tax_sales_amount)
+    @date_loss_amount = Analysis.where(date:@date).group(:store_id).sum(:loss_amount)
+    @date_discount_amount = Analysis.where(date:@date).group(:store_id).sum(:discount_amount)
+
+    @month_sales_amount = Analysis.where(date:bom..@date).group(:store_id).sum(:ex_tax_sales_amount)
+    @month_loss_amount = Analysis.where(date:bom..@date).group(:store_id).sum(:loss_amount)
+    @month_discount_amount = Analysis.where(date:bom..@date).group(:store_id).sum(:discount_amount)
+    @last_month_sales_amount = Analysis.where(date:@date.last_month.all_month).group(:store_id).sum(:ex_tax_sales_amount)
+    @last_month_loss_amount = Analysis.where(date:@date.last_month.all_month).group(:store_id).sum(:loss_amount)
+    @last_month_discount_amount = Analysis.where(date:@date.last_month.all_month).group(:store_id).sum(:discount_amount)
+    # @store_date_loss_amount = analyses.group(:date,:store_id).sum(:loss_amount)
 
   end
   def update_sales_data_smaregi_members

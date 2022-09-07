@@ -22,20 +22,26 @@ table.table
       tr
         td = link_to store.name,@hash[store.id][:sdm]
         td
-          p 月累積：1,000,000円
-          p 前月比：105%
-          p 当日：200,000円
+          p = "当日：#{@date_sales_amount[store.id].to_i.to_s(:delimited)}円"
+          p = "今月：#{@month_sales_amount[store.id].to_s(:delimited)}円"
+          p = "先月：#{@last_month_sales_amount[store.id].to_s(:delimited)}円"
         td
-          p 月平均：5%
-          p 当日：7%
+          p = "当日：#{(((@date_loss_amount[store.id].to_i + @date_discount_amount[store.id].to_i)/@date_sales_amount[store.id].to_i.to_f)*100).round(1)}%"
+          p = "今月平均：#{(((@month_loss_amount[store.id] + @month_discount_amount[store.id])/@month_sales_amount[store.id].to_f)*100).round(1)}%"
+          p = "先月月平均：#{(((@last_month_loss_amount[store.id] + @last_month_discount_amount[store.id])/@last_month_sales_amount[store.id].to_f)*100).round(1)}%"
         td
-          p 月累積：1,000人
-          p 前月比：105%
-          p 当日：100人
+          p ="当日：#{@today_raikyakusu[store.smaregi_store_id]}"
+          p ="昨日：#{@yesterday_raikyakusu[store.smaregi_store_id]}"
+          p ="今月：#{@month_raikyakusu[store.smaregi_store_id].to_s(:delimited)}"
+          p ="先月：#{@last_month_raikyakusu[store.smaregi_store_id].to_s(:delimited)}"
         td
-          p 月累積：
-          p 前月比：105%
-          p 当日：100人
+          p ="当日：#{@today_new_user[store.smaregi_store_id]}"
+          p ="今月：#{@month_new_user[store.smaregi_store_id]}"
+          p ="先月：#{@last_month_new_user[store.smaregi_store_id]}"
+          p ="合計：#{@total_user[store.smaregi_store_id].to_s(:delimited)}"
+
+
+
         td
           p DONE
           p YET
