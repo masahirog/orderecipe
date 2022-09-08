@@ -7,6 +7,47 @@ class AnalysesController < AdminController
   #   update_datas_count = SmaregiTradingHistory.once_uploads_data(params[:file],first_day,last_day,store_id)
   #   redirect_to smaregi_trading_histories_path()
   # end
+  def timezone_sales
+    if params[:stores]
+      checked_store_ids = params['stores'].keys
+      @stores = Store.where(id:checked_store_ids)
+    else
+      @stores = Store.all
+      checked_store_ids = @stores.ids
+      params[:stores] = {}
+      @stores.each do |store|
+        params[:stores][store.id.to_s] = true
+      end
+    end
+    if params[:to]
+      @to = params[:to].to_date
+    else
+      @to = Date.today
+      params[:to] = @to
+    end
+    if params[:from]
+      @from = params[:from].to_date
+    else
+      @from = @to - 30
+      params[:from] = @from
+    end
+    @dates =(@from..@to).to_a
+    @period = (@to - @from).to_i
+    @analyses = Analysis.where(date:@from..@to).where(store_id:checked_store_ids).order(:date)
+    @date_sales_amount = @analyses.group(:date,:store_id).sum(:ex_tax_sales_amount)
+    @date_loss_amount = @analyses.group(:date).sum(:loss_amount)
+    @date_transaction_count = @analyses.group(:date).sum(:transaction_count)
+    @date_sales_number = @analyses.group(:date).sum(:transaction_count)
+    @date_discount_amount = @analyses.group(:date).sum(:discount_amount)
+    respond_to do |format|
+      format.html
+      format.csv do
+        send_data render_to_string, filename: "べじはん販売データ.csv", type: :csv
+      end
+    end
+  end
+
+
   def staffs
     if params[:to]
       @to = params[:to].to_date
@@ -196,18 +237,26 @@ class AnalysesController < AdminController
   end
 
   def smaregi_members
-
-    @stores = Store.all
-    if params[:stores]
-      checked_store_ids = params['stores'].keys
-    else
-      checked_store_ids = @stores.ids
+    if params[:store_ids].present?
       params[:stores] = {}
+      checked_store_ids = params['store_ids']
+      @stores = Store.where(id:checked_store_ids)
+      @stores.each do |store|
+        params[:stores][store.id.to_s] = true
+      end
+    elsif params[:stores].present?
+      checked_store_ids = params['stores'].keys
+      @stores = Store.where(id:checked_store_ids)
+      params[:store_ids] = checked_store_ids
+    else
+      params[:stores] = {}
+      @stores = Store.all
+      checked_store_ids = @stores.ids
+      params[:store_ids] = checked_store_ids
       @stores.each do |store|
         params[:stores][store.id.to_s] = true
       end
     end
-
     smaregi_store_ids = @stores.map{|store|store.smaregi_store_id}
     smaregi_members = SmaregiMember.where(main_use_store:smaregi_store_ids)
     raiten_kaisu_count = smaregi_members.group(:raiten_kaisu).count.sort.to_h
@@ -261,8 +310,8 @@ class AnalysesController < AdminController
       end
     end
     gon.month_days = month_days.map{|day|day.strftime("%-m/%-d")}
-
-    @smaregi_members = SmaregiMember.all
+    @smaregi_members = SmaregiMember.where(main_use_store:@stores.map{|store|store.smaregi_store_id})
+    # @smaregi_members = SmaregiMember.all
     if params[:order].present?
       @smaregi_members = @smaregi_members.order("#{params[:order]} #{params[:sc]}")
     end
@@ -528,8 +577,16 @@ class AnalysesController < AdminController
       params[:stores] = {}
       @stores.each{|store|params[:stores][store.id.to_s] = true}
     end
-    params[:to] = Date.today unless params[:to]
-    params[:from] = params[:to] - 30 unless params[:from]
+    if params[:to]
+      params[:to] = params[:to].to_date
+    else
+      params[:to] = Date.today
+    end
+    if params[:from]
+      params[:from] = params[:from].to_date
+    else
+      params[:from] = params[:to] - 30 unless params[:from]
+    end
     @dates =(params[:from]..params[:to]).to_a
     @analyses = Analysis.where(date:params[:from]..params[:to]).where(store_id:params['stores'].keys)
     @store_analyses = @analyses.map{|analysis|[[analysis.date,analysis.store_id],analysis]}.to_h

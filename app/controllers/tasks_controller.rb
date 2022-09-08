@@ -21,7 +21,7 @@ class TasksController < ApplicationController
     @doings = @tasks.where(status:1)
     @tasks = @tasks.includes(task_staffs:[:staff])
     @checks = @tasks.where(status:2)
-    @staffs = Staff.joins(:store).where(:stores => {group_id:group_id}).where(employment_status:1)
+    @staffs = Staff.joins(:store).where(:stores => {group_id:group_id}).where(employment_status:1,status:0)
     @hash = {}
     @staffs.each do |staff|
       @hash[staff.id] = staff.task_staffs.where(read_flag:false,task_id:@checks.ids).count

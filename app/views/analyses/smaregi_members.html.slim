@@ -1,10 +1,10 @@
 div style='margin-bottom:20px;'
-  = form_tag member_analyses_path, :method => 'get' do
+  = form_tag smaregi_members_analyses_path, :method => 'get' do
     .clearfix
       label style='float:left;' 店舗選択
       = submit_tag "絞り込み" ,class:"btn btn-primary",style:"margin-left:20px;"
       ul style="list-style:none;float:left;"
-        - @stores.each do |store|
+        - Store.all.each do |store|
           li style='float:left;margin-right:10px;'
             = check_box_tag "stores[#{store.id}]",true,params['stores'][store.id.to_s]
             = label_tag "stores[#{store.id}]",store.name
@@ -65,15 +65,15 @@ table.table
       th 性別
       th 誕生日
       th
-        = link_to "▲",smaregi_members_analyses_path(order:'point',sc:"asc")
+        = link_to "▲",smaregi_members_analyses_path(order:'point',sc:"asc",store_ids:params[:store_ids])
         span ポイント
-        = link_to "▼",smaregi_members_analyses_path(order:'point',sc:"desc")
+        = link_to "▼",smaregi_members_analyses_path(order:'point',sc:"desc",store_ids:params[:store_ids])
       th 入会日
       th 最新来店日
       th
-        = link_to "▲",smaregi_members_analyses_path(order:'raiten_kaisu',sc:"asc")
+        = link_to "▲",smaregi_members_analyses_path(order:'raiten_kaisu',sc:"asc",store_ids:params[:store_ids])
         span 来店回数
-        = link_to "▼",smaregi_members_analyses_path(order:'raiten_kaisu',sc:"desc")
+        = link_to "▼",smaregi_members_analyses_path(order:'raiten_kaisu',sc:"desc",store_ids:params[:store_ids])
       th 履歴
 
   tbody

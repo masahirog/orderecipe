@@ -1,0 +1,78 @@
+h3 時間帯別販売データ
+.clearfix
+  = form_tag timezone_sales_analyses_path, :method => 'get' do
+    .clearfix
+      label style='float:left;' 店舗選択
+      ul style="list-style:none;float:left;"
+        - Store.all.each do |store|
+          li style='float:left;margin-right:10px;'
+            = check_box_tag "stores[#{store.id}]",true,params['stores'][store.id.to_s]
+            = label_tag "stores[#{store.id}]",store.name
+
+
+    div
+      label style='float:left;margin-right:10px;' 表示期間
+      = date_field_tag :from, params[:from], class:"form-control float-left",style:'width:200px;float:left;'
+      div style="float:left;padding:8px;" 〜
+      = date_field_tag :to, params[:to], class:"form-control",style:'width:200px;float:left;'
+    .kensaku.col-md-1
+      = submit_tag "絞り込み" ,class:"btn btn-primary"
+  - if @period < 93
+    = link_to "CSV",analyses_path(from:params[:from],to:params[:to], :format => :csv),class:"btn btn-primary",style:'float:right;'
+  - else
+    p style='float:right;' CSVをダウンロードする場合は、期間を3ヶ月以内に指定してください
+
+h3 売上合計
+table.table
+  thead
+    tr
+      th 店舗
+      - (10..21).each do |hour|
+        th = hour
+  tbody
+    - @stores.each do |store|
+      tr
+        td = store.name
+        - (10..21).each do |hour|
+          td = hour
+h3 売上平均
+table.table
+  thead
+    tr
+      th 店舗
+      - (10..21).each do |hour|
+        th = hour
+  tbody
+    - @stores.each do |store|
+      tr
+        td = store.name
+        - (10..21).each do |hour|
+          td = hour
+
+
+h3 来客数合計
+table.table
+  thead
+    tr
+      th 店舗
+      - (10..21).each do |hour|
+        th = hour
+  tbody
+    - @stores.each do |store|
+      tr
+        td = store.name
+        - (10..21).each do |hour|
+          td = hour
+h3 来客数平均
+table.table
+  thead
+    tr
+      th 店舗
+      - (10..21).each do |hour|
+        th = hour
+  tbody
+    - @stores.each do |store|
+      tr
+        td = store.name
+        - (10..21).each do |hour|
+          td = hour

@@ -82,6 +82,7 @@ Rails.application.routes.draw do
   resources :analysis_products
   resources :analyses do
     collection do
+      get :timezone_sales
       get :stores
       get :staffs
       post :update_sales_data_smaregi_members
