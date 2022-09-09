@@ -12,7 +12,7 @@ class AnalysesController < AdminController
       checked_store_ids = params['stores'].keys
       @stores = Store.where(id:checked_store_ids)
     else
-      @stores = Store.all
+      @stores = Store.where(group_id:9)
       checked_store_ids = @stores.ids
       params[:stores] = {}
       @stores.each do |store|
@@ -22,7 +22,7 @@ class AnalysesController < AdminController
     if params[:to]
       @to = params[:to].to_date
     else
-      @to = Date.today
+      @to = Date.today - 1
       params[:to] = @to
     end
     if params[:from]
@@ -33,12 +33,10 @@ class AnalysesController < AdminController
     end
     @dates =(@from..@to).to_a
     @period = (@to - @from).to_i
-    @analyses = Analysis.where(date:@from..@to).where(store_id:checked_store_ids).order(:date)
-    @date_sales_amount = @analyses.group(:date,:store_id).sum(:ex_tax_sales_amount)
-    @date_loss_amount = @analyses.group(:date).sum(:loss_amount)
-    @date_transaction_count = @analyses.group(:date).sum(:transaction_count)
-    @date_sales_number = @analyses.group(:date).sum(:transaction_count)
-    @date_discount_amount = @analyses.group(:date).sum(:discount_amount)
+    uchikeshi_torihiki_ids = SmaregiTradingHistory.where(date:@from..@to).where(uchikeshi_kubun:2).map{|sth|sth.uchikeshi_torihiki_id}.uniq
+    smaregi_trading_histories = SmaregiTradingHistory.where(date:@from..@to).where(torihiki_meisaikubun:1).where.not(torihiki_id:uchikeshi_torihiki_ids)
+    @time_zone_sales = smaregi_trading_histories.group("date_format(time, '%H')").group(:tenpo_id).sum(:zeinuki_uriage)
+    @time_zone_counts = smaregi_trading_histories.group("date_format(time, '%H')").group(:tenpo_id).distinct.count(:torihiki_id)
     respond_to do |format|
       format.html
       format.csv do
