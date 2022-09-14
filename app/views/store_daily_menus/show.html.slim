@@ -82,6 +82,7 @@ table.table.table-list
       th = link_to "編集", edit_store_daily_menu_path(@store_daily_menu),class:'btn btn-primary btn-sm',style:''
       th 名称
       th 売価
+      th 工程
       th 1人前
       th style='width:100px;' 見本皿
       th 温度
@@ -100,6 +101,35 @@ table.table.table-list
           = link_to sdmd.product.name,product_path(sdmd.product)
         td
           = "#{sdmd.product.sell_price}円"
+        td
+          - if sdmd.product.product_ozara_serving_informations.present? || sdmd.product.display_image.present?
+            button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#ozara_serving_#{sdmd.product_id}" style='' 工程
+            .modal.fade tabindex="-1" ID="ozara_serving_#{sdmd.product_id}"
+              .modal-dialog style='width:1000px;'
+                .modal-content
+                  .modal-header
+                    h4.modal-title 仕上げ工程
+                  .modal-body
+                    table.table
+                      thead
+                        tr
+                          th.col-md-6 工程
+                          th 画像
+                      tbody
+                        - sdmd.product.product_ozara_serving_informations.each do |posi|
+                          tr
+                            td
+                              = text_url_to_link(simple_format(h(posi.content))).html_safe
+                            td
+                              = image_tag posi.image.to_s,class:"img-responsive",style:'max-height:350px;'
+                        tr
+                          td 完成系
+                          td
+                            = image_tag sdmd.product.display_image.to_s,class:"img-responsive",style:'max-width:250px;height: auto;'
+
+                  .modal-footer
+                    button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
+
         td
           - if sdmd.product.serving_infomation.present?
             button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#serving_infomation_#{sdmd.product_id}" style='' 1人前
