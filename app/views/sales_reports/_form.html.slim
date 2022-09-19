@@ -21,6 +21,12 @@
   .form-group
     = f.label :bento_ureyuki, "弁当の売れ行き"
     = f.select :bento_ureyuki,['もっと売れた（機会ロスが多かった）','在庫もお客様の数も良い感じだった','在庫量が多かった（値引き割合が多かった）'],{include_blank:true},class:'form-control', required: true
+  .form-group
+    = f.label :kome_amari, "白米のあまり（kg）"
+    .clearfix
+      = f.number_field :kome_amari,class:'form-control', required: true,style:'width:90%;float:left;',step: "0.1"
+      span style='float:left;margin-top:10px;margin-left:20px;' kg
+
 
   .form-group
     = f.label :cash_error, "現金誤差"

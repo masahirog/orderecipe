@@ -25,11 +25,12 @@ class NotificationMailer < ActionMailer::Base
     end
   end
 
-  def sales_report_send(sales_report,analysis,sozai_ureyuki,bento_ureyuki)
+  def sales_report_send(sales_report,analysis,sozai_ureyuki,bento_ureyuki,kome_amari)
     @sales_report = sales_report
     @analysis = analysis
     @sozai_ureyuki = sozai_ureyuki
     @bento_ureyuki = bento_ureyuki
+    @kome_amari = kome_amari
     mail(
       subject: "べじはんフォーム", #メールのタイトル
       to: 'kitchen@taberu.co.jp',

@@ -37,6 +37,7 @@ class AnalysesController < AdminController
     smaregi_trading_histories = SmaregiTradingHistory.where(date:@from..@to).where(torihiki_meisaikubun:1).where.not(torihiki_id:uchikeshi_torihiki_ids)
     @time_zone_sales = smaregi_trading_histories.group("date_format(time, '%H')").group(:tenpo_id).sum(:zeinuki_uriage)
     @time_zone_counts = smaregi_trading_histories.group("date_format(time, '%H')").group(:tenpo_id).distinct.count(:torihiki_id)
+    @time_zone_sales_product = smaregi_trading_histories.group("date_format(time, '%H')").group(:tenpo_id,:bumon_id).sum(:suryo)
     respond_to do |format|
       format.html
       format.csv do

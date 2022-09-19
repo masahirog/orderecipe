@@ -67,11 +67,12 @@ class SmaregiTradingHistoriesController < AdminController
     respond_to do |format|
       format.html do
         @count = @smaregi_trading_histories.count
-        if @count > 10000
-          @smaregi_trading_histories = []
-        else
-          @smaregi_trading_histories = @smaregi_trading_histories.page(params[:page]).per(100)
-        end
+        @smaregi_trading_histories = @smaregi_trading_histories.page(params[:page]).per(100)
+        # if @count > 10000
+        #   @smaregi_trading_histories = []
+        # else
+        #   @smaregi_trading_histories = @smaregi_trading_histories.page(params[:page]).per(100)
+        # end
       end
       format.csv do
         if @smaregi_trading_histories.count > 10000
