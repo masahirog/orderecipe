@@ -1,5 +1,4 @@
 <% if @task.status == 'archive'%>
-alert('アーカイブしました');
 <% else %>
 $lastAnimation = $("<%= escape_javascript(render partial: 'tasks/task_list', locals: {task:@task}) %>");
 $(".task_<%= @task.id %>_li").replaceWith($lastAnimation);

@@ -6,7 +6,6 @@ class TasksController < ApplicationController
     task.update(task_params)
     render body: nil
   end
-
   def index
     group_id = params[:group_id]
     if params[:staff_id].present?
@@ -21,6 +20,10 @@ class TasksController < ApplicationController
     @doings = @tasks.where(status:1)
     @tasks = @tasks.includes(task_staffs:[:staff])
     @checks = @tasks.where(status:2)
+
+    @staff_shares = @tasks.where(status:5)
+    @hikitsugis = @tasks.where(status:6)
+
     @staffs = Staff.joins(:store).where(:stores => {group_id:group_id}).where(employment_status:1,status:0)
     @hash = {}
     @staffs.each do |staff|
@@ -44,9 +47,6 @@ class TasksController < ApplicationController
 
   def new
     @task = Task.new
-    Staff.where(employment_status:1).where.not(store_id:39).each do |staff|
-      @task.task_staffs.build(staff_id:staff.id,read_flag:false)
-    end
   end
 
   def edit
