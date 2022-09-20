@@ -20,16 +20,14 @@ ul.list-group.clearfix style='margin-top:15px;'
           span style='float:left;margin-top:6px;margin-right:20px;' = "#{sdmd.sozai_number} 食"
           div style='float:left;' id="sdmd_#{sdmd.id}_form"
             = render partial: "preperation", locals: { sdmd:sdmd }
-        div.waku style="border:2px solid #ddd;position: relative;margin-top:20px;"
-          span.small-label 1人前
-          = text_url_to_link(simple_format(h(sdmd.product.serving_infomation))).html_safe
         - if sdmd.product.product_ozara_serving_informations.present? || sdmd.product.display_image.present?
           button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#ozara_serving_#{sdmd.product_id}" style='margin-top:10px;' 盛付手順を確認
           .modal.fade tabindex="-1" ID="ozara_serving_#{sdmd.product_id}"
             .modal-dialog style='width:1000px;'
               .modal-content
-                .modal-header
-                  h4.modal-title 大皿盛り付け
+                .modal-header.clearfix
+                  h4.modal-title style='float:left;' 大皿盛り付け
+                  button.modal-close.btn.btn-default type="button" data-dismiss="modal" style='float:right;' 閉じる
                 .modal-body
                   table.table
                     thead
@@ -47,6 +45,11 @@ ul.list-group.clearfix style='margin-top:15px;'
                         td 完成系
                         td
                           = image_tag sdmd.product.display_image.to_s,class:"img-responsive",style:'max-width:250px;height: auto;'
+
+
+        div.waku style="border:2px solid #ddd;position: relative;margin-top:20px;"
+          span.small-label 1人前
+          = text_url_to_link(simple_format(h(sdmd.product.serving_infomation))).html_safe
 
       div style='width:40%;height:300px;float:left;'
         = image_tag sdmd.product.image_for_one_person.to_s,class:"img-responsive",style:'height:300px;margin-top:5px;margin:0 auto;'
