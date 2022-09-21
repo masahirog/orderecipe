@@ -103,10 +103,9 @@
 table.table
   thead
     tr
-      th
-      th オーダーID
-      th.text-center style="width:100px;" ステータス
-      th style="width:130px;" 商品製造日
+      th ID
+      th.text-center style="width:80px;" 状況
+      th style="width:250px;" メモ
       th style="width:100px;" 担当者
       th 業者
   tbody
@@ -117,18 +116,13 @@ table.table
         - color = "silver"
       end
       tr style="background-color:#{color};"
-        td
-          = link_to "発注詳細", order_path(order),class:"order btn btn-default",style:"margin:3px;"
-        td = order.id
+        td = link_to order.id, order_path(order),class:"order",style:""
         td.text-center
           - if order.fixed_flag == true
             span 確定
           - else
             span 未確定
-        td
-          - if order.order_products.present?
-            = order.order_products[0].make_date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[order.order_products[0].make_date.wday]})")
-          - else
+        td = text_url_to_link(simple_format(h(order.memo))).html_safe
         td
           = order.staff_name
         td.clearfix

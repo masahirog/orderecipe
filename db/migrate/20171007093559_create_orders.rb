@@ -5,6 +5,7 @@ class CreateOrders < ActiveRecord::Migration[4.2][5.0]
       t.boolean :fixed_flag,null:false,default:false
       t.string :staff_name
       t.integer :store_id
+      t.text :memo
     end
   end
 end

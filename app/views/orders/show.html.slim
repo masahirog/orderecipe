@@ -26,6 +26,9 @@ ul.list-group.col-md-12.form-group
     = form_tag({:controller => "orders", :action => "order_print", format: "pdf"},{:target => "_blank"}) do
       input.print_btn.btn.btn-primary type="button" onclick="submit();" style='float:right;margin-left:5px;' value="◀1企業印刷"
       = select :vendor,:id, @vendors.map{|t| [t["company_name"], t["vendor_id"]]},{},class:"index_vendor_select form-control",style:'float:right;width:200px;'
+.col-md-12 style="padding:5px;border:1px solid silver;border-radius:3px;"
+  label 社内メモ（送信先には表示されません）
+  = text_url_to_link(simple_format(h(@order.memo))).html_safe
 
 table.table
   thead

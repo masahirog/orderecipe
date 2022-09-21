@@ -456,6 +456,7 @@ ActiveRecord::Schema.define(version: 2022_06_12_033011) do
     t.boolean "fixed_flag", default: false, null: false
     t.string "staff_name"
     t.integer "store_id"
+    t.text "memo"
   end
 
   create_table "place_showcases", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -711,7 +712,7 @@ ActiveRecord::Schema.define(version: 2022_06_12_033011) do
     t.integer "zeinuki_uriage"
   end
 
-  create_table "staffs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "staffs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "store_id", null: false
     t.string "name", null: false
     t.text "memo"

@@ -272,6 +272,7 @@ class OrdersController < AdminController
         order_products << hash
       end
       make_date = Date.parse(date)
+      @order.memo = "#{make_date.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[make_date.wday]})")} べじ 製造分"
     elsif params[:kurumesi_order_date]
       order_products = []
       date = params[:kurumesi_order_date]
@@ -285,6 +286,7 @@ class OrdersController < AdminController
         order_products << hash
       end
       make_date = Date.parse(date)
+      @order.memo = "#{make_date.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[make_date.wday]})")} くる 製造分"
     elsif params[:bihin_flag] == 'true'
       order_products = []
       make_date = (Date.today+2)
@@ -395,6 +397,7 @@ class OrdersController < AdminController
       @from = Date.parse(params[:from])
       @to = Date.parse(params[:to])
       @dates =(@from..@to).to_a
+      @order.memo = "#{@from.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[@from.wday]})")}〜#{@to.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[@to.wday]})")} 製造分"
       if @dates.count > 7
         redirect_to orders_path(store_id:params[:store_id]),:alert => '期間は7日以内で選択してください。'
       end
@@ -432,6 +435,7 @@ class OrdersController < AdminController
     elsif params[:make_date].present?
       order_products = []
       date = params[:make_date]
+
       kurumesi_orders = KurumesiOrder.where(start_time:date,canceled_flag:false)
       bentos_num_h = kurumesi_orders.joins(kurumesi_order_details:[:product]).group('kurumesi_order_details.product_id').sum('kurumesi_order_details.number')
       DailyMenu.find_by(start_time:date).daily_menu_details.each{|dmd|bentos_num_h[dmd.product_id]=dmd.manufacturing_number}
@@ -443,6 +447,7 @@ class OrdersController < AdminController
         order_products << hash
       end
       make_date = Date.parse(date)
+      @order.memo = "#{make_date.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[make_date.wday]})")} 製造分"
       #vendor絞り込み
       if params[:filter] == "none" || params[:filter].nil?
         vendor_ids = Vendor.all.ids
@@ -854,7 +859,7 @@ class OrdersController < AdminController
         om[1]['order_quantity'] = 0
       end
     end
-    params.require(:order).permit(:store_id,:staff_name,:fixed_flag,order_materials_attributes: [:id,:calculated_quantity,:order_quantity_order_unit,:order_quantity,
+    params.require(:order).permit(:store_id,:staff_name,:fixed_flag,:memo,order_materials_attributes: [:id,:calculated_quantity,:order_quantity_order_unit,:order_quantity,
       :menu_name, :order_id, :material_id,:order_material_memo,:delivery_date, :un_order_flag,:_destroy],
       order_products_attributes: [:id,:make_date, :serving_for, :order_id, :product_id, :_destroy])
   end
