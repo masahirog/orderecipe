@@ -9,14 +9,21 @@ class CookCheck < Prawn::Document
     daily_menu = DailyMenu.find(daily_menu_id)
     bounding_box([10, 800], :width => 560) do
       text "発行時間：#{Time.now.strftime("%Y年 %m月 %d日　%H:%M")}",size:8,:align => :right
-      text "#{daily_menu.start_time.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[daily_menu.start_time.wday]})")} 献立"
+      text "調理場仕上がりチェック表　#{daily_menu.start_time.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[daily_menu.start_time.wday]})")} 献立"
       move_down 10
-      table_content(daily_menu)
+      table_content(daily_menu,1)
+    end
+    start_new_page
+    bounding_box([10, 800], :width => 560) do
+      text "発行時間：#{Time.now.strftime("%Y年 %m月 %d日　%H:%M")}",size:8,:align => :right
+      text "作業場仕上がりチェック表 #{daily_menu.start_time.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[daily_menu.start_time.wday]})")} 献立"
+      move_down 10
+      table_content(daily_menu,2)
     end
   end
 
-  def table_content(daily_menu)
-    table line_item_rows(daily_menu) do
+  def table_content(daily_menu,position)
+    table line_item_rows(daily_menu,position) do
       self.row_colors = ["FFFFFF","E5E5E5"]
       # cells.padding = 6
       cells.size = 9
@@ -29,10 +36,10 @@ class CookCheck < Prawn::Document
     end
   end
 
-  def line_item_rows(daily_menu)
+  def line_item_rows(daily_menu,position)
     data = [['商品名','メニュー名','チェック内容','チェック者']]
     daily_menu.daily_menu_details.each_with_index do |dmd,i|
-      if MenuCookCheck.exists?(menu_id:dmd.product.menus.ids)
+      if MenuCookCheck.exists?(menu_id:dmd.product.menus.ids,check_position:position)
         dmd.product.menus.each do |menu|
           menu.menu_cook_checks.each do |mcc|
             data << [dmd.product.name,menu.name,mcc.content,'']
