@@ -347,6 +347,7 @@ ActiveRecord::Schema.define(version: 2022_06_12_033011) do
     t.string "content", default: "", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "check_position", null: false
   end
 
   create_table "menu_last_processes", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -436,7 +437,7 @@ ActiveRecord::Schema.define(version: 2022_06_12_033011) do
     t.date "delivery_date"
     t.text "menu_name"
     t.boolean "un_order_flag", default: false, null: false
-    t.boolean "fax_sended_flag", default: false, null: false
+    t.integer "fax_sended_status", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

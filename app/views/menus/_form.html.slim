@@ -61,6 +61,7 @@
             span 調理チェックリスト
             = link_to_add_association '追加', f, :menu_cook_checks,class:'btn btn-primary add_menu_cook_check_fields',style:'margin-left:20px;',
             data: {association_insertion_node: '#menu_cook_check-add-point',association_insertion_method: 'append' }
+          th 持ち場
           th
       tbody#menu_cook_check-add-point
         = f.fields_for :menu_cook_checks do |mcc|

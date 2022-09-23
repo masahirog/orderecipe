@@ -130,10 +130,15 @@ table.table
             .col-md-3 style='float:left;padding:5px 0;'
               - if id==559
               - else
-                - if @vendors_hash[order.id][id][1] == true
+                - if @vendors_hash[order.id][id][1] == 1
                   span style='margin-right:8px;' class="label label-success" OK
-                - else
+                - elsif  @vendors_hash[order.id][id][1] == 2
                   span style='margin-right:8px;' class="label label-danger" NG
+                - elsif  @vendors_hash[order.id][id][1] == 0
+                  span style='margin-right:8px;' class="label label-default" Unsend
+                - elsif  @vendors_hash[order.id][id][1] == 3
+                  span style='margin-right:8px;' class="label label-warning" Sending
+
               span style='padding:0;' = "#{@vendors_hash[order.id][id][2]}（#{@vendors_hash[order.id][id][0]}）"
 = paginate @orders
 css:

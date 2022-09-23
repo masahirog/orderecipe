@@ -55,6 +55,6 @@ class OrderMaterialsController < AdminController
     end
 
     def order_material_params
-      params.require(:order_material).permit(:id,:fax_sended_flag)
+      params.require(:order_material).permit(:id,:fax_sended_status)
     end
 end

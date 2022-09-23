@@ -113,9 +113,13 @@ class Order < ApplicationRecord
     imap_passwd = ENV['MASA_MAIL_PASS']
     imap.login(imap_user, imap_passwd)
     search_criterias = [
-      'FROM','send@mail.efax.com',
+      'FROM','masahiro11g@gmail.com',
       'SINCE', (Date.today-1).strftime("%d-%b-%Y")
     ]
+    # search_criterias = [
+    #   'FROM','send@mail.efax.com',
+    #   'SINCE', (Date.today-1).strftime("%d-%b-%Y")
+    # ]
     imap.select('INBOX') # 対象のメールボックスを選択
     ids = imap.search(search_criterias) # 全てのメールを取得
     ids.each_slice(100).to_a.each do |id_block| # 100件ごとにメールをfetchする
@@ -141,9 +145,11 @@ class Order < ApplicationRecord
               @fax_mail.vendor_id = vendor_id
               order_materials = order.order_materials.where(un_order_flag:false).joins(:material).where(:materials => {vendor_id:vendor_id})
               if subject.include?("送信完了しました")
-                order_materials.update_all(fax_sended_flag:true)
+                order_materials.update_all(fax_sended_status:1)
                 @fax_mail.status = 1
               else
+                order_materials.update_all(fax_sended_status:2)
+                NotificationMailer.fax_unsend_mail(subject).deliver
                 @fax_mail.status = 0
               end
               @fax_mail.save

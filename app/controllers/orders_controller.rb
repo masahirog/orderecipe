@@ -207,19 +207,9 @@ class OrdersController < AdminController
     OrderMaterial.includes(material:[:vendor]).where(order_id:order_ids,un_order_flag:false).each do |om|
       if @vendors_hash[om.order_id][om.material.vendor_id].present?
         @vendors_hash[om.order_id][om.material.vendor_id][0] += 1
-        if om.fax_sended_flag == true
-          sended = true
-        else
-          sended = false
-        end
-        @vendors_hash[om.order_id][om.material.vendor_id][1] = sended
+        @vendors_hash[om.order_id][om.material.vendor_id][1] = om.fax_sended_status
       else
-        if om.fax_sended_flag == true
-          sended = true
-        else
-          sended = false
-        end
-        @vendors_hash[om.order_id][om.material.vendor_id] = [1,sended,om.material.vendor.company_name]
+        @vendors_hash[om.order_id][om.material.vendor_id] = [1,om.fax_sended_status,om.material.vendor.company_name]
       end
     end
     if params[:start_date].present?
@@ -367,6 +357,7 @@ class OrdersController < AdminController
       order_products = []
       @from = Date.parse(params[:from])
       @to = Date.parse(params[:to])
+      @order.memo = "#{@from.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[@from.wday]})")}〜#{@to.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[@to.wday]})")} 製造分"
       @dates =(@from..@to).to_a
       if @dates.count > 7
         redirect_to orders_path(store_id:params[:store_id]),:alert => '期間は7日以内で選択してください。'
@@ -760,6 +751,7 @@ class OrdersController < AdminController
     vendors.each do |vendor|
       NotificationMailer.send_order(order,vendor).deliver
     end
+    order.order_materials.where(un_order_flag:false).joins(:material).where(:materials =>{vendor_id:vendor_ids}).update_all(fax_sended_status:3)
     redirect_to order, notice: "#{vendors.length} 件のFAXを送信しました。しばらくたったあとにFAXが届いているか確認してください。"
   end
 

@@ -2,4 +2,6 @@ tr.nested-fields.field
   td
     = f.text_field :content,class:'form-control',placeholder:'チェックする項目・内容'
   td
+    = f.select :check_position, options_for_select_from_enum(MenuCookCheck, :check_position), {}, class:"form-control"
+  td
     = link_to_remove_association '削除', f,class:'remove_menu_btn btn btn-danger'

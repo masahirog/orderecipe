@@ -1,5 +1,14 @@
 class NotificationMailer < ActionMailer::Base
   default from: "m.yamashita@jfd.co.jp"
+  def fax_unsend_mail(subject)
+    @subject = subject
+    mail(
+      subject: "fax_unsend",
+      to: 'kitchen@taberu.co.jp',
+    ) do |format|
+      format.text
+    end
+  end
   def refund_support_create_send_mail(refund_support)
     @refund_support = refund_support
     mail(
