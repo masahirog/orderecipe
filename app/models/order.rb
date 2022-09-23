@@ -112,14 +112,14 @@ class Order < ApplicationRecord
     imap_user = 'm.yamashita@jfd.co.jp'
     imap_passwd = ENV['MASA_MAIL_PASS']
     imap.login(imap_user, imap_passwd)
-    search_criterias = [
-      'FROM','masahiro11g@gmail.com',
-      'SINCE', (Date.today-1).strftime("%d-%b-%Y")
-    ]
     # search_criterias = [
-    #   'FROM','send@mail.efax.com',
+    #   'FROM','masahiro11g@gmail.com',
     #   'SINCE', (Date.today-1).strftime("%d-%b-%Y")
     # ]
+    search_criterias = [
+      'FROM','send@mail.efax.com',
+      'SINCE', (Date.today-1).strftime("%d-%b-%Y")
+    ]
     imap.select('INBOX') # 対象のメールボックスを選択
     ids = imap.search(search_criterias) # 全てのメールを取得
     ids.each_slice(100).to_a.each do |id_block| # 100件ごとにメールをfetchする
