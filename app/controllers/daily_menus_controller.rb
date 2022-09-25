@@ -219,6 +219,8 @@ class DailyMenusController < AdminController
   end
 
   def show
+    @total_cost = 0
+    @total_sotei_uriage = 0
     @store_daily_menu_idhash = {}
     @stores = Store.all
     @date = @daily_menu.start_time
@@ -226,12 +228,19 @@ class DailyMenusController < AdminController
     @yesterday = DailyMenu.find_by(start_time:@date-1)
     @daily_menu_details = @daily_menu.daily_menu_details.order("row_order ASC")
     @sdmd_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    @daily_menu.store_daily_menus.includes(:store_daily_menu_details).each do |sdm|
+    @daily_menu.store_daily_menus.includes(store_daily_menu_details:[:product]).each do |sdm|
       @store_daily_menu_idhash[sdm.store_id] = sdm.id
       sdm.store_daily_menu_details.each do |sdmd|
         @sdmd_hash[sdm.store_id][sdmd.product_id] = sdmd.number
+        sell_price = sdmd.product.sell_price.to_i
+        seizo_su = sdmd.sozai_number.to_i
+        sotei_uriage = sell_price * seizo_su
+        cost_price = sdmd.product.cost_price.to_i
+        @total_cost += seizo_su * cost_price
+        @total_sotei_uriage += sotei_uriage
       end
     end
+
     respond_to do |format|
       format.html
       format.pdf do

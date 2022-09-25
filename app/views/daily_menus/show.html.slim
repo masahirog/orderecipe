@@ -1,25 +1,15 @@
 
-.clearfix
-  .col-md-3 style='float:left;'
-    label 日付　
-    - if @yesterday
-      = link_to "前日",@yesterday
-    - else
-      = link_to "前日",new_daily_menu_path(start_time:@date-1)
-    |　
-    - if @tommoroww
-      = link_to "翌日",@tommoroww
-    - else
-      = link_to "翌日",new_daily_menu_path(start_time:@date+1)
+div
+  - if @yesterday
+    = link_to "前日",@yesterday
+  - else
+    = link_to "前日",new_daily_menu_path(start_time:@date-1)
+  span style='margin:0 15px;' = @daily_menu.start_time.strftime("%Y年%-m月%-d日(#{%w(日 月 火 水 木 金 土)[@daily_menu.start_time.wday]})")
+  - if @tommoroww
+    = link_to "翌日",@tommoroww
+  - else
+    = link_to "翌日",new_daily_menu_path(start_time:@date+1)
 
-    p = @daily_menu.start_time.strftime("%Y年%-m月%-d日(#{%w(日 月 火 水 木 金 土)[@daily_menu.start_time.wday]})")
-  .col-md-3 style='float:left;'
-    label 総製造数
-    p = @daily_menu.total_manufacturing_number
-
-  .col-md-3 style='float:left;'
-    label 惣菜在庫
-    p = @daily_menu.sozai_manufacturing_number
 
 
 .form-group.clearfix
@@ -181,10 +171,29 @@
               | 閉じる
 
 
+table.table
+  thead
+    tr
+      th 総製造数
+      th 惣菜在庫
+      th 想定売上
+      th 原価合計
+      th 原価率
+  tbody
+    tr
+      td = @daily_menu.total_manufacturing_number
+      td = @daily_menu.sozai_manufacturing_number
+      td = @total_sotei_uriage.to_s(:delimited)
+      td = @total_cost.to_s(:delimited)
+      td = "#{((@total_cost.to_f/@total_sotei_uriage)*100).round(1)} %"
+
+
 table.table.table-list.table-striped
   thead
     tr
       th 商品名
+      th 売価
+      th 原価
       th 原価率
       th 単品惣菜分
       th 弁当等副菜分
@@ -193,10 +202,12 @@ table.table.table-list.table-striped
       - @store_daily_menu_idhash.each do |store_sdm|
         th = link_to Store.find(store_sdm[0]).name,store_daily_menu_path(store_sdm[1])
   tbody
-    -@daily_menu_details.each do |dmd|
+    -@daily_menu_details.includes([:product]).each do |dmd|
       tr
         td
           = link_to dmd.product.name,product_path(dmd.product)
+        td = dmd.product.sell_price
+        td = dmd.product.cost_price
         - if (dmd.product.cost_price/dmd.product.sell_price) > 0.35
           - color = 'red'
         - elsif (dmd.product.cost_price/dmd.product.sell_price) > 0.3
