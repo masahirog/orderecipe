@@ -41,7 +41,7 @@ class CookCheck < Prawn::Document
     daily_menu.daily_menu_details.each_with_index do |dmd,i|
       if MenuCookCheck.exists?(menu_id:dmd.product.menus.ids,check_position:position)
         dmd.product.menus.each do |menu|
-          menu.menu_cook_checks.each do |mcc|
+          menu.menu_cook_checks.where(check_position:position).each do |mcc|
             data << [dmd.product.name,menu.name,mcc.content,'']
           end
         end
