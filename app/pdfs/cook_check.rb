@@ -9,14 +9,14 @@ class CookCheck < Prawn::Document
     daily_menu = DailyMenu.find(daily_menu_id)
     bounding_box([10, 800], :width => 560) do
       text "発行時間：#{Time.now.strftime("%Y年 %m月 %d日　%H:%M")}",size:8,:align => :right
-      text "調理場仕上がりチェック表　#{daily_menu.start_time.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[daily_menu.start_time.wday]})")} 献立"
+      text "調理 仕上がりチェック表　#{daily_menu.start_time.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[daily_menu.start_time.wday]})")} 献立"
       move_down 10
       table_content(daily_menu,1)
     end
     start_new_page
     bounding_box([10, 800], :width => 560) do
       text "発行時間：#{Time.now.strftime("%Y年 %m月 %d日　%H:%M")}",size:8,:align => :right
-      text "作業場仕上がりチェック表 #{daily_menu.start_time.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[daily_menu.start_time.wday]})")} 献立"
+      text "積載 仕上がりチェック表 #{daily_menu.start_time.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[daily_menu.start_time.wday]})")} 献立"
       move_down 10
       table_content(daily_menu,2)
     end
