@@ -13,12 +13,21 @@ h3 = "#{@store.name}店 献立組み"
           - holiday = HolidayJapan.name(sdm.start_time)
           - if holiday.present?
             th style='background-color:pink;text-align:center;'
-              = sdm.start_time.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[sdm.start_time.wday]})")
-              br
+              - if sdm.event.present?
+                span style='color:red;' data-toggle="tooltip" data-placement="bottom" title="#{sdm.event}" イベント
+                br
               span style='font-size:10px;' = holiday
+              br
+              = sdm.start_time.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[sdm.start_time.wday]})")
+
           - else
             th style='text-align:center;'
+              - if sdm.event.present?
+                span style='color:red;' data-toggle="tooltip" data-placement="bottom" title="#{sdm.event}" イベント
+                br
+
               = sdm.start_time.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[sdm.start_time.wday]})")
+
     tbody#store_daily_menu_details_area
       tr
         td.text-right colspan=2 直近の曜日別 平均惣菜販売点数
@@ -79,7 +88,7 @@ css:
     max-width: 100%; /* Max Width of the popover (depending on the container!) */
   }
 javascript:
-
+  $('[data-toggle="tooltip"]').tooltip();
   $(".col-base").each(function(i,ele){
     var num = 0;
     change(i,num)

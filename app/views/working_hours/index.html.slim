@@ -1,0 +1,19 @@
+h1 Listing working_hours
+
+table
+  thead
+    tr
+      th
+      th
+      th
+
+  tbody
+    - @working_hours.each do |working_hour|
+      tr
+        td = link_to 'Show', working_hour
+        td = link_to 'Edit', edit_working_hour_path(working_hour)
+        td = link_to 'Destroy', working_hour, data: { confirm: 'Are you sure?' }, method: :delete
+
+br
+
+= link_to 'New Working hour', new_working_hour_path

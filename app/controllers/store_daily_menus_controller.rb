@@ -353,7 +353,7 @@ class StoreDailyMenusController < ApplicationController
 
 
     def store_daily_menu_params
-      params.require(:store_daily_menu).permit(:start_time,:total_num,:weather,:max_temperature,:min_temperature,:opentime_showcase_photo,
+      params.require(:store_daily_menu).permit(:start_time,:total_num,:weather,:max_temperature,:min_temperature,:opentime_showcase_photo,:event,
         :showcase_photo_a,:showcase_photo_b,:signboard_photo,:opentime_showcase_photo_uploaded,
         store_daily_menu_photos_attributes: [:id,:store_daily_menu_id,:image],
         store_daily_menu_details_attributes: [:id,:store_daily_menu_id,:product_id,:number,:row_order,:_destroy,

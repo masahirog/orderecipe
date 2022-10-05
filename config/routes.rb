@@ -36,6 +36,7 @@ Rails.application.routes.draw do
   resources :tasks do
     put :sort
   end
+  resources :working_hours
   resources :store_daily_menu_details
   resources :task_comments
   resources :task_staffs

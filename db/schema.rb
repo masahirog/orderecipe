@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_12_033011) do
+ActiveRecord::Schema.define(version: 2022_10_05_144217) do
 
   create_table "analyses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "store_id"
@@ -342,7 +342,7 @@ ActiveRecord::Schema.define(version: 2022_06_12_033011) do
     t.boolean "subdivision_able", default: false, null: false
   end
 
-  create_table "menu_cook_checks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "menu_cook_checks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "menu_id", null: false
     t.string "content", default: "", null: false
     t.datetime "created_at", null: false
@@ -770,7 +770,7 @@ ActiveRecord::Schema.define(version: 2022_06_12_033011) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "store_daily_menus", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+  create_table "store_daily_menus", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "daily_menu_id"
     t.integer "store_id"
     t.date "start_time"
@@ -785,6 +785,7 @@ ActiveRecord::Schema.define(version: 2022_06_12_033011) do
     t.string "showcase_photo_b"
     t.string "signboard_photo"
     t.time "opentime_showcase_photo_uploaded"
+    t.string "event"
   end
 
   create_table "store_shift_frames", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -894,6 +895,16 @@ ActiveRecord::Schema.define(version: 2022_06_12_033011) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "fax_staff_name_display_flag", default: false, null: false
+  end
+
+  create_table "working_hours", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.date "date"
+    t.string "name"
+    t.float "working_time"
+    t.integer "jobcan_staff_code"
+    t.integer "store_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
 end

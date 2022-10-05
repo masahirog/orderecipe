@@ -55,7 +55,7 @@ html
                       h5 style='padding:0 10px;font-weight:bold;' 発注・在庫
                       li = link_to "発注",orders_path(store_id:39)
                       li = link_to "納品確認",deliveried_list_orders_path(store_id:39)
-                      li = link_to "野菜外部公開",'/outside_view'
+                      / li = link_to "野菜外部公開",'/outside_view'
                       li = link_to "野菜棚卸し",mobile_inventory_stocks_path(category:'vege',store_id:39),target:'_blank'
                       li = link_to "肉類棚卸し",mobile_inventory_stocks_path(category:'meat',store_id:39),target:'_blank'
                       li = link_to "くるめし備品手配","https://docs.google.com/spreadsheets/d/12VRdyriEK7nqzdMFcdHqPPcs52n_CsZ20nGfbS0X5GI/edit#gid=104376609",target:'_blank'
@@ -65,10 +65,10 @@ html
                           span class="badge badge-danger" style='background-color:red;float:left;'
                             = @stock_alert_materials
                       li = link_to "月次棚卸し在庫",stocks_path(store_id:39)
-                      h5 style='padding:0 10px;font-weight:bold;' その他
-                      li = link_to 'シフト',shifts_path(date:Date.today,group_id:19)
-                      li = link_to 'シフトテンプレート',default_shifts_path(group_id:19)
-                      li = link_to "キッチン設定",edit_store_path(id:39)
+                      / / h5 style='padding:0 10px;font-weight:bold;' その他
+                      / li = link_to 'シフト',shifts_path(date:Date.today,group_id:19)
+                      / li = link_to 'シフトテンプレート',default_shifts_path(group_id:19)
+                      / li = link_to "キッチン設定",edit_store_path(id:39)
 
 
                   li.dropdown
@@ -101,10 +101,11 @@ html
                       li = link_to "売上-時間帯別",timezone_sales_analyses_path
                       li = link_to "商品",product_sales_analyses_path
                       li = link_to "会員",smaregi_members_analyses_path
-                      li = link_to "購買データ",smaregi_trading_histories_path
+                      li = link_to "購買",smaregi_trading_histories_path
                       li = link_to "店舗",stores_analyses_path
                       li = link_to "スタッフ",staffs_analyses_path
-                      li = link_to "フィードバック",feedback_analyses_path
+                      li = link_to "勤怠",working_hours_path
+                      / li = link_to "フィードバック",feedback_analyses_path
 
                   li.dropdown
                     a.dropdown-toggle href="#" data-toggle="dropdown" role="button"

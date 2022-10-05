@@ -14,6 +14,7 @@ class CreateStoreDailyMenus < ActiveRecord::Migration[5.2]
       t.string :showcase_photo_b
       t.string :signboard_photo
       t.time :opentime_showcase_photo_uploaded
+      t.string :event
     end
   end
 end
