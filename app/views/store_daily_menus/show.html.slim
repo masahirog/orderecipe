@@ -74,7 +74,7 @@ button type="button" class="btn btn-default" data-toggle="modal" data-target="#s
       = link_to sdmp.image.url, "data-lightbox" => sdmp.image.url do
         = image_tag sdmp.image.url,style:'height:200px;width:330px;object-fit:cover;object-position: 0 0;'
 .col-md-12
-  label イベント：
+  label 予約：
   span style='color:red;' = "#{@store_daily_menu.event}"
   / = link_to "在庫CSV", stock_store_daily_menus_path(store_daily_menu_id:@store_daily_menu.id,format:'csv'), class: "btn btn-default",style:'float:right;'
 table.table.table-list

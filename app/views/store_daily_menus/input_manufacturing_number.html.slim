@@ -14,7 +14,7 @@ h3 = "#{@store.name}店 献立組み"
           - if holiday.present?
             th style='background-color:pink;text-align:center;'
               - if sdm.event.present?
-                span style='color:red;' data-toggle="tooltip" data-placement="bottom" title="#{sdm.event}" イベント
+                span style='color:red;' data-toggle="tooltip" data-placement="bottom" title="#{sdm.event}" 予約
                 br
               span style='font-size:10px;' = holiday
               br
@@ -23,7 +23,7 @@ h3 = "#{@store.name}店 献立組み"
           - else
             th style='text-align:center;'
               - if sdm.event.present?
-                span style='color:red;' data-toggle="tooltip" data-placement="bottom" title="#{sdm.event}" イベント
+                span style='color:red;' data-toggle="tooltip" data-placement="bottom" title="#{sdm.event}" 予約
                 br
 
               = sdm.start_time.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[sdm.start_time.wday]})")
