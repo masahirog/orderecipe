@@ -24,7 +24,8 @@ h1
           span style='margin-left:10px;color:red;' 予約有
     - else
       div style='float:left;font-size:16px;'
-        = start_time.strftime("%-m月%-d日")
+        / = start_time.strftime("%-m月%-d日")
+        = link_to start_time.strftime("%-m月%-d日"), new_store_daily_menu_path(date:start_time,store_id:@store.id)
   - if store_daily_menu[0]
     table.table
       - store_daily_menu[0].store_daily_menu_details.each do |sdmd|

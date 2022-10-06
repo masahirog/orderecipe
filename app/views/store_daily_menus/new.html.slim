@@ -1,5 +1,4 @@
-h1 New store_daily_menu
-
-== render 'form'
-
-= link_to 'Back', _store_daily_menus_path
+h4
+  = @store_daily_menu.start_time.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@store_daily_menu.start_time.wday]})")
+  = "　#{@store.name}店 "
+== render 'form',store_daily_menu:@store_daily_menu

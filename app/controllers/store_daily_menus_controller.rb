@@ -344,6 +344,59 @@ class StoreDailyMenusController < ApplicationController
     redirect_to store_daily_menus_path(store_id:store_id)
   end
 
+  def new
+    date = Date.parse(params[:date])
+    store_id = params[:store_id]
+    @store = Store.find(store_id)
+    daily_menu = DailyMenu.find_by(start_time:date)
+    default_product_ids = [11429,13059]
+    dmd_product_ids = default_product_ids
+    @dmd_products = Product.where(id:dmd_product_ids)
+
+    # @tommoroww = DailyMenu.find_by(start_time:date+1)
+    # @yesterday = DailyMenu.find_by(start_time:date-1)
+    @products = Product.where(brand_id:111)
+    # @store_daily_menu_details = @store_daily_menu.products
+
+
+    if daily_menu.present?
+      @store_daily_menu = StoreDailyMenu.new(start_time:date,store_id:store_id,daily_menu_id:daily_menu.id)
+      saveble_photo_nums = 3
+      saveble_photo_nums.times {
+        @store_daily_menu.store_daily_menu_photos.build
+      }
+    else
+      redirect_to store_daily_menus_path(store_id:store_id),notice:'来月の献立を作成するので、山下に連絡ください！'
+    end
+  end
+
+  def create
+    @products = Product.where(brand_id:111)
+    @store_daily_menu = StoreDailyMenu.new(store_daily_menu_params)
+
+    date = @store_daily_menu.start_time
+    store_id = @store_daily_menu.store_id
+    @store = Store.find(store_id)
+    daily_menu = DailyMenu.find_by(start_time:date)
+    default_product_ids = [11429,13059]
+    dmd_product_ids = default_product_ids
+    @dmd_products = Product.where(id:dmd_product_ids)
+
+    # @tommoroww = DailyMenu.find_by(start_time:date+1)
+    # @yesterday = DailyMenu.find_by(start_time:date-1)
+    @products = Product.where(brand_id:111)
+    # @store_daily_menu_details = @store_daily_menu.products
+
+    respond_to do |format|
+      if @store_daily_menu.save
+        format.html { redirect_to store_daily_menus_path(store_id:store_id), notice: "登録OK！" }
+        format.json { render :show, status: :created, location: @store_daily_menu }
+      else
+        format.html { render :new }
+        format.json { render json: @store_daily_menu.errors, status: :unprocessable_entity }
+      end
+    end
+  end
 
   private
 
@@ -353,7 +406,7 @@ class StoreDailyMenusController < ApplicationController
 
 
     def store_daily_menu_params
-      params.require(:store_daily_menu).permit(:start_time,:total_num,:weather,:max_temperature,:min_temperature,:opentime_showcase_photo,:event,
+      params.require(:store_daily_menu).permit(:start_time,:total_num,:weather,:max_temperature,:min_temperature,:opentime_showcase_photo,:event,:store_id,:daily_menu_id,
         :showcase_photo_a,:showcase_photo_b,:signboard_photo,:opentime_showcase_photo_uploaded,
         store_daily_menu_photos_attributes: [:id,:store_daily_menu_id,:image],
         store_daily_menu_details_attributes: [:id,:store_daily_menu_id,:product_id,:number,:row_order,:_destroy,

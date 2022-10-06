@@ -13,13 +13,24 @@ class DailyMenu < ApplicationRecord
 
   def self.once_1month_create(params_date)
     new_arr = []
+    new_store_daily_menu_arr = []
+    dates = []
     (Date.parse(params_date).all_month).each do |date|
       if DailyMenu.find_by(start_time:date).present?
       else
         new_arr << DailyMenu.new(start_time:date)
+        dates << date
       end
     end
     DailyMenu.import new_arr if new_arr.present?
+
+    DailyMenu.where(start_time:dates).each do |dm|
+      if DailyMenu.find_by(start_time:date).present?
+      else
+        new_store_daily_menu_arr << StoreDailyMenu.new(start_time:date)
+      end
+    end
+    StoreDailyMenu.import new_store_daily_menu_arr if new_store_daily_menu_arr.present?
   end
   def self.upload_menu(file)
     dates = []

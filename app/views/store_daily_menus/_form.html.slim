@@ -1,9 +1,12 @@
 = form_with(model: store_daily_menu, local: true) do |f|
+  = f.hidden_field :start_time
+  = f.hidden_field :store_id
+  = f.hidden_field :daily_menu_id
   .clearfix style='margin-bottom:15px;'
     .col-md-1
       = f.label :total_num,"総数", class: ''
       = f.number_field :total_num, class: 'col-md-10 form-control total_manufacturing_number',readonly:true
-    .col-md-1
+    / .col-md-1
       = f.label :sozai_manufacturing_number,"惣菜在庫", class: ''
       = f.number_field :sozai_manufacturing_number, class: 'col-md-10 form-control input_sozai_manufacturing_number',readonly:true
     .col-md-2
