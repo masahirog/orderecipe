@@ -1,7 +1,7 @@
-
-h4 キッチン
+h4 キッチン 日稼働時間推移（週平均）
 canvas#chart1 style='padding-left:30px;'
-.table-responsive style='height:200px;overflow: scroll;'
+h4 週次平均
+.table-responsive style='height:150px;overflow: scroll;'
   table.table.layout-fixed style='border-collapse:separate;'
     thead style='position: sticky;top:0;background-color:white;z-index:3;'
       tr
@@ -19,8 +19,13 @@ canvas#chart1 style='padding-left:30px;'
         - @wednesdays.each do |wednesday|
           td
             = (@weekend_hash[wednesday]['time']/2).round(1) if @weekend_hash[wednesday]['time'].present?
+      tr
+        td style='background-color:white;' 全体
+        - @wednesdays.each do |wednesday|
+          td
+            = (@week_hash[wednesday]['time']/7).round(1) if @week_hash[wednesday]['time'].present?
 
-
+h4 直近1ヶ月
 .table-responsive style='height:200px;overflow: scroll;'
   table.table.layout-fixed style='border-collapse:separate;'
     thead style='position: sticky;top:0;background-color:white;z-index:3;'
@@ -41,58 +46,42 @@ canvas#chart1 style='padding-left:30px;'
       tr
         td style='background-color:white;' 勤務時間
         - @dates.each do |date|
-          td = @working_hours[[39,date]].to_f.round(1)
-/ h4 東中野
-/ .table-responsive style='height:200px;overflow: scroll;'
-/   table.table.layout-fixed style='border-collapse:separate;'
-/     thead style='position: sticky;top:0;background-color:white;z-index:3;'
-/       tr
-/         th style='width:100px;background-color:white;'
-/         - @dates.each do |date|
-/           th style='width:60px;' = "#{date.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[date.wday]})")}"
-/     tbody
-/       tr
-/         td style='background-color:white;' 売上
-/         - @dates.each do |date|
-/           td = @analyses[[date,9]].to_s(:delimited) if @analyses[[date,9]]
-/       tr
-/         td style='background-color:white;' 勤務時間
-/         - @dates.each do |date|
-/           td = @working_hours[[9,date]].to_f.round(1)
-/ h4 新中野
-/ .table-responsive style='height:200px;overflow: scroll;'
-/   table.table.layout-fixed style='border-collapse:separate;'
-/     thead style='position: sticky;top:0;background-color:white;z-index:3;'
-/       tr
-/         th style='width:100px;background-color:white;'
-/         - @dates.each do |date|
-/           th style='width:60px;' = "#{date.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[date.wday]})")}"
-/     tbody
-/       tr
-/         td style='background-color:white;' 売上
-/         - @dates.each do |date|
-/           td = @analyses[[date,19]].to_s(:delimited) if @analyses[[date,19]]
-/       tr
-/         td style='background-color:white;' 勤務時間
-/         - @dates.each do |date|
-/           td = @working_hours[[19,date]].to_f.round(1)
-/ h4 新高円寺
-/ .table-responsive style='height:200px;overflow: scroll;'
-/   table.table.layout-fixed style='border-collapse:separate;'
-/     thead style='position: sticky;top:0;background-color:white;z-index:3;'
-/       tr
-/         th style='width:100px;background-color:white;'
-/         - @dates.each do |date|
-/           th style='width:60px;' = "#{date.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[date.wday]})")}"
-/     tbody
-/       tr
-/         td style='background-color:white;' 売上
-/         - @dates.each do |date|
-/           td = @analyses[[date,29]].to_s(:delimited) if @analyses[[date,29]]
-/       tr
-/         td style='background-color:white;' 勤務時間
-/         - @dates.each do |date|
-/           td = @working_hours[[29,date]].to_f.round(1)
+          td = @daily_working_hours[[39,date]].to_f.round(1)
+h4 スタッフ別
+.table-responsive style='height:600px;overflow: scroll;'
+  table.table.layout-fixed style='border-collapse:separate;'
+    thead style='position: sticky;top:0;background-color:white;z-index:3;'
+      tr
+        th style='width:100px;background-color:white;'
+        th style='width:60px;' 7日時間
+        th style='width:60px;' 7日回数
+        th style='width:60px;' 7日平均
+        th style='width:60px;' 7日超過
+        th style='width:60px;' 月時間
+        th style='width:60px;' 月回数
+        th style='width:60px;' 月平均
+        th style='width:60px;' 月超過
+        - @dates.each do |date|
+          th style='width:60px;' = "#{date.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[date.wday]})")}"
+    tbody
+      - @staffs.each do |name|
+        tr
+          td style='background-color:white;' = name.truncate(5, omission: "")
+          td = @working_hours[name]["seven_sum"].round(1)
+          td = @working_hours[name]["seven_count"]
+          td = (@working_hours[name]["seven_sum"]/@working_hours[name]["seven_count"]).round(1) if @working_hours[name]["seven_count"] > 0
+          td = @working_hours[name]['seven_zangyo'].round(1)
+          td = @working_hours[name]["sum"].round(1)
+          td = @working_hours[name]["count"]
+          td = (@working_hours[name]["sum"]/@working_hours[name]["count"]).round(1) if @working_hours[name]["count"] > 0
+          td = @working_hours[name]['zangyo'].round(1)
+
+          - @dates.each do |date|
+            td
+              = @working_hours[name]['date'][date] if @working_hours[name]['date'][date].present?
+
+
+
 
 css:
   .table-responsive th {
@@ -117,7 +106,7 @@ css:
 javascript:
   // 1個目のグラフ
   var ctx = document.getElementById("chart1").getContext('2d');
-  ctx.canvas.height = 40;
+  ctx.canvas.height = 100;
   var chart1 = new Chart(ctx, {
     type: 'bar',
     data: {
@@ -138,6 +127,16 @@ javascript:
         data: gon.weekend_work_time,
         backgroundColor: 'rgba(255, 99, 132, 0.7)',
         borderColor: 'rgba(255, 99, 132, 0.8)',
+        fill: false,
+        stacked: false,
+        yAxisID: "y-axis-1",
+        pointRadius: 0
+      },{
+        type: 'line',
+        label: "全体",
+        data: gon.week_work_time,
+        backgroundColor: 'gray',
+        borderColor: 'gray',
         fill: false,
         stacked: false,
         yAxisID: "y-axis-1",

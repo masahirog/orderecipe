@@ -10,7 +10,7 @@ class AnalysesController < AdminController
   def labor
     today = Date.today
     @dates = (today-30..today)
-    @working_hours = WorkingHour.where(date:@dates).group(:store_id,:date).sum(:working_time)
+    @daily_working_hours = WorkingHour.where(date:@dates).group(:store_id,:date).sum(:working_time)
     @analyses = Analysis.where(date:@dates).map{|analysis|[[analysis.date,analysis.store_id],analysis.total_sales_amount]}.to_h
     @total_analyses = Analysis.where(date:@dates).group(:date).sum(:total_sales_amount)
     @kurumesis = KurumesiOrder.where(start_time:@dates,canceled_flag:false).group(:start_time).sum("total_price")
@@ -18,9 +18,10 @@ class AnalysesController < AdminController
     gon.labor_data =[]
     (today-30..today).map do |date|
       gon.dates << date.strftime('%y/%m/%d')
-      gon.labor_data << @working_hours[[39,date]]
+      gon.labor_data << @daily_working_hours[[39,date]]
     end
-
+    @working_hours = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    @week_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @weekday_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @weekend_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     WorkingHour.where(store_id:39).where(date:today-180..today).each do |wh|
@@ -29,6 +30,12 @@ class AnalysesController < AdminController
       elsif wh.date.wday < 3
         wednesday = wh.date - (wh.date.wday + 4)
       end
+      if @week_hash[wednesday].present?
+        @week_hash[wednesday]['time'] += wh.working_time
+      else
+        @week_hash[wednesday]['time'] = wh.working_time
+      end
+
       if wh.date.wday == 0 || wh.date.wday == 6
         if @weekend_hash[wednesday].present?
           @weekend_hash[wednesday]['time'] += wh.working_time
@@ -44,17 +51,51 @@ class AnalysesController < AdminController
       end
     end
     gon.wednesdays = []
+    gon.week_work_time = []
     gon.weekday_work_time = []
-    gon.weekend_wednesday = []
     gon.weekend_work_time = []
     (today-180..today).each do |date|
       if date.wday == 3
         gon.wednesdays << date
         gon.weekday_work_time << (@weekday_hash[date]["time"]/5).round(1) if @weekday_hash[date]["time"].present?
         gon.weekend_work_time << (@weekend_hash[date]["time"]/2).round(1) if @weekend_hash[date]["time"].present?
+        gon.week_work_time << (@week_hash[date]["time"]/7).round(1) if @week_hash[date]["time"].present?
       end
     end
     @wednesdays = gon.wednesdays
+    @staffs = WorkingHour.where(date:@dates,group_id:19).order(:jobcan_staff_code).pluck(:name).uniq
+    WorkingHour.where(date:@dates,group_id:19).each do |wh|
+      if wh.working_time > 8
+        zangyo = wh.working_time - 8
+      else
+        zangyo = 0
+      end
+      if @working_hours[wh.name].present?
+        @working_hours[wh.name]["zangyo"] += zangyo
+        @working_hours[wh.name]["date"][wh.date] = wh.working_time
+        @working_hours[wh.name]["sum"] += wh.working_time
+        @working_hours[wh.name]["count"] += 1
+        if wh.date > (today - 7)
+          @working_hours[wh.name]["seven_sum"] += wh.working_time
+          @working_hours[wh.name]["seven_zangyo"] += zangyo
+          @working_hours[wh.name]["seven_count"] += 1
+        end
+      else
+        @working_hours[wh.name]["zangyo"] = zangyo
+        @working_hours[wh.name]["sum"] = wh.working_time
+        @working_hours[wh.name]["count"] = 1
+        @working_hours[wh.name]["date"][wh.date] = wh.working_time
+        if wh.date > (today - 7)
+          @working_hours[wh.name]["seven_sum"] = wh.working_time
+          @working_hours[wh.name]["seven_count"] = 1
+          @working_hours[wh.name]["seven_zangyo"] = zangyo
+        else
+          @working_hours[wh.name]["seven_sum"] = 0
+          @working_hours[wh.name]["seven_zangyo"] = 0
+          @working_hours[wh.name]["seven_count"] = 0
+        end
+      end
+    end
   end
   def timezone_sales
     if params[:stores]
