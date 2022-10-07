@@ -1,0 +1,175 @@
+
+h4 キッチン
+canvas#chart1 style='padding-left:30px;'
+.table-responsive style='height:200px;overflow: scroll;'
+  table.table.layout-fixed style='border-collapse:separate;'
+    thead style='position: sticky;top:0;background-color:white;z-index:3;'
+      tr
+        th style='width:50px;background-color:white;'
+        - @wednesdays.each do |wednesday|
+          th style='width:60px;' = "#{wednesday.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[wednesday.wday]})")}"
+    tbody
+      tr
+        td style='background-color:white;' 平日
+        - @wednesdays.each do |wednesday|
+          td
+            = (@weekday_hash[wednesday]['time']/5).round(1) if @weekday_hash[wednesday]['time'].present?
+      tr
+        td style='background-color:white;' 土日
+        - @wednesdays.each do |wednesday|
+          td
+            = (@weekend_hash[wednesday]['time']/2).round(1) if @weekend_hash[wednesday]['time'].present?
+
+
+.table-responsive style='height:200px;overflow: scroll;'
+  table.table.layout-fixed style='border-collapse:separate;'
+    thead style='position: sticky;top:0;background-color:white;z-index:3;'
+      tr
+        th style='width:100px;background-color:white;'
+        - @dates.each do |date|
+          th style='width:60px;' = "#{date.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[date.wday]})")}"
+    tbody
+      tr
+        td style='background-color:white;' べじはん
+        - @dates.each do |date|
+          td = @total_analyses[date].to_s(:delimited) if @total_analyses[date]
+      tr
+        td style='background-color:white;' くるめし
+        - @dates.each do |date|
+          td = @kurumesis[date].to_s(:delimited) if @kurumesis[date]
+
+      tr
+        td style='background-color:white;' 勤務時間
+        - @dates.each do |date|
+          td = @working_hours[[39,date]].to_f.round(1)
+/ h4 東中野
+/ .table-responsive style='height:200px;overflow: scroll;'
+/   table.table.layout-fixed style='border-collapse:separate;'
+/     thead style='position: sticky;top:0;background-color:white;z-index:3;'
+/       tr
+/         th style='width:100px;background-color:white;'
+/         - @dates.each do |date|
+/           th style='width:60px;' = "#{date.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[date.wday]})")}"
+/     tbody
+/       tr
+/         td style='background-color:white;' 売上
+/         - @dates.each do |date|
+/           td = @analyses[[date,9]].to_s(:delimited) if @analyses[[date,9]]
+/       tr
+/         td style='background-color:white;' 勤務時間
+/         - @dates.each do |date|
+/           td = @working_hours[[9,date]].to_f.round(1)
+/ h4 新中野
+/ .table-responsive style='height:200px;overflow: scroll;'
+/   table.table.layout-fixed style='border-collapse:separate;'
+/     thead style='position: sticky;top:0;background-color:white;z-index:3;'
+/       tr
+/         th style='width:100px;background-color:white;'
+/         - @dates.each do |date|
+/           th style='width:60px;' = "#{date.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[date.wday]})")}"
+/     tbody
+/       tr
+/         td style='background-color:white;' 売上
+/         - @dates.each do |date|
+/           td = @analyses[[date,19]].to_s(:delimited) if @analyses[[date,19]]
+/       tr
+/         td style='background-color:white;' 勤務時間
+/         - @dates.each do |date|
+/           td = @working_hours[[19,date]].to_f.round(1)
+/ h4 新高円寺
+/ .table-responsive style='height:200px;overflow: scroll;'
+/   table.table.layout-fixed style='border-collapse:separate;'
+/     thead style='position: sticky;top:0;background-color:white;z-index:3;'
+/       tr
+/         th style='width:100px;background-color:white;'
+/         - @dates.each do |date|
+/           th style='width:60px;' = "#{date.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[date.wday]})")}"
+/     tbody
+/       tr
+/         td style='background-color:white;' 売上
+/         - @dates.each do |date|
+/           td = @analyses[[date,29]].to_s(:delimited) if @analyses[[date,29]]
+/       tr
+/         td style='background-color:white;' 勤務時間
+/         - @dates.each do |date|
+/           td = @working_hours[[29,date]].to_f.round(1)
+
+css:
+  .table-responsive th {
+    white-space: nowrap;
+  }
+  table.layout-fixed {
+    table-layout: fixed;
+    border-collspace:separate;
+  }
+  .table th:first-child,td:first-child{
+    position: sticky;
+    left: 0;
+    z-index:2;
+  }
+  th,td {
+    border-right: 1px solid #ddd;
+    font-size:0.9em;
+    font-weight:normal;
+    text-align:center;
+  }
+
+javascript:
+  // 1個目のグラフ
+  var ctx = document.getElementById("chart1").getContext('2d');
+  ctx.canvas.height = 40;
+  var chart1 = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: gon.wednesdays,
+      datasets: [{
+        type: 'line',
+        label: "平日",
+        data: gon.weekday_work_time,
+        backgroundColor: '#4169e1',
+        borderColor: '#4169e1',
+        fill: false,
+        stacked: false,
+        yAxisID: "y-axis-1",
+        pointRadius: 0
+      },{
+        type: 'line',
+        label: "土日",
+        data: gon.weekend_work_time,
+        backgroundColor: 'rgba(255, 99, 132, 0.7)',
+        borderColor: 'rgba(255, 99, 132, 0.8)',
+        fill: false,
+        stacked: false,
+        yAxisID: "y-axis-1",
+        pointRadius: 0
+      }
+    ]
+    },
+    options: {
+      scales: {
+        xAxes: [{
+          stacked: true,
+          scaleLabel: {
+            display: true,
+            fontSize: 16
+          }
+        }],
+        yAxes: [{
+          stacked: false,
+          id: "y-axis-1",
+          type: "linear",
+          position: "left",
+          ticks: {
+            min: 60
+          }
+        }]
+      },
+      legend: {
+        labels:{
+          filter: function(items) {
+            return items.text != null;
+          }
+        }
+      }
+    }
+  });
