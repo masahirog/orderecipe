@@ -36,7 +36,11 @@ Rails.application.routes.draw do
   resources :tasks do
     put :sort
   end
-  resources :working_hours
+  resources :working_hours do
+    collection do
+      post :upload_jobcan_data
+    end
+  end
   resources :store_daily_menu_details
   resources :task_comments
   resources :task_staffs
@@ -83,6 +87,7 @@ Rails.application.routes.draw do
   resources :analysis_products
   resources :analyses do
     collection do
+      get :labor
       get :timezone_sales
       get :stores
       get :staffs

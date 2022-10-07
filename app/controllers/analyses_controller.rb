@@ -7,6 +7,55 @@ class AnalysesController < AdminController
   #   update_datas_count = SmaregiTradingHistory.once_uploads_data(params[:file],first_day,last_day,store_id)
   #   redirect_to smaregi_trading_histories_path()
   # end
+  def labor
+    today = Date.today
+    @dates = (today-30..today)
+    @working_hours = WorkingHour.where(date:@dates).group(:store_id,:date).sum(:working_time)
+    @analyses = Analysis.where(date:@dates).map{|analysis|[[analysis.date,analysis.store_id],analysis.total_sales_amount]}.to_h
+    @total_analyses = Analysis.where(date:@dates).group(:date).sum(:total_sales_amount)
+    @kurumesis = KurumesiOrder.where(start_time:@dates,canceled_flag:false).group(:start_time).sum("total_price")
+    gon.dates = []
+    gon.labor_data =[]
+    (today-30..today).map do |date|
+      gon.dates << date.strftime('%y/%m/%d')
+      gon.labor_data << @working_hours[[39,date]]
+    end
+
+    @weekday_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    @weekend_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    WorkingHour.where(store_id:39).where(date:today-180..today).each do |wh|
+      if wh.date.wday >= 3
+        wednesday = wh.date - (wh.date.wday - 3)
+      elsif wh.date.wday < 3
+        wednesday = wh.date - (wh.date.wday + 4)
+      end
+      if wh.date.wday == 0 || wh.date.wday == 6
+        if @weekend_hash[wednesday].present?
+          @weekend_hash[wednesday]['time'] += wh.working_time
+        else
+          @weekend_hash[wednesday]['time'] = wh.working_time
+        end
+      else
+        if @weekday_hash[wednesday].present?
+          @weekday_hash[wednesday]['time'] += wh.working_time
+        else
+          @weekday_hash[wednesday]['time'] = wh.working_time
+        end
+      end
+    end
+    gon.wednesdays = []
+    gon.weekday_work_time = []
+    gon.weekend_wednesday = []
+    gon.weekend_work_time = []
+    (today-180..today).each do |date|
+      if date.wday == 3
+        gon.wednesdays << date
+        gon.weekday_work_time << (@weekday_hash[date]["time"]/5).round(1) if @weekday_hash[date]["time"].present?
+        gon.weekend_work_time << (@weekend_hash[date]["time"]/2).round(1) if @weekend_hash[date]["time"].present?
+      end
+    end
+    @wednesdays = gon.wednesdays
+  end
   def timezone_sales
     if params[:stores]
       checked_store_ids = params['stores'].keys

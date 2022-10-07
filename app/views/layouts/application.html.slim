@@ -104,7 +104,9 @@ html
                       li = link_to "購買",smaregi_trading_histories_path
                       li = link_to "店舗",stores_analyses_path
                       li = link_to "スタッフ",staffs_analyses_path
-                      li = link_to "勤怠",working_hours_path
+                      li = link_to "時間管理",labor_analyses_path()
+                      li = link_to "き勤怠",working_hours_path(group_id:19)
+                      li = link_to "は勤怠",working_hours_path(group_id:9)
                       / li = link_to "フィードバック",feedback_analyses_path
 
                   li.dropdown

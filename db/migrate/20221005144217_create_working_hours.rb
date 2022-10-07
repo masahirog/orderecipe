@@ -7,6 +7,7 @@ class CreateWorkingHours < ActiveRecord::Migration[6.0]
       t.integer :jobcan_staff_code
       t.integer :store_id
       t.timestamps
+      t.integer :group_id
     end
   end
 end
