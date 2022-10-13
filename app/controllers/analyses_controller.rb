@@ -22,7 +22,7 @@ class AnalysesController < AdminController
     if params[:from]
       params[:from] = params[:from].to_date
     else
-      params[:from] = params[:to] - 30 unless params[:from]
+      params[:from] = params[:to] - 14 unless params[:from]
     end
     @dates =(params[:from]..params[:to]).to_a
     @gyusuji_sales_data = SmaregiTradingHistory.where(date:@dates,torihiki_meisaikubun:1,shohin_id:[354,355,373,742,374]).group(:date,:shohin_id).sum(:suryo)
