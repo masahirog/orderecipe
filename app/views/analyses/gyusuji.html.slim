@@ -20,25 +20,26 @@ table.table
       th 日付
       th 牛すじ単品｜80g
       th 牛すじ丼｜80g
-      th 肉増し｜40g
+      th 肉増｜40g
+      th 大根増｜＋2個
       th 煮玉子
-      th 大根
+
   tbody
     tr
-      th = "#{@dates.count}日間合計"
+      th = "#{@dates.count}日間 合計"
       th = "#{(@total_gyusuji_sales_data[374].to_i - @total_gyusuji_henpin_data[374].to_i).to_s(:delimited)}｜#{(((@total_gyusuji_sales_data[374].to_i - @total_gyusuji_henpin_data[374].to_i)*90).to_f/2000).round(1)} pc"
       th = "#{(@total_gyusuji_sales_data[373].to_i - @total_gyusuji_henpin_data[373].to_i).to_s(:delimited)}｜#{(((@total_gyusuji_sales_data[373].to_i - @total_gyusuji_henpin_data[373].to_i)*90).to_f/2000).round(1)} pc"
       th = "#{(@total_gyusuji_sales_data[355].to_i - @total_gyusuji_henpin_data[355].to_i).to_s(:delimited)}｜#{(((@total_gyusuji_sales_data[355].to_i - @total_gyusuji_henpin_data[355].to_i)*45).to_f/2000).round(1)} pc"
-      th = (@total_gyusuji_sales_data[354].to_i - @total_gyusuji_henpin_data[354].to_i).to_s(:delimited)
       th = (@total_gyusuji_sales_data[742].to_i - @total_gyusuji_henpin_data[742].to_i).to_s(:delimited)
+      th = (@total_gyusuji_sales_data[354].to_i - @total_gyusuji_henpin_data[354].to_i).to_s(:delimited)
 
     tr
       th = "#{@dates.count}日間 1日平均"
       th = "#{(@total_gyusuji_sales_data[374].to_i - @total_gyusuji_henpin_data[374].to_i)/@dates.count}｜#{((((@total_gyusuji_sales_data[374].to_i - @total_gyusuji_henpin_data[374].to_i)/@dates.count)*90).to_f/2000).round(1)} pc"
       th = "#{(@total_gyusuji_sales_data[373].to_i - @total_gyusuji_henpin_data[373].to_i)/@dates.count}｜#{((((@total_gyusuji_sales_data[373].to_i - @total_gyusuji_henpin_data[373].to_i)/@dates.count)*90).to_f/2000).round(1)} pc"
       th = "#{(@total_gyusuji_sales_data[355].to_i - @total_gyusuji_henpin_data[355].to_i)/@dates.count}｜#{((((@total_gyusuji_sales_data[355].to_i - @total_gyusuji_henpin_data[355].to_i)/@dates.count)*45).to_f/2000).round(1)} pc"
-      th = (@total_gyusuji_sales_data[354].to_i - @total_gyusuji_henpin_data[354].to_i)/@dates.count
       th = (@total_gyusuji_sales_data[742].to_i - @total_gyusuji_henpin_data[742].to_i)/@dates.count
+      th = (@total_gyusuji_sales_data[354].to_i - @total_gyusuji_henpin_data[354].to_i)/@dates.count
 
     - @dates.reverse_each do |date|
       tr
@@ -46,5 +47,5 @@ table.table
         td = "#{@gyusuji_sales_data[[date,374]].to_i - @gyusuji_henpin_data[[date,374]].to_i}｜#{((90*(@gyusuji_sales_data[[date,374]].to_i - @gyusuji_henpin_data[[date,374]].to_i)).to_f/2000).round(1)} pc"
         td = "#{@gyusuji_sales_data[[date,373]].to_i - @gyusuji_henpin_data[[date,373]].to_i}｜#{((90*(@gyusuji_sales_data[[date,373]].to_i - @gyusuji_henpin_data[[date,373]].to_i)).to_f/2000).round(1)} pc"
         td = "#{@gyusuji_sales_data[[date,355]].to_i - @gyusuji_henpin_data[[date,355]].to_i}｜#{((90*(@gyusuji_sales_data[[date,355]].to_i - @gyusuji_henpin_data[[date,355]].to_i)).to_f/2000).round(1)} pc"
-        td = @gyusuji_sales_data[[date,354]].to_i - @gyusuji_henpin_data[[date,354]].to_i
         td = @gyusuji_sales_data[[date,742]].to_i - @gyusuji_henpin_data[[date,742]].to_i
+        td = @gyusuji_sales_data[[date,354]].to_i - @gyusuji_henpin_data[[date,354]].to_i
