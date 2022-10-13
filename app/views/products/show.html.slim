@@ -73,6 +73,7 @@ table.table
         td style='text-align:center;'
           - if @product.product_pops.present?
             object data="#{@product.product_pops[0].image.to_s}" type="application/pdf" style='height:100px;margin-bottom:5px;'
+            br
             button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#popModal" 印刷する
             #popModal.modal.fade tabindex="-1"
               .modal-dialog
