@@ -349,7 +349,7 @@ class StoreDailyMenusController < ApplicationController
     store_id = params[:store_id]
     @store = Store.find(store_id)
     daily_menu = DailyMenu.find_by(start_time:date)
-    default_product_ids = [11429,13059]
+    default_product_ids = [13059]
     dmd_product_ids = default_product_ids
     @dmd_products = Product.where(id:dmd_product_ids)
 

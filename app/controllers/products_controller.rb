@@ -268,18 +268,19 @@ class ProductsController < AdminController
   #   type: params[:type]
   # end
   def download
-    Dotenv.overload
-    region='ap-northeast-1'
-    bucket='bento-orderecipe'
-    key=params[:key]
-    credentials=Aws::Credentials.new(
-      ENV['ACCESS_KEY_ID'],
-      ENV['SECRET_ACCESS_KEY']
-    )
-    # send_dataのtypeはtypeで指定
-    client=Aws::S3::Client.new(region:region, credentials:credentials)
-    data=client.get_object(bucket:bucket, key:key).body
-    send_data data.read, filename: params[:file_name], disposition: 'attachment', type: params[:type]
+    # Dotenv.overload
+    # region='ap-northeast-1'
+    # bucket='bento-orderecipe'
+    # key=params[:key]
+    # credentials=Aws::Credentials.new(
+    #   ENV['ACCESS_KEY_ID'],
+    #   ENV['SECRET_ACCESS_KEY']
+    # )
+    # # send_dataのtypeはtypeで指定
+    # client=Aws::S3::Client.new(region:region, credentials:credentials)
+    # data=client.get_object(bucket:bucket, key:key).body
+    # send_file(params[:file_name].path , disposition: 'inline', type: params[:type])
+    @product = Product.find(params[:id])
   end
 
 

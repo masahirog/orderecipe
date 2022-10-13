@@ -70,10 +70,19 @@ table.table
         td
           = link_to @product.display_image.to_s, "data-lightbox" => @product.display_image.to_s do
             = image_tag @product.display_image.to_s ,class:"text-center img-responsive center-block",style:'max-height:150px;'
-        td
+        td style='text-align:center;'
           - if @product.product_pops.present?
-            object data="#{@product.product_pops[0].image.to_s}" type="application/pdf" style='max-height:150px;'
-            = link_to "ダウンロード", download_products_path(:file_name => @product.product_pops[0].image,:key => @product.product_pops[0].image.path, :type => 'pdf'),target:'_blank',class:'col-md-12'
+            object data="#{@product.product_pops[0].image.to_s}" type="application/pdf" style='height:100px;margin-bottom:5px;'
+            button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#popModal" 印刷する
+            #popModal.modal.fade tabindex="-1"
+              .modal-dialog
+                .modal-content
+                  .modal-header
+                  .modal-body
+                    iframe src="#{@product.product_pops[0].image}" width="100%" height='500px' style="border: none;"
+                  .modal-footer
+                    button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
+
         td
           = link_to @product.image_for_one_person.to_s, "data-lightbox" => @product.image_for_one_person.to_s do
             = image_tag @product.image_for_one_person.to_s ,class:"text-center img-responsive center-block",style:'max-height:150px;'
