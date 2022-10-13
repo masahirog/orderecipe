@@ -3,14 +3,14 @@ class MaterialImageUploader < CarrierWave::Uploader::Base
   # Include RMagick or MiniMagick support:
   include CarrierWave::RMagick
   # include CarrierWave::MiniMagick
-  process :fix_rotate
-  def fix_rotate
-    manipulate! do |img|
-      img = img.auto_orient
-      img = yield(img) if block_given?
-      img
-    end
-  end
+  # process :fix_rotate
+  # def fix_rotate
+  #   manipulate! do |img|
+  #     img = img.auto_orient
+  #     img = yield(img) if block_given?
+  #     img
+  #   end
+  # end
   # Choose what kind of storage to use for this uploader:
   # storage :file
   storage :fog
@@ -57,15 +57,15 @@ class MaterialImageUploader < CarrierWave::Uploader::Base
   #  include CarrierWave::RMagick
 
   # 画像の上限を200pxにする
-    # process :resize_to_limit => [600, 600]
+    # process :resize_to_fit => [100, 100]
 
    # 保存形式をJPGにする
-   process :convert => 'jpg'
+   # process :convert => 'jpg'
 
    # サムネイルを生成する設定
-    version :thumb do
-      process :resize_to_fill => [40, 40, gravity = ::Magick::CenterGravity]
-    end
+    # version :thumb do
+      # process :resize_to_fill => [40, 40, gravity = ::Magick::CenterGravity]
+    # end
 
    # jpg,jpeg,gif,pngしか受け付けない
    def extension_white_list

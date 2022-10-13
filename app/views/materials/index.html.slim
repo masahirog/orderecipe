@@ -15,7 +15,6 @@ table.table
     th 仕入先
     th 直近1月
     th メモ
-    th
     th 使用メニュー
     th 棚卸し
   - @search.each do |material|
@@ -35,7 +34,6 @@ table.table
           = "#{(@materials_order_quantity[material.id].to_f * material.cost_price).round.to_s(:delimited)} 円"
       td
         = material.memo.truncate(24, separator: '.')
-      td.text-center = image_tag material.image.thumb.url if material.image.present?
       td style="text-align:center;"
         = link_to '確認',include_material_materials_path(id:material.id),class:"btn btn-default btn-sm"
       td

@@ -87,6 +87,7 @@ Rails.application.routes.draw do
   resources :analysis_products
   resources :analyses do
     collection do
+      get :gyusuji
       get :labor
       get :timezone_sales
       get :stores

@@ -73,8 +73,7 @@
               = link_to "#{mcp.menu_materials.count}件",cut_patterns_materials_path(material_cut_pattern_id:mcp.id), class:'btn btn-sm btn-primary',style:'float:right;'
 
 .col-md-6
-  = image_tag @material.image.to_s ,class:"text-center img-responsive center-block",style:'max-height:450px;'
-
+  object data="#{@material.image.to_s}" type="application/pdf" style='height:400px;width:400px;margin-bottom:5px;'
 .col-md-12
   / table.table
   / = link_to "#{f.object.menu_materials.count}件",cut_patterns_materials_path(material_cut_pattern_id:f.object.id), class:'btn btn-sm btn-primary',style:'float:left;'

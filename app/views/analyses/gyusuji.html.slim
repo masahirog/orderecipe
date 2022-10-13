@@ -1,0 +1,50 @@
+div style='margin-bottom:20px;'
+  = form_tag gyusuji_analyses_path, :method => 'get' do
+    .clearfix
+      label style='float:left;' 店舗選択
+      ul style="list-style:none;float:left;"
+        - @stores.each do |store|
+          li style='float:left;margin-right:10px;'
+            = check_box_tag "stores[#{store.id}]",true,params['stores'][store.id.to_s]
+            = label_tag "stores[#{store.id}]",store.name
+    div
+      label style='float:left;margin-right:10px;' 表示期間
+      = date_field_tag :from, params[:from], class:"form-control float-left",style:'width:200px;float:left;'
+      div style="float:left;padding:8px;" 〜
+      = date_field_tag :to, params[:to], class:"form-control",style:'width:200px;float:left;'
+    = submit_tag "絞り込み" ,class:"btn btn-primary",style:"margin-left:20px;"
+
+table.table
+  thead
+    tr
+      th 日付
+      th 牛すじ単品｜80g
+      th 牛すじ丼｜80g
+      th 肉増し｜40g
+      th 煮玉子
+      th 大根
+  tbody
+    tr
+      th = "#{@dates.count}日間合計"
+      th = "#{(@total_gyusuji_sales_data[374].to_i - @total_gyusuji_henpin_data[374].to_i).to_s(:delimited)}｜#{(((@total_gyusuji_sales_data[374].to_i - @total_gyusuji_henpin_data[374].to_i)*90).to_f/2000).round(1)} pc"
+      th = "#{(@total_gyusuji_sales_data[373].to_i - @total_gyusuji_henpin_data[373].to_i).to_s(:delimited)}｜#{(((@total_gyusuji_sales_data[373].to_i - @total_gyusuji_henpin_data[373].to_i)*90).to_f/2000).round(1)} pc"
+      th = "#{(@total_gyusuji_sales_data[355].to_i - @total_gyusuji_henpin_data[355].to_i).to_s(:delimited)}｜#{(((@total_gyusuji_sales_data[355].to_i - @total_gyusuji_henpin_data[355].to_i)*45).to_f/2000).round(1)} pc"
+      th = (@total_gyusuji_sales_data[354].to_i - @total_gyusuji_henpin_data[354].to_i).to_s(:delimited)
+      th = (@total_gyusuji_sales_data[742].to_i - @total_gyusuji_henpin_data[742].to_i).to_s(:delimited)
+
+    tr
+      th = "#{@dates.count}日間 1日平均"
+      th = "#{(@total_gyusuji_sales_data[374].to_i - @total_gyusuji_henpin_data[374].to_i)/@dates.count}｜#{((((@total_gyusuji_sales_data[374].to_i - @total_gyusuji_henpin_data[374].to_i)/@dates.count)*90).to_f/2000).round(1)} pc"
+      th = "#{(@total_gyusuji_sales_data[373].to_i - @total_gyusuji_henpin_data[373].to_i)/@dates.count}｜#{((((@total_gyusuji_sales_data[373].to_i - @total_gyusuji_henpin_data[373].to_i)/@dates.count)*90).to_f/2000).round(1)} pc"
+      th = "#{(@total_gyusuji_sales_data[355].to_i - @total_gyusuji_henpin_data[355].to_i)/@dates.count}｜#{((((@total_gyusuji_sales_data[355].to_i - @total_gyusuji_henpin_data[355].to_i)/@dates.count)*45).to_f/2000).round(1)} pc"
+      th = (@total_gyusuji_sales_data[354].to_i - @total_gyusuji_henpin_data[354].to_i)/@dates.count
+      th = (@total_gyusuji_sales_data[742].to_i - @total_gyusuji_henpin_data[742].to_i)/@dates.count
+
+    - @dates.reverse_each do |date|
+      tr
+        td = date
+        td = "#{@gyusuji_sales_data[[date,374]].to_i - @gyusuji_henpin_data[[date,374]].to_i}｜#{((90*(@gyusuji_sales_data[[date,374]].to_i - @gyusuji_henpin_data[[date,374]].to_i)).to_f/2000).round(1)} pc"
+        td = "#{@gyusuji_sales_data[[date,373]].to_i - @gyusuji_henpin_data[[date,373]].to_i}｜#{((90*(@gyusuji_sales_data[[date,373]].to_i - @gyusuji_henpin_data[[date,373]].to_i)).to_f/2000).round(1)} pc"
+        td = "#{@gyusuji_sales_data[[date,355]].to_i - @gyusuji_henpin_data[[date,355]].to_i}｜#{((90*(@gyusuji_sales_data[[date,355]].to_i - @gyusuji_henpin_data[[date,355]].to_i)).to_f/2000).round(1)} pc"
+        td = @gyusuji_sales_data[[date,354]].to_i - @gyusuji_henpin_data[[date,354]].to_i
+        td = @gyusuji_sales_data[[date,742]].to_i - @gyusuji_henpin_data[[date,742]].to_i

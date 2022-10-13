@@ -7,6 +7,31 @@ class AnalysesController < AdminController
   #   update_datas_count = SmaregiTradingHistory.once_uploads_data(params[:file],first_day,last_day,store_id)
   #   redirect_to smaregi_trading_histories_path()
   # end
+
+  def gyusuji
+    @stores = Store.where.not(id:39)
+    unless params[:stores]
+      params[:stores] = {}
+      @stores.each{|store|params[:stores][store.id.to_s] = true}
+    end
+    if params[:to]
+      params[:to] = params[:to].to_date
+    else
+      params[:to] = Date.today - 1
+    end
+    if params[:from]
+      params[:from] = params[:from].to_date
+    else
+      params[:from] = params[:to] - 30 unless params[:from]
+    end
+    @dates =(params[:from]..params[:to]).to_a
+    @gyusuji_sales_data = SmaregiTradingHistory.where(date:@dates,torihiki_meisaikubun:1,shohin_id:[354,355,373,742,374]).group(:date,:shohin_id).sum(:suryo)
+    @gyusuji_henpin_data = SmaregiTradingHistory.where(date:@dates,torihiki_meisaikubun:2,shohin_id:[354,355,373,742,374]).group(:date,:shohin_id).sum(:suryo)
+    @total_gyusuji_sales_data = SmaregiTradingHistory.where(date:@dates,torihiki_meisaikubun:1,shohin_id:[354,355,373,742,374]).group(:shohin_id).sum(:suryo)
+    @total_gyusuji_henpin_data = SmaregiTradingHistory.where(date:@dates,torihiki_meisaikubun:2,shohin_id:[354,355,373,742,374]).group(:shohin_id).sum(:suryo)
+
+    @shohin_id_name = {354 => "煮玉子",355=>"肉増し",373=>"丼",742=>"大根",374=>"牛すじ単品"}
+  end
   def labor
     today = Date.today
     @dates = (today-30..today)
