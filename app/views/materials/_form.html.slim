@@ -59,7 +59,8 @@
       = f.hidden_field :image_cache
       .form-group
         - if @material.image?
-          object data="#{@material.image.to_s}" type="application/pdf" style='height:400px;width:400px;margin-bottom:5px;'
+          / object data="#{@material.image.to_s}" type="application/pdf" style='height:400px;width:400px;margin-bottom:5px;'
+          iframe src="#{@material.image.to_s}" width="80%" height='500px' style="border: none;"
           div
             = f.label :remove_image,"削除する"
             = f.check_box :remove_image
