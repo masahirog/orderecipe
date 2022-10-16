@@ -686,6 +686,9 @@ class AnalysesController < AdminController
 
   end
   def summary
+    gon.lat = 35.7058146
+    gon.lon = 139.6657874
+    gon.api = ENV['WEATHER_API']
     @stores = Store.where.not(id:39)
     unless params[:stores]
       params[:stores] = {}

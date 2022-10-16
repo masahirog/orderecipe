@@ -1,4 +1,7 @@
 class OrdersController < AdminController
+  def suriho
+    
+  end
   def bejihan_store_orders_list
     if params[:date]
       @date = Date.parse(params[:date])
