@@ -3,7 +3,7 @@ class ProductsController < AdminController
   require 'json'
 
   def get_menu
-    @menus = Menu.where("name LIKE ?", "%#{params[:q]}%").first(10)
+    @menus = Menu.where("name LIKE ?", "%#{params[:q]}%").first(20)
     respond_to do |format|
       format.json { render json: @menus }
     end
