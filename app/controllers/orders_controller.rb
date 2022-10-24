@@ -1,6 +1,6 @@
 class OrdersController < AdminController
   def suriho
-    
+
   end
   def bejihan_store_orders_list
     if params[:date]
@@ -703,7 +703,7 @@ class OrdersController < AdminController
       respond_to do |format|
        format.html
        format.pdf do
-         if vendor_id == '549'
+         if vendor_id == '549' || vendor_id == '261'
            pdf = NpOrderPdf.new(@materials_this_vendor,@vendor,@order)
          else
            pdf = OrderPdf.new(@materials_this_vendor,@vendor,@order)

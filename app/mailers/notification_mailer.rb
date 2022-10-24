@@ -61,7 +61,7 @@ class NotificationMailer < ActionMailer::Base
     @materials_this_vendor = Material.get_material_this_vendor(order.id,@vendor.id)
     num = @materials_this_vendor.map{|om|om.delivery_date}.uniq.length
     filename = "#{Time.now.strftime('%y%m%d')}_taberu.pdf"
-    if vendor.id == 549
+    if vendor.id == 549 ||vendor.id == 261
       attachments[filename] = NpOrderPdf.new(@materials_this_vendor,@vendor,order).render
     else
       attachments[filename] = OrderPdf.new(@materials_this_vendor,@vendor,order).render

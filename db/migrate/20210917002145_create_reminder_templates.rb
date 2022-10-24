@@ -9,6 +9,7 @@ class CreateReminderTemplates < ActiveRecord::Migration[5.2]
       t.string :drafter,null:false,default:''
       t.timestamps
       t.integer :category,null:false,default:0
+      t.integer :group_id
     end
   end
 end

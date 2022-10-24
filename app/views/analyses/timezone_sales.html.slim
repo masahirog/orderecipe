@@ -36,7 +36,7 @@ h3 売上平均
         tr
           td = store.name
           - (10..21).each do |hour|
-            td = (@time_zone_sales[[hour.to_s,store.smaregi_store_id]].to_i/@period).to_s(:delimited)
+            td = (@time_zone_sales[[hour.to_s,store.smaregi_store_id]].to_i/@period).to_s(:delimited) if @period > 0
 
 
 h3 来客数平均
@@ -52,7 +52,7 @@ h3 来客数平均
         tr
           td = store.name
           - (10..21).each do |hour|
-            td = @time_zone_counts[[hour.to_s,store.smaregi_store_id]].to_i/@period
+            td = @time_zone_counts[[hour.to_s,store.smaregi_store_id]].to_i/@period  if @period > 0
 
 h3 客単価
 .table-responsive style='overflow: scroll;'
@@ -69,7 +69,7 @@ h3 客単価
           - (10..21).each do |hour|
             td
               - if @time_zone_counts[[hour.to_s,store.smaregi_store_id]].present?
-                = (@time_zone_sales[[hour.to_s,store.smaregi_store_id]].to_i/@time_zone_counts[[hour.to_s,store.smaregi_store_id]].to_i).to_s(:delimited)
+                = (@time_zone_sales[[hour.to_s,store.smaregi_store_id]].to_i/@time_zone_counts[[hour.to_s,store.smaregi_store_id]].to_i).to_s(:delimited) if @period > 0
 
 
 h3 惣菜販売数（人前）
@@ -86,7 +86,7 @@ h3 惣菜販売数（人前）
         tr
           td = store.name
           - (10..21).each do |hour|
-            td = (@time_zone_sales_product[[hour.to_s,store.smaregi_store_id,1]].to_i/@period)
+            td = (@time_zone_sales_product[[hour.to_s,store.smaregi_store_id,1]].to_i/@period) if @period > 0
 h3 弁当販売数（人前）
 .table-responsive style='overflow: scroll;'
   table.table.layout-fixed style='border-collapse:separate;'
@@ -101,8 +101,38 @@ h3 弁当販売数（人前）
         tr
           td = store.name
           - (10..21).each do |hour|
-            td = (@time_zone_sales_product[[hour.to_s,store.smaregi_store_id,5]].to_i/@period)
+            td = (@time_zone_sales_product[[hour.to_s,store.smaregi_store_id,5]].to_i/@period) if @period > 0
+h3 セール販売金額
+.table-responsive style='overflow: scroll;'
+  table.table.layout-fixed style='border-collapse:separate;'
+    thead style='position: sticky;top:0;background-color:white;z-index:3;'
+      tr
+        th 店舗
+        - (10..21).each do |hour|
 
+          th = hour
+    tbody
+      - @stores.each do |store|
+        tr
+          td = store.name
+          - (10..21).each do |hour|
+            td = (@time_zone_nebikigaku_gokei[[hour.to_s,store.smaregi_store_id]].to_i/@period) if @period > 0
+
+h3 セール販売数量
+.table-responsive style='overflow: scroll;'
+  table.table.layout-fixed style='border-collapse:separate;'
+    thead style='position: sticky;top:0;background-color:white;z-index:3;'
+      tr
+        th 店舗
+        - (10..21).each do |hour|
+
+          th = hour
+    tbody
+      - @stores.each do |store|
+        tr
+          td = store.name
+          - (10..21).each do |hour|
+            td = (@time_zone_nebikisu_gokei[[hour.to_s,store.smaregi_store_id]].to_i/@period) if @period > 0
 
 
 css:

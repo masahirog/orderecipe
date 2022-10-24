@@ -10,13 +10,13 @@ class NpOrderPdf < Prawn::Document
       end
       start_new_page unless i == 0
       # header_lead(vendor)
-      header_adress(vendor,order)
+      header_adress(vendor,order,date)
       table_content(arr,date)
       footer(vendor,order,date)
     end
   end
 
-  def header_adress(vendor,order)
+  def header_adress(vendor,order,date)
     bounding_box([0, 770], :width => 530, :height =>100) do
         font_size 13
         text "#{order.store.name} 様 ご注文書", :leading => 4,size:15
@@ -29,7 +29,20 @@ class NpOrderPdf < Prawn::Document
     end
     bounding_box([0, 770], :width => 530, :height =>100) do
         font_size 15
-        text "#{order.store.np_store_code}", :leading => 4,:align => :right
+        if date >= '2022/11/1'.to_date
+          if order.store_id == 9
+            np_store_code = 'B32143002-500'
+          elsif order.store_id == 19
+            np_store_code = 'B32143003-500'
+          elsif order.store_id == 29
+            np_store_code = 'B32143004-500'
+          elsif order.store_id == 39
+            np_store_code = 'B32143001-500'
+          end
+        else
+          np_store_code = order.store.np_store_code
+        end
+        text "#{np_store_code}", :leading => 4,:align => :right
     end
     bounding_box([0, 744], :width => 530, :height =>100) do
         font_size 9

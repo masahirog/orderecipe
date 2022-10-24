@@ -147,12 +147,18 @@ class AnalysesController < AdminController
       params[:from] = @from
     end
     @dates =(@from..@to).to_a
-    @period = (@to - @from).to_i
+    if @to == @from
+      @period = 1
+    else
+      @period = (@to - @from).to_i
+    end
     uchikeshi_torihiki_ids = SmaregiTradingHistory.where(date:@from..@to).where(uchikeshi_kubun:2).map{|sth|sth.uchikeshi_torihiki_id}.uniq
     smaregi_trading_histories = SmaregiTradingHistory.where(date:@from..@to).where(torihiki_meisaikubun:1).where.not(torihiki_id:uchikeshi_torihiki_ids)
     @time_zone_sales = smaregi_trading_histories.group("date_format(time, '%H')").group(:tenpo_id).sum(:zeinuki_uriage)
     @time_zone_counts = smaregi_trading_histories.group("date_format(time, '%H')").group(:tenpo_id).distinct.count(:torihiki_id)
     @time_zone_sales_product = smaregi_trading_histories.group("date_format(time, '%H')").group(:tenpo_id,:bumon_id).sum(:suryo)
+    @time_zone_nebikigaku_gokei = smaregi_trading_histories.group("date_format(time, '%H')").group(:tenpo_id).sum(:tanka_nebikikei)
+    @time_zone_nebikisu_gokei = smaregi_trading_histories.where("tanka_nebikikei >0").group("date_format(time, '%H')").group(:tenpo_id).sum(:suryo)
     respond_to do |format|
       format.html
       format.csv do

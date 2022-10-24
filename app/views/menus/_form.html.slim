@@ -34,10 +34,10 @@
           .form-group
             |  円
 
-  .col-md-4.form-group
-    = f.label :cook_the_day_before ,'前日調理'
-    = f.text_area :cook_the_day_before, style:"height:10em;width:100%;", class:"form-control"
-  .col-md-4.form-group
+  .col-md-12.form-group
+    = f.label :cook_the_day_before ,'レシピ'
+    = f.text_area :cook_the_day_before, style:"height:15em;", class:"form-control"
+  / .col-md-4.form-group
     = f.label :cook_on_the_day ,'当日調理'
     = f.text_area :cook_on_the_day,style:"height:10em;width:100%;", class: "form-control"
   .col-md-12
@@ -68,6 +68,21 @@
           = render 'menu_cook_check_fields', f:mcc
 
   .col-md-12
+    table.table
+      thead
+        tr
+          th
+            span 写真付き工程
+            = link_to_add_association '追加', f, :menu_processes,class:'btn btn-primary add_menu_process_fields',style:'margin-left:20px;',
+            data: {association_insertion_node: '#menu_process-add-point',association_insertion_method: 'append' }
+          th 写真
+          th
+      tbody#menu_process-add-point
+        = f.fields_for :menu_processes do |mp|
+          = render 'menu_process_fields', f:mp
+
+
+  / .col-md-12
     = f.label :image, "写真"
     = f.file_field :image
     = f.hidden_field :image_cache
