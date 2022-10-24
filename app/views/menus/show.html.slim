@@ -83,7 +83,18 @@
       td = text_url_to_link(simple_format(h(@menu.serving_memo))).html_safe
   .col-md-6
     = image_tag @menu.image.to_s ,class:"text-center img-responsive center-block",style:'max-height:450px;'
-
+table.table
+  thead
+    tr
+      th.col-md-6 工程
+      th 画像
+  tbody
+    - @menu.menu_processes.each do |mp|
+      tr
+        td
+          = text_url_to_link(simple_format(h(mp.memo))).html_safe
+        td
+          = image_tag mp.image.to_s,class:"img-responsive",style:'max-height:350px;' if mp.image?
 .col-md-12.table-responsive
   table.table
     thead
