@@ -1,0 +1,32 @@
+span 食材：肉、生野菜、調味料・既製品、その他野菜（冷凍・調理済み）、魚、米
+br
+span 包材：包材・容器
+br
+span その他：消耗品、調理用品
+table.table
+  thead
+    tr
+      th
+      th 店舗名
+      th.text-right 品目数
+      th.text-right 合計金額
+      th.text-right 食材
+      th.text-right 包材
+      th.text-right その他
+  tbody
+    - @monthly_stocks.each do |ms|
+      tr
+        td
+          = link_to "更新", {controller: "stocks", action: "update_monthly_stocks", date: ms.date,store_id:ms.store_id}, method: :post, data: { confirm: '更新しますか？' }
+        td
+          = ms.store.name
+        td.text-right
+          = ms.item_number
+        td.text-right
+          = "#{ms.total_amount.to_s(:delimited)} 円"
+        td.text-right
+          = link_to "#{ms.foods_amount.to_s(:delimited)} 円",inventory_stocks_path(to:ms.date,categories:{meat:true,fish:true,vege:true,other_vege:true,other_food:true,other_food:true},store_id:ms.store_id)
+        td.text-right
+          = link_to "#{ms.equipments_amount.to_s(:delimited)} 円",inventory_stocks_path(to:ms.date,categories:'packed',store_id:ms.store_id)
+        td.text-right
+          = link_to "#{ms.expendables_amount.to_s(:delimited)} 円",inventory_stocks_path(to:ms.date,categories:['consumable_item','cooking_item'],store_id:ms.store_id)
