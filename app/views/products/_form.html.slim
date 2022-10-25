@@ -10,32 +10,37 @@
           li
             = message
   .col-md-12.form-group
-    .col-md-1
+    .col-md-3
       = f.label :brand_id, "ブランド"
       = f.collection_select :brand_id, Brand.all, :id, :name, {}, { class: "form-control"}
 
-    .col-md-3
+    .col-md-5
       = f.label :name, "商品名"
       = f.text_field :name, id: "menu_search", class:"name form-control"
+    .col-md-2
+      = f.label :product_category, "カテゴリー"
+      = f.select :product_category, options_for_select(Product.product_categories.keys.to_a,@product.product_category), {}, class: 'form-control'
+
     .col-md-2
       = f.label :status, "ステータス"
       = f.select :status, options_for_select_from_enum(Product, :status),{include_blank:true}, { class: "form-control", required:true}
 
-    .col-md-2
+  .col-md-12.form-group
+    .col-md-3
       = f.label :sell_price, "販売価格"
       .form-inline
         .form-group
           = f.number_field :sell_price, class:"price form-control text-right",style:'width:150px;'
           .form-group
             |円
-    .col-md-2
+    .col-md-3
       = f.label :cost_price, "商品原価"
       .form-inline
         .form-group
           = f.number_field :cost_price, :readonly => 'readonly', class:"product_cost_price form-control text-right",style:'width:150px;'
         .form-group
           |円
-    .col-md-2
+    .col-md-3
       label 原価率
       .form-inline
         .form-group
@@ -43,30 +48,47 @@
         .form-group
           |%
 
-
-
   .col-md-12.form-group
-    .col-md-1
-      = f.label :product_category, "べじはん惣菜"
-      = f.check_box :bejihan_sozai_flag, class: "form-control"
-    .col-md-1
-      = f.label :carryover_able_flag, "翌日繰越可"
-      = f.check_box :carryover_able_flag, class: "form-control"
-    .col-md-1
-      = f.label :freezing_able_flag, "冷凍可"
-      = f.check_box :freezing_able_flag, class: "form-control"
-    .col-md-1
-      = f.label :product_category, "カテゴリー"
-      = f.select :product_category, options_for_select(Product.product_categories.keys.to_a,@product.product_category), {}, class: 'form-control'
-
-    / .col-md-2
-      = f.label :cooking_rice_id, "使用ライス"
-      = f.collection_select :cooking_rice_id, CookingRice.all, :id, :name, {}, { class: "form-control"}
-    .col-md-2
+    .col-md-3
       = f.label :container_id, "盛り付け包材"
       = f.collection_select :container_id, Container.all, :id, :name, {include_blank:true}, { class: "form-control"}
 
     .col-md-2
+      = f.label :product_category, "べじはん惣菜"
+      = f.check_box :bejihan_sozai_flag, class: "form-control"
+    .col-md-2
+      = f.label :carryover_able_flag, "翌日繰越可"
+      = f.check_box :carryover_able_flag, class: "form-control"
+    .col-md-2
+      = f.label :freezing_able_flag, "冷凍可"
+      = f.check_box :freezing_able_flag, class: "form-control"
+
+  .col-md-12.form-group
+    .col-md-6
+      = f.label :image_for_one_person, "一人前写真"
+      = f.file_field :image_for_one_person
+      .form-group
+        - if @product.image_for_one_person?
+          = image_tag @product.image_for_one_person.to_s,class:"img-responsive",style:'max-height:450px;'
+
+    .col-md-6
+      = f.fields_for :product_pops do |pp|
+        .col-md-12
+          = pp.label :image, "ポップ写真"
+          .form-group
+            = pp.file_field :image
+            - if pp.object.image.present?
+              = link_to "ダウンロード", download_products_path(:file_name => pp.object.image,:key => pp.object.image.path, :type => 'pdf'),target:'_blank',class:'col-md-12'
+              = pp.label :remove_image,"削除する"
+              = pp.check_box :remove_image
+              = pp.hidden_field :image_cache
+              object data="#{pp.object.image.to_s}" type="application/pdf" width="" height=""
+
+  / .col-md-12.form-group
+    / .col-md-2
+      = f.label :cooking_rice_id, "使用ライス"
+      = f.collection_select :cooking_rice_id, CookingRice.all, :id, :name, {}, { class: "form-control"}
+    / .col-md-3
       = f.label :main_serving_plate_id, "大皿"
       = f.collection_select :main_serving_plate_id, ServingPlate.all, :id, :name, {include_blank:true}, { class: "form-control"}
 
@@ -96,40 +118,39 @@
     .col-md-6
       = f.label :serving_infomation, "1人前分量"
       = f.text_area :serving_infomation, class:"form-control", style:"height:10em;"
-  .col-md-12
-    table.table
-      thead
-        tr
-          th.col-md-6
-            span 大皿盛り手順
-            = link_to_add_association '追加', f, :product_ozara_serving_informations,class:'btn btn-primary add_product_ozara_serving_information_fields',style:'margin-left:20px;',
-            data: {association_insertion_node: '#product_ozara_serving_informations-add-point',association_insertion_method: 'append' }
-          th
-          th
-      tbody#product_ozara_serving_informations-add-point
-        = f.fields_for :product_ozara_serving_informations do |posi|
-          = render 'product_ozara_serving_information_fields', f:posi
+  table.table
+    thead
+      tr
+        th.col-md-6
+          span 盛り付け手順
+          = link_to_add_association '追加', f, :product_ozara_serving_informations,class:'btn btn-primary add_product_ozara_serving_information_fields',style:'margin-left:20px;',
+          data: {association_insertion_node: '#product_ozara_serving_informations-add-point',association_insertion_method: 'append' }
+        th
+        th
+    tbody#product_ozara_serving_informations-add-point
+      = f.fields_for :product_ozara_serving_informations do |posi|
+        = render 'product_ozara_serving_information_fields', f:posi
 
-  .col-md-12
-    table.table
-      thead
-        tr
-          th.col-md-2
-            span 仕分けパーツ
-            = link_to_add_association '追加', f, :product_parts,class:'btn btn-primary add_product_parts_fields',style:'margin-left:20px;',
-            data: {association_insertion_node: '#product_parts-add-point',association_insertion_method: 'append' }
-          th.col-md-1 1人前の分量
-          th.col-md-1 単位
-          th.col-md-2 パッキング
-          th.col-md-1 シール印刷
-          th メモ
-          th.col-md-1
-      tbody#product_parts-add-point
-        = f.fields_for :product_parts do |mp|
-          = render 'product_part_fields', f:mp
 
-  .col-md-12
-    .col-md-3
+  table.table
+    thead
+      tr
+        th.col-md-3
+          span 積載パーツ　
+          = link_to_add_association '追加', f, :product_parts,class:'btn btn-primary add_product_parts_fields',style:'margin-left:20px;',
+          data: {association_insertion_node: '#product_parts-add-point',association_insertion_method: 'append' }
+        th.col-md-1 1人前
+        th.col-md-1 単位
+        th.col-md-2 パッキング
+        th.col-md-1 シール
+        th メモ
+        th.col-md-1
+    tbody#product_parts-add-point
+      = f.fields_for :product_parts do |mp|
+        = render 'product_part_fields', f:mp
+
+  / .col-md-12
+    / .col-md-3
       = f.label :image, "製造側用写真"
       = f.file_field :image
       = f.hidden_field :image_cache
@@ -139,39 +160,21 @@
           div
             = f.label :remove_image,"削除する"
             = f.check_box :remove_image
-    .col-md-3
+    / .col-md-3
       = f.label :display_image, "大皿写真"
       = f.file_field :display_image
       .form-group
         - if @product.display_image?
           = image_tag @product.display_image.to_s,class:"img-responsive",style:'max-height:450px;'
-    .col-md-3
-      = f.label :image_for_one_person, "一人前写真"
-      = f.file_field :image_for_one_person
-      .form-group
-        - if @product.image_for_one_person?
-          = image_tag @product.image_for_one_person.to_s,class:"img-responsive",style:'max-height:450px;'
-
-    = f.fields_for :product_pops do |pp|
-      .col-md-3
-        = pp.label :image, "ポップ写真"
-        .form-group
-          = pp.file_field :image
-          - if pp.object.image.present?
-            = link_to "ダウンロード", download_products_path(:file_name => pp.object.image,:key => pp.object.image.path, :type => 'pdf'),target:'_blank',class:'col-md-12'
-            = pp.label :remove_image,"削除する"
-            = pp.check_box :remove_image
-            = pp.hidden_field :image_cache
-            object data="#{pp.object.image.to_s}" type="application/pdf" width="" height=""
 
 
 
 
-  .menu-area.table-striped
+  .menu-area
     .col-md-12[style="margin-top:10px;"]
       label.col-md-3 メニュー名
-      label.col-md-1.text-right メ原価
-      .col-md-6
+      label.col-md-1.text-right 原価
+      .col-md-7
         label.col-md-4 材料名
         label.col-md-2.text-right 使用量
         label.col-md-2.text-right 材原価

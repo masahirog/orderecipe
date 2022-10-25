@@ -394,7 +394,7 @@ ActiveRecord::Schema.define(version: 2022_10_24_063509) do
     t.integer "material_cut_pattern_id"
   end
 
-  create_table "menu_processes", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "menu_processes", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "menu_id"
     t.string "image"
     t.text "memo"
@@ -434,6 +434,7 @@ ActiveRecord::Schema.define(version: 2022_10_24_063509) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "store_id", null: false
+    t.index ["date", "store_id"], name: "index_monthly_stocks_on_date_and_store_id", unique: true
   end
 
   create_table "order_materials", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -566,7 +567,7 @@ ActiveRecord::Schema.define(version: 2022_10_24_063509) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "reminder_templates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "reminder_templates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "repeat_type", null: false
     t.time "action_time"
     t.string "content", null: false
@@ -576,7 +577,6 @@ ActiveRecord::Schema.define(version: 2022_10_24_063509) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "category", default: 0, null: false
-    t.integer "group_id"
   end
 
   create_table "reminders", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|

@@ -102,15 +102,7 @@
                 = m.text_field :calculated_quantity,class:'recipe_unit_quantity text-right form-control',style:"float:left;width:70%;",readonly:true
                 = m.text_field :recipe_unit, style:'float:left;width:20%;',class:'form-control calculated_material_unit',readonly:true
             .clearfix style="color:#A9A9A9;padding-top:2px;"
-              - if  material.present? && material.need_inventory_flag == true
-                - style = 'float:left;width:55%;height:22px;background-color:red;padding-top:2px;margin-right:5%;'
-              - else
-                - style = 'float:left;width:55%;height:22px;padding-top:2px;margin-right:5%;'
-
-              .text-right style=style
-                span class="stock_yoso_#{m.object.material_id} text-right"
-                  - if material.present? && material.need_inventory_flag == true
-                    span style='margin-right:10px;color:white;' 棚卸し！
+              .text-right style="float:left;width:55%;height:22px;padding-top:2px;margin-right:5%;"
                 - if m.object.material_id.present?
                   - if @stock_hash[m.object.material_id].present?
                     = link_to history_stocks_path(material_id:m.object.material_id,store_id:params[:store_id]),target:'_blank',class:'stock-tooltip' do

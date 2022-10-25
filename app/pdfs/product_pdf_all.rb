@@ -36,9 +36,23 @@ class ProductPdfAll < Prawn::Document
         num = dmd.manufacturing_number
         chosei = dmd.adjustments
         store_order_number = StoreDailyMenuDetail.joins(:store_daily_menu).where(:store_daily_menus => {daily_menu_id:daily_menu.id}).where(product_id:product.id).sum(:number)
-        bounding_box([-5,540], :width => 880) {
-          text alert,size:9 if alert
-        }
+        if alert.present?
+          bounding_box([210,540], :width => 550) {
+            text alert,size:9
+          }
+        end
+        if menus.map{|menu|menu.menu_processes}.reject { |el| el.empty? }.present?
+          bounding_box([0,540], :width => 200) {
+            stroke_color 'FFFFFF'
+            stroke_bounds
+            stroke do
+              fill_and_stroke_rounded_rectangle [cursor - 5,cursor + 2], 200, 15, 0
+              fill_color '000000'
+            end
+            text "PC・ipadで写真付き工程を確認して下さい",size:9,color: 'FFFFFF'
+          }
+        end
+        move_down 5
         header_table(product,num,chosei,daily_menu.start_time,store_order_number,max_i,i)
         table_content(menus,num)
         start_new_page if i<max_i-1
@@ -126,12 +140,12 @@ class ProductPdfAll < Prawn::Document
         else
           cook_the_day_before_size = 7
         end
+        if menu.cook_the_day_before.present? || menu.cook_on_the_day.present?
+          cook_memo = "【前日】\n#{menu.cook_the_day_before}\n―・―・―・―・―・―\n【当日】\n#{menu.cook_on_the_day}"
+        else
+          cook_memo = ''
+        end
         menu.menu_materials.each_with_index do |mm,i|
-          if menu.cook_the_day_before.present? || menu.cook_on_the_day.present?
-            cook_memo = "【前日】\n#{menu.cook_the_day_before}\n―・―・―・―・―・―\n【当日】\n#{menu.cook_on_the_day}"
-          else
-            cook_memo = ''
-          end
           amount = ActiveSupport::NumberHelper.number_to_rounded((mm.amount_used*num), strip_insignificant_zeros: true, :delimiter => ',')
           if i == 0
             data << [{:content => "#{menu.name}", :rowspan => u, size: cook_the_day_before_size},{:content => "#{cook_memo}", :rowspan => u, size: cook_the_day_before_size},'□',

@@ -3,14 +3,9 @@ li.add_li_menu.col-md-12.list-group-item.nested-fields.field[style="padding:5px 
     = f.number_field :row_order, class:"input_row_order form-control"
   .select_menu.col-md-3
     = f.collection_select :menu_id, @menus, :id, :name, {include_blank: true}, { class: "input_select_menu"}
-    div
-      |  カロリー：
-      span.product_make_menu_calorie
-        = f.object.menu.menu_materials.sum(:calorie).round(2) if f.object.menu.present?
-      |  kcal
   .cost_price.col-md-1
     = f.object.menu.cost_price if f.object.menu.present?
-  .material_name.col-md-6
+  .material_name.col-md-7
     ul[style="list-style:none;padding:0;"]
       - if f.object.menu.present?
         - f.object.menu.menu_materials.each do |mm|

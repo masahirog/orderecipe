@@ -15,5 +15,5 @@ class Store < ApplicationRecord
   has_many :shift_frames, through: :store_shift_frames
   has_many :refund_supports
   accepts_nested_attributes_for :store_shift_frames, allow_destroy: true
-
+  has_many :monthly_stocks
 end

@@ -1,39 +1,37 @@
-h3 = "#{@store.name} 月次棚卸一覧"
-div
-  span CSVアップロード　※csvの形式は
-  = link_to "こちらから", inventory_stocks_path(category:params[:category],date:params[:date],store_id:39,format:'csv')
-  span ダウンロードしてください
-  / = form_tag upload_inventory_csv_stocks_path, multipart: true do
-  /   = file_field_tag :file,class:'form-control',style:'padding:10px;height:100%;width:300px;float:left;'
-  /   = submit_tag "アップロード",class:'btn btn-primary',style:'float:left;margin:10px;'
-  = link_to "棚卸し表印刷",inventory_stocks_path(date:Date.today,store_id:39, :format => :pdf),class:'btn btn-primary pull-right',target:"_blank"
+
+= link_to "今月の棚卸枠を作成",make_this_month_stocks_path, method: :post,class:'btn btn-primary'
+span 食材：肉、生野菜、調味料・既製品、その他野菜（冷凍・調理済み）、魚、米
+br
+span 包材：包材・容器
+br
+span その他：消耗品、調理用品
 table.table
   thead
     tr
-      th
-      th 日付け
+      th 年月
+      th 拠点数
       th.text-right 品目数
       th.text-right 合計金額
       th.text-right 食材
-      th.text-right 包材・商品備品
-      th.text-right その他備品・消耗品
+      th.text-right 包材
+      th.text-right その他
   tbody
-    - @monthly_stocks.each do |ms|
+    - @dates.each do |date|
       tr
         td
-          = link_to "更新", {controller: "stocks", action: "update_monthly_stocks", date: ms.date,store_id:params[:store_id]}, method: :post, data: { confirm: 'ほんとに更新しちゃう？やばいよ？' }
-        td
-          -if Date.today < ms.date
-           = "#{ms.date}（予想）"
+          -if Date.today < date
+            = link_to "#{date}（予想）",monthly_stocks_path(date:date)
+
           - else
-            = ms.date
+            = link_to "#{date}",monthly_stocks_path(date:date)
+        td = @month_counts[date]
         td.text-right
-          = ms.item_number
+          = "#{@item_number[date]}"
         td.text-right
-          = "#{ms.total_amount.to_s(:delimited)} 円"
+          = " 円"
         td.text-right
-          = link_to "#{ms.foods_amount.to_s(:delimited)} 円",inventory_stocks_path(to:ms.date,category:['meat','other_food'],store_id:39)
+          = link_to "#{@foods_amount[date].to_s(:delimited)} 円",''
         td.text-right
-          = link_to "#{ms.equipments_amount.to_s(:delimited)} 円",inventory_stocks_path(to:ms.date,category:'packed',store_id:39)
+          = link_to "#{@equipments_amount[date].to_s(:delimited)} 円",''
         td.text-right
-          = link_to "#{ms.expendables_amount.to_s(:delimited)} 円",inventory_stocks_path(to:ms.date,category:'other_packd',store_id:39)
+          = link_to "#{@expendables_amount[date].to_s(:delimited)} 円",''

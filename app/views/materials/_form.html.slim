@@ -12,17 +12,17 @@
     .col-md-6
       .col-md-12.form-group
         = f.label :name, "食材・資材名（余分な情報はメモへお願いします）"
-        = f.text_field :name, class:'form-control name_ja'
+        = f.text_field :name, class:'form-control name_ja',required:true
       .col-md-12.form-group
         = f.label :short_name, "省略名 ひらがな"
-        = f.text_field :short_name, class:'form-control'
+        = f.text_field :short_name, class:'form-control',required:true
 
       / .col-md-12.form-group
         = f.label :roma_name, "ローマ字名"
         = f.text_field :roma_name, class:'form-control roma_name'
       .col-md-12.form-group
         = f.label :order_name, "発注書記載名"
-        = f.text_field :order_name, class:'form-control'
+        = f.text_field :order_name, class:'form-control',required:true
       .col-md-12.form-group
         = f.label :unused_flag, "販売ステータス"
         = f.select :unused_flag,[['使用中',false],['使用停止',true]],{selected:@material.unused_flag}, class:"form-control"
@@ -58,7 +58,7 @@
       = f.file_field :image
       = f.hidden_field :image_cache
       .form-group
-        - if @material.image?
+        - if @material.image.present?
           / object data="#{@material.image.to_s}" type="application/pdf" style='height:400px;width:400px;margin-bottom:5px;'
           iframe src="#{@material.image.to_s}" width="80%" height='500px' style="border: none;"
           div

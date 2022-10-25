@@ -2,8 +2,6 @@
   .col-md-1
     = link_to '新規作成',new_product_path,class:'btn btn-primary'
   = form_tag Product, :method => 'get' do
-    .col-md-1
-      = text_field_tag :management_id, params[:management_id], class:"id_search form-control",style:"width:100%",placeholder:'bentoID'
     .col-md-3
       = select_tag :name,options_for_select(Product.pluck(:name)),include_blank: true, class:"name_search form-control"
     .col-md-2
@@ -21,13 +19,10 @@ table.table
     tr
       th ステータス
       th ブランド名
-      th 管理ID
-      th 短縮名
       th style='width:400px;' 商品名
       th.text-right 売価
       th.text-right 原価
       th.text-right 原価率
-      th.text-center 画像
       th.text-center
 
   tbody.aaaad
@@ -43,8 +38,6 @@ table.table
         td.product_id style="display:none;"
           = product.id
         td = product.brand.name
-        td = product.management_id
-        td = "#{product.short_name}#{product.symbol}"
         td.product_name = link_to "#{product.name}", "/products/#{product.id}/"
         td.text-right = "#{product.sell_price}円"
         td.price.text-right = "#{product.cost_price}円"
@@ -55,7 +48,6 @@ table.table
             span style='color:purple;' = "#{((product.cost_price/product.sell_price)*100).round(1)}%"
           - else
             span style='color:red;' = "#{((product.cost_price/product.sell_price)*100).round(1)}%"
-        td.text-center = image_tag product.image.thumb.url if product.image.present?
         td.text-center
           - unless product.order_products.present?||product.daily_menu_details.present?||product.kurumesi_order_details.present?
             = link_to "削除", product, method: :delete,class:'btn btn-danger pull-right btn-sm',data: { confirm: "ほんまに削除してええの？" },style:''

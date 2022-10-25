@@ -59,18 +59,9 @@ $(document).on('turbolinks:load', function() {
     check_accounting_unit(accounting_unit)
   });
 
-  var previous;
-
-  $(".input_recipe_unit").on('focus', function () {
-    previous = this.value;
-  }).change(function() {
-    if(!confirm('変更すると、レシピに大きく影響します。本当に変更しますか？（変更した場合はレシピを確認してください。）')){
-      $(this).val(previous);
-      return false;
-    }else{
-      var recipe_unit = $(".input_recipe_unit").val();
-      check_recipe_unit(recipe_unit)
-    }
+  $(".input_recipe_unit").on('change', function () {
+    var recipe_unit = $(".input_recipe_unit").val();
+    check_recipe_unit(recipe_unit);
   });
 
   $(".all_box").on("change",function(){

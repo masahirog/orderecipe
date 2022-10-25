@@ -242,6 +242,8 @@ Rails.application.routes.draw do
   resources :food_additives
   resources :stocks do
     collection do
+      post :make_this_month
+      get :monthly
       get :outside_view
       get :material_search
       get :monthly_inventory

@@ -31,6 +31,7 @@ class MaterialsController < AdminController
   end
 
   def create
+    @stores_hash = Store.all.map{|store|[store.id,store.name]}.to_h
     @material = Material.create(material_params)
     if @material.save
      redirect_to @material, notice: "「#{@material.name}」を作成しました。続けて食材を作成する：<a href='/materials/new'>新規作成</a>".html_safe

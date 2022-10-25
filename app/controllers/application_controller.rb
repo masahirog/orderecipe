@@ -5,7 +5,6 @@ class ApplicationController < ActionController::Base
   before_action :authenticate_user!
 
   protect_from_forgery with: :exception
-  before_action :stock_alert_materials
   add_flash_types :success, :info, :warning, :danger
 
   def after_sign_in_path_for(resource)
@@ -75,8 +74,5 @@ class ApplicationController < ActionController::Base
     def revert_link_menu
       view_context.link_to('取消', revert_version_path(@menu.versions.last), :method => :post)
     end
-    def stock_alert_materials
-      @stock_alert_materials = Material.where(need_inventory_flag:true).count
-      # @kaizen_list_counts = KaizenList.where.not(status:['done','cancel']).count
-    end
+
 end

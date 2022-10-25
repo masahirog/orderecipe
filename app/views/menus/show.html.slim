@@ -75,9 +75,9 @@
     tr
       th.active.col-md-4 前日調理
       td = text_url_to_link(simple_format(h(@menu.cook_the_day_before))).html_safe
-    tr
-      th.active.col-md-4 当日調理
-      td = text_url_to_link(simple_format(h(@menu.cook_on_the_day))).html_safe
+    / tr
+      / th.active.col-md-4 当日調理
+      / td = text_url_to_link(simple_format(h(@menu.cook_on_the_day))).html_safe
     tr
       th.active.col-md-4 盛り付けメモ
       td = text_url_to_link(simple_format(h(@menu.serving_memo))).html_safe
@@ -94,7 +94,7 @@ table.table
         td
           = text_url_to_link(simple_format(h(mp.memo))).html_safe
         td
-          = image_tag mp.image.to_s,class:"img-responsive",style:'max-height:350px;' if mp.image?
+          = image_tag mp.image.to_s,class:"img-responsive",style:'max-height:150px;' if mp.image?
 .col-md-12.table-responsive
   table.table
     thead

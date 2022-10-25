@@ -256,20 +256,9 @@ class Stock < ApplicationRecord
       last_inventory = stocks.find_by(material_id:material.id,inventory_flag:true)
       if last_inventory.present?
         material.last_inventory_date = last_inventory.date
-        if latest_stock.inventory_flag == true && latest_stock.end_day_stock == 0
-          material.need_inventory_flag = false
-        else
-          if today - last_inventory.date < 30
-            material.need_inventory_flag = false
-          else
-            material.need_inventory_flag = true
-          end
-        end
-      else
-        material.need_inventory_flag = true
       end
       materials_arr << material
     end
-    Material.import materials_arr, on_duplicate_key_update: [:last_inventory_date,:need_inventory_flag]
+    Material.import materials_arr, on_duplicate_key_update: [:last_inventory_date]
   end
 end

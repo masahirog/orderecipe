@@ -561,7 +561,7 @@ class OrdersController < AdminController
       # クイーンズ、たなか、小田島、ちさんまるしぇ、東中野キッチン、日本パッケージ在庫品、小沢商店
       jogai_vendor_ids = [121,131,151,569]
 
-      no_calculate_vendor_ids = [559,549]
+      no_calculate_vendor_ids = [559,549,261]
       if stocks_hash[key].present?
         if no_calculate_vendor_ids.include?(material.vendor_id)
           order_amount = ((value['calculated_order_amount']/value['recipe_unit_quantity'])*value['order_unit_quantity']).ceil(i)

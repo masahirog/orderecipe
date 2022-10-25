@@ -18,34 +18,42 @@
     .col-md-4
       = f.label :short_name ,'省略名 ひらがな'
       = f.text_field :short_name, class: "form-control", id: "material_name",style:"width:100%;"
-
-    / .col-md-4
-      = f.label :roma_name ,'ローマ字名'
-      = f.text_field :roma_name, class: "form-control", id: "material_name",style:"width:100%;"
-  .form-group.col-md-12
     .col-md-2
       = f.label :category ,'カテゴリー'
       = f.select :category, options_for_select(Menu.categories.keys.to_a,@menu.category),{}, { class: "form-control",style:"width:100%;"}
     .col-md-2
       = f.label :cost_price, "メニュー原価"
-      .form-inline
-        .form-group
-          = f.number_field :cost_price, :readonly => 'readonly',class: "menu_cost_price form-control"
-          .form-group
-            |  円
+      .clearfix
+        = f.number_field :cost_price, :readonly => 'readonly',class: "menu_cost_price form-control",style:'float:left;width:80%;'
+        span style='float:left;margin-top:15px;margin-left:5px;' 円
+
+    / .col-md-4
+      = f.label :roma_name ,'ローマ字名'
+      = f.text_field :roma_name, class: "form-control", id: "material_name",style:"width:100%;"
+
+  .col-md-12
+    = f.label :image, "メニュー写真"
+    = f.file_field :image
+    = f.hidden_field :image_cache
+    .form-group
+      - if @menu.image?
+        = image_tag @menu.image.to_s,class:"img-responsive",style:'max-height:450px;'
+        div
+          = f.label :remove_image,"削除する"
+          = f.check_box :remove_image
 
   .col-md-12.form-group
     = f.label :cook_the_day_before ,'レシピ'
-    = f.text_area :cook_the_day_before, style:"height:15em;", class:"form-control"
-  / .col-md-4.form-group
+    = f.text_area :cook_the_day_before, style:"height:10em;", class:"form-control"
+  .col-md-12.form-group
     = f.label :cook_on_the_day ,'当日調理'
-    = f.text_area :cook_on_the_day,style:"height:10em;width:100%;", class: "form-control"
+    = f.text_area :cook_on_the_day,style:"height:10em;", class: "form-control"
   .col-md-12
     table.table
       thead
         tr
           th
-            span 当日仕上げ工程
+            span 当日仕上げ工程　　
             = link_to_add_association '追加', f, :menu_last_processes,class:'btn btn-primary add_menu_last_process_fields',style:'margin-left:20px;',
             data: {association_insertion_node: '#menu_last_process-add-point',association_insertion_method: 'append' }
           th メモ
@@ -72,7 +80,7 @@
       thead
         tr
           th
-            span 写真付き工程
+            span 写真付き調理工程　
             = link_to_add_association '追加', f, :menu_processes,class:'btn btn-primary add_menu_process_fields',style:'margin-left:20px;',
             data: {association_insertion_node: '#menu_process-add-point',association_insertion_method: 'append' }
           th 写真
@@ -81,17 +89,6 @@
         = f.fields_for :menu_processes do |mp|
           = render 'menu_process_fields', f:mp
 
-
-  / .col-md-12
-    = f.label :image, "写真"
-    = f.file_field :image
-    = f.hidden_field :image_cache
-    .form-group
-      - if @menu.image?
-        = image_tag @menu.image.to_s,class:"img-responsive",style:'max-height:450px;'
-        div
-          = f.label :remove_image,"削除する"
-          = f.check_box :remove_image
   / .used_additives.col-md-12 style="margin:20px 0;"
     = f.label :used_additives ,"使用食品添加物"
     - if f.object.used_additives.present?
@@ -145,7 +142,8 @@
       = link_to_add_association '材料追加', f, :menu_materials,class: 'btn btn-default add_material_fields',data: {association_insertion_node: '#detail-association-insertion-point',association_insertion_method: 'append' }
   .action.col-md-12
     = f.hidden_field :back_to, :value => @back_to
-    = f.submit '保存する',class:'btn btn-primary'
+    / = f.submit '保存する',class:'btn btn-primary',onclick:"form.submit()"
+    input.btn.btn-primary type="button" onclick="submit();" value="保存する"
 
 javascript:
   $(document).on('turbolinks:load', function() {

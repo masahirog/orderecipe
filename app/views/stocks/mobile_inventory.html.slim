@@ -55,8 +55,6 @@ html
                       li
                         a.clearfix href="/stocks/inventory?to=#{Date.today}&store_id=39"
                           span style='float:left;' 棚卸し
-                          span class="badge badge-danger" style='background-color:red;float:left;'
-                            = @stock_alert_materials
                       li = link_to "月次棚卸し在庫",stocks_path(store_id:39)
                   li.dropdown
                     a.dropdown-toggle href="#" data-toggle="dropdown" role="button"

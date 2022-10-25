@@ -33,7 +33,7 @@ li.add_li_material.col-md-12.list-group-item.item.nested-fields.field.table-stri
     = f.object.material.unused_flag if f.object.material.present?
   .amount_used.col-md-2[style="display:inline-flex"]
     div[style="padding-right:10px;"]
-      = f.number_field :amount_used, class:'amount_used_input form-control form-group',required: true,placeholder:"使用量",step: "0.01"
+      = f.number_field :amount_used, class:'amount_used_input form-control',required: true,placeholder:"使用量"
     span.recipe_unit[style="padding-top:10px;"]
       = f.object.material.recipe_unit if f.object.material.present?
   .price_used.col-md-1.text-center

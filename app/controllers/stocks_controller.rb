@@ -14,6 +14,23 @@ class StocksController < AdminController
   #   end
   # end
 
+  def make_this_month
+    new_monthly_stocks = []
+    date = Date.today.end_of_month
+    stores = Store.all
+    stores.each do |store|
+      if MonthlyStock.find_by(date:date,store_id:store.id).present?
+      else
+        new_monthly_stocks << MonthlyStock.new(store_id:store.id,date:date,item_number:0,total_amount:0,foods_amount:0,equipments_amount:0,expendables_amount:0)
+      end
+    end
+    if new_monthly_stocks.present?
+      MonthlyStock.import new_monthly_stocks
+      redirect_to stocks_path,notice:"#{date.month}月の棚卸し枠を作成しました。"
+    else
+      redirect_to stocks_path,notice:"#{date.month}月の枠はすでに作成されています。"
+    end
+  end
 
   def mobile_inventory
     store_id = params[:store_id]
@@ -77,15 +94,16 @@ class StocksController < AdminController
     foods_amount = 0
     equipments_amount = 0
     expendables_amount = 0
+    food_categories = ["meat","fish","vege","other_vege","other_food",'other_food']
     stocks.each do |stock|
       material_price = (stock.end_day_stock * stock.material.cost_price)
-      if stock.material.category == 'meat'||stock.material.category == 'other_food'
+      if food_categories.include?(stock.material.category)
         foods_amount += material_price
         total_amount += material_price
       elsif stock.material.category == 'packed'
         equipments_amount += material_price
         total_amount += material_price
-      elsif stock.material.category == 'consumable_item'
+      elsif stock.material.category == 'consumable_item' ||stock.material.category == "cooking_item"
         expendables_amount += material_price
         total_amount += material_price
       end
@@ -93,11 +111,20 @@ class StocksController < AdminController
     item_number = stocks.length
     monthly_stock = MonthlyStock.find_by(date:date,store_id:store_id)
     monthly_stock.update_attributes(item_number:item_number,total_amount:total_amount.round,foods_amount:foods_amount.round,equipments_amount:equipments_amount.round,expendables_amount:expendables_amount.round)
-    redirect_to stocks_path(store_id:store_id),notice:"#{monthly_stock.date.month}月の棚卸しを更新しました。"
+    redirect_to monthly_stocks_path(date:date),notice:"#{monthly_stock.store.name}拠点の#{monthly_stock.date.month}月の棚卸しを更新しました。"
   end
   def index
-    @store = Store.find(params[:store_id])
-    @monthly_stocks = MonthlyStock.where(store_id:@store.id).order('date DESC')
+    monthly_stocks = MonthlyStock.all
+    @month_counts = MonthlyStock.group(:date).count
+    @dates = monthly_stocks.map{|ms|ms.date}.uniq.sort.reverse
+    @foods_amount = monthly_stocks.group(:date).sum(:foods_amount)
+    @equipments_amount = monthly_stocks.group(:date).sum(:equipments_amount)
+    @expendables_amount = monthly_stocks.group(:date).sum(:expendables_amount)
+    @item_number = monthly_stocks.group(:date).sum(:item_number)
+    # @monthly_stocks = MonthlyStock.order('date DESC')
+  end
+  def monthly
+    @monthly_stocks = MonthlyStock.where(date:params[:date])
   end
   # def new
   #   @stock = Stock.new
@@ -148,7 +175,6 @@ class StocksController < AdminController
       respond_to do |format|
         if @stock.save
           @end_day_stock = (@stock.end_day_stock / @material.accounting_unit_quantity).round(1)
-          material_update(@to)
           @class_name = ".inventory_tr_#{@material.id}"
           Stock.change_stock(update_stocks,@material.id,@stock.date,@stock.end_day_stock,store_id)
           Stock.import update_stocks, on_duplicate_key_update:[:end_day_stock,:start_day_stock,:inventory_flag] if update_stocks.present?
@@ -183,7 +209,6 @@ class StocksController < AdminController
     respond_to do |format|
       if @stock.update(end_day_stock:new_end_day_stock,inventory_flag:inventory_flag,start_day_stock:new_start_day_stock)
         @end_day_stock = (@stock.end_day_stock / @material.accounting_unit_quantity).round(1)
-        material_update(@to)
         Stock.change_stock(update_stocks,@material.id,@stock.date,new_end_day_stock,store_id)
         Stock.import update_stocks, on_duplicate_key_update:[:end_day_stock,:start_day_stock,:inventory_flag] if update_stocks.present?
         @class_name = ".inventory_tr_#{@material.id}"
@@ -247,15 +272,26 @@ class StocksController < AdminController
     else
       @to = Date.today
     end
+    categories = Material.categories
+    if params[:categories]
+      checked_categories = params['categories'].keys
+    else
+      checked_categories = categories
+      params[:categories] = {}
+      categories.each do |category|
+        params[:categories][category] = true
+      end
+    end
     store_id = params[:store_id]
     @store = Store.find(store_id)
-    from = @to - 60
-    materials = Material.all
+    from = @to - 90
+    materials = Material.where(category:checked_categories)
     materials = materials.where(storage_place:params[:storage_place]) if params[:storage_place].present?
     materials = materials.where(category:params[:category]) if params[:category].present?
     material_ids = materials.map{|material|material.id}
-    stocks = Stock.where(store_id:store_id,material_id:material_ids).where("date <= ?", @to).order(date: :desc)
-    # stocks = Stock.where(store_id:store_id,material_id:material_ids).where("date >= ?", from).where("date <= ?", @to).order(date: :desc)
+    # stocks = Stock.where(store_id:store_id,material_id:material_ids).where("date <= ?", @to).order(date: :desc)
+    # 90日以内には一回は棚卸し等をしているはず
+    stocks = Stock.where(store_id:store_id,material_id:material_ids).where("date >= ?", from).where("date <= ?", @to).order(date: :desc)
     @stocks_h = []
     stocks.uniq(&:material_id).each do |stock|
       if stock.date == @to
@@ -424,20 +460,6 @@ class StocksController < AdminController
         ["<tr style='background-color:#ffebcd;'><td>#{stock.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[stock.date.wday]})")}</td>#{delivery_amount}#{used_amount}#{end_day_stock}#{inventory}</tr>"]
       else
         ["<tr><td>#{stock.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[stock.date.wday]})")}</td>#{delivery_amount}#{used_amount}#{end_day_stock}#{inventory}</tr>"]
-      end
-    end
-  end
-
-
-  def material_update(today)
-    if @stock.inventory_flag == true
-      date = @stock.date
-      if @material.last_inventory_date.nil? || @material.last_inventory_date < date
-        if today - 30 < date
-          @material.update_attributes(need_inventory_flag:false,last_inventory_date:date)
-        else
-          @material.update_attributes(need_inventory_flag:true,last_inventory_date:date)
-        end
       end
     end
   end

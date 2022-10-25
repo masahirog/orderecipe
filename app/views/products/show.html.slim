@@ -37,7 +37,7 @@ table.table
       td = "#{@product.sell_price} 円"
       td = "#{@product.cost_price} 円"
       td = "#{((@product.cost_price/@product.sell_price)*100).round(1)}%"
-table.table
+/ table.table
   thead
     tr
       th 大皿盛りつけ手順
@@ -57,19 +57,15 @@ table.table
   table.table
     thead
       tr
-        th.col-md-2 製造側写真
-        th.col-md-2 大皿写真
-        th.col-md-2 ポップ
-        th.col-md-2 1人前写真
-        th.col-md-2 1人前盛り
+        th.col-md-3 製造側写真
+        th.col-md-3 ポップ
+        th.col-md-3 1人前写真
+        th.col-md-3 1人前盛り
     tbody
       tr
         td
           = link_to @product.image.to_s, "data-lightbox" => @product.image.to_s do
             = image_tag @product.image.to_s ,class:"text-center img-responsive center-block",style:'max-height:150px;'
-        td
-          = link_to @product.display_image.to_s, "data-lightbox" => @product.display_image.to_s do
-            = image_tag @product.display_image.to_s ,class:"text-center img-responsive center-block",style:'max-height:150px;'
         td style='text-align:center;'
           - if @product.product_pops.present?
             object data="#{@product.product_pops[0].image.to_s}" type="application/pdf" style='height:100px;margin-bottom:5px;'
@@ -103,8 +99,8 @@ table.table
       tr
         th メニュー名
         th 原価
-        th style='width:15%;' 前日調理
-        th style='width:15%;'当日調理
+        th style='width:30%;' レシピ
+        / th style='width:15%;'当日調理
         th タレ
         th グループ
         th 食材資材名
@@ -124,8 +120,35 @@ table.table
               td rowspan="#{u}"
                 = pm.menu.cost_price
               td rowspan="#{u}"
+                div style='text-align:center;'
+                  - if pm.menu.menu_processes.present?
+                    button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#menu_process_#{pm.menu_id}" style='margin-bottom:10px;' 写真付き工程を確認
+                    .modal.fade tabindex="-1" ID="menu_process_#{pm.menu_id}"
+                      .modal-dialog style='width:1000px;'
+                        .modal-content
+                          .modal-header.clearfix
+                            h4.modal-title style='float:left;' 写真付き工程
+                            button.modal-close.btn.btn-default type="button" data-dismiss="modal" style='float:right;' 閉じる
+                          .modal-body
+                            table.table
+                              thead
+                                tr
+                                  th.col-md-6 工程
+                                  th 画像
+                              tbody
+                                - pm.menu.menu_processes.each do |mp|
+                                  tr
+                                    td
+                                      = text_url_to_link(simple_format(h(mp.memo))).html_safe
+                                    td
+                                      = image_tag mp.image.to_s,class:"img-responsive",style:'max-height:350px;' if mp.image?
+
                 = text_url_to_link(simple_format(h(pm.menu.cook_the_day_before))).html_safe
-              td rowspan="#{u}"
+                - if pm.menu.cook_on_the_day.present?
+                  span ーー 当日調理 ーー
+                  br
+                  = text_url_to_link(simple_format(h(pm.menu.cook_on_the_day))).html_safe
+              / td rowspan="#{u}"
                 = text_url_to_link(simple_format(h(pm.menu.cook_on_the_day))).html_safe
             td = "◯" if mm.post == "タレ"
             td = mm.source_group

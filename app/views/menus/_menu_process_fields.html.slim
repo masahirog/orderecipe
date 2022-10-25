@@ -1,10 +1,16 @@
 tr.nested-fields.field
-  td
-    = f.text_area :memo,class:'form-control',placeholder:'工程メモ'
-  td
-    = f.label :image, "写真"
-    = f.file_field :image
-    = f.hidden_field :image_cache
+  td.col-md-6
+    = f.text_area :memo,class:'form-control',placeholder:'工程メモ', style:"height:7em;"
+  td.clearfix
+    div style='float:left;width:300px;'
+      = f.file_field :image
+      = f.hidden_field :image_cache
+    div style='float:left;'
+      - if f.object.image?
+        = image_tag f.object.image.to_s,class:"img-responsive",style:'max-height:100px;'
+        / div
+          = f.label :remove_image,"削除する"
+          = f.check_box :remove_image
 
   td
-    = link_to_remove_association '削除', f,class:'remove_menu_btn btn btn-danger'
+    = link_to_remove_association '削除', f,class:'btn btn-danger'

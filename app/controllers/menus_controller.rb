@@ -66,7 +66,7 @@ class MenusController < AdminController
     elsif request.referer.include?("products")
       @back_to = request.referer
     end
-    @menu = Menu.includes(:menu_materials,{materials:[:vendor,material_food_additives:[:food_additive]]}).find(params[:id])
+    @menu = Menu.includes(:menu_materials,{materials:[:material_cut_patterns,:vendor,material_food_additives:[:food_additive]]}).find(params[:id])
     @base_menu = Menu.find(@menu.base_menu_id) unless @menu.base_menu_id == @menu.id
     @materials = @menu.materials
     @food_ingredients = []
@@ -172,6 +172,6 @@ class MenusController < AdminController
         :row_order,:gram_quantity,:food_ingredient_id,:calorie,:protein,:lipid,:carbohydrate,:dietary_fiber,
         :potassium,:calcium,:vitamin_b1,:vitamin_b2,:vitamin_c,:salt,:magnesium,:iron,:zinc,:copper,:folic_acid,:vitamin_d,:source_group,:first_flag,:machine_flag,:material_cut_pattern_id],
         menu_last_processes_attributes:[:id,:menu_id,:content,:memo,:_destroy],menu_cook_checks_attributes:[:id,:menu_id,:content,:_destroy,:check_position],
-        menu_processes_attributes:[:menu_id,:image,:memo,:image_cache])
+        menu_processes_attributes:[:id,:menu_id,:image,:memo,:image_cache,:remove_image,:_destroy])
     end
 end
