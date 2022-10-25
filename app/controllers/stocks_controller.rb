@@ -276,7 +276,7 @@ class StocksController < AdminController
     if params[:categories]
       checked_categories = params['categories'].keys
     else
-      checked_categories = categories
+      checked_categories = categories.keys
       params[:categories] = {}
       categories.each do |category|
         params[:categories][category] = true
@@ -287,7 +287,6 @@ class StocksController < AdminController
     from = @to - 90
     materials = Material.where(category:checked_categories)
     materials = materials.where(storage_place:params[:storage_place]) if params[:storage_place].present?
-    materials = materials.where(category:params[:category]) if params[:category].present?
     material_ids = materials.map{|material|material.id}
     # stocks = Stock.where(store_id:store_id,material_id:material_ids).where("date <= ?", @to).order(date: :desc)
     # 90日以内には一回は棚卸し等をしているはず
