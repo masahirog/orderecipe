@@ -278,7 +278,7 @@ class StocksController < AdminController
     else
       checked_categories = categories.keys
       params[:categories] = {}
-      categories.each do |category|
+      checked_categories.each do |category|
         params[:categories][category] = true
       end
     end
