@@ -351,7 +351,7 @@ class SmaregiTradingHistory < ApplicationRecord
         hash[hinban][:discount_amount] += tanka_nebikikei
         hash[hinban][:net_sales_amount] += nebikigokei
         hash[hinban][:ex_tax_sales_amount] += product_zeinuki_uriage
-        if tanpin_waribiki == 50
+        if tanpin_waribiki.present?
           hash[hinban][:discount_number] += suryo
         end
         if Time.parse(time) < Time.parse('14:00')
@@ -367,7 +367,7 @@ class SmaregiTradingHistory < ApplicationRecord
         hash[hinban][:discount_amount] -= tanka_nebikikei
         hash[hinban][:net_sales_amount] -= nebikigokei
         hash[hinban][:ex_tax_sales_amount] -= product_zeinuki_uriage
-        if tanpin_waribiki == 50
+        if tanpin_waribiki.present?
           hash[hinban][:discount_number] -= suryo
         end
         if Time.parse(time) < Time.parse('14:00')
