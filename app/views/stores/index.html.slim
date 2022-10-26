@@ -22,4 +22,4 @@ table.table
         td = link_to '返金対応', refund_supports_path(store_id:store.id),class:'btn btn-sm btn-default'
         td = link_to store.short_name, orders_path(store_id:store.id),class:"order btn btn-default btn-sm"
         td = link_to '一覧', materials_stores_path(store_id:store.id),class:"order btn btn-default btn-sm"
-        td = link_to '棚卸し', inventory_stocks_path(date:Date.today,store_id:store.id),class:"btn btn-default btn-sm"
+        td = link_to '棚卸し', inventory_stocks_path(to:Date.today,store_id:store.id),class:"btn btn-default btn-sm"
