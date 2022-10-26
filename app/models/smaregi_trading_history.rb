@@ -214,7 +214,7 @@ class SmaregiTradingHistory < ApplicationRecord
             sdmd = sdmd_hash[analysis_product.product_id]
             analysis_product.cost_price = sdmd.product.cost_price
             analysis_product.orderecipe_sell_price = sdmd.product.sell_price
-            analysis_product.manufacturing_number = sdmd.number
+            analysis_product.manufacturing_number = sdmd.sozai_number
             analysis_product.carry_over = sdmd.carry_over
             analysis_product.actual_inventory = sdmd.actual_inventory
             analysis_product.loss_number = analysis_product.actual_inventory - analysis_product.sales_number
@@ -433,7 +433,7 @@ class SmaregiTradingHistory < ApplicationRecord
         sdmd = sdmd_hash[analysis_product.product_id]
         analysis_product.cost_price = sdmd.product.cost_price
         analysis_product.orderecipe_sell_price = sdmd.product.sell_price
-        analysis_product.manufacturing_number = sdmd.number
+        analysis_product.manufacturing_number = sdmd.sozai_number
         analysis_product.carry_over = sdmd.carry_over
         analysis_product.actual_inventory = sdmd.actual_inventory
         analysis_product.loss_number = analysis_product.actual_inventory - analysis_product.sales_number
