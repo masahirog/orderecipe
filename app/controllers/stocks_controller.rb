@@ -284,13 +284,13 @@ class StocksController < AdminController
     end
     store_id = params[:store_id]
     @store = Store.find(store_id)
-    from = @to - 90
+    from = @to - 300
     materials = Material.where(category:checked_categories)
     materials = materials.where(storage_place:params[:storage_place]) if params[:storage_place].present?
     material_ids = materials.map{|material|material.id}
     # stocks = Stock.where(store_id:store_id,material_id:material_ids).where("date <= ?", @to).order(date: :desc)
     # 90日以内には一回は棚卸し等をしているはず
-    stocks = Stock.where(store_id:store_id,material_id:material_ids).where("date >= ?", from).where("date <= ?", @to).order(date: :desc)
+    stocks = Stock.where(store_id:store_id,material_id:material_ids).where("date <= ?", @to).order(date: :desc)
     @stocks_h = []
     stocks.uniq(&:material_id).each do |stock|
       if stock.date == @to
