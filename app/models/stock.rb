@@ -245,10 +245,10 @@ class Stock < ApplicationRecord
     end
   end
 
-  def self.stock_status_check
+  def self.stock_status_check(store_id)
     materials_arr = []
     today = Date.today
-    stocks = Stock.where(store_id:store_id).order("date DESC").where('date <= ?',today)
+    stocks = Stock.where(store_id:store_id).order("date DESC").where("updated_at BETWEEN ? AND ?", (today-62),today)
     all_material_ids = stocks.pluck("material_id").uniq
     materials = Material.where(id:all_material_ids)
     materials.each do |material|

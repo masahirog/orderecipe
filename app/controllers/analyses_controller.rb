@@ -726,13 +726,11 @@ class AnalysesController < AdminController
     gon.sales_dates = @dates
     gon.sales_data = []
     gon.loss_data = []
-    gon.loss_mokuhyo_data_min = []
-    gon.loss_mokuhyo_data_max = []
+    gon.loss_mokuhyo_data = []
     @dates.sort.each do |date|
       gon.sales_data << @date_sales_amount[date]
       gon.loss_data << (((@date_discount_amount[date].to_f + @date_loss_amount[date].to_f)/@date_sales_amount[date])*100).round(1) if @date_sales_amount[date].present?
-      gon.loss_mokuhyo_data_min << 9
-      gon.loss_mokuhyo_data_max << 11
+      gon.loss_mokuhyo_data << 7
     end
     respond_to do |format|
       format.html

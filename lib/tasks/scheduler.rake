@@ -27,7 +27,9 @@ end
 
 # 毎日の0:00にheroku_schedulerをセット
 task :update_need_inventory_flag => :environment do
-  Stock.stock_status_check
+  Store.all.each do |store|
+    Stock.stock_status_check(store.id)
+  end
 end
 
 task :capa_check => :environment do
