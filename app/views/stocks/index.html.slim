@@ -28,7 +28,7 @@ table.table
         td.text-right
           = "#{@item_number[date]}"
         td.text-right
-          = " 円"
+          = " #{(@foods_amount[date]+@equipments_amount[date]+@expendables_amount[date]).to_s(:delimited)} 円"
         td.text-right
           = "#{@foods_amount[date].to_s(:delimited)} 円"
         td.text-right
