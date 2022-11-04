@@ -274,7 +274,7 @@ class StocksController < AdminController
     end
     categories = Material.categories
     if params[:categories]
-      checked_categories = params['categories']
+      checked_categories = params['categories'].keys
     else
       checked_categories = categories.keys
       params[:categories] = {}
@@ -285,7 +285,7 @@ class StocksController < AdminController
     store_id = params[:store_id]
     @store = Store.find(store_id)
     from = @to - 90
-    materials = Material.where(category:checked_categories.keys)
+    materials = Material.where(category:checked_categories)
     materials = materials.where(storage_place:params[:storage_place]) if params[:storage_place].present?
     material_ids = materials.map{|material|material.id}
     # stocks = Stock.where(store_id:store_id,material_id:material_ids).where("date <= ?", @to).order(date: :desc)
