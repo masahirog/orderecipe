@@ -1,34 +1,18 @@
 .form-group
-  = link_to "一覧へ戻る",sales_reports_path
-.form-group
-  label 日付：
-  p = "#{@sales_report.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@sales_report.date.wday]})")}"
-.form-group
-  label 店舗：
-  p = Store.find(@sales_report.store_id).name
-
-.form-group
-  label 売上：
-  p = "#{@analysis.ex_tax_sales_amount.to_s(:delimited)}円"
-  label 来店数：
-  p = "#{@analysis.transaction_count}"
-  label 廃棄金額：
-  p = "#{@analysis.loss_amount.to_s(:delimited)}円"
-  label 廃棄率：
-  p = "#{((@analysis.loss_amount.to_f/@analysis.ex_tax_sales_amount)*100).round(1)}%"
-  label 現金誤差：
-  p = "#{@sales_report.cash_error} 円"
-
-.form-group
-  label スタッフ名：
-  p = t("enums.sales_report.staff_id.#{@sales_report.staff_id}")
-.form-group
+  = link_to "一覧へ戻る",sales_reports_path,class:'btn btn-default btn-sm'
+  h3 = "#{@sales_report.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@sales_report.date.wday]})")}"
+  p = "スタッフ名：#{t("enums.sales_report.staff_id.#{@sales_report.staff_id}")}"
+  p = "店舗：#{Store.find(@sales_report.store_id).name}"
+  p = "来店数：#{@analysis.transaction_count}"
+  p = "売上：#{@analysis.ex_tax_sales_amount.to_s(:delimited)}円"
+  p = "値引き金額：#{@analysis.discount_amount.to_s(:delimited)}円"
+  p = "廃棄金額：#{@analysis.loss_amount.to_s(:delimited)}円"
+  p = "ロス率：#{(((@analysis.discount_amount.to_f + @analysis.loss_amount.to_f)/@analysis.ex_tax_sales_amount)*100).round(1)}%"
+  p = "現金誤差：#{@sales_report.cash_error} 円"
   label 良かった点：
   p = @sales_report.good
-.form-group
   label 課題：
   p = @sales_report.issue
-.form-group
   label 備考：
   p = @sales_report.other_memo
-= link_to "編集",edit_sales_report_path(@sales_report),class:'btn btn-primary'
+/ = link_to "編集",edit_sales_report_path(@sales_report),class:'btn btn-primary'

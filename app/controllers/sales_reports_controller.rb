@@ -2,7 +2,16 @@ class SalesReportsController < ApplicationController
   before_action :set_sales_report, only: %i[ show edit update destroy ]
 
   def index
-    @sales_reports = SalesReport.includes(analysis:[:store]).all.order(id:'desc').page(params[:page]).per(20)
+    if params[:date]
+      date =Date.parse(params[:date])
+    else
+      date = Date.today
+      params[:date] = date
+    end
+    @from = date.beginning_of_month
+    @to = date.end_of_month
+    @stores = Store.where(group_id:9)
+    @sales_reports = SalesReport.where(date:@from..@to).map{|sr|[[sr.date,sr.store_id],sr.id]}.to_h
   end
 
   def show

@@ -77,7 +77,11 @@ Rails.application.routes.draw do
       post :hand_reflect
     end
   end
-  resources :sales_reports
+  resources :sales_reports do
+    collection do
+      get :select_store
+    end
+  end
   resources :containers
   resources :product_sales_potentials do
     collection do
