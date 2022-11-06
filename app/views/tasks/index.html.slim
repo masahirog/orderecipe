@@ -116,7 +116,7 @@ button.btn.btn-default.btn-sm data-toggle="modal" data-target="#modal_new_task" 
             = render 'task_list',task:task
       .task_div
         h4 完了
-        ul#tasks_check_ul class="list-group list-group-flush tasks_ul ul-sortable" style='min-height:100px;'
+        ul#tasks_done_ul class="list-group list-group-flush tasks_ul ul-sortable" style='min-height:100px;'
           - @dones.each do |task|
             = render 'task_list',task:task
       .task_div
