@@ -16,6 +16,6 @@
   = form_with(model: sdmd, data: {remote: true}) do |f|
     = f.hidden_field :id
     label style='margin-top:6px;float:left;' 朝準備：
-    = f.select :initial_showcase_number,options_for_select((1..sdmd.sozai_number),initial_number),{},class:"form-control",style:'width:100px;float:left;'
+    = f.select :initial_showcase_number,options_for_select((1..(sdmd.sozai_number+10)),initial_number),{},class:"form-control",style:'width:100px;float:left;'
     label style='margin-top:6px;float:left;'
-    = f.submit "陳列完了",class:'btn btn-primary',style:'float:left;margin-left:10px;'
+    = f.submit "完了",class:'btn btn-primary',style:'float:left;margin-left:10px;'

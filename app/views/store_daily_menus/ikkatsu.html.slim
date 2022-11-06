@@ -21,12 +21,12 @@ ul.list-group.clearfix style='margin-top:15px;'
           div style='float:left;' id="sdmd_#{sdmd.id}_form"
             = render partial: "preperation", locals: { sdmd:sdmd }
         - if sdmd.product.product_ozara_serving_informations.present? || sdmd.product.display_image.present?
-          button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#ozara_serving_#{sdmd.product_id}" style='margin-top:10px;' 盛付手順を確認
+          button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#ozara_serving_#{sdmd.product_id}" style='margin-top:10px;' 盛付工程
           .modal.fade tabindex="-1" ID="ozara_serving_#{sdmd.product_id}"
-            .modal-dialog style='width:1000px;'
+            .modal-dialog style='width:90%;'
               .modal-content
                 .modal-header.clearfix
-                  h4.modal-title style='float:left;' 大皿盛り付け
+                  h4.modal-title style='float:left;' 盛り付け手順
                   button.modal-close.btn.btn-default type="button" data-dismiss="modal" style='float:right;' 閉じる
                 .modal-body
                   table.table
@@ -52,7 +52,8 @@ ul.list-group.clearfix style='margin-top:15px;'
           = text_url_to_link(simple_format(h(sdmd.product.serving_infomation))).html_safe
 
       div style='width:40%;height:300px;float:left;'
-        = image_tag sdmd.product.image_for_one_person.to_s,class:"img-responsive",style:'height:300px;margin-top:5px;margin:0 auto;'
+        - if sdmd.product.image_for_one_person.present?
+          = image_tag sdmd.product.image_for_one_person.to_s,class:"img-responsive",style:'height:300px;width:100%;object-fit:cover;margin-top:5px;margin:0 auto;'
 
 div style="position:fixed;right:20px;bottom:20px;width: 80px;height: 80px;border-radius: 50%;background:orangered;text-align: center;margin: 0 auto;display: flex;align-items: center;justify-content: center;"
   div style='margin-top:-10px;color:white;'

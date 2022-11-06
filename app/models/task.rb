@@ -5,7 +5,7 @@ class Task < ApplicationRecord
   has_many :task_images, dependent: :destroy
   accepts_nested_attributes_for :task_images, allow_destroy: true
 
-  enum status: {todo:0,doing:1,check:2,done:3,archive:4,staff_share:5,store_share:6}
+  enum status: {todo:0,doing:1,check:2,done:3,archive:4,store_share:6}
   enum category: {task:0,kaizen:1,project:2,shere:3,hikitsugi:4}
   include RankedModel
   ranks :row_order, :with_same => :status

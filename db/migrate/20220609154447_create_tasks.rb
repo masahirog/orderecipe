@@ -10,6 +10,7 @@ class CreateTasks < ActiveRecord::Migration[6.0]
       t.integer :row_order
       t.integer :category
       t.integer :group_id,null:false
+      t.boolean :part_staffs_share_flag,default:0,null:false
     end
   end
 end

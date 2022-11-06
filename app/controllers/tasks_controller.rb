@@ -18,12 +18,11 @@ class TasksController < ApplicationController
     @task = Task.new(group_id:group_id)
     @todos = @tasks.where(status:0)
     @doings = @tasks.where(status:1)
+    @hikitsugis = @tasks.where(status:6)
+    @staff_shares = @tasks.where(status:5)
     @tasks = @tasks.includes(task_staffs:[:staff])
     @checks = @tasks.where(status:2)
-
-    @staff_shares = @tasks.where(status:5)
-    @hikitsugis = @tasks.where(status:6)
-
+    @dones = @tasks.where(status:3)
     @staffs = Staff.joins(:store).where(:stores => {group_id:group_id}).where(employment_status:1,status:0)
     @hash = {}
     @staffs.each do |staff|
@@ -33,12 +32,6 @@ class TasksController < ApplicationController
 
     if params[:status].present?
       @archives = Task.where(status:4,group_id:group_id).rank(:row_order)
-    else
-      if params[:staff_id].present?
-        @dones = Task.includes(:task_staffs).where(:task_staffs => {staff_id:params[:staff_id],read_flag:false}).where(status:3,group_id:group_id).rank(:row_order)
-      else
-        @dones = Task.where(status:3,group_id:group_id).rank(:row_order)
-      end
     end
   end
 
@@ -93,7 +86,7 @@ class TasksController < ApplicationController
     end
 
     def task_params
-      params.require(:task).permit(:title,:content,:status,:drafter,:final_decision,:row_order_position,:category,:group_id,
+      params.require(:task).permit(:title,:content,:status,:drafter,:final_decision,:row_order_position,:category,:group_id,:part_staffs_share_flag,
         task_staffs_attributes:[:id,:task_id,:staff_id,:read_flag,:_destroy],
         task_images_attributes:[:id,:task_id,:image,:image_cache,:_destroy,:remove_image])
     end

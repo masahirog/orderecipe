@@ -23,19 +23,17 @@ class DailyMenuPdf < Prawn::Document
           # columns(1).size = 10
           # row(0..1).columns(0).size = 10
           cells.border_width = 0.1
-          # cells.valign = :center
+          cells.align = :center
+          columns(0).align = :left
           columns(-2).align = :center
           self.header = true
-          self.column_widths = [180,50,50,80,50,50,50,50,50]
+          self.column_widths = [180,50,50,50,50,50,50]
         end
         move_down 10
 
-        rows = [
-          ['コンテナ数','　　　'],
-          ['　','　　　'],['　','　　　'],['　','　　　'],['　','　　　']
-        ]
+        rows = [['コンテナ','数','メモ'],['　','',''],['　','',''],['　','',''],['　','',''],['　','','']]
         table rows do
-          self.column_widths = [180,50]
+          self.column_widths = [180,50,200]
         end
         move_down 5
         text "その他メモ："
@@ -46,21 +44,14 @@ class DailyMenuPdf < Prawn::Document
   end
 
   def line_item_rows(sdm)
-    data = [['商品名','翌日繰越','冷凍保存','製造数（朝調理数）','追加調理','残（繰越）','完売']]
+    data = [['商品名','副菜','惣菜','','','','']]
     sdm.store_daily_menu_details.each do |sdmd|
-      if sdmd.product.carryover_able_flag == true
-        kurikoshi = '○'
-        morning_number = "（ #{(sdmd.number/1.4).ceil.to_s} ）"
+      if sdmd.bento_fukusai_number > 0
+        fukusai_num = sdmd.bento_fukusai_number
       else
-        kurikoshi = ''
-        morning_number = ''
+        fukusai_num = ""
       end
-      if sdmd.product.freezing_able_flag == true
-        reito = '○'
-      else
-        reito = ''
-      end
-      data << [sdmd.product.name,kurikoshi,reito,"#{sdmd.number}#{morning_number}",'','','']
+      data << [sdmd.product.name,fukusai_num,sdmd.sozai_number,'','','','']
     end
     data
   end

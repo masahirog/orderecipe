@@ -424,7 +424,7 @@ ActiveRecord::Schema.define(version: 2022_10_24_063509) do
     t.string "short_name"
   end
 
-  create_table "monthly_stocks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "monthly_stocks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.date "date"
     t.integer "item_number"
     t.integer "total_amount"
@@ -854,7 +854,7 @@ ActiveRecord::Schema.define(version: 2022_10_24_063509) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "tasks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+  create_table "tasks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "title"
     t.text "content"
     t.integer "status"
@@ -865,6 +865,7 @@ ActiveRecord::Schema.define(version: 2022_10_24_063509) do
     t.integer "row_order"
     t.integer "category"
     t.integer "group_id", null: false
+    t.boolean "part_staffs_share_flag", default: false, null: false
   end
 
   create_table "users", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
