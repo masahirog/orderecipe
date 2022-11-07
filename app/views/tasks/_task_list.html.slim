@@ -40,8 +40,8 @@ li.clearfix.list-group-item.item class="task_#{task.id}_li" data={model_name: ta
               hr style='border-top: 1px solid #ccc;'
               .form-group
                 = f.label :content, "内容"
-                = f.text_area :content, class:"form-control",style:"height:10em;"
-              .form-group
+                = f.text_area :content, class:"form-control",style:"height:20em;"
+              / .form-group
                 = f.label :final_decision, "最終決定"
                 = f.text_area :final_decision, class:"form-control",style:"height:10em;"
               .form-group.clearfix
