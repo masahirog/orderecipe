@@ -34,7 +34,7 @@
 
   .form-group
     = f.label :staff_id, "スタッフ名"
-    = f.select :staff_id, options_for_select_from_enum(SalesReport, :staff_id),{}, { class: "form-control", required:true}
+    = f.collection_select :staff_id, @staffs, :id, :name, {include_blank:true},class:'form-control', required:true
   .form-group
     = f.label :good, "親切にできた点（自分・周りのスタッフ）"
     = f.text_area :good, class: "form-control", size: "10x7"

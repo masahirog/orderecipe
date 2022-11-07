@@ -19,18 +19,20 @@ class SalesReportsController < ApplicationController
   end
 
   def new
+    @staffs = Staff.joins(:store).where(:stores => {group_id:9}).where(employment_status:1,status:0)
     date = params[:date]
     store_id = params[:store_id]
     @analysis = Analysis.find_by(date:date,store_id:store_id)
     if @analysis.present?
       @sales_report = SalesReport.new(date:date,store_id:store_id,analysis_id:@analysis.id)
     else
-      redirect_to sales_reports_path,danger: "日付を確認するか、先にスマレジの情報をアップロードしてください。"
+      redirect_to select_store_sales_reports_path,danger: "日付を確認するか、先にスマレジの情報をアップロードしてください。"
     end
 
   end
 
   def edit
+    @staffs = Staff.joins(:store).where(:stores => {group_id:9}).where(employment_status:1,status:0)
     @analysis = @sales_report.analysis
   end
 
