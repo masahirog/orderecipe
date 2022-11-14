@@ -907,15 +907,23 @@ ActiveRecord::Schema.define(version: 2022_10_24_063509) do
     t.boolean "fax_staff_name_display_flag", default: false, null: false
   end
 
-  create_table "working_hours", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+  create_table "working_hours", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.date "date"
     t.string "name"
+    t.integer "staff_id"
     t.float "working_time"
     t.integer "jobcan_staff_code"
     t.integer "store_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.integer "group_id"
+    t.float "kari_working_time"
+    t.float "chori_of_working_time"
+    t.float "kiridashi_of_working_time"
+    t.float "moritsuke_of_working_time"
+    t.float "sekisai_of_working_time"
+    t.float "sonota_of_working_time"
+    t.float "tare_of_working_time"
   end
 
 end

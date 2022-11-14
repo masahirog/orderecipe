@@ -1,0 +1,3 @@
+= form_for(working_hour, data: { remote: true }, html: { class: "working_hour_store_form_#{working_hour.id}" }) do |f|
+  = f.hidden_field :id,class:'working_hour_id'
+  = f.collection_select :store_id, Store.all, :id, :name, {include_blank:true}, { class: "form-control select_store"}

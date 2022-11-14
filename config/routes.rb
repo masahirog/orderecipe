@@ -38,6 +38,7 @@ Rails.application.routes.draw do
   end
   resources :working_hours do
     collection do
+      get :staff_input
       post :upload_jobcan_data
     end
   end

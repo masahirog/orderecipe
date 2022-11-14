@@ -1,5 +1,21 @@
 class WorkingHoursController < ApplicationController
   before_action :set_working_hour, only: %i[ show edit update destroy ]
+  def staff_input
+    @staffs = Staff.joins(:store).where(:stores => {group_id:19}).where(status:0)
+    today = Date.today
+    @staffs = WorkingHour.where(group_id:19).pluck(:name).uniq
+    if params[:from]
+      @from = params[:from]
+    else
+      @from = today
+    end
+    if params[:to]
+      @to = params[:to]
+    else
+      @to = today
+    end
+    @working_hours = WorkingHour.where(date:@from..@to).where(group_id:19)
+  end
   def upload_jobcan_data
     group_id = params[:group_id]
     WorkingHour.upload_data(params[:file],group_id)
