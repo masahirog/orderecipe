@@ -9,16 +9,12 @@ class WorkingHoursController < ApplicationController
       end
     end
     today = Date.today
-    @staffs = WorkingHour.where(group_id:19).pluck(:name).uniq
     if params[:date]
       @date = Date.parse(params[:date])
     else
       @date = today
     end
     @working_hours = WorkingHour.where(date:@date).where(group_id:19)
-    if @working_hours.present?
-    else
-    end
   end
   def create_work_times
     new_arr = []
@@ -31,7 +27,7 @@ class WorkingHoursController < ApplicationController
       end
     end
     WorkingHour.import new_arr
-    redirect_to staff_input_working_hours_path(date:@date)
+    redirect_to staff_input_working_hours_path(date:@date,group_id:19)
   end
 
   def upload_jobcan_data

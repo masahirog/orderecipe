@@ -5,7 +5,7 @@
       = @date.strftime("%-Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@date.wday]})")
       = link_to (@date+1).strftime("　＞%-m/%-d (#{%w(日 月 火 水 木 金 土)[(@date+1).wday]})"),staff_input_working_hours_path(date:@date+1,group_id:@group.id)
 
-  = link_to 'スタッフ更新', create_work_times_working_hours_path(date:@date), method: :post,class:'btn btn-sm btn-primary',style:'float:right;',data:{confirm:'スタッフの枠を作成しますか？'}
+  = link_to 'スタッフ更新', create_work_times_working_hours_path(date:@date,group_id:@group.id), method: :post,class:'btn btn-sm btn-primary',style:'float:right;',data:{confirm:'スタッフの枠を作成しますか？'}
 
 .table-responsive style='height: 80vh;overflow: scroll;'
   table.table.layout-fixed style='border-collapse:separate;'
