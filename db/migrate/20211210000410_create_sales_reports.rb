@@ -12,6 +12,7 @@ class CreateSalesReports < ActiveRecord::Migration[5.2]
       t.text :other_memo
       t.timestamps
       t.integer :cash_error
+      t.text :excess_or_deficiency_number_memo
     end
   end
 end

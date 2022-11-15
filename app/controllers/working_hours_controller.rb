@@ -107,7 +107,8 @@ class WorkingHoursController < ApplicationController
 
     def working_hour_params
       params.require(:working_hour).permit(:id,:date,:name,:working_time,:jobcan_staff_code,:store_id,:group_id,:position,
-      :kari_working_time,:chori_of_working_time,:kiridashi_of_working_time,:moritsuke_of_working_time,:sekisai_of_working_time,:sonota_of_working_time,:tare_of_working_time)
+      :kari_working_time,:chori_of_working_time,:kiridashi_of_working_time,:moritsuke_of_working_time,:sekisai_of_working_time,
+      :sonota_of_working_time,:tare_of_working_time,:washing_of_working_time)
 
     end
 end

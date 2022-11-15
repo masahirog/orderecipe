@@ -1,0 +1,6 @@
+span ー 履歴 ー
+- sdmd.store_daily_menu_detail_histories.each_with_index do |sdmdh,i|
+  div class="history_#{sdmdh.id}" style='margin-bottom:5px;'
+    span = "#{i+1}：#{sdmdh.number} 食（ #{sdmdh.updated_at.strftime("%H:%M")} ）"
+    = link_to sdmdh, data: { confirm: '消すよ？',remote:true }, method: :delete,style:"float:right;" do
+      i class="fas fa-trash-alt" style='color:red;font-weight:200;'

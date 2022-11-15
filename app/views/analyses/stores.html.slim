@@ -49,10 +49,10 @@ table.table
           p = "週次：#{@done_weekly_clean_reminders[store.id].to_i}/#{@weekly_clean_reminders_count[store.id]}"
           p = "前週：#{@done_last_weekly_clean_reminders[store.id].to_i}/#{@last_weekly_clean_reminders_count[store.id]}"
           p = "月次：#{@done_monthly_clean_reminders[store.id].to_i}/#{@monthly_clean_reminders_count[store.id]}"
-        td
+        / td
           p
             |弁当：
-            = @hash[store.id][:bento_finish_time].strftime('%H:%M') if @hash[store.id][:bento_finish_time]
+            / = @hash[store.id][:bento_finish_time].strftime('%H:%M') if @hash[store.id][:bento_finish_time]
           p = "10時：#{@hash[store.id][:store_showcase_completion_rate_at_ten]}%"
           p = "11時：#{@hash[store.id][:store_showcase_completion_rate_at_eleven]}%"
         td style='position: relative;width:200px;'

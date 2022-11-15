@@ -60,15 +60,8 @@ ul.list-group.clearfix style='margin-top:15px;'
         .clearfix
           label 過不足：
           span class="excess_or_deficiency_number_#{sdmd.id}" = "#{sdmd.excess_or_deficiency_number} 食"
-
         div class="histories_#{sdmd.id}" style='margin-bottom:10px;'
-          br
-          span ー 履歴 ー
-          - sdmd.store_daily_menu_detail_histories.each_with_index do |sdmdh,i|
-            div class="history_#{sdmdh.id}" style='margin-bottom:5px;'
-              span = "#{i+1}：#{sdmdh.number} 食（ #{sdmdh.updated_at.strftime("%H:%M")} ）"
-              = link_to sdmdh, data: { confirm: '消すよ？',remote:true }, method: :delete,style:"float:right;" do
-                i class="fas fa-trash-alt" style='color:red;font-weight:200;'
+          = render partial: "histories",locals: {sdmd:sdmd}
         div id="sdmd_#{sdmd.id}_form"
           = render partial: "preperation", locals: { sdmd:sdmd }
 div style="position:fixed;right:20px;bottom:20px;width: 80px;height: 80px;border-radius: 50%;background:orangered;text-align: center;margin: 0 auto;display: flex;align-items: center;justify-content: center;"

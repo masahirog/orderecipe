@@ -7,7 +7,7 @@ class StoreDailyMenuDetailHistoriesController < ApplicationController
     @i = @store_daily_menu_detail.store_daily_menu_detail_histories.count
     respond_to do |format|
       if @store_daily_menu_detail_history.save
-        # @remaining_count = StoreDailyMenuDetail.where(store_daily_menu_id:@store_daily_menu_detail.store_daily_menu_id,initial_preparation_done:nil).count
+        @remaining_count = StoreDailyMenuDetail.where(store_daily_menu_id:@store_daily_menu_detail.store_daily_menu_id,prepared_number:0).count
         format.html { redirect_to store_daily_menu_detail_history_url(@store_daily_menu_detail_history), notice: "Store daily menu detail history was successfully created." }
         format.js
       else

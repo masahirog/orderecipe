@@ -20,6 +20,7 @@
         th style='width:100px;' 調理
         th style='width:100px;' 積載
         th style='width:100px;' タレ
+        th style='width:100px;' 洗い物
         th style='width:100px;' その他
     tbody
       - @working_hours.each do |wh|
@@ -40,6 +41,8 @@
             = render partial: "edit_sekisai", locals: { working_hour:wh,position:'sekisai' }
           td.edit_tare_td
             = render partial: "edit_tare", locals: { working_hour:wh,position:'tare' }
+          td.edit_tare_td
+            = render partial: "edit_washing", locals: { working_hour:wh,position:'washing' }
           td.edit_sonota_td
             = render partial: "edit_sonota", locals: { working_hour:wh,position:'sonota' }
 

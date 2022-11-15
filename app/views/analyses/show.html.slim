@@ -49,6 +49,8 @@ table.table
       th 在庫
       th 繰越
       th 実在庫
+      th 盛付数合計
+      th 過不足
       th 販売数
       th 販売金額
       th 廃棄数
@@ -68,6 +70,8 @@ table.table
         td = ap.manufacturing_number if ap.present?
         td = ap.carry_over if ap.present?
         td = ap.actual_inventory if ap.present?
+        td = sdmd.prepared_number
+        td = sdmd.excess_or_deficiency_number
         td = ap.sales_number if ap.present?
         td = ap.ex_tax_sales_amount.to_s(:delimited) if ap.present? && ap.ex_tax_sales_amount.present?
         td = ap.loss_number if ap.present?

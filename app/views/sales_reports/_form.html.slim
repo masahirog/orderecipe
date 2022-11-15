@@ -1,20 +1,18 @@
 = form_with model: @sales_report do |f|
   = f.hidden_field :analysis_id
+  = f.hidden_field :store_id
   .form-group
-    = f.label :date, "日付"
-    p = "#{@sales_report.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@sales_report.date.wday]})")}"
     = f.hidden_field :date
-  .form-group
-    = f.label :store_id, "店舗"
-    p = Store.find(@sales_report.store_id).name
-    = f.hidden_field :store_id
-
-
-  .form-group
+    p = "日付：#{@sales_report.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@sales_report.date.wday]})")}"
+    p = "店舗：#{Store.find(@sales_report.store_id).name}"
     p = "売上：#{@analysis.ex_tax_sales_amount.to_s(:delimited)}円"
     p = "来店数：#{@analysis.transaction_count}"
+    p = "値引き金額：#{@analysis.discount_amount.to_s(:delimited)}円"
+    p = "値引き率：#{((@analysis.discount_amount.to_f/@analysis.ex_tax_sales_amount)*100).round(1)}%"
     p = "廃棄金額：#{@analysis.loss_amount.to_s(:delimited)}円"
     p = "廃棄率：#{((@analysis.loss_amount.to_f/@analysis.ex_tax_sales_amount)*100).round(1)}%"
+    p = "ロス金額：#{(@analysis.loss_amount.to_f + @analysis.discount_amount.to_f).round(1)}"
+    p = "ロス率：#{(((@analysis.loss_amount.to_f + @analysis.discount_amount.to_f)/@analysis.ex_tax_sales_amount)*100).round(1)}%"
   .form-group
     = f.label :sozai_ureyuki, "お惣菜の売れ行き"
     = f.select :sozai_ureyuki,['もっと売れた（機会ロスが多かった）','在庫もお客様の数も良い感じだった','在庫量が多かった（値引き割合が多かった）'],{include_blank:true},class:'form-control', required: true
@@ -41,6 +39,9 @@
   .form-group
     = f.label :issue, "課題点・改善点"
     = f.text_area :issue, class: "form-control", size: "10x7"
+  .form-group
+    = f.label :excess_or_deficiency_number_memo, "惣菜の盛り付け過不足の有無"
+    = f.text_area :excess_or_deficiency_number_memo, class: "form-control", size: "10x7"
   .form-group
     = f.label :other_memo, "その他"
     = f.text_area :other_memo, class: "form-control", size: "10x7"

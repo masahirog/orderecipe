@@ -16,6 +16,7 @@ class CreateWorkingHours < ActiveRecord::Migration[6.0]
       t.float :sekisai_of_working_time
       t.float :sonota_of_working_time
       t.float :tare_of_working_time
+      t.float :washing_of_working_time
     end
   end
 end

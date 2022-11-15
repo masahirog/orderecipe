@@ -610,6 +610,7 @@ ActiveRecord::Schema.define(version: 2022_11_15_093429) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "cash_error"
+    t.text "excess_or_deficiency_number_memo"
   end
 
   create_table "serving_plates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -749,14 +750,14 @@ ActiveRecord::Schema.define(version: 2022_11_15_093429) do
     t.index ["date", "material_id", "store_id"], name: "index_stocks_on_date_and_material_id_and_store_id", unique: true
   end
 
-  create_table "store_daily_menu_detail_histories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "store_daily_menu_detail_histories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "store_daily_menu_detail_id"
     t.integer "number"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "store_daily_menu_details", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "store_daily_menu_details", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "store_daily_menu_id", null: false
     t.integer "product_id", null: false
     t.integer "number", default: 0, null: false
@@ -861,7 +862,7 @@ ActiveRecord::Schema.define(version: 2022_11_15_093429) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "tasks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "tasks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "title"
     t.text "content"
     t.integer "status"
@@ -931,6 +932,7 @@ ActiveRecord::Schema.define(version: 2022_11_15_093429) do
     t.float "sekisai_of_working_time"
     t.float "sonota_of_working_time"
     t.float "tare_of_working_time"
+    t.float "washing_of_working_time"
   end
 
 end

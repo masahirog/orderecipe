@@ -213,12 +213,12 @@ class AnalysesController < AdminController
     @store_daily_menus = StoreDailyMenu.where(start_time:@date)
     @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @store_daily_menus.each do |sdm|
-      store_showcase_completion_rate_at_ten = ((sdm.store_daily_menu_details.where('initial_preparation_done < ?', "10:00").count.to_f / sdm.store_daily_menu_details.count).round(3))*100
-      store_showcase_completion_rate_at_eleven = ((sdm.store_daily_menu_details.where('initial_preparation_done < ?', "11:00").count.to_f / sdm.store_daily_menu_details.count).round(3))*100
-      @hash[sdm.store_id][:store_showcase_completion_rate_at_ten] = store_showcase_completion_rate_at_ten
-      @hash[sdm.store_id][:store_showcase_completion_rate_at_eleven] = store_showcase_completion_rate_at_eleven
+      # store_showcase_completion_rate_at_ten = ((sdm.store_daily_menu_details.where('initial_preparation_done < ?', "10:00").count.to_f / sdm.store_daily_menu_details.count).round(3))*100
+      # store_showcase_completion_rate_at_eleven = ((sdm.store_daily_menu_details.where('initial_preparation_done < ?', "11:00").count.to_f / sdm.store_daily_menu_details.count).round(3))*100
+      # @hash[sdm.store_id][:store_showcase_completion_rate_at_ten] = store_showcase_completion_rate_at_ten
+      # @hash[sdm.store_id][:store_showcase_completion_rate_at_eleven] = store_showcase_completion_rate_at_eleven
       @hash[sdm.store_id][:sdm] = sdm
-      @hash[sdm.store_id][:bento_finish_time] = sdm.store_daily_menu_details.find_by(product_id:13649).initial_preparation_done
+      # @hash[sdm.store_id][:bento_finish_time] = sdm.store_daily_menu_details.find_by(product_id:13649).store_daily_menu_detail_histories[0].created_at
     end
 
     #掃除
