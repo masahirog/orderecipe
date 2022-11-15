@@ -1,21 +1,39 @@
 class WorkingHoursController < ApplicationController
   before_action :set_working_hour, only: %i[ show edit update destroy ]
   def staff_input
-    @staffs = Staff.joins(:store).where(:stores => {group_id:19}).where(status:0)
+    @group = Group.find(params[:group_id])
+    @times = []
+    15.times do |hour|
+      [["00",0.0],["15",0.25],["30",0.5],["45",0.75]].each do |min|
+        @times  << ["#{hour}:#{min[0]}",(hour + min[1])]
+      end
+    end
     today = Date.today
     @staffs = WorkingHour.where(group_id:19).pluck(:name).uniq
-    if params[:from]
-      @from = params[:from]
+    if params[:date]
+      @date = Date.parse(params[:date])
     else
-      @from = today
+      @date = today
     end
-    if params[:to]
-      @to = params[:to]
+    @working_hours = WorkingHour.where(date:@date).where(group_id:19)
+    if @working_hours.present?
     else
-      @to = today
     end
-    @working_hours = WorkingHour.where(date:@from..@to).where(group_id:19)
   end
+  def create_work_times
+    new_arr = []
+    @date = Date.parse(params[:date])
+    working_hour_hash = WorkingHour.where(date:params[:date]).map{|wh|[[wh.date,wh.staff_id],wh]}.to_h
+    Staff.joins(:store).where(:stores => {group_id:19}).where(status:0).each do |staff|
+      if working_hour_hash[[@date,staff.id]].present?
+      else
+        new_arr << WorkingHour.new(date:@date,group_id:19,staff_id:staff.id,name:staff.name,jobcan_staff_code:staff.jobcan_staff_code,store_id:39)
+      end
+    end
+    WorkingHour.import new_arr
+    redirect_to staff_input_working_hours_path(date:@date)
+  end
+
   def upload_jobcan_data
     group_id = params[:group_id]
     WorkingHour.upload_data(params[:file],group_id)
@@ -66,6 +84,7 @@ class WorkingHoursController < ApplicationController
   end
 
   def update
+    @position = params["working_hour"]["position"]
     respond_to do |format|
       if @working_hour.update(working_hour_params)
         format.html
@@ -91,6 +110,8 @@ class WorkingHoursController < ApplicationController
     end
 
     def working_hour_params
-      params.require(:working_hour).permit(:id,:date,:name,:working_time,:jobcan_staff_code,:store_id,:group_id)
+      params.require(:working_hour).permit(:id,:date,:name,:working_time,:jobcan_staff_code,:store_id,:group_id,:position,
+      :kari_working_time,:chori_of_working_time,:kiridashi_of_working_time,:moritsuke_of_working_time,:sekisai_of_working_time,:sonota_of_working_time,:tare_of_working_time)
+
     end
 end

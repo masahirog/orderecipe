@@ -1,34 +1,104 @@
+.clearfix.form-group
+  div style='float:left;'
+    label
+      = link_to (@date-1).strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[(@date-1).wday]})＜　"),staff_input_working_hours_path(date:@date-1,group_id:@group.id)
+      = @date.strftime("%-Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@date.wday]})")
+      = link_to (@date+1).strftime("　＞%-m/%-d (#{%w(日 月 火 水 木 金 土)[(@date+1).wday]})"),staff_input_working_hours_path(date:@date+1,group_id:@group.id)
 
-table.table
-  thead
-    tr
-      th スタッフ名
-      th 勤務時間
-      th 弁当盛付
-      th 切出
-      th 調理
-      th 積載
-      th タレ
-      th その他
-      th ジョブカンコード
-      th ジョブカン時間
-  tbody
-    - @working_hours.each do |wh|
-      tr class="wh_tr_#{wh.id}"
-        td = wh.name
-        td = wh.kari_working_time
-        td.edit_group_td
-          = render partial: "edit_moritsuke", locals: { working_hour:wh }
-        td.edit_group_td
-          = render partial: "edit_kiridashi", locals: { working_hour:wh }
-        td.edit_store_td
-          = render partial: "edit_chori", locals: { working_hour:wh }
-        td.edit_store_td
-          = render partial: "edit_sekisai", locals: { working_hour:wh }
-        td.edit_store_td
-          = render partial: "edit_tare", locals: { working_hour:wh }
-        td.edit_group_td
-          = render partial: "edit_sonota", locals: { working_hour:wh }
+  = link_to 'スタッフ更新', create_work_times_working_hours_path(date:@date), method: :post,class:'btn btn-sm btn-primary',style:'float:right;',data:{confirm:'スタッフの枠を作成しますか？'}
 
-        td = wh.jobcan_staff_code
-        td = wh.working_time
+.table-responsive style='height: 80vh;overflow: scroll;'
+  table.table.layout-fixed style='border-collapse:separate;'
+    thead style='position: sticky;top:0;background-color:white;z-index:3;'
+      tr
+        th style='width:100px;' スタッフ名
+        th style='width:80px;' JCコード
+        th style='width:70px;' JC時間
+        th style='width:70px;' 勤務時間
+        th style='width:100px;' 弁当盛付
+        th style='width:100px;' 切出
+        th style='width:100px;' 調理
+        th style='width:100px;' 積載
+        th style='width:100px;' タレ
+        th style='width:100px;' その他
+    tbody
+      - @working_hours.each do |wh|
+        tr class="wh_tr_#{wh.id} working_hour_tr"
+          td style="overflow:auto;" = wh.name
+          td = wh.jobcan_staff_code
+          td
+            - if wh.working_time
+              = "#{wh.working_time.to_i}:#{sprintf("%02d", ((wh.working_time.to_f - wh.working_time.to_i)*60).round)}"
+          td.kari_working_time_td = wh.kari_working_time
+          td.edit_moritsuke_td
+            = render partial: "edit_moritsuke", locals: { working_hour:wh,position:'moritsuke' }
+          td.edit_kiridashi_td
+            = render partial: "edit_kiridashi", locals: { working_hour:wh,position:'kiridashi' }
+          td.edit_chori_td
+            = render partial: "edit_chori", locals: { working_hour:wh,position:'chori' }
+          td.edit_sekisai_td
+            = render partial: "edit_sekisai", locals: { working_hour:wh,position:'sekisai' }
+          td.edit_tare_td
+            = render partial: "edit_tare", locals: { working_hour:wh,position:'tare' }
+          td.edit_sonota_td
+            = render partial: "edit_sonota", locals: { working_hour:wh,position:'sonota' }
+
+javascript:
+  $(function() {
+    $(document).on("change", ".select_working_time", function(event) {
+      var wh_id = $(this).parent().find('.working_hour_id').val();
+      var position = $(this).parent().find('.position').val();
+      Rails.fire($('.working_hour_'+position+'_' + wh_id)[0], 'submit');
+      var time = 0
+      $(this).parents('tr').find(".select_working_time").each(function(select) {
+        time += Number($(this).val());
+      });
+      var hour = Math.floor(time);
+      var minute = parseFloat("0."+(String(time)).split(".")[1])*60.0;
+      if (time==0) {
+        $(this).parents("tr").find(".kari_working_time_td").text('');
+      }else{
+        if (minute==0) {
+          $(this).parents("tr").find(".kari_working_time_td").text(String(hour)+":00");
+        }else{
+          $(this).parents("tr").find(".kari_working_time_td").text(String(hour)+":"+String(minute));
+        }
+      }
+
+    });
+    $(".working_hour_tr").each(function(){
+      var time = 0
+      $(this).find(".select_working_time").each(function(select) {
+        time += Number($(this).val());
+      });
+      var hour = Math.floor(time);
+      var minute = parseFloat("0."+(String(time)).split(".")[1])*60.0;
+      if (time==0) {
+        $(this).find(".kari_working_time_td").text('');
+      }else{
+        if (minute==0) {
+          $(this).find(".kari_working_time_td").text(String(hour)+":00");
+        }else{
+          $(this).find(".kari_working_time_td").text(String(hour)+":"+String(minute));
+        }
+      }
+    });
+  });
+
+css:
+  .table-responsive th {
+    white-space: nowrap;
+    background-color:white;
+  }
+  table.layout-fixed {
+    table-layout: fixed;
+    border-collspace:separate;
+  }
+  .table th:first-child,td:first-child{
+    position: sticky;
+    left: 0;
+    background-color:white;
+  }
+  th,td {
+    font-weight:normal;
+  }

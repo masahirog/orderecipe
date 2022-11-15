@@ -45,7 +45,7 @@ html
                       li = link_to "べじはん献立",daily_menus_path
                       li = link_to "各店舗発注品",bejihan_store_orders_list_orders_path(date:Date.today,store_id:19)
                       li = link_to "進捗ボード",tasks_path(group_id:19)
-                      li = link_to "インプット",staff_input_working_hours_path
+                      li = link_to "時間内訳",staff_input_working_hours_path(group_id:19)
                         / = link_to '改善リスト', kaizen_lists_path(store_id:39), style:'float:left;'
                         / span style='float:left;margin-top:3px;color:red;' = "#{KaizenList.where(store_id:39).where.not(status:['done','cancel']).count}"
 
