@@ -18,8 +18,8 @@ class CreateStoreDailyMenuDetails < ActiveRecord::Migration[5.2]
       t.integer :sozai_number, default: 0, null: false
       t.integer :bento_fukusai_number, default: 0, null: false
       t.integer :showcase_type
-      t.time :initial_preparation_done
-      t.integer :initial_showcase_number
+      t.integer :prepared_number,default:0
+      t.integer :excess_or_deficiency_number,default:0
     end
   end
 end

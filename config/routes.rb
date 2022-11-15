@@ -5,7 +5,6 @@ Rails.application.routes.draw do
     post'products/description_update' => 'products#description_update'
 
   end
-
   namespace :store do
     resources :store_daily_menus do
       collection do
@@ -43,6 +42,7 @@ Rails.application.routes.draw do
       post :upload_jobcan_data
     end
   end
+  resources :store_daily_menu_detail_histories
   resources :store_daily_menu_details
   resources :task_comments
   resources :task_staffs

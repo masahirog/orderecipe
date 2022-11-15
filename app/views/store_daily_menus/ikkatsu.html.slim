@@ -5,23 +5,26 @@ p
 ul.list-group.clearfix style='margin-top:15px;'
   -@store_daily_menu_details.each do |sdmd|
     li.clearfix.list-group-item.float-left style='text-align: center;position:relative;'
-      div style='width:60%;float:left;text-align:left;padding:0 5px;'
+      div style='width:380px;max-width:100%;height:300px;float:left;'
+        - if sdmd.product.image_for_one_person.present?
+          = image_tag sdmd.product.image_for_one_person.to_s,class:"img-responsive",style:'height:300px;width:100%;object-fit:cover;margin-top:5px;margin:0 auto;'
+
+      div style='width:380px;max-width:100%;float:left;text-align:left;padding:5px 10px;'
         div
           = link_to sdmd.product.name,product_path(sdmd.product)
           span.label.label-info style="margin-left:10px;padding:4px 6px;" = "冷" if sdmd.showcase_type == 1
         div style='margin-top:6px;'
           label 包材：
           = sdmd.product.container.name if sdmd.product.container_id.present?
+        div style='margin-top:6px;'
           - if sdmd.serving_plate.present?
-            label style='margin-left:10px;' ｜見本皿：
+            label 見本皿：
             = sdmd.serving_plate.name
-        .clearfix
-          span style='float:left;margin-top:6px;margin-right:5px;font-weight:bold;' 在庫数：
-          span style='float:left;margin-top:6px;margin-right:20px;' = "#{sdmd.sozai_number} 食"
-          div style='float:left;' id="sdmd_#{sdmd.id}_form"
-            = render partial: "preperation", locals: { sdmd:sdmd }
+
+
         - if sdmd.product.product_ozara_serving_informations.present? || sdmd.product.display_image.present?
-          button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#ozara_serving_#{sdmd.product_id}" style='margin-top:10px;' 盛付工程
+          label 盛付工程：
+          button type="button" class="" data-toggle="modal" data-target="#ozara_serving_#{sdmd.product_id}" style='margin-top:10px;' 確認する
           .modal.fade tabindex="-1" ID="ozara_serving_#{sdmd.product_id}"
             .modal-dialog style='width:90%;'
               .modal-content
@@ -41,20 +44,33 @@ ul.list-group.clearfix style='margin-top:15px;'
                             = text_url_to_link(simple_format(h(posi.content))).html_safe
                           td
                             = image_tag posi.image.to_s,class:"img-responsive",style:'max-height:350px;' if posi.image?
-                      tr
-                        td 完成系
-                        td
-                          = image_tag sdmd.product.display_image.to_s,class:"img-responsive",style:'max-width:250px;height: auto;'
 
-
-        div.waku style="border:2px solid #ddd;position: relative;margin-top:20px;"
+        div.waku style="border:2px solid #ddd;position: relative;margin-top:20px;padding:10px;"
           span.small-label 1人前
-          = text_url_to_link(simple_format(h(sdmd.product.serving_infomation))).html_safe
+          = text_url_to_link(simple_format(h(sdmd.product.serving_infomation), {}, wrapper_tag: "div")).html_safe
 
-      div style='width:40%;height:300px;float:left;'
-        - if sdmd.product.image_for_one_person.present?
-          = image_tag sdmd.product.image_for_one_person.to_s,class:"img-responsive",style:'height:300px;width:100%;object-fit:cover;margin-top:5px;margin:0 auto;'
 
+      div style='width:190px;max-width:100%;float:left;text-align:left;padding:0 5px;'
+        .clearfix
+          label 在庫数：
+          span  = "#{sdmd.sozai_number} 食"
+        .clearfix
+          label 盛付数：
+          span class="prepared_number_#{sdmd.id}" = "#{sdmd.prepared_number} 食"
+        .clearfix
+          label 過不足：
+          span class="excess_or_deficiency_number_#{sdmd.id}" = "#{sdmd.excess_or_deficiency_number} 食"
+
+        div class="histories_#{sdmd.id}" style='margin-bottom:10px;'
+          br
+          span ー 履歴 ー
+          - sdmd.store_daily_menu_detail_histories.each_with_index do |sdmdh,i|
+            div class="history_#{sdmdh.id}" style='margin-bottom:5px;'
+              span = "#{i+1}：#{sdmdh.number} 食（ #{sdmdh.updated_at.strftime("%H:%M")} ）"
+              = link_to sdmdh, data: { confirm: '消すよ？',remote:true }, method: :delete,style:"float:right;" do
+                i class="fas fa-trash-alt" style='color:red;font-weight:200;'
+        div id="sdmd_#{sdmd.id}_form"
+          = render partial: "preperation", locals: { sdmd:sdmd }
 div style="position:fixed;right:20px;bottom:20px;width: 80px;height: 80px;border-radius: 50%;background:orangered;text-align: center;margin: 0 auto;display: flex;align-items: center;justify-content: center;"
   div style='margin-top:-10px;color:white;'
     span style='font-size:12px;' 残り

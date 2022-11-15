@@ -164,7 +164,7 @@ class StoreDailyMenusController < ApplicationController
   def ikkatsu
     @store_daily_menu = StoreDailyMenu.find(params[:id])
     @store_daily_menu_details = @store_daily_menu.store_daily_menu_details.includes([:serving_plate]).order("row_order ASC").includes(product:[:container,:product_ozara_serving_informations])
-    @remaining_count = @store_daily_menu_details.where(initial_preparation_done:nil).count
+    # @remaining_count = @store_daily_menu_details.where(initial_preparation_done:nil).count
   end
 
   def show

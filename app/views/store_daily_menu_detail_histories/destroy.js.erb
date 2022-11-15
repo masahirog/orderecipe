@@ -1,0 +1,5 @@
+// $(".remaining_count").text("<%= @remaining_count %>品")
+$(".prepared_number_<%= @store_daily_menu_detail.id %>").text("<%= @store_daily_menu_detail.prepared_number %> 食")
+$(".excess_or_deficiency_number_<%= @store_daily_menu_detail.id %>").text("<%= @store_daily_menu_detail.excess_or_deficiency_number %> 食")
+$(".history_<%= @store_daily_menu_detail_history.id %>").remove();
+$("#sdmd_<%= @store_daily_menu_detail.id %>_form").html("<%= escape_javascript(render partial: 'store_daily_menus/preperation', locals: {sdmd:@store_daily_menu_detail}) %>");

@@ -26,7 +26,6 @@ class StoreDailyMenuDetailsController < ApplicationController
       @store_daily_menu_detail.initial_preparation_done = Time.now
     end
     store_daily_menu_id = @store_daily_menu_detail.store_daily_menu_id
-
     respond_to do |format|
       if @store_daily_menu_detail.update(store_daily_menu_detail_params)
         @remaining_count = StoreDailyMenuDetail.where(store_daily_menu_id:store_daily_menu_id,initial_preparation_done:nil).count
@@ -56,6 +55,6 @@ class StoreDailyMenuDetailsController < ApplicationController
     end
 
     def store_daily_menu_detail_params
-      params.require(:store_daily_menu_detail).permit(:id,:initial_preparation_done,:initial_showcase_number)
+      params.require(:store_daily_menu_detail).permit(:id,:initial_preparation_done)
     end
 end
