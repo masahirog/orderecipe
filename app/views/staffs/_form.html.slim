@@ -24,5 +24,8 @@
   .form-group
     = f.label :jobcan_staff_code, "ジョブカンスタッフコード"
     = f.text_field :jobcan_staff_code, class:"form-control"
+  .form-group
+    = f.label :smaregi_hanbaiin_id, "スマレジ販売員ID"
+    = f.text_field :smaregi_hanbaiin_id, class:"form-control"
 
-  .actions = f.submit
+  .actions = f.submit "保存する",class:'btn btn-primary'

@@ -34,7 +34,7 @@ class StaffsController < ApplicationController
 
     respond_to do |format|
       if @staff.save
-        format.html { redirect_to staffs_path, notice: "Staff was successfully created." }
+        format.html { redirect_to staffs_path(group_id:@staff.store.group_id), notice: "Staff was successfully created." }
         format.json { render :show, status: :created, location: @staff }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -46,7 +46,7 @@ class StaffsController < ApplicationController
   def update
     respond_to do |format|
       if @staff.update(staff_params)
-        format.html { redirect_to staffs_path, notice: "Staff was successfully updated." }
+        format.html { redirect_to staffs_path(group_id:@staff.store.group_id), notice: "Staff was successfully updated." }
         format.json { render :show, status: :ok, location: @staff }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -69,6 +69,6 @@ class StaffsController < ApplicationController
     end
 
     def staff_params
-      params.require(:staff).permit(:store_id,:name,:memo,:employment_status,:row,:status,:jobcan_staff_code)
+      params.require(:staff).permit(:store_id,:name,:memo,:employment_status,:row,:status,:jobcan_staff_code,:smaregi_hanbaiin_id)
     end
 end

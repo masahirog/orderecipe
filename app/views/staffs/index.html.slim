@@ -10,6 +10,8 @@ h1 一覧
         th 雇用形態
         th 店舗
         th 状態
+        th ジョブカンコード
+        th スマレジID
         th
           |並び順　
           = submit_tag "登録する" ,class:"btn btn-success btn-sm"
@@ -24,6 +26,8 @@ h1 一覧
           td = staff.employment_status
           td = staff.store.name
           td = staff.status
+          td = staff.jobcan_staff_code
+          td = staff.smaregi_hanbaiin_id
           td = number_field_tag "row[#{staff.id}]",{},class:'input_row_order form-control',style:'width:60px;',readonly:true
 javascript:
   $(function () {
