@@ -71,7 +71,11 @@ table.table
         td = ap.carry_over if ap.present?
         td = ap.actual_inventory if ap.present?
         td = sdmd.prepared_number
-        td = sdmd.excess_or_deficiency_number
+        td
+          - if sdmd.excess_or_deficiency_number < 0
+            span style="color:red;" = sdmd.excess_or_deficiency_number
+          - else
+            span = sdmd.excess_or_deficiency_number
         td = ap.sales_number if ap.present?
         td = ap.ex_tax_sales_amount.to_s(:delimited) if ap.present? && ap.ex_tax_sales_amount.present?
         td = ap.loss_number if ap.present?
