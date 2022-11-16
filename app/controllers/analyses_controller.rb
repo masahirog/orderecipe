@@ -56,22 +56,22 @@ class AnalysesController < AdminController
         wednesday = wh.date - (wh.date.wday + 4)
       end
       if @week_hash[wednesday].present?
-        @week_hash[wednesday]['time'] += wh.working_time
+        @week_hash[wednesday]['time'] += wh.working_time.to_f
       else
-        @week_hash[wednesday]['time'] = wh.working_time
+        @week_hash[wednesday]['time'] = wh.working_time.to_f
       end
 
       if wh.date.wday == 0 || wh.date.wday == 6
         if @weekend_hash[wednesday].present?
-          @weekend_hash[wednesday]['time'] += wh.working_time
+          @weekend_hash[wednesday]['time'] += wh.working_time.to_f
         else
-          @weekend_hash[wednesday]['time'] = wh.working_time
+          @weekend_hash[wednesday]['time'] = wh.working_time.to_f
         end
       else
         if @weekday_hash[wednesday].present?
-          @weekday_hash[wednesday]['time'] += wh.working_time
+          @weekday_hash[wednesday]['time'] += wh.working_time.to_f
         else
-          @weekday_hash[wednesday]['time'] = wh.working_time
+          @weekday_hash[wednesday]['time'] = wh.working_time.to_f
         end
       end
     end
@@ -90,7 +90,7 @@ class AnalysesController < AdminController
     @wednesdays = gon.wednesdays
     @staffs = WorkingHour.where(date:@dates,group_id:19).order(:jobcan_staff_code).pluck(:name).uniq
     WorkingHour.where(date:@dates,group_id:19).each do |wh|
-      if wh.working_time > 8
+      if wh.working_time.to_f > 8
         zangyo = wh.working_time - 8
       else
         zangyo = 0
@@ -98,20 +98,20 @@ class AnalysesController < AdminController
       if @working_hours[wh.name].present?
         @working_hours[wh.name]["zangyo"] += zangyo
         @working_hours[wh.name]["date"][wh.date] = wh.working_time
-        @working_hours[wh.name]["sum"] += wh.working_time
+        @working_hours[wh.name]["sum"] += wh.working_time.to_f
         @working_hours[wh.name]["count"] += 1
         if wh.date > (today - 7)
-          @working_hours[wh.name]["seven_sum"] += wh.working_time
+          @working_hours[wh.name]["seven_sum"] += wh.working_time.to_f
           @working_hours[wh.name]["seven_zangyo"] += zangyo
           @working_hours[wh.name]["seven_count"] += 1
         end
       else
         @working_hours[wh.name]["zangyo"] = zangyo
-        @working_hours[wh.name]["sum"] = wh.working_time
+        @working_hours[wh.name]["sum"] = wh.working_time.to_f
         @working_hours[wh.name]["count"] = 1
-        @working_hours[wh.name]["date"][wh.date] = wh.working_time
+        @working_hours[wh.name]["date"][wh.date] = wh.working_time.to_f
         if wh.date > (today - 7)
-          @working_hours[wh.name]["seven_sum"] = wh.working_time
+          @working_hours[wh.name]["seven_sum"] = wh.working_time.to_f
           @working_hours[wh.name]["seven_count"] = 1
           @working_hours[wh.name]["seven_zangyo"] = zangyo
         else
