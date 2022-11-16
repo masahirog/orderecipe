@@ -22,9 +22,9 @@ ul.list-group.clearfix style='margin-top:15px;'
             = sdmd.serving_plate.name
 
 
-        - if sdmd.product.product_ozara_serving_informations.present? || sdmd.product.display_image.present?
+        - if sdmd.product.product_ozara_serving_informations.present?
           label 盛付工程：
-          button type="button" class="" data-toggle="modal" data-target="#ozara_serving_#{sdmd.product_id}" style='margin-top:10px;' 確認する
+          button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#ozara_serving_#{sdmd.product_id}" style='padding:2px 6px;' 確認する
           .modal.fade tabindex="-1" ID="ozara_serving_#{sdmd.product_id}"
             .modal-dialog style='width:90%;'
               .modal-content
