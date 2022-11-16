@@ -35,7 +35,7 @@ class StoreDailyMenusController < ApplicationController
     @store_daily_menu_details_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @store_daily_menu_detail_ids_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     store_daily_menu_ids = params["store_daily_menu_ids"]
-    @store_daily_menus = StoreDailyMenu.where(id:store_daily_menu_ids)
+    @store_daily_menus = StoreDailyMenu.where(id:store_daily_menu_ids).order(:start_time)
     store_daily_menu_details = StoreDailyMenuDetail.where(store_daily_menu_id:@store_daily_menus.ids)
     store_daily_menu_details.each do |sdmd|
       @store_daily_menu_detail_ids_hash[[sdmd.store_daily_menu_id,sdmd.product_id]]= sdmd.id
