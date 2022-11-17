@@ -56,7 +56,7 @@ table.table
           p = "10時：#{@hash[store.id][:store_showcase_completion_rate_at_ten]}%"
           p = "11時：#{@hash[store.id][:store_showcase_completion_rate_at_eleven]}%"
         td style='position: relative;width:200px;'
-          - if @hash[store.id][:sdm].present?
+          - if @hash[store.id][:sdm].present? && @hash[store.id][:sdm].opentime_showcase_photo.present?
             = link_to @hash[store.id][:sdm].opentime_showcase_photo.url, "data-lightbox" => @hash[store.id][:sdm].opentime_showcase_photo.url do
               = image_tag @hash[store.id][:sdm].opentime_showcase_photo.url,style:'height:100px;width:200px;object-fit:cover;object-position: 0 0;'
-          p class="top-left" style='position: absolute;bottom:0px;right:15px;background-color:white;padding:0px 4px;' = "#{@hash[store.id][:sdm].opentime_showcase_photo_uploaded.strftime("%H:%M")}" if @hash[store.id][:sdm].present?
+          p class="top-left" style='position: absolute;bottom:0px;right:15px;background-color:white;padding:0px 4px;' = "#{@hash[store.id][:sdm].opentime_showcase_photo_uploaded.strftime("%H:%M")}" if @hash[store.id][:sdm].present? && @hash[store.id][:sdm].opentime_showcase_photo.present?
