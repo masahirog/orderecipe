@@ -34,12 +34,14 @@ class StoreDailyMenusController < ApplicationController
     @store = Store.find(@store_id)
     @store_daily_menu_details_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @store_daily_menu_detail_ids_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    @store_daily_menu_details_bento_fukusai_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     store_daily_menu_ids = params["store_daily_menu_ids"]
     @store_daily_menus = StoreDailyMenu.where(id:store_daily_menu_ids).order(:start_time)
     store_daily_menu_details = StoreDailyMenuDetail.where(store_daily_menu_id:@store_daily_menus.ids)
     store_daily_menu_details.each do |sdmd|
       @store_daily_menu_detail_ids_hash[[sdmd.store_daily_menu_id,sdmd.product_id]]= sdmd.id
       @store_daily_menu_details_hash[[sdmd.store_daily_menu_id,sdmd.product_id]]= sdmd.sozai_number
+      @store_daily_menu_details_bento_fukusai_hash[[sdmd.store_daily_menu_id,sdmd.product_id]]= sdmd.bento_fukusai_number
     end
     @uniq_product_store_daily_menu_details = store_daily_menu_details.select(:product_id).distinct
     @uniq_product_ids = @uniq_product_store_daily_menu_details.map{|sdmd|sdmd.product_id}
@@ -117,11 +119,12 @@ class StoreDailyMenusController < ApplicationController
     store_daily_menu_details_hash = store_daily_menu_details.map{|sdmd|[sdmd.id,sdmd]}.to_h
     params[:store_daily_menu_details].each do |sdmd|
       store_daily_menu_detail = store_daily_menu_details_hash[sdmd[0].to_i]
-      store_daily_menu_detail.sozai_number = sdmd[1].to_i
+      store_daily_menu_detail.sozai_number = sdmd[1]['sozai_number'].to_i
+      store_daily_menu_detail.bento_fukusai_number = sdmd[1]['fukusai_number'].to_i if sdmd[1]['fukusai_number'].present?
       store_daily_menu_detail.number = store_daily_menu_detail.sozai_number + store_daily_menu_detail.bento_fukusai_number
       update_arr << store_daily_menu_detail
     end
-    StoreDailyMenuDetail.import update_arr,on_duplicate_key_update:[:sozai_number,:number]
+    StoreDailyMenuDetail.import update_arr,on_duplicate_key_update:[:sozai_number,:number,:bento_fukusai_number]
     update_dmds = []
     daily_menu_ids = store_daily_menu_details.map{|sdmd|sdmd.store_daily_menu.daily_menu_id}.uniq
     DailyMenu.where(id:daily_menu_ids).each do |daily_menu|

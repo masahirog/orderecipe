@@ -71,16 +71,21 @@ h3 = "#{@store.name}店 献立組み"
 
               / = "｜#{((@product_sales_potentials[sdmd.product_id].to_f/@sozai_total_sales_potential)*100).round(1)}%"
           - @store_daily_menus.each_with_index do |sdm,i|
-            td.clearfix class="col_#{i}"
+            td class="col_#{i}"
               - if @store_daily_menu_details_hash[[sdm.id,sdmd.product_id]].present?
-                - if sdmd.product.bejihan_sozai_flag == true
-                  input style='float:left;width:60px;' readonly='true' class="form-control yoso_input"
-                -else
-                  input style='float:left;width:60px;' readonly='true' class="form-control"
-                input.sales_potentials_rate value="#{(@product_sales_potentials[sdmd.product_id].to_f/@sozai_total_sales_potential).round(3)}" style='display:none;'
-                input.sozai_flag value="#{sdmd.product.bejihan_sozai_flag}" style='display:none;'
-                input.col_i value="#{i}" style='display:none;'
-                = f.number_field "store_daily_menu_details[#{@store_daily_menu_detail_ids_hash[[sdm.id,sdmd.product_id]]}]",value:@store_daily_menu_details_hash[[sdm.id,sdmd.product_id]], class:'form-control input-sdmd-number',style:"float:left;width:60px;"
+                .clearfix
+                  - if sdmd.product.bejihan_sozai_flag == true
+                    input style='float:left;width:60px;' readonly='true' class="form-control yoso_input"
+                  -else
+                    input style='float:left;width:60px;' readonly='true' class="form-control"
+                  input.sales_potentials_rate value="#{(@product_sales_potentials[sdmd.product_id].to_f/@sozai_total_sales_potential).round(3)}" style='display:none;'
+                  input.sozai_flag value="#{sdmd.product.bejihan_sozai_flag}" style='display:none;'
+                  input.col_i value="#{i}" style='display:none;'
+                  = f.number_field "store_daily_menu_details[#{@store_daily_menu_detail_ids_hash[[sdm.id,sdmd.product_id]]}][sozai_number]",value:@store_daily_menu_details_hash[[sdm.id,sdmd.product_id]], class:'form-control input-sdmd-number',style:"float:left;width:60px;", onClick:"this.select();"
+                - if @store_daily_menu_details_bento_fukusai_hash[[sdm.id,sdmd.product_id]] > 0
+                  .clearfix
+                    span style='width:60px;float:left;text-align:right;padding-top:5px;' 副菜：
+                    = f.number_field "store_daily_menu_details[#{@store_daily_menu_detail_ids_hash[[sdm.id,sdmd.product_id]]}][fukusai_number]",value:@store_daily_menu_details_bento_fukusai_hash[[sdm.id,sdmd.product_id]], class:'form-control input-sdmd-bento-fukusai-number',style:"float:left;width:60px;", onClick:"this.select();"
               - else
 
 css:
@@ -125,7 +130,7 @@ javascript:
     var col = $(this).parent().find('.col').val();
     $(".col_"+ String(col)).each(function(index, element){
       var yoso = Math.round(total_sozai_num * $(element).find('.sales_potentials_rate').val())
-      $(element).children('.yoso_input').val(yoso);
+      $(element).find('.yoso_input').val(yoso);
     });
   });
   $(".yoso-reflect").on('click',function(){
