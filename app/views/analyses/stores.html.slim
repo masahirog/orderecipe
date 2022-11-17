@@ -23,22 +23,22 @@ table.table
         td = link_to store.name,@hash[store.id][:sdm]
         td
           p = "当日：#{@date_sales_amount[store.id].to_i.to_s(:delimited)}円"
-          p = "今月：#{@month_sales_amount[store.id].to_s(:delimited)}円"
-          p = "先月：#{@last_month_sales_amount[store.id].to_s(:delimited)}円"
+          p = "今月：#{@month_sales_amount[store.id].to_i.to_s(:delimited)}円"
+          p = "先月：#{@last_month_sales_amount[store.id].to_i.to_s(:delimited)}円"
         td
           p = "当日：#{(((@date_loss_amount[store.id].to_i + @date_discount_amount[store.id].to_i)/@date_sales_amount[store.id].to_i.to_f)*100).round(1)}%"
-          p = "今月平均：#{(((@month_loss_amount[store.id] + @month_discount_amount[store.id])/@month_sales_amount[store.id].to_f)*100).round(1)}%"
-          p = "先月月平均：#{(((@last_month_loss_amount[store.id] + @last_month_discount_amount[store.id])/@last_month_sales_amount[store.id].to_f)*100).round(1)}%"
+          p = "今月平均：#{(((@month_loss_amount[store.id].to_i + @month_discount_amount[store.id].to_i)/@month_sales_amount[store.id].to_f)*100).round(1)}%"
+          p = "先月月平均：#{(((@last_month_loss_amount[store.id].to_i + @last_month_discount_amount[store.id].to_i)/@last_month_sales_amount[store.id].to_f)*100).round(1)}%"
         td
           p ="当日：#{@today_raikyakusu[store.smaregi_store_id]}"
           p ="昨日：#{@yesterday_raikyakusu[store.smaregi_store_id]}"
-          p ="今月：#{@month_raikyakusu[store.smaregi_store_id].to_s(:delimited)}"
-          p ="先月：#{@last_month_raikyakusu[store.smaregi_store_id].to_s(:delimited)}"
+          p ="今月：#{@month_raikyakusu[store.smaregi_store_id].to_i.to_s(:delimited)}"
+          p ="先月：#{@last_month_raikyakusu[store.smaregi_store_id].to_i.to_s(:delimited)}"
         td
           p ="当日：#{@today_new_user[store.smaregi_store_id]}"
           p ="今月：#{@month_new_user[store.smaregi_store_id]}"
           p ="先月：#{@last_month_new_user[store.smaregi_store_id]}"
-          p ="合計：#{@total_user[store.smaregi_store_id].to_s(:delimited)}"
+          p ="合計：#{@total_user[store.smaregi_store_id].to_i.to_s(:delimited)}"
 
 
 
@@ -52,11 +52,11 @@ table.table
         td
           p
             |弁当：
-            = @hash[store.id][:bento_finish_time].strftime('%H:%M') if @hash[store.id][:bento_finish_time]
+            = @hash[store.id][:bento_finish_time].strftime('%H:%M') if @hash[store.id][:bento_finish_time].present?
           p = "10時：#{@hash[store.id][:store_showcase_completion_rate_at_ten]}%"
           p = "11時：#{@hash[store.id][:store_showcase_completion_rate_at_eleven]}%"
         td style='position: relative;width:200px;'
-          - if @hash[store.id][:sdm].opentime_showcase_photo.present?
+          - if @hash[store.id][:sdm].present?
             = link_to @hash[store.id][:sdm].opentime_showcase_photo.url, "data-lightbox" => @hash[store.id][:sdm].opentime_showcase_photo.url do
               = image_tag @hash[store.id][:sdm].opentime_showcase_photo.url,style:'height:100px;width:200px;object-fit:cover;object-position: 0 0;'
-          p class="top-left" style='position: absolute;bottom:0px;right:15px;background-color:white;padding:0px 4px;' = "#{@hash[store.id][:sdm].opentime_showcase_photo_uploaded.strftime("%H:%M")}" if @hash[store.id][:sdm].opentime_showcase_photo_uploaded.present?
+          p class="top-left" style='position: absolute;bottom:0px;right:15px;background-color:white;padding:0px 4px;' = "#{@hash[store.id][:sdm].opentime_showcase_photo_uploaded.strftime("%H:%M")}" if @hash[store.id][:sdm].present?
