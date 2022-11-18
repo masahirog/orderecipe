@@ -10,9 +10,14 @@ class AnalysesController < AdminController
 
   def gyusuji
     @stores = Store.where.not(id:39)
-    unless params[:stores]
+    if params[:stores]
+      checked_store_ids = params['stores'].keys
+    else
+      checked_store_ids = @stores.ids
       params[:stores] = {}
-      @stores.each{|store|params[:stores][store.id.to_s] = true}
+      @stores.each do |store|
+        params[:stores][store.id.to_s] = true
+      end
     end
     if params[:to]
       params[:to] = params[:to].to_date
@@ -25,10 +30,12 @@ class AnalysesController < AdminController
       params[:from] = params[:to] - 13 unless params[:from]
     end
     @dates =(params[:from]..params[:to]).to_a
-    @gyusuji_sales_data = SmaregiTradingHistory.where(date:@dates,torihiki_meisaikubun:1,shohin_id:[354,355,373,742,374]).group(:date,:shohin_id).sum(:suryo)
-    @gyusuji_henpin_data = SmaregiTradingHistory.where(date:@dates,torihiki_meisaikubun:2,shohin_id:[354,355,373,742,374]).group(:date,:shohin_id).sum(:suryo)
-    @total_gyusuji_sales_data = SmaregiTradingHistory.where(date:@dates,torihiki_meisaikubun:1,shohin_id:[354,355,373,742,374]).group(:shohin_id).sum(:suryo)
-    @total_gyusuji_henpin_data = SmaregiTradingHistory.where(date:@dates,torihiki_meisaikubun:2,shohin_id:[354,355,373,742,374]).group(:shohin_id).sum(:suryo)
+    analyses = Analysis.where(date:@dates).where(store_id:checked_store_ids)
+    all_smaregi_trading_histories = SmaregiTradingHistory.where(analysis_id:analyses.ids)
+    @gyusuji_sales_data = all_smaregi_trading_histories.where(torihiki_meisaikubun:1,shohin_id:[354,355,373,742,374]).group(:date,:shohin_id).sum(:suryo)
+    @gyusuji_henpin_data = all_smaregi_trading_histories.where(torihiki_meisaikubun:2,shohin_id:[354,355,373,742,374]).group(:date,:shohin_id).sum(:suryo)
+    @total_gyusuji_sales_data = all_smaregi_trading_histories.where(torihiki_meisaikubun:1,shohin_id:[354,355,373,742,374]).group(:shohin_id).sum(:suryo)
+    @total_gyusuji_henpin_data = all_smaregi_trading_histories.where(torihiki_meisaikubun:2,shohin_id:[354,355,373,742,374]).group(:shohin_id).sum(:suryo)
 
     @shohin_id_name = {354 => "煮玉子",355=>"肉増し",373=>"丼",742=>"大根",374=>"牛すじ単品"}
   end
