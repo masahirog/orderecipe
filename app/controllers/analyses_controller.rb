@@ -882,7 +882,11 @@ class AnalysesController < AdminController
   end
 
   def create
+    store_daily_menu_id = params["analysis"]["store_daily_menu_id"]
+    store_daily_menu = StoreDailyMenu.find(store_daily_menu_id)
     @analysis = Analysis.new(analysis_params)
+    @analysis.date = store_daily_menu.start_time
+    @analysis.store_id = store_daily_menu.store_id
     respond_to do |format|
       if @analysis.save
         format.html { redirect_to @analysis, notice: "Analysis was successfully created." }
