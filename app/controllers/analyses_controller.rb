@@ -28,7 +28,7 @@ class AnalysesController < AdminController
     else
       @period = (@to - @from).to_i
     end
-    @smaregi_store_id = @analysis.store.smaregi_store_id
+    @smaregi_store_id = @analysis.store_daily_menu.store.smaregi_store_id
     uchikeshi_torihiki_ids = SmaregiTradingHistory.where(date:@from..@to).where(uchikeshi_kubun:2).map{|sth|sth.uchikeshi_torihiki_id}.uniq
     smaregi_trading_histories = SmaregiTradingHistory.where(date:@from..@to).where(tenpo_id:@smaregi_store_id,torihiki_meisaikubun:1).where.not(torihiki_id:uchikeshi_torihiki_ids)
     @time_zone_sales = smaregi_trading_histories.group("date_format(time, '%H')").sum(:zeinuki_uriage)
