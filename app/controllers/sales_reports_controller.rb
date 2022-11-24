@@ -24,7 +24,13 @@ class SalesReportsController < ApplicationController
     store_id = params[:store_id]
     @analysis = Analysis.find_by(date:date,store_id:store_id)
     if @analysis.present?
-      @sales_report = SalesReport.new(date:date,store_id:store_id,analysis_id:@analysis.id)
+      moritsuke_gosa = ""
+      @analysis.store_daily_menu.store_daily_menu_details.each do |sdmd|
+        unless sdmd.excess_or_deficiency_number == 0
+          moritsuke_gosa += "#{sdmd.product.name}：#{sdmd.excess_or_deficiency_number}食\n"
+        end
+      end
+      @sales_report = SalesReport.new(date:date,store_id:store_id,analysis_id:@analysis.id,excess_or_deficiency_number_memo:moritsuke_gosa)
     else
       redirect_to select_store_sales_reports_path,danger: "日付を確認するか、先にスマレジの情報をアップロードしてください。"
     end
