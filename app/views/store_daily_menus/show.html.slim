@@ -1,3 +1,7 @@
+- if @store_daily_menu.analysis.present?
+  = link_to "販売データ",@store_daily_menu.analysis,style:'margin-left:10px;float:right;',class:'btn btn-primary'
+- else
+  = link_to '販売データ', analyses_path(analysis: {store_daily_menu_id:@store_daily_menu.id}), method: :post,style:'margin-left:10px;float:right;',class:'btn btn-primary'
 
 button type="button" class="btn btn-default" data-toggle="modal" data-target="#store_once_reflect" style='margin-right:10px;float:right;' 製造数入力
 #store_once_reflect.modal.fade tabindex="-1"

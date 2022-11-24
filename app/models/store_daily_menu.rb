@@ -11,6 +11,7 @@ class StoreDailyMenu < ApplicationRecord
   accepts_nested_attributes_for :store_daily_menu_details, allow_destroy: true
   has_many :store_daily_menu_photos, dependent: :destroy
   accepts_nested_attributes_for :store_daily_menu_photos
+  has_one :analysis
 
   enum weather: {sunny:1, cloud:2,rain:3,strong_rain:4,taihoon:5,snow:6}
   validates :daily_menu_id, :uniqueness => {:scope => :store_id}

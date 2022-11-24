@@ -7,7 +7,7 @@ table.table
     tr
       th メニュー名
       - @analyses.each do |analysis|
-        th = analysis.date.strftime("%-m/%-d")
+        th = analysis.store_daily_menu.start_time.strftime("%-m/%-d")
   tbody
     - @product_datas.each do |product_data|
       tr

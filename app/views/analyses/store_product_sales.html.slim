@@ -50,15 +50,15 @@ table.table
         - else
           - color = "#ffffff"
         - i += 1
-      - holiday = HolidayJapan.name(analysis_product.analysis.date)
-      - if holiday.present? || analysis_product.analysis.date.wday == 0
+      - holiday = HolidayJapan.name(analysis_product.analysis.store_daily_menu.start_time)
+      - if holiday.present? || analysis_product.analysis.store_daily_menu.start_time.wday == 0
         - date_color = "red"
-      - elsif analysis_product.analysis.date.wday == 6
+      - elsif analysis_product.analysis.store_daily_menu.start_time.wday == 6
         - date_color = "blue"
       - else
         - date_color = "black"
       tr class="analysis_product_tr_#{analysis_product.id}" style="background-color:#{color};"
-        td style="color:#{date_color}" = analysis_product.analysis.date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[analysis_product.analysis.date.wday]})")
+        td style="color:#{date_color}" = analysis_product.analysis.store_daily_menu.start_time.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[analysis_product.analysis.store_daily_menu.start_time.wday]})")
         td = analysis_product.analysis.transaction_count
         td = analysis_product.analysis.fourteen_transaction_count
         td = analysis_product.analysis.total_number_sales_sozai

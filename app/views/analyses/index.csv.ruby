@@ -5,7 +5,7 @@ CSV.generate do |csv|
   @analyses.each do |analysis|
     analysis.analysis_products.each do |ap|
       if ap.product_id.present?
-        csv << [analysis.date,analysis.store.name,ap.product_id,ap.product.name,ap.early_sales_number,ap.sales_number,ap.actual_inventory]
+        csv << [analysis.store_daily_menu.start_time,analysis.store.name,ap.product_id,ap.product.name,ap.early_sales_number,ap.sales_number,ap.actual_inventory]
       end
     end
   end

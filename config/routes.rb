@@ -93,6 +93,7 @@ Rails.application.routes.draw do
   resources :analysis_products
   resources :analyses do
     collection do
+      get :progress
       get :gyusuji
       get :labor
       get :timezone_sales

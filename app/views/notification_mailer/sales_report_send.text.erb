@@ -1,5 +1,5 @@
 店舗名: <%= @analysis.store.name %>
-日付: <%= @analysis.date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[@analysis.date.wday]})") %>
+日付: <%= @analysis.store_daily_menu.start_time.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[@analysis.store_daily_menu.start_time.wday]})") %>
 担当者: <%= Staff.find(@sales_report.staff_id).name %>
 純売上(税抜): <%= @analysis.ex_tax_sales_amount.to_s(:delimited) %> 円
 来店者数: <%= @analysis.transaction_count %> 組

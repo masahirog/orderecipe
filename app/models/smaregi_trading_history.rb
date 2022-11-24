@@ -186,7 +186,7 @@ class SmaregiTradingHistory < ApplicationRecord
           end
           torihiki_ids << torihiki_id
         end
-        store_id = analysis.store_id
+        store_id = analysis.store_daily_menu.store_id
         store_daily_menu = StoreDailyMenu.find_by(store_id:store_id,start_time:date)
         sdmd_hash = store_daily_menu.store_daily_menu_details.map{|sdmd|[sdmd.product_id,sdmd]}.to_h
 
@@ -266,7 +266,7 @@ class SmaregiTradingHistory < ApplicationRecord
 
   def self.recalculate(analysis_id)
     analysis = Analysis.find(analysis_id)
-    date = analysis.date
+    date = analysis.store_daily_menu.start_time
     analysis.analysis_products.destroy_all if analysis.analysis_products
     number = 0
     analysis_total_sales_amount = 0
@@ -404,7 +404,7 @@ class SmaregiTradingHistory < ApplicationRecord
       end
     end
 
-    store_id = analysis.store_id
+    store_id = analysis.store_daily_menu.store_id
     store_daily_menu = StoreDailyMenu.find_by(store_id:store_id,start_time:date)
     sdmd_hash = store_daily_menu.store_daily_menu_details.map{|sdmd|[sdmd.product_id,sdmd]}.to_h
     analysis_products_arr.each do |analysis_product|

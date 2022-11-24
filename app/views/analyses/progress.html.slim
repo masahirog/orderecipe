@@ -1,0 +1,188 @@
+h3 = "#{@analysis.store_daily_menu.store.name}｜#{@time.strftime("%-m月%-d日(#{%w(日 月 火 水 木 金 土)[@time.wday]})")} #{@time.strftime("%H:%M")}時点"
+table.table
+  thead
+    tr
+      th 売上（税抜）
+      th 税額
+      th 値引き額
+      th 店舗売上
+      th デリバリー売上
+      th ポイント利用
+      th 来客数
+      th ~14客数
+      th 惣菜販売数
+      th ~14販売数
+  tbody
+    tr
+      td = "#{@analysis.ex_tax_sales_amount.to_s(:delimited)}円" if @analysis.ex_tax_sales_amount
+      td = "#{@analysis.tax_amount.to_s(:delimited)}円" if @analysis.tax_amount
+      td = "#{@analysis.discount_amount.to_s(:delimited)}円" if @analysis.discount_amount
+      td = "#{@analysis.store_sales_amount.to_s(:delimited)}円" if @analysis.store_sales_amount
+      td = "#{@analysis.delivery_sales_amount.to_s(:delimited)}円" if @analysis.delivery_sales_amount
+      td = "#{@analysis.used_point_amount.to_s(:delimited)}円"  if @analysis.used_point_amount
+      td = "#{@analysis.transaction_count}組"
+      td = "#{@analysis.fourteen_transaction_count}組"
+      td = @analysis.total_number_sales_sozai
+      td = @analysis.fourteen_number_sales_sozai
+
+h4 = "#{@time.hour}:00時点 在庫状況"
+table.table
+  thead
+    tr
+      th
+      th 初期在庫
+      th = "#{@time.hour}:00時点 販売数"
+      th 残数
+      th 以降の販売予想
+      th 差分
+  tbody
+    tr
+      td 惣菜
+      td = @initial_sozai_num
+      td = @today_sozai_sales
+      td = (@initial_sozai_num - @today_sozai_sales)
+      td = @today_sozai_sales_yoso
+      td
+        -if (@initial_sozai_num - @today_sozai_sales) - @today_sozai_sales_yoso > 0
+          = "約#{(@initial_sozai_num - @today_sozai_sales) - @today_sozai_sales_yoso} 点あまる"
+        - elsif (@initial_sozai_num - @today_sozai_sales) - @today_sozai_sales_yoso < 0
+          = "約#{((@initial_sozai_num - @today_sozai_sales) - @today_sozai_sales_yoso)*-1} 点足らない"
+        - else
+          |ちょうどいいくらい
+    tr
+      td 弁当
+      td = @initial_bento_num
+      td = @today_bento_sales
+      td = (@initial_bento_num - @today_bento_sales)
+      td = @today_bento_sales_yoso
+      td
+        -if (@initial_bento_num - @today_bento_sales) - @today_bento_sales_yoso > 0
+          = "約#{(@initial_bento_num - @today_bento_sales) - @today_bento_sales_yoso} 点あまる"
+        - elsif (@initial_bento_num - @today_bento_sales) - @today_bento_sales_yoso < 0
+          = "約#{((@initial_bento_num - @today_bento_sales) - @today_bento_sales_yoso)*-1} 点足らない"
+        - else
+          |ちょうどいいくらい
+
+.clearfix
+  h4 style='float:left;' 時間帯データ
+  div style="float:right;"
+    = form_tag timezone_sales_analyses_path, :method => 'get' do
+      .clearfix
+        label style='float:left;margin-right:10px;' 直近データの期間選択
+        = date_field_tag :from, params[:from], class:"form-control float-left",style:'width:200px;float:left;'
+        div style="float:left;padding:8px;" 〜
+        = date_field_tag :to, params[:to], class:"form-control",style:'width:200px;float:left;'
+        = submit_tag "更新" ,class:"btn btn-primary",style:"float:left;margin-left:10px;"
+.table-responsive style='overflow: scroll;'
+  table.table.layout-fixed style='border-collapse:separate;'
+    thead style='position: sticky;top:0;background-color:white;z-index:3;'
+      tr
+        th 項目
+        th
+        - (10..21).each do |hour|
+          - if hour == @time.hour
+            th style="background-color:#ffc0cb;" = hour
+          - else
+            th = hour
+    tbody
+      tr
+        td rowspan=2
+          span 来客数
+          br
+          span 累計（時間別）
+        td 今日
+        - sum = 0
+        - (10..21).each do |hour|
+          td
+            - if hour <= @time.hour
+              - sum += @today_time_zone_counts[hour.to_s].to_i
+              = "#{sum}（#{@today_time_zone_counts[hour.to_s].to_i}）"
+      tr
+        td 直近
+        - sum = 0
+        - (10..21).each do |hour|
+          - sum += @time_zone_counts[hour.to_s].to_i/@period
+          td = "#{sum}（#{@time_zone_counts[hour.to_s].to_i/@period}）"
+
+      tr
+        td rowspan=2
+          span 惣菜販売数
+          br
+          span 累計（時間別）
+        td 今日
+        - sum = 0
+        - (10..21).each do |hour|
+          td
+            - if hour <= @time.hour
+              - sum += @today_time_zone_sales_product[[hour.to_s,1]].to_i
+              = "#{sum}（#{(@today_time_zone_sales_product[[hour.to_s,1]].to_i)}）"
+      tr
+        td 直近
+        - sum = 0
+        - (10..21).each do |hour|
+          - sum += @time_zone_sales_product[[hour.to_s,1]].to_i/@period
+          td = "#{sum}（#{(@time_zone_sales_product[[hour.to_s,1]].to_i)/@period}）"
+
+      tr
+        td rowspan=2
+          span 弁当販売数
+          br
+          span 累計（時間別）
+        td 今日
+        - sum = 0
+        - (10..21).each do |hour|
+          td
+            - if hour <= @time.hour
+              - sum += @today_time_zone_sales_product[[hour.to_s,5]].to_i
+              = "#{sum}（#{(@today_time_zone_sales_product[[hour.to_s,5]].to_i)}）"
+      tr
+        td 直近
+        - sum = 0
+        - (10..21).each do |hour|
+          - sum += @time_zone_sales_product[[hour.to_s,5]].to_i/@period
+          td = "#{sum}（#{(@time_zone_sales_product[[hour.to_s,5]].to_i)/@period}）"
+
+      tr
+        td rowspan=2
+          span 売上
+          br
+          span 累計（時間別）
+
+        td 今日
+        - sum = 0
+        - (10..21).each do |hour|
+          td
+            - if hour <= @time.hour
+              - sum += @today_time_zone_sales[hour.to_s].to_i
+              span = sum.to_s(:delimited)
+              br
+              span = "（#{(@today_time_zone_sales[hour.to_s].to_i).to_s(:delimited)}）"
+      tr
+        td 直近
+        - sum = 0
+        - (10..21).each do |hour|
+          - sum += @time_zone_sales[hour.to_s].to_i
+          td
+            span = (sum/@period).to_s(:delimited)
+            br
+            span = "（#{(@time_zone_sales[hour.to_s].to_i/@period).to_s(:delimited)}）"
+
+css:
+  .table-responsive th {
+    white-space: nowrap;
+    background-color:white;
+  }
+  table.layout-fixed {
+    table-layout: fixed;
+    border-collspace:separate;
+  }
+  .table th:first-child,td:first-child{
+    position: sticky;
+    left: 0;
+    background-color:white;
+  }
+  th,td {
+    font-weight:normal;
+    text-align:center;
+    width:130px;
+  }

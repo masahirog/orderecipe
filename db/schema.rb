@@ -32,6 +32,7 @@ ActiveRecord::Schema.define(version: 2022_11_15_093429) do
     t.integer "delivery_sales_amount"
     t.integer "used_point_amount"
     t.integer "used_coupon_amount"
+    t.integer "store_daily_menu_id", null: false
     t.index ["date", "store_id"], name: "index_analyses_on_date_and_store_id", unique: true
   end
 
@@ -597,7 +598,7 @@ ActiveRecord::Schema.define(version: 2022_11_15_093429) do
     t.integer "check_staff"
   end
 
-  create_table "sales_reports", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "sales_reports", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "analysis_id", null: false
     t.integer "store_id", null: false
     t.date "date", null: false
@@ -787,7 +788,7 @@ ActiveRecord::Schema.define(version: 2022_11_15_093429) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "store_daily_menus", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+  create_table "store_daily_menus", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "daily_menu_id"
     t.integer "store_id"
     t.date "start_time"
@@ -915,7 +916,7 @@ ActiveRecord::Schema.define(version: 2022_11_15_093429) do
     t.boolean "fax_staff_name_display_flag", default: false, null: false
   end
 
-  create_table "working_hours", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "working_hours", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.date "date"
     t.string "name"
     t.integer "staff_id"

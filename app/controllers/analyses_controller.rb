@@ -8,6 +8,53 @@ class AnalysesController < AdminController
   #   redirect_to smaregi_trading_histories_path()
   # end
 
+  def progress
+    @analysis = Analysis.find(params[:analysis_id])
+    if params[:to]
+      @to = params[:to].to_date
+    else
+      @to = Date.today - 1
+      params[:to] = @to
+    end
+    if params[:from]
+      @from = params[:from].to_date
+    else
+      @from = @to - 30
+      params[:from] = @from
+    end
+    @dates =(@from..@to).to_a
+    if @to == @from
+      @period = 1
+    else
+      @period = (@to - @from).to_i
+    end
+    @smaregi_store_id = @analysis.store.smaregi_store_id
+    uchikeshi_torihiki_ids = SmaregiTradingHistory.where(date:@from..@to).where(uchikeshi_kubun:2).map{|sth|sth.uchikeshi_torihiki_id}.uniq
+    smaregi_trading_histories = SmaregiTradingHistory.where(date:@from..@to).where(tenpo_id:@smaregi_store_id,torihiki_meisaikubun:1).where.not(torihiki_id:uchikeshi_torihiki_ids)
+    @time_zone_sales = smaregi_trading_histories.group("date_format(time, '%H')").sum(:zeinuki_uriage)
+    @time_zone_counts = smaregi_trading_histories.group("date_format(time, '%H')").distinct.count(:torihiki_id)
+    @time_zone_sales_product = smaregi_trading_histories.group("date_format(time, '%H')").group(:bumon_id).sum(:suryo)
+    @time_zone_nebikigaku_gokei = smaregi_trading_histories.group("date_format(time, '%H')").sum(:tanka_nebikikei)
+    @time_zone_nebikisu_gokei = smaregi_trading_histories.where("tanka_nebikikei >0").group("date_format(time, '%H')").sum(:suryo)
+    @store_daily_menu = @analysis.store_daily_menu
+    @initial_sozai_num = @store_daily_menu.store_daily_menu_details.joins(:product).where(:products =>{product_category:1}).sum(:sozai_number)
+    @initial_bento_num = @store_daily_menu.store_daily_menu_details.joins(:product).where(:products =>{product_category:5}).sum(:sozai_number)
+    date = @store_daily_menu.start_time
+    today_uchikeshi_torihiki_ids = SmaregiTradingHistory.where(date:date).where(uchikeshi_kubun:2).map{|sth|sth.uchikeshi_torihiki_id}.uniq
+    today_smaregi_trading_histories = SmaregiTradingHistory.where(date:date).where(torihiki_meisaikubun:1).where.not(torihiki_id:today_uchikeshi_torihiki_ids)
+    @today_time_zone_sales = today_smaregi_trading_histories.group("date_format(time, '%H')").sum(:zeinuki_uriage)
+    @today_time_zone_counts = today_smaregi_trading_histories.group("date_format(time, '%H')").distinct.count(:torihiki_id)
+    @today_time_zone_sales_product = today_smaregi_trading_histories.group("date_format(time, '%H')").group(:bumon_id).sum(:suryo)
+    @today_time_zone_nebikigaku_gokei = today_smaregi_trading_histories.group("date_format(time, '%H')").sum(:tanka_nebikikei)
+    @today_time_zone_nebikisu_gokei = today_smaregi_trading_histories.where("tanka_nebikikei >0").group("date_format(time, '%H')").sum(:suryo)
+    @time = today_smaregi_trading_histories.maximum(:torihiki_nichiji)
+    @today_bento_sales = today_smaregi_trading_histories.where("time < ?", "#{@time.hour}:00:00").where(bumon_id:5).sum(:suryo)
+    @today_sozai_sales = today_smaregi_trading_histories.where("time < ?", "#{@time.hour}:00:00").where(bumon_id:1).sum(:suryo)
+    @today_bento_sales_yoso = (smaregi_trading_histories.where("time > ?", "#{@time.hour}:00:00").where(bumon_id:5).sum(:suryo)/@period)
+    @today_sozai_sales_yoso = (smaregi_trading_histories.where("time > ?", "#{@time.hour}:00:00").where(bumon_id:1).sum(:suryo)/@period)
+
+  end
+
   def gyusuji
     @stores = Store.where.not(id:39)
     if params[:stores]
@@ -43,7 +90,7 @@ class AnalysesController < AdminController
     today = Date.today
     @dates = (today-30..today)
     @daily_working_hours = WorkingHour.where(date:@dates).group(:store_id,:date).sum(:working_time)
-    @analyses = Analysis.where(date:@dates).map{|analysis|[[analysis.date,analysis.store_id],analysis.total_sales_amount]}.to_h
+    @analyses = Analysis.where(date:@dates).map{|analysis|[[analysis.store_daily_menu.start_time,analysis.store_daily_menu.store_id],analysis.total_sales_amount]}.to_h
     @total_analyses = Analysis.where(date:@dates).group(:date).sum(:total_sales_amount)
     @kurumesis = KurumesiOrder.where(start_time:@dates,canceled_flag:false).group(:start_time).sum("total_price")
     gon.dates = []
@@ -480,16 +527,16 @@ class AnalysesController < AdminController
     @dates = []
     product_ids = []
     @analysis_products.each do |ap|
-      if @hash[ap.product_id][ap.analysis.date].present?
-        @hash[ap.product_id][ap.analysis.date][:actual_inventory] += ap.actual_inventory.to_i
-        @hash[ap.product_id][ap.analysis.date][:sales_number] += ap.sales_number
-        @hash[ap.product_id][ap.analysis.date][:total_sales_amount] += ap.total_sales_amount
-        @hash[ap.product_id][ap.analysis.date][:discount_amount] += ap.discount_amount
-        @hash[ap.product_id][ap.analysis.date][:loss_amount] += ap.loss_amount
+      if @hash[ap.product_id][ap.analysis.store_daily_menu.start_time].present?
+        @hash[ap.product_id][ap.analysis.store_daily_menu.start_time][:actual_inventory] += ap.actual_inventory.to_i
+        @hash[ap.product_id][ap.analysis.store_daily_menu.start_time][:sales_number] += ap.sales_number
+        @hash[ap.product_id][ap.analysis.store_daily_menu.start_time][:total_sales_amount] += ap.total_sales_amount
+        @hash[ap.product_id][ap.analysis.store_daily_menu.start_time][:discount_amount] += ap.discount_amount
+        @hash[ap.product_id][ap.analysis.store_daily_menu.start_time][:loss_amount] += ap.loss_amount
       else
-        @hash[ap.product_id][ap.analysis.date] = {sales_number:ap.sales_number,total_sales_amount:ap.total_sales_amount,discount_amount:ap.discount_amount,loss_amount:ap.loss_amount,actual_inventory:ap.actual_inventory.to_i}
+        @hash[ap.product_id][ap.analysis.store_daily_menu.start_time] = {sales_number:ap.sales_number,total_sales_amount:ap.total_sales_amount,discount_amount:ap.discount_amount,loss_amount:ap.loss_amount,actual_inventory:ap.actual_inventory.to_i}
         product_ids << ap.product_id unless product_ids.include?(ap.product_id)
-        @dates << ap.analysis.date unless @dates.include?(ap.analysis.date)
+        @dates << ap.analysis.store_daily_menu.start_time unless @dates.include?(ap.analysis.store_daily_menu.start_time)
       end
     end
     @dates = @dates.sort
@@ -600,7 +647,7 @@ class AnalysesController < AdminController
           @product_datas[ap.product_id][ap.analysis_id]['sales_number'] = ap.sales_number
         end
         @product_datas[ap.product_id][ap.analysis_id]['actual_inventory'] = ap.actual_inventory
-        # @product_datas[ap.product_id][ap.analysis_id]['date'] = ap.analysis.date
+        # @product_datas[ap.product_id][ap.analysis_id]['date'] = ap.analysis.store_daily_menu.start_time
       end
     end
 
@@ -700,7 +747,7 @@ class AnalysesController < AdminController
     @stores = Store.all
     @analyses_hash = {}
     Analysis.where(date:@date).each do |analysis|
-      @analyses_hash[analysis.store_id] = analysis
+      @analyses_hash[analysis.store_daily_menu.store_id] = analysis
     end
 
   end
@@ -725,7 +772,7 @@ class AnalysesController < AdminController
     end
     @dates =(params[:from]..params[:to]).to_a
     @analyses = Analysis.where(date:params[:from]..params[:to]).where(store_id:params['stores'].keys)
-    @store_analyses = @analyses.map{|analysis|[[analysis.date,analysis.store_id],analysis]}.to_h
+    @store_analyses = @analyses.map{|analysis|[[analysis.store_daily_menu.start_time,analysis.store_daily_menu.store_id],analysis]}.to_h
     @date_sales_amount = @analyses.group(:date).sum(:ex_tax_sales_amount)
     @store_date_sales_amount = @analyses.group(:date,:store_id).sum(:ex_tax_sales_amount)
     @date_discount_amount = @analyses.group(:date).sum(:discount_amount)
@@ -809,9 +856,9 @@ class AnalysesController < AdminController
 
     @smaregi_trading_histories = @smaregi_trading_histories.page(params[:page]).per(50)
 
-    date = @analysis.date
-    store_id = @analysis.store_id
-    @store_daily_menu = StoreDailyMenu.find_by(start_time:date,store_id:store_id)
+    date = @analysis.store_daily_menu.start_time
+    store_id = @analysis.store_daily_menu.store_id
+    @store_daily_menu = @analysis.store_daily_menu
     @store_daily_menu_details = @store_daily_menu.store_daily_menu_details.includes([:product]).order(:row_order)
     sdmd_arr = @store_daily_menu_details.map{|sdmd|sdmd.product_id}
     @analysis.analysis_products.includes(:product).each do |ap|
@@ -835,6 +882,7 @@ class AnalysesController < AdminController
   end
 
   def create
+    store_daily_menu_id = params["analysis"]["store_daily_menu_id"]
     @analysis = Analysis.new(analysis_params)
     respond_to do |format|
       if @analysis.save
@@ -873,6 +921,6 @@ class AnalysesController < AdminController
     end
 
     def analysis_params
-      params.require(:analysis).permit(:store_id,:date)
+      params.require(:analysis).permit(:store_id,:date,:store_daily_menu_id)
     end
 end

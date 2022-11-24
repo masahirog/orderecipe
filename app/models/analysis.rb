@@ -4,6 +4,7 @@ class Analysis < ApplicationRecord
   has_many :sales_reports
   belongs_to :store
   validates :store_id, :uniqueness => {:scope => :date}
+  belongs_to :store_daily_menu
 
   def self.recollection_datas
     meisaikubun_plus_all = SmaregiTradingHistory.where(torihiki_meisaikubun:1)

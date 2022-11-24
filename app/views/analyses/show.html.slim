@@ -19,8 +19,8 @@ table.table
       th ~14販売数
   tbody
     tr
-      td = @analysis.date.strftime("%-m月%-d日(#{%w(日 月 火 水 木 金 土)[@analysis.date.wday]})")
-      td = @analysis.store.name
+      td = @analysis.store_daily_menu.start_time.strftime("%-m月%-d日(#{%w(日 月 火 水 木 金 土)[@analysis.store_daily_menu.start_time.wday]})")
+      td = @analysis.store_daily_menu.store.name
       td = "#{@analysis.total_sales_amount.to_s(:delimited)}円" if @analysis.total_sales_amount
       td = "#{@analysis.discount_amount.to_s(:delimited)}円" if @analysis.discount_amount
       td = "#{@analysis.net_sales_amount.to_s(:delimited)}円" if @analysis.net_sales_amount
@@ -36,9 +36,11 @@ table.table
       td = @analysis.total_number_sales_sozai
       td = @analysis.fourteen_number_sales_sozai
 
-= link_to '計算', products_analyses_path(analysis_id:@analysis.id), method: :post,class:'btn btn-sm btn-primary'
+.form-group
+  = link_to '計算', products_analyses_path(analysis_id:@analysis.id), method: :post,class:'btn btn-sm btn-primary'
+  = link_to '途中経過', progress_analyses_path(analysis_id:@analysis.id),class:'btn btn-sm btn-default',style:'margin-left:20px;'
 
-= link_to 'Orderecipeデータリセット',bulk_delete_analysis_products_analyses_path(analysis_id:@analysis.id), {method: :post, data: { confirm: '削除しますか？' },class:'btn btn-sm btn-danger pull-right'}
+/ = link_to 'Orderecipeデータリセット',bulk_delete_analysis_products_analyses_path(analysis_id:@analysis.id), {method: :post, data: { confirm: '削除しますか？' },class:'btn btn-sm btn-danger pull-right'}
 table.table
   thead
     tr style="background-color:gainsboro;"
@@ -63,7 +65,7 @@ table.table
       - bgcolor = "white"
       - bgcolor = 'lightpink' if ap.present? && ap.loss_number.present? && sdmd.sold_out_flag == true && ap.loss_number > 0
       tr style="background-color:#{bgcolor}"
-        td = link_to sdmd.product.name,store_product_sales_analyses_path(store_id:@analysis.store_id,product_id:sdmd.product_id)
+        td = link_to sdmd.product.name,store_product_sales_analyses_path(store_id:@analysis.store_daily_menu.store_id,product_id:sdmd.product_id)
         td = sdmd.product.sell_price
         td = ap.smaregi_shohin_name if ap.present?
         td = ap.smaregi_shohintanka if ap.present?
@@ -141,9 +143,9 @@ table.table
               .modal-header
                 h4.modal-title 新規作成
               .modal-body
-                = hidden_field_tag :smaregi_store_id,@analysis.store.smaregi_store_id
+                = hidden_field_tag :smaregi_store_id,@analysis.store_daily_menu.store.smaregi_store_id
                 = hidden_field_tag :analysis_id,@analysis.id
-                = hidden_field_tag :date,@analysis.date
+                = hidden_field_tag :date,@analysis.store_daily_menu.start_time
                 = file_field_tag :file,class:'form-control',style:'padding:10px;height:100%;'
               .modal-footer
                 button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
