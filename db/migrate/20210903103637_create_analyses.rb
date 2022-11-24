@@ -1,8 +1,6 @@
 class CreateAnalyses < ActiveRecord::Migration[5.2]
   def change
     create_table :analyses do |t|
-      t.integer :store_id
-      t.date :date
       t.integer :total_sales_amount
       t.integer :loss_amount
       t.integer :labor_cost
@@ -19,7 +17,6 @@ class CreateAnalyses < ActiveRecord::Migration[5.2]
       t.integer :delivery_sales_amount
       t.integer :used_point_amount
       t.integer :used_coupon_amount
-      t.index [:date, :store_id], unique: true
       t.integer :store_daily_menu_id,null:false
     end
   end

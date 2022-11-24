@@ -28,7 +28,7 @@ table.table
 
         - else
           td = store.name
-          td = link_to '分析作成', analyses_path(analysis: {store_id: store.id,date:@date}), method: :post
+          td = link_to '分析作成', analyses_path(analysis: {store_daily_menu_id:@store_daily_menus_hash[store.id]}), method: :post
           td
           td
           td

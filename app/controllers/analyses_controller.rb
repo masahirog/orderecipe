@@ -749,7 +749,7 @@ class AnalysesController < AdminController
     Analysis.where(date:@date).each do |analysis|
       @analyses_hash[analysis.store_daily_menu.store_id] = analysis
     end
-
+    @store_daily_menus_hash = StoreDailyMenu.where(start_time:@date).map{|sdm|[sdm.store_id,sdm.id]}.to_h
   end
   def summary
     gon.lat = 35.7058146
@@ -875,14 +875,13 @@ class AnalysesController < AdminController
   end
 
   def new
-    @analysis = Analysis.new(store_id:params[:store_id],date:params[:date])
+    @analysis = Analysis.new()
   end
 
   def edit
   end
 
   def create
-    store_daily_menu_id = params["analysis"]["store_daily_menu_id"]
     @analysis = Analysis.new(analysis_params)
     respond_to do |format|
       if @analysis.save
