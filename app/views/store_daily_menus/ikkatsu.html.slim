@@ -51,7 +51,7 @@ ul.list-group.clearfix style='margin-top:15px;'
           = text_url_to_link(simple_format(h(sdmd.product.serving_infomation), {}, wrapper_tag: "div")).html_safe
 
 
-      div style='width:190px;max-width:100%;float:left;text-align:left;padding:0 5px;'
+      div.reload_target style='width:190px;max-width:100%;float:left;text-align:left;padding:0 5px;'
         .clearfix
           label 在庫数：
           span  = "#{sdmd.sozai_number} 食"
@@ -85,3 +85,14 @@ css:
   .waku p{
     padding: 15px 5px;
   }
+
+javascript:
+  var sync = () => {
+    $.ajax({
+      type: 'GET',
+      url: $(location).attr('href'),
+      dataType: 'script'
+    })
+  }
+  var interval = setInterval(sync, 10000)
+  $(document).on('turbolinks:before-cache turbolinks:before-render', () => clearTimeout(interval))

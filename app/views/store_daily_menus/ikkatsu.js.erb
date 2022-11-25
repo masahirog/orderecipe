@@ -1,0 +1,8 @@
+<% @store_daily_menu_details.each do |sdmd| %>
+  var sdmd_id = <%= sdmd.id %>
+  $(".histories_"+ sdmd_id).html("<%= escape_javascript(render partial: 'store_daily_menus/histories', locals: {sdmd:sdmd}) %>");
+  $(".prepared_number_"+sdmd_id).text("<%=sdmd.prepared_number%> 食");
+  $(".excess_or_deficiency_number_"+sdmd_id).text("<%=sdmd.excess_or_deficiency_number%> 食");
+  $(".remaining_count").text("<%=@remaining_count%>品");
+
+<% end %>
