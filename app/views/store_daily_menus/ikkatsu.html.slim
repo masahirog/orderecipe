@@ -87,6 +87,8 @@ css:
   }
 
 javascript:
+  // 盛りつけ画面の個数入力を10秒に一回自動で更新
+  // store_daily_menus/indexにajaxで送信している
   var sync = () => {
     $.ajax({
       type: 'GET',

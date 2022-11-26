@@ -1,17 +1,21 @@
 .clearfix.form-group
   div style='float:left;'
     label
-      = link_to (@date-1).strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[(@date-1).wday]})＜　"),staff_input_working_hours_path(date:@date-1,group_id:@group.id)
-      = @date.strftime("%-Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@date.wday]})")
-      = link_to (@date+1).strftime("　＞%-m/%-d (#{%w(日 月 火 水 木 金 土)[(@date+1).wday]})"),staff_input_working_hours_path(date:@date+1,group_id:@group.id)
+      = link_to (@date-1).strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[(@date-1).wday]})＜　"),staff_input_working_hours_path(date:@date-1,group_id:19)
+      = link_to @date.strftime("%-Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@date.wday]})"),staff_input_working_hours_path(date:@date,group_id:19)
+      =
+      = link_to (@date+1).strftime("　＞%-m/%-d (#{%w(日 月 火 水 木 金 土)[(@date+1).wday]})"),staff_input_working_hours_path(date:@date+1,group_id:19)
 
-  = link_to 'スタッフ更新', create_work_times_working_hours_path(date:@date,group_id:@group.id), method: :post,class:'btn btn-sm btn-primary',style:'float:right;',data:{confirm:'スタッフの枠を作成しますか？'}
-
+  = link_to '結果',result_working_hours_path(group_id:19),class:'btn btn-sm btn-primary',style:'float:right;margin-left:20px;'
+  = link_to 'スタッフ更新', create_work_times_working_hours_path(date:@date,group_id:19), method: :post,class:'btn btn-sm btn-primary',style:'float:right;',data:{confirm:'スタッフの枠を作成しますか？'}
 .table-responsive style='height: 80vh;overflow: scroll;'
-  table.table.layout-fixed style='border-collapse:separate;'
+  table.table.layout-fixed.table-striped style='border-collapse:separate;'
     thead style='position: sticky;top:0;background-color:white;z-index:3;'
       tr
+        - if params[:staff_id]
+          th style='width:80px;' 日付
         th style='width:100px;' スタッフ名
+        th style='width:40px;' 確認
         th style='width:80px;' JCコード
         th style='width:70px;' JC時間
         th style='width:70px;' 勤務時間
@@ -24,8 +28,17 @@
         th style='width:100px;' その他
     tbody
       - @working_hours.each do |wh|
-        tr class="wh_tr_#{wh.id} working_hour_tr"
-          td style="overflow:auto;" = wh.name
+        - if (wh.working_time.to_f - wh.kari_working_time.to_f).abs > 1
+          - bg_color = "#FFD5EC	"
+        - else
+          - bg_color = ""
+        tr class="wh_tr_#{wh.id} working_hour_tr" style="background-color:#{bg_color}"
+          - if params[:staff_id]
+            td = wh.date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[wh.date.wday]})")
+
+          td style="overflow:auto;"
+            = link_to wh.name,staff_input_working_hours_path(staff_id:wh.staff_id)
+          td = link_to @staff_working_hours[wh.staff_id].count,staff_input_working_hours_path(staff_id:wh.staff_id,alert_flag:true),style:'color:red;' if @staff_working_hours[wh.staff_id].present?
           td = wh.jobcan_staff_code
           td
             - if wh.working_time
