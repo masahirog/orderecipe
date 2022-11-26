@@ -28,7 +28,7 @@
         th style='width:100px;' その他
     tbody
       - @working_hours.each do |wh|
-        - if (wh.working_time.to_f - wh.kari_working_time.to_f).abs > 1
+        - if wh.working_time.present? && (wh.working_time.to_f - wh.kari_working_time.to_f).abs > 1
           - bg_color = "#FFD5EC	"
         - else
           - bg_color = ""
