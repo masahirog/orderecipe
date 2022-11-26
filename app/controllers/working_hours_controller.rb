@@ -34,10 +34,12 @@ class WorkingHoursController < ApplicationController
       @date = today
     end
     if params[:staff_id].present?
-      if params[:alert_flag] == true
+      if params[:alert_flag] == "true"
         @working_hours = []
         WorkingHour.where(staff_id:params[:staff_id]).where("date > ?",'2022/11/16').where("working_time > ?",0).each do |wh|
-          @working_hours << wh if (wh.working_time.to_f - wh.kari_working_time.to_f).abs > 1
+          if (wh.working_time.to_f - wh.kari_working_time.to_f).abs > 1
+            @working_hours << wh
+          end
         end
       else
         @working_hours = WorkingHour.where(staff_id:params[:staff_id]).where("date > ?",'2022/11/16').where("working_time > ?",0)
