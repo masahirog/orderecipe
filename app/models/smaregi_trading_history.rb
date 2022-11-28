@@ -302,6 +302,7 @@ class SmaregiTradingHistory < ApplicationRecord
     analysis = Analysis.find(analysis_id)
     date = analysis.store_daily_menu.start_time
     analysis.analysis_products.destroy_all if analysis.analysis_products
+    analysis.analysis_categories.destroy_all if analysis.analysis_categories
     number = 0
     analysis_total_sales_amount = 0
     analysis_discount_amount = 0
