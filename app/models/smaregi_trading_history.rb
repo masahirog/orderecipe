@@ -126,7 +126,7 @@ class SmaregiTradingHistory < ApplicationRecord
               store_sales_amount = 0
               delivery_sales_amount = 0
             end
-            if torihiki_meisaikubun == '1'
+            if torihiki_meisaikubun == '1' ||torihiki_meisaikubun == '3'
               transaction_count += 1 unless torihiki_ids.include?(torihiki_id)
               total_number_sales_sozai += number if bumon_id == "1"
               hash[hinban][:sales_number] += number

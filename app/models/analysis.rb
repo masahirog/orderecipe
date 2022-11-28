@@ -1,10 +1,62 @@
 class Analysis < ApplicationRecord
   has_many :smaregi_trading_histories
   has_many :analysis_products
+  has_many :analysis_categories
   has_many :sales_reports
   belongs_to :store
   validates :store_id, :uniqueness => {:scope => :date}
   belongs_to :store_daily_menu
+
+  def self.set_analysis_category
+    hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    SmaregiTradingHistory.all.each do |sth|
+      if hash[sth.analysis_id][sth.bumon_id].present?
+        if sth.torihiki_meisaikubun == 1 || sth.torihiki_meisaikubun == 3
+          hash[sth.analysis_id][sth.bumon_id][:zeinuki_uriage] += sth.zeinuki_uriage.to_i
+          hash[sth.analysis_id][sth.bumon_id][:net_sales_amount] += sth.nebikigokei.to_i
+          hash[sth.analysis_id][sth.bumon_id][:sales_number] += sth.suryo.to_i
+          hash[sth.analysis_id][sth.bumon_id][:sales_amount] += sth.nebikimaekei.to_i
+          hash[sth.analysis_id][sth.bumon_id][:discount_amount] += sth.tanka_nebiki_shokei.to_i
+        else
+          hash[sth.analysis_id][sth.bumon_id][:zeinuki_uriage] -= sth.zeinuki_uriage.to_i
+          hash[sth.analysis_id][sth.bumon_id][:net_sales_amount] -= sth.nebikigokei.to_i
+          hash[sth.analysis_id][sth.bumon_id][:sales_number] -= sth.suryo.to_i
+          hash[sth.analysis_id][sth.bumon_id][:sales_amount] -= sth.nebikimaekei.to_i
+          hash[sth.analysis_id][sth.bumon_id][:discount_amount] -= sth.tanka_nebiki_shokei.to_i
+        end
+      else
+        if sth.torihiki_meisaikubun == 1 || sth.torihiki_meisaikubun == 3
+          hash[sth.analysis_id][sth.bumon_id][:zeinuki_uriage] = sth.zeinuki_uriage.to_i
+          hash[sth.analysis_id][sth.bumon_id][:net_sales_amount] = sth.nebikigokei.to_i
+          hash[sth.analysis_id][sth.bumon_id][:sales_number] = sth.suryo.to_i
+          hash[sth.analysis_id][sth.bumon_id][:sales_amount] = sth.nebikimaekei.to_i
+          hash[sth.analysis_id][sth.bumon_id][:discount_amount] = sth.tanka_nebiki_shokei.to_i
+
+        else
+          hash[sth.analysis_id][sth.bumon_id][:zeinuki_uriage] = -1 * sth.zeinuki_uriage.to_i
+          hash[sth.analysis_id][sth.bumon_id][:net_sales_amount] = -1 * sth.nebikigokei.to_i
+          hash[sth.analysis_id][sth.bumon_id][:sales_number] = -1 * sth.suryo.to_i
+          hash[sth.analysis_id][sth.bumon_id][:sales_amount] = -1 * sth.nebikimaekei.to_i
+          hash[sth.analysis_id][sth.bumon_id][:discount_amount] = -1 * sth.tanka_nebiki_shokei.to_i
+        end
+      end
+    end
+    new_arr = []
+    hash.each do |analysis_bumon_data|
+      analysis_id = analysis_bumon_data[0]
+      analysis_bumon_data[1].each do |data|
+        smaregi_bumon_id = data[0]
+        ex_tax_sales_amount = data[1][:zeinuki_uriage]
+        net_sales_amount = data[1][:net_sales_amount]
+        sales_number = data[1][:sales_number]
+        sales_amount = data[1][:sales_amount]
+        discount_amount = data[1][:discount_amount]
+        new_arr << AnalysisCategory.new(analysis_id:analysis_id,smaregi_bumon_id:smaregi_bumon_id,sales_number:sales_number,sales_amount:sales_amount,discount_amount:discount_amount,
+              net_sales_amount:net_sales_amount,ex_tax_sales_amount:ex_tax_sales_amount)
+      end
+    end
+    AnalysisCategory.import new_arr
+  end
 
   def self.recollection_datas
     meisaikubun_plus_all = SmaregiTradingHistory.where(torihiki_meisaikubun:1)

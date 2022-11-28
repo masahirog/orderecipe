@@ -10,9 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_11_15_093429) do
+ActiveRecord::Schema.define(version: 2022_11_28_010031) do
 
-  create_table "analyses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "analyses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "store_id"
     t.date "date"
     t.integer "total_sales_amount"
@@ -34,6 +34,18 @@ ActiveRecord::Schema.define(version: 2022_11_15_093429) do
     t.integer "used_coupon_amount"
     t.integer "store_daily_menu_id", null: false
     t.index ["date", "store_id"], name: "index_analyses_on_date_and_store_id", unique: true
+  end
+
+  create_table "analysis_categories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "analysis_id"
+    t.integer "smaregi_bumon_id"
+    t.integer "sales_number"
+    t.integer "sales_amount"
+    t.integer "discount_amount"
+    t.integer "net_sales_amount"
+    t.integer "ex_tax_sales_amount"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "analysis_products", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -788,7 +800,7 @@ ActiveRecord::Schema.define(version: 2022_11_15_093429) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "store_daily_menus", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "store_daily_menus", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "daily_menu_id"
     t.integer "store_id"
     t.date "start_time"

@@ -8,6 +8,10 @@ div style='margin-bottom:20px;'
           li style='float:left;margin-right:10px;'
             = check_box_tag "stores[#{store.id}]",true,params['stores'][store.id.to_s]
             = label_tag "stores[#{store.id}]",store.name
+    .form-group
+      = label_tag "add_event",' イベント売上も含める',style:'margin-right:20px;'
+      = check_box_tag "add_event",true,params['ex_event']
+
     div
       label style='float:left;margin-right:10px;' 表示期間
       = date_field_tag :from, params[:from], class:"form-control float-left",style:'width:200px;float:left;'
@@ -42,25 +46,25 @@ canvas#chart1
       - @dates.reverse_each do |date|
         tr
           td style='background-color:white;' = link_to date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})"),date_analyses_path(date:date)
-          td = @date_transaction_count[date] if @date_transaction_count[date]
-          td = @date_sales_amount[date].to_s(:delimited) if @date_sales_amount[date]
-          td = @date_discount_amount[date].to_s(:delimited) if @date_discount_amount[date]
-          td = @date_loss_amount[date].to_s(:delimited) if @date_loss_amount[date]
+          td = @date_store_analyses[date].map{|hash|hash[1][:transaction_count]}.sum
+          td = @date_store_analyses[date].map{|hash|hash[1][:sales_amount]}.sum.to_s(:delimited) if @date_store_analyses[date]
+          td = @date_store_analyses[date].map{|hash|hash[1][:discount_amount]}.sum.to_s(:delimited) if @date_store_analyses[date]
+          td = @date_store_analyses[date].map{|hash|hash[1][:loss_amount]}.sum.to_s(:delimited) if @date_store_analyses[date]
           td
-            - if @date_loss_amount[date] && @date_sales_amount[date]
-              - loss = (((@date_loss_amount[date].to_f + @date_discount_amount[date].to_f)/@date_sales_amount[date])*100).round(1)
+            - if @date_store_analyses[date].map{|hash|hash[1][:loss_amount]}.sum > 0 && @date_store_analyses[date].map{|hash|hash[1][:discount_amount]}.sum > 0
+              - loss = (((@date_store_analyses[date].map{|hash|hash[1][:loss_amount]}.sum.to_f + @date_store_analyses[date].map{|hash|hash[1][:discount_amount]}.sum.to_f)/@date_store_analyses[date].map{|hash|hash[1][:sales_amount]}.sum)*100).round(1)
               - if loss > 12 || loss < 8
                 span style='color:red;' = "#{loss}%"
               - else
                 span style='color:black;' = "#{loss}%"
           - @stores.each do |store|
-            td style="border-left: 1px solid #ddd;" = @store_date_sales_number[[date,store.id]]
-            td = link_to @store_date_sales_amount[[date,store.id]].to_s(:delimited),@store_analyses[[date,store.id]] if @store_analyses[[date,store.id]]
-            td = @store_date_discount_amount[[date,store.id]].to_s(:delimited) if @store_date_discount_amount[[date,store.id]]
-            td = @store_date_loss_amount[[date,store.id]].to_s(:delimited) if @store_date_loss_amount[[date,store.id]]
+            td style="border-left: 1px solid #ddd;"  = @date_store_analyses[date][store.id][:transaction_count] if @date_store_analyses[date][store.id][:transaction_count].present?
+            td = @date_store_analyses[date][store.id][:sales_amount].to_s(:delimited) if @date_store_analyses[date][store.id][:sales_amount].present?
+            td = @date_store_analyses[date][store.id][:discount_amount].to_s(:delimited) if @date_store_analyses[date][store.id][:discount_amount].present?
+            td = @date_store_analyses[date][store.id][:loss_amount].to_s(:delimited) if @date_store_analyses[date][store.id][:loss_amount].present?
             td
-              - if @store_date_loss_amount[[date,store.id]] && @store_date_sales_amount[[date,store.id]]
-                - loss = (((@store_date_loss_amount[[date,store.id]].to_f + @store_date_discount_amount[[date,store.id]].to_f)/@store_date_sales_amount[[date,store.id]])*100).round(1)
+              - if @date_store_analyses[date][store.id][:sales_amount].present? && @date_store_analyses[date][store.id][:loss_amount].present? && @date_store_analyses[date][store.id][:discount_amount].present?
+                - loss = (((@date_store_analyses[date][store.id][:loss_amount].to_f + @date_store_analyses[date][store.id][:discount_amount].to_f)/@date_store_analyses[date][store.id][:sales_amount])*100).round(1)
                 - if loss > 12 || loss < 8
                   span style='color:red;' = "#{loss}%"
                 - else

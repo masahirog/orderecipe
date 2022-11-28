@@ -771,25 +771,47 @@ class AnalysesController < AdminController
       params[:from] = params[:to] - 30 unless params[:from]
     end
     @dates =(params[:from]..params[:to]).to_a
-    @analyses = Analysis.where(date:params[:from]..params[:to]).where(store_id:params['stores'].keys)
+    @analyses = Analysis.includes([:store_daily_menu]).where(date:params[:from]..params[:to]).where(store_id:params['stores'].keys)
     @store_analyses = @analyses.map{|analysis|[[analysis.store_daily_menu.start_time,analysis.store_daily_menu.store_id],analysis]}.to_h
-    @date_sales_amount = @analyses.group(:date).sum(:ex_tax_sales_amount)
-    @store_date_sales_amount = @analyses.group(:date,:store_id).sum(:ex_tax_sales_amount)
-    @date_discount_amount = @analyses.group(:date).sum(:discount_amount)
-    @store_date_discount_amount = @analyses.group(:date,:store_id).sum(:discount_amount)
-    @date_loss_amount = @analyses.group(:date).sum(:loss_amount)
-    @store_date_loss_amount = @analyses.group(:date,:store_id).sum(:loss_amount)
-    @date_transaction_count = @analyses.group(:date).sum(:transaction_count)
-    @store_date_transaction_count = @analyses.group(:date,:store_id).sum(:transaction_count)
-    @date_sales_number = @analyses.group(:date).sum(:transaction_count)
-    @store_date_sales_number = @analyses.group(:date,:store_id).sum(:transaction_count)
+    analysis_event_sales = AnalysisCategory.where(analysis_id:@analyses.ids,smaregi_bumon_id:6).map{|ac|[ac.analysis_id,ac.ex_tax_sales_amount]}.to_h
+    @date_analyses = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    @date_store_analyses = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    @analyses.each do |analysis|
+      if analysis_event_sales[analysis.id].present?
+        event_sales = analysis_event_sales[analysis.id]
+      else
+        event_sales = 0
+      end
+      if @date_store_analyses[analysis.date][analysis.store_id].present?
+        if params[:add_event]=="true"
+          @date_store_analyses[analysis.date][analysis.store_id][:sales_amount] += analysis.ex_tax_sales_amount
+        else
+          @date_store_analyses[analysis.date][analysis.store_id][:sales_amount] += (analysis.ex_tax_sales_amount - event_sales)
+        end
+        @date_store_analyses[analysis.date][analysis.store_id][:discount_amount] += analysis.discount_amount
+        @date_store_analyses[analysis.date][analysis.store_id][:loss_amount] += analysis.loss_amount
+        @date_store_analyses[analysis.date][analysis.store_id][:transaction_count] += analysis.transaction_count
+        @date_store_analyses[analysis.date][analysis.store_id][:sales_number] += analysis.transaction_count
+      else
+        if params[:add_event]=="true"
+          @date_store_analyses[analysis.date][analysis.store_id][:sales_amount] = analysis.ex_tax_sales_amount
+        else
+          @date_store_analyses[analysis.date][analysis.store_id][:sales_amount] = (analysis.ex_tax_sales_amount - event_sales)
+        end
+        @date_store_analyses[analysis.date][analysis.store_id][:discount_amount] = analysis.discount_amount
+        @date_store_analyses[analysis.date][analysis.store_id][:loss_amount] = analysis.loss_amount
+        @date_store_analyses[analysis.date][analysis.store_id][:transaction_count] = analysis.transaction_count
+        @date_store_analyses[analysis.date][analysis.store_id][:sales_number] = analysis.transaction_count
+      end
+    end
+
     gon.sales_dates = @dates
     gon.sales_data = []
     gon.loss_data = []
     gon.loss_mokuhyo_data = []
     @dates.sort.each do |date|
-      gon.sales_data << @date_sales_amount[date]
-      gon.loss_data << (((@date_discount_amount[date].to_f + @date_loss_amount[date].to_f)/@date_sales_amount[date])*100).round(1) if @date_sales_amount[date].present?
+      gon.sales_data << @date_store_analyses[date].map{|hash|hash[1][:sales_amount]}.sum
+      gon.loss_data << (((@date_store_analyses[date].map{|hash|hash[1][:discount_amount]}.sum.to_f + @date_store_analyses[date].map{|hash|hash[1][:loss_amount]}.sum.to_f)/@date_store_analyses[date].map{|hash|hash[1][:sales_amount]}.sum)*100).round(1)
       gon.loss_mokuhyo_data << 7
     end
     respond_to do |format|
