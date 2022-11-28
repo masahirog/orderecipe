@@ -10,7 +10,7 @@ div style='margin-bottom:20px;'
             = label_tag "stores[#{store.id}]",store.name
     .form-group
       = label_tag "add_event",' イベント売上も含める',style:'margin-right:20px;'
-      = check_box_tag "add_event",true,params['ex_event']
+      = check_box_tag "add_event",true,params['add_event']
 
     div
       label style='float:left;margin-right:10px;' 表示期間
