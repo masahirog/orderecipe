@@ -31,7 +31,6 @@ class Analysis < ApplicationRecord
           hash[sth.analysis_id][sth.bumon_id][:sales_number] = sth.suryo.to_i
           hash[sth.analysis_id][sth.bumon_id][:sales_amount] = sth.nebikimaekei.to_i
           hash[sth.analysis_id][sth.bumon_id][:discount_amount] = sth.tanka_nebiki_shokei.to_i
-
         else
           hash[sth.analysis_id][sth.bumon_id][:zeinuki_uriage] = -1 * sth.zeinuki_uriage.to_i
           hash[sth.analysis_id][sth.bumon_id][:net_sales_amount] = -1 * sth.nebikigokei.to_i
