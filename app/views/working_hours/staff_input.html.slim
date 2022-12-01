@@ -19,13 +19,13 @@
         th style='width:80px;' JCコード
         th style='width:70px;' JC時間
         th style='width:70px;' 勤務時間
-        th style='width:100px;' 弁当盛付
-        th style='width:100px;' 切出
-        th style='width:100px;' 調理
-        th style='width:100px;' 積載
-        th style='width:100px;' タレ
-        th style='width:100px;' 洗い物
-        th style='width:100px;' その他
+        th style='width:100px;' もりつけ
+        th style='width:100px;' きりだし
+        th style='width:100px;' ちょうりば
+        th style='width:100px;' せきさい
+        th style='width:100px;' たれ
+        th style='width:100px;' あらいもの
+        th style='width:100px;' そのほか
     tbody
       - @working_hours.each do |wh|
         - if wh.working_time.present? && (wh.working_time.to_f - wh.kari_working_time.to_f).abs > 1
