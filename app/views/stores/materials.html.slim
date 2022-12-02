@@ -16,7 +16,7 @@ table.table
       - ouq = ActiveSupport::NumberHelper.number_to_rounded(material.order_unit_quantity, strip_insignificant_zeros: true, :delimiter => ',')
       - ruq = ActiveSupport::NumberHelper.number_to_rounded(material.recipe_unit_quantity, strip_insignificant_zeros: true, :delimiter => ',')
       tr class="tr_#{mso.id}"
-        td = material.name
+        td = link_to material.name,edit_material_path(material),target:'_blank'
         td = t("enums.material.category.#{material.category}")
         td = "#{ouq}#{material.order_unit} #{ruq}#{material.recipe_unit} "
         td = material.vendor.company_name.slice(0..8)
