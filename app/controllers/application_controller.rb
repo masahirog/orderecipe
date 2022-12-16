@@ -17,7 +17,7 @@ class ApplicationController < ActionController::Base
     elsif  current_user.id == 59
       '/outside_view'
     else
-      root_url
+      crew_products_path
     end
   end
   def render_500(e)
