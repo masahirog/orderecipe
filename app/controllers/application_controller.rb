@@ -16,6 +16,8 @@ class ApplicationController < ActionController::Base
       check_shifts_path
     elsif  current_user.id == 59
       '/outside_view'
+    else
+      root_url
     end
   end
   def render_500(e)

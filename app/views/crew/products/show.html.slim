@@ -1,5 +1,5 @@
 h4 style='font-weight:bold;color:' = @product.name
-div
+/ div
   label 大皿写真
   .image_attach
     = link_to @product.display_image.to_s, "data-lightbox" => @product.display_image.to_s do
@@ -20,9 +20,8 @@ div.clearfix.edit_description_area style='display:none;'
 
 div
   label 1人前写真
-  .image_attach
-    = link_to @product.image_for_one_person.to_s, "data-lightbox" => @product.image_for_one_person.to_s do
-      = image_tag @product.image_for_one_person.to_s
+  = link_to @product.image_for_one_person.to_s, "data-lightbox" => @product.image_for_one_person.to_s do
+    = image_tag @product.image_for_one_person.to_s ,class:"text-center img-responsive center-block",style:'max-height:150px;'
 
 div
   label 1人前分量

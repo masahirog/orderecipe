@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   namespace :crew do
     get '/products' => 'products#index'
+    get '/products/ikkatsu' => 'products#ikkatsu'
     get '/product/:id' => 'products#show'
     post'products/description_update' => 'products#description_update'
 

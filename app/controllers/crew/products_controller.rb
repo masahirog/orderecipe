@@ -1,4 +1,13 @@
 class Crew::ProductsController < ApplicationController
+  def ikkatsu
+    if params[:start_date].present?
+      @date = Date.parse(params[:start_date])
+    else
+      @date = Date.today
+    end
+    @daily_menu = DailyMenu.find_by(start_time:@date)
+    @daily_menu_details = @daily_menu.daily_menu_details
+  end
   def index
     if params[:start_date].present?
       @date = Date.parse(params[:start_date])
@@ -8,6 +17,7 @@ class Crew::ProductsController < ApplicationController
     @tommoroww = @date + 1
     @yesterday = @date - 1
     @daily_menu = DailyMenu.find_by(start_time:@date)
+    @daily_menu_details = @daily_menu.daily_menu_details
   end
   def show
     @product = Product.find(params[:id])

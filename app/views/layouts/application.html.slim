@@ -29,7 +29,7 @@ html
               span.icon-bar
               span.icon-bar
               span.icon-bar
-            a.navbar-brand style="padding:12px 10px 8px 20px;" href="/"
+            .navbar-brand style="padding:12px 10px 8px 20px;"
               = image_tag 'orderecipe.png',height:'85%'
           #navbarEexample.collapse.navbar-collapse
             - if user_signed_in?
@@ -124,11 +124,19 @@ html
                       li = link_to "盛り付け皿設定",serving_plates_path
                       li = link_to "盛り付け包材設定",containers_path
                       li = link_to "ログアウト", destroy_user_session_path, :method => :delete
-              - else
+              - elsif current_user.id == 49
                 ul.nav.navbar-nav
                   li.menu_li = link_to "献立",crew_products_path
                   li.menu_li = link_to 'シフト',check_shifts_path(date:Date.today)
                   li.menu_li = link_to "お客さまの声",customer_opinions_path
+                  li.menu_li = link_to "ログアウト", destroy_user_session_path, :method => :delete
+                #navbarEexample.collapse.navbar-collapse.navbar-right
+                  ul.nav.navbar-nav
+                    li.user_nav.grid-6
+                      = link_to "ログアウト", destroy_user_session_path, :method => :delete
+              - else
+                ul.nav.navbar-nav
+                  li.menu_li = link_to "献立",crew_products_path
                   li.menu_li = link_to "ログアウト", destroy_user_session_path, :method => :delete
 
                 #navbarEexample.collapse.navbar-collapse.navbar-right
