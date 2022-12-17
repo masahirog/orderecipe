@@ -777,6 +777,11 @@ class AnalysesController < AdminController
     @date_analyses = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @date_store_analyses = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @analyses.each do |analysis|
+      if analysis.ex_tax_sales_amount.present?
+        ex_tax_sales_amount = analysis.ex_tax_sales_amount
+      else
+        ex_tax_sales_amount = 0
+      end
       if analysis_event_sales[analysis.id].present?
         event_sales = analysis_event_sales[analysis.id]
       else
@@ -786,7 +791,7 @@ class AnalysesController < AdminController
         if params[:add_event]=="true"
           @date_store_analyses[analysis.date][analysis.store_id][:sales_amount] += analysis.ex_tax_sales_amount
         else
-          @date_store_analyses[analysis.date][analysis.store_id][:sales_amount] += (analysis.ex_tax_sales_amount - event_sales)
+          @date_store_analyses[analysis.date][analysis.store_id][:sales_amount] += (ex_tax_sales_amount - event_sales)
         end
         @date_store_analyses[analysis.date][analysis.store_id][:discount_amount] += analysis.discount_amount
         @date_store_analyses[analysis.date][analysis.store_id][:loss_amount] += analysis.loss_amount
@@ -796,7 +801,7 @@ class AnalysesController < AdminController
         if params[:add_event]=="true"
           @date_store_analyses[analysis.date][analysis.store_id][:sales_amount] = analysis.ex_tax_sales_amount
         else
-          @date_store_analyses[analysis.date][analysis.store_id][:sales_amount] = (analysis.ex_tax_sales_amount - event_sales)
+          @date_store_analyses[analysis.date][analysis.store_id][:sales_amount] = (ex_tax_sales_amount - event_sales)
         end
         @date_store_analyses[analysis.date][analysis.store_id][:discount_amount] = analysis.discount_amount
         @date_store_analyses[analysis.date][analysis.store_id][:loss_amount] = analysis.loss_amount
