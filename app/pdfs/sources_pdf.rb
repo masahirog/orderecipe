@@ -1,5 +1,5 @@
 class SourcesPdf < Prawn::Document
-  def initialize(from,to,controler)
+  def initialize(dates,controler)
 
     # 初期設定。ここでは用紙のサイズを指定している。
     super(
@@ -7,7 +7,7 @@ class SourcesPdf < Prawn::Document
       page_layout: :landscape)
     #日本語のフォント
     font "vendor/assets/fonts/ipaexg.ttf"
-    daily_menus = DailyMenu.where(start_time:from..to)
+    daily_menus = DailyMenu.where(start_time:dates)
     daily_menu_details = DailyMenuDetail.includes([:daily_menu]).where(daily_menu_id:daily_menus.ids)
     hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     daily_menu_details.each do |dmd|
