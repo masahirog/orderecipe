@@ -349,15 +349,12 @@ class DailyMenusController < AdminController
   def sources
     @from = params[:from]
     @to = params[:to]
-    dates = ['2022/12/21','2022/12/22','2022/12/26','2022/12/27']
     if @from.present? && @to.present?
-      @daily_menus = DailyMenu.where(start_time:dates)
-      # @daily_menus = DailyMenu.where(start_time:@from..@to)
+      @daily_menus = DailyMenu.where(start_time:@from..@to)
       respond_to do |format|
         format.html
         format.pdf do
-          # pdf = SourcesPdf.new(@from,@to,'daily_menus')
-          pdf = SourcesPdf.new(dates,'daily_menus')
+          pdf = SourcesPdf.new(@from,@to,'daily_menus')
           send_data pdf.render,
           filename:    "#{@from}_#{@to}_source.pdf",
           type:        "application/pdf",
