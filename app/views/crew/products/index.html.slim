@@ -17,7 +17,13 @@ ul.list-group.clearfix style='margin-top:15px;'
         div style='margin-top:6px;'
           label 包材：
           = dmd.product.container.name if dmd.product.container_id.present?
-
+        - mlps = MenuLastProcess.where(menu_id:dmd.product.menus.ids)
+        - if mlps.present?
+          label 当日調理工程▼
+          ul.list-group
+            - mlps.each do |mlp|
+              li.list-group-item
+               = "#{mlp.content}：#{mlp.memo}"
         - if dmd.product.product_ozara_serving_informations.present?
           label 盛付工程：
           button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#ozara_serving_#{dmd.product_id}" style='padding:2px 6px;' 確認する
