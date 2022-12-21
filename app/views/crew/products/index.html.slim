@@ -25,7 +25,7 @@ ul.list-group.clearfix style='margin-top:15px;'
               li.list-group-item
                = "#{mlp.content}：#{mlp.memo}"
         - if dmd.product.product_ozara_serving_informations.present?
-          label 盛付工程：
+          label 仕上げ工程：
           button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#ozara_serving_#{dmd.product_id}" style='padding:2px 6px;' 確認する
           .modal.fade tabindex="-1" ID="ozara_serving_#{dmd.product_id}"
             .modal-dialog style='width:90%;'
