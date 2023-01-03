@@ -59,9 +59,8 @@ class OrderPrintAll < Prawn::Document
       font_size 9
       text "#{order.store.address}", :leading => 3
       text "TEL：#{order.store.phone}", :leading => 3
-      text "FAX：03-6700-9848", :leading => 3
       text "No：#{vendor.management_id}", :leading => 3 if vendor.management_id.present?
-      text "日本フードデリバリー株式会社", :leading => 3
+      text "株式会社べじはん", :leading => 3
     end
   end
 

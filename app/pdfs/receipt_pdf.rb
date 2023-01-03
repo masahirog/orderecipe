@@ -43,11 +43,11 @@ class ReceiptPdf < Prawn::Document
     end
     bounding_box([330, 610], :width => 200, :height => 70) do
       move_down 10
-      text "日本フードデリバリー株式会社", size: 11
-      text "〒150-0043", size: 11
-      text "東京都渋谷区道玄坂2-23-12", size: 11
-      text "フォンティスビル7F", size: 11
-      text "TEL：03-5539-6000", size: 11
+      text "株式会社べじはん", size: 11
+      text "〒164-0011", size: 11
+      text "東京都中野区中央5-3-11", size: 11
+      text "柴ビル", size: 11
+      text "TEL：03-5937-5431", size: 11
     end
 
   end
