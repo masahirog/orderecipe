@@ -1,10 +1,9 @@
 class NotificationMailer < ActionMailer::Base
-  default from: "m.yamashita@jfd.co.jp"
   def fax_unsend_mail(subject)
     @subject = subject
     mail(
       subject: "fax_unsend",
-      to: 'kitchen@taberu.co.jp',
+      to: 'bejihan.orderecipe@gmail.com',
     ) do |format|
       format.text
     end
@@ -13,7 +12,7 @@ class NotificationMailer < ActionMailer::Base
     @refund_support = refund_support
     mail(
       subject: "refund_support_new",
-      to: 'kitchen@taberu.co.jp',
+      to: 'bejihan.orderecipe@gmail.com',
     ) do |format|
       format.text
     end
@@ -28,7 +27,7 @@ class NotificationMailer < ActionMailer::Base
     end
     mail(
       subject: subject,
-      to: 'kitchen@taberu.co.jp',
+      to: 'bejihan.orderecipe@gmail.com',
     ) do |format|
       format.text
     end
@@ -42,7 +41,7 @@ class NotificationMailer < ActionMailer::Base
     @kome_amari = kome_amari
     mail(
       subject: "べじはんフォーム", #メールのタイトル
-      to: 'kitchen@taberu.co.jp',
+      to: 'bejihan.orderecipe@gmail.com',
     ) do |format|
       format.text
     end
@@ -51,7 +50,7 @@ class NotificationMailer < ActionMailer::Base
     @sales_report = sales_report
     mail(
       subject: "kindness_report", #メールのタイトル
-      to: 'kitchen@taberu.co.jp',
+      to: 'bejihan.orderecipe@gmail.com',
     ) do |format|
       format.text
     end
@@ -77,7 +76,7 @@ class NotificationMailer < ActionMailer::Base
     @co = co
     mail(
       subject: "customer_voice", #メールのタイトル
-      to: 'kitchen@taberu.co.jp',
+      to: 'bejihan.orderecipe@gmail.com',
 
     ) do |format|
       format.text
@@ -92,7 +91,7 @@ class NotificationMailer < ActionMailer::Base
     end
     mail(
       subject: "reminder_create", #メールのタイトル
-      to: 'kitchen@taberu.co.jp',
+      to: 'bejihan.orderecipe@gmail.com',
 
     ) do |format|
       format.text
@@ -107,7 +106,7 @@ class NotificationMailer < ActionMailer::Base
     end
     mail(
       subject: subject,
-      to: 'kitchen@taberu.co.jp',
+      to: 'bejihan.orderecipe@gmail.com',
 
     ) do |format|
       format.text
@@ -122,7 +121,7 @@ class NotificationMailer < ActionMailer::Base
     end
     mail(
       subject: subject,
-      to: 'kitchen@taberu.co.jp',
+      to: 'bejihan.orderecipe@gmail.com',
 
     ) do |format|
       format.text
@@ -133,7 +132,7 @@ class NotificationMailer < ActionMailer::Base
     @body = body
     mail(
       subject: "くるめし連携エラー", #メールのタイトル
-      to: 'kitchen@taberu.co.jp',
+      to: 'bejihan.orderecipe@gmail.com',
 
     ) do |format|
       format.text
@@ -145,7 +144,7 @@ class NotificationMailer < ActionMailer::Base
     @num = num
     mail(
       subject: "くるめしキャパオーバー", #メールのタイトル
-      to: 'kitchen@taberu.co.jp',
+      to: 'bejihan.orderecipe@gmail.com',
     ) do |format|
       format.text
     end
