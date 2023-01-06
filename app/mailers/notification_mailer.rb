@@ -1,4 +1,5 @@
 class NotificationMailer < ActionMailer::Base
+  default from: "masahiro11g@gmail.com"
   def fax_unsend_mail(subject)
     @subject = subject
     mail(
