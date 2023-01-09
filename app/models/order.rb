@@ -124,11 +124,12 @@ class Order < ApplicationRecord
         subject = m.subject.gsub(" ", "").gsub("　","")
         body = m.body.decoded.toutf8
         if subject.include?("【MOVFAX】FAX送信結果")
+          binding.pry
           recieved_datetime = m.date
           order_id = body[(body.index('(o_id)')+6)..(body.index('(/o_id)')-1)]
           vendor_id = body[(body.index('(v_id)')+6)..(body.index('(/v_id)')-1)]
           result = body[(body.index('[送信結果]')+6)..(body.index('[送信結果]')+6+3)]
-          unless FaxMail.find_by(order_id:order_id,vendor_id:vendor_id,recieved_datetime:recieved_datetime).present?
+          unless FaxMail.find_by(order_id:order_id,vendor_id:vendor_id,recieved:recieved_datetime).present?
             @fax_mail = FaxMail.new
             @fax_mail.subject = subject
             @fax_mail.recieved = recieved_datetime
