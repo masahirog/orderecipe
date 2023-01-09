@@ -136,13 +136,16 @@ class Order < ApplicationRecord
             if order.present? && vendor_id.present?
               @fax_mail.order_id = order_id
               @fax_mail.vendor_id = vendor_id
+              vendor = Vendor.find(vendor_id)
               order_materials = order.order_materials.where(un_order_flag:false).joins(:material).where(:materials => {vendor_id:vendor_id})
               if result == "正常終了"
+                Slack::Notifier.new("https://hooks.slack.com/services/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", username: '監視君', icon_emoji: ':sunglasses:').ping("【送信OK】ID：#{order_id} 発注先：#{vendor.company_name} 担当：#{order.staff_name}")
                 order_materials.update_all(fax_sended_status:1)
                 @fax_mail.status = 1
               else
                 order_materials.update_all(fax_sended_status:2)
-                NotificationMailer.fax_unsend_mail(subject).deliver
+                Slack::Notifier.new("https://hooks.slack.com/services/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", username: '監視君', icon_emoji: ':sunglasses:').ping("@channel 【失敗】ID：#{order_id} 発注先：#{vendor.company_name} 担当：#{order.staff_name}")
+                # NotificationMailer.fax_unsend_mail(subject).deliver
                 @fax_mail.status = 0
               end
               @fax_mail.save
