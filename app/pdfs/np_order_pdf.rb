@@ -46,7 +46,7 @@ class NpOrderPdf < Prawn::Document
     end
     bounding_box([0, 744], :width => 530, :height =>100) do
         font_size 9
-        text "Tel：#{order.store.phone} / Fax：03-6700-9848", :leading => 8,:align => :right
+        text "Tel：#{order.store.phone} / Fax：03-6837-5337", :leading => 8,:align => :right
     end
   end
 

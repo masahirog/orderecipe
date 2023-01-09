@@ -112,39 +112,32 @@ class Order < ApplicationRecord
     imap_user = 'masahiro11g@gmail.com'
     imap_passwd = ENV['MASAHIRO_MAIL_PASS']
     imap.login(imap_user, imap_passwd)
-    # search_criterias = [
-    #   'FROM','masahiro11g@gmail.com',
-    #   'SINCE', (Date.today-1).strftime("%d-%b-%Y")
-    # ]
     search_criterias = [
-      'FROM','send@mail.efax.com',
+      'FROM','no-reply@mail01.lcloud.jp',
       'SINCE', (Date.today-1).strftime("%d-%b-%Y")
     ]
-    imap.select('INBOX') # 対象のメールボックスを選択
-    ids = imap.search(search_criterias) # 全てのメールを取得
+    imap.select('INBOX')
+    ids = imap.search(search_criterias)
     ids.each_slice(100).to_a.each do |id_block| # 100件ごとにメールをfetchする
       imap.fetch(ids, ["RFC822", "ENVELOPE"]).each do |mail|
         m = Mail.new(mail.attr["RFC822"])
         subject = m.subject.gsub(" ", "").gsub("　","")
-        recieved_datetime = m.date
-        if subject.include?("オーダーID")
-          unless FaxMail.find_by(subject:subject,recieved:recieved_datetime).present?
+        body = m.body.decoded.toutf8
+        if subject.include?("【MOVFAX】FAX送信結果")
+          recieved_datetime = m.date
+          order_id = body[(body.index('(order_id)')+10)..(body.index('(/order_id)')-1)]
+          vendor_id = body[(body.index('(vendor_id)')+11)..(body.index('(/vendor_id)')-1)]
+          result = body[(body.index('[送信結果]')+6)..(body.index('[送信結果]')+6+3)]
+          unless FaxMail.find_by(order_id:order_id,vendor_id:vendor_id,recieved_datetime:recieved_datetime).present?
             @fax_mail = FaxMail.new
             @fax_mail.subject = subject
             @fax_mail.recieved = recieved_datetime
-            if subject.include?("企業ID")
-              vendor_id = subject[(subject.index('企業ID：')+5)..(subject.index('企業ID：')+7)]
-            else
-              vendor_company_name = subject[(subject.index('［件名:')+4)..(subject.index('様')-1)]
-              vendor_id = Vendor.find_by(company_name:vendor_company_name).id
-            end
-            order_id = subject[(subject.index('オーダーID：')+7)..(subject.index('計：')-1)].to_i
             order = Order.find(order_id)
             if order.present? && vendor_id.present?
               @fax_mail.order_id = order_id
               @fax_mail.vendor_id = vendor_id
               order_materials = order.order_materials.where(un_order_flag:false).joins(:material).where(:materials => {vendor_id:vendor_id})
-              if subject.include?("送信完了しました")
+              if result == "正常終了"
                 order_materials.update_all(fax_sended_status:1)
                 @fax_mail.status = 1
               else
@@ -159,4 +152,64 @@ class Order < ApplicationRecord
       end
     end
   end
+
+
+
+  # def self.fax_send_check
+  #   # imapに接続
+  #   imap_host = 'imap.gmail.com' # imapをgmailのhostに設定する
+  #   imap_usessl = true # imapのsslを有効にする
+  #   imap_port = 993 # ssl有効なら993、そうでなければ143
+  #   imap = Net::IMAP.new(imap_host, imap_port, imap_usessl)
+  #   # imapにログイン
+  #   imap_user = 'masahiro11g@gmail.com'
+  #   imap_passwd = ENV['MASAHIRO_MAIL_PASS']
+  #   imap.login(imap_user, imap_passwd)
+  #   # search_criterias = [
+  #   #   'FROM','masahiro11g@gmail.com',
+  #   #   'SINCE', (Date.today-1).strftime("%d-%b-%Y")
+  #   # ]
+  #   search_criterias = [
+  #     'FROM','send@mail.efax.com',
+  #     'SINCE', (Date.today-1).strftime("%d-%b-%Y")
+  #   ]
+  #   imap.select('INBOX') # 対象のメールボックスを選択
+  #   ids = imap.search(search_criterias) # 全てのメールを取得
+  #   ids.each_slice(100).to_a.each do |id_block| # 100件ごとにメールをfetchする
+  #     imap.fetch(ids, ["RFC822", "ENVELOPE"]).each do |mail|
+  #       m = Mail.new(mail.attr["RFC822"])
+  #       subject = m.subject.gsub(" ", "").gsub("　","")
+  #       recieved_datetime = m.date
+  #       if subject.include?("オーダーID")
+  #         unless FaxMail.find_by(subject:subject,recieved:recieved_datetime).present?
+  #           @fax_mail = FaxMail.new
+  #           @fax_mail.subject = subject
+  #           @fax_mail.recieved = recieved_datetime
+  #           if subject.include?("企業ID")
+  #             vendor_id = subject[(subject.index('企業ID：')+5)..(subject.index('企業ID：')+7)]
+  #           else
+  #             vendor_company_name = subject[(subject.index('［件名:')+4)..(subject.index('様')-1)]
+  #             vendor_id = Vendor.find_by(company_name:vendor_company_name).id
+  #           end
+  #           order_id = subject[(subject.index('オーダーID：')+7)..(subject.index('計：')-1)].to_i
+  #           order = Order.find(order_id)
+  #           if order.present? && vendor_id.present?
+  #             @fax_mail.order_id = order_id
+  #             @fax_mail.vendor_id = vendor_id
+  #             order_materials = order.order_materials.where(un_order_flag:false).joins(:material).where(:materials => {vendor_id:vendor_id})
+  #             if subject.include?("送信完了しました")
+  #               order_materials.update_all(fax_sended_status:1)
+  #               @fax_mail.status = 1
+  #             else
+  #               order_materials.update_all(fax_sended_status:2)
+  #               NotificationMailer.fax_unsend_mail(subject).deliver
+  #               @fax_mail.status = 0
+  #             end
+  #             @fax_mail.save
+  #           end
+  #         end
+  #       end
+  #     end
+  #   end
+  # end
 end

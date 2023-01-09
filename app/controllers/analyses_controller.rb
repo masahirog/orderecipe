@@ -816,7 +816,7 @@ class AnalysesController < AdminController
     gon.loss_mokuhyo_data = []
     @dates.sort.each do |date|
       gon.sales_data << @date_store_analyses[date].map{|hash|hash[1][:sales_amount]}.sum
-      gon.loss_data << (((@date_store_analyses[date].map{|hash|hash[1][:discount_amount]}.sum.to_f + @date_store_analyses[date].map{|hash|hash[1][:loss_amount]}.sum.to_f)/@date_store_analyses[date].map{|hash|hash[1][:sales_amount]}.sum)*100).round(1)
+      gon.loss_data << (((@date_store_analyses[date].map{|hash|hash[1][:discount_amount].to_i}.sum.to_f + @date_store_analyses[date].map{|hash|hash[1][:loss_amount].to_i}.sum.to_f)/@date_store_analyses[date].map{|hash|hash[1][:sales_amount]}.sum)*100).round(1)
       gon.loss_mokuhyo_data << 7
     end
     respond_to do |format|

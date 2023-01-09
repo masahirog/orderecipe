@@ -48,11 +48,11 @@ canvas#chart1
           td style='background-color:white;' = link_to date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})"),date_analyses_path(date:date)
           td = @date_store_analyses[date].map{|hash|hash[1][:transaction_count]}.sum
           td = @date_store_analyses[date].map{|hash|hash[1][:sales_amount]}.sum.to_s(:delimited) if @date_store_analyses[date]
-          td = @date_store_analyses[date].map{|hash|hash[1][:discount_amount]}.sum.to_s(:delimited) if @date_store_analyses[date]
-          td = @date_store_analyses[date].map{|hash|hash[1][:loss_amount]}.sum.to_s(:delimited) if @date_store_analyses[date]
+          td = @date_store_analyses[date].map{|hash|hash[1][:discount_amount].to_i}.sum.to_s(:delimited) if @date_store_analyses[date]
+          td = @date_store_analyses[date].map{|hash|hash[1][:loss_amount].to_i}.sum.to_s(:delimited) if @date_store_analyses[date]
           td
-            - if @date_store_analyses[date].map{|hash|hash[1][:loss_amount]}.sum > 0 && @date_store_analyses[date].map{|hash|hash[1][:discount_amount]}.sum > 0
-              - loss = (((@date_store_analyses[date].map{|hash|hash[1][:loss_amount]}.sum.to_f + @date_store_analyses[date].map{|hash|hash[1][:discount_amount]}.sum.to_f)/@date_store_analyses[date].map{|hash|hash[1][:sales_amount]}.sum)*100).round(1)
+            - if @date_store_analyses[date].map{|hash|hash[1][:loss_amount].to_i}.sum > 0 && @date_store_analyses[date].map{|hash|hash[1][:discount_amount].to_i}.sum > 0
+              - loss = (((@date_store_analyses[date].map{|hash|hash[1][:loss_amount].to_i}.sum.to_f + @date_store_analyses[date].map{|hash|hash[1][:discount_amount].to_i}.sum.to_f)/@date_store_analyses[date].map{|hash|hash[1][:sales_amount]}.sum)*100).round(1)
               - if loss > 12 || loss < 8
                 span style='color:red;' = "#{loss}%"
               - else

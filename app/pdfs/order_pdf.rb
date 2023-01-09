@@ -51,7 +51,7 @@ class OrderPdf < Prawn::Document
         text "株式会社べじはん", :leading => 3
         text "#{order.store.address}", :leading => 3
         text "注文担当者：#{order.staff_name}", :leading => 3
-        text "TEL：#{order.store.phone}", :leading => 3
+        text "TEL：#{order.store.phone} FAX：03-6837-5337", :leading => 3
         text "No：#{vendor.management_id}", :leading => 3 if vendor.management_id.present?
     end
   end
