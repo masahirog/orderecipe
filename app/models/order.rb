@@ -125,8 +125,8 @@ class Order < ApplicationRecord
         body = m.body.decoded.toutf8
         if subject.include?("【MOVFAX】FAX送信結果")
           recieved_datetime = m.date
-          order_id = body[(body.index('(order_id)')+10)..(body.index('(/order_id)')-1)]
-          vendor_id = body[(body.index('(vendor_id)')+11)..(body.index('(/vendor_id)')-1)]
+          order_id = body[(body.index('(o_id)')+6)..(body.index('(/o_id)')-1)]
+          vendor_id = body[(body.index('(v_id)')+6)..(body.index('(/v_id)')-1)]
           result = body[(body.index('[送信結果]')+6)..(body.index('[送信結果]')+6+3)]
           unless FaxMail.find_by(order_id:order_id,vendor_id:vendor_id,recieved_datetime:recieved_datetime).present?
             @fax_mail = FaxMail.new
