@@ -124,7 +124,6 @@ class Order < ApplicationRecord
         subject = m.subject.gsub(" ", "").gsub("　","")
         body = m.body.decoded.toutf8
         if subject.include?("【MOVFAX】FAX送信結果")
-          binding.pry
           recieved_datetime = m.date
           order_id = body[(body.index('(o_id)')+6)..(body.index('(/o_id)')-1)]
           vendor_id = body[(body.index('(v_id)')+6)..(body.index('(/v_id)')-1)]
