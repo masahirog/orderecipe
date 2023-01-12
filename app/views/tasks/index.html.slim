@@ -181,6 +181,11 @@ javascript:
     // $('p').text();
     $(this).parent('label').children('span').text(file.name.slice(0,15));
   });
+  if (gon.task_id !== '') {
+    $(window).on('load',function(){
+      $('#modal_'+gon.task_id).modal('show');
+    });
+  }
 css:
   .upload-label {
     max-width:150px;

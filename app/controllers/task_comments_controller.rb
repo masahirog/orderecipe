@@ -20,7 +20,20 @@ class TaskCommentsController < ApplicationController
     @task = @task_comment.task
     respond_to do |format|
       if @task_comment.save
-        NotificationMailer.task_comment_send_mail(@task_comment).deliver
+        message = "https://bento-orderecipe.herokuapp.com/tasks?group_id=#{@task.group_id}&task_id=#{@task.id}\n"+
+        "タスク名：#{@task.title}\n"+
+        "ーー\n"+
+        "コメント：#{@task_comment.content}"+
+        "投稿：#{@task_comment.name}\n"+
+        "ーー"
+        attachment_image = {
+          image_url: @task_comment.image.url
+        }
+        if @task.group_id == 9
+          Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'Bot', icon_emoji: ':male-farmer:', attachments: [attachment_image]).ping(message)
+        else
+          Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'Bot', icon_emoji: ':male-farmer:', attachments: [attachment_image]).ping(message)
+        end
         format.html { redirect_to tasks_path, notice: "コメント投稿" }
         format.js
       else

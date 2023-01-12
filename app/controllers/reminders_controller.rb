@@ -65,7 +65,19 @@ class RemindersController < ApplicationController
     end
     respond_to do |format|
       if @reminder.save
-        Reminder.chatwork_notice(@reminder,params['stores']) if params['chatwork_notice'].present?
+        @store_names = [@reminder.store.name]
+        if params['stores'].present?
+          @store_names << Store.where(id:params['stores'].keys).pluck(:name)
+        end
+        message = "新規リマインダーがセットされました。\n"+
+        "店舗名：#{@store_names.join('、')}\n"+
+        "日付：#{@reminder.action_date.strftime('%m月 %d日')}\n"+
+        "内容：#{@reminder.content}\n"+
+        "メモ：#{@reminder.memo}\n"+
+        "作者：#{@reminder.drafter}"
+        if params['chatwork_notice'].present?
+          Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'Bot', icon_emoji: ':male-farmer:').ping(message)
+        end
         format.html { redirect_to store_reminders_path(store_id:@reminder.store_id,date:@reminder.action_date,status:'yet'), notice: "Reminder was successfully created." }
         format.json { render :show, status: :created, location: @reminder }
       else

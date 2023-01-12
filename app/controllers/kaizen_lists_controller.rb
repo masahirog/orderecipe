@@ -20,7 +20,6 @@ class KaizenListsController < ApplicationController
     @kaizen_list = KaizenList.new(kaizen_list_params)
     respond_to do |format|
       if @kaizen_list.save
-        NotificationMailer.kaizen_list_create_send_mail(@kaizen_list).deliver
         format.html { redirect_to kaizen_lists_path(store_id:@kaizen_list.store_id), notice: "Kaizen list was successfully created." }
         format.json { render :show, status: :created, location: @kaizen_list }
       else

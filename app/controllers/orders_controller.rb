@@ -752,7 +752,6 @@ class OrdersController < AdminController
     vendors = Vendor.where(id:vendor_ids)
     order = Order.find(params[:order_id])
     vendors.each do |vendor|
-      # NotificationMailer.send_order(order,vendor).deliver
       NotificationMailer.send_fax_order(order,vendor).deliver
     end
     order.order_materials.where(un_order_flag:false).joins(:material).where(:materials =>{vendor_id:vendor_ids}).update_all(fax_sended_status:3)

@@ -7,6 +7,11 @@ class TasksController < ApplicationController
     render body: nil
   end
   def index
+    if params[:task_id].present?
+      gon.task_id = params[:task_id]
+    else
+      gon.task_id = ''
+    end
     group_id = params[:group_id]
     if params[:staff_id].present?
       @staff = Staff.find(params[:staff_id])
@@ -49,7 +54,25 @@ class TasksController < ApplicationController
     @task = Task.new(task_params)
     respond_to do |format|
       if @task.save
-        NotificationMailer.task_create_send_mail(@task).deliver if params["chatwork_notice"]=='true'
+        if params["chatwork_notice"]=='true'
+          message = "新規のプロジェクト・タスクが追加されました！\n"+
+          "リストの確認をお願いします。\n"+
+          "https://bento-orderecipe.herokuapp.com/tasks?group_id=#{@task.group_id}&task_id=#{@task.id}\n"+
+          "投稿者：#{@task.drafter}\n"+
+          "タイトル：#{@task.title}\n"+
+          "内容：#{@task.content}"
+
+          attachment_images =[]
+          @task.task_images.each do |ti|
+            attachment_images << {image_url: ti.image.url}
+          end
+
+          if @task.group_id == 9
+            Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'Bot', icon_emoji: ':male-farmer:', attachments: attachment_images).ping(message)
+          else
+            Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'Bot', icon_emoji: ':male-farmer:', attachments: attachment_images).ping(message)
+          end
+        end
         format.html { redirect_to tasks_path(group_id:@task.group_id), notice: "タスクを1件作成しました。" }
         format.js
       else

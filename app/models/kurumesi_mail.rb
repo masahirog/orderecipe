@@ -96,7 +96,6 @@ class KurumesiMail < ApplicationRecord
               @kurumesi_mail.summary = 0
               @kurumesi_mail.save
             end
-            NotificationMailer.send_error_notice(@kurumesi_mail.recieved_datetime,@kurumesi_mail.body).deliver if @kurumesi_mail.kurumesi_order_reflect_flag == false
           end
         end
       end

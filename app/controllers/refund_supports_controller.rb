@@ -20,7 +20,14 @@ class RefundSupportsController < ApplicationController
     @refund_support = RefundSupport.new(refund_support_params)
     respond_to do |format|
       if @refund_support.save
-        NotificationMailer.refund_support_create_send_mail(@refund_support).deliver
+        message = "返金対応のリストに1件追加されました。\n"+
+        "店舗名：#{@refund_support.store.name}\n"+
+        "発生日時：#{@refund_support.occurred_at.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@refund_support.occurred_at.wday]})")}\n"+
+        "状況： #{t("enums.refund_support.status.#{@refund_support.status}")}\n" +
+        "対応者：#{@refund_support.staff_name}\n"+
+        "内容："+
+        "#{@refund_support.content}"
+        Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'Bot', icon_emoji: ':male-farmer:').ping(message)
         format.html { redirect_to refund_supports_path(store_id:@refund_support.store_id), notice: "作成しました。" }
         format.json { render :show, status: :created, location: @refund_support }
       else

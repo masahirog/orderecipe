@@ -6,9 +6,6 @@ class Reminder < ApplicationRecord
   validates :content, presence: true
 
 
-  def self.chatwork_notice(reminder,store_ids)
-    NotificationMailer.reminder_create_send_mail(reminder,store_ids).deliver
-  end
 
   def self.reminder_bulk_create
     new_reminders_arr = []

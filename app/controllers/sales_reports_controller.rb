@@ -49,8 +49,32 @@ class SalesReportsController < ApplicationController
     kome_amari = params[:sales_report][:kome_amari]
     respond_to do |format|
       if @sales_report.save
-        NotificationMailer.sales_report_send(@sales_report,@sales_report.analysis,sozai_ureyuki,bento_ureyuki,kome_amari).deliver
-        NotificationMailer.report_kindness_send(@sales_report).deliver
+        analysis = @sales_report.analysis
+        sales_form="店舗名:#{analysis.store.name}\n"+
+        "日付:#{analysis.store_daily_menu.start_time.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[analysis.store_daily_menu.start_time.wday]})")}\n"+
+        "担当者:#{Staff.find(@sales_report.staff_id).name}\n"+
+        "純売上(税抜):#{analysis.ex_tax_sales_amount.to_s(:delimited)}円\n"+
+        "来店者数:#{analysis.transaction_count}組\n"+
+        "値引き金額:#{analysis.discount_amount.to_s(:delimited)}円\n"+
+        "廃棄金額:#{analysis.loss_amount.to_s(:delimited)}円\n"+
+        "廃棄率:#{((analysis.loss_amount.to_f/analysis.ex_tax_sales_amount)*100).round(1)}%\n"+
+        "ロス金額:#{(analysis.loss_amount.to_f + analysis.discount_amount.to_f).round}円\n"+
+        "ロス率:#{(((analysis.loss_amount.to_f + analysis.discount_amount.to_f)/analysis.ex_tax_sales_amount)*100).round(1)}%\n"+
+        "現金誤差:#{@sales_report.cash_error}円\n"+
+        "惣菜の売れ行き：#{sozai_ureyuki}\n"+
+        "弁当の売れ行き：#{bento_ureyuki}\n"+
+        "白米のあまり：#{kome_amari} kg\n"+
+        "親切にできた点（自分・周りのスタッフ）:\n#{@sales_report.good}\n"+
+        "課題に感じた点：\n#{@sales_report.issue}\n"+
+        "惣菜の盛り付け過不足の有無：\n#{@sales_report.excess_or_deficiency_number_memo}\n"+
+        "その他メモ:#{@sales_report.other_memo}"
+        Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'Bot', icon_emoji: ':male-farmer:').ping(sales_form)
+
+        kindess_message = "#{Staff.find(@sales_report.staff_id).name} さんから\n"+
+        "ーーーーー\n"+
+        "#{@sales_report.good}"
+        Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'Bot', icon_emoji: ':hugging_face:').ping(kindess_message)
+
         format.html { redirect_to @sales_report, success: "作成！" }
         format.json { render :show, status: :created, location: @sales_report }
       else
