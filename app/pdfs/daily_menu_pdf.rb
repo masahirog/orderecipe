@@ -27,7 +27,7 @@ class DailyMenuPdf < Prawn::Document
           columns(0).align = :left
           columns(-2).align = :center
           self.header = true
-          self.column_widths = [180,50,50,50,50,50,50]
+          self.column_widths = [180,50,50,50,50,50]
         end
         move_down 10
 
@@ -44,14 +44,19 @@ class DailyMenuPdf < Prawn::Document
   end
 
   def line_item_rows(sdm)
-    data = [['商品名','副菜','惣菜','','','','']]
+    data = [['商品名','定価','副菜','惣菜','','']]
     sdm.store_daily_menu_details.each do |sdmd|
       if sdmd.bento_fukusai_number > 0
         fukusai_num = sdmd.bento_fukusai_number
       else
         fukusai_num = ""
       end
-      data << [sdmd.product.name,fukusai_num,sdmd.sozai_number,'','','','']
+      if sdmd.sozai_number > 0
+        sozai_number = sdmd.sozai_number
+      else
+        sozai_number = ""
+      end
+      data << [sdmd.product.name,sdmd.product.sell_price,fukusai_num,sozai_number,'','']
     end
     data
   end

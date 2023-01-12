@@ -4,7 +4,8 @@ Rails.application.routes.draw do
     get '/products/ikkatsu' => 'products#ikkatsu'
     get '/product/:id' => 'products#show'
     post'products/description_update' => 'products#description_update'
-
+    get '/store_daily_menus' => 'store_daily_menus#index'
+    get '/store_daily_menus/:id' => 'store_daily_menus#show'
   end
   namespace :store do
     resources :store_daily_menus do

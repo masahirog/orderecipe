@@ -1,0 +1,74 @@
+= link_to "写真一覧", crew_products_path(start_date:@store_daily_menu.start_time),class:'btn btn-success pull-right',style:'margin-right:20px;'
+.clearfix
+  h2 style='float:left;' = link_to "#{@store_daily_menu.store.name}店 ", crew_store_daily_menus_path,class:''
+  h2 style='float:left;margin-left:10px;'
+    - if @yesterday
+      = link_to "＜","/crew/store_daily_menus/#{@yesterday.id}"
+    = @store_daily_menu.start_time.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@store_daily_menu.start_time.wday]})")
+    - if @tommoroww
+      = link_to "＞","/crew/store_daily_menus/#{@tommoroww.id}"
+
+.col-md-12
+  label 予約：
+  span style='color:red;' = "#{@store_daily_menu.event}"
+  / = link_to "在庫CSV", stock_store_daily_menus_path(store_daily_menu_id:@store_daily_menu.id,format:'csv'), class: "btn btn-default",style:'float:right;'
+table.table.table-list
+  thead
+    tr
+      th
+      th 名称
+      th 売価
+      th 発注数
+      th 工程
+      th 1人前
+  tbody
+    -@store_daily_menu_details.each_with_index do |sdmd,index|
+      tr
+        td.text-center = sdmd.row_order
+        td
+          = link_to sdmd.product.name,"/crew/product/#{sdmd.product_id}"
+        td
+          = "#{sdmd.product.sell_price}円"
+        td
+          = sdmd.number if sdmd.number > 0
+
+        td
+          - if sdmd.product.product_ozara_serving_informations.present?
+            button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#ozara_serving_#{sdmd.product_id}" style='' 工程
+            .modal.fade tabindex="-1" ID="ozara_serving_#{sdmd.product_id}"
+              .modal-dialog style='width:1000px;'
+                .modal-content
+                  .modal-header
+                    h4.modal-title 仕上げ工程
+                  .modal-body
+                    table.table
+                      thead
+                        tr
+                          th.col-md-6 工程
+                          th 画像
+                      tbody
+                        - sdmd.product.product_ozara_serving_informations.each do |posi|
+                          tr
+                            td
+                              = text_url_to_link(simple_format(h(posi.content))).html_safe
+                            td
+                              = image_tag posi.image.to_s,class:"img-responsive",style:'max-height:350px;'
+
+                  .modal-footer
+                    button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
+
+        td
+          - if sdmd.product.serving_infomation.present?
+            button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#serving_infomation_#{sdmd.product_id}" style='' 1人前
+            .modal.fade tabindex="-1" ID="serving_infomation_#{sdmd.product_id}"
+              .modal-dialog style='width:1000px;'
+                .modal-content
+                  .modal-header
+                    h4.modal-title = sdmd.product.name
+                  .modal-body.clearfix
+                    div style='width:50%;float:left;'
+                      = text_url_to_link(simple_format(h(sdmd.product.serving_infomation))).html_safe
+                    div style='width:50%;float:left;'
+                      = image_tag sdmd.product.image_for_one_person.to_s,class:"img-responsive",style:'max-width:250px;height: auto;'
+                  .modal-footer
+                    button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
