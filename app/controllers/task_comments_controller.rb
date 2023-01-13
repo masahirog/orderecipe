@@ -23,7 +23,7 @@ class TaskCommentsController < ApplicationController
         message = "https://bento-orderecipe.herokuapp.com/tasks?group_id=#{@task.group_id}&task_id=#{@task.id}\n"+
         "タスク名：#{@task.title}\n"+
         "ーー\n"+
-        "コメント：#{@task_comment.content}"+
+        "コメント：#{@task_comment.content}\n"+
         "投稿：#{@task_comment.name}\n"+
         "ーー"
         attachment_image = {
