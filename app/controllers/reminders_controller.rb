@@ -76,7 +76,7 @@ class RemindersController < ApplicationController
         "メモ：#{@reminder.memo}\n"+
         "作者：#{@reminder.drafter}"
         if params['chatwork_notice'].present?
-          Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'Bot', icon_emoji: ':male-farmer:').ping(message)
+          Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'Bot', icon_emoji: ':male-farmer:').ping(message)
         end
         format.html { redirect_to store_reminders_path(store_id:@reminder.store_id,date:@reminder.action_date,status:'yet'), notice: "Reminder was successfully created." }
         format.json { render :show, status: :created, location: @reminder }

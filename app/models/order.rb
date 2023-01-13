@@ -139,12 +139,12 @@ class Order < ApplicationRecord
               vendor = Vendor.find(vendor_id)
               order_materials = order.order_materials.where(un_order_flag:false).joins(:material).where(:materials => {vendor_id:vendor_id})
               if result == "正常終了"
-                Slack::Notifier.new("https://hooks.slack.com/services/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", username: '監視君', icon_emoji: ':sunglasses:').ping("【送信OK】ID：#{order_id} 発注先：#{vendor.company_name} 担当：#{order.staff_name}")
+                Slack::Notifier.new("https://hooks.slack.com/services/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", username: '監視君', icon_emoji: ':sunglasses:').ping("【送信OK】ID：#{order_id} 発注先：#{vendor.company_name} 担当：#{order.staff_name}")
                 order_materials.update_all(fax_sended_status:1)
                 @fax_mail.status = 1
               else
                 order_materials.update_all(fax_sended_status:2)
-                Slack::Notifier.new("https://hooks.slack.com/services/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", username: '天狗様', icon_emoji: ':japanese_goblin:').ping("@channel 【失敗！！】ID：#{order_id} 発注先：#{vendor.company_name} 担当：#{order.staff_name}")
+                Slack::Notifier.new("https://hooks.slack.com/services/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", username: '天狗様', icon_emoji: ':japanese_goblin:').ping("@channel 【失敗！！】ID：#{order_id} 発注先：#{vendor.company_name} 担当：#{order.staff_name}")
                 @fax_mail.status = 0
               end
               @fax_mail.save

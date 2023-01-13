@@ -27,7 +27,7 @@ class RefundSupportsController < ApplicationController
         "対応者：#{@refund_support.staff_name}\n"+
         "内容："+
         "#{@refund_support.content}"
-        Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'Bot', icon_emoji: ':male-farmer:').ping(message)
+        Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'Bot', icon_emoji: ':male-farmer:').ping(message)
         format.html { redirect_to refund_supports_path(store_id:@refund_support.store_id), notice: "作成しました。" }
         format.json { render :show, status: :created, location: @refund_support }
       else

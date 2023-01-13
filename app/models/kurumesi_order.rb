@@ -137,6 +137,6 @@ class KurumesiOrder < ApplicationRecord
   end
 
   def self.capacity_notify(date,num)
-    Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'Bot', icon_emoji: ':star-struck:').ping("#{date} の製造数が #{num} 個になりました！")
+    Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'Bot', icon_emoji: ':star-struck:').ping("#{date} の製造数が #{num} 個になりました！")
   end
 end

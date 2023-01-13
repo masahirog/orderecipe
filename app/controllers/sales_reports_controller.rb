@@ -68,12 +68,12 @@ class SalesReportsController < ApplicationController
         "課題に感じた点：\n#{@sales_report.issue}\n"+
         "惣菜の盛り付け過不足の有無：\n#{@sales_report.excess_or_deficiency_number_memo}\n"+
         "その他メモ:#{@sales_report.other_memo}"
-        Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'Bot', icon_emoji: ':male-farmer:').ping(sales_form)
+        Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'Bot', icon_emoji: ':male-farmer:').ping(sales_form)
 
         kindess_message = "#{Staff.find(@sales_report.staff_id).name} さんから\n"+
         "ーーーーー\n"+
         "#{@sales_report.good}"
-        Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'Bot', icon_emoji: ':hugging_face:').ping(kindess_message)
+        Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'Bot', icon_emoji: ':hugging_face:').ping(kindess_message)
 
         format.html { redirect_to @sales_report, success: "作成！" }
         format.json { render :show, status: :created, location: @sales_report }
