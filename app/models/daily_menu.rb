@@ -24,7 +24,7 @@ class DailyMenu < ApplicationRecord
     end
     DailyMenu.import new_arr if new_arr.present?
 
-    DailyMenu.where(start_time:dates).each do |dm|
+    DailyMenu.where(start_time:dates).each do |date|
       if DailyMenu.find_by(start_time:date).present?
       else
         new_store_daily_menu_arr << StoreDailyMenu.new(start_time:date)

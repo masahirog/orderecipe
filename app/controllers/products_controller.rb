@@ -270,7 +270,7 @@ class ProductsController < AdminController
   def download
     # Dotenv.overload
     # region='ap-northeast-1'
-    # bucket='bento-orderecipe'
+    # bucket='bejihan-orderecipe'
     # key=params[:key]
     # credentials=Aws::Credentials.new(
     #   ENV['ACCESS_KEY_ID'],
