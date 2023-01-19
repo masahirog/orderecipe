@@ -29,19 +29,7 @@ class NpOrderPdf < Prawn::Document
     end
     bounding_box([0, 770], :width => 530, :height =>100) do
         font_size 15
-        if date >= '2022/11/1'.to_date
-          if order.store_id == 9
-            np_store_code = 'B32143002-500'
-          elsif order.store_id == 19
-            np_store_code = 'B32143003-500'
-          elsif order.store_id == 29
-            np_store_code = 'B32143004-500'
-          elsif order.store_id == 39
-            np_store_code = 'B32143001-500'
-          end
-        else
-          np_store_code = order.store.np_store_code
-        end
+        np_store_code = order.store.np_store_code
         text "#{np_store_code}", :leading => 4,:align => :right
     end
     bounding_box([0, 744], :width => 530, :height =>100) do
