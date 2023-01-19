@@ -18,23 +18,31 @@ task :update_product_cost_price => :environment do
   Product.import update_products, :on_duplicate_key_update => [:cost_price], validate: false
 end
 
-#10分毎に実行
+# masahiro11g@gmailのアカウントでGASを書いている。未開封の新着メールがあれば、下記の2個のタスクを実行するという流れ。
+# herokuの負荷を下げるために、こちらのスクリプトでチェックして必要なときだけOrderのタスクを実行する
+
 task :kurumesi_order_mail_check => :environment do
   KurumesiMail.routine_check
-  Order.fax_send_check
-  # KurumesiOrder.capture_check
-end
-
-# 毎日の0:00にheroku_schedulerをセット
-task :update_need_inventory_flag => :environment do
-  Store.all.each do |store|
-    Stock.stock_status_check(store.id)
-  end
-end
-
-task :capa_check => :environment do
   KurumesiOrder.capacity_check
+  # Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'bot', icon_emoji: ':sunglasses:').ping("kurumesi_check_done")
 end
+
+task :order_fax_status_check => :environment do
+  Order.fax_send_check
+  # Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'bot', icon_emoji: ':sunglasses:').ping("movfax_check_done")
+end
+
+
+# # 毎日の0:00にheroku_schedulerをセット
+# task :update_need_inventory_flag => :environment do
+#   Store.all.each do |store|
+#     Stock.stock_status_check(store.id)
+#   end
+# end
+
+# task :capa_check => :environment do
+  # KurumesiOrder.capacity_check
+# end
 
 task :input_gss => :environment do
   Product.input_spreadsheet
@@ -46,8 +54,4 @@ end
 
 task :reminder_bulk_create => :environment do
   Reminder.reminder_bulk_create
-end
-
-task :yet_reminder_move_nextday => :environment do
-  Reminder.yet_reminder_move_nextday
 end
