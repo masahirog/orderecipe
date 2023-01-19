@@ -28,15 +28,14 @@ class KurumesiMail < ApplicationRecord
     imap_user = 'masahiro11g@gmail.com'
     imap_passwd = ENV['MASAHIRO_MAIL_PASS']
     imap.login(imap_user, imap_passwd)
-    # 'FROM','info@kurumesi-bentou.com',
     search_criterias = [
       'FROM','info@kurumesi-bentou.com',
-      'SINCE', (Date.today-1).strftime("%d-%b-%Y")
-      # 'SINCE', (Date.today).strftime("%d-%b-%Y") テスト環境
+      'SINCE', (Date.today-1).strftime("%d-%b-%Y"),
+      'UNSEEN'
     ]
     imap.select('INBOX') # 対象のメールボックスを選択
     ids = imap.search(search_criterias) # 全てのメールを取得
-    ids.each_slice(100).to_a.each do |id_block| # 100件ごとにメールをfetchする
+    if ids.present?
       imap.fetch(ids, ["RFC822", "ENVELOPE"]).each do |mail|
         m = Mail.new(mail.attr["RFC822"])
         subject = m.subject
@@ -100,6 +99,7 @@ class KurumesiMail < ApplicationRecord
         end
       end
     end
+    imap.logout
     user = User.find(1)
     now = Time.now
     user.update(last_mail_check:now)

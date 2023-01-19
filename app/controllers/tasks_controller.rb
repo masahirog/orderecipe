@@ -57,7 +57,7 @@ class TasksController < ApplicationController
         if params["chatwork_notice"]=='true'
           message = "新規のプロジェクト・タスクが追加されました！\n"+
           "リストの確認をお願いします。\n"+
-          "https://bento-orderecipe.herokuapp.com/tasks?group_id=#{@task.group_id}&task_id=#{@task.id}\n"+
+          "https://bejihan-orderecipe.herokuapp.com/tasks?group_id=#{@task.group_id}&task_id=#{@task.id}\n"+
           "投稿者：#{@task.drafter}\n"+
           "タイトル：#{@task.title}\n"+
           "内容：#{@task.content}"

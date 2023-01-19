@@ -20,10 +20,10 @@ class TaskCommentsController < ApplicationController
     @task = @task_comment.task
     respond_to do |format|
       if @task_comment.save
-        message = "https://bento-orderecipe.herokuapp.com/tasks?group_id=#{@task.group_id}&task_id=#{@task.id}\n"+
+        message = "https://bejihan-orderecipe.herokuapp.com/tasks?group_id=#{@task.group_id}&task_id=#{@task.id}\n"+
         "タスク名：#{@task.title}\n"+
         "ーー\n"+
-        "コメント：#{@task_comment.content}\n"+
+        "コメント：#{@task_comment.content}"+
         "投稿：#{@task_comment.name}\n"+
         "ーー"
         attachment_image = {

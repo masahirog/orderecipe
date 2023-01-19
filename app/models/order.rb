@@ -111,14 +111,16 @@ class Order < ApplicationRecord
     # imapにログイン
     imap_user = 'masahiro11g@gmail.com'
     imap_passwd = ENV['MASAHIRO_MAIL_PASS']
+
     imap.login(imap_user, imap_passwd)
     search_criterias = [
       'FROM','no-reply@mail01.lcloud.jp',
-      'SINCE', (Date.today-1).strftime("%d-%b-%Y")
+      'SINCE', (Date.today-1).strftime("%d-%b-%Y"),
+      'UNSEEN'
     ]
     imap.select('INBOX')
     ids = imap.search(search_criterias)
-    ids.each_slice(100).to_a.each do |id_block| # 100件ごとにメールをfetchする
+    if ids.present?
       imap.fetch(ids, ["RFC822", "ENVELOPE"]).each do |mail|
         m = Mail.new(mail.attr["RFC822"])
         subject = m.subject.gsub(" ", "").gsub("　","")
@@ -140,11 +142,13 @@ class Order < ApplicationRecord
               order_materials = order.order_materials.where(un_order_flag:false).joins(:material).where(:materials => {vendor_id:vendor_id})
               if result == "正常終了"
                 Slack::Notifier.new("https://hooks.slack.com/services/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", username: '監視君', icon_emoji: ':sunglasses:').ping("【送信OK】ID：#{order_id} 発注先：#{vendor.company_name} 担当：#{order.staff_name}")
+                # Slack::Notifier.new("https://hooks.slack.com/services/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", username: '監視君', icon_emoji: ':sunglasses:').ping("【送信OK】ID：#{order_id} 発注先：#{vendor.company_name} 担当：#{order.staff_name}")
                 order_materials.update_all(fax_sended_status:1)
                 @fax_mail.status = 1
               else
                 order_materials.update_all(fax_sended_status:2)
                 Slack::Notifier.new("https://hooks.slack.com/services/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", username: '天狗様', icon_emoji: ':japanese_goblin:').ping("@channel 【失敗！！】ID：#{order_id} 発注先：#{vendor.company_name} 担当：#{order.staff_name}")
+                # Slack::Notifier.new("https://hooks.slack.com/services/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", username: '天狗様', icon_emoji: ':japanese_goblin:').ping("@channel 【失敗！！】ID：#{order_id} 発注先：#{vendor.company_name} 担当：#{order.staff_name}")
                 @fax_mail.status = 0
               end
               @fax_mail.save
@@ -153,6 +157,7 @@ class Order < ApplicationRecord
         end
       end
     end
+    imap.logout
   end
 
 
