@@ -17,7 +17,6 @@ html
     script src="https://unpkg.com/chartjs-plugin-colorschemes"
     script src="https://kit.fontawesome.com/2582000750.js" crossorigin="anonymous"
     script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui-touch-punch/0.2.3/jquery.ui.touch-punch.min.js"
-
   body datxa-controller="#{controller_name}" data-action="#{action_name}"
     header
       / div style='background-color:red;padding:20px;color:white;font-size:30px;'
@@ -53,7 +52,7 @@ html
                       h5 style='padding:0 10px;font-weight:bold;' くるめし
                       li = link_to "オーダー",kurumesi_orders_path(start_date:Date.today)
                       li = link_to "領収書",receipt_kurumesi_orders_path,target:'_blank'
-                      li = link_to "請求書",'https://docs.google.com/spreadsheets/d/1nYRqrIcOlcHK-pe27KUCXlllcHWO-FK3KPjaMjjHyGg/edit#gid=50646244',target:'_blank'
+                      li = link_to "請求書",'https://docs.google.com/spreadsheets/d/1lZkBmhWibpvbIHM3jSNEVCTXGIEMYkwE/',target:'_blank'
                       h5 style='padding:0 10px;font-weight:bold;' 発注・在庫
                       li = link_to "発注",orders_path(store_id:39)
                       li = link_to "納品確認",deliveried_list_orders_path(store_id:39)
@@ -153,5 +152,4 @@ html
 
       = yield
     .col-md-12.footer style="height:20px;"
-
 script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/js/lightbox.min.js" type="text/javascript"

@@ -521,26 +521,39 @@ class AnalysesController < AdminController
       @from = @to - 30
       params[:from] = @from
     end
-    analyses = Analysis.where(date:@from..@to).where(store_id:checked_store_ids)
-    @analysis_products = AnalysisProduct.includes([:analysis]).where(analysis_id:analyses.ids)
-    @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @dates = []
-    product_ids = []
-    @analysis_products.each do |ap|
-      if @hash[ap.product_id][ap.analysis.store_daily_menu.start_time].present?
-        @hash[ap.product_id][ap.analysis.store_daily_menu.start_time][:actual_inventory] += ap.actual_inventory.to_i
-        @hash[ap.product_id][ap.analysis.store_daily_menu.start_time][:sales_number] += ap.sales_number
-        @hash[ap.product_id][ap.analysis.store_daily_menu.start_time][:total_sales_amount] += ap.total_sales_amount
-        @hash[ap.product_id][ap.analysis.store_daily_menu.start_time][:discount_amount] += ap.discount_amount
-        @hash[ap.product_id][ap.analysis.store_daily_menu.start_time][:loss_amount] += ap.loss_amount
-      else
-        @hash[ap.product_id][ap.analysis.store_daily_menu.start_time] = {sales_number:ap.sales_number,total_sales_amount:ap.total_sales_amount,discount_amount:ap.discount_amount,loss_amount:ap.loss_amount,actual_inventory:ap.actual_inventory.to_i}
-        product_ids << ap.product_id unless product_ids.include?(ap.product_id)
-        @dates << ap.analysis.store_daily_menu.start_time unless @dates.include?(ap.analysis.store_daily_menu.start_time)
+    if (@to - @from) < 32
+      analyses = Analysis.where(date:@from..@to).where(store_id:checked_store_ids)
+      @analysis_products = AnalysisProduct.includes(analysis:[:store_daily_menu]).where(analysis_id:analyses.ids)
+      @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+      product_ids = []
+      @analysis_products.each do |ap|
+        if @hash[ap.product_id][ap.analysis.store_daily_menu.start_time].present?
+          @hash[ap.product_id][ap.analysis.store_daily_menu.start_time][:actual_inventory] += ap.actual_inventory.to_i
+          @hash[ap.product_id][ap.analysis.store_daily_menu.start_time][:sales_number] += ap.sales_number
+          @hash[ap.product_id][ap.analysis.store_daily_menu.start_time][:total_sales_amount] += ap.total_sales_amount
+          @hash[ap.product_id][ap.analysis.store_daily_menu.start_time][:discount_amount] += ap.discount_amount
+          @hash[ap.product_id][ap.analysis.store_daily_menu.start_time][:loss_amount] += ap.loss_amount
+        else
+          @hash[ap.product_id][ap.analysis.store_daily_menu.start_time] = {sales_number:ap.sales_number,total_sales_amount:ap.total_sales_amount,discount_amount:ap.discount_amount,loss_amount:ap.loss_amount,actual_inventory:ap.actual_inventory.to_i}
+          product_ids << ap.product_id unless product_ids.include?(ap.product_id)
+          @dates << ap.analysis.store_daily_menu.start_time unless @dates.include?(ap.analysis.store_daily_menu.start_time)
+        end
+        if  @hash[ap.product_id][:period].present?
+          @hash[ap.product_id][:period][:actual_inventory] += ap.actual_inventory.to_i
+          @hash[ap.product_id][:period][:sales_number] += ap.sales_number
+          @hash[ap.product_id][:period][:total_sales_amount] += ap.total_sales_amount
+          @hash[ap.product_id][:period][:discount_amount] += ap.discount_amount
+          @hash[ap.product_id][:period][:loss_amount] += ap.loss_amount
+        else
+          @hash[ap.product_id][:period] = {sales_number:ap.sales_number,total_sales_amount:ap.total_sales_amount,discount_amount:ap.discount_amount,loss_amount:ap.loss_amount,actual_inventory:ap.actual_inventory.to_i}
+        end
       end
+      @dates = @dates.sort
+      @products = Product.where(id:product_ids)
+    else
+      redirect_to product_sales_analyses_path, danger: "期間は一ヶ月間以内にしてください。"
     end
-    @dates = @dates.sort
-    @products = Product.where(id:product_ids)
   end
 
   def visitors_time_zone

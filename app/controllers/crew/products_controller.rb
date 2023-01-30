@@ -26,7 +26,7 @@ class Crew::ProductsController < ApplicationController
     @product = Product.find(params[:product_id])
     respond_to do |format|
       if @product.update_attribute(:description,params[:description])
-        format.html { redirect_to "/crew/product/#{@product.id}", notice: "商品特徴を更新しました！ありがとう！" }
+        format.html { redirect_to "/crew/product/#{@product.id}", success: "商品特徴を更新しました！ありがとう！" }
         format.js
       else
         format.js

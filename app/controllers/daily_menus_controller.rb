@@ -291,7 +291,7 @@ class DailyMenusController < AdminController
     @daily_menu = DailyMenu.new(daily_menu_params)
     respond_to do |format|
       if @daily_menu.save
-        format.html { redirect_to daily_menus_path, notice: "#{params['daily_menu']['start_time']}の献立を作成しました。" }
+        format.html { redirect_to daily_menus_path, success: "#{params['daily_menu']['start_time']}の献立を作成しました。" }
         format.json { render :show, status: :created, location: @daily_menu }
       else
         format.html { render :new }
@@ -435,7 +435,7 @@ class DailyMenusController < AdminController
         end
       end
     end
-    redirect_to daily_menus_path, notice: "#{count}日間、同じメニューをコピーして献立に反映しました！"
+    redirect_to daily_menus_path, success: "#{count}日間、同じメニューをコピーして献立に反映しました！"
   end
 
   def once_store_reflect
@@ -488,7 +488,7 @@ class DailyMenusController < AdminController
       end
     end
     StoreDailyMenuDetail.import store_daily_menu_details_arr
-    redirect_to daily_menu, notice: "#{count}店舗にメニュー反映しました"
+    redirect_to daily_menu, success: "#{count}店舗にメニュー反映しました"
   end
 
   private

@@ -89,7 +89,7 @@ class KurumesiOrdersController < AdminController
 
   def mail_check
     KurumesiMail.routine_check
-    redirect_to kurumesi_orders_path, notice: 'くるめしのメールを確認しました。'
+    redirect_to kurumesi_orders_path, success: 'くるめしのメールを確認しました。'
   end
 
   def receipt
@@ -296,7 +296,7 @@ class KurumesiOrdersController < AdminController
       @kurumesi_order = KurumesiOrder.new(kurumesi_order_params)
     end
     if @kurumesi_order.save
-      redirect_to date_kurumesi_orders_path(date:@kurumesi_order.start_time), notice: 'Masu order was successfully created.'
+      redirect_to date_kurumesi_orders_path(date:@kurumesi_order.start_time), success: 'Masu order was successfully created.'
     else
       render :new
     end
@@ -307,13 +307,13 @@ class KurumesiOrdersController < AdminController
     if params['kurumesi_order']["pick_time(4i)"]==''||params['kurumesi_order']["pick_time(5i)"]==''
       @kurumesi_order.update(kurumesi_order_picktimenone_params)
       respond_to do |format|
-        format.html { redirect_to date_kurumesi_orders_path(date:@kurumesi_order.start_time), notice: '更新しました！' }
+        format.html { redirect_to date_kurumesi_orders_path(date:@kurumesi_order.start_time), success: '更新しました！' }
         format.js
       end
     else
       @kurumesi_order.update(kurumesi_order_params)
       respond_to do |format|
-        format.html { redirect_to date_kurumesi_orders_path(date:@kurumesi_order.start_time), notice: '更新しました！' }
+        format.html { redirect_to date_kurumesi_orders_path(date:@kurumesi_order.start_time), success: '更新しました！' }
         format.js
       end
     end
@@ -322,7 +322,7 @@ class KurumesiOrdersController < AdminController
   def destroy
     @kurumesi_order.destroy
     respond_to do |format|
-      format.html { redirect_to kurumesi_orders_url, notice: 'Masu order was successfully destroyed.' }
+      format.html { redirect_to kurumesi_orders_url, success: 'Masu order was successfully destroyed.' }
       format.json { head :no_content }
     end
   end

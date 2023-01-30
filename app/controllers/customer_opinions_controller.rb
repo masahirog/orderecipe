@@ -23,7 +23,7 @@ class CustomerOpinionsController < ApplicationController
     respond_to do |format|
       if @customer_opinion.save
         Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'Bot', icon_emoji: ':male-farmer:').ping("お客様の声を頂きました！\nーーー\n"+@customer_opinion.content+"\nーーー")
-        format.html { redirect_to customer_opinions_path, notice: '頂いた声をキッチンのみんなに届けるよ！！投稿ありがとう！' }
+        format.html { redirect_to customer_opinions_path, success: '頂いた声をキッチンのみんなに届けるよ！！投稿ありがとう！' }
         format.json { render :show, status: :created, location: @customer_opinion }
       else
         format.html { render :new }

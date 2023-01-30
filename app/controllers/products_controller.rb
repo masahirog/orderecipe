@@ -252,13 +252,13 @@ class ProductsController < AdminController
     @product = Product.find(params[:id])
     @product.destroy
     respond_to do |format|
-      format.html { redirect_to products_path, notice: '商品を削除しました。' }
+      format.html { redirect_to products_path, success: '商品を削除しました。' }
       format.json { head :no_content }
     end
   end
   def bejihan_ss_cost_sync
     Product.input_spreadsheet
-    redirect_to products_path, notice: 'スプレッドシートに連携しました！'
+    redirect_to products_path, success: 'スプレッドシートに連携しました！'
   end
 
   # def download

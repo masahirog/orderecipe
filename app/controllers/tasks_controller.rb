@@ -73,7 +73,7 @@ class TasksController < ApplicationController
             Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'Bot', icon_emoji: ':male-farmer:', attachments: attachment_images).ping(message)
           end
         end
-        format.html { redirect_to tasks_path(group_id:@task.group_id), notice: "タスクを1件作成しました。" }
+        format.html { redirect_to tasks_path(group_id:@task.group_id), success: "タスクを1件作成しました。" }
         format.js
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -85,7 +85,7 @@ class TasksController < ApplicationController
   def update
     respond_to do |format|
       if @task.update(task_params)
-        format.html { redirect_to tasks_path(group_id:@task.group_id), notice: "タスクを1件更新しました。" }
+        format.html { redirect_to tasks_path(group_id:@task.group_id), success: "タスクを1件更新しました。" }
         format.js
       else
         format.html { render :edit, status: :unprocessable_entity }

@@ -53,7 +53,7 @@ class MenusController < AdminController
     # @materials = @menu.materials
     if @menu.save
      redirect_to @menu,
-     notice: "「#{@menu.name}」を作成しました。続けてメニューを作成する：<a href='/menus/new'>新規作成</a>".html_safe
+     success: "「#{@menu.name}」を作成しました。続けてメニューを作成する：<a href='/menus/new'>新規作成</a>".html_safe
     else
      @ar = Menu.used_additives(@menu.materials)
      render 'new'
@@ -80,10 +80,10 @@ class MenusController < AdminController
     @materials = @menu.materials
     if @menu.update(menu_create_update)
       if params["menu"]["back_to"].blank?
-        redirect_to menu_path, notice: "「#{@menu.name}」を更新しました。続けてメニューを作成する：<a href='/menus/new'>新規作成</a>".html_safe
+        redirect_to menu_path, success: "「#{@menu.name}」を更新しました。続けてメニューを作成する：<a href='/menus/new'>新規作成</a>".html_safe
 
       else
-        redirect_to params["menu"]["back_to"], notice: "「#{@menu.name}」を更新しました".html_safe
+        redirect_to params["menu"]["back_to"], success: "「#{@menu.name}」を更新しました".html_safe
       end
     else
       @ar = Menu.used_additives(@menu.materials)
@@ -136,7 +136,7 @@ class MenusController < AdminController
       @pm.update_attribute(:menu_id, pm[:menu_id])
     end
     menu_id = params[:menu_id]
-    redirect_to include_menu_menus_path(id:menu_id), notice: "メニューを変更しました。"
+    redirect_to include_menu_menus_path(id:menu_id), success: "メニューを変更しました。"
   end
 
   def get_food_ingredient
@@ -158,7 +158,7 @@ class MenusController < AdminController
     @menu = Menu.find(params[:id])
     @menu.destroy
     respond_to do |format|
-      format.html { redirect_to menus_path, notice: '1件メニューを削除しました。' }
+      format.html { redirect_to menus_path, success: '1件メニューを削除しました。' }
       format.json { head :no_content }
     end
   end

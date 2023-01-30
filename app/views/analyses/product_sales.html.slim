@@ -19,6 +19,7 @@ div style='margin-bottom:20px;'
     thead style='position: sticky;top:0;background-color:white;z-index:3;'
       tr
         th style='background-color:white;width:200px;' 商品名
+        th colspan=10 style='width:750px;' 期間
         - @dates.each do |date|
           - holiday = HolidayJapan.name(date)
           - if holiday.present? || date.wday == 0
@@ -30,34 +31,62 @@ div style='margin-bottom:20px;'
 
       tr
         th style='background-color:white;width:200px;'
+        th style='width:50px;' ID
+        th style='width:50px;' 価格
+        th style='width:50px;' 原価
+        th style='width:50px;' 原価率
+        th style='width:50px;' 工数
+        th style='width:70px;' 販売数
+        th style='width:70px;' 売上
+        th style='width:70px;' 値引
+        th style='width:70px;' 廃棄
+        th style='width:50px;border-right: 3px solid #808080;' ロス率
         - @dates.each do |date|
           th.aaa style="" 販売数
           th.aaa style="" 売上
           th.aaa style="" 値引
           th.aaa style="" 廃棄
-          th.aaa style="border-right: 3px solid #ddd;" ロス率
+          th.aaa style="border-right: 3px solid #808080;" ロス率
     tbody
       - @products.each_with_index do |product,i|
+        - period_loss_rate = (((@hash[product.id][:period][:discount_amount] + @hash[product.id][:period][:loss_amount] )/@hash[product.id][:period][:total_sales_amount].to_f)*100).round(1)
         - if i.even?
           - bgcolor = 'white'
         - else
           - bgcolor = '#f5f5f5'
         tr style="background-color:#{bgcolor}"
-          td style='background-color:#{bgcolor};border-right: 3px solid #ddd;'
-            = product.name.slice(0..13)
+          td style='background-color:#{bgcolor};border-right: 3px solid #ddd;text-align:left;'
+            = link_to product.name.slice(0..13),product,target:"_blank"
+          td = product.id
+          td = product.sell_price
+          td = product.cost_price
+          td = "#{((product.cost_price / product.sell_price)*100).round(1)}%"
+          td -
+          td = "#{@hash[product.id][:period][:sales_number]}/#{@hash[product.id][:period][:actual_inventory]}"
+          td = @hash[product.id][:period][:total_sales_amount].to_s(:delimited)
+          td = @hash[product.id][:period][:discount_amount].to_s(:delimited)
+          td = @hash[product.id][:period][:loss_amount].to_s(:delimited)
+          - if period_loss_rate > 15
+            td style="border-right: 3px solid #808080;color:#ff0000;" = "#{period_loss_rate}%"
+          - elsif period_loss_rate >10
+            td style="border-right: 3px solid #808080;color:#ff8c00;" = "#{period_loss_rate}%"
+          - elsif period_loss_rate >7
+            td style="border-right: 3px solid #808080;" = "#{period_loss_rate}%"
+          - else
+            td style="border-right: 3px solid #808080;color:#008000;" = "#{period_loss_rate}%"
           - @dates.each do |date|
             - if @hash[product.id][date].present?
               td = "#{@hash[product.id][date][:sales_number]}/#{@hash[product.id][date][:actual_inventory]}"
               td = @hash[product.id][date][:total_sales_amount].to_s(:delimited)
               td = @hash[product.id][date][:discount_amount].to_s(:delimited)
               td = @hash[product.id][date][:loss_amount]
-              td style="border-right: 3px solid #ddd;" = "#{(((@hash[product.id][date][:discount_amount] + @hash[product.id][date][:loss_amount] )/@hash[product.id][date][:total_sales_amount].to_f)*100).round(1)}%"
+              td style="border-right: 3px solid #808080;" = "#{(((@hash[product.id][date][:discount_amount] + @hash[product.id][date][:loss_amount] )/@hash[product.id][date][:total_sales_amount].to_f)*100).round(1)}%"
             - else
               td
               td
               td
               td
-              td style="border-right: 3px solid #ddd;"
+              td style="border-right: 3px solid #808080;"
 
 css:
   .table-responsive th {

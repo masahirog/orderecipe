@@ -715,7 +715,7 @@ class OrdersController < AdminController
          end
        end
      else
-       redirect_to order_path(@order), alert: "企業を選択してください。"
+       redirect_to order_path(@order), danger: "企業を選択してください。"
      end
   end
 

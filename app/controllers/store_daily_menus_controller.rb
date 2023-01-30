@@ -276,7 +276,7 @@ class StoreDailyMenusController < ApplicationController
       sum = sdm.store_daily_menu_details.sum(:number)
       sdm.update_attributes(total_num:sum)
     end
-    redirect_to store_daily_menus_path(store_id:store_id), notice: "まとめて更新しました"
+    redirect_to store_daily_menus_path(store_id:store_id), success: "まとめて更新しました"
   end
 
   def upload_number
@@ -373,7 +373,7 @@ class StoreDailyMenusController < ApplicationController
         @store_daily_menu.store_daily_menu_photos.build
       }
     else
-      redirect_to store_daily_menus_path(store_id:store_id),notice:'来月の献立を作成するので、山下に連絡ください！'
+      redirect_to store_daily_menus_path(store_id:store_id),danger:'来月の献立を作成するので、山下に連絡ください！'
     end
   end
 
@@ -396,7 +396,7 @@ class StoreDailyMenusController < ApplicationController
 
     respond_to do |format|
       if @store_daily_menu.save
-        format.html { redirect_to store_daily_menus_path(store_id:store_id), notice: "登録OK！" }
+        format.html { redirect_to store_daily_menus_path(store_id:store_id), success: "登録OK！" }
         format.json { render :show, status: :created, location: @store_daily_menu }
       else
         format.html { render :new }

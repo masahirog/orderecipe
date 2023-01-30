@@ -34,7 +34,7 @@ class TaskCommentsController < ApplicationController
         else
           Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'Bot', icon_emoji: ':male-farmer:', attachments: [attachment_image]).ping(message)
         end
-        format.html { redirect_to tasks_path, notice: "コメント投稿" }
+        format.html { redirect_to tasks_path, success: "コメント投稿" }
         format.js
       else
         format.html { render :new, status: :unprocessable_entity }

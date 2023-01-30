@@ -34,7 +34,7 @@ class MaterialsController < AdminController
     @stores_hash = Store.all.map{|store|[store.id,store.name]}.to_h
     @material = Material.create(material_params)
     if @material.save
-     redirect_to @material, notice: "「#{@material.name}」を作成しました。続けて食材を作成する：<a href='/materials/new'>新規作成</a>".html_safe
+     redirect_to @material, success: "「#{@material.name}」を作成しました。続けて食材を作成する：<a href='/materials/new'>新規作成</a>".html_safe
     else
      render 'new'
     end
@@ -83,9 +83,9 @@ class MaterialsController < AdminController
       if @material.update(material_params)
         format.html {
           if params["material"]["back_to"].blank?
-            redirect_to material_path, notice: "「#{@material.name}」を更新しました。続けてメニューを作成する：<a href='/materials/new'>新規作成</a>".html_safe
+            redirect_to material_path, success: "「#{@material.name}」を更新しました。続けてメニューを作成する：<a href='/materials/new'>新規作成</a>".html_safe
           else
-            redirect_to params["material"]["back_to"], notice: "「#{@material.name}」を更新しました：".html_safe
+            redirect_to params["material"]["back_to"], success: "「#{@material.name}」を更新しました：".html_safe
           end
         }
         format.js
@@ -106,7 +106,7 @@ class MaterialsController < AdminController
       @mm.update_attribute(:material_id, mm[:material_id])
     end
      material_id = params[:material_id]
-     redirect_to include_material_materials_path(id:material_id), notice: "食材を変更しました。"
+     redirect_to include_material_materials_path(id:material_id), success: "食材を変更しました。"
   end
   def material_cut_patterns_once_update
     mm_arr = []
@@ -123,7 +123,7 @@ class MaterialsController < AdminController
       mm_arr << menu_material
     end
     MenuMaterial.import mm_arr, on_duplicate_key_update:[:preparation,:material_cut_pattern_id]
-    redirect_to cut_patterns_materials_path(material_cut_pattern_id:material_cut_pattern.id), notice: "食材を変更しました。"
+    redirect_to cut_patterns_materials_path(material_cut_pattern_id:material_cut_pattern.id), success: "食材を変更しました。"
   end
 
 
