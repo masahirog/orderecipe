@@ -1602,6 +1602,9 @@ GEM
       pry (>= 0.10.4)
     public_suffix (4.0.7)
     puma (3.12.6)
+    puma_worker_killer (0.3.1)
+      get_process_mem (~> 0.2)
+      puma (>= 2.7)
     racc (1.6.0)
     rack (2.2.3.1)
     rack-test (1.1.0)
@@ -1796,6 +1799,7 @@ DEPENDENCIES
   prawn-table
   pry-rails
   puma (~> 3.11)
+  puma_worker_killer
   rails (= 6.0.0)
   rails-erd
   rails-i18n
