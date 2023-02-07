@@ -1,10 +1,24 @@
 Rails.application.routes.draw do
   namespace :crew do
+    root 'store_daily_menus#index'
     get '/products/ikkatsu' => 'products#ikkatsu'
-    post'products/description_update' => 'products#description_update'
     resources :store_daily_menus
     resources :stores
     resources :products
+    resources :orders do
+      collection do
+        get :send_order_fax
+        get :preparation_all
+        get :monthly
+        get :products_pdfs
+        get :material_info
+        get :get_management_id
+        get :check_management_id
+        get :print_all
+        post :material_reload
+        get :deliveried_list
+      end
+    end
   end
   namespace :store do
     resources :store_daily_menus do

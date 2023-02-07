@@ -1,0 +1,52 @@
+h4 = "#{@order.store.name}の発注"
+.form-group
+  = link_to '発注内容の編集',edit_crew_order_path(@order),class:"btn btn-primary",style:''
+.col-md-12 style="padding:5px;border:1px solid silver;border-radius:3px;"
+  label 社内メモ（送信先には表示されません）
+  = text_url_to_link(simple_format(h(@order.memo))).html_safe
+
+table.table
+  thead
+    tr
+      th 発注食材・資材一覧
+      th 発注量
+      th 仕入先
+      th 備考
+      th 納品日
+  tbody
+    - @order_materials.each do |om|
+      tr class="om_tr_#{om.id}"
+        td
+          = om.material.name
+        td
+          = "#{((om.order_quantity.to_f/om.material.recipe_unit_quantity)*om.material.order_unit_quantity).round(1)} #{om.material.order_unit}"
+        td
+          = om.material.vendor.company_name
+        td
+          = om.order_material_memo
+        td
+          = om.delivery_date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[om.delivery_date.wday]})")
+
+css:
+  select::-ms-expand {
+    display: none;
+  }
+  select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding: 4px 8px;
+    font-size: 11px;
+    border-radius: 5px;
+    border: none;
+    color:white;
+  }
+
+// javascript:
+  $(function() {
+    $(document).on("change", ".fax_status", function(event) {
+      var om_id = $(this).parent().find('.order_material_id').val();
+      console.log(om_id)
+      Rails.fire($('#edit_order_material_' + om_id)[0], 'submit');
+    });
+  });

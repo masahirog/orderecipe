@@ -1,55 +1,61 @@
 h3 = @product.name
-div.clearfix.show_description_area
+.box26.clearfix
+  span class="box-title" SKY情報
+  .col-md-12
+    .col-md-6
+      label SKY_1人前写真
+      = link_to @product.sky_image.to_s, "data-lightbox" => @product.sky_image.to_s do
+        = image_tag @product.sky_image.to_s ,class:"text-center img-responsive center-block",style:'max-height:150px;'
+
+    .col-md-6
+      label SKY_1人前盛付
+      = text_url_to_link(simple_format(h(@product.sky_serving_infomation))).html_safe
   = link_to "編集する",edit_crew_product_path(@product),class:'btn btn-primary pull-right'
-  label 商品特徴
-  = text_url_to_link(simple_format(h(@product.description))).html_safe
-div.clearfix.edit_description_area style='display:none;'
-  btn.pull-right.close_edit_description style='padding:0.4em 0.5em;text-align:center;border:1px solid silver;border-radius:4px;margin-left:10px;cursor: pointer;' 閉じる
-  = form_tag(:controller => "crew/products", :action => "description_update") do
+.box26.clearfix
+  span class="box-title" べじはん情報
+  .col-md-12
     label 商品特徴
-    = hidden_field_tag :product_id,@product.id
-    = submit_tag "保存する",class:'pull-right save_description', style:'padding:0.4em 0.5em;text-align:center;border:1px solid silver;border-radius:4px;background-color:#005691;color:#ffffff;'
-    = text_area_tag "description",@product.description,class:'form-control', rows:"20"
-  / = text_url_to_link(simple_format(h(@product.description))).html_safe
+    = text_url_to_link(simple_format(h(@product.description))).html_safe
 
-div
-  label 1人前写真
-  = link_to @product.image_for_one_person.to_s, "data-lightbox" => @product.image_for_one_person.to_s do
-    = image_tag @product.image_for_one_person.to_s ,class:"text-center img-responsive center-block",style:'max-height:150px;'
+  .col-md-12
+    .col-md-6
+      label 1人前写真
+      = link_to @product.image_for_one_person.to_s, "data-lightbox" => @product.image_for_one_person.to_s do
+        = image_tag @product.image_for_one_person.to_s ,class:"text-center img-responsive center-block",style:'max-height:150px;'
 
-div
-  label 1人前分量
-  = text_url_to_link(simple_format(h(@product.serving_infomation))).html_safe
+    .col-md-6
+      label 1人前分量
+      = text_url_to_link(simple_format(h(@product.serving_infomation))).html_safe
 
 
-table.table
-  thead
-    tr
-      th style='padding-left:0;' 大皿盛りつけ手順
-      th
-  tbody
-    - @product.product_ozara_serving_informations.each_with_index do |posi,i|
+  table.table
+    thead
       tr
-        td
-          span style='font-weight:bold;' = "#{i+1}. "
-          = text_url_to_link(simple_format(h(posi.content))).html_safe
-        td
-          = link_to posi.image.to_s, "data-lightbox" => posi.image.to_s do
-            = image_tag posi.image.to_s ,class:"text-center img-responsive center-block",style:'max-height:150px;'
-
-label レシピ
-table.table
-  tbody
-    - @product.product_menus.includes(menu:[menu_materials:[:material]]).each do |pm|
-      - u = pm.menu.menu_materials.length
-      - pm.menu.menu_materials.each_with_index do |mm,i|
-        - if i == 0
-          tr style='background-color:#ffffe0;'
-            td colspan=2 style='font-weight:bold;'
-              = pm.menu.name
+        th style='padding-left:0;' 盛付手順
+        th
+    tbody
+      - @product.product_ozara_serving_informations.each_with_index do |posi,i|
         tr
-          td = mm.material.name
-          td = "#{mm.amount_used} #{mm.material.recipe_unit}"
+          td
+            span style='font-weight:bold;' = "#{i+1}. "
+            = text_url_to_link(simple_format(h(posi.content))).html_safe
+          td
+            = link_to posi.image.to_s, "data-lightbox" => posi.image.to_s do
+              = image_tag posi.image.to_s ,class:"text-center img-responsive center-block",style:'max-height:150px;'
+
+  label レシピ
+  table.table
+    tbody
+      - @product.product_menus.includes(menu:[menu_materials:[:material]]).each do |pm|
+        - u = pm.menu.menu_materials.length
+        - pm.menu.menu_materials.each_with_index do |mm,i|
+          - if i == 0
+            tr style='background-color:#ffffe0;'
+              td colspan=2 style='font-weight:bold;'
+                = pm.menu.name
+          tr
+            td = mm.material.name
+            td = "#{mm.amount_used} #{mm.material.recipe_unit}"
 sass:
   .image_attach
     height: 200px
@@ -60,3 +66,21 @@ sass:
       width: 100%
       position: absolute
       top: - 20%
+
+  .box26
+    position: relative
+    margin: 2em 0
+    padding: 1.5em 1.3em
+    border: solid 2px #6091d3
+    border-radius: 8px
+  .box26 .box-title
+    position: absolute
+    display: inline-block
+    top: -13px
+    left: 10px
+    padding: 0 9px
+    line-height: 1
+    font-size: 16px
+    background: #FFF
+    color: #6091d3
+    font-weight: bold

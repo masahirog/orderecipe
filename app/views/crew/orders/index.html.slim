@@ -1,0 +1,66 @@
+.clearfix
+  h3 style='margin-right:40px;float:left;font-size:20px;' ="#{@store.name}　発注一覧"
+
+  = link_to "納品確認",deliveried_list_crew_orders_path(store_id:params[:store_id]),class:'btn btn-primary btn-sm',style:'float:right;margin-top:15px;margin-left:10px;'
+  = link_to "発注開始", new_crew_order_path(store_id:params[:store_id],store_orderable_all_flag:true),class:"btn btn-success btn-sm",style:'float:right;margin-top:15px;margin-left:10px;'
+
+
+table.table
+  thead
+    tr
+      th ID
+      th.text-center style="width:80px;" 状況
+      th style="width:250px;" メモ
+      th style="width:100px;" 担当者
+      th 業者
+  tbody
+    - @orders.each do |order|
+      - if order.fixed_flag == true
+        - color = "white"
+      - else
+        - color = "silver"
+      end
+      tr style="background-color:#{color};"
+        td = link_to order.id, crew_order_path(order),class:"order",style:""
+        td.text-center
+          - if order.fixed_flag == true
+            span 確定
+          - else
+            span 未確定
+        td = text_url_to_link(simple_format(h(order.memo))).html_safe
+        td
+          = order.staff_name
+        td.clearfix
+          - @vendors_hash[order.id].keys.each do |id|
+            .col-md-3 style='float:left;padding:5px 0;'
+              - if id==559
+              - else
+                - if @vendors_hash[order.id][id][1] == 1
+                  span style='margin-right:8px;' class="label label-success" OK
+                - elsif  @vendors_hash[order.id][id][1] == 2
+                  span style='margin-right:8px;' class="label label-danger" NG
+                - elsif  @vendors_hash[order.id][id][1] == 0
+                  span style='margin-right:8px;' class="label label-default" Unsend
+                - elsif  @vendors_hash[order.id][id][1] == 3
+                  span style='margin-right:8px;' class="label label-warning" Sending
+
+              span style='padding:0;' = "#{@vendors_hash[order.id][id][2]}（#{@vendors_hash[order.id][id][0]}）"
+= paginate @orders
+css:
+  input[type="date"]{
+    position: relative;
+  }
+
+  input[type=date]::-webkit-calendar-picker-indicator {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+  }
+  .date{
+    width:100px;
+    height:34px;
+    border:1px solid silver;
+    border-radius:3px;
+    padding:4px 6px;
+  }

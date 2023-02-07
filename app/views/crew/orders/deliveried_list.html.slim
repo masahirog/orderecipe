@@ -1,0 +1,30 @@
+.col-md-12
+  = form_tag deliveried_list_crew_orders_path, method: :get do
+    = hidden_field_tag :store_id,params[:store_id]
+    .form-group.col-md-2
+      = date_field_tag :date,@date, class:"form-control"
+    .form-group.col-md-2
+      = select_tag :vendor_id, options_from_collection_for_select(Vendor.all, :id, :company_name,params[:vendor_id]),include_blank: true, class: "form-control"
+    .form-group.col-md-2
+      = submit_tag "検索" ,class:"btn btn-primary"
+h4 = "#{@store.short_name} 納品リスト"
+
+table.table
+  thead
+    tr
+      th
+      th 業者名
+      th 商品名
+      th.text-right 納品量
+      th メモ
+
+  tbody
+    - @hash.each do |material_order_quantity|
+      tr
+        td = link_to 'オーダー',order_path(material_order_quantity[1][5]),target:'_blank'
+        td = material_order_quantity[1][6]
+        td = link_to material_order_quantity[1][2],material_path(material_order_quantity[0]),target:'_blank'
+        td.text-right
+          - order_amount = ActiveSupport::NumberHelper.number_to_rounded(((material_order_quantity[1][1] / material_order_quantity[1][0])*material_order_quantity[1][7]), strip_insignificant_zeros: true, :delimiter => ',')
+          = "#{order_amount} #{material_order_quantity[1][3]}"
+        td = material_order_quantity[1][4]
