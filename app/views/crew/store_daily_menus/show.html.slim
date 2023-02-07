@@ -1,11 +1,5 @@
 .clearfix
   h2 style='float:left;' = link_to "#{@store_daily_menu.store.name}", crew_store_daily_menus_path(store_id:@store.id),class:''
-  h2 style='float:left;margin-left:10px;'
-    - if @yesterday
-      = link_to "＜","/crew/store_daily_menus/#{@yesterday.id}"
-    = @store_daily_menu.start_time.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@store_daily_menu.start_time.wday]})")
-    - if @tommoroww
-      = link_to "＞","/crew/store_daily_menus/#{@tommoroww.id}"
 
 .col-md-12
   label 予約：

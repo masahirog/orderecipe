@@ -111,41 +111,6 @@
 
 javascript:
   $(function() {
-    $(".duplicate_material").on('click',function(){
-      let clone = $(this).parent().parent('.order_materials_tr').clone();
-      clone.find(".duplicate_material").remove();
-      clone.find(".recipe_unit_quantity").val('');
-      clone.find(".calculated_material_unit").val('');
-      clone.find(".order_material_memo").children('input').val('');
-      clone.find(".order_material_memo").children('div').text('コピーした食材');
-      // clone.find(".input_delivery_date").removeClass('hasDatepicker').datepicker();
-      var num = clone.find('.input_material').attr('id').slice(33,-12)
-      var i = String($(".order_materials_tr").length);
-      var array = ["material_id","order_quantity_order_unit","order_unit","calculated_quantity","recipe_unit","delivery_date","un_order_flag","order_material_memo"];
-      $.each(array, function(index, value) {
-        var name = "order[order_materials_attributes]["+i+"]["+value+"]";
-        var id = "order_order_materials_attributes_"+i+"_"+value;
-        clone.find("#order_order_materials_attributes_"+num+"_"+value).attr('id',id).attr('name',name);
-      });
-      $(this).parent().parent('.order_materials_tr').after(clone);
-      clone.find(".input_delivery_date").removeClass('hasDatepicker').datetimepicker({
-        scrollMonth : false,
-        scrollInput : false,
-        format: 'Y-m-d',
-        timepicker:false,
-        autoclose: true,
-        beforeShowDay: function (date) {
-          var ymd = date.getFullYear() + ('0' + (date.getMonth() + 1)).slice(-2) + ('0' +  date.getDate()).slice(-2);
-          if (holidays.indexOf(ymd) != -1 ||date.getDay() == 0 ) {
-            return [true, 'class-sunday-holiday',''];
-          } else if (date.getDay() == 6) {
-            return [true, 'class-saturday'];
-          } else {
-            return [true, ''];
-          }
-        }
-       });
-    });
     $(document).on("keypress", "input:not(.allow_submit)", function(event) {
       return event.which !== 13;
     });

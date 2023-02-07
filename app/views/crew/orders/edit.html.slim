@@ -19,6 +19,9 @@
       = f.text_field :staff_name,class:'form-control staff_name_input',placeholder:'発注者名を入力してください',required:true
     .col-md-2 style="padding-top:25px;"
       = f.submit '確定で保存する',class:'btn btn-success pull-right save-btn order_submit', data: {disable_with: '保存中'}
+  .col-md-12 style="padding-bottom:10px;"
+    = f.label :memo, "社内メモ（送信先には表示されません）"
+    = f.text_area :memo,class:'form-control',placeholder:'メモ'
 
   table.table
     thead.order_materials_thead

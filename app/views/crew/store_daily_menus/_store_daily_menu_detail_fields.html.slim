@@ -4,21 +4,12 @@
   -class_name = ''
 
 tr.nested-fields.item.daily_menu_detail_tr class=class_name
-  / td
-    / = link_to_remove_association '削除', f, class: 'btn btn-sm',  data: {confirm: '削除しますか？'}
-
-  - if f.object.id.present?
-    td.sell_price
-      = f.object.product.sell_price
-    td.wholesale_price
-      = f.object.product.sky_wholesale_price
-    td
-      = f.object.product.name
-  - else
-    td.sell_price
-    td.wholesale_price
-    td
-      = f.collection_select :product_id, @dmd_products, :id, :name, {include_blank:true},class:'form-control input_select_product'
+  td.sell_price
+    = f.object.product.sell_price
+  td.wholesale_price
+    = f.object.product.sky_wholesale_price
+  td
+    = f.object.product.name
   td
     = f.number_field :sozai_number, class: 'form-control sozai_number input_number', min: 0
     = f.number_field :number, class: 'form-control total_number', min: 0,style:"display:none;"

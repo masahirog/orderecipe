@@ -168,12 +168,7 @@ class Crew::OrdersController < ApplicationController
     @today_wday = Date.today.wday
     @wdays = [['月曜日',1],['火曜日',2],['水曜日',3],['木曜日',4],['金曜日',5],['土曜日',6],['日曜日',7]]
     @materials = Material.all
-    if params[:material_id]
-      material_id = params[:material_id]
-      @orders = Order.where(store_id:params[:store_id]).includes(:order_products).joins(:order_materials).where(:order_materials => {material_id:material_id,un_order_flag:false}).order("id DESC").page(params[:page]).per(20)
-    else
-      @orders = Order.where(store_id:params[:store_id]).includes(:order_products).order("id DESC").page(params[:page]).per(20)
-    end
+    @orders = Order.where(store_id:params[:store_id]).order("id DESC").page(params[:page]).per(20)
     @store = Store.find(params[:store_id])
     @vendors_hash = Hash.new { |h,k| h[k] = {} }
     order_ids = @orders.map{|order|order.id}
@@ -447,7 +442,7 @@ class Crew::OrdersController < ApplicationController
   end
 
   def show
-    @order = Order.includes(order_products:[:product]).find(params[:id])
+    @order = Order.find(params[:id])
     @order_materials = OrderMaterial.includes(material:[:vendor]).where(order_id:@order.id,un_order_flag:false)
     @vendors = Vendor.vendor_index(params)
   end
