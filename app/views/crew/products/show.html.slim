@@ -1,12 +1,6 @@
-h4 style='font-weight:bold;color:' = @product.name
-/ div
-  label 大皿写真
-  .image_attach
-    = link_to @product.display_image.to_s, "data-lightbox" => @product.display_image.to_s do
-      = image_tag @product.display_image.to_s
-
+h3 = @product.name
 div.clearfix.show_description_area
-  btn.pull-right.edit_description style='padding:0.4em 0.5em;text-align:center;border:1px solid silver;border-radius:4px;cursor: pointer;' 編集する
+  = link_to "編集する",edit_crew_product_path(@product),class:'btn btn-primary pull-right'
   label 商品特徴
   = text_url_to_link(simple_format(h(@product.description))).html_safe
 div.clearfix.edit_description_area style='display:none;'
@@ -66,13 +60,3 @@ sass:
       width: 100%
       position: absolute
       top: - 20%
-
-javascript:
-  $(".edit_description").on("click",function(){
-    $(".show_description_area").hide();
-    $(".edit_description_area").show();
-  });
-  $(".close_edit_description").on("click",function(){
-    $(".edit_description_area").hide();
-    $(".show_description_area").show();
-  });

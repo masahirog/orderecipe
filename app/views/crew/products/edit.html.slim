@@ -1,0 +1,34 @@
+= form_with model:@product, url: crew_product_path do  |f|
+  .form-group
+    label 商品名：
+    = f.object.name
+  .form-group
+    label カテゴリ：
+    = "惣菜" if f.object.bejihan_sozai_flag==true
+  .form-group
+    label べじはん定価：
+    = "#{f.object.sell_price} 円"
+  .form-group
+    label SKY卸価格：
+    = "#{f.object.sky_wholesale_price} 円"
+  - if @product.image_for_one_person?
+    .form-group
+      label べじはん写真
+      = image_tag @product.image_for_one_person.to_s,class:"img-responsive",style:'max-height:250px;'
+  .form-group
+    = f.label :sky_image, "SKY商品写真"
+    = f.file_field :sky_image
+    .form-group
+      - if @product.sky_image?
+        = image_tag @product.sky_image.to_s,class:"img-responsive",style:'max-height:250px;'
+  .form-group
+    label べじはん1人前盛り付け情報
+    = text_url_to_link(simple_format(h(f.object.serving_infomation))).html_safe
+
+  .form-group
+    = f.label :sky_serving_infomation, "SKY盛り付け情報"
+    = f.text_area :sky_serving_infomation, class:"form-control", style:"height:10em;"
+
+
+  .action.col-md-12
+    input.btn.btn-success[type="button" onclick="submit();" value="登録する"]

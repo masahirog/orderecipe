@@ -36,7 +36,7 @@ ActiveRecord::Schema.define(version: 2022_11_28_010031) do
     t.index ["date", "store_id"], name: "index_analyses_on_date_and_store_id", unique: true
   end
 
-  create_table "analysis_categories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "analysis_categories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "analysis_id"
     t.integer "smaregi_bumon_id"
     t.integer "sales_number"
@@ -560,6 +560,9 @@ ActiveRecord::Schema.define(version: 2022_11_28_010031) do
     t.integer "sub_serving_plate_id"
     t.integer "container_id"
     t.boolean "freezing_able_flag", default: false, null: false
+    t.integer "sky_wholesale_price"
+    t.string "sky_image"
+    t.text "sky_serving_infomation"
   end
 
   create_table "refund_supports", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

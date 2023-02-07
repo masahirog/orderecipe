@@ -16,6 +16,6 @@ h1
       - store_daily_menu[0].store_daily_menu_details.each do |sdmd|
         tr
           td
-            = link_to sdmd.product.name,crew_path(sdmd.product)
+            = link_to sdmd.product.name,crew_product_path(sdmd.product)
           td.text-right style='font-size:11px;'
             = sdmd.number

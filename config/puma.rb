@@ -38,14 +38,23 @@ pidfile ENV.fetch("PIDFILE") { "tmp/pids/server.pid" }
 plugin :tmp_restart
 
 
-workers Integer(ENV['WEB_CONCURRENCY'] || 2)
+if ENV.fetch("RAILS_ENV") == "production"
+  workers Integer(ENV['WEB_CONCURRENCY'] || 2)
+  # ElasticBeanstalkのpumaconf.rbのデフォルト設定
+  # directory '/var/app/current'
+  # threads 8, 32
+  # workers %x(grep -c processor /proc/cpuinfo)
+  # bind 'unix:///var/run/puma/my_app.sock'
+  # stdout_redirect '/var/log/puma/puma.log', '/var/log/puma/puma.log', true
 
-before_fork do
-  PumaWorkerKiller.config do |config|
-    config.ram           = 1024 # 単位はMB。デフォルトは512MB
-    config.frequency     = 10    # 単位は秒
-    config.percent_usage = 0.90 # ramを90%以上を使用したらワーカー再起動
-    config.rolling_restart_frequency = 6 * 3600 # 6時間
+  # PumaWorkerKiller設定
+  before_fork do
+  	PumaWorkerKiller.config do |config|
+  		config.ram           = 1024 # 単位はMB。デフォルトは512MB
+    	config.frequency     = 10    # 単位は秒
+    	config.percent_usage = 0.90 # ramを90%以上を使用したらワーカー再起動
+    	config.rolling_restart_frequency = 6 * 3600 # 6時間
+  	end
+  	PumaWorkerKiller.start
   end
-  PumaWorkerKiller.start
 end

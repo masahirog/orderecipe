@@ -1,0 +1,2 @@
+module Crew::StoresHelper
+end

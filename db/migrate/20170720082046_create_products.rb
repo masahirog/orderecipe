@@ -26,6 +26,9 @@ class CreateProducts < ActiveRecord::Migration[4.2]
       t.integer :sub_serving_plate_id
       t.integer :container_id
       t.boolean :freezing_able_flag, null: false, default: false
+      t.integer :sky_wholesale_price
+      t.string :sky_image
+      t.text :sky_serving_infomation
     end
   end
 end

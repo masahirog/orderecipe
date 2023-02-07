@@ -36,6 +36,7 @@ class Product < ApplicationRecord
   mount_uploader :image, ProductImageUploader
   mount_uploader :display_image, ProductImageUploader
   mount_uploader :image_for_one_person, ProductImageUploader
+  mount_uploader :sky_image, ProductImageUploader
 
 
 

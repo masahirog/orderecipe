@@ -135,16 +135,17 @@ html
                   ul.nav.navbar-nav
                     li.user_nav.grid-6
                       = link_to "ログアウト", destroy_user_session_path, :method => :delete
-              - else
+              - elsif current_user.id == 69
                 ul.nav.navbar-nav
-                  li.menu_li = link_to "献立",crew_store_daily_menus_path
+                  li.dropdown
+                    a.dropdown-toggle href="#" data-toggle="dropdown" role="button"
+                      |店舗選択
+                      span.caret
+                    ul.dropdown-menu role="menu"
+                      - @sky_stores.each do |store|
+                        li = link_to store.name,crew_store_daily_menus_path(store_id:store.id)
+
                   li.menu_li = link_to "ログアウト", destroy_user_session_path, :method => :delete
-
-                #navbarEexample.collapse.navbar-collapse.navbar-right
-                  ul.nav.navbar-nav
-                    li.user_nav.grid-6
-                      = link_to "ログアウト", destroy_user_session_path, :method => :delete
-
     .all_body
       - flash.each do |name, msg|
         .col-md-12 class="alert alert-#{name}" role="alert"

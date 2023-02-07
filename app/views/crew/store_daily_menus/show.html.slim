@@ -1,6 +1,5 @@
-= link_to "写真一覧", crew_products_path(start_date:@store_daily_menu.start_time),class:'btn btn-success pull-right',style:'margin-right:20px;'
 .clearfix
-  h2 style='float:left;' = link_to "#{@store_daily_menu.store.name}店 ", crew_store_daily_menus_path,class:''
+  h2 style='float:left;' = link_to "#{@store_daily_menu.store.name}店 ", crew_store_daily_menus_path(store_id:@store.id),class:''
   h2 style='float:left;margin-left:10px;'
     - if @yesterday
       = link_to "＜","/crew/store_daily_menus/#{@yesterday.id}"
@@ -11,14 +10,25 @@
 .col-md-12
   label 予約：
   span style='color:red;' = "#{@store_daily_menu.event}"
-  / = link_to "在庫CSV", stock_store_daily_menus_path(store_daily_menu_id:@store_daily_menu.id,format:'csv'), class: "btn btn-default",style:'float:right;'
+= link_to "編集する", edit_crew_store_daily_menu_path(@store_daily_menu), class: "btn btn-default"
 table.table.table-list
   thead
     tr
       th
+      th
+      th
+      th
+      th colspan=3 べじはん
+      th colspan=3 sakya
+    tr
+      th
       th 名称
-      th 売価
       th 発注数
+      th 惣菜？
+      th 売価
+      th 工程
+      th 1人前
+      th 仕入れ値
       th 工程
       th 1人前
   tbody
@@ -26,11 +36,13 @@ table.table.table-list
       tr
         td.text-center = sdmd.row_order
         td
-          = link_to sdmd.product.name,"/crew/product/#{sdmd.product_id}"
-        td
-          = "#{sdmd.product.sell_price}円"
+          = link_to sdmd.product.name,crew_product_path(sdmd.product)
         td
           = sdmd.number if sdmd.number > 0
+        td
+          = "惣菜" if sdmd.product.bejihan_sozai_flag == true
+        td
+          = "#{sdmd.product.sell_price}円"
 
         td
           - if sdmd.product.product_ozara_serving_informations.present?
@@ -72,3 +84,6 @@ table.table.table-list
                       = image_tag sdmd.product.image_for_one_person.to_s,class:"img-responsive",style:'max-width:250px;height: auto;'
                   .modal-footer
                     button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
+        td 0
+        td 工程
+        td 1人前

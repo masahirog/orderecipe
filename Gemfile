@@ -53,8 +53,6 @@ gem 'barby'
 gem 'chunky_png'
 gem 'slack-notifier'
 
-gem 'puma_worker_killer'
-
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'pry-rails'
@@ -81,4 +79,5 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 group :production do
   gem 'rails_12factor'
+  gem 'puma_worker_killer'
 end

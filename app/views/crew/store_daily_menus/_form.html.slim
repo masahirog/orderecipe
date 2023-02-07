@@ -1,0 +1,77 @@
+= form_with model:store_daily_menu, url: crew_store_daily_menu_path do  |f|
+  = f.hidden_field :start_time
+  = f.hidden_field :store_id
+  = f.hidden_field :daily_menu_id
+  .clearfix style='margin-bottom:15px;'
+    .col-md-1
+      = f.label :total_num,"総数", class: ''
+      = f.number_field :total_num, class: 'col-md-10 form-control total_manufacturing_number',readonly:true
+
+    .col-md-1
+      = f.submit '登録する',class:'btn btn-primary',style:'margin-top:24px;', data: {disable_with: '登録中...'}
+
+  .col-md-12 style='margin-bottom:15px;'
+    = f.label :event,"予約（簡潔に）"
+    = f.text_field :event,class:'form-control'
+  table.table.table-list.cocoon_are
+    thead
+      tr
+        th べじはん売価
+        th 卸し値
+        th メニュー名
+        th 発注数
+        / th.order_num.readonly 弁当副菜数
+        / th.order_num.readonly 惣菜数
+        / th 発注量以外からの追加分
+        / th 翌日繰越
+        / th 実在庫
+    tbody#store_daily_menu_details_area
+      = f.fields_for :store_daily_menu_details, f.object.store_daily_menu_details.sort_by(&:row_order) do |sdmd|
+        = render 'store_daily_menu_detail_fields', f: sdmd
+  = link_to_add_association '商品追加', f, :store_daily_menu_details,class: 'btn btn-default add_menu_details',data: {association_insertion_node: '#store_daily_menu_details_area',association_insertion_method: 'append' }
+  
+  = f.submit '登録する',class:'btn btn-primary', data: {disable_with: '登録中...'},style:'float:right;'
+javascript:
+  calculate_num();
+
+  $("#store_daily_menu_details_area").on('click','.remove_fields', function(){
+    setTimeout(function(){
+      calculate_num();
+    },5);
+  });
+
+  $("#store_daily_menu_details_area").on("change",'.input_number',function(){
+    calculate_num();
+  });
+
+  $("#store_daily_menu_details_area").on("change",'.input_select_product',function(){
+    var product_id =  parseInt($(this).val());
+    var price_td = $(this).parent().parent().find(".sell_price")
+    var wholesale_price_td = $(this).parent().parent().find(".wholesale_price")
+    $.ajax({
+      url: "/products/get_product",
+      data: { product_id : product_id },
+      dataType: "json",
+      async: false
+    })
+    .done(function(data){
+      price_td.text(data['sell_price']);
+      price_td.text(data['sky_wholesale_price']);
+      calculate_num();
+    });
+  });
+  function calculate_num(){
+    var number = 0;
+    var total_sum = 0;
+    var sozai_sum = 0;
+    var total_order_number = 0;
+    $('.daily_menu_detail_tr:visible').each(function(i){
+      sozai_number = Number($(this).find('.sozai_number').val());
+      total_order_number = sozai_number
+      total_sum += total_order_number;
+      $(this).find('.total_number').val(total_order_number);
+    });
+    $('.total_manufacturing_number').val(total_sum);
+    $('.input_sozai_manufacturing_number').val(sozai_sum);
+
+  }

@@ -3,20 +3,24 @@ class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   before_action :authenticate_user!
-
+  before_action :user_check
   protect_from_forgery with: :exception
   add_flash_types :success, :info, :warning, :danger
+
+  def user_check
+    @sky_stores = Group.find(29).stores
+  end
 
   def after_sign_in_path_for(resource)
     if current_user.id == 1
       root_url
-    elsif  current_user.id == 39
-      mobile_inventory_stocks_path
-    elsif  current_user.id == 49
+    # elsif  current_user.id == 39
+      # mobile_inventory_stocks_path
+    elsif current_user.id == 49
       check_shifts_path
-    elsif  current_user.id == 59
-      '/outside_view'
-    else
+    # elsif  current_user.id == 59
+      # '/outside_view'
+    elsif current_user.id == 69
       crew_products_path
     end
   end
@@ -62,7 +66,6 @@ class ApplicationController < ActionController::Base
       end
     end
     render :layout => false
-
   end
 
 
