@@ -1,9 +1,9 @@
 .clearfix
   h3 style='margin-right:40px;float:left;font-size:20px;' ="#{@store.name}　発注一覧"
 
-  = link_to "納品確認",deliveried_list_crew_orders_path(store_id:params[:store_id]),class:'btn btn-primary btn-sm',style:'float:right;margin-top:15px;margin-left:10px;'
-  = link_to "発注開始", new_crew_order_path(store_id:params[:store_id],store_orderable_all_flag:true),class:"btn btn-success btn-sm",style:'float:right;margin-top:15px;margin-left:10px;'
-
+  = link_to "納品確認",deliveried_list_crew_orders_path(store_id:params[:store_id]),class:'btn btn-primary',style:'margin-top:15px;margin-left:10px;'
+  = link_to "発注開始", new_crew_order_path(store_id:params[:store_id],store_orderable_all_flag:true),class:"btn btn-success",style:'margin-top:15px;margin-left:10px;'
+  = link_to 'B商品の発注（献立）', crew_store_daily_menus_path(store_id:@store.id),class:'btn btn-primary pull-right'
 
 table.table
   thead

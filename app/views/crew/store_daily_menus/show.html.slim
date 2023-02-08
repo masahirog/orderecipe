@@ -1,6 +1,6 @@
 .clearfix
+  h2 style='float:left;' = "#{@store_daily_menu.start_time.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[@store_daily_menu.start_time.wday]})")}　"
   h2 style='float:left;' = link_to "#{@store_daily_menu.store.name}", crew_store_daily_menus_path(store_id:@store.id),class:''
-
 .col-md-12
   label 予約：
   span style='color:red;' = "#{@store_daily_menu.event}"
@@ -17,8 +17,8 @@ table.table.table-list
 
       th
       th
-      th colspan=2 sakya
-      th colspan=3 べじはん
+      th style='background-color:#faebd7;' colspan=2 sake-ya
+      th style='background-color:#fff0f5;'colspan=3 べじはん
     tr
       th 商品名
       th 発注数

@@ -9,7 +9,7 @@ tr.nested-fields.item.daily_menu_detail_tr class=class_name
   td.wholesale_price
     = f.object.product.sky_wholesale_price
   td
-    = f.object.product.name
+    = link_to f.object.product.name,crew_product_path(f.object.product),target:"_blank"
   td
     = f.number_field :sozai_number, class: 'form-control sozai_number input_number', min: 0
     = f.number_field :number, class: 'form-control total_number', min: 0,style:"display:none;"
