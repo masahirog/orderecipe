@@ -40,7 +40,7 @@ h3 = "#{@store.name}店 献立組み"
 
       tr
         td.fixed03
-        td.fixed03 = link_to '更新',reflesh_product_sales_potentials_path(product_ids:@uniq_product_ids,store_id:@store_id,store_daily_menu_ids:params[:store_daily_menu_ids]), method: :post,class:'btn btn-default btn-sm', data: { confirm: 'ポテンシャルの値を、直近12日間のデータで更新しますか？' }
+        td.fixed03 = link_to '更新',reflesh_product_sales_potentials_path(product_ids:@products.ids,store_id:@store_id,store_daily_menu_ids:@store_daily_menus.ids), method: :post,class:'btn btn-default btn-sm', data: { confirm: 'ポテンシャルの値を、直近12日間のデータで更新しますか？' }
         - @store_daily_menus.each_with_index do |sdm,i|
           td.fixed03
             button type="button" class='btn btn-default btn-sm yoso-reflect' 予想反映
