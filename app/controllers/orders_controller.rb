@@ -8,21 +8,26 @@ class OrdersController < AdminController
     else
       @date = Date.today
     end
-    store_id = params[:store_id]
-    @store = Store.find(store_id)
-    @order_materials = OrderMaterial.includes(:order,material:[:vendor]).where(:materials => {vendor_id:[559]}).where(:orders => {store_id:store_id,fixed_flag:true}).where(delivery_date:@date,un_order_flag:false).order("vendors.id")
-    @hash = {}
+    if params[:store_id].present?
+      store_ids = [params[:store_id]]
+      @stores = Store.find(params[:store_id])
+    else
+      @stores = Store.all
+      store_ids = @stores.ids
+    end
+    @order_materials = OrderMaterial.includes(order:[:store],material:[:vendor]).where(:materials => {vendor_id:[559]}).where(:orders => {store_id:store_ids,fixed_flag:true}).where(delivery_date:@date,un_order_flag:false).order("vendors.id")
+    @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @order_materials.each do |om|
-      if @hash[om.material_id].present?
-        @hash[om.material_id][1] += om.order_quantity.to_f
+      if @hash[om.order.store_id][om.material_id].present?
+        @hash[om.order.store_id][om.material_id][1] += om.order_quantity.to_f
       else
-        @hash[om.material_id] = [om.material.recipe_unit_quantity,om.order_quantity.to_f,om.material.order_name,om.material.order_unit,om.order_material_memo,om.order_id,om.material.vendor.company_name,om.material.order_unit_quantity,om.order.staff_name]
+        @hash[om.order.store_id][om.material_id] = [om.material.recipe_unit_quantity,om.order_quantity.to_f,om.material.order_name,om.material.order_unit,om.order_material_memo,om.order_id,om.material.vendor.company_name,om.material.order_unit_quantity,om.order.staff_name,om.order.store.name]
       end
     end
     respond_to do |format|
       format.html
       format.pdf do
-        pdf = BejihanStoreOrdersDeliveryList.new(@hash,@store,@date)
+        pdf = BejihanStoreOrdersDeliveryList.new(@hash,@date)
         send_data pdf.render,
         filename:    "納品リスト.pdf",
         type:        "application/pdf",

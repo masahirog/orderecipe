@@ -43,14 +43,14 @@ class StoreDailyMenusController < ApplicationController
       @store_daily_menu_details_hash[[sdmd.store_daily_menu_id,sdmd.product_id]]= sdmd.sozai_number
       @store_daily_menu_details_bento_fukusai_hash[[sdmd.store_daily_menu_id,sdmd.product_id]]= sdmd.bento_fukusai_number
     end
-    @uniq_product_store_daily_menu_details = store_daily_menu_details.select(:product_id).distinct
-    @uniq_product_ids = @uniq_product_store_daily_menu_details.map{|sdmd|sdmd.product_id}
-    product_sales_potentials = ProductSalesPotential.where(store_id:@store_id,product_id:@uniq_product_ids)
+    product_ids = store_daily_menu_details.order(:row_order).map{|sdmd|sdmd.product_id}.uniq
+    @products = Product.where(id: product_ids).order(['field(id, ?)', product_ids])
+    product_sales_potentials = ProductSalesPotential.where(store_id:@store_id,product_id:product_ids)
     @product_sales_potentials = product_sales_potentials.map{|psp|[psp.product_id,psp.sales_potential]}.to_h
-    sozai_ids = Product.where(id:@uniq_product_ids).where(bejihan_sozai_flag:true).ids
+    sozai_ids = Product.where(id:product_ids).where(bejihan_sozai_flag:true).ids
     @sozai_total_sales_potential = product_sales_potentials.where(product_id:sozai_ids).sum(:sales_potential)
     min_date = @store_daily_menus.map{|sdm|sdm.start_time}.min
-    @analyses = Analysis.where(store_id:@store_id).where('date > ?',min_date-60)
+    @analyses = Analysis.includes(:store_daily_menu).where(store_id:@store_id).where('date > ?',min_date-60)
     @date_sales_sozai_number = []
     @weekday_sales_sozai_number = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @analyses.map do |analysis|

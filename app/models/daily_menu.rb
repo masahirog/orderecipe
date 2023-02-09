@@ -37,9 +37,14 @@ class DailyMenu < ApplicationRecord
     hash = {}
     daily_menu_hash = {}
     count = 0
+    i = 0
     CSV.foreach(file.path,liberal_parsing:true, headers: true) do |row|
       row = row.to_hash
       dates <<  row["date"] if row["date"].present?
+      if i == 0
+        @store_ids = row.keys - ["date", "product_id", "row_order", "serving_plate_id", "showcase_type","sub_num"]
+      end
+      i = 1
     end
     dates = dates.uniq
     daily_menus = DailyMenu.where(start_time:dates)
@@ -47,12 +52,19 @@ class DailyMenu < ApplicationRecord
     hash = daily_menus.map{|daily_menu|[daily_menu.start_time.to_s,daily_menu.id]}.to_h
     create_daily_menu_details_arr = []
     update_daily_menu_details_arr = []
+    sdm_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     CSV.foreach(file.path,liberal_parsing:true, headers: true) do |row|
       date = row["date"].gsub('/','-')
       product_id = row["product_id"]
       sub_num = row["sub_num"].to_i
       row_order = row["row_order"].to_i
       dmd = DailyMenuDetail.find_by(daily_menu_id:hash[date],product_id:product_id)
+      @store_ids.each do |store_id|
+        sdm_hash[date][product_id][store_id][:sub_num] = row[store_id]
+        sdm_hash[date][product_id][store_id][:showcase_type] = row["showcase_type"]
+        sdm_hash[date][product_id][store_id][:serving_plate_id] = row["serving_plate_id"]
+        sdm_hash[date][product_id][store_id][:row_order] = row["row_order"]
+      end
       if dmd.present?
         dmd.for_sub_item_number = sub_num
         dmd.manufacturing_number = dmd.for_single_item_number + sub_num
@@ -64,6 +76,33 @@ class DailyMenu < ApplicationRecord
     end
     DailyMenuDetail.import create_daily_menu_details_arr if create_daily_menu_details_arr.present?
     DailyMenuDetail.import update_daily_menu_details_arr, on_duplicate_key_update:[:for_sub_item_number,:row_order] if update_daily_menu_details_arr.present?
+    store_daily_menu_details_arr = []
+    daily_menus.each do |dm|
+      @store_ids.each do |store_id|
+        store_daily_menu = StoreDailyMenu.find_by(daily_menu_id:dm.id,store_id:store_id)
+        if store_daily_menu.present?
+        else
+          store_daily_menu = StoreDailyMenu.create(daily_menu_id:dm.id,store_id:store_id,start_time:dm.start_time)
+        end
+        if store_daily_menu.store_daily_menu_details.present?
+          sdmd_product_ids = store_daily_menu.store_daily_menu_details.map{|sdmd|sdmd.product_id}
+          dmd_product_ids = dm.daily_menu_details.map{|dmd|dmd.product_id}
+          add_product_ids = dmd_product_ids - sdmd_product_ids
+          dmds = dm.daily_menu_details.where(product_id:add_product_ids)
+        else
+          dmds = dm.daily_menu_details
+        end
+        dmds.each do |dmd|
+          sub_num = sdm_hash[dm.start_time.to_s][dmd.product_id.to_s][store_id][:sub_num]
+          showcase_type = sdm_hash[dm.start_time.to_s][dmd.product_id.to_s][store_id][:showcase_type]
+          serving_plate_id = sdm_hash[dm.start_time.to_s][dmd.product_id.to_s][store_id][:serving_plate_id]
+          row_order = sdm_hash[dm.start_time.to_s][dmd.product_id.to_s][store_id][:row_order]
+          store_daily_menu_details_arr << StoreDailyMenuDetail.new(store_daily_menu_id:store_daily_menu.id,product_id:dmd.product_id,row_order:row_order,
+            bento_fukusai_number:sub_num,showcase_type:showcase_type,serving_plate_id:serving_plate_id)
+        end
+      end
+    end
+    StoreDailyMenuDetail.import store_daily_menu_details_arr
 
   end
 

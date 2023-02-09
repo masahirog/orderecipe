@@ -200,11 +200,7 @@ class DailyMenusController < AdminController
   end
   def upload_menu
     update_result = DailyMenu.upload_menu(params[:file])
-    if update_result = 0
-      redirect_to daily_menus_path(), :alert => 'csvデータが正しいかどうか確認してください'
-    else
-      redirect_to daily_menus_path(), :notice => "メニューを登録しました"
-    end
+    redirect_to daily_menus_path(), :notice => "メニューを登録しました"
   end
   def index
     today = Date.today
