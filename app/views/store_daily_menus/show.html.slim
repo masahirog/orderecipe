@@ -84,7 +84,11 @@ button type="button" class="btn btn-default" data-toggle="modal" data-target="#s
 table.table.table-list
   thead
     tr
-      th = link_to "編集", edit_store_daily_menu_path(@store_daily_menu),class:'btn btn-primary btn-sm',style:''
+      th
+        - if @store_daily_menu.editable_flag == true
+          = link_to "編集", edit_store_daily_menu_path(@store_daily_menu),class:'btn btn-primary btn-sm',style:''
+        - else
+          button.btn.btn-default disabled=true 締切
       th 名称
       th 売価
       th 工程

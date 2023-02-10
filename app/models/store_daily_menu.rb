@@ -14,6 +14,7 @@ class StoreDailyMenu < ApplicationRecord
   has_one :analysis
 
   enum weather: {sunny:1, cloud:2,rain:3,strong_rain:4,taihoon:5,snow:6}
+  
   validates :daily_menu_id, :uniqueness => {:scope => :store_id}
 
   before_save :opentime_showcase_photo_upload_check

@@ -154,22 +154,7 @@ div
   / = link_to '献立の削除', daily_menu_path(@daily_menu), method: :delete,class:"btn btn-danger",style:'float:right;margin-top:10px;margin-left:10px;', data: { confirm: "献立を削除してよろしいですか？" }
   / = link_to '惣菜数の一括変更', daily_menu_path(@daily_menu),class:"btn btn-primary",style:'float:right;margin-top:10px;margin-left:10px;', data: { confirm: "献立を削除してよろしいですか？" }
   = link_to "チェックリスト",cook_check_daily_menus_path(id:@daily_menu.id, :format => :pdf),class:"btn btn-default",:target=>"_blank",style:'margin-left:20px;margin-top:10px;'
-  button.btn.btn-default type="button" data-toggle="modal" data-target="#sampleModal" style="float:right;margin-top:10px;" 惣菜数の一括変更
-  #sampleModal.modal.fade[tabindex="-1"]
-    = form_tag(once_change_numbers_daily_menus_path) do
-      = hidden_field_tag :daily_menu_id,@daily_menu.id
-      .modal-dialog
-        .modal-content.col-md-12
-          .modal-header.col-md-12
-            h4.modal-title
-              | 何%調整しますか？
-          .modal-body.col-md-12
-            = select_tag :rate,options_for_select([["100%",1],["150%",1.5],["140%",1.4],["130%",1.3],["120%",1.2],["110%",1.1],["90%",0.9],["80%",0.8],["70%",0.7],["60%",0.6],["50%",0.5]]), class:"form-control"
-          .modal-footer.col-md-12
-            = submit_tag '変更する',class:'btn btn-primary',data:{confirm:"一括変更しても大丈夫ですか？"}
-            button.btn.btn-default[type="button" data-dismiss="modal"]
-              | 閉じる
-
+  = link_to "発注締め切る",'',class:'btn btn-danger pull-right',style:'margin-top:10px;'
 
 table.table
   thead
