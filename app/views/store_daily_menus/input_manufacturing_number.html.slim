@@ -10,84 +10,51 @@ h3 = "#{@store.name}店 献立組み"
     thead
       tr
         th.fixed01 惣菜
+        th.fixed01
         th.fixed01 ポテンシャル
         - @store_daily_menus.each do |sdm|
           - holiday = HolidayJapan.name(sdm.start_time)
           - if holiday.present?
             th.fixed01 style='background-color:pink;text-align:center;'
               - if sdm.event.present?
-                span style='color:red;' data-toggle="tooltip" data-placement="bottom" title="#{sdm.event}" 予約
-                br
-              span style='font-size:10px;' = holiday
-              br
+                span style='color:red;' data-toggle="tooltip" data-placement="bottom" title="#{sdm.event}" 予約　
               = sdm.start_time.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[sdm.start_time.wday]})")
 
           - else
             th.fixed01 style='text-align:center;'
               - if sdm.event.present?
-                span style='color:red;' data-toggle="tooltip" data-placement="bottom" title="#{sdm.event}" 予約
-                br
+                span style='color:red;' data-toggle="tooltip" data-placement="bottom" title="#{sdm.event}" 予約　
               = sdm.start_time.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[sdm.start_time.wday]})")
 
     tbody#store_daily_menu_details_area
       tr
-        td.fixed02.text-right colspan=2 直近の曜日別 平均惣菜販売点数
-        - @store_daily_menus.each do |sdm|
+        td.fixed02.text-right colspan=3 曜日別 惣菜販売平均
+        - @store_daily_menus.each_with_index do |sdm,i|
           td.fixed02
             button type="button" class="btn btn-secondary" data-container="body" data-html="true" data-toggle="popover" data-placement="bottom" data-content="#{render(partial: 'rireki',:locals => {wday:sdm.start_time.wday}).html_safe}"
               - if @weekday_sales_sozai_number[sdm.start_time.wday]['total_num'].present?
                 = (@weekday_sales_sozai_number[sdm.start_time.wday]['total_num']/@weekday_sales_sozai_number[sdm.start_time.wday]['count'])
-
+            button type="button" class='btn btn-default btn-sm yoso-reflect' style='margin-left:5px;height:34.18px;' 反映
+            input value=i style='display:none;'
+  
       tr
         td.fixed03
-        td.fixed03 = link_to '更新',reflesh_product_sales_potentials_path(product_ids:@products.ids,store_id:@store_id,store_daily_menu_ids:@store_daily_menus.ids), method: :post,class:'btn btn-default btn-sm', data: { confirm: 'ポテンシャルの値を、直近12日間のデータで更新しますか？' }
+        td.fixed03 惣菜数▶
+        td.fixed03 = link_to 'ポテンシャル更新',reflesh_product_sales_potentials_path(product_ids:@products.ids,store_id:@store_id,store_daily_menu_ids:@store_daily_menus.ids), method: :post,class:'btn btn-default btn-sm', data: { confirm: 'ポテンシャルの値を、直近12日間のデータで更新しますか？' }
         - @store_daily_menus.each_with_index do |sdm,i|
-          td.fixed03
-            button type="button" class='btn btn-default btn-sm yoso-reflect' 予想反映
-            input value=i style='display:none;'
-      tr
-        td.fixed04
-        td.fixed04 惣菜総数▶
-        - @store_daily_menus.each_with_index do |sdm,i|
-          td.fixed04
+          td.fixed03 id="col-base-#{i}"
             input style='width:60px;float:left;' class="form-control total_sales_sozai_yoso"
             input style='width:60px;float:left;' class="form-control total_sales_sozai_input" readonly=true
             input style='width:80px;display:none;' class="col" value=i
-      / - @uniq_product_store_daily_menu_details.each do |sdmd|
-      /   tr
-      /     td = link_to sdmd.product.name,sdmd.product,target:'_blank'
-      /     td
-      /       div style='float:left;margin:0 4px 0 0;'
-      /         -if @product_sales_potentials[sdmd.product_id]
-      /           - potential = @product_sales_potentials[sdmd.product_id]
-      /         -else
-      /           - potential = ''
-      /         span style='font-size:15px;' = link_to potential,store_product_sales_analyses_path(store_id:@store_id,product_id:sdmd.product_id),target:'_blank'
-      /         - if sdmd.product.bejihan_sozai_flag == true && @product_sales_potentials[sdmd.product_id].present?
-      /           br
-      /           span style='font-size:12px;color:silver;' = "#{((@product_sales_potentials[sdmd.product_id].to_f/@sozai_total_sales_potential)*100).round(1)}%"
-      /       - if sdmd.product.bejihan_sozai_flag == true && @product_sales_potentials[sdmd.product_id].present?
-      /         input type='number' step='0.1' style='float:left;width:60px;' class="form-control rate" value="#{((@product_sales_potentials[sdmd.product_id].to_f/@sozai_total_sales_potential)*100).round(1)}"
-      /         span style='margin:12px 0 0 4px;float:left;' %
-
-      /         / = "｜#{((@product_sales_potentials[sdmd.product_id].to_f/@sozai_total_sales_potential)*100).round(1)}%"
-      /     - @store_daily_menus.each_with_index do |sdm,i|
-      /       td class="col_#{i}"
-      /         - if @store_daily_menu_details_hash[[sdm.id,sdmd.product_id]].present?
-      /           .clearfix
-      /             - if sdmd.product.bejihan_sozai_flag == true
-      /               input style='float:left;width:60px;' readonly='true' class="form-control yoso_input"
-      /             -else
-      /               input style='float:left;width:60px;' readonly='true' class="form-control"
-      /             input.sales_potentials_rate value="#{(@product_sales_potentials[sdmd.product_id].to_f/@sozai_total_sales_potential).round(3)}" style='display:none;'
-      /             input.sozai_flag value="#{sdmd.product.bejihan_sozai_flag}" style='display:none;'
-      /             input.col_i value="#{i}" style='display:none;'
-      /             = f.number_field "store_daily_menu_details[#{@store_daily_menu_detail_ids_hash[[sdm.id,sdmd.product_id]]}][sozai_number]",value:@store_daily_menu_details_hash[[sdm.id,sdmd.product_id]], class:'form-control input-sdmd-number',style:"float:left;width:60px;", onClick:"this.select();"
-      /           - if @store_daily_menu_details_bento_fukusai_hash[[sdm.id,sdmd.product_id]] > 0
-      /             .clearfix
-      /               span style='width:60px;float:left;text-align:right;padding-top:5px;' 副菜：
-      /               = f.number_field "store_daily_menu_details[#{@store_daily_menu_detail_ids_hash[[sdm.id,sdmd.product_id]]}][fukusai_number]",value:@store_daily_menu_details_bento_fukusai_hash[[sdm.id,sdmd.product_id]], class:'form-control input-sdmd-bento-fukusai-number',style:"float:left;width:60px;", onClick:"this.select();"
-      /         - else
+      tr
+        td.fixed04
+        td.fixed04 弁当数▶
+        td.fixed04 
+        - @store_daily_menus.each_with_index do |sdm,i|
+          td.fixed04 id="col-base-bento-#{i}"
+            input style='width:60px;float:left;' class="form-control total_sales_sozai_yoso"
+            input style='width:60px;float:left;' class="form-control total_sales_bento_input" readonly=true
+            input style='width:80px;display:none;' class="col" value=i
 
       - @products.each do |product|
         - if product.bejihan_sozai_flag == true
@@ -96,6 +63,7 @@ h3 = "#{@store.name}店 献立組み"
           - color = '#ffffff'
         tr style="background-color:#{color}"
           td = link_to product.name,product,target:'_blank'
+          td = product.product_category
           td
             div style='float:left;margin:0 4px 0 0;'
               -if @product_sales_potentials[product.id]
@@ -103,12 +71,13 @@ h3 = "#{@store.name}店 献立組み"
               -else
                 - potential = ''
               span style='font-size:15px;' = link_to potential,store_product_sales_analyses_path(store_id:@store_id,product_id:product.id),target:'_blank'
-              - if product.bejihan_sozai_flag == true && @product_sales_potentials[product.id].present?
+              / - if product.bejihan_sozai_flag == true && @product_sales_potentials[product.id].present?
                 br
                 span style='font-size:12px;color:silver;' = "#{((@product_sales_potentials[product.id].to_f/@sozai_total_sales_potential)*100).round(1)}%"
             - if product.bejihan_sozai_flag == true && @product_sales_potentials[product.id].present?
-              input type='number' step='0.1' style='float:left;width:60px;' class="form-control rate" value="#{((@product_sales_potentials[product.id].to_f/@sozai_total_sales_potential)*100).round(1)}"
-              span style='margin:12px 0 0 4px;float:left;' %
+              span style='margin:12px 0 0 4px;float:right;' %
+              input type='number' step='0.1' style='float:right;width:70px;' class="form-control rate" value="#{((@product_sales_potentials[product.id].to_f/@sozai_total_sales_potential)*100).round(1)}"
+              
 
               / = "｜#{((@product_sales_potentials[product.id].to_f/@sozai_total_sales_potential)*100).round(1)}%"
           - @store_daily_menus.each_with_index do |sdm,i|
@@ -121,6 +90,7 @@ h3 = "#{@store.name}店 献立組み"
                     input style='float:left;width:60px;' readonly='true' class="form-control"
                   input.sales_potentials_rate value="#{(@product_sales_potentials[product.id].to_f/@sozai_total_sales_potential).round(3)}" style='display:none;'
                   input.sozai_flag value="#{product.bejihan_sozai_flag}" style='display:none;'
+                  input.bento_flag value="#{product.product_category}" style='display:none;'
                   input.col_i value="#{i}" style='display:none;'
                   = f.number_field "store_daily_menu_details[#{@store_daily_menu_detail_ids_hash[[sdm.id,product.id]]}][sozai_number]",value:@store_daily_menu_details_hash[[sdm.id,product.id]], class:'form-control input-sdmd-number',style:"float:left;width:60px;", onClick:"this.select();"
                 - if @store_daily_menu_details_bento_fukusai_hash[[sdm.id,product.id]] > 0
@@ -130,6 +100,7 @@ h3 = "#{@store.name}店 献立組み"
               - else
 
 css:
+
   .popover{
     max-width: 100%; /* Max Width of the popover (depending on the container!) */
   }
@@ -187,15 +158,17 @@ css:
     }
   }
 javascript:
-  $('[data-toggle="tooltip"]').tooltip();
-  $(".col-base").each(function(i,ele){
+  $('[data-toggle="tooltip"]').tooltip({ container: 'body' });
+  $(".fixed04").each(function(i,ele){
     var num = 0;
     change(i,num)
+    bento_change(i,num)
   });
   $('.input-sdmd-number').on('change',function(){
     var num = 0;
     var i = $(this).parent().find(".col_i").val();
     change(i,num)
+    bento_change(i,num)
   });
 
   function change(i,num){
@@ -204,17 +177,28 @@ javascript:
         num += Number($(element).find(".input-sdmd-number").val());
       }
     });
-    $(".col-base-"+i).find('.total_sales_sozai_input').val(num);
+    $("#col-base-"+i).find('.total_sales_sozai_input').val(num);
+  }
+  function bento_change(i,num){
+    $(".col_"+i).each(function(ii,element){
+      if ($(element).find(".input-sdmd-number").length && $(element).find(".bento_flag").val()=="お弁当") {
+        num += Number($(element).find(".input-sdmd-number").val());
+      }
+    });
+    $("#col-base-bento-"+i).find('.total_sales_bento_input').val(num);
   }
 
   $(".rate").on('change',function(){
     $(this).css('background-color','#ffc0cb')
     var float = Math.round($(this).val()*10)/1000;
+    console.log(float)
     $(this).parents('tr').find('.sales_potentials_rate').val(float);
     $(this).parents('tr').find(".yoso_input").each(function(index, element){
       if ($(element).val()) {
-        var total_sozai_number = $('.col-base-'+index).children(".total_sales_sozai_yoso").val();
+        var total_sozai_number = $('#col-base-'+index).children(".total_sales_sozai_yoso").val();
+        console.log(total_sozai_number)
         var yoso = Math.round(total_sozai_number * float);
+        console.log(yoso)
         $(element).val(yoso);
       }
     })
@@ -229,7 +213,7 @@ javascript:
   });
   $(".yoso-reflect").on('click',function(){
     var col = $(this).parent("td").children("input").val();
-    var total_sozai_num = $(".col-base-"+col).children(".total_sales_sozai_yoso").val();
+    var total_sozai_num = $("#col-base-"+col).children(".total_sales_sozai_yoso").val();
     $(".col_"+ col).each(function(index, element){
       var yoso = $(element).find('.yoso_input').val();
       if ($(element).find('.yoso_input').length) {
