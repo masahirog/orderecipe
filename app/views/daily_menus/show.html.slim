@@ -154,7 +154,35 @@ div
   / = link_to '献立の削除', daily_menu_path(@daily_menu), method: :delete,class:"btn btn-danger",style:'float:right;margin-top:10px;margin-left:10px;', data: { confirm: "献立を削除してよろしいですか？" }
   / = link_to '惣菜数の一括変更', daily_menu_path(@daily_menu),class:"btn btn-primary",style:'float:right;margin-top:10px;margin-left:10px;', data: { confirm: "献立を削除してよろしいですか？" }
   = link_to "チェックリスト",cook_check_daily_menus_path(id:@daily_menu.id, :format => :pdf),class:"btn btn-default",:target=>"_blank",style:'margin-left:20px;margin-top:10px;'
-  = link_to "発注締め切る",'',class:'btn btn-danger pull-right',style:'margin-top:10px;'
+  button type="button" class="btn btn-danger pull-right" data-toggle="modal" data-target="#close_store_input" style='float:left;margin-top:10px;margin-left:20px;' 発注締め切る
+  #close_store_input.modal.fade tabindex="-1"
+    .modal-dialog
+      .modal-content
+        .modal-header
+          h4.modal-title 店舗の入力可能状況
+        .modal-body.clearfix
+          table.table
+            thead
+              tr
+                th 店舗名
+                th 編集可能
+            tbody
+              - @daily_menu.store_daily_menus.each do |sdm|
+                tr
+                  td = sdm.store.name
+                  td
+                    - if sdm.editable_flag == true
+                      span ◯
+                    - else
+                      span ×
+
+
+        .modal-footer
+          = link_to "発注を可能に",store_input_able_daily_menus_path(daily_menu_id:@daily_menu.id),class:'btn btn-primary', method: :post
+          = link_to "発注を不可に",store_input_disable_daily_menus_path(daily_menu_id:@daily_menu.id),class:'btn btn-danger', method: :post
+          button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
+          
+
 
 table.table
   thead

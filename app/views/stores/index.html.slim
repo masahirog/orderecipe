@@ -1,25 +1,29 @@
-h3 店舗一覧
-table.table
-  thead
-    tr
-      th 店名
-      th 献立
-      th リマインダー
-      th 返金対応
-      th 発注
-      th 発注可能商品
-      th 棚卸し
-  tbody
-    - @stores.each do |store|
+h2 店舗一覧
+- @groups.each do |group|
+  h3 = group.name
+  table.table
+    thead
       tr
-        td
-          - if @store_daily_menus[store.id]
-            = link_to store.name, store_daily_menu_path(@store_daily_menus[store.id])
-          - else
-            = link_to store.name, store_daily_menus_path(store_id:store.id)
-        td = link_to '献立', store_daily_menus_path(store_id:store.id),class:'btn btn-sm btn-default'
-        td = link_to 'リマインダー', store_reminders_path(store_id:store.id,status:'yet'),class:'btn btn-sm btn-default'
-        td = link_to '返金対応', refund_supports_path(store_id:store.id),class:'btn btn-sm btn-default'
-        td = link_to store.short_name, orders_path(store_id:store.id),class:"order btn btn-default btn-sm"
-        td = link_to '一覧', materials_stores_path(store_id:store.id),class:"order btn btn-default btn-sm"
-        td = link_to '棚卸し', inventory_stocks_path(to:Date.today,store_id:store.id),class:"btn btn-default btn-sm"
+        th 店名
+        th 献立
+        th リマインダー
+        th 返金対応
+        th 発注
+        th 発注可能商品
+        th 棚卸し
+    tbody
+      - group.stores.each do |store|
+        tr
+          td
+            - if @store_daily_menus[store.id]
+              = link_to store.name, store_daily_menu_path(@store_daily_menus[store.id])
+            - else
+              = link_to store.name, store_daily_menus_path(store_id:store.id)
+          td = link_to '献立', store_daily_menus_path(store_id:store.id),class:'btn btn-sm btn-default'
+          td = link_to 'リマインダー', store_reminders_path(store_id:store.id,status:'yet'),class:'btn btn-sm btn-default'
+          td = link_to '返金対応', refund_supports_path(store_id:store.id),class:'btn btn-sm btn-default'
+          td = link_to store.short_name, orders_path(store_id:store.id),class:"order btn btn-default btn-sm"
+          td = link_to '一覧', materials_stores_path(store_id:store.id),class:"order btn btn-default btn-sm"
+          td = link_to '棚卸し', inventory_stocks_path(to:Date.today,store_id:store.id),class:"btn btn-default btn-sm"
+
+

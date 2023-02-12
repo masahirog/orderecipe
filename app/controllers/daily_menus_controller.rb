@@ -1,5 +1,21 @@
 class DailyMenusController < AdminController
   before_action :set_daily_menu, only: [:show, :update, :destroy]
+  def store_input_disable
+    @daily_menu = DailyMenu.find(params[:daily_menu_id])
+    store_daily_menus = @daily_menu.store_daily_menus
+    store_daily_menus.each do |sdm|
+      sdm.update_column(:editable_flag,false)
+    end
+    redirect_to @daily_menu, :success => "店舗の発注を不可能にしました。"
+  end
+  def store_input_able
+    @daily_menu = DailyMenu.find(params[:daily_menu_id])
+    store_daily_menus = @daily_menu.store_daily_menus
+    store_daily_menus.each do |sdm|
+      sdm.update_column(:editable_flag,true)
+    end
+    redirect_to @daily_menu, :success => "店舗の発注を可能にしました。"
+  end
   def cook_check
     @daily_menu = DailyMenu.find(params[:id])
     respond_to do |format|
