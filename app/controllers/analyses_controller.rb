@@ -1,12 +1,5 @@
 class AnalysesController < AdminController
   before_action :set_analysis, only: %i[ show edit update destroy ]
-  # def onceupload
-  #   first_day = Date.parse(params[:from])
-  #   last_day = Date.parse(params[:to])
-  #   store_id = params[:store_id]
-  #   update_datas_count = SmaregiTradingHistory.once_uploads_data(params[:file],first_day,last_day,store_id)
-  #   redirect_to smaregi_trading_histories_path()
-  # end
 
   def progress
     @analysis = Analysis.find(params[:analysis_id])
@@ -530,23 +523,33 @@ class AnalysesController < AdminController
       @analysis_products.each do |ap|
         if @hash[ap.product_id][ap.analysis.store_daily_menu.start_time].present?
           @hash[ap.product_id][ap.analysis.store_daily_menu.start_time][:actual_inventory] += ap.actual_inventory.to_i
-          @hash[ap.product_id][ap.analysis.store_daily_menu.start_time][:sales_number] += ap.sales_number
+          @hash[ap.product_id][ap.analysis.store_daily_menu.start_time][:list_price_sales_number] += (ap.sales_number - ap.discount_number)
+          @hash[ap.product_id][ap.analysis.store_daily_menu.start_time][:discount_number] += ap.discount_number
           @hash[ap.product_id][ap.analysis.store_daily_menu.start_time][:total_sales_amount] += ap.total_sales_amount
           @hash[ap.product_id][ap.analysis.store_daily_menu.start_time][:discount_amount] += ap.discount_amount
           @hash[ap.product_id][ap.analysis.store_daily_menu.start_time][:loss_amount] += ap.loss_amount
+          @hash[ap.product_id][ap.analysis.store_daily_menu.start_time][:loss_number] += ap.loss_number.to_i
+          # 16時までに売れた個数
+          @hash[ap.product_id][ap.analysis.store_daily_menu.start_time][:early_sales_number] += ap.early_sales_number
         else
-          @hash[ap.product_id][ap.analysis.store_daily_menu.start_time] = {sales_number:ap.sales_number,total_sales_amount:ap.total_sales_amount,discount_amount:ap.discount_amount,loss_amount:ap.loss_amount,actual_inventory:ap.actual_inventory.to_i}
+          @hash[ap.product_id][ap.analysis.store_daily_menu.start_time] = {list_price_sales_number:(ap.sales_number - ap.discount_number),total_sales_amount:ap.total_sales_amount,
+            discount_amount:ap.discount_amount,loss_amount:ap.loss_amount,actual_inventory:ap.actual_inventory.to_i,discount_number:ap.discount_number,loss_number:ap.loss_number.to_i,
+            early_sales_number:ap.early_sales_number}
           product_ids << ap.product_id unless product_ids.include?(ap.product_id)
           @dates << ap.analysis.store_daily_menu.start_time unless @dates.include?(ap.analysis.store_daily_menu.start_time)
         end
         if  @hash[ap.product_id][:period].present?
           @hash[ap.product_id][:period][:actual_inventory] += ap.actual_inventory.to_i
-          @hash[ap.product_id][:period][:sales_number] += ap.sales_number
+          @hash[ap.product_id][:period][:list_price_sales_number] += (ap.sales_number - ap.discount_number)
           @hash[ap.product_id][:period][:total_sales_amount] += ap.total_sales_amount
           @hash[ap.product_id][:period][:discount_amount] += ap.discount_amount
+          @hash[ap.product_id][:period][:discount_number] += ap.discount_number
           @hash[ap.product_id][:period][:loss_amount] += ap.loss_amount
+          @hash[ap.product_id][:period][:loss_number] += ap.loss_number.to_i
+          @hash[ap.product_id][:period][:early_sales_number] += ap.early_sales_number
         else
-          @hash[ap.product_id][:period] = {sales_number:ap.sales_number,total_sales_amount:ap.total_sales_amount,discount_amount:ap.discount_amount,loss_amount:ap.loss_amount,actual_inventory:ap.actual_inventory.to_i}
+          @hash[ap.product_id][:period] = {list_price_sales_number:(ap.sales_number - ap.discount_number),total_sales_amount:ap.total_sales_amount,discount_amount:ap.discount_amount,
+            loss_amount:ap.loss_amount,actual_inventory:ap.actual_inventory.to_i,discount_number:ap.discount_number,loss_number:ap.loss_number.to_i,early_sales_number:ap.early_sales_number}
         end
       end
       @dates = @dates.sort

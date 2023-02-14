@@ -19,15 +19,15 @@ div style='margin-bottom:20px;'
     thead style='position: sticky;top:0;background-color:white;z-index:3;'
       tr
         th style='background-color:white;width:200px;' 商品名
-        th colspan=10 style='width:750px;' 期間
+        th colspan=14 style='width:750px;' 期間
         - @dates.each do |date|
           - holiday = HolidayJapan.name(date)
           - if holiday.present? || date.wday == 0
-            th colspan=5 style='width:250px;color:#f08080;' = date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})")
+            th colspan=9 style='width:400px;color:#f08080;' = date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})")
           - elsif date.wday == 6
-            th colspan=5 style='width:250px;color:#87cefa;' = date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})")
+            th colspan=9 style='width:400px;color:#87cefa;' = date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})")
           - else
-            th colspan=5 style='width:250px;' = date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})")
+            th colspan=9 style='width:400px;' = date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})")
 
       tr
         th style='background-color:white;width:200px;'
@@ -36,13 +36,21 @@ div style='margin-bottom:20px;'
         th style='width:50px;' 原価
         th style='width:50px;' 原価率
         th style='width:50px;' 工数
-        th style='width:70px;' 販売数
+        th style='width:70px;' 在庫
+        th style='width:70px;' 16時
+        th style='width:70px;' 定価
+        th style='width:70px;' 値引
+        th style='width:70px;' ロス
         th style='width:70px;' 売上
         th style='width:70px;' 値引
         th style='width:70px;' 廃棄
         th style='width:50px;border-right: 3px solid #808080;' ロス率
         - @dates.each do |date|
-          th.aaa style="" 販売数
+          th.aaa style="" 在庫
+          th.aaa style="" 16時
+          th.aaa style="" 定価
+          th.aaa style="" 値引
+          th.aaa style="" ロス
           th.aaa style="" 売上
           th.aaa style="" 値引
           th.aaa style="" 廃棄
@@ -62,7 +70,11 @@ div style='margin-bottom:20px;'
           td = product.cost_price
           td = "#{((product.cost_price / product.sell_price)*100).round(1)}%"
           td -
-          td = "#{@hash[product.id][:period][:sales_number]}/#{@hash[product.id][:period][:actual_inventory]}"
+          td = @hash[product.id][:period][:actual_inventory]
+          td = @hash[product.id][:period][:early_sales_number]
+          td = @hash[product.id][:period][:list_price_sales_number]
+          td = @hash[product.id][:period][:discount_number]
+          td = @hash[product.id][:period][:loss_number]
           td = @hash[product.id][:period][:total_sales_amount].to_s(:delimited)
           td = @hash[product.id][:period][:discount_amount].to_s(:delimited)
           td = @hash[product.id][:period][:loss_amount].to_s(:delimited)
@@ -76,12 +88,20 @@ div style='margin-bottom:20px;'
             td style="border-right: 3px solid #808080;color:#008000;" = "#{period_loss_rate}%"
           - @dates.each do |date|
             - if @hash[product.id][date].present?
-              td = "#{@hash[product.id][date][:sales_number]}/#{@hash[product.id][date][:actual_inventory]}"
+              td = @hash[product.id][date][:actual_inventory]
+              td = @hash[product.id][date][:early_sales_number]
+              td = @hash[product.id][date][:list_price_sales_number]
+              td = @hash[product.id][date][:discount_number]
+              td = @hash[product.id][date][:loss_number]
               td = @hash[product.id][date][:total_sales_amount].to_s(:delimited)
               td = @hash[product.id][date][:discount_amount].to_s(:delimited)
               td = @hash[product.id][date][:loss_amount]
               td style="border-right: 3px solid #808080;" = "#{(((@hash[product.id][date][:discount_amount] + @hash[product.id][date][:loss_amount] )/@hash[product.id][date][:total_sales_amount].to_f)*100).round(1)}%"
             - else
+              td
+              td
+              td
+              td
               td
               td
               td

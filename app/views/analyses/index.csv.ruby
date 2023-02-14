@@ -1,6 +1,6 @@
 require 'csv'
 CSV.generate do |csv|
-  csv_column_names = %w(日付 店舗名 商品ID 商品名 14時販売数 合計販売数 在庫)
+  csv_column_names = %w(日付 店舗名 商品ID 商品名 16時販売数 合計販売数 在庫)
   csv << csv_column_names
   @analyses.each do |analysis|
     analysis.analysis_products.each do |ap|
