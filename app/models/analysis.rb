@@ -7,4 +7,19 @@ class Analysis < ApplicationRecord
   validates :store_id, :uniqueness => {:scope => :date}
   belongs_to :store_daily_menu
 
+
+  def self.calculate_nomination_rate(from,to)
+    update_analysis_product_arr = []
+    analyses = Analysis.includes(:analysis_products).where(date:from..to)
+    analyses.each do |analysis|
+      fourteen_transaction_count = analysis.fourteen_transaction_count
+      analysis.analysis_products.each do |ap|
+        if fourteen_transaction_count > 0
+          ap.nomination_rate = ((ap.early_sales_number.to_f/fourteen_transaction_count)*100).round(1)
+          update_analysis_product_arr << ap
+        end
+      end
+    end
+    AnalysisProduct.import update_analysis_product_arr, on_duplicate_key_update:[:nomination_rate]
+  end
 end

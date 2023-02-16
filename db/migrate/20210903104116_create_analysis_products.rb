@@ -27,6 +27,7 @@ class CreateAnalysisProducts < ActiveRecord::Migration[5.2]
       t.float :discount_rate
       t.boolean :loss_ignore,default:false,null:false
       t.integer :discount_number,default:0
+      t.float :nomination_rate,default:0,null:false
     end
   end
 end

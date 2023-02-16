@@ -48,7 +48,7 @@ ActiveRecord::Schema.define(version: 2022_11_28_010031) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "analysis_products", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+  create_table "analysis_products", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "analysis_id"
     t.integer "smaregi_shohin_id"
     t.string "smaregi_shohin_name"
@@ -76,6 +76,7 @@ ActiveRecord::Schema.define(version: 2022_11_28_010031) do
     t.float "discount_rate"
     t.boolean "loss_ignore", default: false, null: false
     t.integer "discount_number", default: 0
+    t.float "nomination_rate", default: 0.0, null: false
   end
 
   create_table "brands", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -803,7 +804,7 @@ ActiveRecord::Schema.define(version: 2022_11_28_010031) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "store_daily_menus", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "store_daily_menus", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "daily_menu_id"
     t.integer "store_id"
     t.date "start_time"

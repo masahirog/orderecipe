@@ -19,25 +19,23 @@ div style='margin-bottom:20px;'
     thead style='position: sticky;top:0;background-color:white;z-index:3;'
       tr
         th style='background-color:white;width:200px;' 商品名
-        th colspan=14 style='width:750px;' 期間
+        th colspan=12 style='width:750px;' 期間
         - @dates.each do |date|
           - holiday = HolidayJapan.name(date)
           - if holiday.present? || date.wday == 0
-            th colspan=9 style='width:400px;color:#f08080;' = date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})")
+            th colspan=10 style='width:480px;color:#f08080;' = date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})")
           - elsif date.wday == 6
-            th colspan=9 style='width:400px;color:#87cefa;' = date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})")
+            th colspan=10 style='width:480px;color:#87cefa;' = date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})")
           - else
-            th colspan=9 style='width:400px;' = date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})")
+            th colspan=10 style='width:480px;' = date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})")
 
       tr
         th style='background-color:white;width:200px;'
         th style='width:50px;' ID
         th style='width:50px;' 価格
-        th style='width:50px;' 原価
-        th style='width:50px;' 原価率
-        th style='width:50px;' 工数
         th style='width:70px;' 在庫
         th style='width:70px;' 16時
+        th style='width:70px;' 指名率
         th style='width:70px;' 定価
         th style='width:70px;' 値引
         th style='width:70px;' ロス
@@ -48,6 +46,7 @@ div style='margin-bottom:20px;'
         - @dates.each do |date|
           th.aaa style="" 在庫
           th.aaa style="" 16時
+          th.aaa style="" 指名率
           th.aaa style="" 定価
           th.aaa style="" 値引
           th.aaa style="" ロス
@@ -67,11 +66,9 @@ div style='margin-bottom:20px;'
             = link_to product.name.slice(0..13),product,target:"_blank"
           td = product.id
           td = product.sell_price
-          td = product.cost_price
-          td = "#{((product.cost_price / product.sell_price)*100).round(1)}%"
-          td -
           td = @hash[product.id][:period][:actual_inventory]
           td = @hash[product.id][:period][:early_sales_number]
+          td = (@hash[product.id][:period][:nomination_rate]/@hash[product.id][:period][:count]).round(1)
           td = @hash[product.id][:period][:list_price_sales_number]
           td = @hash[product.id][:period][:discount_number]
           td = @hash[product.id][:period][:loss_number]
@@ -90,6 +87,7 @@ div style='margin-bottom:20px;'
             - if @hash[product.id][date].present?
               td = @hash[product.id][date][:actual_inventory]
               td = @hash[product.id][date][:early_sales_number]
+              td = (@hash[product.id][date][:nomination_rate]/@hash[product.id][date][:count]).round(1)
               td = @hash[product.id][date][:list_price_sales_number]
               td = @hash[product.id][date][:discount_number]
               td = @hash[product.id][date][:loss_number]
@@ -98,6 +96,7 @@ div style='margin-bottom:20px;'
               td = @hash[product.id][date][:loss_amount]
               td style="border-right: 3px solid #808080;" = "#{(((@hash[product.id][date][:discount_amount] + @hash[product.id][date][:loss_amount] )/@hash[product.id][date][:total_sales_amount].to_f)*100).round(1)}%"
             - else
+              td
               td
               td
               td

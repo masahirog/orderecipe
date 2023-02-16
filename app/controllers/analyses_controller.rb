@@ -1,6 +1,78 @@
 class AnalysesController < AdminController
   before_action :set_analysis, only: %i[ show edit update destroy ]
+  def product_score
+    order = params[:order]
 
+    @stores = Store.where(group_id:9)
+    if params[:stores]
+      checked_store_ids = params['stores'].keys
+    else
+      checked_store_ids = @stores.ids
+      params[:stores] = {}
+      @stores.each do |store|
+        params[:stores][store.id.to_s] = true
+      end
+    end
+    if params[:from]
+      @from = params[:from].to_date
+    else
+      @from = Date.today.prev_occurring(:wednesday)
+      params[:from] = @from
+    end
+    if params[:to]
+      @to = params[:to].to_date
+    else
+      @to = @from + 6
+      params[:to] = @to
+    end
+    @dates = []
+    if (@to - @from) < 32
+      analyses = Analysis.where(date:@from..@to).where(store_id:checked_store_ids)
+      @analysis_products = AnalysisProduct.includes(analysis:[:store_daily_menu,:store]).where(analysis_id:analyses.ids)
+      @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+      @store_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+      product_ids = []
+      @analysis_products.each do |ap|
+        if @hash[ap.product_id][ap.analysis.store_daily_menu.start_time].present?
+          @hash[ap.product_id][ap.analysis.store_daily_menu.start_time][:count] += 1
+          @hash[ap.product_id][ap.analysis.store_daily_menu.start_time][:nomination_rate] += ap.nomination_rate
+        else
+          @hash[ap.product_id][ap.analysis.store_daily_menu.start_time] = {nomination_rate:ap.nomination_rate,count:1}
+          product_ids << ap.product_id unless product_ids.include?(ap.product_id)
+          @dates << ap.analysis.store_daily_menu.start_time unless @dates.include?(ap.analysis.store_daily_menu.start_time)
+        end
+        if  @hash[ap.product_id][:period].present?
+          @hash[ap.product_id][:period][:nomination_rate] += ap.nomination_rate
+          @hash[ap.product_id][:period][:count] += 1
+        else
+          @hash[ap.product_id][:period] = {nomination_rate:ap.nomination_rate,count:1}
+        end
+        @store_hash[ap.analysis.store_daily_menu.start_time][ap.product_id][ap.analysis.store.id]["store_name"]=ap.analysis.store.name
+        @store_hash[ap.analysis.store_daily_menu.start_time][ap.product_id][ap.analysis.store.id]["nomination_rate"]=ap.nomination_rate
+        @store_hash[ap.analysis.store_daily_menu.start_time][ap.product_id][ap.analysis.store.id]["actual_inventory"]=ap.actual_inventory.to_i
+        @store_hash[ap.analysis.store_daily_menu.start_time][ap.product_id][ap.analysis.store.id]["list_price_sales_number"]=(ap.sales_number - ap.discount_number)
+        @store_hash[ap.analysis.store_daily_menu.start_time][ap.product_id][ap.analysis.store.id]["early_sales_number"]=ap.early_sales_number.to_i
+      end
+      @dates = @dates.sort
+      products = {}
+      @hash.map do |data|
+        products[data[0]] = (data[1][:period][:nomination_rate]/data[1][:period][:count]).round(1)
+      end
+      if order.present?
+        product_ids = products.sort_by { |_, v| v }.reverse.to_h.keys.compact
+      else
+      end
+      @products = Product.where(id:product_ids).order(['field(id, ?)', product_ids])
+      respond_to do |format|
+        format.html
+        format.csv do
+          send_data render_to_string, filename: "score_#{@from}_#{@to}.csv", type: :csv
+        end
+      end
+    else
+      redirect_to product_score_analyses_path, danger: "期間は一ヶ月間以内にしてください。"
+    end    
+  end
   def progress
     @analysis = Analysis.find(params[:analysis_id])
     if params[:to]
@@ -492,7 +564,7 @@ class AnalysesController < AdminController
   end
 
   def product_sales
-    @stores = Store.all
+    @stores = Store.where(group_id:9)
     if params[:stores]
       checked_store_ids = params['stores'].keys
     else
@@ -502,17 +574,17 @@ class AnalysesController < AdminController
         params[:stores][store.id.to_s] = true
       end
     end
-    if params[:to]
-      @to = params[:to].to_date
-    else
-      @to = Date.today
-      params[:to] = @to
-    end
     if params[:from]
       @from = params[:from].to_date
     else
-      @from = @to - 30
+      @from = Date.today.prev_occurring(:wednesday)
       params[:from] = @from
+    end
+    if params[:to]
+      @to = params[:to].to_date
+    else
+      @to = @from + 6
+      params[:to] = @to
     end
     @dates = []
     if (@to - @from) < 32
@@ -522,6 +594,7 @@ class AnalysesController < AdminController
       product_ids = []
       @analysis_products.each do |ap|
         if @hash[ap.product_id][ap.analysis.store_daily_menu.start_time].present?
+          @hash[ap.product_id][ap.analysis.store_daily_menu.start_time][:count] += 1
           @hash[ap.product_id][ap.analysis.store_daily_menu.start_time][:actual_inventory] += ap.actual_inventory.to_i
           @hash[ap.product_id][ap.analysis.store_daily_menu.start_time][:list_price_sales_number] += (ap.sales_number - ap.discount_number)
           @hash[ap.product_id][ap.analysis.store_daily_menu.start_time][:discount_number] += ap.discount_number
@@ -531,10 +604,11 @@ class AnalysesController < AdminController
           @hash[ap.product_id][ap.analysis.store_daily_menu.start_time][:loss_number] += ap.loss_number.to_i
           # 16時までに売れた個数
           @hash[ap.product_id][ap.analysis.store_daily_menu.start_time][:early_sales_number] += ap.early_sales_number
+          @hash[ap.product_id][ap.analysis.store_daily_menu.start_time][:nomination_rate] += ap.nomination_rate
         else
           @hash[ap.product_id][ap.analysis.store_daily_menu.start_time] = {list_price_sales_number:(ap.sales_number - ap.discount_number),total_sales_amount:ap.total_sales_amount,
             discount_amount:ap.discount_amount,loss_amount:ap.loss_amount,actual_inventory:ap.actual_inventory.to_i,discount_number:ap.discount_number,loss_number:ap.loss_number.to_i,
-            early_sales_number:ap.early_sales_number}
+            early_sales_number:ap.early_sales_number,nomination_rate:ap.nomination_rate,count:1}
           product_ids << ap.product_id unless product_ids.include?(ap.product_id)
           @dates << ap.analysis.store_daily_menu.start_time unless @dates.include?(ap.analysis.store_daily_menu.start_time)
         end
@@ -547,9 +621,12 @@ class AnalysesController < AdminController
           @hash[ap.product_id][:period][:loss_amount] += ap.loss_amount
           @hash[ap.product_id][:period][:loss_number] += ap.loss_number.to_i
           @hash[ap.product_id][:period][:early_sales_number] += ap.early_sales_number
+          @hash[ap.product_id][:period][:nomination_rate] += ap.nomination_rate
+          @hash[ap.product_id][:period][:count] += 1
         else
           @hash[ap.product_id][:period] = {list_price_sales_number:(ap.sales_number - ap.discount_number),total_sales_amount:ap.total_sales_amount,discount_amount:ap.discount_amount,
-            loss_amount:ap.loss_amount,actual_inventory:ap.actual_inventory.to_i,discount_number:ap.discount_number,loss_number:ap.loss_number.to_i,early_sales_number:ap.early_sales_number}
+            loss_amount:ap.loss_amount,actual_inventory:ap.actual_inventory.to_i,discount_number:ap.discount_number,loss_number:ap.loss_number.to_i,
+            early_sales_number:ap.early_sales_number,nomination_rate:ap.nomination_rate,count:1}
         end
       end
       @dates = @dates.sort
