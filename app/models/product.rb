@@ -137,7 +137,7 @@ class Product < ApplicationRecord
 
   def self.input_spreadsheet
     session = GoogleDrive::Session.from_config("config.json")
-    sheet = session.spreadsheet_by_key("12o48iD-G2C_PHr9AkPvTeb0PF6o5rHRCYZcDAAp-7vg").worksheet_by_title("原価OR連携")
+    sheet = session.spreadsheet_by_key("1hZ00gO4ur_jvwzuj6BHMqJXLq3J1zJTchoGH19lLVt0").worksheet_by_title("原価OR連携")
     last_row = sheet.num_rows
     for i in 2..last_row do
       id = sheet[i, 1]
