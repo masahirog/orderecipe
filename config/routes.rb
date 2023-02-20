@@ -109,6 +109,7 @@ Rails.application.routes.draw do
   resources :analysis_products
   resources :analyses do
     collection do
+      get :product_repeat
       get :product_score
       get :progress
       get :gyusuji

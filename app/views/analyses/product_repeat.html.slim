@@ -1,0 +1,24 @@
+= link_to "CSV",product_repeat_analyses_path(:format => :csv),class:"btn btn-primary",style:'float:right;'
+span style='float:left;' ※16時までの販売データ
+table.table
+	thead
+		tr
+			th id
+			th name
+			th リピ率
+			th count
+			th UU
+			th 指数
+			- (1..20).each do |i|
+				th = i
+	tbody
+		- @products.each do |product|
+			tr
+				td = product.id
+				td = product.name
+				td = "#{((@repeat_count[product.id].to_f/@uu[product.id].to_i)*100).round(1)}%"
+				td = @product_count[product.id]
+				td = @uu[product.id]
+				td = (((@repeat_count[product.id].to_f/@uu[product.id].to_i)/@uu[product.id])*10000).round(1)
+				- (1..20).each do |i|
+					td = @hash[[product.id,i]]

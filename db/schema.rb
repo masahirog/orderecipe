@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_11_28_010031) do
+ActiveRecord::Schema.define(version: 2023_02_19_051234) do
 
   create_table "analyses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "store_id"
@@ -663,6 +663,15 @@ ActiveRecord::Schema.define(version: 2022_11_28_010031) do
     t.text "memo"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "smaregi_member_products", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "kaiin_id"
+    t.integer "product_id"
+    t.integer "early_number_of_purchase"
+    t.integer "total_number_of_purchase"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "smaregi_members", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

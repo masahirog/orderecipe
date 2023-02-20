@@ -1,5 +1,21 @@
 class AnalysesController < AdminController
   before_action :set_analysis, only: %i[ show edit update destroy ]
+  def product_repeat
+    product_ids = SmaregiMemberProduct.all.map{|smp|smp.product_id}.uniq
+    @products = Product.where(id:product_ids)
+    # 16時までの販売データ
+    @hash = SmaregiMemberProduct.all.group(:product_id,:early_number_of_purchase).count
+    daily_menu_ids = DailyMenu.where(start_time:"2023-01-01".to_date..(Date.today-1)).ids
+    @product_count = DailyMenuDetail.where(daily_menu_id:daily_menu_ids).group(:product_id).count
+    @uu = SmaregiMemberProduct.where.not(early_number_of_purchase:0).group(:product_id).count
+    @repeat_count = SmaregiMemberProduct.where("early_number_of_purchase > ?",1).group(:product_id).count
+    respond_to do |format|
+      format.html
+      format.csv do
+        send_data render_to_string, filename: "repeat_products.csv", type: :csv
+      end
+    end
+  end
   def product_score
     order = params[:order]
 
