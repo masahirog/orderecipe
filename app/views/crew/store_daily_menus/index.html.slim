@@ -1,6 +1,9 @@
 h1
   = "献立　#{@store.name}"
   = link_to 'A商品の発注', crew_orders_path(store_id:@store.id),class:'btn btn-primary pull-right'
+= link_to "先月", crew_store_daily_menus_path(start_date:@date.last_month,store_id:@store.id)
+|　　　
+= link_to "#{@date.next_month.month}月", crew_store_daily_menus_path(start_date:@date.next_month,store_id:@store.id)
 = month_calendar events: @store_daily_menus do |start_time, store_daily_menu|
   div style='height:29px;'
     - if store_daily_menu[0]
@@ -20,3 +23,7 @@ h1
             = link_to sdmd.product.name,crew_product_path(sdmd.product)
           td.text-right style='font-size:11px;'
             = sdmd.number
+css:
+  .calendar-heading{
+    display: none;
+  }

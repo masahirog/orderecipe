@@ -2,11 +2,11 @@ class Crew::StoreDailyMenusController < ApplicationController
   def index
     @store = Store.find(params[:store_id])
     if params[:start_date].present?
-      date = params[:start_date]
+      @date = params[:start_date].to_date
     else
-      date = Date.today
+      @date = Date.today
     end
-    @store_daily_menus = @store.store_daily_menus.where(start_time:date.in_time_zone.all_month).includes(store_daily_menu_details:[:product])
+    @store_daily_menus = @store.store_daily_menus.where(start_time:@date.in_time_zone.all_month).includes(store_daily_menu_details:[:product])
     respond_to do |format|
       format.html
       format.csv do
