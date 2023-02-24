@@ -16,13 +16,19 @@ h1
         = start_time.strftime("%-m月%-d日")
         / = link_to start_time.strftime("%-m月%-d日"), new_store_daily_menu_path(date:start_time,store_id:@store.id)
   - if store_daily_menu[0]
+    - ordered_sdmds = store_daily_menu[0].store_daily_menu_details.includes(:product).where.not(number:0)
+    div
+      = "メニュー数：#{ordered_sdmds.count}/#{store_daily_menu[0].store_daily_menu_details.count}"
     table.table
-      - store_daily_menu[0].store_daily_menu_details.each do |sdmd|
+      - ordered_sdmds.each do |sdmd|
         tr
           td
             = link_to sdmd.product.name,crew_product_path(sdmd.product)
           td.text-right style='font-size:11px;'
             = sdmd.number
+  - else
+    div
+      |メニュー 未反映
 css:
   .calendar-heading{
     display: none;

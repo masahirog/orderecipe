@@ -18,16 +18,14 @@ class DailyMenuPdf < Prawn::Document
         move_down 10
         table line_item_rows(sdm) do
           self.row_colors = ["FFFFFF","E5E5E5"]
-          # cells.padding = 6
           cells.size = 7
-          # columns(1).size = 10
-          # row(0..1).columns(0).size = 10
           cells.border_width = 0.1
           cells.align = :center
           columns(0).align = :left
+          columns(-1).align = :left
           columns(-2).align = :center
           self.header = true
-          self.column_widths = [180,50,50,50,50,50]
+          self.column_widths = [180,50,50,50,50,170]
         end
         move_down 10
 
@@ -44,8 +42,9 @@ class DailyMenuPdf < Prawn::Document
   end
 
   def line_item_rows(sdm)
-    data = [['商品名','定価','副菜','惣菜','','']]
-    sdm.store_daily_menu_details.each do |sdmd|
+    data = [['商品名','定価','副菜','惣菜','パーツ数','パーツ詳細']]
+    sdm.store_daily_menu_details.includes(product:[:product_parts]).each do |sdmd|
+      product_parts = sdmd.product.product_parts
       if sdmd.bento_fukusai_number > 0
         fukusai_num = sdmd.bento_fukusai_number
       else
@@ -56,7 +55,7 @@ class DailyMenuPdf < Prawn::Document
       else
         sozai_number = ""
       end
-      data << [sdmd.product.name,sdmd.product.sell_price,fukusai_num,sozai_number,'','']
+      data << [sdmd.product.name,sdmd.product.sell_price,fukusai_num,sozai_number,product_parts.count,product_parts.map{|pp|pp.name.slice(0..5)}.join("｜")]
     end
     data
   end

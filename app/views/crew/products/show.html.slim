@@ -17,7 +17,7 @@ h3 = @product.name
     label 商品特徴
     = text_url_to_link(simple_format(h(@product.description))).html_safe
 
-  .col-md-12
+  div
     .col-md-6
       label 1人前写真
       = link_to @product.image_for_one_person.to_s, "data-lightbox" => @product.image_for_one_person.to_s do
@@ -26,6 +26,18 @@ h3 = @product.name
     .col-md-6
       label 1人前分量
       = text_url_to_link(simple_format(h(@product.serving_infomation))).html_safe
+
+  table.table
+    thead
+      tr
+        th style='padding-left:0;' 仕上げ調理工程
+        th
+    tbody
+      - @product.menus.each_with_index do |menu,i|
+        - if menu.cook_on_the_day.present?
+          tr
+            td = menu.name
+            td = text_url_to_link(simple_format(h(menu.cook_on_the_day))).html_safe
 
 
   table.table

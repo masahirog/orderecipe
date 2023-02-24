@@ -240,7 +240,7 @@ class DailyMenusController < AdminController
     @yesterday = DailyMenu.find_by(start_time:@date-1)
     @daily_menu_details = @daily_menu.daily_menu_details.order("row_order ASC")
     @sdmd_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    @daily_menu.store_daily_menus.includes(store_daily_menu_details:[:product]).each do |sdm|
+    @daily_menu.store_daily_menus.includes(:store,store_daily_menu_details:[:product]).each do |sdm|
       @store_daily_menu_idhash[sdm.store_id] = sdm.id
       sdm.store_daily_menu_details.each do |sdmd|
         @sdmd_hash[sdm.store_id][sdmd.product_id] = sdmd.number

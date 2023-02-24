@@ -6,7 +6,7 @@ class Crew::StoreDailyMenusController < ApplicationController
     else
       @date = Date.today
     end
-    @store_daily_menus = @store.store_daily_menus.where(start_time:@date.in_time_zone.all_month).includes(store_daily_menu_details:[:product])
+    @store_daily_menus = @store.store_daily_menus.where(start_time:@date.in_time_zone.all_month)
     respond_to do |format|
       format.html
       format.csv do
