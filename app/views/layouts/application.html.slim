@@ -67,8 +67,8 @@ html
                           span style='float:left;' 棚卸し
                       li = link_to "月次棚卸し在庫",stocks_path(store_id:39)
                       h5 style='padding:0 10px;font-weight:bold;' その他
-                      li = link_to 'シフト',shifts_path(date:Date.today,group_id:19)
-                      li = link_to 'シフトテンプレート',default_shifts_path(group_id:19)
+                      / li = link_to 'シフト',shifts_path(date:Date.today,group_id:19)
+                      / li = link_to 'シフトテンプレート',default_shifts_path(group_id:19)
                       li = link_to "キッチン設定",edit_store_path(id:39)
 
 
@@ -79,7 +79,7 @@ html
                     ul.dropdown-menu role="menu" style='width:250px;'
                       li = link_to "店舗一覧",stores_path(group_id:9)
                       li = link_to "掃除リスト",clean_reminders_path()
-                      li = link_to "進捗ボード",tasks_path(group_id:9)
+                      / li = link_to "進捗ボード",tasks_path(group_id:9)
                       li = link_to '販売レポート',select_store_sales_reports_path
                       li = link_to "お客さまの声",customer_opinions_path
                       li = link_to 'シフト',shifts_path(date:Date.today,group_id:9)
