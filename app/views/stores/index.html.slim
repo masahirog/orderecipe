@@ -6,6 +6,7 @@ h2 店舗一覧
       tr
         th 店名
         th 献立
+        th 進捗ボード
         th リマインダー
         th 返金対応
         th 発注
@@ -20,6 +21,7 @@ h2 店舗一覧
             - else
               = link_to store.name, store_daily_menus_path(store_id:store.id)
           td = link_to '献立', store_daily_menus_path(store_id:store.id),class:'btn btn-sm btn-default'
+          td = link_to "進捗ボード",tasks_path(store_id:store.id),class:'btn btn-sm btn-default'
           td = link_to 'リマインダー', store_reminders_path(store_id:store.id,status:'yet'),class:'btn btn-sm btn-default'
           td = link_to '返金対応', refund_supports_path(store_id:store.id),class:'btn btn-sm btn-default'
           td = link_to store.short_name, orders_path(store_id:store.id),class:"order btn btn-default btn-sm"
