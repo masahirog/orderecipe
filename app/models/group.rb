@@ -3,7 +3,7 @@ class Group < ApplicationRecord
   has_many :shift_frames
   has_many :fix_shift_patterns
 
-
+  has_many :tasks
   has_many :materials
   has_many :menus
   has_many :products

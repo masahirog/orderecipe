@@ -12,7 +12,7 @@
       .modal-body
         .clearfix
           = form_with(model: @task,class:'new_task_form', data: {remote: true}) do |f|
-            = f.hidden_field :group_id,value:params[:group_id]
+            = f.hidden_field :group_id,value:@group_id
             .form-group.clearfix
               = f.text_field :title, class:"form-control", required:true,placeholder:'タイトル',style:'width:calc(100% - 140px);float:left;'
               = f.text_field :drafter, class:"form-control",placeholder:'投稿者名',style:'float:left;width:120px;margin-left:10px;', required:true
