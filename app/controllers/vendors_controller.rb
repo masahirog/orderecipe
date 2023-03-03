@@ -1,9 +1,9 @@
-class VendorsController < AdminController
+class VendorsController < ApplicationController
   def index
     if params[:all_flag]
-      @vendors = Vendor.all
+      @vendors = Vendor.where(group_id:@group_id)
     else
-      @vendors = Vendor.where(status:1)
+      @vendors = Vendor.where(group_id:@group_id,status:1)
     end
     if params[:monthly_price] == 'true'
       if params[:year] && params[:month]
@@ -43,7 +43,7 @@ class VendorsController < AdminController
   end
 
   def new
-    @vendor = Vendor.new
+    @vendor = Vendor.new(group_id:@group_id)
   end
   def create
     @vendor = Vendor.create(vendor_params)
@@ -108,6 +108,6 @@ class VendorsController < AdminController
   private
   def vendor_params
     params.require(:vendor).permit(:company_name, :company_phone, :company_fax, :company_mail,:efax_address,:status,:delivery_date,
-                                    :zip, :address, :staff_name, :staff_phone, :staff_mail, :memo)
+                                    :zip, :address, :staff_name, :staff_phone, :staff_mail, :memo,:group_id)
   end
 end

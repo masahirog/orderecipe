@@ -19,6 +19,7 @@ class CreateMenus < ActiveRecord::Migration[4.2]
       t.integer :onday_20_cook,null:false,default:0
       t.integer :onday_60_cook,null:false,default:0
       t.string :short_name
+      t.integer :group_id, :null => false
     end
   end
 end

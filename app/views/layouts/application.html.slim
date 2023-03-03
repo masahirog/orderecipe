@@ -34,7 +34,7 @@ html
               = image_tag 'orderecipe.png',height:'85%'
           #navbarEexample.collapse.navbar-collapse
             - if user_signed_in?
-              - if current_user.admin?
+              - if current_user.id == 1
                 ul.nav.navbar-nav
                   li.dropdown
                     a.dropdown-toggle href="#" data-toggle="dropdown" role="button"
@@ -44,7 +44,7 @@ html
                       h5 style='padding:0 10px;font-weight:bold;' べじはん
                       li = link_to "べじはん献立",daily_menus_path
                       li = link_to "各店舗発注品",bejihan_store_orders_list_orders_path(date:Date.today)
-                      li = link_to "進捗ボード",tasks_path(group_id:19)
+                      li = link_to "進捗ボード",tasks_path(store_id:39)
                       li = link_to "時間内訳",staff_input_working_hours_path(group_id:19)
                         / = link_to '改善リスト', kaizen_lists_path(store_id:39), style:'float:left;'
                         / span style='float:left;margin-top:3px;color:red;' = "#{KaizenList.where(store_id:39).where.not(status:['done','cancel']).count}"
@@ -144,9 +144,21 @@ html
                       |店舗選択
                       span.caret
                     ul.dropdown-menu role="menu"
-                      - @sky_stores.each do |store|
+                      - @stores.each do |store|
                         li = link_to store.name,crew_store_path(store)
+  
+                  / li.menu_li = link_to "進捗ボード",tasks_path(group_id:29)
+                  li.dropdown
+                    a.dropdown-toggle href="#" data-toggle="dropdown" role="button"
+                      |レシピ
+                      span.caret
+                    ul.dropdown-menu role="menu" style='width:250px;'
+                      li = link_to "商品一覧",products_path(group_id:29)
+                      li = link_to "メニュー",menus_path(group_id:29)
+                      li = link_to "食材・資材",materials_path(group_id:29)
+                      li = link_to "仕入先",vendors_path(group_id:29)
 
+                  li.menu_li = link_to "スタッフ",staffs_path(group_id:29)
                   li.menu_li = link_to "ログアウト", destroy_user_session_path, :method => :delete
     .all_body
       - flash.each do |name, msg|

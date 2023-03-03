@@ -21,9 +21,10 @@ class Material < ApplicationRecord
   scope :mate_search, lambda { |query|  where(unused_flag:false).where('name LIKE ?', "%#{query}%").limit(100)}
   has_many :stocks
   mount_uploader :image, MaterialImageUploader
+  belongs_to :group
 
   # after_save :update_cache
-  validates :name, presence: true, uniqueness: true, format: { with:/\A[^０-９ａ-ｚＡ-Ｚ]+\z/,
+  validates :name, presence: true, format: { with:/\A[^０-９ａ-ｚＡ-Ｚ]+\z/,
     message: "：全角英数字は使用出来ません。"}
   validates :order_name, presence: true, format: { with:/\A[^０-９ａ-ｚＡ-Ｚ]+\z/,
     message: "：全角英数字は使用出来ません。"}
@@ -39,20 +40,20 @@ class Material < ApplicationRecord
   enum category: {meat:1,fish:8,vege:2,other_vege:7,other_food:3,packed:4,consumable_item:5,cooking_item:6,rice:9}
   enum storage_place: {normal:1,refrigerate:2,freezing:3,pack:4,equipment:5}
 
-  def self.search(params)
+  def self.search(params,group_id)
    if params
      if params['order_quantity_order'] == 'true'
        ids = OrderMaterial.joins(:order).where(orders:{fixed_flag:1}).where(delivery_date:(Date.today - 31)..Date.today).group(:material_id).sum(:order_quantity).transform_values(&:to_f).sort {|a,b| b[1]<=>a[1]}.to_h.keys
        data = Material.where(id:ids)
      else
-      data = Material.order(id: "DESC").all
+      data = Material.where(group_id:group_id).order(id: "DESC").all
      end
      data = data.where(['name LIKE ?', "%#{params["name"]}%"]) if params["name"].present?
      data = data.where(vendor_id: params["vendor_id"]) if params["vendor_id"].present?
      data = data.where(unused_flag:params["unused_flag"]) if params["unused_flag"].present?
      data
    else
-     Material.order(id: "DESC").all
+     Material.where(group_id:group_id).order(id: "DESC").all
    end
   end
 

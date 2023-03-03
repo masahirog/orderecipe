@@ -12,6 +12,8 @@ class StaffsController < ApplicationController
     redirect_to staffs_path(group_id:group_id),notice:'並び更新しました。'
   end
   def index
+    group_id = params[:group_id]
+    @group = Group.find(group_id)
     @staffs = Staff.includes([:store]).where(:stores => {group_id:params[:group_id]}).order(row:'asc')
   end
 
@@ -19,6 +21,8 @@ class StaffsController < ApplicationController
   end
 
   def new
+    @group = Group.find(params[:group_id])
+    @stores = @group.stores
     if params[:place] == 'kitchen'
       @staff = Staff.new(store_id:39)
     else

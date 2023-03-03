@@ -1,4 +1,4 @@
-class BrandsController < AdminController
+class BrandsController < ApplicationController
   before_action :set_brand, only: [:show, :edit, :update, :destroy]
 
   def index
@@ -54,6 +54,6 @@ class BrandsController < AdminController
     end
 
     def brand_params
-      params.require(:brand).permit(:id,:name)
+      params.require(:brand).permit(:id,:name,:group_id,:store_path,:kurumesi_flag)
     end
 end

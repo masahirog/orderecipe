@@ -29,6 +29,7 @@ class CreateProducts < ActiveRecord::Migration[4.2]
       t.integer :sky_wholesale_price
       t.string :sky_image
       t.text :sky_serving_infomation
+      t.integer :group_id, :null => false
     end
   end
 end

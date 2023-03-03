@@ -1,5 +1,3 @@
-
-
 = form_for @vendor do |f|
   - if @vendor.errors.any?
     #error_explanation
@@ -10,6 +8,11 @@
         - @vendor.errors.full_messages.each do |message|
           li
             = message
+
+  .form-group
+    = f.label :group_id, "グループ名：#{Group.find(@group_id).name}"
+    = f.hidden_field :group_id,value:@group_id
+
   .form-group
     = f.label :company_name, "企業名"
     = f.text_field :company_name, required: true, class:"form-control"
@@ -23,7 +26,7 @@
   .form-group
     = f.label :company_fax, "FAX番号"
     = f.text_field :company_fax, class:"form-control"
-  .form-group
+  / .form-group
     = f.label :efax_address, "eFAX送信用のメールアドレス「81 + fax番号(先頭の0無し) + @efaxsend.com」"
     = f.text_field :efax_address, class:"form-control"
   .form-group

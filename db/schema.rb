@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_02_19_051234) do
+ActiveRecord::Schema.define(version: 2023_03_03_033759) do
 
   create_table "analyses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "store_id"
@@ -48,7 +48,7 @@ ActiveRecord::Schema.define(version: 2023_02_19_051234) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "analysis_products", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "analysis_products", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "analysis_id"
     t.integer "smaregi_shohin_id"
     t.string "smaregi_shohin_name"
@@ -81,11 +81,11 @@ ActiveRecord::Schema.define(version: 2023_02_19_051234) do
 
   create_table "brands", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name", null: false
-    t.integer "store_id", default: 0, null: false
     t.boolean "kurumesi_flag", default: false, null: false
     t.string "store_path"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "group_id", null: false
   end
 
   create_table "containers", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -354,6 +354,7 @@ ActiveRecord::Schema.define(version: 2023_02_19_051234) do
     t.string "short_name"
     t.integer "storage_place", default: 0, null: false
     t.boolean "subdivision_able", default: false, null: false
+    t.integer "group_id", null: false
   end
 
   create_table "menu_cook_checks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -436,6 +437,7 @@ ActiveRecord::Schema.define(version: 2023_02_19_051234) do
     t.integer "onday_20_cook", default: 0, null: false
     t.integer "onday_60_cook", default: 0, null: false
     t.string "short_name"
+    t.integer "group_id", null: false
   end
 
   create_table "monthly_stocks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -564,6 +566,7 @@ ActiveRecord::Schema.define(version: 2023_02_19_051234) do
     t.integer "sky_wholesale_price"
     t.string "sky_image"
     t.text "sky_serving_infomation"
+    t.integer "group_id", null: false
   end
 
   create_table "refund_supports", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -665,7 +668,7 @@ ActiveRecord::Schema.define(version: 2023_02_19_051234) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "smaregi_member_products", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "smaregi_member_products", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "kaiin_id"
     t.integer "product_id"
     t.integer "early_number_of_purchase"
@@ -889,6 +892,14 @@ ActiveRecord::Schema.define(version: 2023_02_19_051234) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "task_stores", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "task_id"
+    t.integer "store_id"
+    t.boolean "subject_flag", default: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "tasks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "title"
     t.text "content"
@@ -918,6 +929,7 @@ ActiveRecord::Schema.define(version: 2023_02_19_051234) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "admin", default: false, null: false
+    t.integer "group_id", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
@@ -940,6 +952,7 @@ ActiveRecord::Schema.define(version: 2023_02_19_051234) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "fax_staff_name_display_flag", default: false, null: false
+    t.integer "group_id", null: false
   end
 
   create_table "working_hours", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|

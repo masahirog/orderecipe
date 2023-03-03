@@ -2,6 +2,7 @@ class Product < ApplicationRecord
   has_many :kaizen_lists
   has_many :product_sales_potentials
   has_many :analysis_products
+  belongs_to :group
   belongs_to :brand
   belongs_to :container
 
@@ -53,17 +54,15 @@ class Product < ApplicationRecord
     self.management_id.to_s + '｜' + self.name
   end
 
-  def self.search(params)
-   if params
-     data = Product.order(id: "DESC").all
-     data = data.where(['management_id LIKE ?', "%#{params["management_id"]}%"]) if params["management_id"].present?
-     data = data.where(brand_id: params["brand_id"]) if params["brand_id"].present?
-     data = data.where(['name LIKE ?', "%#{params["name"]}%"]) if params["name"].present?
-     data = data.reorder(params['order']) if params["order"].present?
-     data
-   else
-     data = Product.order(id: "DESC").all
-   end
+  def self.search(params,group_id)
+    data = Product.where(group_id:group_id).order(id: "DESC").all
+    if params
+      data = data.where(['management_id LIKE ?', "%#{params["management_id"]}%"]) if params["management_id"].present?
+      data = data.where(brand_id: params["brand_id"]) if params["brand_id"].present?
+      data = data.where(['name LIKE ?', "%#{params["name"]}%"]) if params["name"].present?
+      data = data.reorder(params['order']) if params["order"].present?
+      data
+    end
   end
 
   def self.bentoid

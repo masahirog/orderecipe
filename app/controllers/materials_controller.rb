@@ -1,4 +1,4 @@
-class MaterialsController < AdminController
+class MaterialsController < ApplicationController
   protect_from_forgery :except => [:change_additives]
   def index
     if params[:store_id]
@@ -6,7 +6,7 @@ class MaterialsController < AdminController
     else
       @store_id = 39
     end
-    @search = Material.includes(:vendor).search(params).page(params[:page]).per(50)
+    @search = Material.includes(:vendor).search(params,@group_id).page(params[:page]).per(50)
     @materials_order_quantity = OrderMaterial.joins(:order).where(un_order_flag:false,orders:{fixed_flag:1}).where(delivery_date:(Date.today - 31)..Date.today,material_id:@search.ids).group(:material_id).sum(:order_quantity)
     respond_to do |format|
       format.html
@@ -17,7 +17,7 @@ class MaterialsController < AdminController
   def new
     @material = Material.new
     @stores_hash = {}
-    Store.all.each do |store|
+    Store.where(group_id:@group_id).each do |store|
       @stores_hash[store.id]=store.name
       if store.id == 39
         @material.material_store_orderables.build(store_id:store.id,orderable_flag:true)
@@ -243,7 +243,7 @@ class MaterialsController < AdminController
   end
   private
   def material_params
-    params.require(:material).permit(:name, :order_name, :recipe_unit_quantity, :recipe_unit,:vendor_stock_flag,:image,:image_cache,:remove_image,:short_name,:storage_place,
+    params.require(:material).permit(:name, :order_name, :recipe_unit_quantity, :recipe_unit,:vendor_stock_flag,:image,:image_cache,:remove_image,:short_name,:storage_place,:group_id,
      :recipe_unit_price, :cost_price, :category, :order_code, :order_unit, :memo, :unused_flag, :vendor_id,:order_unit_quantity,:delivery_deadline,:accounting_unit,:accounting_unit_quantity,:measurement_flag,
      {allergy:[]},material_store_orderables_attributes:[:id,:store_id,:material_id,:orderable_flag],material_food_additives_attributes:[:id,:material_id,:food_additive_id,:_destroy],
    material_cut_patterns_attributes:[:id,:material_id,:name,:machine,:_destroy])

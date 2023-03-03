@@ -28,6 +28,7 @@ class CreateMaterials < ActiveRecord::Migration[4.2]
       t.string :short_name
       t.integer :storage_place,:null => false,:default => 0
       t.boolean :subdivision_able, :null => false, :default => false
+      t.integer :group_id, :null => false
     end
   end
 end

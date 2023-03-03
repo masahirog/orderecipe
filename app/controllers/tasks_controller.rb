@@ -12,15 +12,26 @@ class TasksController < ApplicationController
     else
       gon.task_id = ''
     end
-    group_id = params[:group_id]
+    # group_id = params[:group_id]
+    stores = Store.where(group_id:@group_id)
     if params[:staff_id].present?
       @staff = Staff.find(params[:staff_id])
-      @tasks = Task.includes([:task_comments,:task_images,:task_staffs]).where(:task_staffs => {staff_id:params[:staff_id],read_flag:false}).where(group_id:group_id).rank(:row_order)
-      # @tasks = Task.includes([:task_comments,:task_images,:task_staffs]).rank(:row_order)
+      @tasks = Task.includes([:task_comments,:task_images,:task_staffs,task_stores:[:store]]).where(:task_staffs => {staff_id:params[:staff_id],read_flag:false}).where(group_id:@group_id).rank(:row_order)
+      @staffs = Staff.joins(:store).where(:stores => {group_id:@group_id}).where(employment_status:1,status:0)
+    elsif params[:store_id].present?
+      @tasks = Task.joins(:task_stores).where(:task_stores => {store_id:params[:store_id],subject_flag:true}).includes([:task_comments,:task_images,task_stores:[:store]]).rank(:row_order)
+      @staffs = Staff.where(store_id:params[:store_id]).where(employment_status:1,status:0)
     else
-      @tasks = Task.where(group_id:group_id).includes([:task_comments,:task_images]).rank(:row_order)
+      @staffs = Staff.joins(:store).where(:stores => {group_id:@group_id}).where(employment_status:1,status:0)
+      @tasks = Task.where(group_id:@group_id).includes([:task_comments,:task_images,task_stores:[:store]]).rank(:row_order)
     end
-    @task = Task.new(group_id:group_id)
+    @tasks.each do |task|
+      stores.each do |store|
+        task.task_stores.build(store_id:store.id)
+      end
+    end
+
+    @task = Task.new(group_id:@group_id)
     @todos = @tasks.where(status:0)
     @doings = @tasks.where(status:1)
     @hikitsugis = @tasks.where(status:6)
@@ -28,15 +39,18 @@ class TasksController < ApplicationController
     @tasks = @tasks.includes(task_staffs:[:staff])
     @checks = @tasks.where(status:2)
     @dones = @tasks.where(status:3)
-    @staffs = Staff.joins(:store).where(:stores => {group_id:group_id}).where(employment_status:1,status:0)
     @hash = {}
     @staffs.each do |staff|
       @hash[staff.id] = staff.task_staffs.where(read_flag:false,task_id:@checks.ids).count
-      @task.task_staffs.build(staff_id:staff.id,read_flag:false)
+      # @task.task_staffs.build(staff_id:staff.id,read_flag:false)
     end
-
     if params[:status].present?
-      @archives = Task.where(status:4,group_id:group_id).rank(:row_order)
+      @archives = Task.where(status:4,group_id:@group_id).rank(:row_order)
+    end
+    @stores_hash = {}
+    stores.each do |store|
+      @stores_hash[store.id]=store.name
+      @task.task_stores.build(store_id:store.id)
     end
   end
 
@@ -52,12 +66,23 @@ class TasksController < ApplicationController
 
   def create
     @task = Task.new(task_params)
+    @stores_hash = {}
+    Store.where(group_id:@group_id).each do |store|
+      @stores_hash[store.id]=store.name
+    end
+    @task.task_stores.each do |ts|
+      if ts.subject_flag == true
+        ts.store.staffs.where(employment_status:1).each do|staff|
+          @task.task_staffs.build(staff_id:staff.id,read_flag:false)
+        end
+      end
+    end
     respond_to do |format|
       if @task.save
         if params["chatwork_notice"]=='true'
           message = "新規のプロジェクト・タスクが追加されました！\n"+
           "リストの確認をお願いします。\n"+
-          "https://bejihan-orderecipe.herokuapp.com/tasks?group_id=#{@task.group_id}&task_id=#{@task.id}\n"+
+          "https://bento-orderecipe.herokuapp.com/tasks?group_id=#{@task.group_id}&task_id=#{@task.id}\n"+
           "投稿者：#{@task.drafter}\n"+
           "タイトル：#{@task.title}\n"+
           "内容：#{@task.content}"
@@ -68,9 +93,9 @@ class TasksController < ApplicationController
           end
 
           if @task.group_id == 9
-            Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'Bot', icon_emoji: ':male-farmer:', attachments: attachment_images).ping(message)
+            # Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'Bot', icon_emoji: ':male-farmer:', attachments: attachment_images).ping(message)
           else
-            Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'Bot', icon_emoji: ':male-farmer:', attachments: attachment_images).ping(message)
+            # Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'Bot', icon_emoji: ':male-farmer:', attachments: attachment_images).ping(message)
           end
         end
         format.html { redirect_to tasks_path(group_id:@task.group_id), success: "タスクを1件作成しました。" }
@@ -111,6 +136,7 @@ class TasksController < ApplicationController
     def task_params
       params.require(:task).permit(:title,:content,:status,:drafter,:final_decision,:row_order_position,:category,:group_id,:part_staffs_share_flag,
         task_staffs_attributes:[:id,:task_id,:staff_id,:read_flag,:_destroy],
-        task_images_attributes:[:id,:task_id,:image,:image_cache,:_destroy,:remove_image])
+        task_images_attributes:[:id,:task_id,:image,:image_cache,:_destroy,:remove_image],
+        task_stores_attributes:[:id,:store_id,:task_id,:subject_flag])
     end
 end

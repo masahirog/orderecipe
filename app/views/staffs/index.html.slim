@@ -1,5 +1,5 @@
-h1 一覧
-= link_to '新規登録', new_staff_path(place:params[:place]),class:'btn btn-primary'
+h1 = "#{@group.name}スタッフ一覧"
+= link_to '新規登録', new_staff_path(group_id:params[:group_id]),class:'btn btn-primary'
 
 = form_tag(row_order_update_staffs_path,method: :post) do
   = hidden_field_tag :group_id,params[:group_id]

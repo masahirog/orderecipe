@@ -12,11 +12,11 @@ class Menu < ApplicationRecord
   accepts_nested_attributes_for :menu_cook_checks, allow_destroy: true
   has_many :menu_processes, dependent: :destroy
   accepts_nested_attributes_for :menu_processes, allow_destroy: true
-
+  belongs_to :group
 
   # after_update :update_product_cost_price
 
-  validates :name, presence: true, uniqueness: true, format: { with:/\A[^０-９ａ-ｚＡ-Ｚ]+\z/,
+  validates :name, presence: true, format: { with:/\A[^０-９ａ-ｚＡ-Ｚ]+\z/,
     message: "：全角英数字は使用出来ません。"}
   validates :category, presence: true
   validates :cost_price, presence: true, numericality: true
@@ -24,16 +24,14 @@ class Menu < ApplicationRecord
   after_update :copy_menu_reflect
 
   enum category: {主食:1,主菜:2,副菜:3,容器:4}
-  def self.search(params)
-   if params
-     data = Menu.order(id: "DESC").all
-     data = data.where(['name LIKE ?', "%#{params["name"]}%"]) if params["name"].present?
-     data = data.where(category: params["category"]) if params["category"].present?
-     data = data.where(base_menu_id: params["base_menu_id"]) if params["base_menu_id"].present?
-     data = data.reorder(params['order']) if params["order"].present?
-     data
-   else
-     Menu.order(id: "DESC").all
+  def self.search(params,group_id)
+    data = Menu.where(group_id:group_id).order(id: "DESC").all
+    if params
+      data = data.where(['name LIKE ?', "%#{params["name"]}%"]) if params["name"].present?
+      data = data.where(category: params["category"]) if params["category"].present?
+      data = data.where(base_menu_id: params["base_menu_id"]) if params["base_menu_id"].present?
+      data = data.reorder(params['order']) if params["order"].present?
+      data
    end
   end
 

@@ -1,9 +1,9 @@
-class ProductsController < AdminController
+class ProductsController < ApplicationController
   require 'net/https'
   require 'json'
 
   def get_menu
-    @menus = Menu.where("name LIKE ?", "%#{params[:q]}%").first(20)
+    @menus = Menu.where(group_id:@group_id).where("name LIKE ?", "%#{params[:q]}%").first(20)
     respond_to do |format|
       format.json { render json: @menus }
     end
@@ -57,7 +57,7 @@ class ProductsController < AdminController
   end
 
   def index
-    @search = Product.includes(:brand,:order_products,:daily_menu_details,:kurumesi_order_details).search(params).page(params[:page]).per(30)
+    @search = Product.includes(:brand,:order_products,:daily_menu_details,:kurumesi_order_details).search(params,@group_id).page(params[:page]).per(30)
   end
 
   def new
@@ -288,7 +288,7 @@ class ProductsController < AdminController
   private
     def product_create_update
       params.require(:product).permit(:name,:memo, :management_id,:short_name,:symbol, :sell_price, :description, :contents, :image,:brand_id,:product_category,:bejihan_sozai_flag,
-                      :sky_wholesale_price,:sky_image,:sky_serving_infomation,
+                      :sky_wholesale_price,:sky_image,:sky_serving_infomation,:group_id,
                       :food_label_name,:food_label_content,:status,:remove_image, :image_cache,:display_image,:image_for_one_person,:serving_infomation,:carryover_able_flag,
                       :main_serving_plate_id,:sub_serving_plate_id,:container_id,:ozara_serving_infomation,:freezing_able_flag,
                       :cost_price,:cooking_rice_id, product_menus_attributes: [:id, :product_id, :menu_id,:row_order, :_destroy],product_pops_attributes: [:id, :product_id,:image,:remove_image,:image_cache],

@@ -11,12 +11,14 @@ class CookOnTheDay < Prawn::Document
 
   def table_content(daily_menu_id)
     daily_menu = DailyMenu.find(daily_menu_id)
-    daily_menu.store_daily_menus.each_with_index do |sdm,i|
+    store_daily_menus = daily_menu.store_daily_menus.joins(:store).where(:stores => {group_id:9})
+    store_daily_menus.includes(:store,store_daily_menu_details:[:product]).each_with_index do |sdm,i|
       bounding_box([10, 800], :width => 560) do
-        text "発行時間：#{Time.now.strftime("%Y年 %m月 %d日　%H:%M")}",size:10,:align => :right
-        text "#{sdm.start_time} #{sdm.store.name}"
+        text "※この紙はべじはん新高円寺店に納品してください",size:10 if sdm.store_id == 19 ||sdm.store_id == 29
+        text "発行：#{Time.now.strftime("%Y年 %m月 %d日　%H:%M")}",size:8,:align => :right
+        text "#{sdm.start_time} 当日調理工程表",:align => :center,size:14
         move_down 10
-        text "当日調理工程一覧："
+        text "#{sdm.store.name}店"
         move_down 5
         table cook_on_the_day(sdm) do
           self.row_colors = ["FFFFFF","E5E5E5"]
@@ -40,7 +42,7 @@ class CookOnTheDay < Prawn::Document
         move_down 10
         text "その他メモ："
       end
-      start_new_page if i < daily_menu.store_daily_menus.length - 1
+      start_new_page if i < store_daily_menus.length - 1
     end
   end
   def cook_on_the_day(sdm)

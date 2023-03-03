@@ -1,9 +1,11 @@
 
-
 .clearfix.form-group
-  = link_to "進捗ボード",tasks_path(group_id:params[:group_id]),style:'float:left;font-size:2em'
-  = link_to 'アーカイブ済',tasks_path(status:'archive',group_id:params[:group_id]),style:'float:right;margin-top:5px;background-color:#a9a9a9;color:white;',class:'btn btn-sm'
-button.btn.btn-default.btn-sm data-toggle="modal" data-target="#modal_new_task" カードを追加
+  button.btn.btn-primary.btn-sm data-toggle="modal" data-target="#modal_new_task" style="float:left;" 新規カードを追加
+  
+  = form_tag tasks_path, :method => 'get',class:'pull-right' do
+    = select_tag :store_id, options_from_collection_for_select(Store.where(group_id:@group_id), :id, :name,params[:store_id]),include_blank:true, class: "form-control",style:'float:left;width:200px;margin-right:5px;'
+    = submit_tag '店舗を選択',class:'btn btn-primary',style:'float:left;'
+
 #modal_new_task.modal.fade tabindex="-1"
   .modal-dialog
     .modal-content style='background-color:#f5f5f5;'
@@ -47,6 +49,15 @@ button.btn.btn-default.btn-sm data-toggle="modal" data-target="#modal_new_task" 
               div style='width:80px;float:left;padding:5px 10px;'
                 label 通知
                 = check_box_tag "chatwork_notice",true,true
+            .form-group
+              label 店舗
+              ul.list-group.clearfix
+                = f.fields_for :task_stores do |ts|
+                  = ts.hidden_field :store_id
+                  li.list-group-item style='float:left;'
+                    = ts.label :subject_flag, @stores_hash[ts.object.store_id]
+                    = ts.check_box :subject_flag
+
               = f.submit '更新する',class:'btn btn-primary pull-right'
       .modal-footer
         button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
@@ -124,6 +135,7 @@ button.btn.btn-default.btn-sm data-toggle="modal" data-target="#modal_new_task" 
         ul#tasks_store_share_ul class="list-group list-group-flush tasks_ul ul-sortable" style='min-height:100px;'
           - @hikitsugis.each do |task|
             = render 'task_list',task:task
+  = link_to 'アーカイブ済',tasks_path(status:'archive',group_id:params[:group_id]),style:'float:right;margin-top:5px;background-color:#a9a9a9;color:white;',class:'btn btn-sm'
 
 javascript:
   $(".fa-box-archive").on('click',function(){

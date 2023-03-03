@@ -3,13 +3,17 @@ class BejihanStoreOrdersDeliveryList < Prawn::Document
     super(page_size: 'A4')
     font "vendor/assets/fonts/ipaexg.ttf"
     hash.each_with_index do |store_material_order_list,i|
-      text "#{Store.find(store_material_order_list[0]).name}　#{date.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[date.wday]})")} 発注商品一覧"
+      text " 納 品 書",:align => :center,:size => 20
+      move_down 5
+      text "#{Store.find(store_material_order_list[0]).name} 宛",:size => 16
+      move_down 10
+      text "#{date.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[date.wday]})")} 発注商品一覧"
       table_content(store_material_order_list)
       start_new_page unless i == (hash.length - 1)
     end
   end
   def table_content(store_material_order_list)
-    bounding_box([0,730], :width => 530) do
+    bounding_box([0,700], :width => 530) do
       table line_item_rows(store_material_order_list) do
         # column(-1).align = :right
         # column(2).align = :center

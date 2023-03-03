@@ -13,8 +13,10 @@ class DailyMenuPdf < Prawn::Document
     daily_menu = DailyMenu.find(daily_menu_id)
     daily_menu.store_daily_menus.each_with_index do |sdm,i|
       bounding_box([10, 800], :width => 560) do
+        text " 納 品 書",:align => :center,:size => 20
+        move_down 5
         text "発行時間：#{Time.now.strftime("%Y年 %m月 %d日　%H:%M")}",size:10,:align => :right
-        text "#{sdm.start_time} #{sdm.store.name}"
+        text "#{sdm.store.name} 宛（#{sdm.start_time} 分）",size:15
         move_down 10
         table line_item_rows(sdm) do
           self.row_colors = ["FFFFFF","E5E5E5"]

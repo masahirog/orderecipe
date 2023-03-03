@@ -3,12 +3,14 @@ class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   before_action :authenticate_user!
-  before_action :user_check
   protect_from_forgery with: :exception
   add_flash_types :success, :info, :warning, :danger
-
+  before_action :user_check
   def user_check
-    @sky_stores = Group.find(29).stores
+    if user_signed_in?
+      @group_id = current_user.group_id
+      @stores = Group.find(@group_id).stores
+    end
   end
 
   def after_sign_in_path_for(resource)
@@ -24,45 +26,45 @@ class ApplicationController < ActionController::Base
     ExceptionNotifier.notify_exception(e, :env => request.env, :data => {:message => "your error message"})
     render template: 'errors/error_500', status: 500
   end
-  def outside_view
-    if params[:from].present?
-      @from = Date.parse(params[:from])
-    else
-      @from = Date.today + 1
-    end
-    if params[:to].present?
-      @to = Date.parse(params[:to])
-    else
-      @to = @from + 6
-    end
-    @dates =(@from..@to).to_a
-    if @dates.count > 7
-      @from = Date.today
-      @to = @from + 6
-      @dates =(@from..@to).to_a
-      flash[:alert] = '期間は7日以内で選択してください。'
-    end
-    store_id = 39
-    vendor_ids = [151,489]
-    stocks = Stock.joins(:material).where(store_id:store_id).where(:materials => {vendor_id:vendor_ids}).where(date:@from..@to)
-    @hash = {}
-    stocks.each do |stock|
-      amount = ActiveSupport::NumberHelper.number_to_rounded((stock.used_amount/stock.material.accounting_unit_quantity), strip_insignificant_zeros: true, :delimiter => ',', precision: 1)
-      @hash[[stock.material_id,stock.date]] = amount
-    end
-    material_ids = stocks.map{|stock|stock.material_id}.uniq
-    stock_hash = {}
-    @materials = Material.where(id:material_ids).order(short_name:'asc')
-    @used_amounts = {}
-    Stock.where(material_id:material_ids).where(date:@from..@to).each do |stock|
-      if @used_amounts[stock.material_id].present?
-        @used_amounts[stock.material_id] += (stock.used_amount / stock.material.accounting_unit_quantity)
-      else
-        @used_amounts[stock.material_id] = (stock.used_amount / stock.material.accounting_unit_quantity)
-      end
-    end
-    render :layout => false
-  end
+  # def outside_view
+  #   if params[:from].present?
+  #     @from = Date.parse(params[:from])
+  #   else
+  #     @from = Date.today + 1
+  #   end
+  #   if params[:to].present?
+  #     @to = Date.parse(params[:to])
+  #   else
+  #     @to = @from + 6
+  #   end
+  #   @dates =(@from..@to).to_a
+  #   if @dates.count > 7
+  #     @from = Date.today
+  #     @to = @from + 6
+  #     @dates =(@from..@to).to_a
+  #     flash[:alert] = '期間は7日以内で選択してください。'
+  #   end
+  #   store_id = 39
+  #   vendor_ids = [151,489]
+  #   stocks = Stock.joins(:material).where(store_id:store_id).where(:materials => {vendor_id:vendor_ids}).where(date:@from..@to)
+  #   @hash = {}
+  #   stocks.each do |stock|
+  #     amount = ActiveSupport::NumberHelper.number_to_rounded((stock.used_amount/stock.material.accounting_unit_quantity), strip_insignificant_zeros: true, :delimiter => ',', precision: 1)
+  #     @hash[[stock.material_id,stock.date]] = amount
+  #   end
+  #   material_ids = stocks.map{|stock|stock.material_id}.uniq
+  #   stock_hash = {}
+  #   @materials = Material.where(id:material_ids).order(short_name:'asc')
+  #   @used_amounts = {}
+  #   Stock.where(material_id:material_ids).where(date:@from..@to).each do |stock|
+  #     if @used_amounts[stock.material_id].present?
+  #       @used_amounts[stock.material_id] += (stock.used_amount / stock.material.accounting_unit_quantity)
+  #     else
+  #       @used_amounts[stock.material_id] = (stock.used_amount / stock.material.accounting_unit_quantity)
+  #     end
+  #   end
+  #   render :layout => false
+  # end
 
 
   protected

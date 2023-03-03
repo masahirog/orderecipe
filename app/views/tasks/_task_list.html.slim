@@ -51,6 +51,16 @@ li.clearfix.list-group-item.item class="task_#{task.id}_li" data={model_name: ta
                 .col-md-4 style='text-align:center;margin-top:35px;margin-bottom:35px;color:silver;'
                   = link_to_add_association f, :task_images,class: 'btn btn-default',data: {association_insertion_node: '.task_images_area',association_insertion_method: 'append' } do
                     i class="fa-solid fa-file-circle-plus" style='color:gray;font-size:20px;'
+
+              .clearfix
+                label 店舗
+                ul.list-group.clearfix
+                  = f.fields_for :task_stores do |ts|
+                    = ts.hidden_field :store_id
+                    li.list-group-item style='float:left;'
+                      = ts.label :subject_flag, @stores_hash[ts.object.store_id]
+                      = ts.check_box :subject_flag
+
               .clearfix
                 div style='float:left;padding:5px 10px;margin-right:20px;'
                   label ステータス：
@@ -90,6 +100,11 @@ li.clearfix.list-group-item.item class="task_#{task.id}_li" data={model_name: ta
               = task.part_staffs_share_flag
               label 　投稿：
               = task.drafter
+            .clearfix
+              label 対象店舗：
+              = task.task_stores.map{|ts|ts.store.name if ts.subject_flag == true}.reject(&:blank?).join("、")
+              / - task.task_stores.each do |ts|
+                = "#{ts.store.name}｜" if ts.subject_flag == true
 
 
               button.task_edit_btn.btn.btn-success.btn-sm.pull-right 編集する
