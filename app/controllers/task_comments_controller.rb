@@ -20,7 +20,7 @@ class TaskCommentsController < ApplicationController
     @task = @task_comment.task
     respond_to do |format|
       if @task_comment.save
-        message = "https://bejihan-orderecipe.herokuapp.com/tasks?group_id=#{@task.group_id}&task_id=#{@task.id}\n"+
+        message = "https://bento-orderecipe.herokuapp.com/tasks?group_id=#{@task.group_id}&task_id=#{@task.id}\n"+
         "タスク名：#{@task.title}\n"+
         "ーー\n"+
         "コメント：#{@task_comment.content}"+
@@ -29,10 +29,8 @@ class TaskCommentsController < ApplicationController
         attachment_image = {
           image_url: @task_comment.image.url
         }
-        if @task.group_id == 9
-          Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'Bot', icon_emoji: ':male-farmer:', attachments: [attachment_image]).ping(message)
-        else
-          Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'Bot', icon_emoji: ':male-farmer:', attachments: [attachment_image]).ping(message)
+        if @task.group.task_slack_url.present?
+          Slack::Notifier.new(@task.group.task_slack_url, username: 'Bot', icon_emoji: ':male-farmer:', attachments: [attachment_image]).ping(message)
         end
         format.html { redirect_to tasks_path, success: "コメント投稿" }
         format.js

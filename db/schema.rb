@@ -232,23 +232,7 @@ ActiveRecord::Schema.define(version: 2023_03_03_033759) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-  end
-
-  create_table "kaizen_lists", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "product_id"
-    t.string "author"
-    t.string "kaizen_staff"
-    t.text "kaizen_point"
-    t.integer "priority", default: 0, null: false
-    t.integer "status", default: 0, null: false
-    t.text "kaizen_result"
-    t.boolean "or_change_flag", default: false, null: false
-    t.boolean "share_flag", default: false, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "before_image"
-    t.string "after_image"
-    t.integer "store_id", null: false
+    t.string "task_slack_url"
   end
 
   create_table "kurumesi_mails", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

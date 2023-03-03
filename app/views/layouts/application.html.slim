@@ -46,8 +46,6 @@ html
                       li = link_to "各店舗発注品",bejihan_store_orders_list_orders_path(date:Date.today)
                       li = link_to "進捗ボード",tasks_path(store_id:39)
                       li = link_to "時間内訳",staff_input_working_hours_path(group_id:19)
-                        / = link_to '改善リスト', kaizen_lists_path(store_id:39), style:'float:left;'
-                        / span style='float:left;margin-top:3px;color:red;' = "#{KaizenList.where(store_id:39).where.not(status:['done','cancel']).count}"
 
                       h5 style='padding:0 10px;font-weight:bold;' くるめし
                       li = link_to "オーダー",kurumesi_orders_path(start_date:Date.today)

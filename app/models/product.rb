@@ -1,5 +1,4 @@
 class Product < ApplicationRecord
-  has_many :kaizen_lists
   has_many :product_sales_potentials
   has_many :analysis_products
   belongs_to :group

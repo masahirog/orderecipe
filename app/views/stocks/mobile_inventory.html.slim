@@ -38,10 +38,6 @@ html
                       h5 style='padding:0 10px;font-weight:bold;' べじはん
                       li = link_to "べじはん献立",daily_menus_path
                       li = link_to "各店舗発注品",bejihan_store_orders_list_orders_path(date:Date.today,store_id:19)
-                      li.clearfix
-                        = link_to '改善リスト', kaizen_lists_path(store_id:39), style:'float:left;'
-                        span style='float:left;margin-top:3px;color:red;' = "#{KaizenList.where(store_id:39).where.not(status:['done','cancel']).count}"
-
                       h5 style='padding:0 10px;font-weight:bold;' くるめし
                       li = link_to "オーダー",kurumesi_orders_path(start_date:Date.today)
                       li = link_to "領収書",receipt_kurumesi_orders_path,target:'_blank'

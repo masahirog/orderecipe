@@ -92,10 +92,8 @@ class TasksController < ApplicationController
             attachment_images << {image_url: ti.image.url}
           end
 
-          if @task.group_id == 9
-            # Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'Bot', icon_emoji: ':male-farmer:', attachments: attachment_images).ping(message)
-          else
-            # Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'Bot', icon_emoji: ':male-farmer:', attachments: attachment_images).ping(message)
+          if @task.group.task_slack_url.present?
+            Slack::Notifier.new(@task.group.task_slack_url, username: 'Bot', icon_emoji: ':male-farmer:', attachments: attachment_images).ping(message)
           end
         end
         format.html { redirect_to tasks_path(group_id:@task.group_id), success: "タスクを1件作成しました。" }
