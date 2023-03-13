@@ -221,6 +221,7 @@ Rails.application.routes.draw do
   end
   resources :orders do
     collection do
+      get :monthly_data
       get :suriho
       get :bejihan_store_orders_list
       get :send_order_fax

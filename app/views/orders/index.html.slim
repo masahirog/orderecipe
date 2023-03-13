@@ -89,8 +89,6 @@
             button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
 
 
-
-
   - if @store.id == 39
     = link_to "備品発注", new_order_path(bihin_flag:true,store_id:params[:store_id]),class:"order btn btn-primary btn-sm",style:"float:left;margin-top:15px;margin-left:10px;"
   = form_tag orders_path, :method => 'get',style:"float:right;margin-top:15px;margin-left:10px;" do
@@ -98,7 +96,6 @@
     = select_tag :material_id, options_from_collection_for_select(@materials, :id, :name,params[:material_id]),include_blank: '食材検索', class: "form-control material_search",style:"width:300px;"
     = submit_tag "検索" ,class:"btn btn-default btn-sm",style:'margin-left:10px;'
   = link_to "納品確認",deliveried_list_orders_path(store_id:params[:store_id]),class:'btn btn-primary btn-sm',style:'float:right;margin-top:15px;margin-left:10px;'
-
 
 table.table
   thead
