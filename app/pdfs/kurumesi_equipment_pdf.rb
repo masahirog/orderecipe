@@ -56,7 +56,7 @@ class KurumesiEquipmentPdf < Prawn::Document
         hash2.store(mo.id,["#{bihin}\n(#{hashi}g)",bihin])
       end
     end
-    kurumesi_ids = moa.map{|kurumesi_order|kurumesi_order.management_id.to_s[-4..-1]}
+    kurumesi_ids = moa.map{|kurumesi_order|kurumesi_order.management_id.to_s[-5..-1]}
     data = [["品名"].push(kurumesi_ids).flatten!]
     if brand_id == 11
       arr = ["みそ汁"]

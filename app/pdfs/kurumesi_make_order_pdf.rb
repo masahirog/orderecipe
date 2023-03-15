@@ -55,9 +55,9 @@ class KurumesiMakeOrderPdf < Prawn::Document
 
     kurumesi_ids = moa.map do |kurumesi_order|
       if kurumesi_order.kitchen_memo.present?
-        "#{kurumesi_order.management_id.to_s[-4..-1]} MEMO"
+        "#{kurumesi_order.management_id.to_s[-5..-1]} MEMO"
       else
-        kurumesi_order.management_id.to_s[-4..-1]
+        kurumesi_order.management_id.to_s[-5..-1]
       end
     end
 
