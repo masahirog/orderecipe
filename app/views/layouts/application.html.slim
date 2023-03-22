@@ -31,7 +31,7 @@ html
               span.icon-bar
               span.icon-bar
             .navbar-brand style="padding:12px 10px 8px 20px;"
-              = image_tag 'orderecipe.png',height:'85%'
+              = link_to image_tag("orderecipe.png", class:"",height:'85%'), "/"
           #navbarEexample.collapse.navbar-collapse
             - if user_signed_in?
               - if current_user.id == 1
