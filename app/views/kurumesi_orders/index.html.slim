@@ -3,6 +3,8 @@
   div.text-center style='float:right'
     div = link_to '新着確認',mail_check_kurumesi_orders_path,class:'btn btn-default'
     div = "last：#{current_user.last_mail_check.strftime("%-m / %-d　%H:%M")}"
+  = link_to "CSV", kurumesi_orders_path(start_date:params[:start_date],format:'csv'), class: "btn btn-primary",style:'float:right;margin-right:10px;'
+
 = month_calendar do |date|
   div.col-md-12 style='font-size:18px;padding:0 0 7px 0;'
     = link_to date.strftime("%-m月%-d日"), date_kurumesi_orders_path(date:date)

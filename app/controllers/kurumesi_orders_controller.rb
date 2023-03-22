@@ -161,6 +161,13 @@ class KurumesiOrdersController < AdminController
     @cantea_num = kurumesi_order_details.where(:products => {id:3801}).group('kurumesi_orders.start_time').sum(:number)
     @pettea_num = kurumesi_order_details.where(:products => {id:3791}).group('kurumesi_orders.start_time').sum(:number)
     @brands = Brand.all
+    @product_numbers = kurumesi_order_details.group(:product_id).sum(:number)
+    respond_to do |format|
+      format.html
+      format.csv do
+        send_data render_to_string, filename: "kurumesi_monthly.csv", type: :csv
+      end
+    end
   end
 
 
