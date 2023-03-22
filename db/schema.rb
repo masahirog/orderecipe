@@ -79,7 +79,7 @@ ActiveRecord::Schema.define(version: 2023_03_03_033759) do
     t.float "nomination_rate", default: 0.0, null: false
   end
 
-  create_table "brands", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "brands", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "name", null: false
     t.boolean "kurumesi_flag", default: false, null: false
     t.string "store_path"
@@ -228,7 +228,7 @@ ActiveRecord::Schema.define(version: 2023_03_03_033759) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "groups", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "groups", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -850,6 +850,7 @@ ActiveRecord::Schema.define(version: 2023_03_03_033759) do
     t.string "short_name"
     t.string "np_store_code"
     t.integer "group_id"
+    t.string "task_slack_url"
   end
 
   create_table "task_comments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -876,7 +877,7 @@ ActiveRecord::Schema.define(version: 2023_03_03_033759) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "task_stores", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "task_stores", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "task_id"
     t.integer "store_id"
     t.boolean "subject_flag", default: false

@@ -12,9 +12,6 @@ class OrdersController < AdminController
     @store = Store.find(store_id)
     
     @order_materials = OrderMaterial.joins(:order).where(:orders => {store_id:store_id}).where(delivery_date:date.beginning_of_month..date.end_of_month).where(un_order_flag:false)
-    # @order_materials.each do |om|
-    #   binding.pry
-    # end
     respond_to do |format|
       format.html
       format.csv do

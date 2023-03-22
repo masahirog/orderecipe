@@ -21,6 +21,7 @@ class CreateStores < ActiveRecord::Migration[5.2]
       t.string :short_name
       t.string :np_store_code
       t.integer :group_id
+      t.string :task_slack_url
     end
   end
 end
