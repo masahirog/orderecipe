@@ -30,8 +30,8 @@ h3 = "#{@store.name}店 献立組み"
       tr
         td.fixed02.text-right colspan=3 曜日別 惣菜販売平均
         - @store_daily_menus.each_with_index do |sdm,i|
-          td.fixed02
-            button type="button" class="btn btn-secondary" data-container="body" data-html="true" data-toggle="popover" data-placement="bottom" data-content="#{render(partial: 'rireki',:locals => {wday:sdm.start_time.wday}).html_safe}"
+          td.fixed02 id="col-fixed02-#{i}"
+            button type="button" class="btn btn-secondary col_fixed02_#{i}" data-container="body" data-html="true" data-toggle="popover" data-placement="bottom" data-content="#{render(partial: 'rireki',:locals => {wday:sdm.start_time.wday}).html_safe}"
               - if @weekday_sales_sozai_number[sdm.start_time.wday]['total_num'].present?
                 = (@weekday_sales_sozai_number[sdm.start_time.wday]['total_num']/@weekday_sales_sozai_number[sdm.start_time.wday]['count'])
             button type="button" class='btn btn-default btn-sm yoso-reflect' style='margin-left:5px;height:34.18px;' 反映
@@ -165,6 +165,11 @@ javascript:
     bento_change(i,num)
   });
   $('.input-sdmd-number').on('change',function(){
+    if ($(this).val()=="" || $(this).val()>30 || $(this).val()<1 ){
+      $(this).css('background-color','red')
+    }else{
+      $(this).css('background-color','white')
+    };
     var num = 0;
     var i = $(this).parent().find(".col_i").val();
     change(i,num)
@@ -178,6 +183,14 @@ javascript:
       }
     });
     $("#col-base-"+i).find('.total_sales_sozai_input').val(num);
+    var heikin = $(".col_fixed02_"+i).text();
+    if (Math.abs(num - heikin)>50) {
+      $("#col-base-"+i).css("background-color","red");
+      $("#col-fixed02-"+i).css("background-color","red");
+    }else{
+      $("#col-base-"+i).css("background-color","white");
+      $("#col-fixed02-"+i).css("background-color","white");
+    };
   }
   function bento_change(i,num){
     $(".col_"+i).each(function(ii,element){
