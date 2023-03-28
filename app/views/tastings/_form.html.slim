@@ -26,8 +26,8 @@ p なるべくお客様と一緒の状態で食べて評価してほしいです
     br
     = f.file_field :image
     .form-group
-      - if @product.image?
-        = image_tag @product.image.to_s,class:"img-responsive",style:'max-height:250px;'
+      - if @tasting.image?
+        = image_tag @tasting.image.to_s,class:"img-responsive",style:'max-height:250px;'
 
 
   table.table
