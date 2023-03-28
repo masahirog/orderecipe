@@ -33,12 +33,12 @@ class Product < ApplicationRecord
   has_many :product_ozara_serving_informations, dependent: :destroy
   accepts_nested_attributes_for :product_ozara_serving_informations, allow_destroy: true
 
+  has_many :tastings
+  
   mount_uploader :image, ProductImageUploader
   mount_uploader :display_image, ProductImageUploader
   mount_uploader :image_for_one_person, ProductImageUploader
   mount_uploader :sky_image, ProductImageUploader
-
-
 
   validates :name, presence: true, uniqueness: true, format: { with: /\A[^０-９ａ-ｚＡ-Ｚ]+\z/,message: "：全角英数字は使用出来ません。"}
   validates :sell_price, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }

@@ -7,6 +7,7 @@ class ApplicationController < ActionController::Base
   add_flash_types :success, :info, :warning, :danger
   before_action :user_check
   def user_check
+    @today = Date.today
     if user_signed_in?
       @group_id = current_user.group_id
       @stores = Group.find(@group_id).stores

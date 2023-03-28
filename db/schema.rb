@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_03_03_033759) do
+ActiveRecord::Schema.define(version: 2023_03_27_002419) do
 
   create_table "analyses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "store_id"
@@ -897,6 +897,23 @@ ActiveRecord::Schema.define(version: 2023_03_03_033759) do
     t.integer "category"
     t.integer "group_id", null: false
     t.boolean "part_staffs_share_flag", default: false, null: false
+  end
+
+  create_table "tastings", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "product_id"
+    t.integer "staff_id"
+    t.date "date"
+    t.text "comment"
+    t.integer "appearance"
+    t.integer "taste"
+    t.integer "amount"
+    t.integer "likeness"
+    t.integer "total_evaluation"
+    t.integer "price_satisfaction"
+    t.integer "sell_price"
+    t.string "image"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "users", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

@@ -72,7 +72,7 @@ class TasksController < ApplicationController
     end
     @task.task_stores.each do |ts|
       if ts.subject_flag == true
-        ts.store.staffs.where(employment_status:1).each do|staff|
+        ts.store.staffs.where(employment_status:1,status:0).each do|staff|
           @task.task_staffs.build(staff_id:staff.id,read_flag:false)
         end
       end
