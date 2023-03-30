@@ -650,6 +650,7 @@ ActiveRecord::Schema.define(version: 2023_03_27_002419) do
     t.text "memo"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "fixed_flag", default: false, null: false
   end
 
   create_table "smaregi_member_products", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|

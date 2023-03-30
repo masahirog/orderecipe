@@ -8,6 +8,7 @@ class CreateShifts < ActiveRecord::Migration[5.2]
       t.integer :fix_shift_pattern_id
       t.text :memo
       t.timestamps
+      t.boolean :fixed_flag,null:false,default:false
     end
   end
 end

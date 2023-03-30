@@ -179,6 +179,57 @@ class ShiftsController < ApplicationController
     Shift.import new_arr
     redirect_to shifts_path(date:@date,group_id:params[:group_id]),notice:"#{@date.month}月のシフト枠を作成しました"
   end
+  def fixed
+    if params[:date]
+      @date = Date.parse(params[:date])
+    else
+      @date = Date.today
+    end
+    @group = Group.find(params[:group_id])
+    @shift_frames = @group.shift_frames
+    @stores = @group.stores.where.not(id:39)
+    store_ids = @stores.ids
+
+    group_staff_ids = Staff.where(store_id:store_ids,status:0)
+    # first_day = @date.beginning_of_month
+    first_day = Date.new(@date.year,@date.month, 16)
+    last_day = first_day.end_of_month
+    last_day = Date.new((last_day + 1).year,(last_day +1).month, 15)
+    @one_month = [*first_day..last_day]
+    shifts = Shift.where(staff_id:group_staff_ids,date:@one_month)
+    @shifts = shifts.map{|shift|[[shift.staff_id,shift.date],shift]}.to_h
+    shift_staff_ids = shifts.map{|shift|shift.staff_id}.uniq
+    add_ids = group_staff_ids - shift_staff_ids
+    staff_ids =shift_staff_ids + add_ids
+    @staffs = Staff.where(id:staff_ids).order(row:'asc')
+    @shifts_fixed_hash = shifts.map{|shift|[shift.id,shift.fixed_flag]}.to_h
+  end
+
+  def once_update_fixed
+    if params[:date].present?
+      @date = Date.parse(params[:date])
+    else
+      @date = Date.today
+    end
+    @group = Group.find(params[:group_id])
+    first_day = Date.new(@date.year,@date.month, 16)
+    last_day = first_day.end_of_month
+    last_day = Date.new((last_day + 1).year,(last_day +1).month, 15)
+    @one_month = [*first_day..last_day]
+    @stores = @group.stores.where.not(id:39)
+    store_ids = @stores.ids
+    group_staff_ids = Staff.where(store_id:store_ids,status:0)
+    shifts = Shift.where(staff_id:group_staff_ids,date:@one_month)
+    fixed_shift_ids = []
+    if params['shifts'].present?
+      fixed_shift_ids = params["shifts"].keys.map(&:to_i)
+      fixed_shifts = Shift.where(id:fixed_shift_ids)
+      fixed_shifts.update_all(fixed_flag:true)
+    end
+    un_fixed_shift_ids = shifts.ids - fixed_shift_ids
+    Shift.where(id:un_fixed_shift_ids).update_all(fixed_flag:false) if un_fixed_shift_ids.present?
+    redirect_to shifts_path(group_id:params[:group_id],date:@date), notice: "公開ステータスを更新しました！" 
+  end
 
   def index
     if params[:date]

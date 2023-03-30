@@ -15,7 +15,7 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_in_path_for(resource)
-    if current_user.id == 1
+    if current_user.admin?
       root_url
     elsif current_user.id == 49
       check_shifts_path
