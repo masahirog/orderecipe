@@ -32,11 +32,8 @@ class TaskCommentsController < ApplicationController
         stores = Store.where(id:@task.task_stores.where(subject_flag:true).map{|ts|ts.store_id})
         slack_urls = stores.map{|store|store.task_slack_url}.uniq
         slack_urls.each do |slack_url|
-          Slack::Notifier.new(slack_url, username: 'Bot', icon_emoji: ':male-farmer:', attachments: attachment_images).ping(message)
+          Slack::Notifier.new(slack_url, username: 'Bot', icon_emoji: ':male-farmer:', attachments: [attachment_image]).ping(message)
         end
-        # if @task.group.task_slack_url.present?
-        #   Slack::Notifier.new(@task.group.task_slack_url, username: 'Bot', icon_emoji: ':male-farmer:', attachments: [attachment_image]).ping(message)
-        # end
         format.html { redirect_to tasks_path, success: "コメント投稿" }
         format.js
       else
