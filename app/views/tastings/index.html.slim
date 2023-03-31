@@ -15,7 +15,7 @@ table.table
   tbody
     - @products.each do |product|
       tr
-        td = product.name
+        td = link_to product.name,product
         td = product.product_category
         td = product.sell_price
         td = @product_tasting_count[product.id]

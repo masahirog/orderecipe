@@ -907,8 +907,6 @@ ActiveRecord::Schema.define(version: 2023_03_27_002419) do
     t.text "comment"
     t.integer "appearance"
     t.integer "taste"
-    t.integer "amount"
-    t.integer "likeness"
     t.integer "total_evaluation"
     t.integer "price_satisfaction"
     t.integer "sell_price"

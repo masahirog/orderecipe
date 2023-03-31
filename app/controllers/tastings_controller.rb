@@ -19,13 +19,13 @@ class TastingsController < ApplicationController
     @product = Product.find(params[:product_id])
     @tasting = Tasting.new(product_id:params[:product_id],sell_price:@product.sell_price)
     store_ids = Store.where(group_id:9)
-    @staffs = Staff.where(employment_status:1,store_id:store_ids,status:0)
+    @staffs = Staff.where(store_id:store_ids,status:0)
   end
 
   def edit
     @product = @tasting.product
     store_ids = Store.where(group_id:9)
-    @staffs = Staff.where(employment_status:1,store_id:store_ids,status:0)
+    @staffs = Staff.where(store_id:store_ids,status:0)
   end
 
   def create
@@ -33,7 +33,21 @@ class TastingsController < ApplicationController
 
     respond_to do |format|
       if @tasting.save
-        format.html { redirect_to tasting_url(@tasting), notice: "Tasting was successfully created." }
+        message = "_新規試食コメント！_\n"+
+        "日付：#{@tasting.date.strftime('%m月 %d日')}\n"+
+        "商品：#{@tasting.product.name}　#{@tasting.product.sell_price}円\n"+
+        "見た目（1〜4）：#{@tasting.appearance}\n"+
+        "味（1〜4）：#{@tasting.taste}\n"+
+        "価格納得感（1〜4）：#{@tasting.price_satisfaction}\n"+
+        "総合評価（1〜4）：#{@tasting.total_evaluation}\n"+
+        "コメント：\n#{@tasting.comment}\n"+
+        "ーーーー"
+        attachment_image = {
+          image_url: @tasting.image.url
+        }
+
+        Slack::Notifier.new("https://hooks.slack.com/services/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", username: '試食', icon_emoji: ':man-surfing:', attachments: [attachment_image]).ping(message)
+        format.html { redirect_to tastings_path(date:@tasting.date), notice: "Tasting was successfully created." }
         format.json { render :show, status: :created, location: @tasting }
       else
         format.html { render :new, status: :unprocessable_entity }

@@ -7,8 +7,6 @@ class CreateTastings < ActiveRecord::Migration[6.0]
     	t.text :comment
     	t.integer :appearance
     	t.integer :taste
-    	t.integer :amount
-    	t.integer :likeness
     	t.integer :total_evaluation
     	t.integer :price_satisfaction
         t.integer :sell_price

@@ -6,7 +6,7 @@ p なるべくお客様と一緒の状態で食べて評価してほしいです
 
   .form-group
   	= f.label :staff_id, "スタッフ名"
-  	= f.collection_select :staff_id, @staffs, :id, :name, {include_blank:true},class:'form-control',required:true
+  	= f.collection_select :staff_id, @staffs, :id, :name, {include_blank:true},class:'form-control select_used_additives',required:true
   .form-group
   	= f.label :date, "日付"
   	= f.date_field :date, value:Date.today, class: 'form-control',required:true
@@ -14,6 +14,8 @@ p なるべくお客様と一緒の状態で食べて評価してほしいです
   .form-group
   	label 商品名
    	h4 = @product.name
+    label 商品説明
+    p = @product.description
    	= f.hidden_field :product_id
    	= f.label :sell_price ,"税抜販売価格"
    	= f.number_field :sell_price,class:'form-control'
@@ -53,18 +55,6 @@ p なるべくお客様と一緒の状態で食べて評価してほしいです
 		  	td = f.radio_button :taste, 3
 		  	td = f.radio_button :taste, 4
   		tr
-  			td = f.label :amount,"量のちょうど良さ"
-		  	td = f.radio_button :amount, 1,required:true
-		  	td = f.radio_button :amount, 2
-		  	td = f.radio_button :amount, 3
-		  	td = f.radio_button :amount, 4
-  		tr
-  			td = f.label :likeness,"べじはんらしさ"
-		  	td = f.radio_button :likeness, 1,required:true
-		  	td = f.radio_button :likeness, 2
-		  	td = f.radio_button :likeness, 3
-		  	td = f.radio_button :likeness, 4
-  		tr
   			td = f.label :price_satisfaction,"価格の納得感"
 		  	td = f.radio_button :price_satisfaction, 1,required:true
 		  	td = f.radio_button :price_satisfaction, 2
@@ -78,7 +68,7 @@ p なるべくお客様と一緒の状態で食べて評価してほしいです
 		  	td = f.radio_button :total_evaluation, 4
 
   .form-group
-  	= f.label :comment, "コメント・改善点"
+  	= f.label :comment, "コメント"
   	= f.text_area :comment, class: 'form-control', size: "20x10",required:true
 
 
