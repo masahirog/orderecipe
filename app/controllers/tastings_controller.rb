@@ -2,7 +2,11 @@ class TastingsController < ApplicationController
   before_action :set_tasting, only: %i[ show edit update destroy ]
 
   def index
-    date = (Date.parse(params[:date]) + 1)
+    if params[:date].present?
+      date = (Date.parse(params[:date]) + 1)
+    else
+      date = Date.today + 1
+    end
     @wednesday = date.prev_occurring(:wednesday)
     @prev_wednesday = @wednesday - 7
     @next_wednesday = @wednesday + 7
