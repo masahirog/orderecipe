@@ -41,6 +41,7 @@ h4 「配慮は必要、遠慮は不要！」
   			th 2
   			th 3
   			th 4
+        th 5
 
   	tbody
   		tr
@@ -49,24 +50,29 @@ h4 「配慮は必要、遠慮は不要！」
 		  	td = f.radio_button :appearance, 2
 		  	td = f.radio_button :appearance, 3
 		  	td = f.radio_button :appearance, 4
+        td = f.radio_button :appearance, 5
   		tr
   			td = f.label :taste,"味"
 		  	td = f.radio_button :taste, 1,required:true
 		  	td = f.radio_button :taste, 2
 		  	td = f.radio_button :taste, 3
 		  	td = f.radio_button :taste, 4
+        td = f.radio_button :taste, 5
+
   		tr
   			td = f.label :price_satisfaction,"価格の納得感"
 		  	td = f.radio_button :price_satisfaction, 1,required:true
 		  	td = f.radio_button :price_satisfaction, 2
 		  	td = f.radio_button :price_satisfaction, 3
 		  	td = f.radio_button :price_satisfaction, 4
+        td = f.radio_button :price_satisfaction, 5
   		tr
   			td = f.label :total_evaluation,"総合評価"
 		  	td = f.radio_button :total_evaluation, 1,required:true
 		  	td = f.radio_button :total_evaluation, 2
 		  	td = f.radio_button :total_evaluation, 3
 		  	td = f.radio_button :total_evaluation, 4
+        td = f.radio_button :total_evaluation, 5
 
   .form-group
   	= f.label :comment, "コメント"
