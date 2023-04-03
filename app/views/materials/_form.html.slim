@@ -184,12 +184,16 @@
 
   .form-group
     label 発注可能店舗
-    ul.list-group.clearfix
-      = f.fields_for :material_store_orderables do |mso|
-        = mso.hidden_field :store_id
-        li.list-group-item style='float:left;'
-          = mso.label :orderable_flag, @stores_hash[mso.object.store_id]
-          = mso.check_box :orderable_flag
+    - @stores_hash.each do |store_hash|
+      div
+        span = Group.find(store_hash[0]).name
+        ul.list-group.clearfix
+          = f.fields_for :material_store_orderables do |mso|
+            - if store_hash[1].keys.include?(mso.object.store_id)
+              = mso.hidden_field :store_id
+              li.list-group-item style='float:left;'
+                = mso.label :orderable_flag, store_hash[1][mso.object.store_id]
+                = mso.check_box :orderable_flag
   ul#detail-association-insertion-point.list-group
     label 切出パターン
     = f.fields_for :material_cut_patterns do |mcp|

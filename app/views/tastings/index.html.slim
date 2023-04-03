@@ -1,22 +1,40 @@
-h1 試食
-= link_to @prev_wednesday,tastings_path(date:@prev_wednesday)
-= "　　#{@wednesday}　　"
-= link_to @next_wednesday,tastings_path(date:@next_wednesday)
-
+- if @product.present?
+  h4 = "#{@product.name} 試食履歴"
+- else
+  h4 = "#{@staff.name} 試食履歴"
 table.table
   thead
     tr
-      th 商品名
-      th カテゴリ
-      th 価格
-      th 試食回数
-      th 
+      th style='width:110px;' 日付
+      th style='width:150px;'
+        - if @product.present?
+          |スタッフ名
+        - else
+          |商品名
+      th style='width:80px;' 当時売価
+      th style='width:70px;' 見た目
+      th style='width:50px;'味
+      th style='width:80px;' 価格満足
+      th style='width:80px;' 総合評価
+      th コメント
+      th style='width:100px;' 画像
 
   tbody
-    - @products.each do |product|
+    - @tastings.each do |tasting|
       tr
-        td = link_to product.name,product
-        td = product.product_category
-        td = product.sell_price
-        td = @product_tasting_count[product.id]
-        td = link_to '試食', new_tasting_path(product_id:product.id,)
+        td = tasting.date
+        td
+          - if @product.present?
+            = link_to tasting.staff.name,tastings_path(staff_id:tasting.staff_id)
+          - else
+            = link_to tasting.product.name,tastings_path(product_id:tasting.product_id)
+        td = tasting.sell_price
+        td = tasting.appearance
+        td = tasting.taste
+        td = tasting.price_satisfaction
+        td = tasting.total_evaluation
+        td = text_url_to_link(simple_format(h(tasting.comment))).html_safe
+        td
+          - if tasting.image.present?
+            = link_to tasting.image.to_s, "data-lightbox" => tasting.image.to_s do
+              = image_tag tasting.image.to_s,class:"img-responsive",style:'width:80px;object-fit:cover;margin:0 auto;'

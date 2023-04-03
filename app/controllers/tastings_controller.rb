@@ -1,7 +1,6 @@
 class TastingsController < ApplicationController
   before_action :set_tasting, only: %i[ show edit update destroy ]
-
-  def index
+  def weekly
     if params[:date].present?
       date = (Date.parse(params[:date]) + 1)
     else
@@ -13,7 +12,17 @@ class TastingsController < ApplicationController
     daily_menus = DailyMenu.where(start_time:@wednesday..@wednesday+6)
     product_ids = DailyMenuDetail.where(daily_menu_id:daily_menus.ids).map{|dmd|dmd.product_id}.uniq
     @products = Product.where(id:product_ids).order(:product_category)
-    @product_tasting_count = Tasting.where(product_id:product_ids).group(:product_id).count
+    @product_tasting_count = Tasting.where(product_id:product_ids).group(:product_id).count    
+  end
+
+  def index
+    if params[:product_id]
+      @product = Product.find(params[:product_id])
+      @tastings = @product.tastings.includes([:product])
+    elsif params[:staff_id]
+      @staff = Staff.find(params[:staff_id])
+      @tastings = @staff.tastings.includes([:product])
+    end
   end
 
   def show

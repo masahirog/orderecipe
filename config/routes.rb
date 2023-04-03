@@ -58,7 +58,11 @@ Rails.application.routes.draw do
       post :upload_jobcan_data
     end
   end
-  resources :tastings
+  resources :tastings do
+    collection do
+      get :weekly
+    end
+  end
   resources :store_daily_menu_detail_histories
   resources :store_daily_menu_details
   resources :task_comments

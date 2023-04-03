@@ -16,9 +16,9 @@ class MaterialsController < ApplicationController
 
   def new
     @material = Material.new
-    @stores_hash = {}
-    Store.where(group_id:@group_id).each do |store|
-      @stores_hash[store.id]=store.name
+    @stores_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    Store.all.each do |store|
+      @stores_hash[store.group_id][store.id]=store.name
       if store.id == 39
         @material.material_store_orderables.build(store_id:store.id,orderable_flag:true)
       else
@@ -56,13 +56,11 @@ class MaterialsController < ApplicationController
     end
     @material = Material.find(params[:id])
     store_ids = @material.material_store_orderables.pluck(:store_id)
-    @stores_hash = Store.all.map{|store|[store.id,store.name]}.to_h
-    all_store_ids = @stores_hash.keys
-    new_store_ids = all_store_ids - store_ids
-    new_store_ids.each do |store_id|
-      @material.material_store_orderables.build(store_id:store_id)
+    @stores_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    Store.all.each do |store|
+      @stores_hash[store.group_id][store.id]=store.name
+      @material.material_store_orderables.build(store_id:store_id) unless store_ids.include?(store.id)
     end
-
     if request.referer.nil?
     elsif request.referer.include?("products")
       @back_to = request.referer
