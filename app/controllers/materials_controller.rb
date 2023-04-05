@@ -59,7 +59,7 @@ class MaterialsController < ApplicationController
     @stores_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     Store.all.each do |store|
       @stores_hash[store.group_id][store.id]=store.name
-      @material.material_store_orderables.build(store_id:store_id) unless store_ids.include?(store.id)
+      @material.material_store_orderables.build(store_id:store.id) unless store_ids.include?(store.id)
     end
     if request.referer.nil?
     elsif request.referer.include?("products")
