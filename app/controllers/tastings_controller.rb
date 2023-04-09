@@ -60,7 +60,7 @@ class TastingsController < ApplicationController
         }
 
         Slack::Notifier.new("https://hooks.slack.com/services/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", username: '試食', icon_emoji: ':man-surfing:', attachments: [attachment_image]).ping(message)
-        format.html { redirect_to tastings_path(date:@tasting.date), notice: "Tasting was successfully created." }
+        format.html { redirect_to weekly_tastings_path(date:@tasting.date), notice: "Tasting was successfully created." }
         format.json { render :show, status: :created, location: @tasting }
       else
         format.html { render :new, status: :unprocessable_entity }
