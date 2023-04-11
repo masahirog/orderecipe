@@ -106,17 +106,14 @@ class ShiftsController < ApplicationController
     else
       @date = Date.today
     end
+    @date =  @date.prev_month if @date.day < 15
     @year_months = [["#{@date.year}年#{@date.month}月",@date],["#{@date.next_month.year}年#{@date.next_month.month}月",@date.next_month],["#{@date.next_month.next_month.year}年#{@date.next_month.next_month.month}月",@date.next_month.next_month]]
     @group = Group.find(params[:group_id])
     @rowspan = @group.shift_frames.count
     @shift_frames = @group.shift_frames
     @stores = @group.stores.where.not(id:39)
     store_ids = @stores.ids
-    # @stores = @group.stores
-    # store_ids = @stores.ids
     group_staff_ids = Staff.where(store_id:store_ids)
-    # first_day = @date.beginning_of_month
-    # last_day = first_day.end_of_month
     first_day = Date.new(@date.year,@date.month, 16)
     last_day = first_day.end_of_month
     last_day = Date.new((last_day + 1).year,(last_day +1).month, 15)
@@ -126,8 +123,6 @@ class ShiftsController < ApplicationController
     @staff_shinsei_count = shifts.where.not(shift_pattern_id: nil).group(:staff_id).count
     @staff_syukkin_count = shifts.where.not(fix_shift_pattern_id: nil).group(:staff_id).count
     staff_ids = shifts.map{|shift|shift.staff_id}.uniq
-    # add_ids = group_staff_ids - shift_staff_ids
-    # staff_ids =shift_staff_ids + add_ids
     @staffs = Staff.includes([:store]).where(id:staff_ids).order(row:'asc')
 
     @fix_shift_patterns = FixShiftPattern.where(group_id:@group.id)
@@ -237,6 +232,7 @@ class ShiftsController < ApplicationController
     else
       @date = Date.today
     end
+    @date =  @date.prev_month if @date.day < 16
     @group = Group.find(params[:group_id])
     @shift_frames = @group.shift_frames
     @stores = @group.stores.where.not(id:39)

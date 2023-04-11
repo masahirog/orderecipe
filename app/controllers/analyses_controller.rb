@@ -403,7 +403,7 @@ class AnalysesController < AdminController
     redirect_to smaregi_members_analyses_path,notice:'更新しました。'
   end
   def sales
-    @stores = Store.all
+    @stores = Store.where(group_id:9).where.not(id:39)
     if params[:stores]
       checked_store_ids = params['stores'].keys
     else
@@ -511,7 +511,7 @@ class AnalysesController < AdminController
       params[:store_ids] = checked_store_ids
     else
       params[:stores] = {}
-      @stores = Store.all
+      @stores = Store.where(group_id:9).where.not(id:39)
       checked_store_ids = @stores.ids
       params[:store_ids] = checked_store_ids
       @stores.each do |store|
@@ -653,7 +653,7 @@ class AnalysesController < AdminController
   end
 
   def visitors_time_zone
-    @stores = Store.all
+    @stores = Store.where(group_id:9).where.not(id:39)
     if params[:stores]
       checked_store_ids = params['stores'].keys
     else
@@ -853,7 +853,7 @@ class AnalysesController < AdminController
   end
   def date
     @date = params[:date]
-    @stores = Store.all
+    @stores = Store.where(group_id:9).where.not(id:39)
     @analyses_hash = {}
     Analysis.where(date:@date).each do |analysis|
       @analyses_hash[analysis.store_daily_menu.store_id] = analysis
@@ -864,7 +864,7 @@ class AnalysesController < AdminController
     gon.lat = 35.7058146
     gon.lon = 139.6657874
     gon.api = ENV['WEATHER_API']
-    @stores = Store.where.not(id:39)
+    @stores = Store.where(group_id:9).where.not(id:39)
     unless params[:stores]
       params[:stores] = {}
       @stores.each{|store|params[:stores][store.id.to_s] = true}
@@ -937,7 +937,7 @@ class AnalysesController < AdminController
   end
 
   def index
-    @stores = Store.all
+    @stores = Store.where(group_id:9).where.not(id:39)
     if params[:stores]
       checked_store_ids = params['stores'].keys
     else

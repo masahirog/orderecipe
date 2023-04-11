@@ -18,6 +18,7 @@ table.table
       th style='width:80px;' 総合評価
       th コメント
       th style='width:100px;' 画像
+      th style='width:80px;'
 
   tbody
     - @tastings.each do |tasting|
@@ -38,3 +39,8 @@ table.table
           - if tasting.image.present?
             = link_to tasting.image.to_s, "data-lightbox" => tasting.image.to_s do
               = image_tag tasting.image.to_s,class:"img-responsive",style:'width:80px;object-fit:cover;margin:0 auto;'
+        td
+          - if @product.present?
+            = link_to '削除', tasting_path(tasting,product_id:@product.id), method: :delete, data: { confirm: '本当にOK？' }, method: :delete,class:'btn btn-danger btn-sm'
+          - elsif @staff.present?
+            = link_to '削除', tasting_path(tasting,staff_id:@staff.id), data: { confirm: '本当にOK？' }, method: :delete,class:'btn btn-danger btn-sm'

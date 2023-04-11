@@ -83,10 +83,12 @@ class TastingsController < ApplicationController
 
   def destroy
     @tasting.destroy
-
     respond_to do |format|
-      format.html { redirect_to tastings_url, notice: "Tasting was successfully destroyed." }
-      format.json { head :no_content }
+      if params["product_id"].present?
+        format.html { redirect_to tastings_path(product_id:params["product_id"]),notice: "試食コメントを削除しました" }
+      else
+        format.html { redirect_to tastings_path(staff_id:params["staff_id"]), notice: "試食コメントを削除しました" }
+      end
     end
   end
 
