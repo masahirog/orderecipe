@@ -106,7 +106,7 @@ class ShiftsController < ApplicationController
     else
       @date = Date.today
     end
-    @date =  @date.prev_month if @date.day < 15
+    @date =  Date.new(@date.prev_month.year,@date.prev_month.month,16) if @date.day < 15
     @year_months = [["#{@date.year}年#{@date.month}月",@date],["#{@date.next_month.year}年#{@date.next_month.month}月",@date.next_month],["#{@date.next_month.next_month.year}年#{@date.next_month.next_month.month}月",@date.next_month.next_month]]
     @group = Group.find(params[:group_id])
     @rowspan = @group.shift_frames.count
@@ -232,7 +232,7 @@ class ShiftsController < ApplicationController
     else
       @date = Date.today
     end
-    @date =  @date.prev_month if @date.day < 16
+    @date =  Date.new(@date.prev_month.year,@date.prev_month.month,16) if @date.day < 15
     @group = Group.find(params[:group_id])
     @shift_frames = @group.shift_frames
     @stores = @group.stores.where.not(id:39)
