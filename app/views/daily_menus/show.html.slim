@@ -219,7 +219,7 @@ table.table.table-list.table-striped
       tr
         td
           = link_to dmd.product.name,product_path(dmd.product)
-        td = dmd.product.sell_price
+        td = dmd.sell_price
         td = dmd.product.cost_price
         - if (dmd.product.cost_price/dmd.product.sell_price) > 0.35
           - color = 'red'

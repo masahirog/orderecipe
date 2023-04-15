@@ -56,6 +56,7 @@ class DailyMenu < ApplicationRecord
     CSV.foreach(file.path,liberal_parsing:true, headers: true) do |row|
       date = row["date"].gsub('/','-')
       product_id = row["product_id"]
+      product = Product.find(product_id)
       sub_num = row["sub_num"].to_i
       row_order = row["row_order"].to_i
       dmd = DailyMenuDetail.find_by(daily_menu_id:hash[date],product_id:product_id)
@@ -71,7 +72,7 @@ class DailyMenu < ApplicationRecord
         dmd.row_order = row_order
         update_daily_menu_details_arr << dmd
       else
-        create_daily_menu_details_arr << DailyMenuDetail.new(daily_menu_id:hash[date],product_id:product_id,for_sub_item_number:sub_num,manufacturing_number:sub_num,row_order:row_order)
+        create_daily_menu_details_arr << DailyMenuDetail.new(daily_menu_id:hash[date],product_id:product_id,for_sub_item_number:sub_num,manufacturing_number:sub_num,row_order:row_order,sell_price:product.sell_price)
       end
     end
     DailyMenuDetail.import create_daily_menu_details_arr if create_daily_menu_details_arr.present?
@@ -97,8 +98,9 @@ class DailyMenu < ApplicationRecord
           showcase_type = sdm_hash[dm.start_time.to_s][dmd.product_id.to_s][store_id][:showcase_type]
           serving_plate_id = sdm_hash[dm.start_time.to_s][dmd.product_id.to_s][store_id][:serving_plate_id]
           row_order = sdm_hash[dm.start_time.to_s][dmd.product_id.to_s][store_id][:row_order]
+          price = dmd.product.sell_price
           store_daily_menu_details_arr << StoreDailyMenuDetail.new(store_daily_menu_id:store_daily_menu.id,product_id:dmd.product_id,row_order:row_order,
-            bento_fukusai_number:sub_num,showcase_type:showcase_type,serving_plate_id:serving_plate_id)
+            bento_fukusai_number:sub_num,showcase_type:showcase_type,serving_plate_id:serving_plate_id,price:price)
         end
       end
     end

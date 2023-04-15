@@ -42,6 +42,7 @@
       tr
         th style='width:100px;' = link_to_add_association '商品追加', f, :daily_menu_details,class: 'btn btn-default add_menu_details',data: {association_insertion_node: '#daily_menu_details_area',association_insertion_method: 'append' }
         th メニュー名
+        th 価格
         th 惣菜
         - @store_daily_menus.each do |sdm_hash|
           th = Store.find(sdm_hash[0]).name

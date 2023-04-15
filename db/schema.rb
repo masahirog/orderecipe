@@ -133,6 +133,7 @@ ActiveRecord::Schema.define(version: 2023_03_27_002419) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "adjustments", default: 0, null: false
+    t.integer "sell_price", default: 0, null: false
   end
 
   create_table "daily_menus", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -641,7 +642,7 @@ ActiveRecord::Schema.define(version: 2023_03_27_002419) do
     t.integer "group_id"
   end
 
-  create_table "shifts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "shifts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.date "date"
     t.integer "store_id"
     t.integer "staff_id"
@@ -829,7 +830,7 @@ ActiveRecord::Schema.define(version: 2023_03_27_002419) do
     t.integer "default_working_hour", default: 0, null: false
   end
 
-  create_table "stores", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "stores", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "name", null: false
     t.string "phone"
     t.string "fax"
@@ -900,7 +901,7 @@ ActiveRecord::Schema.define(version: 2023_03_27_002419) do
     t.boolean "part_staffs_share_flag", default: false, null: false
   end
 
-  create_table "tastings", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "tastings", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "product_id"
     t.integer "staff_id"
     t.date "date"

@@ -4,18 +4,20 @@ CSV.generate do |csv|
   csv << csv_column_names
     @store_daily_menus.each do |store_daily_menu|
       store_daily_menu.store_daily_menu_details.each do |sdmd|
-        if sdmd.sold_out_flag == true
-          kanbai = 1
-        else
-          kanbai = ''
+        if sdmd.number > 0 || sdmd.actual_inventory > 0
+          if sdmd.sold_out_flag == true
+            kanbai = 1
+          else
+            kanbai = ''
+          end
+          csv_column_values = [
+            sdmd.store_daily_menu.store.name,sdmd.store_daily_menu.start_time,sdmd.product_id,
+            @last_process[sdmd.product_id],
+            sdmd.product.name,sdmd.product.sell_price,sdmd.product.cost_price,sdmd.number,
+            sdmd.stock_deficiency_excess,sdmd.actual_inventory,sdmd.carry_over,kanbai
+          ]
+          csv << csv_column_values
         end
-        csv_column_values = [
-          sdmd.store_daily_menu.store.name,sdmd.store_daily_menu.start_time,sdmd.product_id,
-          @last_process[sdmd.product_id],
-          sdmd.product.name,sdmd.product.sell_price,sdmd.product.cost_price,sdmd.number,
-          sdmd.stock_deficiency_excess,sdmd.actual_inventory,sdmd.carry_over,kanbai
-        ]
-        csv << csv_column_values
       end
     end
   end
