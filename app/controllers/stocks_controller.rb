@@ -434,7 +434,7 @@ class StocksController < AdminController
     @stocks_info_hash[@material.id] = [stock.date,stock.end_day_stock,stock.date,mso.last_inventory_date]
 
     @stocks_h = []
-    store_material_hash = MaterialStoreOrderable.where(store_id:store_id,material_id:material_ids).map{|mso|[mso.material_id,mso]}.to_h
+    store_material_hash = MaterialStoreOrderable.where(store_id:store_id,material_id:@material.id).map{|mso|[mso.material_id,mso]}.to_h
     stocks.uniq(&:material_id).each do |stock|
       if store_material_hash[stock.material_id].present?
         last_inventory_date = ''
