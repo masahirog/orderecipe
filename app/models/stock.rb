@@ -246,19 +246,23 @@ class Stock < ApplicationRecord
   end
 
   def self.stock_status_check(store_id)
-    materials_arr = []
+    msos_arr = []
     today = Date.today
     stocks = Stock.where(store_id:store_id).order("date DESC").where("updated_at BETWEEN ? AND ?", (today-62),today)
     all_material_ids = stocks.pluck("material_id").uniq
+    store_material_hash = MaterialStoreOrderable.where(store_id:store_id,material_id:all_material_ids).map{|mso|[mso.material_id,mso]}.to_h
     materials = Material.where(id:all_material_ids)
     materials.each do |material|
-      latest_stock = stocks.find_by(material_id:material.id)
-      last_inventory = stocks.find_by(material_id:material.id,inventory_flag:true)
-      if last_inventory.present?
-        material.last_inventory_date = last_inventory.date
+      mso = store_material_hash[material.id]
+      if mso.present?
+        latest_stock = stocks.find_by(material_id:material.id)
+        last_inventory = stocks.find_by(material_id:material.id,inventory_flag:true)
+        if last_inventory.present?
+          mso.last_inventory_date = last_inventory.date
+          msos_arr << mso
+        end
       end
-      materials_arr << material
     end
-    Material.import materials_arr, on_duplicate_key_update: [:last_inventory_date]
+    MaterialStoreOrderable.import msos_arr, on_duplicate_key_update: [:last_inventory_date]
   end
 end

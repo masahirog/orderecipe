@@ -307,6 +307,7 @@ ActiveRecord::Schema.define(version: 2023_03_27_002419) do
     t.boolean "fri", default: false, null: false
     t.boolean "sat", default: false, null: false
     t.boolean "sun", default: false, null: false
+    t.date "last_inventory_date"
     t.index ["material_id", "store_id"], name: "index_material_store_orderables_on_material_id_and_store_id", unique: true
   end
 
@@ -333,8 +334,6 @@ ActiveRecord::Schema.define(version: 2023_03_27_002419) do
     t.string "accounting_unit", null: false
     t.integer "accounting_unit_quantity", null: false
     t.boolean "measurement_flag", default: false, null: false
-    t.date "last_inventory_date"
-    t.boolean "need_inventory_flag", default: false, null: false
     t.string "image"
     t.string "short_name"
     t.integer "storage_place", default: 0, null: false

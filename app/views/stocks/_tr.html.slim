@@ -18,8 +18,9 @@ tr class="inventory_tr_#{material.id}" style="background-color:#{bc}"
     = "#{@stocks_h[material.id][1].round.to_s(:delimited)} 円"
   td
     = @stocks_h[material.id][3]
-  - stock = Stock.find_by(material_id:material.id,date:@to,store_id:store_id)
-  - if stock.present?
+  / - stock = Stock.find_by(material_id:material.id,date:@to,store_id:store_id)
+  - stock = @stocks_hash[material.id]
+  - if stock.date == @to
     td style='width:170px;'
       = form_with(model: stock, data: {remote: true}) do |f|
         = f.hidden_field :inventory_flag,value:true

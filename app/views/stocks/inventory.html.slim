@@ -59,7 +59,7 @@ table.table
       - else
         - bc = 'pink'
       = render partial: "tr", locals: { material:material,store_id:params[:store_id],bc:bc }
-
+= paginate @materials
 javascript:
   $(function() {
     $('.input_inventory_stock').keypress( function ( e ) {
@@ -96,4 +96,3 @@ sass:
   .tooltip.in
     opacity: 1 !important
     filter: alpha(opacity=100)
-= paginate @materials

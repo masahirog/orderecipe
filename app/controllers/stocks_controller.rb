@@ -284,21 +284,30 @@ class StocksController < AdminController
     end
     store_id = params[:store_id]
     @store = Store.find(store_id)
-    from = @to - 300
+    from = @to - 100
     materials = Material.where(category:checked_categories)
     materials = materials.where(storage_place:params[:storage_place]) if params[:storage_place].present?
     material_ids = materials.map{|material|material.id}
-    # stocks = Stock.where(store_id:store_id,material_id:material_ids).where("date <= ?", @to).order(date: :desc)
+    # stocks = Stock.where(store_id:store_id,material_id:material_ids).where(date:from..@to).order(date: :desc)
     # 90日以内には一回は棚卸し等をしているはず
-    stocks = Stock.where(store_id:store_id,material_id:material_ids).where("date <= ?", @to).order(date: :desc)
+    store_material_hash = MaterialStoreOrderable.where(store_id:store_id,material_id:material_ids).map{|mso|[mso.material_id,mso]}.to_h
+    # include(:material)を入れるとめちゃめちゃ重くなる
+    stocks = Stock.where(store_id:store_id,material_id:material_ids).where(date:from..@to).order(date: :desc)
+    @stocks_hash = {}
     @stocks_h = []
     stocks.uniq(&:material_id).each do |stock|
+      @stocks_hash[stock.material_id] = stock
+      if store_material_hash[stock.material_id].present?
+        last_inventory_date = store_material_hash[stock.material_id].last_inventory_date
+      else
+        last_inventory_date = ""
+      end
       if stock.date == @to
-        @stocks_h << [stock.material_id,[(stock.end_day_stock/stock.material.accounting_unit_quantity),(stock.end_day_stock * stock.material.cost_price),stock.date,stock.material.last_inventory_date,stock.material.vendor_id,stock.material.short_name,stock.material.storage_place,stock.material_id]]
+        @stocks_h << [stock.material_id,[(stock.end_day_stock/stock.material.accounting_unit_quantity),(stock.end_day_stock * stock.material.cost_price),stock.date,last_inventory_date,stock.material.vendor_id,stock.material.short_name,stock.material.storage_place,stock.material_id]]
       else
         if stock.end_day_stock == 0 && stock.inventory_flag == true
         else
-          @stocks_h << [stock.material_id,[(stock.end_day_stock/stock.material.accounting_unit_quantity),(stock.end_day_stock * stock.material.cost_price),stock.date,stock.material.last_inventory_date,stock.material.vendor_id,stock.material.short_name,stock.material.storage_place,stock.material_id]]
+          @stocks_h << [stock.material_id,[(stock.end_day_stock/stock.material.accounting_unit_quantity),(stock.end_day_stock * stock.material.cost_price),stock.date,last_inventory_date,stock.material.vendor_id,stock.material.short_name,stock.material.storage_place,stock.material_id]]
         end
       end
     end
@@ -416,18 +425,24 @@ class StocksController < AdminController
     Stock.change_stock(update_stocks,stock.material_id,stock.date,stock.end_day_stock,store_id)
     Stock.import update_stocks, on_duplicate_key_update:[:end_day_stock,:start_day_stock] if update_stocks.present?
     @material = stock.material
+    mso = MaterialStoreOrderable.find_by(store_id:store_id,material_id:@material.id)
     date = stock.date
     stocks = Stock.where(material_id:@material.id).where('date <= ?',date).order("date DESC")
     stocks_arr = stocks.where(material_id:@material.id).first(5)
     aaa(@material,date,stocks_arr)
     @stocks_hash = {@material.id => stock}
-    @stocks_info_hash[@material.id] = [stock.date,stock.end_day_stock,stock.date,stock.material.last_inventory_date]
+    @stocks_info_hash[@material.id] = [stock.date,stock.end_day_stock,stock.date,mso.last_inventory_date]
 
     @stocks_h = []
-
+    store_material_hash = MaterialStoreOrderable.where(store_id:store_id,material_id:material_ids).map{|mso|[mso.material_id,mso]}.to_h
     stocks.uniq(&:material_id).each do |stock|
+      if store_material_hash[stock.material_id].present?
+        last_inventory_date = ''
+      else
+        last_inventory_date = store_material_hash[stock.material_id].last_inventory_date
+      end
       if stock.end_day_stock >= 0
-        @stocks_h << [stock.material_id,[(stock.end_day_stock/stock.material.accounting_unit_quantity),(stock.end_day_stock * stock.material.cost_price),stock.date,stock.material.last_inventory_date]]
+        @stocks_h << [stock.material_id,[(stock.end_day_stock/stock.material.accounting_unit_quantity),(stock.end_day_stock * stock.material.cost_price),stock.date,last_inventory_date]]
       end
     end
     @stocks_h = Hash[ @stocks_h.to_h.sort_by{ |_, v| -v[1] } ]

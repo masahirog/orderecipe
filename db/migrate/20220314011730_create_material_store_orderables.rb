@@ -14,6 +14,7 @@ class CreateMaterialStoreOrderables < ActiveRecord::Migration[5.2]
       t.boolean :fri,null:false,default:false
       t.boolean :sat,null:false,default:false
       t.boolean :sun,null:false,default:false
+      t.date :last_inventory_date
     end
   end
 end
