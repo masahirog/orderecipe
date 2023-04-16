@@ -133,7 +133,15 @@ html
                       li = link_to "ログアウト", destroy_user_session_path, :method => :delete
               - elsif current_user.id == 49
                 ul.nav.navbar-nav
-                  li.menu_li = link_to "献立",crew_products_path
+                  / li.menu_li = link_to "献立",crew_products_path
+                  li.dropdown
+                    a.dropdown-toggle href="#" data-toggle="dropdown" role="button"
+                      |献立
+                      span.caret
+                    ul.dropdown-menu role="menu" style='width:250px;'
+                      - @stores.each do |store|
+                        li = link_to store.name,crew_products_path(store_id:store.id)
+
                   li.menu_li = link_to 'シフト',check_shifts_path(date:@today)
                   li.menu_li = link_to "お客さまの声",customer_opinions_path
                   li.menu_li = link_to "試食コメント",weekly_tastings_path(date:@today)
