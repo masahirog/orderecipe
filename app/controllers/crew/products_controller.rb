@@ -19,9 +19,13 @@ class Crew::ProductsController < ApplicationController
     @store = Store.find(params[:store_id])
     @store_daily_menu = @store.store_daily_menus.find_by(start_time:@date)
     @store_daily_menu_details = @store_daily_menu.store_daily_menu_details.includes(product:[:container,:product_ozara_serving_informations])
-    @bento_shokusu = @store_daily_menu_details.where(:products => {product_category:5}).sum(:sozai_number)
-    @sozai_shokusu = @store_daily_menu_details.where(:products => {product_category:1,bejihan_sozai_flag:true}).sum(:sozai_number)
+    products = @store_daily_menu.products
+    sozai_ids = products.where(product_category:"惣菜").ids
+    bento_ids = products.where(product_category:"お弁当").ids
+    @bento_shokusu = @store_daily_menu_details.where(product_id:bento_ids).map{|sdmd|sdmd.sozai_number}.sum
+    @sozai_shokusu = @store_daily_menu_details.where(product_id:sozai_ids).map{|sdmd|sdmd.sozai_number}.sum
   end
+
   def show
     @product = Product.find(params[:id])
   end
