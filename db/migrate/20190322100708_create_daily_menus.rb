@@ -9,6 +9,7 @@ class CreateDailyMenus < ActiveRecord::Migration[4.2][5.2]
       t.timestamps
       t.integer :sozai_manufacturing_number,null:false,default:0
       t.string :event
+      t.boolean :stock_update_flag, default:0 , null: false
     end
   end
 end

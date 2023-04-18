@@ -136,7 +136,7 @@ ActiveRecord::Schema.define(version: 2023_03_27_002419) do
     t.integer "sell_price", default: 0, null: false
   end
 
-  create_table "daily_menus", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+  create_table "daily_menus", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.date "start_time", null: false
     t.integer "total_manufacturing_number", default: 0, null: false
     t.integer "weather"
@@ -146,6 +146,7 @@ ActiveRecord::Schema.define(version: 2023_03_27_002419) do
     t.datetime "updated_at", null: false
     t.integer "sozai_manufacturing_number", default: 0, null: false
     t.string "event"
+    t.boolean "stock_update_flag", default: false, null: false
   end
 
   create_table "date_manufacture_numbers", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

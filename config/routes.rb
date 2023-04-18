@@ -245,6 +245,7 @@ Rails.application.routes.draw do
   end
   resources :daily_menus do
     collection do
+      post :stock_reload
       post :store_input_able
       post :store_input_disable
       get :cook_check

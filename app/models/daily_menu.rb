@@ -114,6 +114,15 @@ class DailyMenu < ApplicationRecord
     end
   end
 
+  def self.stock_reload(daily_menu)
+    #saveされたdailymenuの日付を取得
+    store_id = 39
+    date = daily_menu.start_time
+    previous_day = date - 1
+    Stock.calculate_stock(date,previous_day,store_id)
+    daily_menu.update_column(:stock_update_flag,false)
+  end
+
   def input_stock
     #saveされたdailymenuの日付を取得
     store_id = 39

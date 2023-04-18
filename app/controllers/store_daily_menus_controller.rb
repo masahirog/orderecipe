@@ -126,8 +126,11 @@ class StoreDailyMenusController < ApplicationController
     end
     StoreDailyMenuDetail.import update_arr,on_duplicate_key_update:[:sozai_number,:number,:bento_fukusai_number]
     update_dmds = []
+    update_dms = []
     daily_menu_ids = store_daily_menu_details.map{|sdmd|sdmd.store_daily_menu.daily_menu_id}.uniq
     DailyMenu.where(id:daily_menu_ids).each do |daily_menu|
+      daily_menu.stock_update_flag = true
+      update_dms << daily_menu
       sdmds = StoreDailyMenuDetail.where(store_daily_menu_id:daily_menu.store_daily_menus.ids)
       product_num_hash = sdmds.group(:product_id).sum(:number)
       sozai_num_hash = sdmds.group(:product_id).sum(:sozai_number)
@@ -139,6 +142,7 @@ class StoreDailyMenusController < ApplicationController
         update_dmds << dmd
       end
     end
+    DailyMenu.import update_dms, :on_duplicate_key_update => [:stock_update_flag]
     DailyMenuDetail.import update_dmds, :on_duplicate_key_update => [:for_single_item_number,:manufacturing_number,:for_sub_item_number]
     redirect_to input_manufacturing_number_store_daily_menus_path(store_id:params['store_id'],store_daily_menu_ids:params['store_daily_menu_ids'].split(" ")),notice:'更新OK！'
   end

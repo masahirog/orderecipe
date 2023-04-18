@@ -1,5 +1,10 @@
 class DailyMenusController < AdminController
   before_action :set_daily_menu, only: [:show, :update, :destroy]
+  def stock_reload
+    @daily_menu = DailyMenu.find(params[:id])
+    DailyMenu.stock_reload(@daily_menu)
+    redirect_to daily_menus_path(start_date:@daily_menu.start_time), :success => "在庫を更新しました。"
+  end
   def store_input_disable
     @daily_menu = DailyMenu.find(params[:daily_menu_id])
     store_daily_menus = @daily_menu.store_daily_menus
@@ -509,7 +514,7 @@ class DailyMenusController < AdminController
     end
 
     def daily_menu_params
-      params.require(:daily_menu).permit(:start_time,:total_manufacturing_number,:sozai_manufacturing_number,
+      params.require(:daily_menu).permit(:start_time,:total_manufacturing_number,:sozai_manufacturing_number,:stock_update_flag,
         daily_menu_details_attributes: [:id,:daily_menu_id,:product_id,:manufacturing_number,:row_order,:_destroy,:sell_price,
           :serving_plate_id,:signboard_flag,:window_pop_flag,:sold_outed,:for_single_item_number,:for_sub_item_number,:adjustments])
     end

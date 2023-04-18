@@ -44,13 +44,17 @@ button type="button" class="btn btn-default" data-toggle="modal" data-target="#u
 = link_to "1ヶ月分の枠作成", {controller: "daily_menus", action: "create_1month", date: @date}, method: :post,class:'btn btn-default',style:'margin-right:10px;float:right;'
 
 = month_calendar events: @daily_menus do |start_time, daily_menu|
-  div style='height:29px;'
+  div style=''
     - if daily_menu[0]
-      div style='font-size:16px;margin-right:10px;'
+      div style='font-size:16px;padding:10px;'
         = link_to start_time.strftime("%-m月%-d日"), daily_menu_path(daily_menu[0])
+        - if daily_menu[0].stock_update_flag == true
+          = link_to "データ更新",stock_reload_daily_menus_path(id:daily_menu[0].id), method: :post,class:"btn btn-success pull-right btn-sm", data: {confirm: '在庫更新OK？',disable_with: '処理中です'}
+
     - else
       div style='float:left;font-size:16px;'
         = link_to start_time.strftime("%-m月%-d日"), new_daily_menu_path(start_time:start_time)
+
   - if daily_menu[0]
     table.table
       - daily_menu[0].daily_menu_details.each do |dmd|
