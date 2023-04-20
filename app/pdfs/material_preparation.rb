@@ -62,11 +62,27 @@ class MaterialPreparation < Prawn::Document
               test_hash[base_menu_material_id][6] += "、#{menu.roma_name}（#{num}）"
             end
           else
-            if lang == "1"
-              test_hash[base_menu_material_id] = ["#{mm.material.category_before_type_cast}-#{mm.material.name}",mm.material.name,amount,mm.material.recipe_unit,mm.post,mm.preparation,"#{menu.name} (#{num})",first,machine,group]
+            tmm = mm.temporary_menu_materials.find_by(date:date)
+            if tmm.present?
+              change_flag = '◯'
+              if lang == "1"
+                material_name=tmm.material.name
+                menu_name=menu.name
+              else
+                material_name=tmm.material.roma_name
+                menu_name=menu.roma_name
+              end
             else
-              test_hash[base_menu_material_id] = ["#{mm.material.category_before_type_cast}-#{mm.material.name}",mm.material.roma_name,amount,mm.material.recipe_unit,mm.post,mm.preparation,"#{menu.roma_name} (#{num})",first,machine,group]
+              change_flag = ''
+              if lang == "1"
+                material_name=mm.material.name
+                menu_name=menu.name
+              else
+                material_name=mm.material.roma_name
+                menu_name=menu.roma_name
+              end              
             end
+            test_hash[base_menu_material_id] = ["#{mm.material.category_before_type_cast}-#{material_name}",material_name,amount,mm.material.recipe_unit,mm.post,mm.preparation,"#{menu_name} (#{num})",first,machine,group,change_flag]
           end
         end
       end
@@ -119,7 +135,7 @@ class MaterialPreparation < Prawn::Document
       columns(7).size = 6
       row(0).column(2).align = :left
       self.header = true
-      self.column_widths = [25,140,20,20,60,60,20,230,230]
+      self.column_widths = [25,30,140,20,20,60,60,20,200,230]
     end
     page_count.times do |i|
       unless i < start_page_count
@@ -132,10 +148,10 @@ class MaterialPreparation < Prawn::Document
   end
 
   def line_item_rows(menu_materials_arr,date,mochiba)
-    data = [["","#{mochiba}  #{date}",'F','M',"分量", {:content => "仕込み", :colspan => 3},'メニュー名']]
+    data = [["",'変更',"#{mochiba}  #{date}",'F','M',"分量", {:content => "仕込み", :colspan => 3},'メニュー名']]
     menu_materials_arr.each_with_index do |mma,i|
       amount = ActiveSupport::NumberHelper.number_to_rounded(mma[2], strip_insignificant_zeros: true, :delimiter => ',', precision: 1)
-      data << ["#{i+1}",mma[1],mma[7],mma[8],"#{amount} #{mma[3]}",mma[4],mma[9],mma[5],mma[6]]
+      data << ["#{i+1}",mma[10],mma[1],mma[7],mma[8],"#{amount} #{mma[3]}",mma[4],mma[9],mma[5],mma[6]]
     end
     data
   end

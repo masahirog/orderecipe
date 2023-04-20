@@ -3,6 +3,7 @@ class MenuMaterial < ApplicationRecord
   belongs_to :menu, optional: true
   belongs_to :material
   belongs_to :food_ingredient, optional: true
+  has_many :temporary_menu_materials
 
   validates :amount_used, presence: true, format: { :with=>/\A\d+(\.)?+(\d){0,3}\z/,
     message: "：小数点3位までの値が入力できます" }, numericality: true

@@ -54,7 +54,7 @@ class ProductPdfAll < Prawn::Document
         end
         move_down 5
         header_table(product,num,chosei,daily_menu.start_time,store_order_number,max_i,i)
-        table_content(menus,num)
+        table_content(daily_menu,menus,num)
         start_new_page if i<max_i-1
       end
     else
@@ -102,21 +102,21 @@ class ProductPdfAll < Prawn::Document
 
 
 
-  def table_content(menus,num)
-    table line_item_rows(menus,num),:width =>770 do
+  def table_content(daily_menu,menus,num)
+    table line_item_rows(daily_menu,menus,num),:width =>770 do
       cells.padding = 2
       cells.leading = 2
       cells.borders = [:bottom]
       cells.border_width = 0.2
       column(-1).align = :right
-      column(4).align = :right
-      column(5).align = :center
-      column(5).padding = [2,6,2,2]
+      column(5).align = :right
+      column(6).align = :center
+      column(6).padding = [2,6,2,2]
       row(0).border_width = 1
       row(0).size = 9
-      columns(4).size = 11
+      columns(5).size = 11
       self.header = true
-      self.column_widths = [90,170,30,130,60,50,30,150,60]
+      self.column_widths = [90,170,30,30,130,60,50,30,120,60]
       grayout = []
       menuline = []
       values = cells.columns(2).rows(1..-1)
@@ -127,8 +127,9 @@ class ProductPdfAll < Prawn::Document
 
     end
   end
-  def line_item_rows(menus,num)
-    data= [["メニュー名","調理メモ",'✓',"材料名","#{num}人分",'持ち場','G',"仕込み内容","1人分"]]
+  def line_item_rows(daily_menu,menus,num)
+    data= [["メニュー名","調理メモ",'✓','変更',"材料名","#{num}人分",'持ち場','G',"仕込み内容","1人分"]]
+    date = daily_menu.start_time
     menus.each do |menu|
       unless menu.category == '容器'
         u = menu.materials.length
@@ -145,18 +146,28 @@ class ProductPdfAll < Prawn::Document
         else
           cook_memo = ''
         end
+        
         menu.menu_materials.each_with_index do |mm,i|
           amount = ActiveSupport::NumberHelper.number_to_rounded((mm.amount_used*num), strip_insignificant_zeros: true, :delimiter => ',')
+          tmm = mm.temporary_menu_materials.find_by(date:date)
+          if tmm.present?
+            material_name = tmm.material.name
+            change_flag = "◯"
+          else
+            material_name = mm.material.name
+            change_flag = ""
+          end
           if i == 0
             data << [{:content => "#{menu.name}", :rowspan => u, size: cook_the_day_before_size},{:content => "#{cook_memo}", :rowspan => u, size: cook_the_day_before_size},'□',
-              {:content => "#{mm.material.name}", size: cook_the_day_before_size },
+              change_flag,
+              {:content => "#{material_name}", size: cook_the_day_before_size },
               {:content => "#{amount} #{mm.material.recipe_unit}", size: cook_the_day_before_size },
               {:content => "#{mm.post}", size: cook_the_day_before_size },
               {:content => "#{mm.source_group}", size: cook_the_day_before_size },
               {:content => "#{mm.preparation}", size: cook_the_day_before_size },
               {:content => "#{mm.amount_used} #{mm.material.recipe_unit}", size: cook_the_day_before_size }]
           else
-            data << ['□',{:content => "#{mm.material.name}", size: cook_the_day_before_size },
+            data << ['□',change_flag,{:content => "#{material_name}", size: cook_the_day_before_size },
               {:content => "#{amount} #{mm.material.recipe_unit}", size: cook_the_day_before_size },
               {:content => "#{mm.post}", size: cook_the_day_before_size },
               {:content => "#{mm.source_group}", size: cook_the_day_before_size },

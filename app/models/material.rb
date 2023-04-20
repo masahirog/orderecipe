@@ -22,7 +22,7 @@ class Material < ApplicationRecord
   has_many :stocks
   mount_uploader :image, MaterialImageUploader
   belongs_to :group
-
+  has_many :temporary_menu_materials
   # after_save :update_cache
   validates :name, presence: true, format: { with:/\A[^０-９ａ-ｚＡ-Ｚ]+\z/,
     message: "：全角英数字は使用出来ません。"}

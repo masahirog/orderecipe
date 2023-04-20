@@ -114,7 +114,7 @@ table.table
           tr
             - if i == 0
               td rowspan="#{u}"
-                div = link_to pm.menu.name, edit_menu_path(pm.menu)
+                div = link_to pm.menu.name,menu_path(pm.menu)
                 / div = "#{pm.menu.menu_materials.sum(:calorie).round(2)}kcal"
                 div = image_tag pm.menu.image.to_s ,class:"text-center img-responsive center-block",style:'max-height:450px;'
               td rowspan="#{u}"

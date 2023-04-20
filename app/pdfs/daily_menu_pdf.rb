@@ -11,9 +11,10 @@ class DailyMenuPdf < Prawn::Document
 
   def table_content(daily_menu_id)
     daily_menu = DailyMenu.find(daily_menu_id)
-    count = daily_menu.store_daily_menus.where.not(total_num:0).count
+    number = StoreDailyMenuDetail.where(store_daily_menu_id:daily_menu.store_daily_menus.ids).group(:store_daily_menu_id).sum(:number)
+    count = number.select{|k, v| v > 0}.size
     daily_menu.store_daily_menus.each_with_index do |sdm,i|
-      if sdm.total_num > 0
+      if sdm.store_daily_menu_details.sum(:number) > 0
         bounding_box([10, 800], :width => 560) do
           text " 納 品 書",:align => :center,:size => 20
           move_down 5
@@ -39,9 +40,9 @@ class DailyMenuPdf < Prawn::Document
           end
           move_down 5
           text "その他メモ："
-        end
 
-        start_new_page if i < count - 1
+          start_new_page if i < count - 1
+        end
       end
     end
   end

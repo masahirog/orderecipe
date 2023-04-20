@@ -1,0 +1,37 @@
+.form-group
+	label メニュー名：
+	h4 = @menu_material.menu.name
+	label デフォルトの食材：
+	h4 = @menu_material.material.name
+.form-group
+	= link_to "＜#{@last.month}月",new_temporary_menu_material_path(date:@last,menu_material_id:@menu_material.id)
+	span ="　　#{@date.month}月　　"
+	= link_to "#{@next.month}月＞",new_temporary_menu_material_path(date:@next,menu_material_id:@menu_material.id)
+= form_tag(:controller => "temporary_menu_materials", :action => "ikkatsu_update") do
+	= hidden_field_tag :menu_material_id,@menu_material.id
+	= submit_tag "材料の変更", class:"btn btn-success pull-right", data: { confirm: "変更してよろしいですか？"}
+	table.table
+		thead
+			tr
+				th 日付
+				th 変更後の食材
+				th 解除
+		tbody
+			- @dates.each_with_index do |date,i|
+				- tmm = TemporaryMenuMaterial.find_by(date:date,menu_material_id:@menu_material.id)
+				- if tmm.present?
+					- material_id = tmm.material_id
+					- bg = '#fafad2'
+				- else
+					- material_id = ''
+					- bg = '#ffffff'
+				tr style="background-color:#{bg}"
+					td = date.strftime("%Y/%-m/%-d(#{%w(日 月 火 水 木 金 土)[date.wday]})")
+					td
+						= select_tag("temporary_menu_material_#{date}_material_id", options_from_collection_for_select(@materials,:id,:name,material_id), include_blank: true,class:"input_select_material", name:"temporary_menu_material[#{date}][material_id]",style:'width:300px;')
+					td
+						input type="button" class='clear-btn btn btn-danger btn-sm' value="解除"
+javascript:
+	$(".clear-btn").on('click',function(){
+		$(this).parents('tr').find(".input_select_material").val(null).trigger("change");
+	});

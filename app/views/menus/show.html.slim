@@ -92,6 +92,7 @@ table.table
     thead
       tr
         th 食材
+        th 一時的な食材変更
         th 原価
         th 仕入先
         th 分量
@@ -103,6 +104,7 @@ table.table
       - @menu.menu_materials.each do |mm|
         tr
           td = link_to mm.material.name, edit_material_path(mm.material)
+          td = link_to "登録", new_temporary_menu_material_path(menu_material_id:mm.id),target:"_blank"
           td = ActiveSupport::NumberHelper.number_to_rounded((mm.amount_used * mm.material.cost_price), strip_insignificant_zeros: true, :delimiter => ',', precision: 1)
           td = mm.material.vendor.company_name
           td = "#{ActiveSupport::NumberHelper.number_to_rounded(mm.amount_used, strip_insignificant_zeros: true, :delimiter => ',', precision: 1)} #{mm.material.recipe_unit}"

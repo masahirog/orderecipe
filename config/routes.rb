@@ -63,6 +63,12 @@ Rails.application.routes.draw do
       get :weekly
     end
   end
+  resources :temporary_menu_materials do
+    collection do
+      post :ikkatsu_update
+      get :material_date
+    end
+  end
   resources :store_daily_menu_detail_histories
   resources :store_daily_menu_details
   resources :task_comments

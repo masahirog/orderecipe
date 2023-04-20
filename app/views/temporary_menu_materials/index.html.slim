@@ -1,0 +1,20 @@
+h3 今日以降の食材の変更一覧
+- if params[:past_include] == "true"
+  = link_to '本日以降',temporary_menu_materials_path(),class:"btn btn-default btn-sm pull-right"
+- else
+  = link_to '過去も含める',temporary_menu_materials_path(past_include:true),class:"btn btn-default btn-sm pull-right"
+table.table
+  thead
+    tr
+      th 日数
+      th メニュー名
+      th 食材
+      th 
+
+  tbody
+    - @uniq_tmms.each do |data|
+      tr
+        td = data[1]
+        td = link_to @uniq_mms_hash[data[0]].menu.name,@uniq_mms_hash[data[0]].menu
+        td = "#{@uniq_mms_hash[data[0]].material.name}｜#{@uniq_mms_hash[data[0]].material.vendor.company_name}"
+        td = link_to "確認",new_temporary_menu_material_path(menu_material_id:data[0]),class:'btn btn-primary btn-sm'

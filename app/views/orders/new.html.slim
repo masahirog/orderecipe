@@ -85,6 +85,9 @@
 
             - if m.object.material_id.present?
               span style='font-size:16px;font-weight:bold;' = material.name
+              - if @temporary_menu_materials[m.object.material_id].present?
+                br
+                = link_to "※食材の一時切り替え有り！",material_date_temporary_menu_materials_path(material_id:m.object.material_id,date:params[:make_date]),style:"color:red;",target:"_blank"
               = m.hidden_field :material_id,class:'input_material'
             - else
               = m.collection_select :material_id, @materials, :id, :name,{include_blank: true}, class:'select_order_materials',style:"width:250px;"

@@ -273,6 +273,7 @@ class OrdersController < AdminController
 
 
   def new
+    @temporary_menu_materials = {}
     gon.holidays = HolidayJapan.list_year(Date.today.year).map{|data|data[0].to_s.delete('-')}
     orderable_material_ids = MaterialStoreOrderable.where(store_id:params[:store_id],orderable_flag:true).map{|mso|mso.material_id}
     material_ids = []
@@ -536,20 +537,11 @@ class OrdersController < AdminController
       else
         @b_hash[info['material_id']] = info
       end
-
-      # @b_hash[info['material_id']] = info unless @b_hash[info['material_id']].present?
-      # @b_hash[info['material_id']]['calculated_order_amount'] += info['calculated_order_amount']
-      # @b_hash[info['material_id']]['menu_num'][info["menu_num"].keys[0]] = 0 unless @b_hash[info['material_id']]['menu_num'][info["menu_num"].keys[0]].present?
-      # @b_hash[info['material_id']]['menu_num'][info["menu_num"].keys[0]] += info['menu_num'].values[0].to_i
-      # @b_hash[info['material_id']]['product_id'] << info['product_id'][0] unless @b_hash[info['material_id']]['product_id'].include?(info['product_id'])
     end
     material_ids = material_ids.uniq
     @prev_stocks = {}
     @stock_hash = {}
     stocks_hash = Stock.where(store_id:params[:store_id],material_id:material_ids).where("date < ?", make_date).order("date ASC").map{|stock|[stock.material_id,stock]}.to_h
-    # stocks_hash_short = Stock.joins(:material).where(:materials => {vendor_id:[151,121,131]}).where("date < ?", make_date+1).order("date ASC").map{|stock|[stock.material_id,stock]}.to_h
-    # stocks_hash_long = Stock.joins(:material).where.not(:materials => {vendor_id:[151,121,131]}).where("date < ?", make_date+5).order("date ASC").map{|stock|[stock.material_id,stock]}.to_h
-    # stocks_hash = stocks_hash_short.merge(stocks_hash_long)
     date = make_date - 1
     stock_hash = {}
     @latest_material_used_amount = {}
@@ -850,6 +842,9 @@ class OrdersController < AdminController
   private
   def make_hash(menu_material,material_ids,po,product,menu)
     hash = {}
+    if menu_material.temporary_menu_materials.find_by(date:po[:make_date]).present?
+      @temporary_menu_materials[menu_material.material_id] = menu_material
+    end
     hash['material'] = menu_material.material
     hash['make_num'] = po[:num]
     hash['product_id'] = [product.id]

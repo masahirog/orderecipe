@@ -1,0 +1,16 @@
+h3 = "#{@date} #{@material.name}の使用量"
+- if params[:past_include] == "true"
+  = link_to '本日以降',temporary_menu_materials_path(),class:"btn btn-default btn-sm pull-right"
+- else
+  = link_to '過去も含める',temporary_menu_materials_path(past_include:true),class:"btn btn-default btn-sm pull-right"
+table.table
+  thead
+    tr
+      th メニュー名
+      th 食数
+
+  tbody
+    - @temporary_menu_materials.each do |tmm|
+      tr
+        td = tmm.menu_material.menu.name
+        td 

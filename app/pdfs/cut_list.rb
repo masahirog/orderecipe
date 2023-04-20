@@ -30,27 +30,35 @@ class CutList < Prawn::Document
       menu_materials.each do |mm|
         if mm.material_cut_pattern_id.present?
           amount = mm.amount_used * num
+          # 一時的な食材変更があるかどうか？
+          tmm = mm.temporary_menu_materials.find_by(date:date)
+          if tmm.present?
+            material_id = tmm.material_id
+            material_name = tmm.material.name
+          else
+            material_id = mm.material_id
+            material_name = mm.material.name
+          end
           if mm.material_cut_pattern.machine.present?
-            if machine_cut_hash[mm.material_id][mm.material_cut_pattern_id].present?
-              machine_cut_hash[mm.material_id][mm.material_cut_pattern_id][0] += amount
-              machine_cut_hash[mm.material_id][mm.material_cut_pattern_id][2] += 1
-              machine_cut_hash[mm.material_id][mm.material_cut_pattern_id][3] << [mm,num,brand]
+            if machine_cut_hash[material_id][mm.material_cut_pattern_id].present?
+              machine_cut_hash[material_id][mm.material_cut_pattern_id][0] += amount
+              machine_cut_hash[material_id][mm.material_cut_pattern_id][2] += 1
+              machine_cut_hash[material_id][mm.material_cut_pattern_id][3] << [mm,num,brand]
             else
               count = 1
-              machine_cut_hash[mm.material_id][mm.material_cut_pattern_id] = [amount,mm.material.name,count,[[mm,num,brand]]]
+              machine_cut_hash[material_id][mm.material_cut_pattern_id] = [amount,material_name,count,[[mm,num,brand]]]
             end
 
           else
-            if material_cut_hash[mm.material_id][mm.material_cut_pattern_id].present?
-              material_cut_hash[mm.material_id][mm.material_cut_pattern_id][0] += amount
-              material_cut_hash[mm.material_id][mm.material_cut_pattern_id][2] += 1
-              material_cut_hash[mm.material_id][mm.material_cut_pattern_id][3] << [mm,num,brand]
+            if material_cut_hash[material_id][mm.material_cut_pattern_id].present?
+              material_cut_hash[material_id][mm.material_cut_pattern_id][0] += amount
+              material_cut_hash[material_id][mm.material_cut_pattern_id][2] += 1
+              material_cut_hash[material_id][mm.material_cut_pattern_id][3] << [mm,num,brand]
             else
               count = 1
-              material_cut_hash[mm.material_id][mm.material_cut_pattern_id] = [amount,mm.material.name,count,[[mm,num,brand]]]
+              material_cut_hash[material_id][mm.material_cut_pattern_id] = [amount,material_name,count,[[mm,num,brand]]]
             end
           end
-
         end
       end
     end
@@ -109,7 +117,7 @@ class CutList < Prawn::Document
       column(0).leading = 4
       column(1).align = :right
       column(3).align = :right
-      columns(5).size = 6
+      columns(-1).size = 6
       row(0).size = 8
       values = cells.columns(5).rows(1..-1)
       values.each do |cell|
@@ -117,12 +125,12 @@ class CutList < Prawn::Document
       end
       grayout.map{|num|row(num).column(3..-1).background_color = "dcdcdc"}
       self.header = true
-      self.column_widths = [140,55,170,50,250,150]
+      self.column_widths = [140,55,170,50,220,30,150]
     end
   end
 
   def line_item_rows(material_cut_hash)
-    data = [["","分量",'カット','量',"仕込み",'']]
+    data = [["","分量",'カット','量',"仕込み",'変更','']]
     material_cut_hash.each do |mmch|
       material_rowspan = 0
       material_used_total_amount = 0
@@ -134,8 +142,14 @@ class CutList < Prawn::Document
       mmch[1].each_with_index do |mch,i|
         amount = ActiveSupport::NumberHelper.number_to_rounded(mch[1][0], strip_insignificant_zeros: true, :delimiter => ',', precision: 1)
         material_cut_pattern = MaterialCutPattern.find(mch[0])
-        material = material_cut_pattern.material
+        default_material = material_cut_pattern.material
+        material_name = mch[1][1]
         rowspan = mch[1][2]
+        if mmch[0] == default_material.id
+          chage_flag = ""
+        else
+          chage_flag = "◯"
+        end
         mch[1][3].each_with_index do |mm,index|
           menu_amount = ActiveSupport::NumberHelper.number_to_rounded((mm[0].amount_used * mm[1]), strip_insignificant_zeros: true, :delimiter => ',', precision: 1)
           if mm[2]=='kurumesi'
@@ -146,15 +160,15 @@ class CutList < Prawn::Document
           if index == 0
             if i == 0
               if mmch[1].count > 1
-                data << [{:content => "#{material.name}\n【 計：#{material_used_total_amount} #{material.recipe_unit} 】", :rowspan => material_rowspan},{:content =>"#{amount} #{material.recipe_unit}", :rowspan => rowspan},{:content => material_cut_pattern.name, :rowspan => rowspan},"#{menu_amount} #{material.recipe_unit}",mm[0].preparation,"#{flag} #{mm[0].menu.name}(#{mm[1]})"]
+                data << [{:content => "#{material_name}\n【 計：#{material_used_total_amount} #{default_material.recipe_unit} 】", :rowspan => material_rowspan},{:content =>"#{amount} #{default_material.recipe_unit}", :rowspan => rowspan},{:content => material_cut_pattern.name, :rowspan => rowspan},"#{menu_amount} #{default_material.recipe_unit}",mm[0].preparation,chage_flag,"#{flag} #{mm[0].menu.name}(#{mm[1]})"]
               else
-                data << [{:content => "#{material.name}", :rowspan => material_rowspan},{:content =>"#{amount} #{material.recipe_unit}", :rowspan => rowspan},{:content => material_cut_pattern.name, :rowspan => rowspan},"#{menu_amount} #{material.recipe_unit}",mm[0].preparation,"#{flag} #{mm[0].menu.name}(#{mm[1]})"]
+                data << [{:content => "#{material_name}", :rowspan => material_rowspan},{:content =>"#{amount} #{default_material.recipe_unit}", :rowspan => rowspan},{:content => material_cut_pattern.name, :rowspan => rowspan},"#{menu_amount} #{default_material.recipe_unit}",mm[0].preparation,chage_flag,"#{flag} #{mm[0].menu.name}(#{mm[1]})"]
               end
             else
-              data <<[{:content =>"#{amount} #{material.recipe_unit}", :rowspan => rowspan},{:content => material_cut_pattern.name, :rowspan => rowspan},"#{menu_amount} #{material.recipe_unit}",mm[0].preparation,"#{flag} #{mm[0].menu.name}(#{mm[1]})"]
+              data <<[{:content =>"#{amount} #{default_material.recipe_unit}", :rowspan => rowspan},{:content => material_cut_pattern.name, :rowspan => rowspan},"#{menu_amount} #{default_material.recipe_unit}",mm[0].preparation,chage_flag,"#{flag} #{mm[0].menu.name}(#{mm[1]})"]
             end
           else
-            data <<["#{menu_amount} #{material.recipe_unit}",mm[0].preparation,"#{flag} #{mm[0].menu.name}(#{mm[1]})"]
+            data <<["#{menu_amount} #{default_material.recipe_unit}",mm[0].preparation,chage_flag,"#{flag} #{mm[0].menu.name}(#{mm[1]})"]
           end
         end
       end
