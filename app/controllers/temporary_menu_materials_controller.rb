@@ -52,8 +52,22 @@ class TemporaryMenuMaterialsController < ApplicationController
     material_id = params[:material_id]
     @date = params[:date]
     @material = Material.find(material_id)
-    @temporary_menu_materials = TemporaryMenuMaterial.where(origin_material_id:material_id,date:@date)
-    
+
+    menu_ids = Menu.joins(:materials).where(:materials=>{id:material_id}).ids
+    product_ids = Product.joins(:product_menus).where(:product_menus=>{menu_id:menu_ids}).ids
+    @dmds = DailyMenuDetail.joins(:daily_menu).where(:daily_menus =>{start_time:@date}).where(product_id:product_ids)
+    # @dmds_hash = DailyMenuDetail.joins(:daily_menu).where(:daily_menus =>{start_time:@date}).where(product_id:product_ids).map{|dmd|[dmd.daily_menu.start_time,dmd]}.to_h
+    menu_ids = ProductMenu.where(product_id:@dmds.map{|dmd|dmd.product_id}).map{|pm|pm.menu_id}
+    @menu_materials = MenuMaterial.includes([:material,:menu]).where(menu_id:menu_ids,material_id:material_id)
+    @tmm_hash = TemporaryMenuMaterial.where(origin_material_id:material_id,date:@date).map{|tmm|[tmm.menu_material_id,tmm]}.to_h
+    dmds = DailyMenuDetail.includes(:product).joins(:daily_menu).where(:daily_menus =>{start_time:@date}).where(product_id:product_ids)
+    @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    dmds.each do |dmd|
+      MenuMaterial.includes([:material,:menu]).where(menu_id:dmd.product.menus.ids,material_id:material_id).each do |mm|
+        @hash[@date][mm.id][:amount] = (mm.amount_used * dmd.manufacturing_number).round.to_s(:delimited)
+        @hash[@date][mm.id][:num] = dmd.manufacturing_number
+      end
+    end
   end
 
   def show
@@ -69,10 +83,14 @@ class TemporaryMenuMaterialsController < ApplicationController
     @next = @date.next_month
     @last = @date.last_month
     @menu_material = MenuMaterial.find(params[:menu_material_id])
-    @menu_materials =MenuMaterial.where(menu_id:11)
-    material_ids = TemporaryMenuMaterial.where(date:@dates,menu_material_id:@menu_material.id).map{|tmm|tmm.material_id}
+    product_ids = Product.joins(:product_menus).where(:product_menus=>{menu_id:@menu_material.menu_id}).ids
+    dmds = DailyMenuDetail.joins(:daily_menu).where(:daily_menus =>{start_time:@dates}).where(product_id:product_ids)
+    @dmds_hash = DailyMenuDetail.joins(:daily_menu).where(:daily_menus =>{start_time:@dates}).where(product_id:product_ids).map{|dmd|[dmd.daily_menu.start_time,dmd]}.to_h
+    # dms = DailyMenu.where(start_time:@dates).joins(:daily_menu_details).where(:daily_menu_details =>{product_id:product_ids})
+    @temporary_menu_materials = TemporaryMenuMaterial.where(date:@dates,menu_material_id:@menu_material.id)
+    material_ids = @temporary_menu_materials.map{|tmm|tmm.material_id}
     @materials = Material.where(id:material_ids)
-
+    @hash = @temporary_menu_materials.map{|tmm|[tmm.date,tmm]}.to_h
   end
 
   def edit

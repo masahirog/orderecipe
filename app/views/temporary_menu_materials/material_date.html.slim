@@ -7,10 +7,22 @@ table.table
   thead
     tr
       th メニュー名
+      th 食材名
+      th 一時的な変更
       th 食数
+      th 量
 
   tbody
-    - @temporary_menu_materials.each do |tmm|
+    - @menu_materials.each do |mm|
       tr
-        td = tmm.menu_material.menu.name
-        td 
+        td = mm.menu.name
+        td = mm.material.name
+        td = @tmm_hash[mm.id].material.name if @tmm_hash[mm.id]
+        td = @hash[@date][mm.id][:num]
+        td = "#{@hash[@date][mm.id][:amount]} #{@material.recipe_unit}"
+    / - @temporary_menu_materials.each do |tmm|
+    /   tr
+    /     td = tmm.menu_material.menu.name
+    /     td 
+    /     td 
+    /     td 

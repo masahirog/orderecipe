@@ -2,7 +2,7 @@
 	label メニュー名：
 	h4 = @menu_material.menu.name
 	label デフォルトの食材：
-	h4 = @menu_material.material.name
+	h4 = "#{@menu_material.material.name} 1人前あたり #{@menu_material.amount_used}#{@menu_material.material.recipe_unit} 使用"
 .form-group
 	= link_to "＜#{@last.month}月",new_temporary_menu_material_path(date:@last,menu_material_id:@menu_material.id)
 	span ="　　#{@date.month}月　　"
@@ -14,11 +14,13 @@
 		thead
 			tr
 				th 日付
+				th 食数
+				th 使用量
 				th 変更後の食材
 				th 解除
 		tbody
 			- @dates.each_with_index do |date,i|
-				- tmm = TemporaryMenuMaterial.find_by(date:date,menu_material_id:@menu_material.id)
+				- tmm = @hash[date]
 				- if tmm.present?
 					- material_id = tmm.material_id
 					- bg = '#fafad2'
@@ -27,6 +29,8 @@
 					- bg = '#ffffff'
 				tr style="background-color:#{bg}"
 					td = date.strftime("%Y/%-m/%-d(#{%w(日 月 火 水 木 金 土)[date.wday]})")
+					td = @dmds_hash[date].manufacturing_number if @dmds_hash[date]
+					td = "#{(@dmds_hash[date].manufacturing_number*@menu_material.amount_used).round.to_s(:delimited)} #{@menu_material.material.recipe_unit}" if @dmds_hash[date]
 					td
 						= select_tag("temporary_menu_material_#{date}_material_id", options_from_collection_for_select(@materials,:id,:name,material_id), include_blank: true,class:"input_select_material", name:"temporary_menu_material[#{date}][material_id]",style:'width:300px;')
 					td
