@@ -1,5 +1,23 @@
 class Crew::OrdersController < ApplicationController
-
+  def monthly_data
+    if params[:start_date].present?
+      date = params[:start_date].to_date
+    elsif params[:start_time].present?
+      date = params[:start_time].to_date
+    else
+      date = Date.today
+    end
+    store_id = params[:store_id]
+    @store = Store.find(store_id)
+    
+    @order_materials = OrderMaterial.joins(:order).where(:orders => {store_id:store_id}).where(delivery_date:date.beginning_of_month..date.end_of_month).where(un_order_flag:false)
+    respond_to do |format|
+      format.html
+      format.csv do
+        send_data render_to_string, filename: "#{date}_#{store_id}_Ashohin.csv", type: :csv
+      end
+    end
+  end
 
   def material_reload
     @material = Material.find(params[:material_id])

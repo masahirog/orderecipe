@@ -1,6 +1,6 @@
 require 'csv'
 CSV.generate do |csv|
-  csv_column_names = %w(日付 店舗名 商品名 発注量 単位 価格 メモ スタッフ名)
+  csv_column_names = %w(日付 店舗名 商品名 発注量 単位 卸価格 メモ スタッフ名)
   csv << csv_column_names
     @order_materials.each do |om|
       order_quantity = om.order_quantity.to_f/om.material.recipe_unit_quantity
