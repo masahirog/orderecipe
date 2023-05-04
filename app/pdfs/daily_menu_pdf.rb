@@ -44,7 +44,8 @@ class DailyMenuPdf < Prawn::Document
             self.column_widths = [180,50,200]
           end
           move_down 5
-          text "その他メモ："
+          text "ーー その他メモ ーー"
+          text "冷凍品："
         end
         start_new_page if i < count + 1
         i += 1

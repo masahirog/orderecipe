@@ -46,5 +46,9 @@
     = f.label :other_memo, "その他"
     = f.text_area :other_memo, class: "form-control", size: "10x7"
 
+  .form-group
+    = f.label :slack_notify, "Slack通知"
+    = f.select :slack_notify,[["通知しない",0],["通知する",1]],{include_blank:true}, required: true,class:'form-control', required: true
+
   .actions
-  = f.submit '送信する', data: { confirm: "送信してよろしいですか？"} , class:"btn btn-primary"
+  = f.submit "保存する", data: { confirm: "確定する場合はSlackで通知してくださいね"} , class:"btn btn-primary"

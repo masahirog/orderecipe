@@ -79,7 +79,7 @@ class TasksController < ApplicationController
     end
     respond_to do |format|
       if @task.save
-        if params["chatwork_notice"]=='true'
+        if params[:task]["slack_notify"]=="1"
           message = "新規のプロジェクト・タスクが追加されました！\n"+
           "リストの確認をお願いします。\n"+
           "https://bento-orderecipe.herokuapp.com/tasks?group_id=#{@task.group_id}&task_id=#{@task.id}\n"+
@@ -110,8 +110,34 @@ class TasksController < ApplicationController
   end
 
   def update
+    @stores_hash = {}
+    Store.where(group_id:@group_id).each do |store|
+      @stores_hash[store.id]=store.name
+    end
     respond_to do |format|
       if @task.update(task_params)
+        if params[:task]["slack_notify"]=="1"
+          message = "新規のプロジェクト・タスクが追加されました！\n"+
+          "リストの確認をお願いします。\n"+
+          "https://bento-orderecipe.herokuapp.com/tasks?group_id=#{@task.group_id}&task_id=#{@task.id}\n"+
+          "投稿者：#{@task.drafter}\n"+
+          "タイトル：#{@task.title}\n"+
+          "内容：#{@task.content}"
+
+          attachment_images =[]
+          @task.task_images.each do |ti|
+            attachment_images << {image_url: ti.image.url}
+          end
+          stores = Store.where(id:@task.task_stores.where(subject_flag:true).map{|ts|ts.store_id})
+          slack_urls = stores.map{|store|store.task_slack_url}.uniq
+          slack_urls.each do |slack_url|
+            Slack::Notifier.new(slack_url, username: 'Bot', icon_emoji: ':male-farmer:', attachments: attachment_images).ping(message)
+          end
+          # if @task.group.task_slack_url.present?
+            # Slack::Notifier.new(@task.group.task_slack_url, username: 'Bot', icon_emoji: ':male-farmer:', attachments: attachment_images).ping(message)
+          # end
+        end
+
         format.html { redirect_to tasks_path(group_id:@task.group_id), success: "タスクを1件更新しました。" }
         format.js
       else

@@ -4,6 +4,7 @@ class Staff < ApplicationRecord
   has_many :default_shifts
   has_many :task_staffs
   has_many :tastings
+  has_many :sales_reports
   enum employment_status: {part_time:0,employee:1}
   enum status: {working:0,retirement:1}
 

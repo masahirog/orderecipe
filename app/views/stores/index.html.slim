@@ -8,6 +8,7 @@ h2 店舗一覧
         th 献立
         th 進捗ボード
         th リマインダー
+        th 一日のフォーム
         th 返金対応
         th 発注
         th 発注可能商品
@@ -23,6 +24,7 @@ h2 店舗一覧
           td = link_to '献立', store_daily_menus_path(store_id:store.id),class:'btn btn-sm btn-default'
           td = link_to "進捗ボード",tasks_path(store_id:store.id),class:'btn btn-sm btn-default'
           td = link_to 'リマインダー', store_reminders_path(store_id:store.id,status:'yet'),class:'btn btn-sm btn-default'
+          td = link_to "フォーム",sales_reports_path(store_id:store.id),class:'btn btn-sm btn-default'
           td = link_to '返金対応', refund_supports_path(store_id:store.id),class:'btn btn-sm btn-default'
           td = link_to store.short_name, orders_path(store_id:store.id),class:"order btn btn-default btn-sm"
           td = link_to '一覧', materials_stores_path(store_id:store.id),class:"order btn btn-default btn-sm"

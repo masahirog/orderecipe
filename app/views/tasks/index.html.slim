@@ -46,9 +46,6 @@
               div style='float:left;padding:5px 10px;margin-right:20px;'
                 = f.label :part_staffs_share_flag,"朝礼："
                 = f.check_box :part_staffs_share_flag
-              div style='width:80px;float:left;padding:5px 10px;'
-                label 通知
-                = check_box_tag "chatwork_notice",true,true
             .form-group
               label 店舗
               ul.list-group.clearfix
@@ -57,8 +54,11 @@
                   li.list-group-item style='float:left;'
                     = ts.label :subject_flag, @stores_hash[ts.object.store_id]
                     = ts.check_box :subject_flag
+            .form-group
+              = f.label :slack_notify, "Slack通知"
+              = f.select :slack_notify,[["通知しない",0],["通知する",1]],{include_blank:true}, required: true,class:'form-control', required: true
 
-              = f.submit '更新する',class:'btn btn-primary pull-right'
+            = f.submit '更新する',class:'btn btn-primary pull-right'
       .modal-footer
         button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
 

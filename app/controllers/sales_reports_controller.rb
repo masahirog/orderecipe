@@ -2,16 +2,8 @@ class SalesReportsController < ApplicationController
   before_action :set_sales_report, only: %i[ show edit update destroy ]
 
   def index
-    if params[:date]
-      date =Date.parse(params[:date])
-    else
-      date = Date.today
-      params[:date] = date
-    end
-    @from = date.beginning_of_month
-    @to = date.end_of_month
-    @stores = Store.where(group_id:9)
-    @sales_reports = SalesReport.where(date:@from..@to).map{|sr|[[sr.date,sr.store_id],sr.id]}.to_h
+    @store = Store.find(params[:store_id])
+    @sales_reports = SalesReport.where(store_id:params[:store_id]).order("date DESC")
   end
 
   def show
@@ -60,21 +52,27 @@ class SalesReportsController < ApplicationController
         " *課題に感じた点* ：\n#{@sales_report.issue}\n\n"+
         " *その他* ：\n#{@sales_report.other_memo}\n" +
         "ーーーーー\n"
-        Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'おつかれ様', icon_emoji: ':male-farmer:').ping(sales_form)
+        if params[:sales_report]["slack_notify"]=="1"
+          Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'おつかれ様', icon_emoji: ':male-farmer:').ping(sales_form)
+        end
         if @sales_report.excess_or_deficiency_number_memo
           kabusoku = " *惣菜の盛り付け過不足* \n"+
           "#{analysis.store_daily_menu.start_time.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[analysis.store_daily_menu.start_time.wday]})")}　#{analysis.store.name}　#{Staff.find(@sales_report.staff_id).name}\n"+
           "\n#{@sales_report.excess_or_deficiency_number_memo}\n"+
           "ーーーーー\n"
-          Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'かぶそ君', icon_emoji: ':male-scientist:').ping(kabusoku)
+          if params[:sales_report]["slack_notify"]=="1"
+            Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'かぶそ君', icon_emoji: ':male-scientist:').ping(kabusoku)
+          end
         end
         if @sales_report.good.present?
-          kindess_message = "#{Staff.find(@sales_report.staff_id).name} さんから\n"+
+          # kindess_message = "#{Staff.find(@sales_report.staff_id).name} さんから\n"+
           "ーーーーー\n"+
           "#{@sales_report.good}"
-          Slack::Notifier.new("https://hooks.slack.com/services/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", username: '感謝', icon_emoji: ':hugging_face:').ping(kindess_message)
+          if params[:sales_report]["slack_notify"]=="1"
+            Slack::Notifier.new("https://hooks.slack.com/services/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", username: '感謝', icon_emoji: ':hugging_face:').ping(kindess_message)
+          end
         end
-        format.html { redirect_to @sales_report, success: "作成しました。今日もお疲れさまでした！" }
+        format.html { redirect_to sales_report_path(store_id:@sales_report.store_id), success: "保存しました。" }
         format.json { render :show, status: :created, location: @sales_report }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -84,9 +82,43 @@ class SalesReportsController < ApplicationController
   end
 
   def update
+    sozai_ureyuki = params[:sales_report][:sozai_ureyuki]
+    bento_ureyuki = params[:sales_report][:bento_ureyuki]
+    kome_amari = params[:sales_report][:kome_amari]
     respond_to do |format|
       if @sales_report.update(sales_report_params)
-        format.html { redirect_to @sales_report, success: "更新！" }
+        analysis = @sales_report.analysis
+        sales_form=" *#{analysis.store_daily_menu.start_time.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[analysis.store_daily_menu.start_time.wday]})")}*　*#{analysis.store.name}*　*#{Staff.find(@sales_report.staff_id).name}* \n"+
+        " *売上(税抜)* ： #{analysis.ex_tax_sales_amount.to_s(:delimited)}円（#{analysis.transaction_count}組）\n"+
+        " *値引き率* ： #{((analysis.discount_amount.to_f/analysis.ex_tax_sales_amount)*100).round(1)}%（#{analysis.discount_amount.to_s(:delimited)}円）\n"+
+        " *廃棄率* ： #{((analysis.loss_amount.to_f/analysis.ex_tax_sales_amount)*100).round(1)}% （#{analysis.loss_amount.to_s(:delimited)}円）\n"+
+        " *ロス率* ： #{(((analysis.loss_amount.to_f + analysis.discount_amount.to_f)/analysis.ex_tax_sales_amount)*100).round(1)}% （#{(analysis.loss_amount.to_f + analysis.discount_amount.to_f).round.to_s(:delimited)}円）\n"+
+        " *現金誤差* ： #{@sales_report.cash_error}円\n"+
+        " *在庫感* ： 惣菜は#{sozai_ureyuki}、弁当は#{bento_ureyuki}、白米残#{kome_amari} kg\n\n"+
+        " *課題に感じた点* ：\n#{@sales_report.issue}\n\n"+
+        " *その他* ：\n#{@sales_report.other_memo}\n" +
+        "ーーーーー\n"
+        if params[:sales_report]["slack_notify"]=="1"
+          Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'おつかれ様', icon_emoji: ':male-farmer:').ping(sales_form)
+        end
+        if @sales_report.excess_or_deficiency_number_memo
+          kabusoku = " *惣菜の盛り付け過不足* \n"+
+          "#{analysis.store_daily_menu.start_time.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[analysis.store_daily_menu.start_time.wday]})")}　#{analysis.store.name}　#{Staff.find(@sales_report.staff_id).name}\n"+
+          "\n#{@sales_report.excess_or_deficiency_number_memo}\n"+
+          "ーーーーー\n"
+          if params[:sales_report]["slack_notify"]=="1"
+            Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'かぶそ君', icon_emoji: ':male-scientist:').ping(kabusoku)
+          end
+        end
+        if @sales_report.good.present?
+          # kindess_message = "#{Staff.find(@sales_report.staff_id).name} さんから\n"+
+          "ーーーーー\n"+
+          "#{@sales_report.good}"
+          if params[:sales_report]["slack_notify"]=="1"
+            Slack::Notifier.new("https://hooks.slack.com/services/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", username: '感謝', icon_emoji: ':hugging_face:').ping(kindess_message)
+          end
+        end
+        format.html { redirect_to sales_report_path(store_id:@sales_report.store_id), success: "更新しました。" }
         format.json { render :show, status: :ok, location: @sales_report }
       else
         format.html { render :edit, status: :unprocessable_entity }

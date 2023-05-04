@@ -73,8 +73,12 @@ li.clearfix.list-group-item.item class="task_#{task.id}_li" data={model_name: ta
                   = f.check_box :part_staffs_share_flag
                 / = f.select :status, options_for_select_from_enum(Task, :status),{include_blank:'ステータス'}, { class: "form-control", required:true,style:'float:left;width:200px;'}
                 / = f.text_field :drafter, class:"form-control",placeholder:'投稿者名',style:'float:left;width:200px;margin-left:10px;'
-                = link_to "削除", task, method: :delete,class:'btn btn-default btn-sm pull-right',style:'margin-left:10px;',data: { confirm: "ホンマに削除するで？" }
-                = f.submit '更新する',class:'btn btn-primary pull-right btn-sm'
+              .form-group              
+                = f.label :slack_notify, "Slack通知"
+                = f.select :slack_notify,[["通知しない",0],["通知する",1]],{include_blank:true}, required: true,class:'form-control', required: true
+
+              = link_to "削除", task, method: :delete,class:'btn btn-default btn-sm pull-right',style:'margin-left:10px;',data: { confirm: "ホンマに削除するで？" }
+              = f.submit '更新する',class:'btn btn-primary pull-right btn-sm'
           .clearfix.task_show
             h4.title = task.title
             hr style='border-top: 1px solid #ccc;'

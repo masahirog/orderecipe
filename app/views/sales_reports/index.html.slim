@@ -1,36 +1,17 @@
-/ h1 レポート
-/ = form_tag(new_sales_report_path,method: :get) do
-/   .form-group
-/     label 日付
-/     = date_field_tag :date,{}, required: true, class:"form-control"
-/   .form-group
-/     label 店舗
-/     = select_tag "store_id", options_from_collection_for_select(Store.all,:id,:name),include_blank:'店舗を選択',required: true, class: "form-control"
-/   = submit_tag "レポート作成する" ,class:"btn btn-primary"
+h3 = "#{@store.name} 一日のフォーム"
 
-
-= form_tag(sales_reports_path,method: :get) do
-  .form-group.clearfix
-    = date_field_tag :date,params[:date], class:"form-control float-start",style:'width:200px;float:left;margin-right:10px;'
-    = submit_tag "検索" ,class:"btn btn-primary",style:"float:left;"
-h2 = "#{@from.year}年#{@from.month}月 レポート"
-
-.table-responsive style='overflow: scroll;'
-  table.table.layout-fixed style='border-collapse:separate;'
-    thead style='position: sticky;top:0;background-color:white;z-index:3;'
+table.table
+  thead
+    tr
+      th ID
+      th 日付
+      th スタッフ名
+  tbody
+    - @sales_reports.each do |sales_report|
       tr
-        th 店舗名
-        - (@from..@to).each do |date|
-          th = date.strftime("%-d日")
-    tbody
-      - @stores.each do |store|
-        tr
-          td = store.name
-          - (@from..@to).each do |date|
-            td
-              - if @sales_reports[[date,store.id]].present?
-                = link_to "レポート",sales_report_path(id:@sales_reports[[date,store.id]])
-              - else
+        td = link_to sales_report.id,edit_sales_report_path(sales_report)
+        td = sales_report.date
+        td = sales_report.staff.name  
 
 css:
   .table-responsive th {

@@ -1,7 +1,7 @@
 .form-group
   = link_to "一覧へ戻る",sales_reports_path,class:'btn btn-default btn-sm'
   h3 = "#{@sales_report.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@sales_report.date.wday]})")}"
-  p = "スタッフ名：#{t("enums.sales_report.staff_id.#{@sales_report.staff_id}")}"
+  p = "スタッフ名：#{@sales_report.staff.name}"
   p = "店舗：#{Store.find(@sales_report.store_id).name}"
   p = "来店数：#{@analysis.transaction_count}"
   p = "売上：#{@analysis.ex_tax_sales_amount.to_s(:delimited)}円"
