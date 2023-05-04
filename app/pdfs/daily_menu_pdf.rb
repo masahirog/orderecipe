@@ -20,12 +20,13 @@ class DailyMenuPdf < Prawn::Document
     daily_menu.store_daily_menus.each_with_index do |sdm|
       num = sdm.store_daily_menu_details.sum(:number)
       if num > 0
-        bounding_box([10, 800], :width => 560) do
+        bounding_box([10, 800], :width => 540) do
           text " 納 品 書",:align => :center,:size => 20
-          move_down 5
-          text "発行時間：#{Time.now.strftime("%Y年 %m月 %d日　%H:%M")}",size:10,:align => :right
-          text "#{sdm.store.name} 宛（#{sdm.start_time} 分）",size:15
           move_down 10
+          text "発行時間：#{Time.now.strftime("%Y年 %m月 %d日　%H:%M")}",size:10,:align => :right
+          move_up 15
+          text "#{sdm.store.name} 宛（#{sdm.start_time} 分）",size:15
+          move_down 5
           table line_item_rows(sdm) do
             self.row_colors = ["FFFFFF","E5E5E5"]
             cells.size = 7
@@ -39,13 +40,15 @@ class DailyMenuPdf < Prawn::Document
           end
           move_down 10
 
-          rows = [['コンテナ','数','メモ'],['　','',''],['　','',''],['　','',''],['　','',''],['　','','']]
+          rows = [['コンテナ','数','メモ'],['　','',''],['　','',''],['　','',''],['　','','']]
           table rows do
-            self.column_widths = [180,50,200]
+            cells.border_width = 0.1
+            self.column_widths = [180,50,310]
           end
           move_down 5
-          text "ーー その他メモ ーー"
-          text "冷凍品："
+          text "冷凍品：　　　　　　　　　　タッパー："
+          move_down 5
+          text "バット：　　　　　　　　　　ボトル："
         end
         start_new_page if i < count + 1
         i += 1
