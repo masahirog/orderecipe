@@ -117,7 +117,7 @@ ActiveRecord::Schema.define(version: 2023_04_19_030858) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "daily_menu_details", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "daily_menu_details", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "daily_menu_id", null: false
     t.integer "product_id", null: false
     t.integer "manufacturing_number", default: 0, null: false
@@ -136,7 +136,7 @@ ActiveRecord::Schema.define(version: 2023_04_19_030858) do
     t.integer "sell_price", default: 0, null: false
   end
 
-  create_table "daily_menus", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "daily_menus", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.date "start_time", null: false
     t.integer "total_manufacturing_number", default: 0, null: false
     t.integer "weather"
@@ -294,7 +294,7 @@ ActiveRecord::Schema.define(version: 2023_04_19_030858) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "material_store_orderables", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "material_store_orderables", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "material_id", null: false
     t.integer "store_id", null: false
     t.boolean "orderable_flag", default: false, null: false
@@ -738,7 +738,7 @@ ActiveRecord::Schema.define(version: 2023_04_19_030858) do
     t.integer "zeinuki_uriage"
   end
 
-  create_table "staffs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+  create_table "staffs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "store_id", null: false
     t.string "name", null: false
     t.text "memo"
@@ -749,6 +749,7 @@ ActiveRecord::Schema.define(version: 2023_04_19_030858) do
     t.integer "status", default: 0, null: false
     t.integer "jobcan_staff_code"
     t.integer "smaregi_hanbaiin_id"
+    t.string "phone_number"
   end
 
   create_table "stocks", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -916,7 +917,7 @@ ActiveRecord::Schema.define(version: 2023_04_19_030858) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "temporary_menu_materials", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "temporary_menu_materials", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "menu_material_id", null: false
     t.integer "material_id", null: false
     t.date "date"

@@ -14,7 +14,12 @@ class StaffsController < ApplicationController
   def index
     group_id = params[:group_id]
     @group = Group.find(group_id)
-    @staffs = Staff.includes([:store]).where(:stores => {group_id:params[:group_id]}).order(row:'asc')
+    if params[:status].present?
+      status = params[:status]
+    else
+      status = 0
+    end
+    @staffs = Staff.includes([:store]).where(:stores => {group_id:params[:group_id]},status:status).order(row:'asc')
   end
 
   def show
@@ -73,6 +78,6 @@ class StaffsController < ApplicationController
     end
 
     def staff_params
-      params.require(:staff).permit(:store_id,:name,:memo,:employment_status,:row,:status,:jobcan_staff_code,:smaregi_hanbaiin_id)
+      params.require(:staff).permit(:store_id,:name,:memo,:employment_status,:row,:status,:jobcan_staff_code,:smaregi_hanbaiin_id,:phone_number)
     end
 end

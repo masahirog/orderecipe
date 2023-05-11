@@ -1,5 +1,12 @@
-h1 = "#{@group.name}スタッフ一覧"
-= link_to '新規登録', new_staff_path(group_id:params[:group_id]),class:'btn btn-primary'
+h3 = "#{@group.name}スタッフ一覧"
+.form-group.clearfix
+  = link_to '新規登録', new_staff_path(group_id:params[:group_id]),class:'btn btn-primary',style:'float:left;'
+  = form_tag staffs_path, :method => 'get' do
+    = hidden_field_tag :group_id,params[:group_id]
+    .col-md-2 style="float:left;"
+      = select_tag :status, options_for_select([[:working,0],[:retirement,1]],params[:status]), include_blank: true, class:"form-control"
+    .col-md-2 style="float:left;"
+      = submit_tag "検索" ,class:"btn btn-primary"
 
 = form_tag(row_order_update_staffs_path,method: :post) do
   = hidden_field_tag :group_id,params[:group_id]
@@ -12,6 +19,7 @@ h1 = "#{@group.name}スタッフ一覧"
         th 状態
         th ジョブカンコード
         th スマレジID
+        th 電話
         th
           |並び順　
           = submit_tag "登録する" ,class:"btn btn-success btn-sm"
@@ -28,6 +36,7 @@ h1 = "#{@group.name}スタッフ一覧"
           td = staff.status
           td = staff.jobcan_staff_code
           td = staff.smaregi_hanbaiin_id
+          td = staff.phone_number
           td = number_field_tag "row[#{staff.id}]",{},class:'input_row_order form-control',style:'width:60px;',readonly:true
 javascript:
   $(function () {
