@@ -123,6 +123,7 @@ html
                       |設定
                       span.caret
                     ul.dropdown-menu role="menu"
+                      li = link_to "スタッフ一覧",staffs_path(group_id:9)
                       li = link_to "グループ",groups_path
                       li = link_to "シフト枠",shift_frames_path
                       li = link_to '確定シフトパターン',fix_shift_patterns_path
