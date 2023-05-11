@@ -65,7 +65,7 @@ class SalesReportsController < ApplicationController
           end
         end
         if @sales_report.good.present?
-          # kindess_message = "#{Staff.find(@sales_report.staff_id).name} さんから\n"+
+          kindess_message = "#{Staff.find(@sales_report.staff_id).name} さんから\n"+
           "ーーーーー\n"+
           "#{@sales_report.good}"
           if params[:sales_report]["slack_notify"]=="1"
