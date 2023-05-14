@@ -32,7 +32,8 @@
 					td = @dmds_hash[date].manufacturing_number if @dmds_hash[date]
 					td = "#{(@dmds_hash[date].manufacturing_number*@menu_material.amount_used).round.to_s(:delimited)} #{@menu_material.material.recipe_unit}" if @dmds_hash[date]
 					td
-						= select_tag("temporary_menu_material_#{date}_material_id", options_from_collection_for_select(@materials,:id,:name,material_id), include_blank: true,class:"input_select_material", name:"temporary_menu_material[#{date}][material_id]",style:'width:300px;')
+						/ = select_tag :shohin_id, options_for_select(@shohin_ids,params[:shohin_id]),include_blank:'商品ID' , class: "form-control",placeholder:'商品ID'
+						= select_tag("temporary_menu_material_#{date}_material_id", options_for_select(@materials,material_id), include_blank: true,class:"input_select_material", name:"temporary_menu_material[#{date}][material_id]",style:'width:300px;')
 					td
 						input type="button" class='clear-btn btn btn-danger btn-sm' value="解除"
 javascript:
