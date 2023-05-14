@@ -56,7 +56,7 @@ $(document).on('turbolinks:load', function() {
         },
         processResults: function (data, params) {
           return { results: $.map(data, function(obj) {
-              return { id: obj.id, text: obj.name };
+              return { id: obj[0], text: obj[1] };
             })
           };
         }

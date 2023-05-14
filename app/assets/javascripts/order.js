@@ -43,7 +43,7 @@ $(document).on('turbolinks:load', function() {
         processResults: function (data, params) {
           console.log(data);
           return { results: $.map(data, function(obj) {
-              return { id: obj.id, text: obj.name };
+              return { id: obj[0], text: obj[1] };
             })
           };
         }

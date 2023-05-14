@@ -1,4 +1,18 @@
-#weather.clearfix style='margin-bottom:20px;'
+.col-md-12 style='background-color:#fffacd;border-radius:8px;padding:10px;margin-bottom:15px;'
+  span style='' ミッション - 存在意義 -
+  h4 style='margin:5px 0;font-weight:bold;' 食べる楽しさを全てのひとへ
+  br
+  span ビジョン - 理想像 -
+  h4 style='margin:5px 0;font-weight:bold;' 「毎日の美味しいを支える」街一番のお惣菜店
+  br
+  span バリュー  - 行動指針 -
+  h4 style='margin:5px 0;font-weight:bold;' 「CACHI」にこだわり続ける
+  p 　Creative：創り出そう
+  p 　Active：行動しよう
+  p 　Communicate：伝えよう
+  p 　Honesty：誠実でいよう
+  p 　Impact：影響を与えよう
+
 div style='margin-bottom:20px;'
   = form_tag summary_analyses_path, :method => 'get' do
     .clearfix
@@ -153,78 +167,78 @@ javascript:
       }
     }
   });
-  $(function () {
-    const lat = gon.lat
-    const lon = gon.lon
-    const key = gon.api
-    const weather_url = 'https://api.openweathermap.org/data/2.5/onecall?lat=' + lat + '&lon=' + lon + '&exclude=current,minutely,alerts&units=metric&appid=' + key;
-    $.ajax({
-        url: weather_url,
-        dataType: 'json',
-        type: 'GET',
-      })
-    .done(function (weather) {
-      let insertHTML = '';
-      for (let i = 0; i <= 7; i = i + 1) {
-        insertHTML += buildHTML(weather, i);
-      }
-      $('#weather').html(insertHTML);
-    })
-    .fail(function (weather) {
-      alert('天気予報の取得に失敗しました');
-    });
-  });
+  // $(function () {
+  //   const lat = gon.lat
+  //   const lon = gon.lon
+  //   const key = gon.api
+  //   const weather_url = 'https://api.openweathermap.org/data/2.5/onecall?lat=' + lat + '&lon=' + lon + '&exclude=current,minutely,alerts&units=metric&appid=' + key;
+  //   $.ajax({
+  //       url: weather_url,
+  //       dataType: 'json',
+  //       type: 'GET',
+  //     })
+  //   .done(function (weather) {
+  //     let insertHTML = '';
+  //     for (let i = 0; i <= 7; i = i + 1) {
+  //       insertHTML += buildHTML(weather, i);
+  //     }
+  //     $('#weather').html(insertHTML);
+  //   })
+  //   .fail(function (weather) {
+  //     alert('天気予報の取得に失敗しました');
+  //   });
+  // });
 
   // 日本語で表示
-  function buildHTML(weather, i) {
-    //日付、時間を取得（Dateがミリ秒なので1000倍が必要）
-    const date = new Date(weather.daily[i].dt * 1000);
-    //UTCとの時差を無くす(日本は-9時間のため9を足す)
-    // date.setHours(date.getHours() + 9);
-    //月を取得。getMonth()は0~11を返すため1を足すことによって1月~12月を返すように設定
-    const month = date.getMonth() + 1;
-    //曜日の日本語化のため、配列を用意する
-    const Week = new Array('(日)', '(月)', '(火)', '(水)', '(木)', '(金)', '(土)');
-    //月＋日＋曜日をdayに代入。getDay()は0~6を返すためWeek配列内のインデックスに対応した文字列を取得
-    const day = month + '/' + date.getDate() + Week[date.getDay()];
-    //天気のアイコンを取得
-    const icon = weather.daily[i].weather[0].icon;
-    //風速を取得
-    var rain = 0;
-    if (weather.daily[i].rain) {
-      var rain = Math.round(weather.daily[i].rain);
-    }
-    var jpn_description = {"clear sky":"快晴","few clouds":"晴れ","scattered clouds":"くもり","broken clouds":"くもり","shower rain":"小雨","rain":"雨",
-    "thunderstorm":"雷雨","snow":"雪","mist":"霧",
-    'thunderstorm with light rain':'小雨で雷を伴う','thunderstorm with rain':'雷雨','thunderstorm with heavy rain':'強い雨で雷を伴う','light thunderstorm':'雷','thunderstorm':'雷雨',
-    'heavy thunderstorm':'強い雷雨','ragged thunderstorm':'局地的雷雨','thunderstorm with light drizzle':'薄い霧で雷を伴う','thunderstorm with drizzle':'霧雨で雷を伴う',
-    'thunderstorm with heavy drizzle':'濃い霧雨で雷を伴う','light intensity drizzle':'もや','drizzle':'霧','heavy intensity drizzle':'濃霧',
-    'light intensity drizzle rain':'霧雨','drizzle rain':'小雨','heavy intensity drizzle rain':'濃霧の伴う雨','shower rain and drizzle':'霧所によりにわか雨',
-    'heavy shower rain and drizzle':'霧所により強いにわか雨','shower drizzle':'にわか霧','light rain':'小雨','moderate rain':'雨',
-    'heavy intensity rain':'やや強い雨','very heavy rain':'強い雨','extreme rain':'激しい雨','freezing rain':'冷たい雨','light intensity shower rain':'小雨',
-    'shower rain':'にわか雨','heavy intensity shower rain':'強いにわか雨','ragged shower rain':'局地的にわか雨','light snow':'小雪','snow':'雪',
-    'heavy snow':'大雪','sleet':'みぞれ','shower sleet':'にわかみぞれ','light rain and snow':'小雨所により雪','rain and snow':'雨所により雪','light shower snow':'にわか小雪',
-    'shower snow':'にわか雪','heavy shower snow':'強いにわか雪','mist':'霧','smoke':'スモッグ','haze':'煙霧','sand, dust whirls':'黄砂','fog':'濃霧','sand':'黄砂','dust':'塵',
-    'volcanic ash':'火山灰','squalls':'スコール','tornado':'竜巻','clear sky':'晴れ','few clouds':'晴れ所により曇り','scattered clouds':'曇り所により晴れ','broken clouds':'曇り時々晴れ',
-    'overcast clouds':'曇り','tornado':'竜巻','tropical storm':'台風','hurricane':'ハリケーン','cold':'寒気','hot':'暖気','windy':'強風','hail':'ひょう',
-    'calm':'無風','light breeze':'微風','gentle breeze':'そよ風','moderate breeze':'弱い風','fresh breeze':'やや強い風','strong breeze':'強い風',
-    'high wind, near gale':'非常に強い風','gale':'強風注意報','severe gale':'海上風警報','storm':'強風警報','violent storm':'暴風警報','hurricane':'特別暴風警報'}
+  // function buildHTML(weather, i) {
+  //   //日付、時間を取得（Dateがミリ秒なので1000倍が必要）
+  //   const date = new Date(weather.daily[i].dt * 1000);
+  //   //UTCとの時差を無くす(日本は-9時間のため9を足す)
+  //   // date.setHours(date.getHours() + 9);
+  //   //月を取得。getMonth()は0~11を返すため1を足すことによって1月~12月を返すように設定
+  //   const month = date.getMonth() + 1;
+  //   //曜日の日本語化のため、配列を用意する
+  //   const Week = new Array('(日)', '(月)', '(火)', '(水)', '(木)', '(金)', '(土)');
+  //   //月＋日＋曜日をdayに代入。getDay()は0~6を返すためWeek配列内のインデックスに対応した文字列を取得
+  //   const day = month + '/' + date.getDate() + Week[date.getDay()];
+  //   //天気のアイコンを取得
+  //   const icon = weather.daily[i].weather[0].icon;
+  //   //風速を取得
+  //   var rain = 0;
+  //   if (weather.daily[i].rain) {
+  //     var rain = Math.round(weather.daily[i].rain);
+  //   }
+  //   var jpn_description = {"clear sky":"快晴","few clouds":"晴れ","scattered clouds":"くもり","broken clouds":"くもり","shower rain":"小雨","rain":"雨",
+  //   "thunderstorm":"雷雨","snow":"雪","mist":"霧",
+  //   'thunderstorm with light rain':'小雨で雷を伴う','thunderstorm with rain':'雷雨','thunderstorm with heavy rain':'強い雨で雷を伴う','light thunderstorm':'雷','thunderstorm':'雷雨',
+  //   'heavy thunderstorm':'強い雷雨','ragged thunderstorm':'局地的雷雨','thunderstorm with light drizzle':'薄い霧で雷を伴う','thunderstorm with drizzle':'霧雨で雷を伴う',
+  //   'thunderstorm with heavy drizzle':'濃い霧雨で雷を伴う','light intensity drizzle':'もや','drizzle':'霧','heavy intensity drizzle':'濃霧',
+  //   'light intensity drizzle rain':'霧雨','drizzle rain':'小雨','heavy intensity drizzle rain':'濃霧の伴う雨','shower rain and drizzle':'霧所によりにわか雨',
+  //   'heavy shower rain and drizzle':'霧所により強いにわか雨','shower drizzle':'にわか霧','light rain':'小雨','moderate rain':'雨',
+  //   'heavy intensity rain':'やや強い雨','very heavy rain':'強い雨','extreme rain':'激しい雨','freezing rain':'冷たい雨','light intensity shower rain':'小雨',
+  //   'shower rain':'にわか雨','heavy intensity shower rain':'強いにわか雨','ragged shower rain':'局地的にわか雨','light snow':'小雪','snow':'雪',
+  //   'heavy snow':'大雪','sleet':'みぞれ','shower sleet':'にわかみぞれ','light rain and snow':'小雨所により雪','rain and snow':'雨所により雪','light shower snow':'にわか小雪',
+  //   'shower snow':'にわか雪','heavy shower snow':'強いにわか雪','mist':'霧','smoke':'スモッグ','haze':'煙霧','sand, dust whirls':'黄砂','fog':'濃霧','sand':'黄砂','dust':'塵',
+  //   'volcanic ash':'火山灰','squalls':'スコール','tornado':'竜巻','clear sky':'晴れ','few clouds':'晴れ所により曇り','scattered clouds':'曇り所により晴れ','broken clouds':'曇り時々晴れ',
+  //   'overcast clouds':'曇り','tornado':'竜巻','tropical storm':'台風','hurricane':'ハリケーン','cold':'寒気','hot':'暖気','windy':'強風','hail':'ひょう',
+  //   'calm':'無風','light breeze':'微風','gentle breeze':'そよ風','moderate breeze':'弱い風','fresh breeze':'やや強い風','strong breeze':'強い風',
+  //   'high wind, near gale':'非常に強い風','gale':'強風注意報','severe gale':'海上風警報','storm':'強風警報','violent storm':'暴風警報','hurricane':'特別暴風警報'}
 
-    const description = jpn_description[weather.daily[i].weather[0].description]
-    const max_temp = Math.round(weather.daily[i].temp.max);
-    const min_temp = Math.round(weather.daily[i].temp.min);
-    const html =
-      '<div class="weather__content--report" style="float:left;padding:5px 30px;">' +
-        '<div class="weather__content--report-date">' + day + "</div>" +
-        '<img src="https://openweathermap.org/img/w/' + icon + '.png">' +
-        '<div class="weather__content--report-description" style="font-weight:bold;">' + description + "</div>" +
-        '<div class="weather__content--report-date">最高：' + max_temp + "℃</div>" +
-        '<div class="weather__content--report-date">最低：' + min_temp + "℃</div>" +
-        '<div class="weather__content--report-rain">降水量：' + rain + "mm</div>" +
-        // '<p class="weather__content--report-wind_speed">' + wind_speed + "m</p>" +
-      '</div>';
-    return html
-  }
+  //   const description = jpn_description[weather.daily[i].weather[0].description]
+  //   const max_temp = Math.round(weather.daily[i].temp.max);
+  //   const min_temp = Math.round(weather.daily[i].temp.min);
+  //   const html =
+  //     '<div class="weather__content--report" style="float:left;padding:5px 30px;">' +
+  //       '<div class="weather__content--report-date">' + day + "</div>" +
+  //       '<img src="https://openweathermap.org/img/w/' + icon + '.png">' +
+  //       '<div class="weather__content--report-description" style="font-weight:bold;">' + description + "</div>" +
+  //       '<div class="weather__content--report-date">最高：' + max_temp + "℃</div>" +
+  //       '<div class="weather__content--report-date">最低：' + min_temp + "℃</div>" +
+  //       '<div class="weather__content--report-rain">降水量：' + rain + "mm</div>" +
+  //       // '<p class="weather__content--report-wind_speed">' + wind_speed + "m</p>" +
+  //     '</div>';
+  //   return html
+  // }
 
 css:
   .table-responsive th {
