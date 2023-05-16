@@ -28,20 +28,28 @@
 
   .col-md-12.form-group
     .col-md-3
+      = f.label :container_id, "盛り付け包材"
+      = f.collection_select :container_id, Container.all, :id, :name, {include_blank:true}, { class: "form-control"}
+
+    .col-md-2
+      = f.label :product_category, "べじはん惣菜"
+      = f.check_box :bejihan_sozai_flag, class: "form-control"
+
+    .col-md-2
       = f.label :sell_price, "販売価格"
       .form-inline
         .form-group
           = f.number_field :sell_price, class:"price form-control text-right",style:'width:150px;'
           .form-group
             |円
-    .col-md-3
+    .col-md-2
       = f.label :cost_price, "商品原価"
       .form-inline
         .form-group
           = f.number_field :cost_price, :readonly => 'readonly', class:"product_cost_price form-control text-right",style:'width:150px;'
         .form-group
           |円
-    .col-md-3
+    .col-md-2
       label 原価率
       .form-inline
         .form-group
@@ -51,39 +59,46 @@
 
   .col-md-12.form-group
     .col-md-3
-      = f.label :container_id, "盛り付け包材"
-      = f.collection_select :container_id, Container.all, :id, :name, {include_blank:true}, { class: "form-control"}
-
-    .col-md-2
-      = f.label :product_category, "べじはん惣菜"
-      = f.check_box :bejihan_sozai_flag, class: "form-control"
-    / .col-md-2
-      = f.label :carryover_able_flag, "翌日繰越可"
-      = f.check_box :carryover_able_flag, class: "form-control"
-    / .col-md-2
-      = f.label :freezing_able_flag, "冷凍可"
-      = f.check_box :freezing_able_flag, class: "form-control"
-
-  .col-md-12.form-group
-    .col-md-6
+      = f.label :image, "公式写真"
+      = f.file_field :image
+      = f.hidden_field :image_cache
+      .form-group
+        - if @product.image?
+          = image_tag @product.image.to_s,class:"img-responsive",style:'max-height:300px;'
+          div
+            = f.label :remove_image,"削除する"
+            = f.check_box :remove_image
+    .col-md-3
       = f.label :image_for_one_person, "一人前写真"
       = f.file_field :image_for_one_person
       .form-group
         - if @product.image_for_one_person?
-          = image_tag @product.image_for_one_person.to_s,class:"img-responsive",style:'max-height:450px;'
+          = image_tag @product.image_for_one_person.to_s,class:"img-responsive",style:'max-height:300px;'
+          div
+            = f.label :remove_image_for_one_person,"削除する"
+            = f.check_box :remove_image_for_one_person
 
-    .col-md-6
-      = f.fields_for :product_pops do |pp|
-        .col-md-12
-          = pp.label :image, "ポップ写真"
-          .form-group
-            = pp.file_field :image
-            - if pp.object.image.present?
-              = link_to "ダウンロード", download_products_path(:file_name => pp.object.image,:key => pp.object.image.path, :type => 'pdf'),target:'_blank',class:'col-md-12'
-              = pp.label :remove_image,"削除する"
-              = pp.check_box :remove_image
-              = pp.hidden_field :image_cache
-              object data="#{pp.object.image.to_s}" type="application/pdf" width="" height=""
+    = f.fields_for :product_pops do |pp|
+      .col-md-3
+        = pp.label :image, "ポップ"
+        .form-group
+          = pp.file_field :image
+          - if pp.object.image.present?
+            = pp.hidden_field :image_cache
+            object data="#{pp.object.image.to_s}" type="application/pdf" width="" height=""
+            = link_to "ダウンロード", download_products_path(:file_name => pp.object.image,:key => pp.object.image.path, :type => 'pdf'),target:'_blank',class:'col-md-12'
+            = pp.label :remove_image,"削除する"
+            = pp.check_box :remove_image
+
+
+    / .col-md-3
+      = f.label :display_image, "大皿写真"
+      = f.file_field :display_image
+      .form-group
+        - if @product.display_image?
+          = image_tag @product.display_image.to_s,class:"img-responsive",style:'max-height:450px;'
+
+
 
   / .col-md-12.form-group
     / .col-md-2
@@ -149,26 +164,6 @@
     tbody#product_parts-add-point
       = f.fields_for :product_parts do |mp|
         = render 'product_part_fields', f:mp
-
-  / .col-md-12
-    / .col-md-3
-      = f.label :image, "製造側用写真"
-      = f.file_field :image
-      = f.hidden_field :image_cache
-      .form-group
-        - if @product.image?
-          = image_tag @product.image.to_s,class:"img-responsive",style:'max-height:450px;'
-          div
-            = f.label :remove_image,"削除する"
-            = f.check_box :remove_image
-    / .col-md-3
-      = f.label :display_image, "大皿写真"
-      = f.file_field :display_image
-      .form-group
-        - if @product.display_image?
-          = image_tag @product.display_image.to_s,class:"img-responsive",style:'max-height:450px;'
-
-
 
 
   .menu-area
