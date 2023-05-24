@@ -79,7 +79,7 @@ canvas#chart1
             td
               - if @date_store_analyses[date][store.id][:sales_amount].present? && @date_store_analyses[date][store.id][:loss_amount].present? && @date_store_analyses[date][store.id][:discount_amount].present?
                 - loss = (((@date_store_analyses[date][store.id][:loss_amount].to_f + @date_store_analyses[date][store.id][:discount_amount].to_f)/@date_store_analyses[date][store.id][:sales_amount])*100).round(1)
-                - if loss > 12 || loss < 8
+                - if loss > 9 || loss < 4
                   span style='color:red;' = "#{loss}%"
                 - else
                   span style='color:black;' = "#{loss}%"
