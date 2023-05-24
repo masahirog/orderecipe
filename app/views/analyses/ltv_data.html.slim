@@ -1,0 +1,45 @@
+.clearfix style='margin-bottom:20px;'
+  div style="width:1000px;float:left;"
+    = form_tag ltv_data_analyses_path, :method => 'get' do
+      div
+        label style='float:left;margin-right:10px;' 店舗
+        = select_tag :store_id, options_from_collection_for_select(@stores, :id, :name,params[:store_id]),include_blank: true, class: "form-control",style:'width:200px;float:left;'
+
+      div
+        label style='float:left;margin-right:10px;' 年
+        = select_tag :year, options_for_select([2021,2022,2023,2024,2025],params[:year]),include_blank:'', class:"form-control",style:'width:200px;float:left;'
+      div
+        label style='float:left;margin-right:10px;' 月
+        = select_tag :month, options_for_select([1,2,3,4,5,6,7,8,9,10,11,12],params[:month]),include_blank:'', class:"form-control",style:'width:200px;float:left;'
+      = submit_tag "絞り込み" ,class:"btn btn-primary",style:"margin-left:20px;"
+  .pull-right
+     = form_tag ltv_data_analyses_path(format: :csv), :method => 'get' do
+      = hidden_field_tag :store_id,params[:store_id]
+      = hidden_field_tag :year,params[:year]
+      = hidden_field_tag :month,params[:month]
+      = submit_tag "CSV",class:"btn btn-primary",style:"margin-top:35px;"
+= paginate @hash
+table.table
+  thead
+    tr
+      th 店舗ID
+      th 取引ID
+      th 日付
+      th 会員ID
+      th 登録日
+      th 合計金額
+      th 購入点数
+      th 時間
+      th 販売員
+  tbody
+    - @hash.each do |data|
+      tr
+        td = data[1][:tenpo_id]
+        td = data[0]
+        td = data[1][:date]
+        td = data[1][:kaiin_id]
+        td = data[1][:nyukaibi]
+        td = data[1][:gokei]
+        td = data[1][:suryo_gokei]
+        td = data[1][:time]
+        td = data[1][:hanbaiin_id]

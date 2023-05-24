@@ -123,8 +123,9 @@ Rails.application.routes.draw do
   resources :analysis_products
   resources :analyses do
     collection do
+      post :reload_product_repeat
       get :product_repeat
-      get :product_score
+      get :ltv_data
       get :progress
       get :gyusuji
       get :labor
@@ -156,6 +157,7 @@ Rails.application.routes.draw do
   end
   resources :smaregi_trading_histories do
     collection do
+      get :member
       post :upload_salesdatas
       get :analysis_data
       post :bulk_delete

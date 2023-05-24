@@ -39,10 +39,13 @@ div style='margin-bottom:20px;'
 
 
 h3 会員一覧
-= link_to '販売データ更新',update_sales_data_smaregi_members_analyses_path,class:'btn btn-primary btn-sm pull-right',style:'margin-left:10px;', method: :post
-= link_to '会員データCSV',smaregi_member_csv_analyses_path(format: :csv),class:'btn btn-primary btn-sm pull-right',style:'margin-left:10px;'
+= link_to '購入履歴DL',member_smaregi_trading_histories_path(order:params[:order],sc:params[:sc],page:params[:page],store_ids:params[:store_ids],format: :csv),class:'btn btn-default btn-sm pull-right',style:'margin-left:10px;'
 
-button type="button" class="pull-right btn btn-sm btn-primary" data-toggle="modal" data-target="#sampleModal" 会員データアップロード
+= link_to '会員データDL',smaregi_member_csv_analyses_path(format: :csv),class:'btn btn-default btn-sm pull-right',style:'margin-left:10px;'
+
+= link_to '販売データ更新',update_sales_data_smaregi_members_analyses_path,class:'btn btn-primary btn-sm pull-right',style:'margin-left:10px;', method: :post
+
+button type="button" class="pull-right btn btn-sm btn-primary" data-toggle="modal" data-target="#sampleModal" 会員データUL
 #sampleModal.modal.fade tabindex="-1"
   = form_tag upload_smaregi_members_analyses_path, multipart: true do
     .modal-dialog

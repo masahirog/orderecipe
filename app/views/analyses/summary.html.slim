@@ -67,7 +67,7 @@ canvas#chart1
           td
             - if @date_store_analyses[date].map{|hash|hash[1][:loss_amount].to_i}.sum > 0 && @date_store_analyses[date].map{|hash|hash[1][:discount_amount].to_i}.sum > 0
               - loss = (((@date_store_analyses[date].map{|hash|hash[1][:loss_amount].to_i}.sum.to_f + @date_store_analyses[date].map{|hash|hash[1][:discount_amount].to_i}.sum.to_f)/@date_store_analyses[date].map{|hash|hash[1][:sales_amount]}.sum)*100).round(1)
-              - if loss > 12 || loss < 8
+              - if loss > 9 || loss < 4
                 span style='color:red;' = "#{loss}%"
               - else
                 span style='color:black;' = "#{loss}%"

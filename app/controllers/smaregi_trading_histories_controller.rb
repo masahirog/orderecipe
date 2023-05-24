@@ -1,5 +1,41 @@
 class SmaregiTradingHistoriesController < AdminController
   before_action :set_smaregi_trading_history, only: %i[ show edit update destroy ]
+  def member
+    if params[:store_ids].present?
+      params[:stores] = {}
+      checked_store_ids = params['store_ids']
+      @stores = Store.where(id:checked_store_ids)
+      @stores.each do |store|
+        params[:stores][store.id.to_s] = true
+      end
+    elsif params[:stores].present?
+      checked_store_ids = params['stores'].keys
+      @stores = Store.where(id:checked_store_ids)
+      params[:store_ids] = checked_store_ids
+    else
+      params[:stores] = {}
+      @stores = Store.where(group_id:9).where.not(id:39)
+      checked_store_ids = @stores.ids
+      params[:store_ids] = checked_store_ids
+      @stores.each do |store|
+        params[:stores][store.id.to_s] = true
+      end
+    end
+    @smaregi_members = SmaregiMember.where(main_use_store:@stores.map{|store|store.smaregi_store_id})
+    if params[:order].present?
+      @smaregi_members = @smaregi_members.order("#{params[:order]} #{params[:sc]}")
+    end
+    @smaregi_members = @smaregi_members.page(params[:page]).per(50)
+    kaiin_ids = @smaregi_members.map{|sm|sm.kaiin_id}
+    @smaregi_trading_histories = SmaregiTradingHistory.where(kaiin_id:kaiin_ids)
+    respond_to do |format|
+      format.html
+      format.csv do
+        send_data render_to_string, filename: "member.csv", type: :csv
+      end
+    end    
+  end
+
   def bulk_delete
     update_smaregi_members_arr = []
     analysis_id = params[:analysis_id]
