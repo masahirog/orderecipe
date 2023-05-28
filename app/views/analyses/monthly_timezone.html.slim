@@ -1,0 +1,100 @@
+
+h3 時間帯別販売データ
+.clearfix
+  = form_tag monthly_timezone_analyses_path, :method => 'get' do
+    .clearfix
+      label style='float:left;' 店舗選択
+      ul style="list-style:none;float:left;"
+        - @stores.each do |store|
+          li style='float:left;margin-right:10px;'
+            = check_box_tag "stores[#{store.id}]",true,params['stores'][store.id.to_s]
+            = label_tag "stores[#{store.id}]",store.name
+    .clearfix
+      label style='float:left;' 曜日選択
+      - wdayarr = ['2','3','4','5','6','7','1']
+      ul style="list-style:none;float:left;"
+        - @stores.each do |store|
+        - @weekdays.each_with_index do |weekday, i|
+          li style='float:left;margin-right:10px;'
+            = check_box_tag 'weekdays[]', wdayarr[i], @weekdays_index.include?(wdayarr[i]), id:"weekdays_#{wdayarr[i]}"
+            = label_tag "weekdays[#{weekday}]",weekday
+
+    div
+      label style='float:left;margin-right:10px;' 表示期間
+      = date_field_tag :from, params[:from], class:"form-control float-left",style:'width:200px;float:left;'
+      div style="float:left;padding:8px;" 〜
+      = date_field_tag :to, params[:to], class:"form-control",style:'width:200px;float:left;'
+    .kensaku.col-md-1
+      = submit_tag "絞り込み" ,class:"btn btn-primary"
+  / - if @period < 93
+  /   = link_to "CSV",analyses_path(from:params[:from],to:params[:to], :format => :csv),class:"btn btn-primary",style:'float:right;'
+  / - else
+  /   p style='float:right;' CSVをダウンロードする場合は、期間を3ヶ月以内に指定してください
+
+h3 売上平均
+.table-responsive style='overflow: scroll;'
+  table.table.layout-fixed style='border-collapse:separate;'
+    thead style='position: sticky;top:0;background-color:white;z-index:3;'
+      tr
+        th 店舗
+        - (10..21).each do |hour|
+          th = hour
+    tbody
+      - @months.each do |month|
+        tr
+          td = month
+          - (10..21).each do |hour|
+            td
+              - if @time_zone_sales[[month,hour.to_s]].present?
+                = (@time_zone_sales[[month,hour.to_s]]/@date_count[month]).to_s(:delimited)
+
+h3 客数
+.table-responsive style='overflow: scroll;'
+  table.table.layout-fixed style='border-collapse:separate;'
+    thead style='position: sticky;top:0;background-color:white;z-index:3;'
+      tr
+        th 店舗
+        - (10..21).each do |hour|
+          th = hour
+    tbody
+      - @months.each do |month|
+        tr
+          td = month
+          - (10..21).each do |hour|
+            td
+              - if @time_zone_counts[[month,hour.to_s]].present?
+                = (@time_zone_counts[[month,hour.to_s]].to_f/@date_count[month]).round(1)
+h3 惣菜
+.table-responsive style='overflow: scroll;'
+  table.table.layout-fixed style='border-collapse:separate;'
+    thead style='position: sticky;top:0;background-color:white;z-index:3;'
+      tr
+        th 店舗
+        - (10..21).each do |hour|
+          th = hour
+    tbody
+      - @months.each do |month|
+        tr
+          td = month
+          - (10..21).each do |hour|
+            td
+              - if @time_zone_sales_product[[month,hour.to_s,1]].present?
+                = (@time_zone_sales_product[[month,hour.to_s,1]].to_f/@date_count[month]).round(1)
+
+h3 弁当
+.table-responsive style='overflow: scroll;'
+  table.table.layout-fixed style='border-collapse:separate;'
+    thead style='position: sticky;top:0;background-color:white;z-index:3;'
+      tr
+        th 店舗
+        - (10..21).each do |hour|
+          th = hour
+    tbody
+      - @months.each do |month|
+        tr
+          td = month
+          - (10..21).each do |hour|
+            td
+              - if @time_zone_sales_product[[month,hour.to_s,5]].present?
+                = (@time_zone_sales_product[[month,hour.to_s,5]].to_f/@date_count[month]).round(1)
+

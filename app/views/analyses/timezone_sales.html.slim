@@ -21,7 +21,7 @@ h3 時間帯別販売データ
   /   = link_to "CSV",analyses_path(from:params[:from],to:params[:to], :format => :csv),class:"btn btn-primary",style:'float:right;'
   / - else
   /   p style='float:right;' CSVをダウンロードする場合は、期間を3ヶ月以内に指定してください
-
+  = link_to "月間データ",monthly_timezone_analyses_path,class:"btn btn-primary",style:'float:right;'
 
 h3 売上平均
 .table-responsive style='overflow: scroll;'

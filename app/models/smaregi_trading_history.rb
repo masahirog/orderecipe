@@ -1,5 +1,7 @@
 require "csv"
 class SmaregiTradingHistory < ApplicationRecord
+  scope :search_by_week, ->(week) { where("dayofweek(date) in (?)", Array(week)) }
+
   belongs_to :analysis
   def self.oncerecalculate(from,to,store_id)
     analyses = Analysis.where(date:from..to).where(store_id:store_id)

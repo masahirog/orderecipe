@@ -123,6 +123,7 @@ Rails.application.routes.draw do
   resources :analysis_products
   resources :analyses do
     collection do
+      get :monthly_timezone
       post :reload_product_repeat
       get :product_repeat
       get :ltv_data
