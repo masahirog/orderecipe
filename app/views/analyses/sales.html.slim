@@ -17,7 +17,7 @@ h3 販売データ
   .kensaku.col-md-1
     = submit_tag "絞り込み" ,class:"btn btn-primary"
 - if @period < 93
-  = link_to "CSV",analyses_path(from:params[:from],to:params[:to], :format => :csv),class:"btn btn-primary",style:'float:right;'
+  = link_to "CSV",sales_analyses_path(from:params[:from],to:params[:to], :format => :csv),class:"btn btn-primary",style:'float:right;'
 - else
   p style='float:right;' CSVをダウンロードする場合は、期間を3ヶ月以内に指定してください
 

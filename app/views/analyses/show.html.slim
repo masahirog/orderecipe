@@ -14,9 +14,9 @@ table.table
       th 廃棄率
       th ポイント利用
       th 来客数
-      th ~14客数
+      th ~16時客数
       th 惣菜販売数
-      th ~14販売数
+      th ~16時販売数
   tbody
     tr
       td = @analysis.store_daily_menu.start_time.strftime("%-m月%-d日(#{%w(日 月 火 水 木 金 土)[@analysis.store_daily_menu.start_time.wday]})")
