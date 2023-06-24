@@ -21,9 +21,9 @@ table.table
       td = "#{@analysis.delivery_sales_amount.to_s(:delimited)}円" if @analysis.delivery_sales_amount
       td = "#{@analysis.used_point_amount.to_s(:delimited)}円"  if @analysis.used_point_amount
       td = "#{@analysis.transaction_count}組"
-      td = "#{@analysis.fourteen_transaction_count}組"
-      td = @analysis.total_number_sales_sozai
-      td = @analysis.fourteen_number_sales_sozai
+      td = "#{@analysis.sixteen_transaction_count}組"
+      td = @analysis.total_sozai_sales_number
+      td = @analysis.sixteen_sozai_sales_number
 
 h4 = "#{@time.hour}:00時点 在庫状況"
 table.table

@@ -26,18 +26,18 @@ class SmaregiTradingHistory < ApplicationRecord
     analysis_delivery_sales_amount = 0
     analysis_used_point_amount = 0
     torihiki_ids = []
-    fourteen_transaction_count = 0
+    sixteen_transaction_count = 0
     transaction_count = 0
     total_sales = 0
-    total_early_sales_number = 0
-    total_number_sales_sozai = 0
-    fourteen_number_sales_sozai = 0
+    # total_sixteen_total_sales_number = 0
+    total_sozai_sales_number = 0
+    sixteen_sozai_sales_number = 0
     smaregi_trading_histories_arr = []
     analysis_products_arr = []
     update_analysis_products_arr = []
     hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     product_sales_number = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    product_early_sales_number = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    product_sixteen_total_sales_number = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     product_sales_amount = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     analysis_category_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     analysis = Analysis.find(analysis_id)
@@ -86,16 +86,16 @@ class SmaregiTradingHistory < ApplicationRecord
         end
       else
         new_analysis_product = AnalysisProduct.new(analysis_id:analysis_id,smaregi_shohin_id:shohin_id,smaregi_shohin_name:shohinmei,smaregi_shohintanka:shohintanka,
-        product_id:hinban,total_sales_amount:0,sales_number:0,loss_amount:0,early_sales_number:0,bumon_id:bumon_id,bumon_mei:bumonmei,
+        product_id:hinban,total_sales_amount:0,sales_number:0,loss_amount:0,sixteen_total_sales_number:0,bumon_id:bumon_id,bumon_mei:bumonmei,
         discount_amount:0,net_sales_amount:0,ex_tax_sales_amount:0,discount_rate:0,loss_ignore:loss_ignore,discount_number:0)
         analysis_products_arr << new_analysis_product
         product_ids << hinban
-        hash[hinban]={sales_number:0,total_sales_amount:0,discount_amount:0,net_sales_amount:0,ex_tax_sales_amount:0,early_sales_number:0,loss_amount:0,smaregi_shohin_id:[shohin_id],smaregi_shohin_name:shohinmei,smaregi_price:shohintanka,discount_number:0}
+        hash[hinban]={sales_number:0,total_sales_amount:0,discount_amount:0,net_sales_amount:0,ex_tax_sales_amount:0,sixteen_total_sales_number:0,loss_amount:0,smaregi_shohin_id:[shohin_id],smaregi_shohin_name:shohinmei,smaregi_price:shohintanka,discount_number:0}
       end
       # ▼analysis_productの更新部分
       if torihiki_meisaikubun == 1 ||torihiki_meisaikubun == 3
         transaction_count += 1 unless torihiki_ids.include?(torihiki_id)
-        total_number_sales_sozai += suryo if bumon_id == 1
+        total_sozai_sales_number += suryo if bumon_id == 1
         hash[hinban][:sales_number] += suryo
         hash[hinban][:total_sales_amount] += nebikimaekei
         hash[hinban][:discount_amount] += tanka_nebikikei
@@ -105,9 +105,9 @@ class SmaregiTradingHistory < ApplicationRecord
           hash[hinban][:discount_number] += suryo
         end
         if Time.parse(time) < Time.parse('16:00')
-          hash[hinban][:early_sales_number] += suryo
-          fourteen_number_sales_sozai += suryo if bumon_id == 1
-          fourteen_transaction_count += 1 unless torihiki_ids.include?(torihiki_id)
+          hash[hinban][:sixteen_total_sales_number] += suryo
+          sixteen_sozai_sales_number += suryo if bumon_id == 1
+          sixteen_transaction_count += 1 unless torihiki_ids.include?(torihiki_id)
         end
         # analysis_categoryの部分の更新
         analysis_category_hash[bumon_id][:zeinuki_uriage] += product_zeinuki_uriage
@@ -118,7 +118,7 @@ class SmaregiTradingHistory < ApplicationRecord
 
       elsif torihiki_meisaikubun == 2
         transaction_count -= 1 unless torihiki_ids.include?(torihiki_id)
-        total_number_sales_sozai -= suryo if bumon_id == 1
+        total_sozai_sales_number -= suryo if bumon_id == 1
         hash[hinban][:sales_number] -= suryo
         hash[hinban][:total_sales_amount] -= nebikimaekei
         hash[hinban][:discount_amount] -= tanka_nebikikei
@@ -128,9 +128,9 @@ class SmaregiTradingHistory < ApplicationRecord
           hash[hinban][:discount_number] -= suryo
         end
         if Time.parse(time) < Time.parse('16:00')
-          hash[hinban][:early_sales_number] -= suryo
-          fourteen_number_sales_sozai -= suryo if bumon_id == 1
-          fourteen_transaction_count -= 1 unless torihiki_ids.include?(torihiki_id)
+          hash[hinban][:sixteen_total_sales_number] -= suryo
+          sixteen_sozai_sales_number -= suryo if bumon_id == 1
+          sixteen_transaction_count -= 1 unless torihiki_ids.include?(torihiki_id)
         end
         # analysis_categoryの部分の更新
         analysis_category_hash[bumon_id][:zeinuki_uriage] -= product_zeinuki_uriage
@@ -176,7 +176,7 @@ class SmaregiTradingHistory < ApplicationRecord
       analysis_product.smaregi_shohin_name = hash[product_id][:smaregi_shohin_name]
       analysis_product.sales_number = hash[product_id][:sales_number]
       analysis_product.total_sales_amount = hash[product_id][:total_sales_amount]
-      analysis_product.early_sales_number = hash[product_id][:early_sales_number]
+      analysis_product.sixteen_total_sales_number = hash[product_id][:sixteen_total_sales_number]
       analysis_product.discount_amount = hash[product_id][:discount_amount]
       analysis_product.net_sales_amount = hash[product_id][:net_sales_amount]
       analysis_product.ex_tax_sales_amount = hash[product_id][:ex_tax_sales_amount]
@@ -187,10 +187,10 @@ class SmaregiTradingHistory < ApplicationRecord
         analysis_product.discount_rate = 0
       end
 
-      if hash[product_id][:early_sales_number] == 0
+      if hash[product_id][:sixteen_total_sales_number] == 0
         analysis_product.potential = 0
       else
-        analysis_product.potential = ((total_number_sales_sozai.to_f/fourteen_number_sales_sozai)*hash[product_id][:early_sales_number]).round(1)
+        analysis_product.potential = ((total_sozai_sales_number.to_f/sixteen_sozai_sales_number)*hash[product_id][:sixteen_total_sales_number]).round(1)
       end
 
       if sdmd_hash[analysis_product.product_id].present?
@@ -225,8 +225,8 @@ class SmaregiTradingHistory < ApplicationRecord
             net_sales_amount:net_sales_amount,ex_tax_sales_amount:ex_tax_sales_amount)
     end
     loss_amount = hash.values.sum { |data| data[:loss_amount]}
-    analysis.update(total_sales_amount:analysis_total_sales_amount,transaction_count:transaction_count,fourteen_transaction_count:fourteen_transaction_count,
-      total_number_sales_sozai:total_number_sales_sozai,fourteen_number_sales_sozai:fourteen_number_sales_sozai,discount_amount:analysis_discount_amount,loss_amount:loss_amount,
+    analysis.update(total_sales_amount:analysis_total_sales_amount,transaction_count:transaction_count,sixteen_transaction_count:sixteen_transaction_count,
+      total_sozai_sales_number:total_sozai_sales_number,sixteen_sozai_sales_number:sixteen_sozai_sales_number,discount_amount:analysis_discount_amount,loss_amount:loss_amount,
       net_sales_amount:analysis_net_sales_amount,tax_amount:analysis_tax_amount,ex_tax_sales_amount:analysis_ex_tax_sales_amount,store_sales_amount:analysis_store_sales_amount,
       delivery_sales_amount:analysis_delivery_sales_amount,used_point_amount:analysis_used_point_amount)
     AnalysisProduct.import analysis_products_arr

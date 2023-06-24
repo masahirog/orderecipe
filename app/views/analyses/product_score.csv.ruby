@@ -5,7 +5,7 @@ CSV.generate do |csv|
   @products.each do |product|
     @dates.each do |date|
     	@store_hash[date][product.id].each do |store_data|
-    		csv << [date,store_data[1]["store_name"],store_data[0],product.name,product.id,store_data[1]["nomination_rate"],product.sell_price,store_data[1]["actual_inventory"],store_data[1]["list_price_sales_number"],store_data[1]["early_sales_number"]]
+    		csv << [date,store_data[1]["store_name"],store_data[0],product.name,product.id,store_data[1]["nomination_rate"],product.sell_price,store_data[1]["actual_inventory"],store_data[1]["list_price_sales_number"],store_data[1]["sixteen_total_sales_number"]]
     	end
     end
   end

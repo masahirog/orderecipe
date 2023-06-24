@@ -32,9 +32,9 @@ table.table
       td = "#{((@analysis.loss_amount.to_f/@analysis.ex_tax_sales_amount)*100).round(1)}%" if @analysis.ex_tax_sales_amount && @analysis.loss_amount
       td = "#{@analysis.used_point_amount.to_s(:delimited)}円"  if @analysis.used_point_amount
       td = "#{@analysis.transaction_count}組"
-      td = "#{@analysis.fourteen_transaction_count}組"
-      td = @analysis.total_number_sales_sozai
-      td = @analysis.fourteen_number_sales_sozai
+      td = "#{@analysis.sixteen_transaction_count}組"
+      td = @analysis.total_sozai_sales_number
+      td = @analysis.sixteen_sozai_sales_number
 
 .form-group
   = link_to '計算', products_analyses_path(analysis_id:@analysis.id), method: :post,class:'btn btn-sm btn-primary'

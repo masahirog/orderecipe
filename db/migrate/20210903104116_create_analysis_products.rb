@@ -16,7 +16,7 @@ class CreateAnalysisProducts < ActiveRecord::Migration[5.2]
       t.integer :total_sales_amount
       t.integer :loss_amount
       t.timestamps
-      t.integer :early_sales_number,default:0,null:false
+      t.integer :sixteen_total_sales_number,default:0,null:false
       t.boolean :exclusion_flag,default:0,null:false
       t.float :potential
       t.integer :bumon_id

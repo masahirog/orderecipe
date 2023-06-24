@@ -12,10 +12,10 @@ class Analysis < ApplicationRecord
     update_analysis_product_arr = []
     analyses = Analysis.includes(:analysis_products).where(date:from..to)
     analyses.each do |analysis|
-      fourteen_transaction_count = analysis.fourteen_transaction_count
+      sixteen_transaction_count = analysis.sixteen_transaction_count
       analysis.analysis_products.each do |ap|
-        if fourteen_transaction_count > 0
-          ap.nomination_rate = ((ap.early_sales_number.to_f/fourteen_transaction_count)*100).round(1)
+        if sixteen_transaction_count > 0
+          ap.nomination_rate = ((ap.sixteen_total_sales_number.to_f/sixteen_transaction_count)*100).round(1)
           update_analysis_product_arr << ap
         end
       end

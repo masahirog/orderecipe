@@ -8,9 +8,9 @@ class CreateAnalyses < ActiveRecord::Migration[5.2]
       t.integer :labor_cost
       t.timestamps
       t.integer :transaction_count,default:0,null:false
-      t.integer :fourteen_transaction_count,default:0,null:false
-      t.integer :fourteen_number_sales_sozai,default:0,null:false
-      t.integer :total_number_sales_sozai,default:0,null:false
+      t.integer :sixteen_transaction_count,default:0,null:false
+      t.integer :sixteen_sozai_sales_number,default:0,null:false
+      t.integer :total_sozai_sales_number,default:0,null:false
       t.integer :discount_amount
       t.integer :net_sales_amount
       t.integer :tax_amount
@@ -24,3 +24,4 @@ class CreateAnalyses < ActiveRecord::Migration[5.2]
     end
   end
 end
+

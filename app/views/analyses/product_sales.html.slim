@@ -67,7 +67,7 @@ div style='margin-bottom:20px;'
           td = product.id
           td = product.sell_price
           td = @hash[product.id][:period][:actual_inventory]
-          td = @hash[product.id][:period][:early_sales_number]
+          td = @hash[product.id][:period][:sixteen_total_sales_number]
           td = (@hash[product.id][:period][:nomination_rate]/@hash[product.id][:period][:count]).round(1)
           td = @hash[product.id][:period][:list_price_sales_number]
           td = @hash[product.id][:period][:discount_number]
@@ -86,7 +86,7 @@ div style='margin-bottom:20px;'
           - @dates.each do |date|
             - if @hash[product.id][date].present?
               td = @hash[product.id][date][:actual_inventory]
-              td = @hash[product.id][date][:early_sales_number]
+              td = @hash[product.id][date][:sixteen_total_sales_number]
               td = (@hash[product.id][date][:nomination_rate]/@hash[product.id][date][:count]).round(1)
               td = @hash[product.id][date][:list_price_sales_number]
               td = @hash[product.id][date][:discount_number]

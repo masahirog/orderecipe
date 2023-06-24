@@ -439,7 +439,9 @@ class AnalysesController < AdminController
     @date_sales_amount = @analyses.group(:date).sum(:ex_tax_sales_amount)
     @date_loss_amount = @analyses.group(:date).sum(:loss_amount)
     @date_transaction_count = @analyses.group(:date).sum(:transaction_count)
+    # ????
     @date_sales_number = @analyses.group(:date).sum(:transaction_count)
+    # ????
     @date_discount_amount = @analyses.group(:date).sum(:discount_amount)
     respond_to do |format|
       format.html
@@ -627,12 +629,12 @@ class AnalysesController < AdminController
           @hash[ap.product_id][ap.analysis.store_daily_menu.start_time][:loss_amount] += ap.loss_amount
           @hash[ap.product_id][ap.analysis.store_daily_menu.start_time][:loss_number] += ap.loss_number.to_i
           # 16時までに売れた個数
-          @hash[ap.product_id][ap.analysis.store_daily_menu.start_time][:early_sales_number] += ap.early_sales_number
+          @hash[ap.product_id][ap.analysis.store_daily_menu.start_time][:sixteen_total_sales_number] += ap.sixteen_total_sales_number
           @hash[ap.product_id][ap.analysis.store_daily_menu.start_time][:nomination_rate] += ap.nomination_rate
         else
           @hash[ap.product_id][ap.analysis.store_daily_menu.start_time] = {list_price_sales_number:(ap.sales_number - ap.discount_number),total_sales_amount:ap.total_sales_amount,
             discount_amount:ap.discount_amount,loss_amount:ap.loss_amount,actual_inventory:ap.actual_inventory.to_i,discount_number:ap.discount_number,loss_number:ap.loss_number.to_i,
-            early_sales_number:ap.early_sales_number,nomination_rate:ap.nomination_rate,count:1}
+            sixteen_total_sales_number:ap.sixteen_total_sales_number,nomination_rate:ap.nomination_rate,count:1}
           product_ids << ap.product_id unless product_ids.include?(ap.product_id)
           @dates << ap.analysis.store_daily_menu.start_time unless @dates.include?(ap.analysis.store_daily_menu.start_time)
         end
@@ -644,13 +646,13 @@ class AnalysesController < AdminController
           @hash[ap.product_id][:period][:discount_number] += ap.discount_number
           @hash[ap.product_id][:period][:loss_amount] += ap.loss_amount
           @hash[ap.product_id][:period][:loss_number] += ap.loss_number.to_i
-          @hash[ap.product_id][:period][:early_sales_number] += ap.early_sales_number
+          @hash[ap.product_id][:period][:sixteen_total_sales_number] += ap.sixteen_total_sales_number
           @hash[ap.product_id][:period][:nomination_rate] += ap.nomination_rate
           @hash[ap.product_id][:period][:count] += 1
         else
           @hash[ap.product_id][:period] = {list_price_sales_number:(ap.sales_number - ap.discount_number),total_sales_amount:ap.total_sales_amount,discount_amount:ap.discount_amount,
             loss_amount:ap.loss_amount,actual_inventory:ap.actual_inventory.to_i,discount_number:ap.discount_number,loss_number:ap.loss_number.to_i,
-            early_sales_number:ap.early_sales_number,nomination_rate:ap.nomination_rate,count:1}
+            sixteen_total_sales_number:ap.sixteen_total_sales_number,nomination_rate:ap.nomination_rate,count:1}
         end
       end
       @dates = @dates.sort
@@ -758,8 +760,8 @@ class AnalysesController < AdminController
       if ap.sales_number.present? && ap.actual_inventory.present?
         @product_datas[ap.product_id]['name'] = ap.product.name
         @product_datas[ap.product_id]['product_id'] = ap.product_id
-        if params[:early_sales_number_flag]=='true'
-          @product_datas[ap.product_id][ap.analysis_id]['sales_number'] = ap.early_sales_number
+        if params[:sixteen_total_sales_number_flag]=='true'
+          @product_datas[ap.product_id][ap.analysis_id]['sales_number'] = ap.sixteen_total_sales_number
         else
           @product_datas[ap.product_id][ap.analysis_id]['sales_number'] = ap.sales_number
         end
@@ -795,15 +797,15 @@ class AnalysesController < AdminController
   end
   def smaregi_trading_history_totalling
     #アップロード済みのスマレジの販売履歴を計算する
-    total_number_sales_sozai = 0
-    fourteen_number_sales_sozai = 0
+    total_sozai_sales_number = 0
+    sixteen_sozai_sales_number = 0
     analysis_id = params[:analysis]["analysis_id"]
     @analysis = Analysis.find(analysis_id)
     smaregi_shohin_ids = @analysis.analysis_products.map{|ap|ap.smaregi_shohin_id}
     smaregi_trading_histories = SmaregiTradingHistory.where(analysis_id:analysis_id)
     analysis_products_arr = []
     @product_sales_number = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    product_early_sales_number = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    product_sixteen_total_sales_number = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     smaregi_trading_histories.each do |sth|
       if sth.suryo.present?
         if sth.torihiki_meisaikubun == 1
@@ -820,15 +822,15 @@ class AnalysesController < AdminController
           @product_sales_number[sth.shohin_id][:suryo] = suryo
           @product_sales_number[sth.shohin_id][:nebikigokei] = nebikigokei
         end
-        total_number_sales_sozai += suryo if sth.bumon_id == 1
+        total_sozai_sales_number += suryo if sth.bumon_id == 1
 
         if sth.time.strftime('%H%M').to_i < 1400
-          if product_early_sales_number[sth.shohin_id].present?
-            product_early_sales_number[sth.shohin_id] += suryo
+          if product_sixteen_total_sales_number[sth.shohin_id].present?
+            product_sixteen_total_sales_number[sth.shohin_id] += suryo
           else
-            product_early_sales_number[sth.shohin_id] = suryo
+            product_sixteen_total_sales_number[sth.shohin_id] = suryo
           end
-          fourteen_number_sales_sozai += suryo if sth.bumon_id == 1
+          sixteen_sozai_sales_number += suryo if sth.bumon_id == 1
         end
         if smaregi_shohin_ids.include?(sth.shohin_id)
         else
@@ -842,11 +844,11 @@ class AnalysesController < AdminController
     analysis_products_arr.each do |ap|
       ap.sales_number = @product_sales_number[ap.smaregi_shohin_id][:suryo]
       ap.total_sales_amount = @product_sales_number[ap.smaregi_shohin_id][:nebikigokei]
-      if product_early_sales_number[ap.smaregi_shohin_id].present?
-        ap.early_sales_number = product_early_sales_number[ap.smaregi_shohin_id]
-        ap.potential = ((total_number_sales_sozai.to_f/fourteen_number_sales_sozai)*product_early_sales_number[ap.smaregi_shohin_id]).round(1)
+      if product_sixteen_total_sales_number[ap.smaregi_shohin_id].present?
+        ap.sixteen_total_sales_number = product_sixteen_total_sales_number[ap.smaregi_shohin_id]
+        ap.potential = ((total_sozai_sales_number.to_f/sixteen_sozai_sales_number)*product_sixteen_total_sales_number[ap.smaregi_shohin_id]).round(1)
       else
-        ap.early_sales_number = 0
+        ap.sixteen_total_sales_number = 0
         ap.potential = 0
       end
     end

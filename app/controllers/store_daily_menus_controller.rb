@@ -54,24 +54,23 @@ class StoreDailyMenusController < ApplicationController
     @date_sales_sozai_number = []
     @weekday_sales_sozai_number = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @analyses.map do |analysis|
-      @date_sales_sozai_number << [analysis.store_daily_menu.start_time,analysis.total_number_sales_sozai]
+      @date_sales_sozai_number << [analysis.store_daily_menu.start_time,analysis.total_sozai_sales_number]
       if @weekday_sales_sozai_number[analysis.store_daily_menu.start_time.wday].present?
-        @weekday_sales_sozai_number[analysis.store_daily_menu.start_time.wday]['total_num'] += analysis.total_number_sales_sozai
+        @weekday_sales_sozai_number[analysis.store_daily_menu.start_time.wday]['total_num'] += analysis.total_sozai_sales_number
         @weekday_sales_sozai_number[analysis.store_daily_menu.start_time.wday]['count'] += 1
       else
-        @weekday_sales_sozai_number[analysis.store_daily_menu.start_time.wday]['total_num'] = analysis.total_number_sales_sozai
+        @weekday_sales_sozai_number[analysis.store_daily_menu.start_time.wday]['total_num'] = analysis.total_sozai_sales_number
         @weekday_sales_sozai_number[analysis.store_daily_menu.start_time.wday]['count'] = 1
       end
       transaction_count = analysis.transaction_count
       analysis_products = analysis.analysis_products
       discount_sozai_number = analysis_products.joins(:product).where(:products => {bejihan_sozai_flag:true}).sum(:discount_number)
-      fixed_price_sales_sozai_number = analysis.total_number_sales_sozai - discount_sozai_number
+      fixed_price_sales_sozai_number = analysis.total_sozai_sales_number - discount_sozai_number
       loss_sozai_number = analysis_products.joins(:product).where(:products => {bejihan_sozai_flag:true}).where(loss_ignore:false).where('loss_number > ?', 0).sum(:loss_number)
       total_number_sales_bento =  analysis_products.joins(:product).where(:products => {product_category:5}).sum(:sales_number)
       discount_bento_number = analysis_products.joins(:product).where(:products => {product_category:5}).sum(:discount_number)
       fixed_price_sales_bento_number = total_number_sales_bento - discount_bento_number
       loss_bento_number = analysis_products.joins(:product).where(:products => {product_category:5}).where(loss_ignore:false).where('loss_number > ?', 0).sum(:loss_number)
-
       sdm = StoreDailyMenu.find_by(start_time:analysis.store_daily_menu.start_time,store_id:analysis.store_daily_menu.store_id)
       sozai_zaiko = analysis_products.joins(:product).where(:products => {bejihan_sozai_flag:true}).sum(:manufacturing_number)
       sozai_kurikoshi = analysis_products.joins(:product).where(:products => {bejihan_sozai_flag:true}).sum(:carry_over)

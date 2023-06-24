@@ -60,12 +60,12 @@ table.table
       tr class="analysis_product_tr_#{analysis_product.id}" style="background-color:#{color};"
         td style="color:#{date_color}" = analysis_product.analysis.store_daily_menu.start_time.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[analysis_product.analysis.store_daily_menu.start_time.wday]})")
         td = analysis_product.analysis.transaction_count
-        td = analysis_product.analysis.fourteen_transaction_count
-        td = analysis_product.analysis.total_number_sales_sozai
-        td = analysis_product.analysis.fourteen_number_sales_sozai
+        td = analysis_product.analysis.sixteen_transaction_count
+        td = analysis_product.analysis.total_sozai_sales_number
+        td = analysis_product.analysis.sixteen_sozai_sales_number
         td = analysis_product.actual_inventory
         td = analysis_product.sales_number
-        td = analysis_product.early_sales_number
+        td = analysis_product.sixteen_total_sales_number
         td = analysis_product.potential
         td
           = form_with(model: analysis_product, data: {remote: true},id:"update_analysis_product_#{analysis_product.id}") do |f|
