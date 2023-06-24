@@ -18,7 +18,7 @@ class ApplicationController < ActionController::Base
     if current_user.admin?
       root_url
     elsif current_user.id == 49
-      check_shifts_path
+      shifts_path(group_id:current_user.group_id)
     elsif current_user.id == 69
       crew_stores_path
     end

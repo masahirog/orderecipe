@@ -10,9 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_04_19_030858) do
+ActiveRecord::Schema.define(version: 2023_06_24_024340) do
 
-  create_table "analyses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+  create_table "analyses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "store_id"
     t.date "date"
     t.integer "total_sales_amount"
@@ -21,9 +21,9 @@ ActiveRecord::Schema.define(version: 2023_04_19_030858) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "transaction_count", default: 0, null: false
-    t.integer "fourteen_transaction_count", default: 0, null: false
-    t.integer "fourteen_number_sales_sozai", default: 0, null: false
-    t.integer "total_number_sales_sozai", default: 0, null: false
+    t.integer "sixteen_transaction_count", default: 0, null: false
+    t.integer "sixteen_sozai_sales_number", default: 0, null: false
+    t.integer "total_sozai_sales_number", default: 0, null: false
     t.integer "discount_amount"
     t.integer "net_sales_amount"
     t.integer "tax_amount"
@@ -48,7 +48,7 @@ ActiveRecord::Schema.define(version: 2023_04_19_030858) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "analysis_products", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+  create_table "analysis_products", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "analysis_id"
     t.integer "smaregi_shohin_id"
     t.string "smaregi_shohin_name"
@@ -65,7 +65,7 @@ ActiveRecord::Schema.define(version: 2023_04_19_030858) do
     t.integer "loss_amount"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "early_sales_number", default: 0, null: false
+    t.integer "sixteen_total_sales_number", default: 0, null: false
     t.boolean "exclusion_flag", default: false, null: false
     t.float "potential"
     t.integer "bumon_id"
@@ -738,8 +738,16 @@ ActiveRecord::Schema.define(version: 2023_04_19_030858) do
     t.integer "zeinuki_uriage"
   end
 
+  create_table "staff_stores", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "staff_id"
+    t.integer "store_id"
+    t.boolean "affiliation_flag", default: false, null: false
+    t.integer "transportation_expenses"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "staffs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "store_id", null: false
     t.string "name", null: false
     t.text "memo"
     t.datetime "created_at", null: false
@@ -750,6 +758,7 @@ ActiveRecord::Schema.define(version: 2023_04_19_030858) do
     t.integer "jobcan_staff_code"
     t.integer "smaregi_hanbaiin_id"
     t.string "phone_number"
+    t.integer "group_id", null: false
   end
 
   create_table "stocks", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

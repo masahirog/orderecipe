@@ -19,7 +19,7 @@ class StaffsController < ApplicationController
     else
       status = 0
     end
-    @staffs = Staff.includes([:store]).where(:stores => {group_id:params[:group_id]},status:status).order(row:'asc')
+    @staffs = Staff.where(group_id:group_id,status:status).order(row:'asc')
   end
 
   def show
@@ -29,21 +29,27 @@ class StaffsController < ApplicationController
     @group = Group.find(params[:group_id])
     @stores = @group.stores
     if params[:place] == 'kitchen'
-      @staff = Staff.new(store_id:39)
+      @staff = Staff.new(store_id:39,group_id:@group.id)
     else
-      @staff = Staff.new
+      @staff = Staff.new(group_id:@group.id)
     end
+    @stores.each do |store|
+      @staff.staff_stores.build(store_id:store.id)
+    end
+
   end
 
   def edit
+    Store.where(group_id:9).where.not(id:@staff.staff_stores.map{|ss|ss.store_id}).each do |store|
+      @staff.staff_stores.build(store_id:store.id)
+    end
   end
 
   def create
     @staff = Staff.new(staff_params)
-
     respond_to do |format|
       if @staff.save
-        format.html { redirect_to staffs_path(group_id:@staff.store.group_id), notice: "Staff was successfully created." }
+        format.html { redirect_to staffs_path(group_id:@staff.group_id), notice: "Staff was successfully created." }
         format.json { render :show, status: :created, location: @staff }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -55,7 +61,7 @@ class StaffsController < ApplicationController
   def update
     respond_to do |format|
       if @staff.update(staff_params)
-        format.html { redirect_to staffs_path(group_id:@staff.store.group_id), notice: "Staff was successfully updated." }
+        format.html { redirect_to staffs_path(group_id:@Staff.group_id), notice: "Staff was successfully updated." }
         format.json { render :show, status: :ok, location: @staff }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -78,6 +84,7 @@ class StaffsController < ApplicationController
     end
 
     def staff_params
-      params.require(:staff).permit(:store_id,:name,:memo,:employment_status,:row,:status,:jobcan_staff_code,:smaregi_hanbaiin_id,:phone_number)
+      params.require(:staff).permit(:store_id,:name,:memo,:employment_status,:row,:status,:jobcan_staff_code,:smaregi_hanbaiin_id,:phone_number,:group_id,
+        staff_stores_attributes:[:id,:store_id,:staff_id,:affiliation_flag,:transportation_expenses])
     end
 end

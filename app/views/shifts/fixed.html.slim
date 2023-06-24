@@ -5,6 +5,12 @@ span 　チェックがついた欄は公開している状態です。
   = form_tag once_update_fixed_shifts_path do
     = hidden_field_tag :group_id,params[:group_id]
     = hidden_field_tag :date,params[:date]
+    ul style="list-style:none;float:left;display:none;"
+      - @stores.each do |store|
+        li style='float:left;margin-right:10px;'
+          = check_box_tag "stores[#{store.id}]",true,params['stores'][store.id.to_s]
+          / = label_tag "stores[#{store.id}]",store.name
+
     table.table.layout-fixed style='border-collapse:separate;'
       thead style='position: sticky;top:0;background-color:white;z-index:5;'
         tr

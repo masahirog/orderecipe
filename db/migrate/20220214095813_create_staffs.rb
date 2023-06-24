@@ -1,7 +1,6 @@
 class CreateStaffs < ActiveRecord::Migration[5.2]
   def change
     create_table :staffs do |t|
-      t.integer :store_id,null:false
       t.string :name,null:false
       t.text :memo
       t.timestamps
@@ -11,6 +10,7 @@ class CreateStaffs < ActiveRecord::Migration[5.2]
       t.integer :jobcan_staff_code
       t.integer :smaregi_hanbaiin_id
       t.string :phone_number
+      t.integer :group_id,null:false
     end
   end
 end

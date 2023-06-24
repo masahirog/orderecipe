@@ -1,6 +1,7 @@
 h4 = "#{@staff.name}さん シフト申請"
 = form_tag(once_update_shifts_path,method: :get) do
   = hidden_field_tag :date,@date
+  = hidden_field_tag :staff_id,params[:staff_id]
   table.table
     thead
       tr

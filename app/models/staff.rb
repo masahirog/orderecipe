@@ -1,5 +1,8 @@
 class Staff < ApplicationRecord
-  belongs_to :store
+	belongs_to :group
+  has_many :staff_stores,dependent: :destroy
+  accepts_nested_attributes_for :staff_stores, reject_if: :reject_store_blank, allow_destroy: true
+  has_many :stores, through: :staff_stores
   has_many :shifts
   has_many :default_shifts
   has_many :task_staffs
@@ -7,5 +10,9 @@ class Staff < ApplicationRecord
   has_many :sales_reports
   enum employment_status: {part_time:0,employee:1}
   enum status: {working:0,retirement:1}
+
+  def reject_store_blank(attributes)
+    attributes.merge!(_destroy: "1") if attributes[:affiliation_flag] == "0"
+  end
 
 end

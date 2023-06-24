@@ -1,11 +1,4 @@
-<% if @shinsei_flag == true %>
-  <% if @shift.shift_pattern.present? %>
-    $(".td_shinsei_<%= @shift.id %>").children(".shinsei_shift").text("<%= @shift.shift_pattern.pattern_name %>");
-  <% else %>
-    $(".td_shinsei_<%= @shift.id %>").children(".shinsei_shift").text("");
-  <% end %>
-<% else %>
-  <% if @before_fix_shift_pattern.present? && @before_store_id.present? %>
+<% if @before_fix_shift_pattern.present? && @before_store_id.present? %>
     <% @before_shift_frames.each do |sf| %>
       var count = $(".<%= @shift.date.day %>_store_<%= @before_store_id %>_sf_<%= sf.id %>").find(".fix_shift_count").text()
       count = Number(count) - 1;
@@ -16,12 +9,13 @@
       var default_number = "<%= @before_store.store_shift_frames.find_by(shift_frame_id:sf.id).default_number %>"
       if (count < default_number) {
         $(".<%= @shift.date.day %>_store_<%= @before_store_id %>_sf_<%= sf.id %>").css("background-color",'#f0c0c0 ');
+      }else if(count > default_number){
+        $(".<%= @shift.date.day %>_store_<%= @before_store_id %>_sf_<%= sf.id %>").css("background-color",'#f0e68c');
       }else{
-        $(".<%= @shift.date.day %>_store_<%= @before_store_id %>_sf_<%= sf.id %>").css("background-color",'white');
+        $(".<%= @shift.date.day %>_store_<%= @before_store_id %>_sf_<%= sf.id %>").css("background-color",'#f5f5f5');
       };
     <% end %>
   <% end %>
-
   var val = 0
   var total = 0
   <% if @shift.fix_shift_pattern.present? && @store.present? %>
@@ -40,9 +34,11 @@
 
       var default_number = "<%= @store.store_shift_frames.find_by(shift_frame_id:sf.id).default_number %>"
       if (count < default_number) {
-        $(".<%= @shift.date.day %>_store_<%= @store.id %>_sf_<%= sf.id %>").css("background-color",'#f0c0c0 ');
+        $(".<%= @shift.date.day %>_store_<%= @store.id %>_sf_<%= sf.id %>").css("background-color",'#f0c0c0');
+      }else if(count > default_number){
+        $(".<%= @shift.date.day %>_store_<%= @store.id %>_sf_<%= sf.id %>").css("background-color",'#f0e68c');
       }else{
-        $(".<%= @shift.date.day %>_store_<%= @store.id %>_sf_<%= sf.id %>").css("background-color",'white');
+        $(".<%= @shift.date.day %>_store_<%= @store.id %>_sf_<%= sf.id %>").css("background-color",'#f5f5f5');
       };
     <% end %>
     var working_hour = <%= @shift.fix_shift_pattern.working_hour %>
@@ -52,7 +48,7 @@
   <% else %>
     var working_hour = 0
     var color_code = 'black'
-    var bg_color_code = 'white'
+    var bg_color_code = '#f5f5f5'
     $(".td_<%= @shift.id %>").find(".fix_shift_pattern").text("")
   <% end %>
   $(".td_<%= @shift.id %>").find('.working_hour').val(working_hour);
@@ -61,15 +57,14 @@
     total = total + val;
   });
   $(".working_hours_<%= @shift.staff_id %>").text(total);
-  console.log(color_code);
   <% if @shift.store_id.present? %>
-    <% if @shift.store_id == @shift.staff.store_id %>
-      $(".td_<%= @shift.id %>").find(".fix_shift_select_store_id").css('background-color','#fffff');
+    <% if @shift.staff.stores.ids.include?(@shift.store_id) %>
+      $(".td_<%= @shift.id %>").find(".fix_shift_select_store_id").css('background-color','#f5f5f5');
     <% else %>
       $(".td_<%= @shift.id %>").find(".fix_shift_select_store_id").css('background-color','#90ee90');
     <% end %>
     <% if @shift.fix_shift_pattern_id.present? %>
-      $(".td_<%= @shift.id %>").find(".fix_shift_select").css('background-color','white');
+      $(".td_<%= @shift.id %>").find(".fix_shift_select").css('background-color','#f5f5f5');
     <% else %>
       $(".td_<%= @shift.id %>").find(".fix_shift_select").css('background-color','pink');
     <% end %>
@@ -78,9 +73,8 @@
     <% if @shift.fix_shift_pattern_id.present? %>
       $(".td_<%= @shift.id %>").find(".fix_shift_select_store_id").css('background-color','pink');
     <% else %>
-      $(".td_<%= @shift.id %>").find(".fix_shift_select_store_id").css('background-color','white');
+      $(".td_<%= @shift.id %>").find(".fix_shift_select_store_id").css('background-color','#f5f5f5');
     <% end %>
     $(".td_<%= @shift.id %>").find(".fix_store_name").text("")
   <% end %>
   $(".td_<%= @shift.id %>").find(".fix_shift_select").css('background-color',bg_color_code).css('color',color_code);
-<% end %>

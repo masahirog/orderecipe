@@ -6,7 +6,8 @@ class Store < ApplicationRecord
   has_many :reminder_template_stores
   has_many :reminders
   has_many :product_sales_potentials
-  has_many :staffs
+  has_many :staff_stores
+  has_many :staffs, through: :staff_stores
   has_many :shifts
   has_many :default_shifts
   has_many :orders
