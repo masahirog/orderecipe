@@ -11,7 +11,7 @@ class SalesReportsController < ApplicationController
   end
 
   def new
-    @staffs = Staff.joins(:store).where(:stores => {group_id:9}).where(employment_status:1,status:0)
+    @staffs = Staff.where(group_id:current_user.group_id,employment_status:1,status:0)
     date = params[:date]
     store_id = params[:store_id]
     @analysis = Analysis.find_by(date:date,store_id:store_id)
@@ -30,7 +30,7 @@ class SalesReportsController < ApplicationController
   end
 
   def edit
-    @staffs = Staff.joins(:store).where(:stores => {group_id:9}).where(employment_status:1,status:0)
+    @staffs = Staff.where(group_id:current_user.group_id,employment_status:1,status:0)
     @analysis = @sales_report.analysis
   end
 
