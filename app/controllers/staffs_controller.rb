@@ -61,7 +61,7 @@ class StaffsController < ApplicationController
   def update
     respond_to do |format|
       if @staff.update(staff_params)
-        format.html { redirect_to staffs_path(group_id:@Staff.group_id), notice: "Staff was successfully updated." }
+        format.html { redirect_to staffs_path(group_id:@staff.group_id), notice: "Staff was successfully updated." }
         format.json { render :show, status: :ok, location: @staff }
       else
         format.html { render :edit, status: :unprocessable_entity }
