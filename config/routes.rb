@@ -88,7 +88,6 @@ Rails.application.routes.draw do
       get :jobcan_upload
       get :once_update
       get :get_fix_shift_pattern
-      get :check
       post :create_frame
       get :staff_edit
     end

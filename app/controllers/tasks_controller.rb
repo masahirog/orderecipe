@@ -12,17 +12,18 @@ class TasksController < ApplicationController
     else
       gon.task_id = ''
     end
-    # group_id = params[:group_id]
+    group_id = params[:group_id]
     stores = Store.where(group_id:@group_id)
     if params[:staff_id].present?
       @staff = Staff.find(params[:staff_id])
       @tasks = Task.includes([:task_comments,:task_images,:task_staffs,task_stores:[:store]]).where(:task_staffs => {staff_id:params[:staff_id],read_flag:false}).where(group_id:@group_id).rank(:row_order)
-      @staffs = Staff.joins(:store).where(:stores => {group_id:@group_id}).where(employment_status:1,status:0)
+      @staffs = Staff.where(group_id:@group_id,employment_status:1,status:0)
     elsif params[:store_id].present?
       @tasks = Task.joins(:task_stores).where(:task_stores => {store_id:params[:store_id],subject_flag:true}).includes([:task_comments,:task_images,task_stores:[:store]]).rank(:row_order)
-      @staffs = Staff.where(store_id:params[:store_id]).where(employment_status:1,status:0)
+      @staffs = Staff.joins(:staff_stores).where(:staff_stores => {store_id:params[:store_id],affiliation_flag:true}).where(employment_status:1,status:0)
+      # @staffs = Staff.where(store_id:params[:store_id]).where(employment_status:1,status:0)
     else
-      @staffs = Staff.joins(:store).where(:stores => {group_id:@group_id}).where(employment_status:1,status:0)
+      @staffs = Staff.where(group_id:@group_id,employment_status:1,status:0)
       @tasks = Task.where(group_id:@group_id).includes([:task_comments,:task_images,task_stores:[:store]]).rank(:row_order)
     end
     @tasks.each do |task|

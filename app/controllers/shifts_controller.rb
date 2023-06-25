@@ -100,49 +100,6 @@ class ShiftsController < ApplicationController
     end
   end
 
-  def check
-    params[:group_id] = '9'
-    if params[:date]
-      @date = Date.parse(params[:date])
-    else
-      @date = Date.today
-    end
-    @date =  Date.new(@date.prev_month.year,@date.prev_month.month,16) if @date.day < 15
-    @year_months = [["#{@date.year}年#{@date.month}月",@date],["#{@date.next_month.year}年#{@date.next_month.month}月",@date.next_month],["#{@date.next_month.next_month.year}年#{@date.next_month.next_month.month}月",@date.next_month.next_month]]
-    @group = Group.find(params[:group_id])
-    @rowspan = @group.shift_frames.count
-    @shift_frames = @group.shift_frames
-    @stores = @group.stores.where.not(id:39)
-    group_staff_ids = @group.staffs.ids
-    first_day = Date.new(@date.year,@date.month, 16)
-    last_day = first_day.end_of_month
-    last_day = Date.new((last_day + 1).year,(last_day +1).month, 15)
-    @one_month = [*first_day..last_day]
-    shifts = Shift.includes([:store,:fix_shift_pattern,:shift_pattern]).where(staff_id:group_staff_ids,date:@one_month)
-    @shifts = shifts.map{|shift|[[shift.staff_id,shift.date],shift]}.to_h
-    @staff_shinsei_count = shifts.where.not(shift_pattern_id: nil).group(:staff_id).count
-    @staff_syukkin_count = shifts.where.not(fix_shift_pattern_id: nil).group(:staff_id).count
-    staff_ids = shifts.map{|shift|shift.staff_id}.uniq
-    @staffs = Staff.where(id:staff_ids).order(row:'asc')
-
-    @fix_shift_patterns = FixShiftPattern.where(group_id:@group.id)
-    @shift_patterns = ShiftPattern.where(group_id:@group.id)
-
-    @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    Shift.includes(fix_shift_pattern:[:shift_frames,fix_shift_pattern_shift_frames:[:shift_frame]]).where(date:@one_month).each do |shift|
-      if shift.fix_shift_pattern_id.present?
-        date = shift.date
-        store_id = shift.store_id
-        shift.fix_shift_pattern.shift_frames.each do |sf|
-          if @hash[store_id][date][sf.id].present?
-            @hash[store_id][date][sf.id] += 1
-          else
-            @hash[store_id][date][sf.id] = 1
-          end
-        end
-      end
-    end
-  end
   def create_frame
     group = Group.find(params[:group_id])
     store_ids = group.stores.ids
