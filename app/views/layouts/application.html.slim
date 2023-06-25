@@ -80,7 +80,7 @@ html
                       li = link_to "掃除リスト",clean_reminders_path()
                       / li = link_to "進捗ボード",tasks_path(group_id:9)
                       li = link_to '販売レポート',select_store_sales_reports_path
-                      li = link_to 'シフト',check_shifts_path(date:@today,group_id:9)
+                      li = link_to 'シフト',shifts_path(date:@today,group_id:current_user.group_id)
                   li.dropdown
                     a.dropdown-toggle href="#" data-toggle="dropdown" role="button"
                       |共通
@@ -145,7 +145,7 @@ html
                       - @stores.each do |store|
                         li = link_to store.name,crew_products_path(store_id:store.id)
 
-                  li.menu_li = link_to 'シフト',check_shifts_path(date:@today)
+                  li.menu_li = link_to 'シフト',shifts_path(date:@today,group_id:current_user.group_id)
                   li.menu_li = link_to "お客さまの声",customer_opinions_path
                   li.menu_li = link_to "試食コメント",weekly_tastings_path(date:@today)
                   li.menu_li = link_to "ログアウト", destroy_user_session_path, :method => :delete
