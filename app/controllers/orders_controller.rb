@@ -321,7 +321,7 @@ class OrdersController < AdminController
         hash["recipe_unit_quantity"] = material.recipe_unit_quantity
         hash["order_unit_quantity"] = material.order_unit_quantity
         hash["vendor_id"] = material.vendor_id
-        hash["vendor_name"] = material.vendor.name.truncate(5)
+        hash["vendor_name"] = material.vendor.name.truncate(10)
         hash['recipe_unit'] = material.recipe_unit
         hash['order_unit'] = material.order_unit
         hash['delivery_deadline'] = material.delivery_deadline
@@ -854,7 +854,7 @@ class OrdersController < AdminController
     hash["recipe_unit_quantity"] = menu_material.material.recipe_unit_quantity
     hash["order_unit_quantity"] = menu_material.material.order_unit_quantity
     hash["vendor_id"] = menu_material.material.vendor_id
-    hash["vendor_name"] = menu_material.material.vendor.name.first(5)
+    hash["vendor_name"] = menu_material.material.vendor.name
     hash["vendor_info"] = menu_material.material.vendor.delivery_date
     hash['recipe_unit'] = menu_material.material.recipe_unit
     hash['order_unit'] = menu_material.material.order_unit
