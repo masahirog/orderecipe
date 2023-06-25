@@ -115,9 +115,9 @@ html
           - else
             - color = "white"
           tr class="inventory_tr_#{material.id}" style="background-color:#{color}"
-            / td style='font-size:10px;padding:10px 0 0 2px;' = material.vendor.company_name.slice(0..4)
+            / td style='font-size:10px;padding:10px 0 0 2px;' = material.vendor.name.slice(0..4)
             td style='color:#696969;'
-              = material.vendor.company_name.slice(0..1)
+              = material.vendor.name.slice(0..1)
             td style='text-align:right;font-size:1vw;'
               = link_to material.name,edit_material_path(material),target:'_blank'
             td.text-right style='color:#696969;'

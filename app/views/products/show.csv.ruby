@@ -22,7 +22,7 @@ CSV.generate do |csv|
             (mm.amount_used * mm.material.cost_price).round(1),
             mm.preparation,
             mm.post,
-            mm.material.vendor.company_name
+            mm.material.vendor.name
           ]
           csv << csv_column_values
         elsif ii == 0
@@ -42,7 +42,7 @@ CSV.generate do |csv|
             (mm.amount_used * mm.material.cost_price).round(1),
             mm.preparation,
             mm.post,
-            mm.material.vendor.company_name
+            mm.material.vendor.name
           ]
           csv << csv_column_values
         else
@@ -62,7 +62,7 @@ CSV.generate do |csv|
             (mm.amount_used * mm.material.cost_price).round(1),
             mm.preparation,
             mm.post,
-            mm.material.vendor.company_name
+            mm.material.vendor.name
           ]
           csv << csv_column_values
         end

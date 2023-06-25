@@ -89,7 +89,7 @@ class TemporaryMenuMaterialsController < ApplicationController
     # dms = DailyMenu.where(start_time:@dates).joins(:daily_menu_details).where(:daily_menu_details =>{product_id:product_ids})
     @temporary_menu_materials = TemporaryMenuMaterial.where(date:@dates,menu_material_id:@menu_material.id)
     material_ids = @temporary_menu_materials.map{|tmm|tmm.material_id}
-    @materials = Material.where(id:material_ids).map{|material|["#{material.name}｜#{material.vendor.company_name}",material.id]}
+    @materials = Material.where(id:material_ids).map{|material|["#{material.name}｜#{material.vendor.name}",material.id]}
     @hash = @temporary_menu_materials.map{|tmm|[tmm.date,tmm]}.to_h
   end
 

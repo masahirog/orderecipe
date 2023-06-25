@@ -158,7 +158,7 @@ class MaterialsController < ApplicationController
     to = from.end_of_month
     @product_hash = {}
     @material_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    @vendor_hash = Vendor.all.map{|vendor|[vendor.id,vendor.company_name]}.to_h
+    @vendor_hash = Vendor.all.map{|vendor|[vendor.id,vendor.name]}.to_h
     if kubun == '0'
       kurumesi_order_ids = KurumesiOrder.where(start_time:from..to,canceled_flag:false)
       KurumesiOrderDetail.where(kurumesi_order_id:kurumesi_order_ids).each do |kod|

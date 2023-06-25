@@ -30,7 +30,7 @@ class InventoryPdf < Prawn::Document
     storage_places = {"un_saved"=>"未登録","normal"=>"常温","refrigerate"=>"冷蔵",'freezing'=>"冷凍","pack"=>"包材","equipment"=>"備品"}
     materials.each do |material|
       column_values = [material.id,material.name,material.short_name,'','',material.accounting_unit,"#{stocks_h[material.id][2]}\n#{stocks_h[material.id][0].floor(1)}#{material.accounting_unit}",
-        material.vendor.company_name.slice(0..8),storage_places[material.storage_place]]
+        material.vendor.name.slice(0..8),storage_places[material.storage_place]]
       data << column_values
 
     end

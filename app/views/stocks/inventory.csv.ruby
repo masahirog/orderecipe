@@ -4,7 +4,7 @@ CSV.generate do |csv|
   csv << csv_column_names
     @materials.each do |material|
       csv_column_values = [material.id,material.name,material.short_name,'','',material.accounting_unit,"#{@stocks_h[material.id][2]} #{@stocks_h[material.id][0].floor(1)}#{material.accounting_unit}",
-        @stocks_h[material.id][1],material.vendor.company_name,t("enums.material.storage_place.#{material.storage_place}")]
+        @stocks_h[material.id][1],material.vendor.name,t("enums.material.storage_place.#{material.storage_place}")]
       csv << csv_column_values
     end
   end

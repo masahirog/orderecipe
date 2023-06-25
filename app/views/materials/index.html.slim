@@ -27,7 +27,7 @@ table.table
       td
         = "#{(material.cost_price).round(2)} 円/#{material.recipe_unit}"
       td
-        = material.vendor.company_name
+        = material.vendor.name
       td
         - if @materials_order_quantity[material.id].present?
           = "#{(@materials_order_quantity[material.id].to_f / material.accounting_unit_quantity).round(1).to_s(:delimited)} #{material.accounting_unit}｜"

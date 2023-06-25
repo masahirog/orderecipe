@@ -108,6 +108,6 @@ class VendorsController < ApplicationController
   private
   def vendor_params
     params.require(:vendor).permit(:company_name, :company_phone, :company_fax, :company_mail,:efax_address,:status,:delivery_date,
-                                    :zip, :address, :staff_name, :staff_phone, :staff_mail, :memo,:group_id)
+                                    :zip, :address, :staff_name, :staff_phone, :staff_mail, :memo,:group_id,:name)
   end
 end

@@ -50,7 +50,7 @@
             .vendor_company_name style="padding-top:3px;color:#A9A9A9;"
               - if m.object.material.present?
                 input value="#{m.object.material.vendor_id}" style="display:none;"
-                span = m.object.material.vendor.company_name
+                span = m.object.material.vendor.name
                 span style='color:red;font-weight:bold;' = "【受注品】" if m.object.material.vendor_stock_flag == false
           td.delivery_date style="min-width:186px;"
             - if m.object.delivery_date

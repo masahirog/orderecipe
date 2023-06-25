@@ -8,7 +8,7 @@ class MenusController < ApplicationController
   end
   def get_material
     @materials = Material.where(group_id:@group_id,unused_flag:false).where("name LIKE ?", "%#{params[:q]}%").first(20)
-    @materials = @materials.map{|material|[material.id,"#{material.name}｜#{material.vendor.company_name}"]}
+    @materials = @materials.map{|material|[material.id,"#{material.name}｜#{material.vendor.name}"]}
     respond_to do |format|
       format.json { render json: @materials }
     end

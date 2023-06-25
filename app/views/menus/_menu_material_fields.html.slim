@@ -67,7 +67,7 @@ li.add_li_material.col-md-12.list-group-item.item.nested-fields.field.table-stri
       span.view_food_ingredient
         = "カロリー:#{f.object.calorie}kcal" if f.object.calorie
     .vendor.col-md-3
-      = f.object.material.vendor.company_name if f.object.material.present?
+      = f.object.material.vendor.name if f.object.material.present?
 
     / .select_source_group.col-md-1
       span style="margin:8px 8px 0 0;float:left;" 急：

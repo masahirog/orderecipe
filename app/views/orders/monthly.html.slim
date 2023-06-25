@@ -24,6 +24,6 @@
 /   tbody
 /     - @vendor_sum.each do |hash|
 /       tr
-/         td = Vendor.find(hash['vendor_id']).company_name
+/         td = Vendor.find(hash['vendor_id']).name
 /         td.text-right = "#{hash['cost_price'].round.to_s(:delimited)}円"
 /         td.text-right = @ar[hash['vendor_id']].length

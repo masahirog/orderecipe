@@ -52,7 +52,7 @@ class Crew::OrdersController < ApplicationController
       if @hash[om.material_id].present?
         @hash[om.material_id][1] += om.order_quantity.to_f
       else
-        @hash[om.material_id] = [om.material.recipe_unit_quantity,om.order_quantity.to_f,om.material.order_name,om.material.order_unit,om.order_material_memo,om.order_id,om.material.vendor.company_name,om.material.order_unit_quantity]
+        @hash[om.material_id] = [om.material.recipe_unit_quantity,om.order_quantity.to_f,om.material.order_name,om.material.order_unit,om.order_material_memo,om.order_id,om.material.vendor.name,om.material.order_unit_quantity]
       end
     end
     respond_to do |format|
@@ -72,7 +72,7 @@ class Crew::OrdersController < ApplicationController
     today = Date.today
     vendor_name = {}
     all_materials = Material.includes(:vendor).where(unused_flag:false)
-    # @vendor_name =all_materials.map{|material|[material.id,material.vendor.company_name]}.to_h
+    # @vendor_name =all_materials.map{|material|[material.id,material.vendor.name]}.to_h
     @stock_hash ={}
     @hash = {}
     @prev_stocks = {}
@@ -85,7 +85,7 @@ class Crew::OrdersController < ApplicationController
       om.order_quantity_order_unit = ((om.order_quantity.to_f / om.material.recipe_unit_quantity) * om.material.order_unit_quantity).round(1)
     end
     @code_materials = Material.where(unused_flag:false).where.not(order_code:"")
-    @vendors = @order.order_materials.includes(material:[:vendor]).map{|om|[om.material.vendor.company_name,om.material.vendor.id]}.uniq
+    @vendors = @order.order_materials.includes(material:[:vendor]).map{|om|[om.material.vendor.name,om.material.vendor.id]}.uniq
     product_ids = @order.products.ids
     # materials = Product.includes(:product_menus,[menus: [menu_materials: :material]]).where(id:product_ids).map{|product| product.menus.map{|pm| pm.menu_materials.map{|mm|[mm.material.id, product.name]}}}.flatten(2)
     materials = @order.order_materials.map{|om|om.material}
@@ -195,7 +195,7 @@ class Crew::OrdersController < ApplicationController
         @vendors_hash[om.order_id][om.material.vendor_id][0] += 1
         @vendors_hash[om.order_id][om.material.vendor_id][1] = om.fax_sended_status
       else
-        @vendors_hash[om.order_id][om.material.vendor_id] = [1,om.fax_sended_status,om.material.vendor.company_name]
+        @vendors_hash[om.order_id][om.material.vendor_id] = [1,om.fax_sended_status,om.material.vendor.name]
       end
     end
     if params[:start_date].present?
@@ -221,7 +221,7 @@ class Crew::OrdersController < ApplicationController
     @search_code_materials = Material.where(unused_flag:false).where.not(order_code:"")
     @order = Order.includes(:products,:order_products,:order_materials,{materials: [:vendor]}).find(params[:id])
     @code_materials = Material.where(unused_flag:false).where.not(order_code:"")
-    @vendors = @order.order_materials.map{|om|[om.material.vendor.company_name,om.material.vendor.id]}.uniq
+    @vendors = @order.order_materials.map{|om|[om.material.vendor.name,om.material.vendor.id]}.uniq
     if @order.update(order_create_update)
       redirect_to crew_order_path
     else
@@ -253,7 +253,7 @@ class Crew::OrdersController < ApplicationController
         hash["recipe_unit_quantity"] = material.recipe_unit_quantity
         hash["order_unit_quantity"] = material.order_unit_quantity
         hash["vendor_id"] = material.vendor_id
-        hash["vendor_name"] = material.vendor.company_name.truncate(10)
+        hash["vendor_name"] = material.vendor.name.truncate(10)
         hash['recipe_unit'] = material.recipe_unit
         hash['order_unit'] = material.order_unit
         hash['delivery_deadline'] = material.delivery_deadline
@@ -441,8 +441,8 @@ class Crew::OrdersController < ApplicationController
     end
     @materials = []
     #一旦vendors
-    # @vendors = Vendor.all.map{|vendor|[vendor.company_name,vendor.id]}
-    @vendors = Vendor.where(id:vendors_ids.uniq).map{|vendor|[vendor.company_name,vendor.id]}
+    # @vendors = Vendor.all.map{|vendor|[vendor.name,vendor.id]}
+    @vendors = Vendor.where(id:vendors_ids.uniq).map{|vendor|[vendor.name,vendor.id]}
   end
 
   def create
@@ -450,7 +450,7 @@ class Crew::OrdersController < ApplicationController
     @order = Order.new(order_create_update)
     @code_materials = Material.where(unused_flag:false).where.not(order_code:"")
     @materials = Material.where(unused_flag:false)
-    @vendors = @order.order_materials.map{|om|[om.material.vendor.company_name,om.material.vendor.id]}.uniq
+    @vendors = @order.order_materials.map{|om|[om.material.vendor.name,om.material.vendor.id]}.uniq
     @prev_stocks = {}
     if @order.save
       redirect_to "/crew/orders/#{@order.id}"
@@ -481,7 +481,7 @@ class Crew::OrdersController < ApplicationController
            pdf = OrderPdf.new(@materials_this_vendor,@vendor,@order)
          end
          send_data pdf.render,
-           filename:    "#{@order.id}_#{@vendor.company_name}.pdf",
+           filename:    "#{@order.id}_#{@vendor.name}.pdf",
            type:        "application/pdf",
            disposition: "inline"
          end
@@ -606,7 +606,7 @@ class Crew::OrdersController < ApplicationController
     hash["recipe_unit_quantity"] = menu_material.material.recipe_unit_quantity
     hash["order_unit_quantity"] = menu_material.material.order_unit_quantity
     hash["vendor_id"] = menu_material.material.vendor_id
-    hash["vendor_name"] = menu_material.material.vendor.company_name.first(5)
+    hash["vendor_name"] = menu_material.material.vendor.name.first(5)
     hash["vendor_info"] = menu_material.material.vendor.delivery_date
     hash['recipe_unit'] = menu_material.material.recipe_unit
     hash['order_unit'] = menu_material.material.order_unit

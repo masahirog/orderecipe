@@ -14,7 +14,11 @@
     = f.hidden_field :group_id,value:@group_id
 
   .form-group
-    = f.label :company_name, "企業名"
+    = f.label :name, "名称（社内）"
+    = f.text_field :name, required: true, class:"form-control"
+
+  .form-group
+    = f.label :company_name, "正式名称（納品書宛名等）"
     = f.text_field :company_name, required: true, class:"form-control"
   .form-group
     = f.label :status, "分類"

@@ -16,5 +16,5 @@ table.table
       tr
         td = data[1]
         td = link_to @uniq_mms_hash[data[0]].menu.name,@uniq_mms_hash[data[0]].menu
-        td = "#{@uniq_mms_hash[data[0]].material.name}｜#{@uniq_mms_hash[data[0]].material.vendor.company_name}"
+        td = "#{@uniq_mms_hash[data[0]].material.name}｜#{@uniq_mms_hash[data[0]].material.vendor.name}"
         td = link_to "確認",new_temporary_menu_material_path(menu_material_id:data[0]),class:'btn btn-primary btn-sm'

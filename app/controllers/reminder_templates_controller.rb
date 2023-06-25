@@ -39,21 +39,20 @@ class ReminderTemplatesController < ApplicationController
       category = 0
     end
     @reminder_template = ReminderTemplate.new(category:category)
-    # @reminder_template.reminder_template_stores.build
-    new_store_ids = Store.all.ids
+    @stores = Store.where(group_id:current_user.group_id).where.not(id:39)
+    new_store_ids = @stores.ids
     @stores_hash = {}
-    Store.all.each do |store|
+    @stores.each do |store|
       @stores_hash[store.id]=store.name
-    end
-    new_store_ids.each do |store_id|
-      @reminder_template.reminder_template_stores.build(store_id:store_id)
+      @reminder_template.reminder_template_stores.build(store_id:store.id)
     end
   end
 
   def edit
     @category = @reminder_template.category
     store_ids = @reminder_template.reminder_template_stores.pluck(:store_id)
-    all_store_ids = Store.all.ids
+    @stores = Store.where(group_id:current_user.group_id).where.not(id:39)
+    all_store_ids = @stores.ids
     new_store_ids = all_store_ids - store_ids
     @stores_hash = {}
     Store.all.each do |store|

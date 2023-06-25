@@ -1,7 +1,6 @@
 class Vendor < ApplicationRecord
   has_many :materials
   belongs_to :group
-  validates :company_name, presence: true, uniqueness: true
   validates :zip, allow_blank: true, format: {with: /\A\d{3}[-]\d{4}\z|\A\d{7}\z/}
   validates :company_phone, allow_blank: true, format: {with: /\A\d{3}[-]\d{4}[-]\d{4}\z|\A\d{2}[-]\d{4}[-]\d{4}\z|\A\d{11}\z|\A\d{10}\z/}
   validates :company_mail, allow_blank: true, format: {with: /\A\S+@\S+\.\S+\z/}
@@ -17,7 +16,7 @@ class Vendor < ApplicationRecord
     order_materials.each do |om|
       hash={}
       hash.store("vendor_id", om.material.vendor_id)
-      hash.store("company_name", om.material.vendor.company_name)
+      hash.store("company_name", om.material.vendor.name)
       hash.store("company_fax", om.material.vendor.company_fax)
       hash.store("efax_address", om.material.vendor.efax_address)
       hoge << hash

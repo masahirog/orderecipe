@@ -17,7 +17,7 @@ CSV.generate do |csv|
           (menu_material.amount_used * menu_material.material.cost_price).round(1),
           menu_material.preparation,
           menu_material.post,
-          menu_material.material.vendor.company_name
+          menu_material.material.vendor.name
         ]
         csv << csv_column_values
       else
@@ -33,7 +33,7 @@ CSV.generate do |csv|
           (menu_material.amount_used * menu_material.material.cost_price).round(1),
           menu_material.preparation,
           menu_material.post,
-          menu_material.material.vendor.company_name
+          menu_material.material.vendor.name
         ]
         csv << csv_column_values
       end

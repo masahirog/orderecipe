@@ -19,7 +19,7 @@ table.table
         td = link_to material.name,edit_material_path(material),target:'_blank'
         td = t("enums.material.category.#{material.category}")
         td = "#{ouq}#{material.order_unit} #{ruq}#{material.recipe_unit} "
-        td = material.vendor.company_name.slice(0..8)
+        td = material.vendor.name.slice(0..8)
         td
           = form_with(model:mso, data: {remote: true}) do |f|
             = f.hidden_field :id,value:mso.id,class:'shift_id'

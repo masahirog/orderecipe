@@ -106,7 +106,7 @@ table.table
           td = link_to mm.material.name, edit_material_path(mm.material)
           td = link_to "登録", new_temporary_menu_material_path(menu_material_id:mm.id),target:"_blank"
           td = ActiveSupport::NumberHelper.number_to_rounded((mm.amount_used * mm.material.cost_price), strip_insignificant_zeros: true, :delimiter => ',', precision: 1)
-          td = mm.material.vendor.company_name
+          td = mm.material.vendor.name
           td = "#{ActiveSupport::NumberHelper.number_to_rounded(mm.amount_used, strip_insignificant_zeros: true, :delimiter => ',', precision: 1)} #{mm.material.recipe_unit}"
           td = mm.source_group
           td = mm.post

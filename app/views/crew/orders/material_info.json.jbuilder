@@ -2,10 +2,10 @@ json.material do |json|
   json.order_unit    @material.order_unit
   json.recipe_unit    @material.recipe_unit
   if @material.vendor_stock_flag == false
-    json.vendor_company_name    @material.vendor.company_name + "【受注品】"
+    json.vendor_company_name    @material.vendor.name + "【受注品】"
     json.color   'red'
   else
-    json.vendor_company_name    @material.vendor.company_name
+    json.vendor_company_name    @material.vendor.name
     json.color  ''
   end
   if @material.delivery_deadline > 1

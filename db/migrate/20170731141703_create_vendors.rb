@@ -1,7 +1,7 @@
 class CreateVendors < ActiveRecord::Migration[4.2][5.0]
   def change
     create_table :vendors do |t|
-      t.string :company_name, unique: true
+      t.string :company_name
       t.string :company_phone
       t.string :company_fax
       t.string :company_mail
@@ -18,6 +18,7 @@ class CreateVendors < ActiveRecord::Migration[4.2][5.0]
       t.timestamps
       t.boolean :fax_staff_name_display_flag,default:false,null:false
       t.integer :group_id, :null => false
+      t.string :name
     end
   end
 end

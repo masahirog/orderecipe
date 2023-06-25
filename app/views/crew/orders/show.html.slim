@@ -21,7 +21,7 @@ table.table
         td
           = "#{((om.order_quantity.to_f/om.material.recipe_unit_quantity)*om.material.order_unit_quantity).round(1)} #{om.material.order_unit}"
         td
-          = om.material.vendor.company_name
+          = om.material.vendor.name
         td
           = om.order_material_memo
         td

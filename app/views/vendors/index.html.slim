@@ -32,7 +32,7 @@ table.table.table-striped
   tbody
     - @vendors.each do |vendor|
       tr
-        td = link_to vendor.company_name,edit_vendor_path(vendor)
+        td = link_to vendor.name,edit_vendor_path(vendor)
         td = vendor.staff_name
         td = vendor.staff_phone
         td = vendor.company_phone

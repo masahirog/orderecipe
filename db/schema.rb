@@ -12,7 +12,7 @@
 
 ActiveRecord::Schema.define(version: 2023_06_24_024340) do
 
-  create_table "analyses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "analyses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "store_id"
     t.date "date"
     t.integer "total_sales_amount"
@@ -48,7 +48,7 @@ ActiveRecord::Schema.define(version: 2023_06_24_024340) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "analysis_products", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "analysis_products", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "analysis_id"
     t.integer "smaregi_shohin_id"
     t.string "smaregi_shohin_name"
@@ -738,7 +738,7 @@ ActiveRecord::Schema.define(version: 2023_06_24_024340) do
     t.integer "zeinuki_uriage"
   end
 
-  create_table "staff_stores", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "staff_stores", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "staff_id"
     t.integer "store_id"
     t.boolean "affiliation_flag", default: false, null: false
@@ -747,7 +747,7 @@ ActiveRecord::Schema.define(version: 2023_06_24_024340) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "staffs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "staffs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "name", null: false
     t.text "memo"
     t.datetime "created_at", null: false
@@ -975,6 +975,7 @@ ActiveRecord::Schema.define(version: 2023_06_24_024340) do
     t.datetime "updated_at", null: false
     t.boolean "fax_staff_name_display_flag", default: false, null: false
     t.integer "group_id", null: false
+    t.string "name"
   end
 
   create_table "working_hours", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
