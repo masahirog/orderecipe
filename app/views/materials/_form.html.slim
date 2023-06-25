@@ -39,7 +39,7 @@
         = f.check_box :measurement_flag, class: "form-control"
       .col-md-12.form-group
         = f.label :vendor_id, "仕入先企業名"
-        = f.collection_select :vendor_id, Vendor.where(group_id:@group_id), :id, :company_name, {include_blank: true}, { class: "form-control"}
+        = f.collection_select :vendor_id, Vendor.where(group_id:@group_id), :id, :name, {include_blank: true}, { class: "form-control"}
       .col-md-12.form-group
         = f.label :vendor_stock_flag, "メーカー在庫品・受注品"
         = f.select :vendor_stock_flag, [["在庫品", true], ["受注品", false]],{}, class: "form-control"
