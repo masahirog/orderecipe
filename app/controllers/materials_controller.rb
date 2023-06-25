@@ -7,7 +7,8 @@ class MaterialsController < ApplicationController
       @store_id = 39
     end
     @search = Material.includes(:vendor).search(params,@group_id).page(params[:page]).per(50)
-    @materials_order_quantity = OrderMaterial.joins(:order).where(un_order_flag:false,orders:{fixed_flag:1}).where(delivery_date:(Date.today - 31)..Date.today,material_id:@search.ids).group(:material_id).sum(:order_quantity)
+    @ids = @search.ids
+    @materials_order_quantity = OrderMaterial.joins(:order).where(un_order_flag:false,orders:{fixed_flag:1}).where(delivery_date:(Date.today - 31)..Date.today,material_id:@ids).group(:material_id).sum(:order_quantity)
     respond_to do |format|
       format.html
       format.json{render :json => @search}

@@ -48,7 +48,7 @@ class Material < ApplicationRecord
      else
       data = Material.where(group_id:group_id).order(id: "DESC").all
      end
-     data = data.where(['name LIKE ?', "%#{params["name"]}%"]) if params["name"].present?
+     data = data.where(['materials.name LIKE ?', "%#{params["name"]}%"]) if params["name"].present?
      data = data.where(vendor_id: params["vendor_id"]) if params["vendor_id"].present?
      data = data.where(unused_flag:params["unused_flag"]) if params["unused_flag"].present?
      data
