@@ -3,8 +3,7 @@ class DefaultShiftsController < ApplicationController
   def create_frame
     @wdays = [[1,'月'],[2,'火'],[3,'水'],[4,'木'],[5,'金'],[6,'土'],[0,'日']]
     group = Group.find(params[:group_id])
-    store_ids = group.stores.ids
-    staff_ids = Staff.where(status:0,store_id:store_ids).ids
+    staff_ids = Staff.where(status:0,group_id:group.id).ids
     default_staff_ids = DefaultShift.all.map{|ds|ds.staff_id}.uniq
     new_staff_ids = staff_ids - default_staff_ids
     new_arr = []

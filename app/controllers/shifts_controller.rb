@@ -102,13 +102,13 @@ class ShiftsController < ApplicationController
 
   def create_frame
     group = Group.find(params[:group_id])
-    store_ids = group.stores.ids
+    # store_ids = group.stores.ids
     @date = Date.parse(params[:date])
     first_day = @date.beginning_of_month
     last_day = first_day.end_of_month
     @one_month = [*first_day..last_day]
     aaa = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    staff_ids = Staff.where(status:0,store_id:store_ids).ids
+    staff_ids = Staff.where(status:0,group_id:group.id).ids
     Shift.where(date:@one_month,staff_id:staff_ids).each do |shift|
       if aaa[shift.date].present?
         aaa[shift.date] << shift.staff_id
