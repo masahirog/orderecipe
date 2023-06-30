@@ -6,7 +6,7 @@ class AnalysesController < AdminController
     if params[:weekdays].present?
       @weekdays_index = params[:weekdays]
     end
-    @stores = Store.where(group_id:9)
+    @stores = Store.where(group_id:current_user.group_id)
     if params[:stores]
       checked_store_ids = params['stores'].keys
     else
@@ -145,7 +145,7 @@ class AnalysesController < AdminController
   end
 
   def gyusuji
-    @stores = Store.where(group_id:9)
+    @stores = Store.where(group_id:current_user.group_id)
     if params[:stores]
       checked_store_ids = params['stores'].keys
     else
@@ -231,8 +231,8 @@ class AnalysesController < AdminController
       end
     end
     @wednesdays = gon.wednesdays
-    @staffs = WorkingHour.where(date:@dates,group_id:19).order(:jobcan_staff_code).pluck(:name).uniq
-    WorkingHour.where(date:@dates,group_id:19).each do |wh|
+    @staffs = WorkingHour.where(date:@dates,group_id:current_user.group_id).order(:jobcan_staff_code).pluck(:name).uniq
+    WorkingHour.where(date:@dates,group_id:current_user.group_id).each do |wh|
       if wh.working_time.to_f > 8
         zangyo = wh.working_time - 8
       else
@@ -270,7 +270,7 @@ class AnalysesController < AdminController
       checked_store_ids = params['stores'].keys
       @stores = Store.where(id:checked_store_ids)
     else
-      @stores = Store.where(group_id:9)
+      @stores = Store.where(group_id:current_user.group_id)
       checked_store_ids = @stores.ids
       params[:stores] = {}
       @stores.each do |store|
@@ -352,7 +352,7 @@ class AnalysesController < AdminController
     else
       @date = Date.today
     end
-    @stores = Store.where(group_id:9)
+    @stores = Store.where(group_id:current_user.group_id)
     @store_daily_menus = StoreDailyMenu.where(start_time:@date)
     @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @store_daily_menus.each do |sdm|
@@ -411,7 +411,7 @@ class AnalysesController < AdminController
     redirect_to smaregi_members_analyses_path,notice:'更新しました。'
   end
   def sales
-    @stores = Store.where(group_id:9).where.not(id:39)
+    @stores = Store.where(group_id:current_user.group_id).where.not(id:39)
     if params[:stores]
       checked_store_ids = params['stores'].keys
     else
@@ -521,7 +521,7 @@ class AnalysesController < AdminController
       params[:store_ids] = checked_store_ids
     else
       params[:stores] = {}
-      @stores = Store.where(group_id:9).where.not(id:39)
+      @stores = Store.where(group_id:current_user.group_id).where.not(id:39)
       checked_store_ids = @stores.ids
       params[:store_ids] = checked_store_ids
       @stores.each do |store|
@@ -590,7 +590,7 @@ class AnalysesController < AdminController
   end
 
   def product_sales
-    @stores = Store.where(group_id:9)
+    @stores = Store.where(group_id:current_user.group_id)
     if params[:stores]
       checked_store_ids = params['stores'].keys
     else
@@ -663,7 +663,7 @@ class AnalysesController < AdminController
   end
 
   def visitors_time_zone
-    @stores = Store.where(group_id:9).where.not(id:39)
+    @stores = Store.where(group_id:current_user.group_id).where.not(id:39)
     if params[:stores]
       checked_store_ids = params['stores'].keys
     else
@@ -863,7 +863,7 @@ class AnalysesController < AdminController
   end
   def date
     @date = params[:date]
-    @stores = Store.where(group_id:9).where.not(id:39)
+    @stores = Store.where(group_id:current_user.group_id).where.not(id:39)
     @analyses_hash = {}
     Analysis.where(date:@date).each do |analysis|
       @analyses_hash[analysis.store_daily_menu.store_id] = analysis
@@ -873,7 +873,7 @@ class AnalysesController < AdminController
   def summary
     gon.lat = 35.7058146
     gon.lon = 139.6657874
-    @stores = Store.where(group_id:9).where.not(id:39)
+    @stores = Store.where(group_id:current_user.group_id).where.not(id:39)
     unless params[:stores]
       params[:stores] = {}
       @stores.each{|store|params[:stores][store.id.to_s] = true}
@@ -946,7 +946,7 @@ class AnalysesController < AdminController
   end
 
   def index
-    @stores = Store.where(group_id:9).where.not(id:39)
+    @stores = Store.where(group_id:current_user.group_id).where.not(id:39)
     if params[:stores]
       checked_store_ids = params['stores'].keys
     else

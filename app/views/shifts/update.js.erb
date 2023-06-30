@@ -1,5 +1,6 @@
 <% if @before_fix_shift_pattern.present? && @before_store_id.present? %>
     <% @before_shift_frames.each do |sf| %>
+
       var count = $(".<%= @shift.date.day %>_store_<%= @before_store_id %>_sf_<%= sf.id %>").find(".fix_shift_count").text()
       count = Number(count) - 1;
       var working_hour = $(".<%= @shift.date.day %>_store_<%= @before_store_id %>_sf_<%= sf.id %>").find(".working_hour").text()
@@ -78,3 +79,7 @@
     $(".td_<%= @shift.id %>").find(".fix_store_name").text("")
   <% end %>
   $(".td_<%= @shift.id %>").find(".fix_shift_select").css('background-color',bg_color_code).css('color',color_code);
+
+<% if @store_change_flag == true %>
+  $(".form_<%= @shift.id %>").find('.fix_shift_select').html('<%= j(options_for_select(@fix_shift_patterns.pluck(:pattern_name, :id).unshift(["",""]))) %>');
+<% end %>

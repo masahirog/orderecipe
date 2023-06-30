@@ -3,7 +3,7 @@ class SalesReportsController < ApplicationController
 
   def index
     @store = Store.find(params[:store_id])
-    @sales_reports = SalesReport.where(store_id:params[:store_id]).order("date DESC")
+    @sales_reports = SalesReport.where(store_id:params[:store_id]).order("id DESC").page(params[:page]).per(30)
   end
 
   def show
@@ -72,7 +72,7 @@ class SalesReportsController < ApplicationController
             Slack::Notifier.new("https://hooks.slack.com/services/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", username: '感謝', icon_emoji: ':hugging_face:').ping(kindess_message)
           end
         end
-        format.html { redirect_to sales_report_path(store_id:@sales_report.store_id), success: "保存しました。" }
+        format.html { redirect_to sales_reports_path(store_id:@sales_report.store_id), success: "保存しました。" }
         format.json { render :show, status: :created, location: @sales_report }
       else
         format.html { render :new, status: :unprocessable_entity }

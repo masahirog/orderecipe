@@ -40,7 +40,7 @@ class StaffsController < ApplicationController
   end
 
   def edit
-    Store.where(group_id:9).where.not(id:@staff.staff_stores.map{|ss|ss.store_id}).each do |store|
+    Store.where(group_id:current_user.group_id).where.not(id:@staff.staff_stores.map{|ss|ss.store_id}).each do |store|
       @staff.staff_stores.build(store_id:store.id)
     end
   end

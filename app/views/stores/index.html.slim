@@ -13,6 +13,7 @@ h2 店舗一覧
         th 発注
         th 発注可能商品
         th 棚卸し
+        th 店舗情報修正
     tbody
       - group.stores.each do |store|
         tr
@@ -29,5 +30,5 @@ h2 店舗一覧
           td = link_to store.short_name, orders_path(store_id:store.id),class:"order btn btn-default btn-sm"
           td = link_to '一覧', materials_stores_path(store_id:store.id),class:"order btn btn-default btn-sm"
           td = link_to '棚卸し', inventory_stocks_path(to:Date.today,store_id:store.id),class:"btn btn-default btn-sm"
-
+          td = link_to '詳細', edit_store_path(store),class:"btn btn-default btn-sm"
 

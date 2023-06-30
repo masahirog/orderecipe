@@ -1,20 +1,27 @@
 .clearfix style='margin-bottom:10px;'
-  = link_to "#{@date.last_month.month}月＜",shifts_path(date:@date.last_month,group_id:@group.id,stores:params[:stores].to_unsafe_h),style:"font-size:1.6em;"
+  = link_to "#{@date.last_month.month}月＜",shifts_path(date:@date.last_month,group_id:@group.id,stores:params[:stores].to_unsafe_h,store_type:params[:store_type]),style:"font-size:1.6em;"
   span style='font-size:1.6em;' = "　　#{@date.year}年#{@date.month}月　　"
-  = link_to "＞#{@date.next_month.month}月",shifts_path(date:@date.next_month,group_id:@group.id,stores:params[:stores].to_unsafe_h),style:"font-size:1.6em;"
+  = link_to "＞#{@date.next_month.month}月",shifts_path(date:@date.next_month,group_id:@group.id,stores:params[:stores].to_unsafe_h,store_type:params[:store_type]),style:"font-size:1.6em;"
+  .pull-right
+    = form_tag shifts_path, :method => 'get' do
+      = hidden_field_tag :group_id,@group.id
+      = hidden_field_tag :date,@date
+      = select_tag(:store_type, options_for_select(Store.store_types.map { |data| [data[0], data[1]] }, params[:store_type]),include_blank:true,class:"form-control",style:'float:left;width:100px;')
 
+      = submit_tag "切り替え" ,class:"btn btn-primary",style:"margin-left:20px;"
 
 .clearfix
   .pull-left
     = form_tag shifts_path, :method => 'get' do
       = hidden_field_tag :group_id,@group.id
       = hidden_field_tag :date,@date
-      ul style="list-style:none;float:left;padding:0;"
-        - @stores.each do |store|
-          li style='float:left;margin-right:10px;'
-            = check_box_tag "stores[#{store.id}]",true,params['stores'][store.id.to_s]
-            = label_tag "stores[#{store.id}]",store.name
-      = submit_tag "表示" ,class:"btn btn-primary",style:"margin-left:20px;"
+      .clearfix
+        ul style="list-style:none;float:left;padding:0;margin-left:10px;"
+          - @stores.each do |store|
+            li style='float:left;margin-right:10px;'
+              = check_box_tag "stores[#{store.id}]",true,params['stores'][store.id.to_s]
+              = label_tag "stores[#{store.id}]",store.name
+        = submit_tag "表示" ,class:"btn btn-primary",style:"margin-left:20px;"
   - if current_user.id == 74
     = link_to "枠作成",create_frame_shifts_path(date:params[:date],group_id:params[:group_id]),{method: :post,class:'btn btn-default pull-right'}
     = link_to "交通費CSV", shifts_path(date:params[:date],group_id:@group.id,format:'csv'), class: "btn btn-default pull-right",style:'margin-right:20px;'
@@ -39,7 +46,6 @@
 
 
 
-
 .table-responsive style='height:800px;overflow: scroll;overscroll-behavior-x: contain;'
   table.table.layout-fixed style='border-collapse:separate;'
     colgroup
@@ -55,64 +61,72 @@
           / = link_to "店舗名",store_shifts_path(date:@date,group_id:@group.id)
           button.hide_all_stores_tr.btn.btn-default.btn-sm style='padding:2px 4px;font-size:10px;margin-left:2px;' 非表示
           button.show_tr.btn.btn-default.btn-sm style='padding:2px 4px;font-size:10px;display:none;margin-left:2px;' 表示
-        - if current_user.id == 74
-          th.fixed_second_thtd style='width:120px;'
-        - else
-          th.fixed_second_thtd style='width:120px;display:none;'
+        th.fixed_second_thtd style='width:120px;border-right: 1px silver solid;'
         - @one_month.each do |date|
           - holiday = HolidayJapan.name(date)
           - if holiday.present?
-            th colspan=2 style='width:260px;background-color:#f06060;color:white;' = date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})")
+            - bg_color = "#f06060"
+            - color = "white"
           - else
-            th colspan=2 style='width:260px;background-color:#f5f5f5;' = date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})")
+            - bg_color = "#f5f5f5"
+            - color = "black"
+          th colspan=2 style="width:260px;background-color:#{bg_color};color:#{color}"
+            = date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})")
       - @checked_stores.each do |store|
-        - @shift_frames.each_with_index do |sf,i|
-          - if store.store_shift_frames.find_by(shift_frame_id:sf.id)
-            - default_number = store.store_shift_frames.find_by(shift_frame_id:sf.id).default_number
+        - store.store_shift_frames.each_with_index do |ssf,i|
+          - if i == 0
             tr.shift_amount_tr class="store_#{store.id}_tr"
-              - if i == 0
-                td rowspan="#{@rowspan}" style='text-align: center;vertical-align: middle;z-index:4;font-weight:bold;'
-                  = store.short_name
-                  br
-                  button.hide_store_tr.btn.btn-default.btn-sm style='padding:2px 4px;font-size:10px;' 非表示
-                  input.store_id value= "#{store.id}" style="display:none;"
-              - if current_user.id == 74
-                td.fixed_second_thtd style=""
-                  = "#{sf.name}：#{default_number}"
-                  input.default_shift_value value="#{default_number}" style='display:none;'
-              - else
-                td.fixed_second_thtd style="display:none;"
-                  = "#{sf.name}：#{default_number}"
-                  input.default_shift_value value="#{default_number}" style='display:none;'
+              td rowspan="#{store.store_shift_frames.count+1}" style='text-align: center;vertical-align: middle;z-index:4;font-weight:bold;'
+                = store.short_name
+                br
+                button.hide_store_tr.btn.btn-default.btn-sm style='padding:2px 4px;font-size:10px;' 非表示
+                input.store_id value= "#{store.id}" style="display:none;"
 
+              td.fixed_second_thtd style="padding:4px;background-color:#a9a9a9;color:white;border-right: 1px silver solid;" 合計
               - @one_month.each do |date|
-                td colspan=2 class="#{date.day}_store_#{store.id}_sf_#{sf.id} fix_shift_amount" style="border-right: 1px silver solid;font-size:1.1.6em;padding:4px;background-color:#f5f5f5;"
-                  - if @hash[store.id][date][sf.id].present?
-                    span.fix_shift_count = "#{@hash[store.id][date][sf.id]['working_number']}"
-                    / span = " ("
-                    / span.working_hour = "#{ActiveSupport::NumberHelper.number_to_rounded(@hash[store.id][date][sf.id]['working_hour'], strip_insignificant_zeros: true, :delimiter => ',')}"
-                    / span = ")"
-                  - else
-                    span.fix_shift_count = ""
-                    / span = " ("
-                    / span.working_hour = ""
-                    / span = ")"
+                td style='border-right: 1px silver solid;padding:4px;background-color:#a9a9a9;color:white;' colspan=2
+                  - @hash[store.id][date].values.each do |data|
+                  span.total_worker_number style='font-weight:normal;'
+                    = @date_store_working_count[[date,store.id]]
+                  span.total_working_time style='font-weight:normal;'
+                    = "（#{@date_store_working_hour[[date,store.id]].to_i.round}）"
+          tr.shift_amount_tr class="store_#{store.id}_tr"
+            td.fixed_second_thtd style="padding:4px;border-right: 1px silver solid;"
+              = "#{ssf.shift_frame.name}：#{ssf.default_number}"
+              input.default_shift_value value="#{ssf.default_number}" style='display:none;'
+            - @one_month.each do |date|
+              - bg_color = '#f0c0c0'
+              - if @hash[store.id][date][ssf.shift_frame.id].present?
+                - if ssf.default_number == @hash[store.id][date][ssf.shift_frame.id]['working_number']
+                  - bg_color = '#f5f5f5'
+                - elsif ssf.default_number < @hash[store.id][date][ssf.shift_frame.id]['working_number']
+                  - bg_color = '#f0e68c'
+
+              td colspan=2 class="#{date.day}_store_#{store.id}_sf_#{ssf.shift_frame.id} fix_shift_amount" style="border-right: 1px silver solid;font-size:1.1.6em;padding:4px;background-color:#{bg_color};"
+                - if @hash[store.id][date][ssf.shift_frame.id].present?
+                  span.fix_shift_count = "#{@hash[store.id][date][ssf.shift_frame.id]['working_number']}"
+                  / span = " ("
+                  / span.working_hour = "#{ActiveSupport::NumberHelper.number_to_rounded(@hash[store.id][date][sf.id]['working_hour'], strip_insignificant_zeros: true, :delimiter => ',')}"
+                  / span = ")"
+                - else
+                  span.fix_shift_count = ""
+                  / span = " ("
+                  / span.working_hour = ""
+                  / span = ")"
     tbody
       - @staffs.each do |staff|
         tr.fix_shift_tr class="fix_shift_tr_#{staff.id}"
           td.staff_name style='line-height:0.9em;color:black;text-align:center;vertical-align:middle;z-index:3;'
-            = staff.name
+            = link_to staff.name,edit_staff_path(staff)
             - if staff.memo.present?
               span.shinsei_shift_memo style='color:pink;font-size:12px;' class="glyphicon glyphicon-book original-tooltip" aria-hidden="true"  data-toggle="tooltip" data-placement="top" data-container="body" title="#{staff.memo}"
             br
             span style='font-size:11px;color:gray;margin:0;'
               = "#{@staff_syukkin_count[staff.id]} 回｜"
             span class="working_hours_#{staff.id}" style='font-size:11px;color:gray;margin:0;'
-          - if current_user.id == 74
-            td.fixed_second_thtd style='z-index:1;font-size:0.8em;'
-              = staff.stores.map{|store|store.short_name}.join(",")
-          - else
-            td.fixed_second_thtd style='z-index:1;font-size:0.8em;display:none;'
+              = @staff_working_hour[staff.id].to_i.round
+          td.fixed_second_thtd style='z-index:1;font-size:0.8em;border-right: 1px silver solid;'
+            = staff.stores.map{|store|store.short_name}.join(",")
 
           - @one_month.each do |date|
             - if @shifts[[staff.id,date]].present?
@@ -146,9 +160,14 @@
                       span.fix_shift_pattern
                   .edit_fix_shift_form style='text-align:center;display:none;'
                     = form_with(model: @shifts[[staff.id,date]], data: {remote: true},class:"form_#{@shifts[[staff.id,date]].id}") do |f|
+                      - select_bg_color = ""
+                      - fix_shift_patterns = []
                       = f.hidden_field :id,value:@shifts[[staff.id,date]].id,class:'shift_id'
-                      = f.collection_select :store_id, @stores, :id, :short_name, {include_blank:true}, { class: "fix_shift_select_store_id",style:"width:60px;height:30px;text-align:center;float:left;border-radius:4px;border-color:silver;"}
-                      = f.collection_select :fix_shift_pattern_id, @fix_shift_patterns, :id, :pattern_name, {include_blank:true}, { class: "fix_shift_select",style:"width:63px;height:30px;text-align:center;float:left;border-radius:4px;border-color:silver;"}
+                      = f.collection_select :store_id, @checked_stores, :id, :short_name, {include_blank:true}, { class: "fix_shift_select_store_id",style:"width:60px;height:30px;text-align:center;float:left;border-radius:4px;border-color:silver;"}
+                      - if @shifts[[staff.id,date]].store_id.present?
+                        - fix_shift_patterns = @shifts[[staff.id,date]].store.fix_shift_patterns
+                        - select_bg_color = "pink" unless @shifts[[staff.id,date]].fix_shift_pattern_id.present?
+                      = f.collection_select :fix_shift_pattern_id,fix_shift_patterns, :id, :pattern_name, {include_blank:true}, { class: "fix_shift_select",style:"width:63px;height:30px;text-align:center;float:left;border-radius:4px;border-color:silver;background-color:#{select_bg_color};"}
                       span style='color:#d3d3d3;margin-left:2px;margin-top:7px;' class="glyphicon glyphicon-pencil edit_memo" aria-hidden="true"
                       span style='color:#d3d3d3;margin-left:2px;margin-top:7px;display:none;' class="glyphicon glyphicon-saved save_memo" aria-hidden="true"
                       = f.text_field :memo,style:'width:100%;margin-top:4px;display:none;',class:"memo"
@@ -185,7 +204,13 @@
               - else
                 td style='font-size:12px;border-right: 1px silver solid;'
 
+/ 画面が狭いので2列目はスマホでは非表示
 css:
+  @media (max-width: 700px) {
+    .fixed_second_thtd {
+      display:none;
+    }
+  }
   select{
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -230,42 +255,6 @@ css:
 
 javascript:
   $(function() {
-    $(".fix_shift_tr").each(function(){
-      var val = 0;
-      var total = 0;
-      $(this).find('.working_hour').each(function(){
-        val = Number($(this).val());
-        total = total + val
-      });
-      $(this).find('.td_shift_form').each(function(){
-        if ($(this).find(".fix_shift_select").val()==""){
-          if ($(this).find(".fix_shift_select_store_id").val()==""){
-          }else{
-            $(this).find(".fix_shift_select").css('background-color','pink')
-          };
-        }else{
-          if ($(this).find(".fix_shift_select_store_id").val()=="") {
-            $(this).find(".fix_shift_select_store_id").css('background-color','pink')
-          };
-        };
-      });
-      var staff_id = $(this).find(".staff_id").val();
-      $('.working_hours_'+ staff_id).text(total);
-    });
-
-    $(".shift_amount_tr").each(function(){
-      var default_amount = Number($(this).find(".default_shift_value").val());
-      $(this).find('.fix_shift_amount').each(function(){
-        if (default_amount > Number($(this).children(".fix_shift_count").text())) {
-          $(this).css("background-color",'#f0c0c0');
-        }else if(default_amount < Number($(this).children(".fix_shift_count").text())){
-          $(this).css("background-color",'#f0e68c');
-        };
-      });
-    });
-
-
-
 
     $('.fix_shift_select_store_id').on( 'change',function(){
       Rails.fire($(this).parent('form')[0], 'submit');
@@ -273,20 +262,6 @@ javascript:
 
     $('.fix_shift_select').on( 'change',function(){
       Rails.fire($(this).parent('form')[0], 'submit');
-    });
-
-
-    $(".edit_fix_shift").on("click",function(){
-      $(this).parents('tr').find(".edit_fix_shift_form").show();
-      $(this).parents('tr').find(".fix_shift").hide();
-      $(this).parent('td').children(".edit_fix_shift_ok").show();
-      $(this).hide();
-    });
-    $(".edit_fix_shift_ok").on("click",function(){
-      $(this).parents('tr').find(".edit_fix_shift_form").hide();
-      $(this).parents('tr').find(".fix_shift").show();
-      $(this).parent('td').children(".edit_fix_shift").show();
-      $(this).hide();
     });
 
 
@@ -330,5 +305,5 @@ javascript:
       $(this).parent().find(".edit_memo").show();
       $(this).hide();
     });
-    
+
   });

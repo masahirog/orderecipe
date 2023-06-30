@@ -27,8 +27,15 @@
   ul.list-group.clearfix#add_fspsf
     = f.fields_for :fix_shift_pattern_shift_frames do |fspsf|
       = render 'fix_shift_pattern_shift_frame_fields', f: fspsf
-  = link_to_add_association 'シフト枠追加', f, :fix_shift_pattern_shift_frames,class: 'btn btn-default add_menu_details',data: {association_insertion_node: '#add_fspsf',association_insertion_method: 'append' }
-
+  = link_to_add_association 'シフト枠追加', f, :fix_shift_pattern_shift_frames,class: 'btn btn-default',data: {association_insertion_node: '#add_fspsf',association_insertion_method: 'append' }
+  br
+  br
+  br
+  label 使用可能店舗の選択
+  ul.list-group.clearfix#add_fsps
+    = f.fields_for :fix_shift_pattern_stores do |fsps|
+      = render 'fix_shift_pattern_store_fields', f: fsps
+  = link_to_add_association '店舗追加', f, :fix_shift_pattern_stores,class: 'btn btn-default',data: {association_insertion_node: '#add_fsps',association_insertion_method: 'append' }
 
   .actions.text-center
     = f.submit '登録する',class:'btn btn-success'

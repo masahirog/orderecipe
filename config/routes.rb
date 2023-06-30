@@ -81,6 +81,7 @@ Rails.application.routes.draw do
   resources :material_store_orderables
   resources :shifts do
     collection do
+      get :get_fix_shift_pattern
       get :fixed
       post :once_update_fixed
       post :reflect_default_shifts

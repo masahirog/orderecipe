@@ -45,7 +45,7 @@ class WorkingHoursController < ApplicationController
         @working_hours = WorkingHour.where(staff_id:params[:staff_id]).where("date > ?",'2022/11/16').where("working_time > ?",0)
       end
     else
-      @working_hours = WorkingHour.where(date:@date).where(group_id:19)
+      @working_hours = WorkingHour.where(date:@date).where(group_id:current_user.group_id)
     end
     @times = []
     15.times do |hour|
@@ -71,11 +71,11 @@ class WorkingHoursController < ApplicationController
     Staff.where(group_id:current_user.id,employment_status:1,status:0).where(status:0).each do |staff|
       if working_hour_hash[[@date,staff.id]].present?
       else
-        new_arr << WorkingHour.new(date:@date,group_id:19,staff_id:staff.id,name:staff.name,jobcan_staff_code:staff.jobcan_staff_code,store_id:39)
+        new_arr << WorkingHour.new(date:@date,group_id:current_user.group_id,staff_id:staff.id,name:staff.name,jobcan_staff_code:staff.jobcan_staff_code,store_id:39)
       end
     end
     WorkingHour.import new_arr
-    redirect_to staff_input_working_hours_path(date:@date,group_id:19)
+    redirect_to staff_input_working_hours_path(date:@date,group_id:current_user.group_id)
   end
 
   def upload_jobcan_data

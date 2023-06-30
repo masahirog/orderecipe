@@ -1,0 +1,10 @@
+li.list-group-item.clearfix
+	div style='float:left;width:250px;'
+		= f.label :default_number,"シフト枠"
+		= f.collection_select :shift_frame_id, @shift_frames, :id, :name, {include_blank: true}, { class: "form-control",style:'width:200px;'}
+	div style='float:left;width:250px;'
+		= f.label :default_number,"人数"
+		= f.number_field :default_number, class:'form-control',style:'width:200px;'
+	div style='float:left;width:250px;'
+		= f.label :default_working_hour,"時間"
+		= f.number_field :default_working_hour, class:'form-control',style:'width:200px;'

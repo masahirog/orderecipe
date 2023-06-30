@@ -46,7 +46,7 @@ html
                       li = link_to "食材の一時変更一覧",temporary_menu_materials_path
                       li = link_to "各店舗発注品",bejihan_store_orders_list_orders_path(date:@today)
                       li = link_to "進捗ボード",tasks_path(store_id:39)
-                      li = link_to "時間内訳",staff_input_working_hours_path(group_id:19)
+                      li = link_to "時間内訳",staff_input_working_hours_path(group_id:current_user.group_id)
 
                       h5 style='padding:0 10px;font-weight:bold;' くるめし
                       li = link_to "オーダー",kurumesi_orders_path(start_date:@today)
@@ -66,8 +66,8 @@ html
                           span style='float:left;' 棚卸し
                       li = link_to "月次棚卸し在庫",stocks_path(store_id:39)
                       h5 style='padding:0 10px;font-weight:bold;' その他
-                      / li = link_to 'シフト',shifts_path(date:@today,group_id:19)
-                      / li = link_to 'シフトテンプレート',default_shifts_path(group_id:19)
+                      / li = link_to 'シフト',shifts_path(date:@today,group_id:current_user.group_id)
+                      / li = link_to 'シフトテンプレート',default_shifts_path(group_id:current_user.group_id)
                       li = link_to "キッチン設定",edit_store_path(id:39)
 
 
@@ -76,11 +76,11 @@ html
                       |販売店舗
                       span.caret
                     ul.dropdown-menu role="menu" style='width:250px;'
-                      li = link_to "店舗一覧",stores_path(group_id:9)
+                      li = link_to "店舗一覧",stores_path(group_id:current_user.group_id)
                       li = link_to "掃除リスト",clean_reminders_path()
-                      / li = link_to "進捗ボード",tasks_path(group_id:9)
+                      / li = link_to "進捗ボード",tasks_path(group_id:current_user.group_id)
                       li = link_to '販売レポート',select_store_sales_reports_path
-                      li = link_to 'シフト',shifts_path(date:@today,group_id:current_user.group_id)
+                      li = link_to 'シフト',shifts_path(date:@today,group_id:current_user.group_id,store_type:0)
                   li.dropdown
                     a.dropdown-toggle href="#" data-toggle="dropdown" role="button"
                       |共通
@@ -115,8 +115,8 @@ html
                       li = link_to "商品リピート",product_repeat_analyses_path
                       li = link_to "スタッフ",staffs_analyses_path
                       li = link_to "時間管理",labor_analyses_path()
-                      li = link_to "き勤怠",working_hours_path(group_id:19)
-                      li = link_to "は勤怠",working_hours_path(group_id:9)
+                      li = link_to "き勤怠",working_hours_path(group_id:current_user.group_id)
+                      li = link_to "は勤怠",working_hours_path(group_id:current_user.group_id)
                       / li = link_to "フィードバック",feedback_analyses_path
 
                   li.dropdown
@@ -124,7 +124,7 @@ html
                       |設定
                       span.caret
                     ul.dropdown-menu role="menu"
-                      li = link_to "スタッフ一覧",staffs_path(group_id:9)
+                      li = link_to "スタッフ一覧",staffs_path(group_id:current_user.group_id)
                       li = link_to "グループ",groups_path
                       li = link_to "シフト枠",shift_frames_path
                       li = link_to '確定シフトパターン',fix_shift_patterns_path

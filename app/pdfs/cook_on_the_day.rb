@@ -11,7 +11,7 @@ class CookOnTheDay < Prawn::Document
 
   def table_content(daily_menu_id)
     daily_menu = DailyMenu.find(daily_menu_id)
-    store_daily_menus = daily_menu.store_daily_menus.joins(:store).where(:stores => {group_id:9})
+    store_daily_menus = daily_menu.store_daily_menus.joins(:store).where(:stores => {group_id:current_user.group_id})
     store_daily_menus.includes(:store,store_daily_menu_details:[:product]).each_with_index do |sdm,i|
       bounding_box([10, 800], :width => 560) do
         text "※この紙はべじはん新高円寺店に納品してください",size:10 if sdm.store_id == 19 ||sdm.store_id == 29

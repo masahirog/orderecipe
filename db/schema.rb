@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_06_24_024340) do
+ActiveRecord::Schema.define(version: 2023_06_29_230155) do
 
   create_table "analyses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "store_id"
@@ -182,6 +182,14 @@ ActiveRecord::Schema.define(version: 2023_06_24_024340) do
     t.integer "shift_frame_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "fix_shift_pattern_stores", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "fix_shift_pattern_id", null: false
+    t.integer "store_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["fix_shift_pattern_id", "store_id"], name: "index_uniq", unique: true
   end
 
   create_table "fix_shift_patterns", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -838,9 +846,10 @@ ActiveRecord::Schema.define(version: 2023_06_24_024340) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "default_working_hour", default: 0, null: false
+    t.index ["store_id", "shift_frame_id"], name: "index_store_shift_frames_on_store_id_and_shift_frame_id", unique: true
   end
 
-  create_table "stores", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+  create_table "stores", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name", null: false
     t.string "phone"
     t.string "fax"
@@ -863,6 +872,7 @@ ActiveRecord::Schema.define(version: 2023_06_24_024340) do
     t.string "np_store_code"
     t.integer "group_id"
     t.string "task_slack_url"
+    t.integer "store_type", default: 0, null: false
   end
 
   create_table "task_comments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|

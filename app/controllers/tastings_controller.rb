@@ -31,13 +31,13 @@ class TastingsController < ApplicationController
   def new
     @product = Product.find(params[:product_id])
     @tasting = Tasting.new(product_id:params[:product_id],sell_price:@product.sell_price)
-    store_ids = Store.where(group_id:9)
+    store_ids = Store.where(group_id:current_user.group_id)
     @staffs = Staff.where(store_id:store_ids,status:0)
   end
 
   def edit
     @product = @tasting.product
-    store_ids = Store.where(group_id:9)
+    store_ids = Store.where(group_id:current_user.group_id)
     @staffs = Staff.where(store_id:store_ids,status:0)
   end
 

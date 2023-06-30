@@ -18,4 +18,8 @@ class Store < ApplicationRecord
   accepts_nested_attributes_for :store_shift_frames, allow_destroy: true
   has_many :monthly_stocks
   has_many :task_stores
+  has_many :fix_shift_pattern_stores
+  has_many :fix_shift_patterns, through: :fix_shift_pattern_stores
+
+  enum store_type: {sales:0,kitchen:1}
 end

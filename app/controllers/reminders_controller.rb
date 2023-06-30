@@ -89,7 +89,7 @@ class RemindersController < ApplicationController
 
   def update
     @class_name = ".reminder_tr_#{@reminder.id}"
-    @staffs = Staff.where(group_id:9,status:0)
+    @staffs = Staff.where(group_id:current_user.group_id,status:0)
     respond_to do |format|
       if @reminder.update(reminder_params)
         format.html { redirect_to store_reminders_path(store_id:@reminder.store_id,date:@reminder.action_date,status:'yet'), notice: "Reminder was successfully updated." }

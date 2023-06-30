@@ -23,7 +23,7 @@ table.table
   tbody
     - (@from..@to).sort.reverse.each do |date|
       tr class=""
-        td = link_to date.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[date.wday]})"),staff_input_working_hours_path(date:date,group_id:19),target:"_blunk"
+        td = link_to date.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[date.wday]})"),staff_input_working_hours_path(date:date,group_id:current_user.group_id),target:"_blunk"
         td = @jobcan_working_hours[date].to_f.round(1)
         td = @kari_working_time[date].to_f.round(1)
         td = @chori_of_working_time[date]

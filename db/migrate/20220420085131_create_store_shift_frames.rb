@@ -6,6 +6,7 @@ class CreateStoreShiftFrames < ActiveRecord::Migration[5.2]
       t.integer :default_number,default:0,null:false
       t.timestamps
       t.integer :default_working_hour,default:0,null:false
+      t.index [:store_id,:shift_frame_id], unique: true
     end
   end
 end
