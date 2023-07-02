@@ -6,6 +6,8 @@ h3 = "#{@group.name}スタッフ一覧"
     .col-md-2 style="float:left;"
       = select_tag :status, options_for_select([[:working,0],[:retirement,1]],params[:status]), include_blank: true, class:"form-control"
     .col-md-2 style="float:left;"
+      = select_tag(:store_type, options_for_select(Store.store_types.map { |data| [data[0], data[1]] }, params[:store_type]),include_blank:true,class:"form-control")
+    .col-md-2 style="float:left;"
       = submit_tag "検索" ,class:"btn btn-primary"
 
 = form_tag(row_order_update_staffs_path,method: :post) do

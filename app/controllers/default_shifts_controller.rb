@@ -15,17 +15,33 @@ class DefaultShiftsController < ApplicationController
     DefaultShift.import new_arr
     redirect_to default_shifts_path(group_id:params[:group_id]),notice:"デフォルトシフト枠を作成しました。"
   end
+
   def index
     @group = Group.find(params[:group_id])
-    store_ids = @group.stores.ids
-    @stores = Store.where(id:store_ids)
+    if params[:store_type].present?
+      @store_type = params[:store_type]
+      @stores = @group.stores.includes(:fix_shift_pattern_stores,store_shift_frames:[:shift_frame]).where(store_type:@store_type)
+    else
+      @store_type = nil
+      @stores = @group.stores.includes(:fix_shift_pattern_stores,store_shift_frames:[:shift_frame])
+    end
+    if params[:stores]
+      @checked_stores = Store.where(id:params['stores'].keys)
+    else
+      @checked_stores = @stores
+      params[:stores] = {}
+      @stores.each do |store|
+        params[:stores][store.id.to_s] = true
+      end
+    end
     @fix_shift_patterns = FixShiftPattern.where(group_id:@group.id)
-    @staffs = Staff.where(status:0,store_id:store_ids)
+
+    staff_ids = @checked_stores.map{|store|store.staffs.ids}.flatten.uniq
+    @staffs = Staff.where(status:0,id:staff_ids).order(row:'asc')
     @wdays = [[1,'月'],[2,'火'],[3,'水'],[4,'木'],[5,'金'],[6,'土'],[0,'日']]
     default_shifts = DefaultShift.where(staff_id:@staffs.ids)
     @default_shifts = default_shifts.map{|default_shift|[[default_shift.staff_id,default_shift.weekday],default_shift]}.to_h
-    @rowspan = @group.shift_frames.count
-    @shift_frames = @group.shift_frames
+    # @shift_frames = @group.shift_frames
     @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     default_shifts.each do |default_shift|
       if default_shift.fix_shift_pattern_id.present?
@@ -79,6 +95,18 @@ class DefaultShiftsController < ApplicationController
       @before_store_id = @default_shift.store_id_was
       @before_store = Store.find(@before_store_id)
     end
+    if @default_shift.store_id_was == params[:default_shift][:store_id].to_i
+    else
+      @store_change_flag = true
+      params[:default_shift][:fix_shift_pattern_id]=""
+    end
+    if params[:default_shift][:store_id].present?
+      store = Store.find(params[:default_shift][:store_id])
+      @fix_shift_patterns = store.fix_shift_patterns
+    else
+      @fix_shift_patterns = []
+    end
+
     respond_to do |format|
       if @default_shift.update(default_shift_params)
         if @default_shift.store_id.present?

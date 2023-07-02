@@ -52,7 +52,7 @@ $(".fix_shift_tr_<%= @default_shift.staff_id %>").find('.working_hour').each(fun
 $(".working_hours_<%= @default_shift.staff_id %>").text(total);
 
 <% if @default_shift.store_id.present? %>
-  <% if @default_shift.store_id == @default_shift.staff.store_id %>
+  <% if @default_shift.staff.stores.ids.include?(@default_shift.store_id) %>
     $(".td_<%= @default_shift.id %>").find(".fix_shift_select_store_id").css('background-color','#fffff');
   <% else %>
     $(".td_<%= @default_shift.id %>").find(".fix_shift_select_store_id").css('background-color','#90ee90');
@@ -70,4 +70,8 @@ $(".working_hours_<%= @default_shift.staff_id %>").text(total);
     $(".td_<%= @default_shift.id %>").find(".fix_shift_select_store_id").css('background-color','white');
   <% end %>
   $(".td_<%= @default_shift.id %>").find(".fix_store_name").text("")
+<% end %>
+
+<% if @store_change_flag == true %>
+  $(".form_<%= @default_shift.id %>").find('.fix_shift_select').html('<%= j(options_for_select(@fix_shift_patterns.pluck(:pattern_name, :id).unshift(["",""]))) %>');
 <% end %>

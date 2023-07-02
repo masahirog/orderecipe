@@ -236,6 +236,7 @@ class ShiftsController < ApplicationController
       end
     end
     staff_ids = @checked_stores.map{|store|store.staffs.ids}.flatten.uniq
+    
     first_day = Date.new(@date.year,@date.month, 16)
     last_day = first_day.end_of_month
     last_day = Date.new((last_day + 1).year,(last_day +1).month, 15)
@@ -252,7 +253,7 @@ class ShiftsController < ApplicationController
     staff_ids =shift_staff_ids + add_ids
     @staffs = Staff.includes(:stores,staff_stores:[:store]).where(id:staff_ids,status:0).order(row:'asc')
     shift_frame_ids = ShiftFrame.joins(:store_shift_frames).where(:store_shift_frames => {id:@stores.ids}).ids.uniq
-    @fix_shift_patterns = FixShiftPattern.where(group_id:9)
+    @fix_shift_patterns = FixShiftPattern.where(group_id:@group.id)
 
     @shift_patterns = ShiftPattern.where(group_id:@group.id)
 

@@ -19,7 +19,13 @@ class StaffsController < ApplicationController
     else
       status = 0
     end
-    @staffs = Staff.where(group_id:group_id,status:status).order(row:'asc')
+    if params[:store_type]
+      @stores = @group.stores.where(store_type:params[:store_type])
+      staff_ids = @stores.map{|store|store.staffs.ids}.flatten.uniq
+      @staffs = Staff.where(id:staff_ids,status:status).order(row:'asc')
+    else
+      @staffs = Staff.where(group_id:group_id,status:status).order(row:'asc')
+    end
   end
 
   def show
