@@ -2,8 +2,25 @@ class DefaultShiftsController < ApplicationController
   before_action :set_default_shift, only: %i[ show edit update destroy ]
   def create_frame
     @wdays = [[1,'月'],[2,'火'],[3,'水'],[4,'木'],[5,'金'],[6,'土'],[0,'日']]
-    group = Group.find(params[:group_id])
-    staff_ids = Staff.where(status:0,group_id:group.id).ids
+
+    @group = Group.find(params[:group_id])
+    if params[:store_type].present?
+      @store_type = params[:store_type]
+      @stores = @group.stores.where(store_type:@store_type)
+    else
+      @store_type = nil
+      @stores = @group.stores
+    end
+    if params[:stores]
+      @checked_stores = Store.where(id:params['stores'].keys)
+    else
+      @checked_stores = @stores
+      params[:stores] = {}
+      @stores.each do |store|
+        params[:stores][store.id.to_s] = true
+      end
+    end
+    staff_ids = @checked_stores.map{|store|store.staffs.ids}.flatten.uniq
     default_staff_ids = DefaultShift.all.map{|ds|ds.staff_id}.uniq
     new_staff_ids = staff_ids - default_staff_ids
     new_arr = []
@@ -13,7 +30,7 @@ class DefaultShiftsController < ApplicationController
       end
     end
     DefaultShift.import new_arr
-    redirect_to default_shifts_path(group_id:params[:group_id]),notice:"デフォルトシフト枠を作成しました。"
+    redirect_to default_shifts_path(group_id:params[:group_id],store_type:@store_type),success:"デフォルトシフト枠を作成しました。"
   end
 
   def index
@@ -35,13 +52,20 @@ class DefaultShiftsController < ApplicationController
       end
     end
     @fix_shift_patterns = FixShiftPattern.where(group_id:@group.id)
-
     staff_ids = @checked_stores.map{|store|store.staffs.ids}.flatten.uniq
     @staffs = Staff.where(status:0,id:staff_ids).order(row:'asc')
     @wdays = [[1,'月'],[2,'火'],[3,'水'],[4,'木'],[5,'金'],[6,'土'],[0,'日']]
     default_shifts = DefaultShift.where(staff_id:@staffs.ids)
     @default_shifts = default_shifts.map{|default_shift|[[default_shift.staff_id,default_shift.weekday],default_shift]}.to_h
     # @shift_frames = @group.shift_frames
+
+
+    @staff_syukkin_count = default_shifts.joins(:fix_shift_pattern).where.not(:fix_shift_patterns=>{working_hour:0}).where.not(fix_shift_pattern_id: nil).group(:staff_id).count
+    @date_store_working_count = default_shifts.joins(:fix_shift_pattern).where.not(:fix_shift_patterns=>{working_hour:0}).where.not(fix_shift_pattern_id: nil).group(:weekday,:store_id).count
+    @staff_working_hour = default_shifts.joins(:fix_shift_pattern).where.not(:fix_shift_patterns=>{working_hour:0}).where.not(fix_shift_pattern_id: nil).group(:staff_id).sum("fix_shift_patterns.working_hour")
+    @date_store_working_hour = default_shifts.joins(:fix_shift_pattern).where.not(:fix_shift_patterns=>{working_hour:0}).where.not(fix_shift_pattern_id: nil).group(:weekday,:store_id).sum("fix_shift_patterns.working_hour")
+
+
     @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     default_shifts.each do |default_shift|
       if default_shift.fix_shift_pattern_id.present?

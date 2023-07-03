@@ -19,7 +19,7 @@
 
 h3 シフトテンプレート一覧
 .text-right
-  = link_to "シフト枠を作成",create_frame_default_shifts_path(group_id:params[:group_id]),{method: :post,class:'btn btn-primary'}
+  = link_to "シフト枠を作成",create_frame_default_shifts_path(group_id:params[:group_id],store_type:params[:store_type],stores:params[:stores].to_unsafe_h),{method: :post,class:'btn btn-primary'}
 .table-responsive style='height:800px;overflow: scroll;'
   table.table.layout-fixed style='border-collapse:separate;'
     thead style='position: sticky;top:0;background-color:white;z-index:3;'
@@ -31,10 +31,24 @@ h3 シフトテンプレート一覧
  
       - @checked_stores.each do |store|
         - store.store_shift_frames.each_with_index do |ssf,i|
+          - if i == 0
+            tr.shift_amount_tr class="store_#{store.id}_tr"
+              td rowspan="#{store.store_shift_frames.count+1}" style='text-align: center;vertical-align: middle;z-index:4;font-weight:bold;'
+                = store.short_name
+                br
+                button.hide_store_tr.btn.btn-default.btn-sm style='padding:2px 4px;font-size:10px;' 非表示
+                input.store_id value= "#{store.id}" style="display:none;"
+
+              td.fixed_second_thtd style="padding:4px;background-color:#a9a9a9;color:white;border-right: 1px silver solid;" 合計
+              - @wdays.each do |wday|
+                td style='border-right: 1px silver solid;padding:4px;background-color:#a9a9a9;color:white;'
+                  span.total_worker_number style='font-weight:normal;'
+                    = @date_store_working_count[[wday[0],store.id]]
+                  span.total_working_time style='font-weight:normal;'
+                    = "（#{@date_store_working_hour[[wday[0],store.id]].to_i.round}）"
+
+
           tr.shift_amount_tr
-            - if i == 0
-              td rowspan="#{store.store_shift_frames.count}" style='background-color:white;text-align: center;vertical-align: middle;z-index:4;font-weight:bold;'
-                = store.name
             td.fixed_second_thtd style='text-align:right;'
               = "#{ssf.shift_frame.name}：#{ssf.default_number}｜#{ssf.default_working_hour}"
               input.default_shift_value value="#{ssf.default_number}" style='display:none;'
@@ -53,13 +67,24 @@ h3 シフトテンプレート一覧
 
       tbody
         - @staffs.each do |staff|
-          tr
+          tr.fix_shift_tr class="fix_shift_tr_#{staff.id}"
             td = staff.name
             td
+              span class="working_count_#{staff.id}" style='font-size:11px;color:gray;margin:0;'
+                = "#{@staff_syukkin_count[staff.id]}"
+              span style='font-size:11px;color:gray;margin:0;'  回｜
+              span class="working_hours_#{staff.id}" style='font-size:11px;color:gray;margin:0;'
+                = @staff_working_hour[staff.id].to_i.round
+
             - @wdays.each do |wday|
               - color = ''
               - if @default_shifts[[staff.id,wday[0]]].present?
-                td
+                td class="td_#{@default_shifts[[staff.id,wday[0]]].id}"
+                  - if @default_shifts[[staff.id,wday[0]]].fix_shift_pattern_id.present?
+                    input.working_hour style="display:none;" value="#{@default_shifts[[staff.id,wday[0]]].fix_shift_pattern.working_hour}"
+                  - else
+                    input.working_hour style="display:none;" value=0
+
                   = form_with(model: @default_shifts[[staff.id,wday[0]]], data: {remote: true},class:"form_#{@default_shifts[[staff.id,wday[0]]].id}") do |f|
                     - select_bg_color = ""
                     - fix_shift_patterns = []

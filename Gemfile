@@ -53,6 +53,7 @@ gem 'barby'
 gem 'chunky_png'
 gem 'slack-notifier'
 
+
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   gem 'pry-rails'

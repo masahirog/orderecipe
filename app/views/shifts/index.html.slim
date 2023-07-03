@@ -2,6 +2,8 @@
   = link_to "#{@date.last_month.month}月＜",shifts_path(date:@date.last_month,group_id:@group.id,stores:params[:stores].to_unsafe_h,store_type:params[:store_type]),style:"font-size:1.6em;"
   span style='font-size:1.6em;' = "　　#{@date.year}年#{@date.month}月　　"
   = link_to "＞#{@date.next_month.month}月",shifts_path(date:@date.next_month,group_id:@group.id,stores:params[:stores].to_unsafe_h,store_type:params[:store_type]),style:"font-size:1.6em;"
+  
+
   .pull-right
     = form_tag shifts_path, :method => 'get' do
       = hidden_field_tag :group_id,@group.id
@@ -9,6 +11,7 @@
       = select_tag(:store_type, options_for_select(Store.store_types.map { |data| [data[0], data[1]] }, params[:store_type]),include_blank:true,class:"form-control",style:'float:left;width:100px;')
 
       = submit_tag "切り替え" ,class:"btn btn-primary",style:"margin-left:20px;"
+
 
 .clearfix
   .pull-left
@@ -23,12 +26,70 @@
               = label_tag "stores[#{store.id}]",store.name
         = submit_tag "表示" ,class:"btn btn-primary",style:"margin-left:20px;"
   - if current_user.id == 74
-    = link_to "枠作成",create_frame_shifts_path(date:params[:date],group_id:params[:group_id]),{method: :post,class:'btn btn-default pull-right'}
-    = link_to "交通費CSV", shifts_path(date:params[:date],group_id:@group.id,format:'csv'), class: "btn btn-default pull-right",style:'margin-right:20px;'
+    .btn.btn-default.pull-right data-toggle="modal" style="" data-target="#csv_shifts_Modal" CSV
+    #csv_shifts_Modal.modal.fade tabindex="-1"
+      .modal-dialog
+        .modal-content
+          .modal-header
+            h4.modal-title CSV操作
+          .modal-body
+            h4 ダウンロード
+            = link_to "交通費CSV", transportation_expenses_shifts_path(date:params[:date],group_id:@group.id,store_type:params[:store_type],stores:params[:stores].to_unsafe_h,format:'csv'), class: "btn btn-default",style:'margin-right:20px;'
+            br
+            br
+            = link_to "勤怠データCSV", shifts_path(date:params[:date],group_id:@group.id,store_type:params[:store_type],stores:params[:stores].to_unsafe_h,format:'csv'), class: "btn btn-default",style:'margin-right:20px;'
+            br
+            br
+            = link_to "マネフォ用CSV", shifts_path(date:params[:date],group_id:@group.id,store_type:params[:store_type],stores:params[:stores].to_unsafe_h,format:'csv'), class: "btn btn-default",style:'margin-right:20px;'
+            br
+            br
+            h4 アップロード
+            div
+              label CSVでの一括更新
+              .clearfix
+                = form_tag csv_once_update_shifts_path, multipart: true do
+                  = hidden_field_tag :group_id,@group.id
+                  = hidden_field_tag :date,@date
+                  = hidden_field_tag :store_type,params[:store_type]
+
+                  = file_field_tag :file,class:'form-control',style:'padding:10px;width:300px;float:left;margin-right:20px;height:100%;'
+                  = submit_tag "アップロード",class:'btn btn-primary',style:'float:left;'
+
+          .modal-footer
+            button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
+
+    .btn.btn-default.pull-right data-toggle="modal" style="margin-right:20px;" data-target="#refrect_default_shifts_Modal" テンプレ反映
+    #refrect_default_shifts_Modal.modal.fade tabindex="-1"
+      = form_tag reflect_default_shifts_shifts_path, :method => 'post' do
+        .modal-dialog
+          .modal-content
+            .modal-header
+              h4.modal-title テンプレシフトをシフトに反映
+            .modal-body
+              p 選択した店舗に所属するスタッフのシフトを上書きします。
+              p 先にCSVダウンロードしてバックアップを取って下さい。
+              = hidden_field_tag :group_id,@group.id
+              = hidden_field_tag :date,@date
+              = hidden_field_tag :store_type,params[:store_type]
+              .clearfix
+                ul style="list-style:none;"
+                  - @stores.each do |store|
+                    li style=''
+                      = check_box_tag "stores[#{store.id}]",true,params['stores'][store.id.to_s]
+                      = label_tag "stores[#{store.id}]",store.name
+
+            .modal-footer
+              button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
+              = submit_tag "送信する",class:'btn btn-primary',data: { confirm: "選択した店舗のシフトがテンプレで上書きされます。元にもどす事が出来ません。本当によろしいですか？"}
+
+
     = link_to "公開ステータス", fixed_shifts_path(date:params[:date],group_id:@group.id,stores:params[:stores].to_unsafe_h), class: "btn btn-default pull-right",style:'margin-right:20px;'
-    .btn.btn-primary.all_edit_btn.pull-right style='margin-right:20px;' 一括編集
+    = link_to "枠作成",create_frame_shifts_path(date:params[:date],group_id:params[:group_id],store_type:params[:store_type]),{method: :post,class:'btn btn-default pull-right',style:'margin-right:20px;'}
+
+
+    .btn.btn-success.all_edit_btn.pull-right style='margin-right:20px;' 編集
     .btn.btn-primary.all_fix_btn.pull-right style='margin-right:20px;display:none;' 確定
-    / = link_to "テンプレシフト反映", reflect_default_shifts_shifts_path(date:params[:date],group_id:@group.id), method: :post, data: { confirm: 'デフォルトシフトで上書きされます。よろしいですか？' }, class: "btn btn-default pull-right",style:'margin-right:20px;' if params[:group_id]=='19'
+
   - else
     .btn.btn-sm.btn-primary.pull-right data-toggle="modal" data-target="#sampleModal" 提 出
     #sampleModal.modal.fade tabindex="-1"
@@ -58,7 +119,6 @@
     thead style='position: sticky;top:0;z-index:5;'
       tr
         th style='width:150px;'
-          / = link_to "店舗名",store_shifts_path(date:@date,group_id:@group.id)
           button.hide_all_stores_tr.btn.btn-default.btn-sm style='padding:2px 4px;font-size:10px;margin-left:2px;' 非表示
           button.show_tr.btn.btn-default.btn-sm style='padding:2px 4px;font-size:10px;display:none;margin-left:2px;' 表示
         th.fixed_second_thtd style='width:120px;border-right: 1px silver solid;'
@@ -85,7 +145,6 @@
               td.fixed_second_thtd style="padding:4px;background-color:#a9a9a9;color:white;border-right: 1px silver solid;" 合計
               - @one_month.each do |date|
                 td style='border-right: 1px silver solid;padding:4px;background-color:#a9a9a9;color:white;' colspan=2
-                  - @hash[store.id][date].values.each do |data|
                   span.total_worker_number style='font-weight:normal;'
                     = @date_store_working_count[[date,store.id]]
                   span.total_working_time style='font-weight:normal;'
@@ -121,8 +180,9 @@
             - if staff.memo.present?
               span.shinsei_shift_memo style='color:pink;font-size:12px;' class="glyphicon glyphicon-book original-tooltip" aria-hidden="true"  data-toggle="tooltip" data-placement="top" data-container="body" title="#{staff.memo}"
             br
-            span style='font-size:11px;color:gray;margin:0;'
-              = "#{@staff_syukkin_count[staff.id]} 回｜"
+            span class="working_count_#{staff.id}" style='font-size:11px;color:gray;margin:0;'
+              = "#{@staff_syukkin_count[staff.id]}"
+            span style='font-size:11px;color:gray;margin:0;'  回｜
             span class="working_hours_#{staff.id}" style='font-size:11px;color:gray;margin:0;'
               = @staff_working_hour[staff.id].to_i.round
           td.fixed_second_thtd style='z-index:1;font-size:0.8em;border-right: 1px silver solid;'

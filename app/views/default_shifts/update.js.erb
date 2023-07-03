@@ -38,13 +38,13 @@ var total = 0
       $(".<%= @default_shift.weekday %>_store_<%= @store.id %>_sf_<%= sf.id %>").css("background-color",'white');
     };
   <% end %>
-  var working_hour = <%= @default_shift.fix_shift_pattern.working_hour %>
+  var staff_date_working_hour = <%= @default_shift.fix_shift_pattern.working_hour %>
   $(".td_<%= @default_shift.id %>").find(".fix_shift_pattern").text("<%= @default_shift.fix_shift_pattern.pattern_name %>")
 <% else %>
   var working_hour = 0
   $(".td_<%= @default_shift.id %>").find(".fix_shift_pattern").text("")
 <% end %>
-$(".td_<%= @default_shift.id %>").find('.working_hour').val(working_hour);
+$(".td_<%= @default_shift.id %>").find('.working_hour').val(staff_date_working_hour);
 $(".fix_shift_tr_<%= @default_shift.staff_id %>").find('.working_hour').each(function(){
   val = Number($(this).val());
   total = total + val;

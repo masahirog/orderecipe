@@ -19,6 +19,7 @@
   <% end %>
   var val = 0
   var total = 0
+  var working_count = 0
   <% if @shift.fix_shift_pattern.present? && @store.present? %>
     <% @shift_frames.each do |sf| %>
       var count = $(".<%= @shift.date.day %>_store_<%= @store.id %>_sf_<%= sf.id %>").find(".fix_shift_count").text();
@@ -56,8 +57,10 @@
   $(".fix_shift_tr_<%= @shift.staff_id %>").find('.working_hour').each(function(){
     val = Number($(this).val());
     total = total + val;
+    if (val > 0 ) {working_count += 1};
   });
   $(".working_hours_<%= @shift.staff_id %>").text(total);
+  $(".working_count_<%= @shift.staff_id %>").text(working_count);
   <% if @shift.store_id.present? %>
     <% if @shift.staff.stores.ids.include?(@shift.store_id) %>
       $(".td_<%= @shift.id %>").find(".fix_shift_select_store_id").css('background-color','#f5f5f5');
