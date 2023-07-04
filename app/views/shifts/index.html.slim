@@ -110,18 +110,19 @@
 .table-responsive style='height:800px;overflow: scroll;overscroll-behavior-x: contain;'
   table.table.layout-fixed style='border-collapse:separate;'
     colgroup
-      col class="col"
-      - if current_user.id == 74
-        col class="col2"
+      col class="col1"
+      col class="col2"
+      col class="col5"
       - @one_month.each do |date|
         col class="col3"
         col class="col4"
     thead style='position: sticky;top:0;z-index:5;'
       tr
-        th style='width:150px;'
+        th
           button.hide_all_stores_tr.btn.btn-default.btn-sm style='padding:2px 4px;font-size:10px;margin-left:2px;' 非表示
           button.show_tr.btn.btn-default.btn-sm style='padding:2px 4px;font-size:10px;display:none;margin-left:2px;' 表示
-        th.fixed_second_thtd style='width:120px;border-right: 1px silver solid;'
+        th.fixed_second_thtd style=''
+        th.fixed_third_thtd style='font-size:0.8em;border-right: 1px silver solid;'
         - @one_month.each do |date|
           - holiday = HolidayJapan.name(date)
           - if holiday.present?
@@ -141,8 +142,9 @@
                 br
                 button.hide_store_tr.btn.btn-default.btn-sm style='padding:2px 4px;font-size:10px;' 非表示
                 input.store_id value= "#{store.id}" style="display:none;"
+              td.fixed_second_thtd style="padding:4px;background-color:#a9a9a9;color:white;"
+              td.fixed_third_thtd style='font-size:0.8em;border-right: 1px silver solid;background-color:#a9a9a9;color:white;' 合計
 
-              td.fixed_second_thtd style="padding:4px;background-color:#a9a9a9;color:white;border-right: 1px silver solid;" 合計
               - @one_month.each do |date|
                 td style='border-right: 1px silver solid;padding:4px;background-color:#a9a9a9;color:white;' colspan=2
                   span.total_worker_number style='font-weight:normal;'
@@ -150,7 +152,8 @@
                   span.total_working_time style='font-weight:normal;'
                     = "（#{@date_store_working_hour[[date,store.id]].to_i.round}）"
           tr.shift_amount_tr class="store_#{store.id}_tr"
-            td.fixed_second_thtd style="padding:4px;border-right: 1px silver solid;"
+            td.fixed_second_thtd style="padding:4px;"
+            td.fixed_third_thtd style='font-size:0.8em;border-right: 1px silver solid;'
               = "#{ssf.shift_frame.name}：#{ssf.default_number}"
               input.default_shift_value value="#{ssf.default_number}" style='display:none;'
             - @one_month.each do |date|
@@ -176,18 +179,19 @@
       - @staffs.each do |staff|
         tr.fix_shift_tr class="fix_shift_tr_#{staff.id}"
           td.staff_name style='line-height:0.9em;color:black;text-align:center;vertical-align:middle;z-index:3;'
-            = link_to staff.name,edit_staff_path(staff)
-            - if staff.memo.present?
-              span.shinsei_shift_memo style='color:pink;font-size:12px;' class="glyphicon glyphicon-book original-tooltip" aria-hidden="true"  data-toggle="tooltip" data-placement="top" data-container="body" title="#{staff.memo}"
+            - if current_user.id == 74
+              = link_to staff.name,edit_staff_path(staff)
+            - else
+              = staff.name
             br
             span class="working_count_#{staff.id}" style='font-size:11px;color:gray;margin:0;'
               = "#{@staff_syukkin_count[staff.id]}"
             span style='font-size:11px;color:gray;margin:0;'  回｜
             span class="working_hours_#{staff.id}" style='font-size:11px;color:gray;margin:0;'
               = @staff_working_hour[staff.id].to_i.round
-          td.fixed_second_thtd style='z-index:1;font-size:0.8em;border-right: 1px silver solid;'
+          td.fixed_second_thtd style='font-size:0.8em;'
             = staff.stores.map{|store|store.short_name}.join(",")
-
+          td.fixed_third_thtd style='font-size:0.8em;border-right: 1px silver solid;' = text_url_to_link(simple_format(h(staff.memo), {}, wrapper_tag: "span")).html_safe
           - @one_month.each do |date|
             - if @shifts[[staff.id,date]].present?
               td class="td_shinsei_#{@shifts[[staff.id,date]].id}"
@@ -270,6 +274,9 @@ css:
     .fixed_second_thtd {
       display:none;
     }
+    .fixed_third_thtd {
+      display:none;
+    }
   }
   select{
     -webkit-appearance: none;
@@ -295,6 +302,12 @@ css:
     left:150px;
     background-color:#f5f5f5;
   }
+  .table .fixed_third_thtd {
+    position: sticky;
+    z-index:2;
+    left:250px;
+    background-color:#f5f5f5;
+  }
 
   th,td {
     text-align:center;
@@ -303,6 +316,9 @@ css:
       max-width:350px;
       width: 350px;
   }
+  .col1{
+    width:150px;
+  }
   .col2{
     width:100px;
   }
@@ -310,6 +326,9 @@ css:
     width:70px;
   }
   .col4{
+    width:152px;
+  }
+  .col5{
     width:152px;
   }
 
