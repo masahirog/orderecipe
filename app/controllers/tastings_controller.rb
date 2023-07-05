@@ -32,13 +32,13 @@ class TastingsController < ApplicationController
     @product = Product.find(params[:product_id])
     @tasting = Tasting.new(product_id:params[:product_id],sell_price:@product.sell_price)
     store_ids = Store.where(group_id:current_user.group_id)
-    @staffs = Staff.where(store_id:store_ids,status:0)
+    @staffs = Staff.joins(:staff_stores).where(status:0,:staff_stores => {store_id:store_ids}).order(:row).uniq
   end
 
   def edit
     @product = @tasting.product
     store_ids = Store.where(group_id:current_user.group_id)
-    @staffs = Staff.where(store_id:store_ids,status:0)
+    @staffs = Staff.joins(:staff_stores).where(status:0,:staff_stores => {store_id:store_ids}).order(:row).uniq
   end
 
   def create

@@ -68,7 +68,7 @@ class WorkingHoursController < ApplicationController
     new_arr = []
     @date = Date.parse(params[:date])
     working_hour_hash = WorkingHour.where(date:params[:date]).map{|wh|[[wh.date,wh.staff_id],wh]}.to_h
-    Staff.where(group_id:current_user.id,employment_status:1,status:0).where(status:0).each do |staff|
+    Staff.where(group_id:current_user.group_id,employment_status:1,status:0).where(status:0).each do |staff|
       if working_hour_hash[[@date,staff.id]].present?
       else
         new_arr << WorkingHour.new(date:@date,group_id:current_user.group_id,staff_id:staff.id,name:staff.name,jobcan_staff_code:staff.jobcan_staff_code,store_id:39)
