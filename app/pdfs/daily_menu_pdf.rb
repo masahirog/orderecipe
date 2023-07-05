@@ -74,7 +74,7 @@ class DailyMenuPdf < Prawn::Document
         sozai_number = ""
       end
       num = (fukusai_num.to_i + sozai_number.to_i)
-      oroshi_ne = (sdmd.product.sell_price*0.75).round
+      oroshi_ne = (sdmd.product.sell_price*0.58).round
       syokei = ActiveSupport::NumberHelper.number_to_rounded(oroshi_ne * num, strip_insignificant_zeros: true, :delimiter => ',')
       total_sozai += sozai_number.to_i
       total_fukusai += fukusai_num.to_i

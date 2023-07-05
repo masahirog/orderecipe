@@ -13,8 +13,8 @@ CSV.generate do |csv|
           csv_column_values = [
             sdmd.store_daily_menu.store.name,sdmd.store_daily_menu.start_time,sdmd.product_id,
             @last_process[sdmd.product_id],
-            sdmd.product.name,sdmd.product.sell_price,(sdmd.product.sell_price*0.75),sdmd.number,
-            (sdmd.product.sell_price*0.75*sdmd.number),sdmd.stock_deficiency_excess,sdmd.actual_inventory,sdmd.carry_over,kanbai
+            sdmd.product.name,sdmd.product.sell_price,(sdmd.product.sell_price*0.58),sdmd.number,
+            (sdmd.product.sell_price*0.58*sdmd.number),sdmd.stock_deficiency_excess,sdmd.actual_inventory,sdmd.carry_over,kanbai
           ]
           csv << csv_column_values
         end

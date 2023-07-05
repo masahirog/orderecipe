@@ -39,37 +39,7 @@ class ShiftsController < ApplicationController
     last_day = Date.new((last_day + 1).year,(last_day +1).month, 15)
     @one_month = [*first_day..last_day]
     @shifts = Shift.includes(:store,:shift_pattern).where(staff_id:@staffs.ids,date:@one_month)
-    # @shifts = shifts.map{|shift|[[shift.staff_id,shift.date],shift]}.to_h
-    # @staff_shinsei_count = shifts.where.not(shift_pattern_id: nil).group(:staff_id).count
-    # @staff_syukkin_count = shifts.joins(:fix_shift_pattern).where.not(:fix_shift_patterns=>{working_hour:0}).where.not(fix_shift_pattern_id: nil).group(:staff_id).count
-    # @date_store_working_count = shifts.joins(:fix_shift_pattern).where.not(:fix_shift_patterns=>{working_hour:0}).where.not(fix_shift_pattern_id: nil).group(:date,:store_id).count
-    # @staff_working_hour = shifts.joins(:fix_shift_pattern).where.not(:fix_shift_patterns=>{working_hour:0}).where.not(fix_shift_pattern_id: nil).group(:staff_id).sum("fix_shift_patterns.working_hour")
-    # @date_store_working_hour = shifts.joins(:fix_shift_pattern).where.not(:fix_shift_patterns=>{working_hour:0}).where.not(fix_shift_pattern_id: nil).group(:date,:store_id).sum("fix_shift_patterns.working_hour")
-    # shift_staff_ids = shifts.map{|shift|shift.staff_id}.uniq
-    # add_ids = staff_ids - shift_staff_ids
-    # staff_ids =shift_staff_ids + add_ids
-    # shift_frame_ids = ShiftFrame.joins(:store_shift_frames).where(:store_shift_frames => {id:@stores.ids}).ids.uniq
-    # @fix_shift_patterns = FixShiftPattern.where(group_id:@group.id)
 
-    # @shift_patterns = ShiftPattern.where(group_id:@group.id)
-
-    # @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    # Shift.includes(fix_shift_pattern:[:shift_frames,fix_shift_pattern_shift_frames:[:shift_frame]]).where(date:@one_month).each do |shift|
-    #   if shift.fix_shift_pattern_id.present?
-    #     date = shift.date
-    #     store_id = shift.store_id
-    #     working_hour = shift.fix_shift_pattern.working_hour
-    #     shift.fix_shift_pattern.shift_frames.each do |sf|
-    #       if @hash[store_id][date][sf.id].present?
-    #         @hash[store_id][date][sf.id]['working_number'] += 1
-    #         @hash[store_id][date][sf.id]['working_hour'] += working_hour
-    #       else
-    #         @hash[store_id][date][sf.id]['working_number'] = 1
-    #         @hash[store_id][date][sf.id]['working_hour'] = working_hour
-    #       end
-    #     end
-    #   end
-    # end
     respond_to do |format|
       format.html
       format.csv do
@@ -334,8 +304,14 @@ class ShiftsController < ApplicationController
     staff_ids =shift_staff_ids + add_ids
     @staffs = Staff.includes(:stores,staff_stores:[:store]).where(id:staff_ids,status:0).order(row:'asc')
     shift_frame_ids = ShiftFrame.joins(:store_shift_frames).where(:store_shift_frames => {id:@stores.ids}).ids.uniq
-    @fix_shift_patterns = FixShiftPattern.where(group_id:@group.id)
-
+    # fix_shift_patterns = FixShiftPattern.where(group_id:@group.id).order(:pattern_name)
+    @store_fix_shift_patterns_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    FixShiftPatternStore.includes(:fix_shift_pattern).where(store_id:@checked_stores.ids).each do |fsps|
+      @store_fix_shift_patterns_hash[fsps.store_id][fsps.fix_shift_pattern.pattern_name] = fsps.fix_shift_pattern
+    end
+    @store_fix_shift_patterns_hash.each do |key, value|
+      @store_fix_shift_patterns_hash[key] = value.sort{ |a,b| a[0]<=>b[0] }
+    end
     @shift_patterns = ShiftPattern.where(group_id:@group.id)
 
     @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
@@ -428,7 +404,7 @@ class ShiftsController < ApplicationController
     end
     if params[:shift][:store_id].present?
       store = Store.find(params[:shift][:store_id])
-      @fix_shift_patterns = store.fix_shift_patterns
+      @fix_shift_patterns = store.fix_shift_patterns.order(:pattern_name)
     else
       @fix_shift_patterns = []
     end
