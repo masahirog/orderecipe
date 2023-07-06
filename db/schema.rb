@@ -184,7 +184,7 @@ ActiveRecord::Schema.define(version: 2023_06_29_230155) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "fix_shift_pattern_stores", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "fix_shift_pattern_stores", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "fix_shift_pattern_id", null: false
     t.integer "store_id", null: false
     t.datetime "created_at", precision: 6, null: false
@@ -202,6 +202,7 @@ ActiveRecord::Schema.define(version: 2023_06_29_230155) do
     t.integer "group_id"
     t.string "color_code", default: "#000000"
     t.string "bg_color_code", default: "#ffffff"
+    t.boolean "unused_flag", default: false, null: false
   end
 
   create_table "food_additives", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -839,7 +840,7 @@ ActiveRecord::Schema.define(version: 2023_06_29_230155) do
     t.boolean "editable_flag", default: true, null: false
   end
 
-  create_table "store_shift_frames", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "store_shift_frames", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "store_id", null: false
     t.integer "shift_frame_id", null: false
     t.integer "default_number", default: 0, null: false
@@ -849,7 +850,7 @@ ActiveRecord::Schema.define(version: 2023_06_29_230155) do
     t.index ["store_id", "shift_frame_id"], name: "index_store_shift_frames_on_store_id_and_shift_frame_id", unique: true
   end
 
-  create_table "stores", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "stores", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "name", null: false
     t.string "phone"
     t.string "fax"

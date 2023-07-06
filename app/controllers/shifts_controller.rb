@@ -307,7 +307,7 @@ class ShiftsController < ApplicationController
     # fix_shift_patterns = FixShiftPattern.where(group_id:@group.id).order(:pattern_name)
     @store_fix_shift_patterns_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     FixShiftPatternStore.includes(:fix_shift_pattern).where(store_id:@checked_stores.ids).each do |fsps|
-      @store_fix_shift_patterns_hash[fsps.store_id][fsps.fix_shift_pattern.pattern_name] = fsps.fix_shift_pattern
+      @store_fix_shift_patterns_hash[fsps.store_id][fsps.fix_shift_pattern.pattern_name] = fsps.fix_shift_pattern if fsps.fix_shift_pattern.unused_flag == false
     end
     @store_fix_shift_patterns_hash.each do |key, value|
       @store_fix_shift_patterns_hash[key] = value.sort{ |a,b| a[0]<=>b[0] }
@@ -404,7 +404,7 @@ class ShiftsController < ApplicationController
     end
     if params[:shift][:store_id].present?
       store = Store.find(params[:shift][:store_id])
-      @fix_shift_patterns = store.fix_shift_patterns.order(:pattern_name)
+      @fix_shift_patterns = store.fix_shift_patterns.where(unused_flag:false).order(:pattern_name)
     else
       @fix_shift_patterns = []
     end

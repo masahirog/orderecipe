@@ -22,6 +22,9 @@
   .form-group
     = f.label :end_time, "勤務終了時間（ジョブカンへのシフトアップロードの際に使用します）"
     = f.time_field :end_time, class: "form-control"
+  .form-group
+    = f.label :unused_flag, "使用停止チェック"
+    = f.check_box :unused_flag,class:'form-control',style:'width:30px;'
 
   label 計算対象シフト選択
   ul.list-group.clearfix#add_fspsf

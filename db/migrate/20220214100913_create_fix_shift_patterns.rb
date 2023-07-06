@@ -9,6 +9,7 @@ class CreateFixShiftPatterns < ActiveRecord::Migration[5.2]
       t.integer :group_id
       t.string :color_code,default:"#000000"
       t.string :bg_color_code,default:"#ffffff"
+      t.boolean :unused_flag,null:false,default:false
     end
   end
 end
