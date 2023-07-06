@@ -1,31 +1,21 @@
 .clearfix style='margin-bottom:10px;'
-  = link_to "#{@date.last_month.month}月＜",shifts_path(date:@date.last_month,group_id:@group.id,stores:params[:stores].to_unsafe_h,store_type:params[:store_type]),style:"font-size:1.6em;"
-  span style='font-size:1.6em;' = "　　#{@date.year}年#{@date.month}月　　"
-  = link_to "＞#{@date.next_month.month}月",shifts_path(date:@date.next_month,group_id:@group.id,stores:params[:stores].to_unsafe_h,store_type:params[:store_type]),style:"font-size:1.6em;"
-  
-
-  .pull-right
-    = form_tag shifts_path, :method => 'get' do
-      = hidden_field_tag :group_id,@group.id
-      = hidden_field_tag :date,@date
-      = select_tag(:store_type, options_for_select(Store.store_types.map { |data| [data[0], data[1]] }, params[:store_type]),include_blank:true,class:"form-control",style:'float:left;width:100px;')
-
-      = submit_tag "切り替え" ,class:"btn btn-primary",style:"margin-left:20px;"
-
-
-.clearfix
   .pull-left
-    = form_tag shifts_path, :method => 'get' do
-      = hidden_field_tag :group_id,@group.id
-      = hidden_field_tag :date,@date
-      .clearfix
-        ul style="list-style:none;float:left;padding:0;margin-left:10px;"
-          - @stores.each do |store|
-            li style='float:left;margin-right:10px;'
-              = check_box_tag "stores[#{store.id}]",true,params['stores'][store.id.to_s]
-              = label_tag "stores[#{store.id}]",store.name
-        = submit_tag "表示" ,class:"btn btn-primary",style:"margin-left:20px;"
+    = link_to "#{@date.last_month.month}月＜",shifts_path(date:@date.last_month,group_id:@group.id,stores:params[:stores].to_unsafe_h,store_type:params[:store_type]),style:"font-size:1.5em;"
+    span style='font-size:1.5em;' = "　#{@date.year}年#{@date.month}月　"
+    = link_to "＞#{@date.next_month.month}月",shifts_path(date:@date.next_month,group_id:@group.id,stores:params[:stores].to_unsafe_h,store_type:params[:store_type]),style:"font-size:1.5em;"
   - if current_user.id == 74
+    .pull-left.mobile_view_hide style='margin-left:20px;'
+      = form_tag shifts_path, :method => 'get' do
+        = hidden_field_tag :group_id,@group.id
+        = hidden_field_tag :date,@date
+        .clearfix
+          ul style="list-style:none;float:left;padding:0;margin-left:10px;"
+            - @stores.each do |store|
+              li style='float:left;margin-right:10px;'
+                = check_box_tag "stores[#{store.id}]",true,params['stores'][store.id.to_s]
+                = label_tag "stores[#{store.id}]",store.name
+          = submit_tag "表示" ,class:"btn btn-primary",style:"margin-left:20px;"
+
     .btn.btn-default.pull-right data-toggle="modal" style="" data-target="#csv_shifts_Modal" CSV
     #csv_shifts_Modal.modal.fade tabindex="-1"
       .modal-dialog
@@ -89,8 +79,7 @@
 
     .btn.btn-success.all_edit_btn.pull-right style='margin-right:20px;' 編集
     .btn.btn-primary.all_fix_btn.pull-right style='margin-right:20px;display:none;' 確定
-
-  - else
+  -else
     .btn.btn-sm.btn-primary.pull-right data-toggle="modal" data-target="#sampleModal" 提 出
     #sampleModal.modal.fade tabindex="-1"
       = form_tag staff_edit_shifts_path, :method => 'get' do
@@ -107,7 +96,26 @@
 
 
 
-.table-responsive style='height:800px;overflow: scroll;overscroll-behavior-x: contain;'
+/ .clearfix
+  .pull-left.mobile_view_hide
+    = form_tag shifts_path, :method => 'get' do
+      = hidden_field_tag :group_id,@group.id
+      = hidden_field_tag :date,@date
+      .clearfix
+        ul style="list-style:none;float:left;padding:0;margin-left:10px;"
+          - @stores.each do |store|
+            li style='float:left;margin-right:10px;'
+              = check_box_tag "stores[#{store.id}]",true,params['stores'][store.id.to_s]
+              = label_tag "stores[#{store.id}]",store.name
+        = submit_tag "表示" ,class:"btn btn-primary",style:"margin-left:20px;"
+  / .pull-right.mobile_view_hide
+    = form_tag shifts_path, :method => 'get' do
+      = hidden_field_tag :group_id,@group.id
+      = hidden_field_tag :date,@date
+      = select_tag(:store_type, options_for_select(Store.store_types.map { |data| [data[0], data[1]] }, params[:store_type]),include_blank:true,class:"form-control",style:'float:left;width:100px;')
+      = submit_tag "切り替え" ,class:"btn btn-primary",style:"margin-left:20px;"
+
+.table-responsive style='overflow: scroll;overscroll-behavior-x: contain;'
   table.table.layout-fixed style='border-collapse:separate;'
     colgroup
       col class="col1"
@@ -121,8 +129,8 @@
         th
           button.hide_all_stores_tr.btn.btn-default.btn-sm style='padding:2px 4px;font-size:10px;margin-left:2px;' 非表示
           button.show_tr.btn.btn-default.btn-sm style='padding:2px 4px;font-size:10px;display:none;margin-left:2px;' 表示
-        th.fixed_second_thtd style=''
-        th.fixed_third_thtd style='font-size:0.8em;border-right: 1px silver solid;'
+        th.fixed_second_thtd.mobile_view_hide style=''
+        th.fixed_third_thtd.mobile_view_hide style='font-size:0.8em;border-right: 1px silver solid;'
         - @one_month.each do |date|
           - holiday = HolidayJapan.name(date)
           - if holiday.present?
@@ -136,14 +144,14 @@
       - @checked_stores.each do |store|
         - store.store_shift_frames.each_with_index do |ssf,i|
           - if i == 0
-            tr.shift_amount_tr class="store_#{store.id}_tr"
+            tr.shift_amount_tr.mobile_view_hide class="store_#{store.id}_tr"
               td rowspan="#{store.store_shift_frames.count+1}" style='text-align: center;vertical-align: middle;z-index:4;font-weight:bold;'
                 = store.short_name
                 br
                 button.hide_store_tr.btn.btn-default.btn-sm style='padding:2px 4px;font-size:10px;' 非表示
                 input.store_id value= "#{store.id}" style="display:none;"
-              td.fixed_second_thtd style="padding:4px;background-color:#a9a9a9;color:white;"
-              td.fixed_third_thtd style='font-size:0.8em;border-right: 1px silver solid;background-color:#a9a9a9;color:white;' 合計
+              td.fixed_second_thtd.mobile_view_hide style="padding:4px;background-color:#a9a9a9;color:white;"
+              td.fixed_third_thtd.mobile_view_hide style='font-size:0.8em;border-right: 1px silver solid;background-color:#a9a9a9;color:white;' 合計
 
               - @one_month.each do |date|
                 td style='border-right: 1px silver solid;padding:4px;background-color:#a9a9a9;color:white;' colspan=2
@@ -151,9 +159,9 @@
                     = @date_store_working_count[[date,store.id]]
                   span.total_working_time style='font-weight:normal;'
                     = "（#{@date_store_working_hour[[date,store.id]].to_i.round}）"
-          tr.shift_amount_tr class="store_#{store.id}_tr"
-            td.fixed_second_thtd style="padding:4px;"
-            td.fixed_third_thtd style='font-size:0.8em;border-right: 1px silver solid;'
+          tr.mobile_view_hide.shift_amount_tr class="store_#{store.id}_tr"
+            td.fixed_second_thtd.mobile_view_hide style="padding:4px;"
+            td.fixed_third_thtd.mobile_view_hide style='font-size:0.8em;border-right: 1px silver solid;'
               = "#{ssf.shift_frame.name}：#{ssf.default_number}"
               input.default_shift_value value="#{ssf.default_number}" style='display:none;'
             - @one_month.each do |date|
@@ -189,9 +197,9 @@
             span style='font-size:11px;color:gray;margin:0;'  回｜
             span class="working_hours_#{staff.id}" style='font-size:11px;color:gray;margin:0;'
               = @staff_working_hour[staff.id].to_i.round
-          td.fixed_second_thtd style='font-size:0.8em;'
+          td.fixed_second_thtd.mobile_view_hide style='font-size:0.8em;'
             = staff.stores.map{|store|store.short_name}.join(",")
-          td.fixed_third_thtd style='font-size:0.8em;border-right: 1px silver solid;' = text_url_to_link(simple_format(h(staff.memo), {}, wrapper_tag: "span")).html_safe
+          td.fixed_third_thtd.mobile_view_hide style='font-size:0.8em;border-right: 1px silver solid;' = text_url_to_link(simple_format(h(staff.memo), {}, wrapper_tag: "span")).html_safe
           - @one_month.each do |date|
             - if @shifts[[staff.id,date]].present?
               td class="td_shinsei_#{@shifts[[staff.id,date]].id}"
@@ -270,14 +278,19 @@
 
 / 画面が狭いので2列目はスマホでは非表示
 css:
-  @media (max-width: 700px) {
-    .fixed_second_thtd {
-      display:none;
-    }
-    .fixed_third_thtd {
-      display:none;
-    }
+  .table-responsive{
+    height:800px;
   }
+  @media (max-width: 700px) {
+    .mobile_view_hide {
+      display:none;
+    }
+    .table-responsive{
+      height:450px;
+    }
+
+  }
+
   select{
     -webkit-appearance: none;
     -moz-appearance: none;
