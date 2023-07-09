@@ -117,9 +117,13 @@ class ShiftsController < ApplicationController
     @staff = Staff.find(staff_id)
     date = params[:date]
     if staff_id.present? && date.present?
+
       @date = Date.parse(params[:date])
-      first_day = @date.beginning_of_month
+      @date = Date.new(@date.prev_month.year,@date.prev_month.month,16) if @date.day < 15
+      first_day = Date.new(@date.year,@date.month, 16)
       last_day = first_day.end_of_month
+      last_day = Date.new((last_day + 1).year,(last_day +1).month, 15)
+
       @one_month = [*first_day..last_day]
       @shifts = Shift.where(staff_id:staff_id,date:@one_month)
       @shift_patterns = ShiftPattern.all.order(pattern_name:'DESC')
@@ -275,7 +279,7 @@ class ShiftsController < ApplicationController
       @date = Date.today
     end
     @date =  Date.new(@date.prev_month.year,@date.prev_month.month,16) if @date.day < 15
-    @year_months = [["#{@date.year}年#{@date.month}月",@date],["#{@date.next_month.year}年#{@date.next_month.month}月",@date.next_month],["#{@date.next_month.next_month.year}年#{@date.next_month.next_month.month}月",@date.next_month.next_month]]
+    @year_months = [["#{@date.year}年#{@date.month}月16日〜",@date],["#{@date.next_month.year}年#{@date.next_month.month}月16日〜",@date.next_month],["#{@date.next_month.next_month.year}年#{@date.next_month.next_month.month}月16日〜",@date.next_month.next_month]]
     @shift_frames = @group.shift_frames
     if params[:stores]
       @checked_stores = Store.where(id:params['stores'].keys)
@@ -303,10 +307,11 @@ class ShiftsController < ApplicationController
     add_ids = staff_ids - shift_staff_ids
     staff_ids =shift_staff_ids + add_ids
     @staffs = Staff.includes(:stores,staff_stores:[:store]).where(id:staff_ids,status:0).order(row:'asc')
+    @select_option_stores = Store.joins(:staff_stores).where(:staff_stores => {staff_id:@staffs.ids}).uniq
     shift_frame_ids = ShiftFrame.joins(:store_shift_frames).where(:store_shift_frames => {id:@stores.ids}).ids.uniq
     # fix_shift_patterns = FixShiftPattern.where(group_id:@group.id).order(:pattern_name)
     @store_fix_shift_patterns_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    FixShiftPatternStore.includes(:fix_shift_pattern).where(store_id:@checked_stores.ids).each do |fsps|
+    FixShiftPatternStore.includes(:fix_shift_pattern).where(store_id:@select_option_stores.map{|store|store.id}).each do |fsps|
       @store_fix_shift_patterns_hash[fsps.store_id][fsps.fix_shift_pattern.pattern_name] = fsps.fix_shift_pattern if fsps.fix_shift_pattern.unused_flag == false
     end
     @store_fix_shift_patterns_hash.each do |key, value|

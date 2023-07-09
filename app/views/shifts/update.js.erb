@@ -23,6 +23,7 @@
   <% if @shift.fix_shift_pattern.present? && @store.present? %>
     <% @shift_frames.each do |sf| %>
       var count = $(".<%= @shift.date.day %>_store_<%= @store.id %>_sf_<%= sf.id %>").find(".fix_shift_count").text();
+      console.log("<%= sf.name %>")
       if (count=='0' || count=="") {
         count = 1;
       }else{
@@ -30,6 +31,7 @@
       }
       $(".<%= @shift.date.day %>_store_<%= @store.id %>_sf_<%= sf.id %>").find(".fix_shift_count").text(count);
       var working_hour = $(".<%= @shift.date.day %>_store_<%= @store.id %>_sf_<%= sf.id %>").find(".working_hour").text();
+      console.log(working_hour)
       working_hour = Number(working_hour) + <%= @shift.fix_shift_pattern.working_hour %>;
       $(".<%= @shift.date.day %>_store_<%= @store.id %>_sf_<%= sf.id %>").find(".working_hour").text(working_hour);
 
