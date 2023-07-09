@@ -24,7 +24,7 @@ CSV.generate do |csv|
     end
     
 
-    csv_column_values = [shift.staff.staff_code,shift.staff.name,'',shift.date.strftime("%Y/%m/%d"),division,start_time,end_time,"","","","","",""]
+    csv_column_values = [shift.staff.staff_code,shift.staff.name,'',shift.date.strftime("%Y/%m/%d"),division,"",start_time,end_time,"","","","","",""]
     csv << csv_column_values
   end
 end
