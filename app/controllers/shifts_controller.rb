@@ -447,16 +447,16 @@ class ShiftsController < ApplicationController
       if fix_shift_pattern.start_time.present?
         params[:shift][:start_time]= fix_shift_pattern.start_time
       else
-        params[:shift][:start_time]=nil
+        # params[:shift][:start_time]=nil
       end
       if fix_shift_pattern.end_time.present?
         params[:shift][:end_time]=fix_shift_pattern.end_time
       else
-        params[:shift][:end_time]=nil
+        # params[:shift][:end_time]=nil
       end
     else
-      params[:shift][:start_time]=nil
-      params[:shift][:end_time]=nil
+      # params[:shift][:start_time]=nil
+      # params[:shift][:end_time]=nil
     end
     respond_to do |format|
       if @shift.update(shift_params)

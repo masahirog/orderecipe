@@ -324,10 +324,14 @@ javascript:
   $(function() {
 
     $('.fix_shift_select_store_id').on( 'change',function(){
+      $(this).parent('form').find(".fix_shift_select_start_time").val("");
+      $(this).parent('form').find(".fix_shift_select_end_time").val("");
       Rails.fire($(this).parent('form')[0], 'submit');
     });
 
     $('.fix_shift_select').on( 'change',function(){
+      $(this).parent('form').find(".fix_shift_select_start_time").val("");
+      $(this).parent('form').find(".fix_shift_select_end_time").val("");
       Rails.fire($(this).parent('form')[0], 'submit');
     });
     $('.fix_shift_select_start_time').on( 'change',function(){

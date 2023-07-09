@@ -19,7 +19,7 @@ class StaffsController < ApplicationController
     else
       status = 0
     end
-    if params[:store_type]
+    if params[:store_type].present?
       @stores = @group.stores.where(store_type:params[:store_type])
       staff_ids = @stores.map{|store|store.staffs.ids}.flatten.uniq
       @staffs = Staff.where(id:staff_ids,status:status).order(row:'asc')

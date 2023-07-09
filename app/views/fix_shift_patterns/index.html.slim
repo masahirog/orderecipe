@@ -28,7 +28,7 @@ table.table
             = fix_shift_pattern.start_time.strftime('%-H:%M')
           span 〜
           - if fix_shift_pattern.end_time.present?
-            = fix_shift_pattern.start_time.strftime('%-H:%M')
+            = fix_shift_pattern.end_time.strftime('%-H:%M')
         td = fix_shift_pattern.working_hour
         td
           - if fix_shift_pattern.fix_shift_pattern_shift_frames.present?
