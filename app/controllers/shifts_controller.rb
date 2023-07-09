@@ -1,4 +1,5 @@
 class ShiftsController < ApplicationController
+  require 'csv'
   before_action :set_shift, only: %i[ show edit update destroy ]
   def csv_once_update
     Shift.upload_data(params[:file])
@@ -352,7 +353,7 @@ class ShiftsController < ApplicationController
     respond_to do |format|
       format.html
       format.csv do
-        send_data render_to_string, filename: "mf_shifts.csv", type: :csv
+        download_csv(@shifts)
       end
     end
   end
@@ -489,5 +490,37 @@ class ShiftsController < ApplicationController
 
     def shift_params
       params.require(:shift).permit(:date,:staff_id,:shift_pattern_id,:fix_shift_pattern_id,:memo,:store_id,:start_time,:end_time)
+    end
+
+    def download_csv(shifts)
+      bom = %w[EF BB BF].map { |e| e.hex.chr }.join
+      csv_data = CSV.generate(bom) do |csv|
+        column_names = %w(従業員番号 苗字 名前 日付 勤怠区分 勤務パターン 開始時刻 終了時刻 休憩開始時刻1 休憩終了時刻1 休憩開始時刻2 休憩終了時刻2 休憩開始時刻3 休憩終了時刻3)
+        csv << column_names
+        shifts.each do |shift|
+          if shift.fix_shift_pattern_id.present?
+            if shift.fix_shift_pattern.working_hour == 0
+              division = "休日"
+            else
+              division = "平日"
+            end
+          else
+            division = "休日"
+          end
+          if shift.start_time.present?
+            start_time = shift.start_time.strftime("%-H:%M")
+          else
+            start_time = ""
+          end
+          if shift.end_time.present?
+            end_time = shift.end_time.strftime("%-H:%M")
+          else
+            end_time = ""
+          end
+          csv_column_values = [shift.staff.staff_code,'','',shift.date.strftime("%Y/%m/%d"),division,'',start_time,end_time,"","","","","",""]
+          csv << csv_column_values
+        end
+      end
+      send_data(csv_data, filename: "money_forward.csv")
     end
 end

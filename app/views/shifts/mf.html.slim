@@ -1,5 +1,4 @@
 <label for="all"><input type="checkbox" name="allChecked" id="all">全選択</label>
-span 　チェックがついた欄は公開している状態です。
 .table-responsive style='height:800px;overflow: scroll;'
   = form_tag download_mf_csv_shifts_path(format: :csv) do
     = hidden_field_tag :group_id,params[:group_id]
