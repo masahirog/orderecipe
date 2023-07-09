@@ -231,7 +231,7 @@ class AnalysesController < AdminController
       end
     end
     @wednesdays = gon.wednesdays
-    @staffs = WorkingHour.where(date:@dates,group_id:current_user.group_id).order(:jobcan_staff_code).pluck(:name).uniq
+    @staffs = WorkingHour.where(date:@dates,group_id:current_user.group_id).pluck(:name).uniq
     WorkingHour.where(date:@dates,group_id:current_user.group_id).each do |wh|
       if wh.working_time.to_f > 8
         zangyo = wh.working_time - 8

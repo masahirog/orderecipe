@@ -9,6 +9,8 @@ class CreateShifts < ActiveRecord::Migration[5.2]
       t.text :memo
       t.timestamps
       t.boolean :fixed_flag,null:false,default:false
+      t.time :start_time
+      t.time :end_time
     end
   end
 end

@@ -2,7 +2,7 @@ class FixShiftPatternsController < ApplicationController
   before_action :set_fix_shift_pattern, only: %i[ show edit update destroy ]
 
   def index
-    @fix_shift_patterns = FixShiftPattern.includes([:group,fix_shift_pattern_shift_frames:[:shift_frame]]).all.order(:pattern_name)
+    @fix_shift_patterns = FixShiftPattern.includes(fix_shift_pattern_stores:[:store],fix_shift_pattern_shift_frames:[:shift_frame]).all.order(:pattern_name)
   end
 
   def show

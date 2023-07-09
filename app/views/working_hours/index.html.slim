@@ -9,7 +9,7 @@ h1 ="#{@group.name} 勤怠データ"
 
 button type="button" class="btn btn-default" data-toggle="modal" data-target="#upload" style='float:right;' アップロード
 #upload.modal.fade tabindex="-1"
-  = form_tag upload_jobcan_data_working_hours_path, multipart: true do
+  = form_tag upload_data_working_hours_path, multipart: true do
     .modal-dialog style='width:1000px;'
       .modal-content
         .modal-header
@@ -26,7 +26,6 @@ table.table
       th 日付
       th 姓名
       th 実労働時間
-      th スタッフコード
       th style="width:200px;" グループ
       th style="width:200px;" 店舗
   tbody
@@ -35,7 +34,6 @@ table.table
         td = link_to wh.date, edit_working_hour_path(wh)
         td = wh.name
         td = wh.working_time
-        td = wh.jobcan_staff_code
         td.edit_group_td
           = render partial: "edit_group", locals: { working_hour:wh }
         td.edit_store_td

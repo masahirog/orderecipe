@@ -16,7 +16,7 @@
           th style='width:80px;' 日付
         th style='width:100px;' スタッフ名
         th style='width:40px;' 確認
-        th style='width:80px;' JCコード
+        th style='width:80px;'
         th style='width:70px;' JC時間
         th style='width:70px;' 勤務時間
         th style='width:100px;' もりつけ
@@ -39,7 +39,7 @@
           td style="overflow:auto;"
             = link_to wh.name,staff_input_working_hours_path(staff_id:wh.staff_id)
           td = link_to @staff_working_hours[wh.staff_id].count,staff_input_working_hours_path(staff_id:wh.staff_id,alert_flag:true),style:'color:red;' if @staff_working_hours[wh.staff_id].present?
-          td = wh.jobcan_staff_code
+          td
           td
             - if wh.working_time
               = "#{wh.working_time.to_i}:#{sprintf("%02d", ((wh.working_time.to_f - wh.working_time.to_i)*60).round)}"

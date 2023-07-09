@@ -56,7 +56,7 @@ Rails.application.routes.draw do
       get :result
       post :create_work_times
       get :staff_input
-      post :upload_jobcan_data
+      post :upload_data
     end
   end
   resources :tastings do
@@ -88,11 +88,12 @@ Rails.application.routes.draw do
       post :once_update_fixed
       post :reflect_default_shifts
       get :store
-      get :jobcan_upload
       get :once_update
       get :get_fix_shift_pattern
       post :create_frame
       get :staff_edit
+      get :mf
+      post :download_mf_csv
     end
   end
   resources :staffs do

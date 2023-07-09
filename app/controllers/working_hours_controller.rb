@@ -15,7 +15,7 @@ class WorkingHoursController < ApplicationController
       @to = today
     end
     @working_hours = WorkingHour.where(date:@from..@to).where(group_id:@group.id)
-    @jobcan_working_hours = @working_hours.group(:date).sum(:working_time)
+    @working_hours = @working_hours.group(:date).sum(:working_time)
     @kari_working_time = @working_hours.group(:date).sum(:kari_working_time)
     @chori_of_working_time = @working_hours.group(:date).sum(:chori_of_working_time)
     @kiridashi_of_working_time = @working_hours.group(:date).sum(:kiridashi_of_working_time)
@@ -71,14 +71,14 @@ class WorkingHoursController < ApplicationController
     Staff.where(group_id:current_user.group_id,employment_status:1,status:0).where(status:0).each do |staff|
       if working_hour_hash[[@date,staff.id]].present?
       else
-        new_arr << WorkingHour.new(date:@date,group_id:current_user.group_id,staff_id:staff.id,name:staff.name,jobcan_staff_code:staff.jobcan_staff_code,store_id:39)
+        new_arr << WorkingHour.new(date:@date,group_id:current_user.group_id,staff_id:staff.id,name:staff.name,store_id:39)
       end
     end
     WorkingHour.import new_arr
     redirect_to staff_input_working_hours_path(date:@date,group_id:current_user.group_id)
   end
 
-  def upload_jobcan_data
+  def upload_data
     group_id = params[:group_id]
     WorkingHour.upload_data(params[:file],group_id)
     redirect_to working_hours_path(group_id:group_id), :notice => "ジョブカンデータをアップロードしました。"
@@ -157,7 +157,7 @@ class WorkingHoursController < ApplicationController
     end
 
     def working_hour_params
-      params.require(:working_hour).permit(:id,:date,:name,:working_time,:jobcan_staff_code,:store_id,:group_id,:position,
+      params.require(:working_hour).permit(:id,:date,:name,:working_time,:store_id,:group_id,:position,
       :kari_working_time,:chori_of_working_time,:kiridashi_of_working_time,:moritsuke_of_working_time,:sekisai_of_working_time,
       :sonota_of_working_time,:tare_of_working_time,:washing_of_working_time)
 

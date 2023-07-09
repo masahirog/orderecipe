@@ -85,6 +85,17 @@
   <% end %>
   $(".td_<%= @shift.id %>").find(".fix_shift_select").css('background-color',bg_color_code).css('color',color_code);
 
+<% if @shift.start_time.present? %>
+  $(".td_<%= @shift.id %>").find(".fix_shift_select_start_time").val("<%=@shift.start_time.strftime('%-H:%M')%>");
+<% else %>
+  $(".td_<%= @shift.id %>").find(".fix_shift_select_start_time").val("");
+<% end %>
+<% if @shift.end_time.present? %>
+  $(".td_<%= @shift.id %>").find(".fix_shift_select_end_time").val("<%=@shift.end_time.strftime('%-H:%M')%>");
+<% else %>
+  $(".td_<%= @shift.id %>").find(".fix_shift_select_end_time").val("");
+<% end %>
+
 <% if @store_change_flag == true %>
   $(".form_<%= @shift.id %>").find('.fix_shift_select').html('<%= j(options_for_select(@fix_shift_patterns.pluck(:pattern_name, :id).unshift(["",""]))) %>');
 <% end %>

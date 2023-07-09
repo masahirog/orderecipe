@@ -7,6 +7,8 @@ class CreateDefaultShifts < ActiveRecord::Migration[5.2]
       t.integer :fix_shift_pattern_id
       t.text :memo
       t.timestamps
+      t.time :start_time
+      t.time :end_time
     end
   end
 end

@@ -90,7 +90,7 @@ class StaffsController < ApplicationController
     end
 
     def staff_params
-      params.require(:staff).permit(:store_id,:name,:memo,:employment_status,:row,:status,:jobcan_staff_code,:smaregi_hanbaiin_id,:phone_number,:group_id,
+      params.require(:staff).permit(:store_id,:name,:memo,:employment_status,:row,:status,:staff_code,:smaregi_hanbaiin_id,:phone_number,:group_id,
         staff_stores_attributes:[:id,:store_id,:staff_id,:affiliation_flag,:transportation_expenses,:_destroy])
     end
 end

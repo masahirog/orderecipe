@@ -165,6 +165,8 @@ ActiveRecord::Schema.define(version: 2023_06_29_230155) do
     t.text "memo"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.time "start_time"
+    t.time "end_time"
   end
 
   create_table "fax_mails", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -192,7 +194,7 @@ ActiveRecord::Schema.define(version: 2023_06_29_230155) do
     t.index ["fix_shift_pattern_id", "store_id"], name: "index_uniq", unique: true
   end
 
-  create_table "fix_shift_patterns", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "fix_shift_patterns", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "pattern_name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -651,7 +653,7 @@ ActiveRecord::Schema.define(version: 2023_06_29_230155) do
     t.integer "group_id"
   end
 
-  create_table "shifts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+  create_table "shifts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.date "date"
     t.integer "store_id"
     t.integer "staff_id"
@@ -661,6 +663,8 @@ ActiveRecord::Schema.define(version: 2023_06_29_230155) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "fixed_flag", default: false, null: false
+    t.time "start_time"
+    t.time "end_time"
   end
 
   create_table "smaregi_member_products", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -756,7 +760,7 @@ ActiveRecord::Schema.define(version: 2023_06_29_230155) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "staffs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+  create_table "staffs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name", null: false
     t.text "memo"
     t.datetime "created_at", null: false
@@ -764,7 +768,7 @@ ActiveRecord::Schema.define(version: 2023_06_29_230155) do
     t.integer "employment_status", default: 0, null: false
     t.integer "row", default: 0, null: false
     t.integer "status", default: 0, null: false
-    t.integer "jobcan_staff_code"
+    t.integer "staff_code"
     t.integer "smaregi_hanbaiin_id"
     t.string "phone_number"
     t.integer "group_id", null: false
@@ -989,12 +993,11 @@ ActiveRecord::Schema.define(version: 2023_06_29_230155) do
     t.string "name"
   end
 
-  create_table "working_hours", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+  create_table "working_hours", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.date "date"
     t.string "name"
     t.integer "staff_id"
     t.float "working_time"
-    t.integer "jobcan_staff_code"
     t.integer "store_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false

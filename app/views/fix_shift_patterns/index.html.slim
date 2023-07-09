@@ -7,12 +7,11 @@ h1 確定シフトパターン
 table.table
   thead
     tr
-      th
       th シフト名
-      th グループ名
       th 使用店舗
       th 文字色
       th 背景色
+      th 開始/終了
       th 勤務時間
       th カウント区分
   tbody
@@ -20,12 +19,16 @@ table.table
       - bg_color = "white"
       - bg_color = "silver" if fix_shift_pattern.unused_flag == true
       tr style="background-color:#{bg_color}"
-        td = link_to 'Edit', edit_fix_shift_pattern_path(fix_shift_pattern),class:'btn btn-primary'
-        td = fix_shift_pattern.pattern_name
-        td = fix_shift_pattern.group.name
+        td = link_to fix_shift_pattern.pattern_name, edit_fix_shift_pattern_path(fix_shift_pattern)
         td = fix_shift_pattern.fix_shift_pattern_stores.map{|fsps|fsps.store.name}.join('、')
-        td = fix_shift_pattern.color_code
-        td = fix_shift_pattern.bg_color_code
+        td style="color:#{fix_shift_pattern.color_code}" = fix_shift_pattern.color_code
+        td style="background-color:#{fix_shift_pattern.bg_color_code}" = fix_shift_pattern.bg_color_code
+        td
+          - if fix_shift_pattern.start_time.present?
+            = fix_shift_pattern.start_time.strftime('%-H:%M')
+          span 〜
+          - if fix_shift_pattern.end_time.present?
+            = fix_shift_pattern.start_time.strftime('%-H:%M')
         td = fix_shift_pattern.working_hour
         td
           - if fix_shift_pattern.fix_shift_pattern_shift_frames.present?

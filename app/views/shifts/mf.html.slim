@@ -1,0 +1,80 @@
+<label for="all"><input type="checkbox" name="allChecked" id="all">全選択</label>
+span 　チェックがついた欄は公開している状態です。
+.table-responsive style='height:800px;overflow: scroll;'
+  = form_tag download_mf_csv_shifts_path(format: :csv) do
+    = hidden_field_tag :group_id,params[:group_id]
+    = hidden_field_tag :date,params[:date]
+    ul style="list-style:none;float:left;display:none;"
+      - @stores.each do |store|
+        li style='float:left;margin-right:10px;'
+          = check_box_tag "stores[#{store.id}]",true,params['stores'][store.id.to_s]
+          / = label_tag "stores[#{store.id}]",store.name
+
+    table.table.layout-fixed style='border-collapse:separate;'
+      thead style='position: sticky;top:0;background-color:white;z-index:5;'
+        tr
+          th style='background-color:white;width:200px;'
+            = submit_tag "ダウンロード",class:'btn btn-primary'
+          th style='background-color:white;width:80px;'
+          - @one_month.each_with_index do |date,i|
+            th style='width:80px;' class="column_#{i}"
+              span = date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})")
+              br
+              <label><input type="checkbox" name="column_allChecked" class="column_all">列選択</label>
+
+      tbody
+        - @staffs.each do |staff|
+          tr.fix_shift_tr class="fix_shift_tr_#{staff.id}"
+            td.staff_name style='background-color:white;z-index:3;'
+              = staff.name
+            td
+              <label><input type="checkbox" name="allChecked" class="tr_all">行選択</label>
+            - @one_month.each_with_index do |date,index|
+              - if @shifts[[staff.id,date]].present?
+                td class="column_#{index}_td" style='padding:3px;'
+                  = check_box_tag "shifts[#{@shifts[[staff.id,date]].id}][fixed_flag]",true,false,class:'form-control sfhit_check_box'
+
+
+css:
+  select{
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+  .table-responsive th {
+    white-space: nowrap;
+  }
+  table.layout-fixed {
+    table-layout: fixed;
+    border-collspace:separate;
+  }
+  .table th:first-child,td:first-child{
+    position: sticky;
+    left: 0;
+    z-index:2;
+  }
+  .table .fixed_second_thtd {
+    position: sticky;
+    z-index:2;
+    left:150px;
+    background-color:white;
+  }
+  th,td {
+    text-align:center;
+  }
+  .tooltip-inner {
+      max-width:350px;
+      width: 350px;
+  }
+javascript:
+  $('#all').on('click', function() {
+    $(".sfhit_check_box").prop('checked', this.checked);
+  });
+  $('.tr_all').on('click', function() {
+    $(this).parents('tr').find(".sfhit_check_box").prop('checked', this.checked);
+  });
+  $('.column_all').on('click', function() {
+    var class_name = $(this).parents("th").attr("class");
+    console.log(class_name);
+    $("."+ class_name +"_td").children(".sfhit_check_box").prop('checked', this.checked);
+  });
