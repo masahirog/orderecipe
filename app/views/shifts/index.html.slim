@@ -209,72 +209,53 @@
                   span.shinsei_shift_memo style='color:pink;font-size:12px;' class="glyphicon glyphicon-book original-tooltip" aria-hidden="true"  data-toggle="tooltip" data-placement="top" title="#{@shifts[[staff.id,date]].memo}"
             - else
               td
-
-            - if current_user.id == 74
-              - if @shifts[[staff.id,date]].present?
-                td class="td_shift_form td_#{@shifts[[staff.id,date]].id} clearfix" style='padding:3px;border-right: 1px silver solid;'
-                  input.staff_id value="#{staff.id}" style='display:none;'
+            - if @shifts[[staff.id,date]].present?
+              td class="td_shift_form td_#{@shifts[[staff.id,date]].id} clearfix" style='padding:3px;border-right: 1px silver solid;'
+                input.staff_id value="#{staff.id}" style='display:none;'
+                - if @shifts[[staff.id,date]].fixed_flag == true
                   - if @shifts[[staff.id,date]].fix_shift_pattern_id.present?
                     input.working_hour style='display:none;' value="#{@shifts[[staff.id,date]].fix_shift_pattern.working_hour}"
+                    .fix_shift style="font-size:12px;background-color:#{@shifts[[staff.id,date]].fix_shift_pattern.bg_color_code};color:#{@shifts[[staff.id,date]].fix_shift_pattern.color_code};"
+                      span.fix_store_name
+                        - if @shifts[[staff.id,date]].store_id.present?
+                          = @shifts[[staff.id,date]].store.short_name
+                      br
+                        span.fix_shift_pattern = @shifts[[staff.id,date]].fix_shift_pattern.pattern_name
                   - else
                     input.working_hour value=0 style='display:none;'
-                  .fix_shift style='font-size:12px;'
-                    span.fix_store_name
-                      - if @shifts[[staff.id,date]].store_id.present?
-                        = @shifts[[staff.id,date]].store.short_name
-                    br
-                    - if @shifts[[staff.id,date]].fix_shift_pattern_id.present?
-                      - if @shifts[[staff.id,date]].fix_shift_pattern.working_hour == 0
-                        span.fix_shift_pattern style="color:#b22222;"  = @shifts[[staff.id,date]].fix_shift_pattern.pattern_name
-                      - else
-                        span.fix_shift_pattern = @shifts[[staff.id,date]].fix_shift_pattern.pattern_name
-                    - else
-                      span.fix_shift_pattern
+                    .fix_shift style="font-size:12px;"
+                      span.fix_store_name
+                        - if @shifts[[staff.id,date]].store_id.present?
+                          = @shifts[[staff.id,date]].store.short_name
+                      br
+                        span.fix_shift_pattern
+                - else
+                  .fix_shift
+                    span style='color:gray;' 調整中
+
+                - if current_user.id == 74
                   .edit_fix_shift_form style='text-align:center;display:none;'
                     = form_with(model: @shifts[[staff.id,date]], data: {remote: true},class:"form_#{@shifts[[staff.id,date]].id}") do |f|
-                      - select_bg_color = ""
+                      
                       - fix_shift_patterns = []
                       = f.hidden_field :id,value:@shifts[[staff.id,date]].id,class:'shift_id'
                       = f.collection_select :store_id, @checked_stores, :id, :short_name, {include_blank:true}, { class: "fix_shift_select_store_id",style:"width:60px;height:30px;text-align:center;float:left;border-radius:4px;border-color:silver;"}
                       - if @shifts[[staff.id,date]].store_id.present?
                         - fix_shift_patterns = @store_fix_shift_patterns_hash[@shifts[[staff.id,date]].store_id].to_h.values
-                        - select_bg_color = "pink" unless @shifts[[staff.id,date]].fix_shift_pattern_id.present?
+                        - if @shifts[[staff.id,date]].fix_shift_pattern_id.present?
+                          - if @shifts[[staff.id,date]].fix_shift_pattern.working_hour == 0
+                            - select_bg_color = "pink"
+                          - else
+                            - select_bg_color = ""
+                        - else
+                          - select_bg_color = "#ff7f50" 
                       = f.collection_select :fix_shift_pattern_id,fix_shift_patterns, :id, :pattern_name, {include_blank:true}, { class: "fix_shift_select",style:"width:63px;height:30px;text-align:center;float:left;border-radius:4px;border-color:silver;background-color:#{select_bg_color};"}
                       span style='color:#d3d3d3;margin-left:2px;margin-top:7px;' class="glyphicon glyphicon-pencil edit_memo" aria-hidden="true"
                       span style='color:#d3d3d3;margin-left:2px;margin-top:7px;display:none;' class="glyphicon glyphicon-saved save_memo" aria-hidden="true"
                       = f.text_field :memo,style:'width:100%;margin-top:4px;display:none;',class:"memo"
-
-              - else
-                td class="td_shift_form" style='padding:3px;border-right: 1px silver solid;'
             - else
-              - if @shifts[[staff.id,date]].present?
-                - if @shifts[[staff.id,date]].fixed_flag == true
-                  td style='font-size:12px;border-right: 1px silver solid;'
-                    input.staff_id value="#{staff.id}" style='display:none;'
-                    - if @shifts[[staff.id,date]].fix_shift_pattern_id.present?
-                      input.working_hour style='display:none;' value="#{@shifts[[staff.id,date]].fix_shift_pattern.working_hour}"
-                    - else
-                      input.working_hour value=0 style='display:none;'
-                    .fix_shift style='font-size:12px;'
-                      span.fix_store_name
-                        - if @shifts[[staff.id,date]].store_id.present?
-                          = @shifts[[staff.id,date]].store.short_name
-                      br
-                      - if @shifts[[staff.id,date]].fix_shift_pattern_id.present?
-                        - if @shifts[[staff.id,date]].fix_shift_pattern.working_hour == 0
-                          span.fix_shift_pattern style="color:#b22222;"  = @shifts[[staff.id,date]].fix_shift_pattern.pattern_name
-                        - else
-                          span.fix_shift_pattern = @shifts[[staff.id,date]].fix_shift_pattern.pattern_name
-                      - else
-                        span.fix_shift_pattern
+              td class="td_shift_form" style='padding:3px;border-right: 1px silver solid;'
 
-
-
-                - else
-                  td style='font-size:12px;border-right: 1px silver solid;'
-                    span style='color:gray;' 調整中
-              - else
-                td style='font-size:12px;border-right: 1px silver solid;'
 
 / 画面が狭いので2列目はスマホでは非表示
 css:
