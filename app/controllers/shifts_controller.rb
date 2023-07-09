@@ -197,6 +197,11 @@ class ShiftsController < ApplicationController
     else
       @date = Date.today
     end
+    @date =  Date.new(@date.prev_month.year,@date.prev_month.month,16) if @date.day < 15
+    first_day = Date.new(@date.year,@date.month, 16)
+    last_day = first_day.end_of_month
+    last_day = Date.new((last_day + 1).year,(last_day +1).month, 15)
+    @one_month = [*first_day..last_day]
     @group = Group.find(params[:group_id])
 
     @shift_frames = @group.shift_frames
@@ -212,18 +217,9 @@ class ShiftsController < ApplicationController
     end
     staff_ids = @checked_stores.map{|store|store.staff_ids}.flatten.uniq
     @staffs = Staff.where(id:staff_ids,status:0)
-    # group_staff_ids = Staff.where(group_id:@group.id,status:0)
-    # first_day = @date.beginning_of_month
-    first_day = Date.new(@date.year,@date.month, 16)
-    last_day = first_day.end_of_month
-    last_day = Date.new((last_day + 1).year,(last_day +1).month, 15)
-    @one_month = [*first_day..last_day]
     shifts = Shift.where(staff_id:@staffs.ids,date:@one_month)
     @shifts = shifts.map{|shift|[[shift.staff_id,shift.date],shift]}.to_h
     shift_staff_ids = shifts.map{|shift|shift.staff_id}.uniq
-    # add_ids = staff_ids - shift_staff_ids
-    # staff_ids =shift_staff_ids + add_ids
-    # @staffs = Staff.where(id:staff_ids).order(row:'asc')
     @shifts_fixed_hash = shifts.map{|shift|[shift.id,shift.fixed_flag]}.to_h
   end
 
@@ -367,6 +363,13 @@ class ShiftsController < ApplicationController
     else
       @date = Date.today
     end
+    @date =  Date.new(@date.prev_month.year,@date.prev_month.month,16) if @date.day < 15
+    first_day = Date.new(@date.year,@date.month, 16)
+    last_day = first_day.end_of_month
+    last_day = Date.new((last_day + 1).year,(last_day +1).month, 15)
+    @one_month = [*first_day..last_day]
+
+
     @group = Group.find(params[:group_id])
 
     @shift_frames = @group.shift_frames
@@ -382,10 +385,6 @@ class ShiftsController < ApplicationController
     end
     staff_ids = @checked_stores.map{|store|store.staff_ids}.flatten.uniq
     @staffs = Staff.where(id:staff_ids,status:0)
-    first_day = Date.new(@date.year,@date.month, 16)
-    last_day = first_day.end_of_month
-    last_day = Date.new((last_day + 1).year,(last_day +1).month, 15)
-    @one_month = [*first_day..last_day]
     shifts = Shift.where(staff_id:@staffs.ids,date:@one_month)
     @shifts = shifts.map{|shift|[[shift.staff_id,shift.date],shift]}.to_h
     shift_staff_ids = shifts.map{|shift|shift.staff_id}.uniq
