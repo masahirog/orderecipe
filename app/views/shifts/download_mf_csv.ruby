@@ -1,6 +1,6 @@
 require 'csv'
 CSV.generate do |csv|
-  csv_column_names = %w(名前 従業員番号 日付	勤怠区分 開始時刻 終了時刻)
+  csv_column_names = %w(従業員番号 苗字  名前  日付  勤怠区分  勤務パターン  開始時刻  終了時刻  休憩開始時刻1 休憩終了時刻1 休憩開始時刻2 休憩終了時刻2 休憩開始時刻3 休憩終了時刻3)
   csv << csv_column_names
   @shifts.each do |shift|
     if shift.fix_shift_pattern_id.present?
@@ -24,7 +24,7 @@ CSV.generate do |csv|
     end
     
 
-    csv_column_values = [shift.staff.name,shift.staff.staff_code,shift.date.strftime("%Y/%m/%d"),division,start_time,end_time]
+    csv_column_values = [shift.staff.staff_code,shift.staff.name,'',shift.date.strftime("%Y/%m/%d"),division,start_time,end_time,"","","","","",""]
     csv << csv_column_values
   end
 end
