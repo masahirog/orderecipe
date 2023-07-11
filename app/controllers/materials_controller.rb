@@ -35,13 +35,8 @@ class MaterialsController < ApplicationController
     @stores_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     Store.where(group_id:current_user.group_id).each do |store|
       @stores_hash[store.group_id][store.id]=store.name
-      if store.id == 39
-        @material.material_store_orderables.build(store_id:store.id,orderable_flag:true)
-      else
-        @material.material_store_orderables.build(store_id:store.id)
-      end
     end
-    @material = Material.create(material_params)
+    @material = Material.new(material_params)
     if @material.save
      redirect_to @material, success: "「#{@material.name}」を作成しました。続けて食材を作成する：<a href='/materials/new'>新規作成</a>".html_safe
     else
@@ -66,10 +61,13 @@ class MaterialsController < ApplicationController
     @material = Material.find(params[:id])
     store_ids = @material.material_store_orderables.pluck(:store_id)
     @stores_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    Store.all.each do |store|
+
+    Store.where(group_id:current_user.group_id).each do |store|
       @stores_hash[store.group_id][store.id]=store.name
       @material.material_store_orderables.build(store_id:store.id) unless store_ids.include?(store.id)
     end
+
+
     if request.referer.nil?
     elsif request.referer.include?("products")
       @back_to = request.referer
@@ -81,11 +79,15 @@ class MaterialsController < ApplicationController
   end
 
   def update
-    @stores_hash = Store.all.map{|store|[store.id,store.name]}.to_h
     @material = Material.find(params[:id])
     if params[:material][:inventory_flag] == 'true'
       @class_name = ".inventory_tr_#{@material.id}"
     end
+    @stores_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    Store.where(group_id:current_user.group_id).each do |store|
+      @stores_hash[store.group_id][store.id]=store.name
+    end
+
     respond_to do |format|
       if @material.update(material_params)
         format.html {
