@@ -9,8 +9,9 @@ table.table.table-list
   thead
     tr
       th
-        - if @store_daily_menu.start_time > Date.today
-          = link_to "編集する", edit_crew_store_daily_menu_path(@store_daily_menu), class: "btn btn-default"
+        - if @store_daily_menu.editable_flag == true
+          - if @store_daily_menu.start_time > Date.today
+            = link_to "編集する", edit_crew_store_daily_menu_path(@store_daily_menu), class: "btn btn-default"
         - else
           btn.btn.btn-default disabled=true 編集する
           |　※期限を過ぎている為編集はできません。

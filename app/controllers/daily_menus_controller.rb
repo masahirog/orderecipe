@@ -16,10 +16,15 @@ class DailyMenusController < AdminController
   def store_input_able
     @daily_menu = DailyMenu.find(params[:daily_menu_id])
     store_daily_menus = @daily_menu.store_daily_menus
+    store_ids_arr = params[:stores].keys
     store_daily_menus.each do |sdm|
-      sdm.update_column(:editable_flag,true)
+      if store_ids_arr.include?(sdm.store_id.to_s)
+        sdm.update_column(:editable_flag,false)
+      else
+        sdm.update_column(:editable_flag,true)
+      end
     end
-    redirect_to @daily_menu, :success => "店舗の発注を可能にしました。"
+    redirect_to @daily_menu, :success => "店舗の発注状況を変更しました"
   end
   def cook_check
     @daily_menu = DailyMenu.find(params[:id])

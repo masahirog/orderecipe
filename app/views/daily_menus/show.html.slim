@@ -155,33 +155,34 @@ div
   / = link_to '惣菜数の一括変更', daily_menu_path(@daily_menu),class:"btn btn-primary",style:'float:right;margin-top:10px;margin-left:10px;', data: { confirm: "献立を削除してよろしいですか？" }
   = link_to "チェックリスト",cook_check_daily_menus_path(id:@daily_menu.id, :format => :pdf),class:"btn btn-default",:target=>"_blank",style:'margin-left:20px;margin-top:10px;'
 
-  button type="button" class="btn btn-danger pull-right" data-toggle="modal" data-target="#close_store_input" style='float:left;margin-top:10px;margin-left:20px;' 発注締め切る
+
+  button type="button" class="btn btn-danger pull-right" data-toggle="modal" data-target="#close_store_input" style='float:left;margin-top:10px;margin-left:20px;' 店舗発注締め切り
   #close_store_input.modal.fade tabindex="-1"
-    .modal-dialog
-      .modal-content
-        .modal-header
-          h4.modal-title 店舗の入力可能状況
-        .modal-body.clearfix
-          table.table
-            thead
-              tr
-                th 店舗名
-                th 編集可能
-            tbody
-              - @daily_menu.store_daily_menus.each do |sdm|
+    = form_tag store_input_able_daily_menus_path do
+      = hidden_field_tag :daily_menu_id,params[:id]
+      .modal-dialog
+        .modal-content
+          .modal-header
+            h4.modal-title 締め切り状況
+          .modal-body.clearfix
+            table.table
+              thead
                 tr
-                  td = sdm.store.name
-                  td
-                    - if sdm.editable_flag == true
-                      span ◯
-                    - else
-                      span ×
+                  th 店舗名
+                  th 締め切り完了（チェック）
+              tbody
 
-
-        .modal-footer
-          = link_to "発注を可能に",store_input_able_daily_menus_path(daily_menu_id:@daily_menu.id),class:'btn btn-primary', method: :post
-          = link_to "発注を不可に",store_input_disable_daily_menus_path(daily_menu_id:@daily_menu.id),class:'btn btn-danger', method: :post
-          button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
+                - @daily_menu.store_daily_menus.each do |sdm|
+                  tr
+                    td = label_tag "stores[#{sdm.store_id}]",sdm.store.name
+                    td
+                      - if sdm.editable_flag == true
+                        = check_box_tag "stores[#{sdm.store_id}]",true,false
+                      - else
+                        = check_box_tag "stores[#{sdm.store_id}]",true,true
+          .modal-footer
+            = submit_tag "更新" ,class:"btn btn-primary"
+            button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
 
 table.table
   thead
@@ -212,7 +213,11 @@ table.table.table-list.table-striped
       th style='color:red;' 製造調整
       th 合計製造数
       - @store_daily_menu_idhash.each do |store_sdm|
-        th = link_to Store.find(store_sdm[0]).name,store_daily_menu_path(store_sdm[1])
+        - sdm = StoreDailyMenu.find(store_sdm[1])
+        - if sdm.editable_flag == true
+          th = link_to sdm.store.name,store_daily_menu_path(store_sdm[1])
+        - else
+          th style="background-color:silver;" = link_to sdm.store.name,store_daily_menu_path(store_sdm[1])
   tbody
     -@daily_menu_details.includes([:product]).each do |dmd|
       tr
