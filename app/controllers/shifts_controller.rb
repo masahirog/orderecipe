@@ -524,17 +524,15 @@ class ShiftsController < ApplicationController
           else
             division = "休日"
           end
-          if shift.start_time.present?
-            start_time = shift.start_time.strftime("%-H:%M")
-          else
-            start_time = ""
-          end
-          if shift.end_time.present?
-            end_time = shift.end_time.strftime("%-H:%M")
-          else
-            end_time = ""
-          end
-          csv_column_values = [shift.staff.staff_code,'','',shift.date.strftime("%Y/%m/%d"),division,'',start_time,end_time,"","","","","",""]
+          start_time = ""
+          end_time = ""
+          rest_start_time = ""
+          rest_end_time = ""
+          start_time = shift.start_time.strftime("%-H:%M") if shift.start_time.present?
+          end_time = shift.end_time.strftime("%-H:%M") if shift.end_time.present?
+          rest_start_time = shift.rest_start_time.strftime("%-H:%M") if shift.rest_start_time.present?
+          rest_end_time = shift.rest_end_time.strftime("%-H:%M") if shift.rest_end_time.present?
+          csv_column_values = [shift.staff.staff_code,'','',shift.date.strftime("%Y/%m/%d"),division,'',start_time,end_time,rest_start_time,rest_end_time,"","","",""]
           csv << csv_column_values
         end
       end
