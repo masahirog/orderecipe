@@ -11,6 +11,8 @@ class CreateShifts < ActiveRecord::Migration[5.2]
       t.boolean :fixed_flag,null:false,default:false
       t.time :start_time
       t.time :end_time
+      t.time :rest_start_time
+      t.time :rest_end_time
     end
   end
 end

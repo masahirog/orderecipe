@@ -10,6 +10,8 @@ class CreateFixShiftPatterns < ActiveRecord::Migration[5.2]
       t.string :color_code,default:"#000000"
       t.string :bg_color_code,default:"#ffffff"
       t.boolean :unused_flag,null:false,default:false
+      t.time :rest_start_time
+      t.time :rest_end_time
     end
   end
 end

@@ -20,14 +20,14 @@
 h3 シフトテンプレート一覧
 .text-right
   = link_to "シフト枠を作成",create_frame_default_shifts_path(group_id:params[:group_id],store_type:params[:store_type],stores:params[:stores].to_unsafe_h),{method: :post,class:'btn btn-primary'}
-.table-responsive style='height:800px;overflow: scroll;'
+.table-responsive style='overflow: scroll;overscroll-behavior-x: contain;'
   table.table.layout-fixed style='border-collapse:separate;'
     thead style='position: sticky;top:0;background-color:white;z-index:3;'
       tr
         th style='background-color:white;width:150px;' 店舗名
         th.fixed_second_thtd style='width:120px;'
         - @wdays.each do |wday|
-          th style='width:160px;' = wday[1]
+          th style='width:260px;' = wday[1]
  
       - @checked_stores.each do |store|
         - store.store_shift_frames.each_with_index do |ssf,i|
@@ -91,22 +91,34 @@ h3 シフトテンプレート一覧
                       - fix_shift_patterns = []
                       = f.hidden_field :id,value:@default_shifts[[staff.id,wday[0]]].id,class:'default_shift_id'
 
-                      = f.collection_select :store_id, @stores, :id, :short_name, {include_blank:true}, { class: "fix_shift_select_store_id",style:"width:60px;height:30px;text-align:center;float:left;border-radius:4px;border-color:silver;"}
+                      = f.collection_select :store_id, @stores, :id, :short_name, {include_blank:true}, { class: "fix_shift_select_store_id",style:"width:120px;height:30px;text-align:center;float:left;border-radius:4px;border-color:silver;"}
 
                       - if @default_shifts[[staff.id,wday[0]]].store_id.present?
                         - fix_shift_patterns = @default_shifts[[staff.id,wday[0]]].store.fix_shift_patterns
                         - select_bg_color = "pink" unless @default_shifts[[staff.id,wday[0]]].fix_shift_pattern_id.present?
-                      = f.collection_select :fix_shift_pattern_id,fix_shift_patterns, :id, :pattern_name, {include_blank:true}, { class: "fix_shift_select",style:"width:63px;height:30px;text-align:center;float:left;border-radius:4px;border-color:silver;background-color:#{select_bg_color};"}
-                    .clearfix
-                      - if f.object.start_time.present?
-                        = f.select :start_time, options_for_select(@times_arr,f.object.start_time.strftime("%-H:%M")),{include_blank:true}, class: "fix_shift_select_start_time",style:'float:left;width:60px;height:30px;text-align:center;border-radius:4px;border-color:silver;'
-                      - else
-                        = f.select :start_time, options_for_select(@times_arr,''),{include_blank:true}, class: "fix_shift_select_start_time",style:'float:left;width:60px;height:30px;text-align:center;border-radius:4px;border-color:silver;'
-                      / span style='float:left;margin:10px 2px 0 2px;' 〜
-                      - if f.object.end_time.present?
-                        = f.select :end_time, options_for_select(@times_arr,f.object.end_time.strftime("%-H:%M")),{include_blank:true}, class: "fix_shift_select_end_time",style:'float:left;width:60px;height:30px;text-align:center;border-radius:4px;border-color:silver;'
-                      - else
-                        = f.select :end_time, options_for_select(@times_arr,''),{include_blank:true}, class: "fix_shift_select_end_time",style:'float:left;width:60px;height:30px;text-align:center;border-radius:4px;border-color:silver;'
+                      = f.collection_select :fix_shift_pattern_id,fix_shift_patterns, :id, :pattern_name, {include_blank:true}, { class: "fix_shift_select",style:"width:120px;height:30px;text-align:center;float:left;border-radius:4px;border-color:silver;background-color:#{select_bg_color};"}
+
+                    .clearfix style='text-align:left;color:gray;'
+                      div style='float:left;width:120px;'
+                        - if f.object.start_time.present?
+                          = f.select :start_time, options_for_select([f.object.start_time.strftime("%-H:%M")],f.object.start_time.strftime("%-H:%M")),{include_blank:true}, class: "get_times fix_shift_select_start_time select_time"
+                        - else
+                          = f.select :start_time, options_for_select([],''),{include_blank:true}, class: "fix_shift_select_start_time get_times select_time"
+                        - if f.object.end_time.present?
+                          = f.select :end_time, options_for_select([f.object.end_time.strftime("%-H:%M")],f.object.end_time.strftime("%-H:%M")),{include_blank:true}, class: "get_times fix_shift_select_end_time select_time"
+                        - else
+                          = f.select :end_time, options_for_select([],''),{include_blank:true}, class: "fix_shift_select_end_time get_times select_time"
+                      div style='float:left;'
+                        - if f.object.rest_start_time.present?
+                          = f.select :rest_start_time, options_for_select([f.object.rest_start_time.strftime("%-H:%M")],f.object.rest_start_time.strftime("%-H:%M")),{include_blank:true}, class: "get_times fix_shift_select_rest_start_time select_time",style:'color:#4682b4;'
+                        - else
+                          = f.select :rest_start_time, options_for_select([],''),{include_blank:true}, class: "get_times fix_shift_select_rest_start_time select_time",style:'color:#4682b4;'
+                        - if f.object.rest_end_time.present?
+                          = f.select :rest_end_time, options_for_select([f.object.rest_end_time.strftime("%-H:%M")],f.object.rest_end_time.strftime("%-H:%M")),{include_blank:true}, class: "get_times fix_shift_select_rest_end_time select_time",style:'color:#4682b4;'
+                        - else
+                          = f.select :rest_end_time, options_for_select([],''),{include_blank:true}, class: "get_times fix_shift_select_rest_end_time select_time",style:'color:#4682b4;'
+
+
 
 css:
   select{
@@ -135,20 +147,25 @@ css:
     width: 350px;
   }
 
+  .select_time{
+    float:left;
+    width:60px;
+    height:30px;
+    text-align:center;
+    border-radius:4px;
+    border-color:silver;
+  }
 
 javascript:
   $(function() {
     $('.fix_shift_select_store_id').on( 'change',function(){
-      Rails.fire($(this).parent('form')[0], 'submit');
+      Rails.fire($(this).parents('form')[0], 'submit');
     });
 
     $('.fix_shift_select').on( 'change',function(){
-      Rails.fire($(this).parent('form')[0], 'submit');
-    });
-    $('.fix_shift_select_start_time').on( 'change',function(){
       Rails.fire($(this).parents('form')[0], 'submit');
     });
-    $('.fix_shift_select_end_time').on( 'change',function(){
+    $('.select_time').on( 'change',function(){
       Rails.fire($(this).parents('form')[0], 'submit');
     });
 
@@ -183,6 +200,17 @@ javascript:
         }
       });
     });
-
+    $(".get_times").focus(function () {
+      var array = ["5:00","5:15","5:30","5:45","6:00","6:15","6:30","6:45","7:00","7:15","7:30","7:45","8:00","8:15","8:30","8:45","9:00",
+      "9:15","9:30","9:45","10:00","10:15","10:30","10:45","11:00","11:15","11:30","11:45","12:00","12:15","12:30","12:45","13:00","13:15",
+      "13:30","13:45","14:00","14:15","14:30","14:45","15:00","15:15","15:30","15:45","16:00","16:15","16:30","16:45","17:00","17:15","17:30",
+      "17:45","18:00","18:15","18:30","18:45","19:00","19:15","19:30","19:45","20:00","20:15","20:30","20:45","21:00","21:15","21:30","21:45",
+      "22:00","22:15","22:30"];
+      var this_select = this
+      $.each(array, function(index, value) {
+        $(this_select).append($('<option>').html(value).val(value));
+      })
+      $(this).removeClass('get_times');
+    });
 
   });

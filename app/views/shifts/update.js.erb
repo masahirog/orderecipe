@@ -84,18 +84,47 @@
     $(".td_<%= @shift.id %>").find(".fix_store_name").text("")
   <% end %>
   $(".td_<%= @shift.id %>").find(".fix_shift_select").css('background-color',bg_color_code).css('color',color_code);
-
+var start_time = ""
+var end_time = ""
+var rest_start_time = ""
+var rest_end_time = ""
 <% if @shift.start_time.present? %>
-  $(".td_<%= @shift.id %>").find(".fix_shift_select_start_time").val("<%=@shift.start_time.strftime('%-H:%M')%>");
-<% else %>
-  $(".td_<%= @shift.id %>").find(".fix_shift_select_start_time").val("");
+  start_time = "<%=@shift.start_time.strftime('%-H:%M')%>"
+  if ($(".td_<%= @shift.id %>").find(".fix_shift_select_start_time").hasClass('get_times')){
+    $(".td_<%= @shift.id %>").find(".fix_shift_select_start_time").append($('<option seleted="selected">').html("<%=@shift.start_time.strftime('%-H:%M')%>").val("<%=@shift.start_time.strftime('%-H:%M')%>"));
+    $(".td_<%= @shift.id %>").find(".fix_shift_select_start_time").val("<%=@shift.start_time.strftime('%-H:%M')%>");
+  }else{
+    $(".td_<%= @shift.id %>").find(".fix_shift_select_start_time").val("<%=@shift.start_time.strftime('%-H:%M')%>");
+  }
 <% end %>
 <% if @shift.end_time.present? %>
-  $(".td_<%= @shift.id %>").find(".fix_shift_select_end_time").val("<%=@shift.end_time.strftime('%-H:%M')%>");
-<% else %>
-  $(".td_<%= @shift.id %>").find(".fix_shift_select_end_time").val("");
+  end_time = "<%=@shift.end_time.strftime('%-H:%M')%>"
+  if ($(".td_<%= @shift.id %>").find(".fix_shift_select_end_time").hasClass('get_times')){
+    $(".td_<%= @shift.id %>").find(".fix_shift_select_end_time").append($('<option seleted="selected">').html("<%=@shift.end_time.strftime('%-H:%M')%>").val("<%=@shift.end_time.strftime('%-H:%M')%>"));
+    $(".td_<%= @shift.id %>").find(".fix_shift_select_end_time").val("<%=@shift.end_time.strftime('%-H:%M')%>");
+  }else{
+    $(".td_<%= @shift.id %>").find(".fix_shift_select_end_time").val("<%=@shift.end_time.strftime('%-H:%M')%>");
+  }
 <% end %>
-
+<% if @shift.rest_start_time.present? %>
+  rest_start_time = "<%=@shift.rest_start_time.strftime('%-H:%M')%>"
+  if ($(".td_<%= @shift.id %>").find(".fix_shift_select_rest_start_time").hasClass('get_times')){
+    $(".td_<%= @shift.id %>").find(".fix_shift_select_rest_start_time").append($('<option seleted="selected">').html("<%=@shift.rest_start_time.strftime('%-H:%M')%>").val("<%=@shift.rest_start_time.strftime('%-H:%M')%>"));
+    $(".td_<%= @shift.id %>").find(".fix_shift_select_rest_start_time").val("<%=@shift.rest_start_time.strftime('%-H:%M')%>");
+  }else{
+    $(".td_<%= @shift.id %>").find(".fix_shift_select_rest_start_time").val("<%=@shift.rest_start_time.strftime('%-H:%M')%>");
+  }
+<% end %>
+<% if @shift.rest_end_time.present? %>
+  rest_end_time = "<%=@shift.rest_end_time.strftime('%-H:%M')%>"
+  if ($(".td_<%= @shift.id %>").find(".fix_shift_select_rest_end_time").hasClass('get_times')){
+    $(".td_<%= @shift.id %>").find(".fix_shift_select_rest_end_time").append($('<option seleted="selected">').html("<%=@shift.rest_end_time.strftime('%-H:%M')%>").val("<%=@shift.rest_end_time.strftime('%-H:%M')%>"));
+    $(".td_<%= @shift.id %>").find(".fix_shift_select_rest_end_time").val("<%=@shift.rest_end_time.strftime('%-H:%M')%>");
+  }else{
+    $(".td_<%= @shift.id %>").find(".fix_shift_select_rest_end_time").val("<%=@shift.rest_end_time.strftime('%-H:%M')%>");
+  }
+<% end %>
+$(".td_<%= @shift.id %>").find(".time_display").text(start_time+"-"+end_time+" ("+rest_start_time+"-"+rest_end_time+")");
 <% if @store_change_flag == true %>
   $(".form_<%= @shift.id %>").find('.fix_shift_select').html('<%= j(options_for_select(@fix_shift_patterns.pluck(:pattern_name, :id).unshift(["",""]))) %>');
 <% end %>

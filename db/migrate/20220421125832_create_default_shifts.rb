@@ -9,6 +9,8 @@ class CreateDefaultShifts < ActiveRecord::Migration[5.2]
       t.timestamps
       t.time :start_time
       t.time :end_time
+      t.time :rest_start_time
+      t.time :rest_end_time
     end
   end
 end

@@ -91,10 +91,13 @@ class ShiftsController < ApplicationController
         shift.fix_shift_pattern = default_shift.fix_shift_pattern
         shift.start_time = default_shift.start_time
         shift.end_time = default_shift.end_time
+        shift.rest_start_time = default_shift.rest_start_time
+        shift.rest_end_time = default_shift.rest_end_time
+
       end
       update_shifts << shift
     end
-    Shift.import update_shifts, on_duplicate_key_update:[:store_id,:fix_shift_pattern_id,:start_time,:end_time]
+    Shift.import update_shifts, on_duplicate_key_update:[:store_id,:fix_shift_pattern_id,:start_time,:end_time,:rest_start_time,:rest_end_time]
     redirect_to shifts_path(date:@date,group_id:params[:group_id],store_type:@store_type),success:"デフォルトのシフトを反映しました。"
 
   end
@@ -263,11 +266,8 @@ class ShiftsController < ApplicationController
   end
 
   def index
-     @times_arr = ["5:00","5:15","5:30","5:45","6:00","6:15","6:30","6:45","7:00","7:15","7:30","7:45","8:00","8:15","8:30","8:45","9:00",
-      "9:15","9:30","9:45","10:00","10:15","10:30","10:45","11:00","11:15","11:30","11:45","12:00","12:15","12:30","12:45","13:00","13:15",
-      "13:30","13:45","14:00","14:15","14:30","14:45","15:00","15:15","15:30","15:45","16:00","16:15","16:30","16:45","17:00","17:15","17:30",
-      "17:45","18:00","18:15","18:30","18:45","19:00","19:15","19:30","19:45","20:00","20:15","20:30","20:45","21:00","21:15","21:30","21:45",
-      "22:00","22:15","22:30"]
+     @times_arr = ["5:00","5:30","6:00","6:30","7:00","7:30","8:00","8:30","9:00","9:30","10:00","10:30","11:00","11:30","12:00","12:30","13:00",
+      "13:30","14:00","14:30","15:00","15:30","16:00","16:30","17:00","17:30","18:00","18:30","19:00","19:30","20:00","20:30","21:00","21:30","22:00","22:30"]
      @group = Group.find(params[:group_id])
     if params[:store_type].present?
       @store_type = params[:store_type]
@@ -300,7 +300,7 @@ class ShiftsController < ApplicationController
     last_day = first_day.end_of_month
     last_day = Date.new((last_day + 1).year,(last_day +1).month, 15)
     @one_month = [*first_day..last_day]
-    shifts = Shift.includes(:store,:shift_pattern).where(staff_id:staff_ids,date:@one_month)
+    shifts = Shift.includes(:shift_pattern).where(staff_id:staff_ids,date:@one_month)
     @shifts = shifts.map{|shift|[[shift.staff_id,shift.date],shift]}.to_h
     @staff_shinsei_count = shifts.where.not(shift_pattern_id: nil).group(:staff_id).count
     @staff_syukkin_count = shifts.joins(:fix_shift_pattern).where.not(:fix_shift_patterns=>{working_hour:0}).where.not(fix_shift_pattern_id: nil).group(:staff_id).count
@@ -442,21 +442,38 @@ class ShiftsController < ApplicationController
     else
       @fix_shift_patterns = []
     end
-    if params[:shift][:fix_shift_pattern_id].present?
-      fix_shift_pattern = FixShiftPattern.find(params[:shift][:fix_shift_pattern_id])
-      if fix_shift_pattern.start_time.present?
-        params[:shift][:start_time]= fix_shift_pattern.start_time
-      else
-        # params[:shift][:start_time]=nil
-      end
-      if fix_shift_pattern.end_time.present?
-        params[:shift][:end_time]=fix_shift_pattern.end_time
-      else
-        # params[:shift][:end_time]=nil
-      end
+    if @shift.fix_shift_pattern_id == params[:shift][:fix_shift_pattern_id].to_i
+      # fixshiftpatternが一緒の場合は時間のみを変更したケース
+
     else
-      # params[:shift][:start_time]=nil
-      # params[:shift][:end_time]=nil
+      if params[:shift][:fix_shift_pattern_id].present?
+        fix_shift_pattern = FixShiftPattern.find(params[:shift][:fix_shift_pattern_id])
+        if fix_shift_pattern.start_time.present?
+          params[:shift][:start_time]= fix_shift_pattern.start_time
+        else
+          params[:shift][:start_time]= ""
+        end
+        if fix_shift_pattern.end_time.present?
+          params[:shift][:end_time]=fix_shift_pattern.end_time
+        else
+          params[:shift][:end_time]= ""
+        end
+        if fix_shift_pattern.rest_start_time.present?
+          params[:shift][:rest_start_time]=fix_shift_pattern.rest_start_time
+        else
+          params[:shift][:rest_start_time]=""
+        end
+        if fix_shift_pattern.rest_end_time.present?
+          params[:shift][:rest_end_time]=fix_shift_pattern.rest_end_time
+        else
+          params[:shift][:rest_end_time]=""
+        end
+      else
+        params[:shift][:start_time]= ""
+        params[:shift][:end_time]= ""
+        params[:shift][:rest_start_time]=""
+        params[:shift][:rest_end_time]=""
+      end      
     end
     respond_to do |format|
       if @shift.update(shift_params)
@@ -489,7 +506,7 @@ class ShiftsController < ApplicationController
     end
 
     def shift_params
-      params.require(:shift).permit(:date,:staff_id,:shift_pattern_id,:fix_shift_pattern_id,:memo,:store_id,:start_time,:end_time)
+      params.require(:shift).permit(:date,:staff_id,:shift_pattern_id,:fix_shift_pattern_id,:memo,:store_id,:start_time,:end_time,:rest_start_time,:rest_end_time)
     end
 
     def download_csv(shifts)
