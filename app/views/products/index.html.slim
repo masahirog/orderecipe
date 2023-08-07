@@ -1,14 +1,31 @@
+
 .col-md-12
-  .col-md-1
+  .col-md-1 style='padding-top:25px;'
     = link_to '新規作成',new_product_path,class:'btn btn-primary'
   = form_tag Product, :method => 'get' do
-    .col-md-3
-      = select_tag :name,options_for_select(Product.where(group_id:@group_id).pluck(:name)),include_blank: true, class:"name_search form-control"
     .col-md-2
+      label 名称
+      = text_field_tag :name,params[:name],class:"form-control"
+    .col-md-2
+      label ブランド・店舗
       = select_tag :brand_id, options_from_collection_for_select(Brand.where(group_id:@group_id),:id,:name,params[:brand_id]),include_blank:true, class: "form-control",style:"width:100%"
+    - if current_user.group_id == 9
+      - categories = Product.product_categories.find_all{|k,v| v < 13 }.to_h.keys
+    - else
+      - categories = Product.product_categories.find_all{|k,v| v >= 13 }.to_h.keys
     .col-md-2
+      label カテゴリ
+      = select_tag :product_category, options_for_select(categories,params[:product_category]),include_blank:true, class: "form-control",style:"width:100%"
+    - unless current_user.group_id == 9
+      - sub_categories = Product.sub_categories.keys
+      .col-md-2
+        label サブカテゴリ
+        = select_tag :sub_category, options_for_select(sub_categories,params[:sub_category]),include_blank:true, class: "form-control",style:"width:100%"
+
+    .col-md-2
+      label 並び替え
       = select_tag :order,options_for_select([['原価高い順','cost_price DESC'],['原価低い順','cost_price ASC'],['名前順','name ASC']],params[:order]), include_blank: true, class:"form-control",style:"width:150px;"
-    .col-md-1
+    .col-md-1 style='padding-top:25px;'
       = submit_tag "検索" ,class:"btn btn-primary"
     - if @group_id == 9
       .col-md-2
@@ -21,6 +38,8 @@ table.table
       th ステータス
       th ブランド名
       th style='width:400px;' 商品名
+      th style="size:10px;" 皿容器
+      th カテゴリ（サブ）
       th.text-right 売価
       th.text-right 原価
       th.text-right 原価率
@@ -40,6 +59,11 @@ table.table
           = product.id
         td = product.brand.name
         td.product_name = link_to "#{product.name}", "/products/#{product.id}/"
+        td = product.container.name if product.container.present?
+        td 
+          span = product.product_category
+          - if product.sub_category.present?
+            span = "（#{product.sub_category}）"
         td.text-right = "#{product.sell_price}円"
         td.price.text-right = "#{product.cost_price}円"
         td.text-right

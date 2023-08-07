@@ -24,19 +24,30 @@
 table.table
   thead
     tr
+      th ステータス
+      th ブランド
       th 商品名
-      th.col-md-6 商品特徴
+      th カテゴリ
+      th サブカテゴリ
+      th 容器・皿
       th 販売価格
       th 原価価格
       th 原価率
 
   tbody
     tr
+      td = @product.status
+      td = @product.brand.name
       td = @product.name
-      td = text_url_to_link(simple_format(h(@product.description))).html_safe
+      td = @product.product_category
+      td = @product.sub_category
+      td = @product.container.name if @product.container.present?
       td = "#{@product.sell_price} 円"
       td = "#{@product.cost_price} 円"
       td = "#{((@product.cost_price/@product.sell_price)*100).round(1)}%"
+div style='padding:8px;'
+  label 商品特徴
+  = text_url_to_link(simple_format(h(@product.description))).html_safe
 / table.table
   thead
     tr

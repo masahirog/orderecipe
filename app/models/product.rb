@@ -44,7 +44,8 @@ class Product < ApplicationRecord
   validates :sell_price, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :cost_price, presence: true, numericality: true
   validates :management_id, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, :allow_nil => true
-  enum product_category: {惣菜:1,ご飯・丼:2,ドリンク:3,備品:4,お弁当:5,オードブル:6,スープ:7,惣菜（仕入れ）:8,レジ修正:9,オプション:11,その他:12}
+  enum sub_category: {グランドメニュー:1,週替わりメニュー:2,"1月":3,"2月":4,"3月":5,"4月":6,"5月":7,"6月":8,"7月":9,"8月":10,"9月":11,"10月":12,"11月":13,"12月":14,イベント:15}
+  enum product_category: {惣菜:1,ご飯・丼:2,ドリンク:3,備品:4,お弁当:5,オードブル:6,スープ:7,惣菜（仕入れ）:8,レジ修正:9,オプション:11,その他:12,冷菜:13,温菜:14,揚げ物:15,焼き物:16,ご飯物:17,デザート:18}
   enum status: {販売中:1,販売停止:2,試作中:3}
   before_save :name_code
   before_destroy :clean_s3
@@ -56,9 +57,10 @@ class Product < ApplicationRecord
   def self.search(params,group_id)
     data = Product.where(group_id:group_id).order(id: "DESC").all
     if params
-      data = data.where(['management_id LIKE ?', "%#{params["management_id"]}%"]) if params["management_id"].present?
       data = data.where(brand_id: params["brand_id"]) if params["brand_id"].present?
       data = data.where(['name LIKE ?', "%#{params["name"]}%"]) if params["name"].present?
+      data = data.where(product_category: params["product_category"]) if params["product_category"].present?
+      data = data.where(sub_category: params["sub_category"]) if params["sub_category"].present?
       data = data.reorder(params['order']) if params["order"].present?
       data
     end

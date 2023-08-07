@@ -20,8 +20,13 @@
       = f.label :short_name ,'省略名 ひらがな'
       = f.text_field :short_name, class: "form-control", id: "material_name",style:"width:100%;"
     .col-md-2
+      - if current_user.group_id == 9
+        - categories = Menu.categories.find_all{|k,v| v < 5 }.to_h.keys
+      - else
+        - categories = Menu.categories.find_all{|k,v| v >= 5 }.to_h.keys
+
       = f.label :category ,'カテゴリー'
-      = f.select :category, options_for_select(Menu.categories.keys.to_a,@menu.category),{}, { class: "form-control",style:"width:100%;"}
+      = f.select :category, options_for_select(categories,@menu.category),{}, { class: "form-control",style:"width:100%;"}
     .col-md-2
       = f.label :cost_price, "メニュー原価"
       .clearfix

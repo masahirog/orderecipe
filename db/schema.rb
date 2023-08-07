@@ -92,6 +92,7 @@ ActiveRecord::Schema.define(version: 2023_06_29_230155) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "group_id", null: false
   end
 
   create_table "cooking_rices", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -567,6 +568,7 @@ ActiveRecord::Schema.define(version: 2023_06_29_230155) do
     t.string "sky_image"
     t.text "sky_serving_infomation"
     t.integer "group_id", null: false
+    t.integer "sub_category"
   end
 
   create_table "refund_supports", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

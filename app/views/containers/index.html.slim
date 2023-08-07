@@ -1,5 +1,5 @@
-h1 包材一覧
-= link_to '新規追加', new_container_path
+h1 盛り付け容器一覧
+= link_to '新規追加', new_container_path,class:"btn btn-primary"
 table.table
   thead
     tr
@@ -11,5 +11,5 @@ table.table
     - @containers.each do |container|
       tr
         td = container.name
-        td = link_to 'Edit', edit_container_path(container)
+        td = link_to '編集', edit_container_path(container)
         / td = link_to 'Destroy', container, data: { confirm: 'Are you sure?' }, method: :delete

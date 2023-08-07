@@ -23,7 +23,7 @@ class Menu < ApplicationRecord
   after_create :base_menu_id_check
   after_update :copy_menu_reflect
 
-  enum category: {主食:1,主菜:2,副菜:3,容器:4}
+  enum category: {主食:1,主菜:2,副菜:3,容器:4,冷菜:5,温菜:6,揚げ物:7,焼き物:8,ご飯物:9,デザート:10}
   def self.search(params,group_id)
     data = Menu.where(group_id:group_id).order(id: "DESC").all
     if params

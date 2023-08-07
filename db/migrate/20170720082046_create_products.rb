@@ -30,6 +30,7 @@ class CreateProducts < ActiveRecord::Migration[4.2]
       t.string :sky_image
       t.text :sky_serving_infomation
       t.integer :group_id, :null => false
+      t.integer :sub_category
     end
   end
 end

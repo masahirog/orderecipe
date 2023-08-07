@@ -1,7 +1,7 @@
 = form_for @brand do |f|
   .form-group
-    = f.label :name, "ブランド名"
-    = f.text_field :name, required: true, class:"form-control"
-
+		= f.label :name, "ブランド名"
+		= f.text_field :name, required: true, class:"form-control"
+		= f.hidden_field :group_id, class:"form-control"
   .actions
     = f.submit '登録する',class:'btn btn-success'

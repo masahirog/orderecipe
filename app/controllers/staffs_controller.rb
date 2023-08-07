@@ -12,7 +12,7 @@ class StaffsController < ApplicationController
     redirect_to staffs_path(group_id:group_id),notice:'並び更新しました。'
   end
   def index
-    group_id = params[:group_id]
+    group_id = current_user.group_id
     @group = Group.find(group_id)
     if params[:status].present?
       status = params[:status]

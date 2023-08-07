@@ -69,14 +69,14 @@ class ApplicationController < ActionController::Base
 
 
   protected
-    def revert_link
-      view_context.link_to('取消', revert_version_path(@material.versions.last), :method => :post)
-    end
-    def versions_link
-      view_context.link_to('編集履歴', version_path(@material), :method => :get)
-    end
-    def revert_link_menu
-      view_context.link_to('取消', revert_version_path(@menu.versions.last), :method => :post)
-    end
+    # def revert_link
+    #   view_context.link_to('取消', revert_version_path(@material.versions.last), :method => :post)
+    # end
+    # def versions_link
+    #   view_context.link_to('編集履歴', version_path(@material), :method => :get)
+    # end
+    # def revert_link_menu
+    #   view_context.link_to('取消', revert_version_path(@menu.versions.last), :method => :post)
+    # end
 
 end

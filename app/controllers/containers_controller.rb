@@ -1,15 +1,15 @@
-class ContainersController < AdminController
+class ContainersController < ApplicationController
   before_action :set_container, only: %i[ show edit update destroy ]
 
   def index
-    @containers = Container.all
+    @containers = Container.where(group_id:current_user.group_id)
   end
 
   def show
   end
 
   def new
-    @container = Container.new
+    @container = Container.new(group_id:current_user.group_id)
   end
 
   def edit
@@ -20,7 +20,7 @@ class ContainersController < AdminController
 
     respond_to do |format|
       if @container.save
-        format.html { redirect_to @container, notice: "Container was successfully created." }
+        format.html { redirect_to containers_path, success: "OK！" }
         format.json { render :show, status: :created, location: @container }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -32,7 +32,7 @@ class ContainersController < AdminController
   def update
     respond_to do |format|
       if @container.update(container_params)
-        format.html { redirect_to @container, notice: "Container was successfully updated." }
+        format.html { redirect_to containers_path, success: "OK！" }
         format.json { render :show, status: :ok, location: @container }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -44,7 +44,7 @@ class ContainersController < AdminController
   def destroy
     @container.destroy
     respond_to do |format|
-      format.html { redirect_to containers_url, notice: "Container was successfully destroyed." }
+      format.html { redirect_to containers_url, success: "OK！" }
       format.json { head :no_content }
     end
   end
@@ -55,6 +55,6 @@ class ContainersController < AdminController
     end
 
     def container_params
-      params.require(:container).permit(:name)
+      params.require(:container).permit(:name,:group_id)
     end
 end

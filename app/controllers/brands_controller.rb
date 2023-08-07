@@ -2,14 +2,14 @@ class BrandsController < ApplicationController
   before_action :set_brand, only: [:show, :edit, :update, :destroy]
 
   def index
-    @brands = Brand.all
+    @brands = Brand.where(group_id:current_user.group_id)
   end
 
   def show
   end
 
   def new
-    @brand = Brand.new
+    @brand = Brand.new(group_id:current_user.group_id)
   end
 
   def edit
@@ -19,7 +19,7 @@ class BrandsController < ApplicationController
     @brand = Brand.new(brand_params)
     respond_to do |format|
       if @brand.save
-        format.html { redirect_to @brand, notice: 'Brand was successfully created.' }
+        format.html { redirect_to brands_path, success: '追加！' }
         format.json { render :show, status: :created, location: @brand }
       else
         format.html { render :new }
@@ -31,7 +31,7 @@ class BrandsController < ApplicationController
   def update
     respond_to do |format|
       if @brand.update(brand_params)
-        format.html { redirect_to @brand, notice: 'Brand was successfully updated.' }
+        format.html { redirect_to brands_path, success: '更新！' }
         format.json { render :show, status: :ok, location: @brand }
       else
         format.html { render :edit }

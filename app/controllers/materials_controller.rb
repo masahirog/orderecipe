@@ -23,7 +23,7 @@ class MaterialsController < ApplicationController
       if store.id == 39
         @material.material_store_orderables.build(store_id:store.id,orderable_flag:true)
       else
-        @material.material_store_orderables.build(store_id:store.id)
+        @material.material_store_orderables.build(store_id:store.id,orderable_flag:true)
       end
     end
     @material.material_food_additives.build
