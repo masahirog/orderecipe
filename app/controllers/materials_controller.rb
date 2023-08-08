@@ -255,6 +255,6 @@ class MaterialsController < ApplicationController
     params.require(:material).permit(:name, :order_name, :recipe_unit_quantity, :recipe_unit,:vendor_stock_flag,:image,:image_cache,:remove_image,:short_name,:storage_place,:group_id,
      :recipe_unit_price, :cost_price, :category, :order_code, :order_unit, :memo, :unused_flag, :vendor_id,:order_unit_quantity,:delivery_deadline,:accounting_unit,:accounting_unit_quantity,:measurement_flag,
      {allergy:[]},material_store_orderables_attributes:[:id,:store_id,:material_id,:orderable_flag],material_food_additives_attributes:[:id,:material_id,:food_additive_id,:_destroy],
-   material_cut_patterns_attributes:[:id,:material_id,:name,:machine,:_destroy])
+   material_cut_patterns_attributes:[:id,:material_id,:name,:machine,:_destroy,:roma_name])
   end
 end

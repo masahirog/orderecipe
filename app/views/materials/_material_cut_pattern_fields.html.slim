@@ -1,6 +1,12 @@
-li.add_li_material.col-md-12.list-group-item.item.nested-fields.field.clearfix
-  = f.text_field :name,class:'form-control',style:'float:left;width:calc(100% - 300px);margin-right:20px;'
-  = f.select :machine, MaterialCutPattern.machines.keys.to_a, {include_blank:true}, class: 'form-control',style:'width:150px;float:left;margin-right:20px;'
-  = link_to_remove_association '削除', f, class:'btn btn-sm btn-danger',style:'float:left;margin-right:20px;',  data: {confirm: '削除しますか？'}
-  - if f.object.present?&&f.object.menu_materials.present?
-    = link_to "#{f.object.menu_materials.count}件",cut_patterns_materials_path(material_cut_pattern_id:f.object.id), class:'btn btn-sm btn-primary',style:'float:left;'
+tr.nested-fields.field
+	td
+	  = f.text_field :name,class:'form-control'
+	td
+	  = f.text_field :roma_name,class:'form-control'
+	td
+	  = f.select :machine, MaterialCutPattern.machines.keys.to_a, {include_blank:true}, class: 'form-control'
+	td
+		= link_to_remove_association '削除', f, class:'btn btn-sm btn-danger',  data: {confirm: '削除しますか？'}
+	- if f.object.present?&&f.object.menu_materials.present?
+		td
+	  	= link_to "#{f.object.menu_materials.count}件",cut_patterns_materials_path(material_cut_pattern_id:f.object.id), class:'btn btn-sm btn-primary'

@@ -34,10 +34,10 @@ class CutList < Prawn::Document
           tmm = mm.temporary_menu_materials.find_by(date:date)
           if tmm.present?
             material_id = tmm.material_id
-            material_name = tmm.material.name
+            material_name = "#{tmm.material.name}\n#{tmm.material.roma_name}"
           else
             material_id = mm.material_id
-            material_name = mm.material.name
+            material_name ="#{ mm.material.name}\n#{ mm.material.roma_name}"
           end
           if mm.material_cut_pattern.machine.present?
             if machine_cut_hash[material_id][mm.material_cut_pattern_id].present?
@@ -160,12 +160,12 @@ class CutList < Prawn::Document
           if index == 0
             if i == 0
               if mmch[1].count > 1
-                data << [{:content => "#{material_name}\n【 計：#{material_used_total_amount} #{default_material.recipe_unit} 】", :rowspan => material_rowspan},{:content =>"#{amount} #{default_material.recipe_unit}", :rowspan => rowspan},{:content => material_cut_pattern.name, :rowspan => rowspan},"#{menu_amount} #{default_material.recipe_unit}",mm[0].preparation,chage_flag,"#{flag} #{mm[0].menu.name}(#{mm[1]})"]
+                data << [{:content => "#{material_name}\n【 計：#{material_used_total_amount} #{default_material.recipe_unit} 】", :rowspan => material_rowspan},{:content =>"#{amount} #{default_material.recipe_unit}", :rowspan => rowspan},{:content => "#{material_cut_pattern.name}\n\n#{material_cut_pattern.roma_name}", :rowspan => rowspan},"#{menu_amount} #{default_material.recipe_unit}",mm[0].preparation,chage_flag,"#{flag} #{mm[0].menu.name}(#{mm[1]})"]
               else
-                data << [{:content => "#{material_name}", :rowspan => material_rowspan},{:content =>"#{amount} #{default_material.recipe_unit}", :rowspan => rowspan},{:content => material_cut_pattern.name, :rowspan => rowspan},"#{menu_amount} #{default_material.recipe_unit}",mm[0].preparation,chage_flag,"#{flag} #{mm[0].menu.name}(#{mm[1]})"]
+                data << [{:content => "#{material_name}", :rowspan => material_rowspan},{:content =>"#{amount} #{default_material.recipe_unit}", :rowspan => rowspan},{:content => "#{material_cut_pattern.name}\n\n#{material_cut_pattern.roma_name}", :rowspan => rowspan},"#{menu_amount} #{default_material.recipe_unit}",mm[0].preparation,chage_flag,"#{flag} #{mm[0].menu.name}(#{mm[1]})"]
               end
             else
-              data <<[{:content =>"#{amount} #{default_material.recipe_unit}", :rowspan => rowspan},{:content => material_cut_pattern.name, :rowspan => rowspan},"#{menu_amount} #{default_material.recipe_unit}",mm[0].preparation,chage_flag,"#{flag} #{mm[0].menu.name}(#{mm[1]})"]
+              data <<[{:content =>"#{amount} #{default_material.recipe_unit}", :rowspan => rowspan},{:content => "#{material_cut_pattern.name}\n\n#{material_cut_pattern.roma_name}", :rowspan => rowspan},"#{menu_amount} #{default_material.recipe_unit}",mm[0].preparation,chage_flag,"#{flag} #{mm[0].menu.name}(#{mm[1]})"]
             end
           else
             data <<["#{menu_amount} #{default_material.recipe_unit}",mm[0].preparation,chage_flag,"#{flag} #{mm[0].menu.name}(#{mm[1]})"]

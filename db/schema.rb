@@ -301,6 +301,7 @@ ActiveRecord::Schema.define(version: 2023_06_29_230155) do
     t.integer "machine"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "roma_name"
   end
 
   create_table "material_food_additives", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

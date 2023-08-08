@@ -5,6 +5,7 @@ class CreateMaterialCutPatterns < ActiveRecord::Migration[5.2]
       t.string :name
       t.integer :machine
       t.timestamps
+      t.string :roma_name
     end
   end
 end
