@@ -66,14 +66,14 @@ class Product < ApplicationRecord
     end
   end
 
-  def self.bentoid
-    max = Product.maximum(:management_id)
-    if max.nil?
-      data = 1
-    else
-      data = max + 1
-    end
-  end
+  # def self.bentoid
+  #   max = Product.maximum(:management_id)
+  #   if max.nil?
+  #     data = 1
+  #   else
+  #     data = max + 1
+  #   end
+  # end
 
   def self.allergy_seiri(product)
     arr=[]

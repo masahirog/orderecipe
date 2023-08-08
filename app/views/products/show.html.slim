@@ -45,9 +45,16 @@ table.table
       td = "#{@product.sell_price} 円"
       td = "#{@product.cost_price} 円"
       td = "#{((@product.cost_price/@product.sell_price)*100).round(1)}%"
-div style='padding:8px;'
-  label 商品特徴
-  = text_url_to_link(simple_format(h(@product.description))).html_safe
+.col-md-12 style="padding:0;"
+  .col-md-6
+    label 商品特徴
+    hr style='margin:0 0 8px 0;'
+    = text_url_to_link(simple_format(h(@product.description))).html_safe
+  .col-md-6
+    label 1人前盛り付け
+    hr style='margin:0 0 8px 0;'
+    = text_url_to_link(simple_format(h(@product.serving_infomation))).html_safe
+
 / table.table
   thead
     tr

@@ -25,12 +25,12 @@
       - else
         - categories = Product.product_categories.find_all{|k,v| v >= 13 }.to_h.keys
 
-      = f.select :product_category, options_for_select(categories,@product.product_category), {}, class: 'form-control'
+      = f.select :product_category, options_for_select(categories,@product.product_category), {include_blank:true}, class: 'form-control'
     .col-md-2
       - unless current_user.group_id == 9
         = f.label :sub_category, "サブカテゴリー"
         - sub_categories = Product.sub_categories.keys
-        = f.select :sub_category, options_for_select(sub_categories,@product.sub_category), {}, class: 'form-control'
+        = f.select :sub_category, options_for_select(sub_categories,@product.sub_category), {include_blank:true}, class: 'form-control'
   .col-md-12.form-group
     .col-md-2
       = f.label :status, "ステータス"
@@ -176,8 +176,11 @@
 
 
   .menu-area
-    .col-md-12[style="margin-top:10px;"]
-      label.col-md-3 メニュー名
+    .col-md-12 style="margin-top:10px;padding:0 8px;"
+      label.col-md-3 style='padding:0;'
+        |メニュー名
+        = link_to_add_association '品目追加', f, :product_menus,class:'btn btn-primary add_menu_fields',style:'margin-left:20px;',
+        data: {association_insertion_node: '.used_menu_ul',association_insertion_method: 'append' }
       label.col-md-1.text-right 原価
       .col-md-7
         label.col-md-4 材料名
@@ -188,7 +191,5 @@
     ul.used_menu_ul.list-group.ul-sortable[style="list-style:none;cursor:move;"]
       = f.fields_for :product_menus do |pr|
         = render 'product_menu_fields', f: pr
-    .col-md-12[style="margin:10px 10px 30px 0;"]
-      = link_to_add_association '品目追加', f, :product_menus,class:'btn btn-primary add_menu_fields'
   .action.col-md-12
     input.btn.btn-success[type="button" onclick="submit();" value="登録する"]

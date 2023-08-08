@@ -68,12 +68,11 @@ class ProductsController < ApplicationController
       flash.now[:notice] = "#{original_product.name}を複製しました。この商品を登録する前に、コピーした元の商品のmanagement_idを消してください。名前も変更してください。"
       @menus = original_product.menus
     else
-      @management_id = Product.bentoid()
-      @product = Product.new(sell_price:0,brand_id:111)
+      # @management_id = Product.bentoid()
+      @product = Product.new(sell_price:0)
       @product.product_menus.build(row_order: 0)
       @menus = []
     end
-    @product.product_parts.build
   end
 
   def show
@@ -97,35 +96,39 @@ class ProductsController < ApplicationController
 
   def create
     @product = Product.new(product_create_update)
-    if @product.save
-      redirect_to products_path
-    else
-      menu_ids = []
-      params["product"]["product_menus_attributes"].each{|key,value|menu_ids << value['menu_id']}
-      @menus = Menu.where(id:menu_ids)
-      render 'new'
+    respond_to do |format|
+      if @product.save
+        format.html { redirect_to @product, success: "作成！" }
+      else
+        menu_ids = []
+        params["product"]["product_menus_attributes"].each{|key,value|menu_ids << value['menu_id']}
+        @menus = Menu.where(id:menu_ids)
+        format.html { render :new, status: :unprocessable_entity }
+      end
     end
   end
 
   def edit
-    @management_id = Product.bentoid()
+    # @management_id = Product.bentoid()
     @product = Product.includes(:product_menus,{menus: [:menu_materials,:materials]}).find(params[:id])
     @product.product_pops.build
     @menus = @product.menus
     @product.product_menus.build  if @product.menus.length == 0
     @allergies = Product.allergy_seiri(@product)
-    # @product.product_parts.build
   end
 
   def update
     @product = Product.find(params[:id])
-    if @product.update(product_create_update)
-      redirect_to product_path
-    else
-      menu_ids = []
-      params["product"]["product_menus_attributes"].each{|key,value|menu_ids << value['menu_id']}
-      @menus = Menu.where(id:menu_ids)
-      render 'edit'
+
+    respond_to do |format|
+      if @product.update(product_create_update)
+        format.html { redirect_to @product, success: "更新！" }
+      else
+        menu_ids = []
+        params["product"]["product_menus_attributes"].each{|key,value|menu_ids << value['menu_id']}
+        @menus = Menu.where(id:menu_ids)
+        format.html { render :edit, status: :unprocessable_entity }
+      end
     end
   end
 
