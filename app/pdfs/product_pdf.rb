@@ -17,8 +17,8 @@ class ProductPdf < Prawn::Document
 
   def header_table(product,num)
     bounding_box([0, 530], :width => 650) do
-      data = [["商品名","management_id","原価","製造数"],
-              ["#{product.name}","#{product.management_id}","#{product.cost_price} 円","#{num}人分"]]
+      data = [["商品名","management_id","製造数"],
+              ["#{product.name}","#{product.management_id}","#{num}人分"]]
       table data, cell_style: { size: 9 } do
       cells.padding = 2
 
@@ -40,27 +40,23 @@ class ProductPdf < Prawn::Document
         cells.padding = 2
         cells.borders = [:bottom]
         cells.border_width = 0.2
-        column(-2..-1).align = :right
+        column(-1).align = :right
         row(0).border_width = 1
         row(0).size = 9
         self.header = true
-        self.column_widths = [100,150,150,80,40,30,120,40,65]
+        self.column_widths = [100,170,150,80,40,40,130,65]
       end
     end
   end
   def line_item_rows(menus,num)
-    data= [["メニュー名","レシピ","食材","#{num}人分",'G',{:content => "仕込み内容", :colspan => 2},"使用原価","1人分"]]
+    data= [["メニュー名","レシピ","食材","#{num}人分",'グループ',{:content => "仕込み内容", :colspan => 2},"1人分"]]
     menus.each do |menu|
       u = menu.materials.length
       cook_the_day_before_mozi = menu.cook_the_day_before.length
-      if cook_the_day_before_mozi<50
+      if cook_the_day_before_mozi<150
         cook_the_day_before_size = 9
-      elsif cook_the_day_before_mozi<100
-        cook_the_day_before_size = 8
-      elsif cook_the_day_before_mozi<150
-        cook_the_day_before_size = 7
       else
-        cook_the_day_before_size = 6
+        cook_the_day_before_size = 8
       end
       menu.menu_materials.each_with_index do |mm,i|
         if i == 0
@@ -78,13 +74,12 @@ class ProductPdf < Prawn::Document
             {content:"#{((mm.amount_used * num.to_i).round(1)).to_s(:delimited)} #{mm.material.recipe_unit}",size:9},
             {content:mm.source_group, size: 8},
             {content: "#{mm.post}", size: 7},{content:"#{mm.preparation}", size: 7},
-            {content:"#{(mm.material.cost_price * mm.amount_used).round(1)}", size: 8},{content:"#{mm.amount_used} #{mm.material.recipe_unit}", size: 8}
+            {content:"#{mm.amount_used} #{mm.material.recipe_unit}", size: 8}
             ]
         else
           data << [{content:"#{mm.material.name}", size: 9},{content:"#{((mm.amount_used * num.to_i).round(1)).to_s(:delimited)} #{mm.material.recipe_unit}",size:9},
             {content:mm.source_group, size: 8},
             {content:"#{mm.post}", size: 7},{content:"#{mm.preparation}", size: 7},
-            {content:"#{(mm.material.cost_price * mm.amount_used).round(1)}", size: 8},
           {content:"#{mm.amount_used} #{mm.material.recipe_unit}", size: 8}]
         end
       end
