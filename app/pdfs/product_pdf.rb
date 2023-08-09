@@ -44,12 +44,12 @@ class ProductPdf < Prawn::Document
         row(0).border_width = 1
         row(0).size = 9
         self.header = true
-        self.column_widths = [100,170,150,80,40,40,130,65]
+        self.column_widths = [270,150,80,40,40,130,65]
       end
     end
   end
   def line_item_rows(menus,num)
-    data= [["メニュー名","レシピ","食材","#{num}人分",'グループ',{:content => "仕込み内容", :colspan => 2},"1人分"]]
+    data= [["メニューレシピ","食材","#{num}人分",'グループ',{:content => "仕込み内容", :colspan => 2},"1人分"]]
     menus.each do |menu|
       u = menu.materials.length
       cook_the_day_before_mozi = menu.cook_the_day_before.length
@@ -68,8 +68,7 @@ class ProductPdf < Prawn::Document
             recipe += "【 当 日 】\n#{menu.cook_on_the_day}"
           end
 
-          data << [{content: "#{menu.name}", rowspan: u,size: 9},
-            {content: recipe, rowspan: u, size: cook_the_day_before_size},
+          data << [{content: "#{menu.name}\n\n#{recipe}", rowspan: u,size: 9},
             {content:"#{mm.material.name}", size: 9},
             {content:"#{((mm.amount_used * num.to_i).round(1)).to_s(:delimited)} #{mm.material.recipe_unit}",size:9},
             {content:mm.source_group, size: 8},
