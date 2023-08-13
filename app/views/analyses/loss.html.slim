@@ -1,11 +1,6 @@
 h3 販売データ
-= form_tag loss_update_analyses_path, multipart: true do
-  = file_field_tag :file,class:'form-control'
-  = submit_tag "アップロード",class:'btn btn-primary'
 
-
-
-= form_tag analyses_path, :method => 'get' do
+= form_tag loss_analyses_path, :method => 'get' do
   .clearfix
     label style='float:left;' 店舗選択
     ul style="list-style:none;float:left;"
@@ -23,7 +18,12 @@ h3 販売データ
   .kensaku.col-md-1
     = submit_tag "絞り込み" ,class:"btn btn-primary"
 - if @period < 93
-  = link_to "CSV",sales_analyses_path(from:params[:from],to:params[:to], :format => :csv),class:"btn btn-primary",style:'float:right;'
+  = form_tag loss_analyses_path(format: :csv), :method => 'get' do
+    - @stores.each do |store|
+        = check_box_tag "stores[#{store.id}]",true,params['stores'][store.id.to_s],style:'display:none;'
+    = hidden_field_tag :from, params[:from]
+    = hidden_field_tag :to, params[:to]
+    = submit_tag "CSV" ,class:"btn btn-primary",style:'float:right;'
 - else
   p style='float:right;' CSVをダウンロードする場合は、期間を3ヶ月以内に指定してください
 
@@ -40,10 +40,11 @@ table.table
       th 20%OFF
       th 30%OFF
       th 50%OFF
-      th 100円引き
+      th LINE
       th 社割り
       th その他割引
       th 廃棄
+      th ポイント利用
 
 
   tbody
@@ -59,7 +60,8 @@ table.table
         td = @twenty_per_off[date].to_s(:delimited) if @twenty_per_off[date]
         td = @thirty_per_off[date].to_s(:delimited) if @thirty_per_off[date]
         td = @fifty_per_off[date].to_s(:delimited) if @fifty_per_off[date]
-        td = @kaiin_toroku_off[date].values.sum
-        td = @staff_off[date].values.sum
-        td = @other_off[date].values.sum
+        td = @kaiin_toroku_off[date].values.sum.to_s(:delimited)  if @kaiin_toroku_off[date].present?
+        td = @staff_off[date].values.sum.to_s(:delimited) if @staff_off[date].present?
+        td = @other_off[date].values.sum.to_s(:delimited) if @other_off[date].present?
         td = @date_loss_amount[date].to_s(:delimited) if @date_loss_amount[date]
+        td = @point_off[date].values.sum.to_s(:delimited)
