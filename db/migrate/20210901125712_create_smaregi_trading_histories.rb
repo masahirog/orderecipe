@@ -51,6 +51,8 @@ class CreateSmaregiTradingHistories < ActiveRecord::Migration[5.2]
       t.integer :uchishohizei
       t.integer :uchizeianbun
       t.integer :zeinuki_uriage
+      t.string :shokei_nebiki_kubun
+      t.string :tanpin_nebiki_kubun
     end
   end
 end

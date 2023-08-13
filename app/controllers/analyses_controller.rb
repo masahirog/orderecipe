@@ -1,5 +1,79 @@
 class AnalysesController < AdminController
   before_action :set_analysis, only: %i[ show edit update destroy ]
+  def loss_update
+    SmaregiTradingHistory.upload_csv_loss_data(params[:file])
+    redirect_to loss_analyses_path(), :success => "一括更新しました"
+  end
+  def loss
+    @stores = Store.where(group_id:current_user.group_id).where.not(id:39)
+    if params[:stores]
+      checked_store_ids = params['stores'].keys
+    else
+      checked_store_ids = @stores.ids
+      params[:stores] = {}
+      @stores.each do |store|
+        params[:stores][store.id.to_s] = true
+      end
+    end
+    stores = Store.where(id:checked_store_ids)
+    smaregi_store_ids = stores.map{|store|store.smaregi_store_id}
+
+    if params[:to]
+      @to = params[:to].to_date
+    else
+      @to = Date.today
+      params[:to] = @to
+    end
+    if params[:from]
+      @from = params[:from].to_date
+    else
+      @from = @to - 30
+      params[:from] = @from
+    end
+    @dates =(@from..@to).to_a
+    @period = (@to - @from).to_i
+    @analyses = Analysis.where(date:@from..@to).where(store_id:checked_store_ids).order(:date)
+    @date_sales_amount = @analyses.group(:date).sum(:ex_tax_sales_amount)
+    @date_loss_amount = @analyses.group(:date).sum(:loss_amount)
+    @date_transaction_count = @analyses.group(:date).sum(:transaction_count)
+    @date_discount_amount = @analyses.group(:date).sum(:discount_amount)
+    
+    uchikeshi_torihiki_ids = SmaregiTradingHistory.where(date:params[:from]..params[:to]).where(uchikeshi_kubun:2,tenpo_id:smaregi_store_ids).map{|sth|sth.uchikeshi_torihiki_id}.uniq
+    smaregi_trading_histories = SmaregiTradingHistory.where(date:params[:from]..params[:to]).where(torihiki_meisaikubun:1,tenpo_id:smaregi_store_ids).where.not(torihiki_id:uchikeshi_torihiki_ids)
+    
+    # 会員登録→shikei_nebiki = 100
+    # 社割→shokei_waribikiritsu = 20
+    @staff_off = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    @kaiin_toroku_off = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    @other_off = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    shokei_nebiki_smaregi_trading_histories = smaregi_trading_histories.where("shikei_nebiki > ?",0)
+    shokei_nebiki_smaregi_trading_histories.each do |snsth|
+      if snsth.shokei_waribikiritsu == 20
+        @staff_off[snsth.date][snsth.torihiki_id] = snsth.shikei_nebiki 
+      elsif snsth.shikei_nebiki == 100
+        @kaiin_toroku_off[snsth.date][snsth.torihiki_id] = snsth.shikei_nebiki
+      else
+        @other_off[snsth.date][snsth.torihiki_id] = snsth.shikei_nebiki
+      end
+    end
+    # @kaiin_toroku_off = smaregi_trading_histories.where(shokei_waribikiritsu:20).distinct(:torihiki_id).group(:date).sum(:tanka_nebikikei)
+    # @staff_off = smaregi_trading_histories.where(tanpin_waribiki:50).group(:date).sum(:tanka_nebikikei)
+    @ten_per_off = smaregi_trading_histories.where(tanpin_waribiki:10).group(:date).sum(:tanka_nebikikei)
+    @twenty_per_off = smaregi_trading_histories.where(tanpin_waribiki:20).group(:date).sum(:tanka_nebikikei)
+    @thirty_per_off = smaregi_trading_histories.where(tanpin_waribiki:30).group(:date).sum(:tanka_nebikikei)
+    @fifty_per_off = smaregi_trading_histories.where(tanpin_waribiki:50).group(:date).sum(:tanka_nebikikei)
+    @date_count = smaregi_trading_histories.group(:date).count('DISTINCT torihiki_id')
+    # @time_zone_sales = smaregi_trading_histories.group("date_format(date, '%Y-%m')").group("date_format(time, '%H')").sum(:zeinuki_uriage)
+    # @time_zone_counts = smaregi_trading_histories.group("date_format(date, '%Y-%m')").group("date_format(time, '%H')").distinct.count(:torihiki_id)
+    # @time_zone_sales_product = smaregi_trading_histories.group("date_format(date, '%Y-%m')").group("date_format(time, '%H')").group(:bumon_id).sum(:suryo)
+
+    respond_to do |format|
+      format.html
+      format.csv do
+        send_data render_to_string, filename: "べじはん販売データ.csv", type: :csv
+      end
+    end    
+  end
   def monthly_timezone
     @weekdays = %w[月 火 水 木 金 土 日]
     @weekdays_index = ['2','3','4','5','6','7','1']

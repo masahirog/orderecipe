@@ -1,8 +1,29 @@
 require "csv"
 class SmaregiTradingHistory < ApplicationRecord
   scope :search_by_week, ->(week) { where("dayofweek(date) in (?)", Array(week)) }
-
   belongs_to :analysis
+  def self.upload_csv_loss_data(file)
+    smaregi_trading_histories_arr = []
+    hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    CSV.foreach file.path, {encoding: 'BOM|UTF-8', headers: true} do |row|
+      row = row.to_hash
+      torihiki_id = row["取引ID"]
+      torihikimeisai_id = row["取引明細ID"]
+      shokei_nebiki_kubun = row["小計値引／割引区分"]
+      tanpin_nebiki_kubun = row["単品値引／割引区分"]
+      hash[torihiki_id][torihikimeisai_id][:shokei_nebiki_kubun] = shokei_nebiki_kubun
+      hash[torihiki_id][torihikimeisai_id][:tanpin_nebiki_kubun] = tanpin_nebiki_kubun
+    end
+    smaregi_trading_histories = SmaregiTradingHistory.where(torihiki_id:hash.keys)
+    smaregi_trading_histories.each do |sth|
+      sth.shokei_nebiki_kubun = hash[sth.torihiki_id.to_s][sth.torihikimeisai_id.to_s][:shokei_nebiki_kubun]
+      sth.tanpin_nebiki_kubun = hash[sth.torihiki_id.to_s][sth.torihikimeisai_id.to_s][:tanpin_nebiki_kubun]
+      smaregi_trading_histories_arr << sth
+    end
+    SmaregiTradingHistory.import smaregi_trading_histories_arr, on_duplicate_key_update:[:shokei_nebiki_kubun,:tanpin_nebiki_kubun]
+    return
+  end
+
   def self.oncerecalculate(from,to,store_id)
     analyses = Analysis.where(date:from..to).where(store_id:store_id)
     analyses.each do |analysis|

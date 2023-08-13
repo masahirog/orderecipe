@@ -126,6 +126,8 @@ Rails.application.routes.draw do
   resources :analysis_products
   resources :analyses do
     collection do
+      get :loss
+      post :loss_update
       get :monthly_timezone
       post :reload_product_repeat
       get :product_repeat

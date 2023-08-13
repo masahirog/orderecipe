@@ -88,7 +88,7 @@ ActiveRecord::Schema.define(version: 2023_06_29_230155) do
     t.integer "group_id", null: false
   end
 
-  create_table "containers", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "containers", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -158,7 +158,7 @@ ActiveRecord::Schema.define(version: 2023_06_29_230155) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "default_shifts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "default_shifts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "weekday"
     t.integer "store_id"
     t.integer "staff_id"
@@ -197,7 +197,7 @@ ActiveRecord::Schema.define(version: 2023_06_29_230155) do
     t.index ["fix_shift_pattern_id", "store_id"], name: "index_uniq", unique: true
   end
 
-  create_table "fix_shift_patterns", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "fix_shift_patterns", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "pattern_name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -295,7 +295,7 @@ ActiveRecord::Schema.define(version: 2023_06_29_230155) do
     t.text "kitchen_memo"
   end
 
-  create_table "material_cut_patterns", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "material_cut_patterns", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "material_id", null: false
     t.string "name"
     t.integer "machine"
@@ -660,7 +660,7 @@ ActiveRecord::Schema.define(version: 2023_06_29_230155) do
     t.integer "group_id"
   end
 
-  create_table "shifts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "shifts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.date "date"
     t.integer "store_id"
     t.integer "staff_id"
@@ -758,6 +758,8 @@ ActiveRecord::Schema.define(version: 2023_06_29_230155) do
     t.integer "uchishohizei"
     t.integer "uchizeianbun"
     t.integer "zeinuki_uriage"
+    t.string "shokei_nebiki_kubun"
+    t.string "tanpin_nebiki_kubun"
   end
 
   create_table "staff_stores", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
