@@ -1,6 +1,6 @@
 require 'csv'
 CSV.generate do |csv|
-  csv_column_names = %w(スタッフID スタッフ名 日付 出勤店舗 出勤シフト メモ)
+  csv_column_names = %w(スタッフID 社員番号 スタッフ名 日付 出勤店舗 出勤シフト メモ)
   csv << csv_column_names
   @shifts.each do |shift|
     if shift.store_id.present?
@@ -13,7 +13,7 @@ CSV.generate do |csv|
     else
       pattern_name = ''
     end
-    csv_column_values = [shift.staff_id,shift.staff.name,shift.date,store_name,pattern_name,shift.memo]
+    csv_column_values = [shift.staff_id,shift.staff.staff_code,shift.staff.name,shift.date,store_name,pattern_name,shift.memo]
     csv << csv_column_values
   end
 end
