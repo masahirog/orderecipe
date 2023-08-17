@@ -300,7 +300,7 @@ class ShiftsController < ApplicationController
     last_day = first_day.end_of_month
     last_day = Date.new((last_day + 1).year,(last_day +1).month, 15)
     @one_month = [*first_day..last_day]
-    shifts = Shift.includes(:shift_pattern).where(staff_id:staff_ids,date:@one_month)
+    shifts = Shift.includes(:store,:shift_pattern).where(staff_id:staff_ids,date:@one_month)
     @shifts = shifts.map{|shift|[[shift.staff_id,shift.date],shift]}.to_h
     @staff_shinsei_count = shifts.where.not(shift_pattern_id: nil).group(:staff_id).count
     @staff_syukkin_count = shifts.joins(:fix_shift_pattern).where.not(:fix_shift_patterns=>{working_hour:0}).where.not(fix_shift_pattern_id: nil).group(:staff_id).count
