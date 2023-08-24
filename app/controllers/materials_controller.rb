@@ -18,10 +18,15 @@ class MaterialsController < ApplicationController
   def new
     @material = Material.new
     @stores_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    Store.where(group_id:current_user.group_id).each do |store|
+    if current_user.group_id == 9
+      stores = Store.all
+    else
+      stores = @stores
+    end
+    stores.each do |store|
       @stores_hash[store.group_id][store.id]=store.name
-      if store.id == 39
-        @material.material_store_orderables.build(store_id:store.id,orderable_flag:true)
+      if current_user.group_id == 9
+        @material.material_store_orderables.build(store_id:store.id)
       else
         @material.material_store_orderables.build(store_id:store.id,orderable_flag:true)
       end
@@ -61,8 +66,12 @@ class MaterialsController < ApplicationController
     @material = Material.find(params[:id])
     store_ids = @material.material_store_orderables.pluck(:store_id)
     @stores_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-
-    Store.where(group_id:current_user.group_id).each do |store|
+    if current_user.group_id == 9
+      stores = Store.all
+    else
+      stores = @stores
+    end
+    stores.each do |store|
       @stores_hash[store.group_id][store.id]=store.name
       @material.material_store_orderables.build(store_id:store.id) unless store_ids.include?(store.id)
     end
