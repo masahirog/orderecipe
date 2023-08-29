@@ -1,0 +1,59 @@
+h3 = "#{@store.name} 予算"
+.clearfix
+  .pull-left
+    = link_to "#{@date.last_month.month}月＜",shifts_path(date:@date.last_month,store_id:params[:store_id]),style:"font-size:1.5em;"
+    span style='font-size:1.5em;' = "　#{@date.year}年#{@date.month}月　"
+    = link_to "＞#{@date.next_month.month}月",shifts_path(date:@date.next_month,store_id:params[:store_id]),style:"font-size:1.5em;"
+table.table
+  thead
+    tr
+      th 日付
+      th 予算
+      th フード予算
+      th 野菜予算
+      th 物販予算
+  tbody
+    tr
+      td 月間合計
+      td.total_budget
+        = "#{@total_budget.to_s(:delimited)}円"
+      td.foods_total_budget
+        = "#{@foods_total_budget.to_s(:delimited)}円"
+      td.vegetables_total_budget
+        = "#{@vegetables_total_budget.to_s(:delimited)}円"
+      td.goods_total_budget
+        = "#{@goods_total_budget.to_s(:delimited)}円"
+    - @store_daily_menus.each do |sdm|
+      tr class="sdm_#{sdm.id}"
+        td = "#{sdm.start_time.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[sdm.start_time.wday]})")}"
+        td
+          input class="form-control date_budget" readonly="true" value="#{sdm.foods_budget.to_i+sdm.vegetables_budget.to_i+sdm.goods_budget.to_i}"
+        td class="foods_budget_td"
+          = form_tag budget_update_store_daily_menus_path, remote: true do
+            = hidden_field_tag :store_daily_menu_id,sdm.id
+            = number_field_tag :foods_budget,sdm.foods_budget,class:"form-control js_submit"
+        td class="vegetables_budget_td"
+          = form_tag budget_update_store_daily_menus_path, remote: true do
+            = hidden_field_tag :store_daily_menu_id,sdm.id
+            = number_field_tag :vegetables_budget,sdm.vegetables_budget,class:"form-control js_submit"
+
+        td class="goods_budget_td"
+          = form_tag budget_update_store_daily_menus_path, remote: true do
+            = hidden_field_tag :store_daily_menu_id,sdm.id
+            = number_field_tag :goods_budget,sdm.goods_budget,class:"form-control js_submit"
+
+javascript:
+  $(function() {
+    $('.js_submit').keypress( function ( e ) {
+      var code = e.which ? e.which : e.keyCode;
+      if ( code == 13 ) {
+        var tr = $(this).parents('tr')
+        var td_class = $(this).parents('td').attr("class");
+        var index = $('tr').index(tr);
+        $('tr').eq(index + 1).children("."+td_class).find('.js_submit').focus().select();
+
+      }
+    });
+  });
+
+

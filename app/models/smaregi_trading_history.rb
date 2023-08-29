@@ -52,7 +52,7 @@ class SmaregiTradingHistory < ApplicationRecord
       tanka_nebikimae_shokei = smaregi_trading_history.tanka_nebikimae_shokei.to_i
       tanka_nebiki_shokei = smaregi_trading_history.tanka_nebiki_shokei.to_i
       shokei = smaregi_trading_history.shokei.to_i
-      shikei_nebiki = smaregi_trading_history.shikei_nebiki.to_i
+      shokei_nebiki = smaregi_trading_history.shokei_nebiki.to_i
       point_nebiki = smaregi_trading_history.point_nebiki.to_i
       gokei = smaregi_trading_history.gokei.to_i
       tenpo_id = smaregi_trading_history.tenpo_id
@@ -144,7 +144,7 @@ class SmaregiTradingHistory < ApplicationRecord
       # ▼analysisの更新部分
       unless torihiki_ids.include?(torihiki_id)
         tanka_nebikimae_shokei = tanka_nebikimae_shokei #総売上
-        nebiki = tanka_nebiki_shokei + shikei_nebiki
+        nebiki = tanka_nebiki_shokei + shokei_nebiki
         used_point_amount = point_nebiki.to_i
         gokei = gokei #純売上
         ex_tax_sales_amount = gokei - uchishohizei #税抜売上
@@ -253,7 +253,7 @@ class SmaregiTradingHistory < ApplicationRecord
       tanka_nebikimae_shokei = row["単価値引き前小計"]
       tanka_nebiki_shokei = row["単価値引き小計"]
       shokei = row["小計"]
-      shikei_nebiki = row["小計値引き"]
+      shokei_nebiki = row["小計値引き"]
       shokei_waribikiritsu = row["小計割引率"]
       point_nebiki = row["ポイント値引き"]
       gokei = row["合計"]
@@ -300,7 +300,7 @@ class SmaregiTradingHistory < ApplicationRecord
       zeinuki_uriage = nebikigokei.to_i - uchizeianbun.to_i
       if date == form_date.to_date && smaregi_store_id == tenpo_id
         new_smaregi_trading_history = SmaregiTradingHistory.new(date:date,analysis_id:analysis_id,torihiki_id:torihiki_id,torihiki_nichiji:torihiki_nichiji,tanka_nebikimae_shokei:tanka_nebikimae_shokei,
-          tanka_nebiki_shokei:tanka_nebiki_shokei,shokei:shokei,shikei_nebiki:shikei_nebiki,shokei_waribikiritsu:shokei_waribikiritsu,
+          tanka_nebiki_shokei:tanka_nebiki_shokei,shokei:shokei,shokei_nebiki:shokei_nebiki,shokei_waribikiritsu:shokei_waribikiritsu,
           point_nebiki:point_nebiki,gokei:gokei,suryo_gokei:suryo_gokei,henpinsuryo_gokei:henpinsuryo_gokei,huyo_point:huyo_point,
           shiyo_point:shiyo_point,genzai_point:genzai_point,gokei_point:gokei_point,tenpo_id:tenpo_id,kaiin_id:kaiin_id,kaiin_code:kaiin_code,
           tanmatsu_torihiki_id:tanmatsu_torihiki_id,nenreiso:nenreiso,kyakuso_id:kyakuso_id,hanbaiin_id:hanbaiin_id,hanbaiin_mei:hanbaiin_mei,

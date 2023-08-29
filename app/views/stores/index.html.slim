@@ -5,15 +5,16 @@ h2 店舗一覧
     thead
       tr
         th 店名
+        th 売上
         th 献立
         th 進捗ボード
         th リマインダー
-        th 一日のフォーム
-        th 返金対応
+        th レポート
+        th 返金
         th 発注
-        th 発注可能商品
+        th 商品一覧
         th 棚卸し
-        th 店舗情報修正
+        th 店舗
     tbody
       - group.stores.each do |store|
         tr
@@ -22,6 +23,7 @@ h2 店舗一覧
               = link_to store.name, store_daily_menu_path(@store_daily_menus[store.id])
             - else
               = link_to store.name, store_daily_menus_path(store_id:store.id)
+          td = link_to '売上', budget_store_daily_menus_path(store_id:store.id),class:'btn btn-sm btn-default'
           td = link_to '献立', store_daily_menus_path(store_id:store.id),class:'btn btn-sm btn-default'
           td = link_to "進捗ボード",tasks_path(store_id:store.id),class:'btn btn-sm btn-default'
           td = link_to 'リマインダー', store_reminders_path(store_id:store.id,status:'yet'),class:'btn btn-sm btn-default'

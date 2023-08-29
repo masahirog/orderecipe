@@ -620,7 +620,7 @@ ActiveRecord::Schema.define(version: 2023_06_29_230155) do
     t.integer "check_staff"
   end
 
-  create_table "sales_reports", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+  create_table "sales_reports", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "analysis_id", null: false
     t.integer "store_id", null: false
     t.date "date", null: false
@@ -634,6 +634,7 @@ ActiveRecord::Schema.define(version: 2023_06_29_230155) do
     t.datetime "updated_at", null: false
     t.integer "cash_error"
     t.text "excess_or_deficiency_number_memo"
+    t.time "leaving_work"
   end
 
   create_table "serving_plates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -714,7 +715,7 @@ ActiveRecord::Schema.define(version: 2023_06_29_230155) do
     t.integer "tanka_nebikimae_shokei"
     t.integer "tanka_nebiki_shokei"
     t.integer "shokei"
-    t.integer "shikei_nebiki"
+    t.integer "shokei_nebiki"
     t.float "shokei_waribikiritsu"
     t.integer "point_nebiki"
     t.integer "gokei"
@@ -760,6 +761,11 @@ ActiveRecord::Schema.define(version: 2023_06_29_230155) do
     t.integer "zeinuki_uriage"
     t.string "shokei_nebiki_kubun"
     t.string "tanpin_nebiki_kubun"
+    t.integer "shokei_nebiki_anbun"
+    t.integer "point_nebiki_anbun"
+    t.integer "sotozei_anbun"
+    t.integer "shain_nebiki_anbun"
+    t.integer "sale_nebiki_anbun"
   end
 
   create_table "staff_stores", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -836,7 +842,7 @@ ActiveRecord::Schema.define(version: 2023_06_29_230155) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "store_daily_menus", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+  create_table "store_daily_menus", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "daily_menu_id"
     t.integer "store_id"
     t.date "start_time"
@@ -853,6 +859,9 @@ ActiveRecord::Schema.define(version: 2023_06_29_230155) do
     t.time "opentime_showcase_photo_uploaded"
     t.string "event"
     t.boolean "editable_flag", default: true, null: false
+    t.integer "foods_budget"
+    t.integer "vegetables_budget"
+    t.integer "goods_budget"
   end
 
   create_table "store_shift_frames", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|

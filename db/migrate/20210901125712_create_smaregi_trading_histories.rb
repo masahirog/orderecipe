@@ -8,7 +8,7 @@ class CreateSmaregiTradingHistories < ActiveRecord::Migration[5.2]
       t.integer :tanka_nebikimae_shokei
       t.integer :tanka_nebiki_shokei
       t.integer :shokei
-      t.integer :shikei_nebiki
+      t.integer :shokei_nebiki
       t.float :shokei_waribikiritsu
       t.integer :point_nebiki
       t.integer :gokei
@@ -53,6 +53,11 @@ class CreateSmaregiTradingHistories < ActiveRecord::Migration[5.2]
       t.integer :zeinuki_uriage
       t.string :shokei_nebiki_kubun
       t.string :tanpin_nebiki_kubun
+      t.integer :shokei_nebiki_anbun
+      t.integer :point_nebiki_anbun
+      t.integer :sotozei_anbun
+      t.integer :shain_nebiki_anbun
+      t.integer :sale_nebiki_anbun
     end
   end
 end

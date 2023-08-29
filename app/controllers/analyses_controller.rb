@@ -42,14 +42,14 @@ class AnalysesController < AdminController
     @kaiin_toroku_off = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @other_off = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @point_off = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    shokei_nebiki_smaregi_trading_histories = smaregi_trading_histories.where("shikei_nebiki > ?",0)
+    shokei_nebiki_smaregi_trading_histories = smaregi_trading_histories.where("shokei_nebiki > ?",0)
     shokei_nebiki_smaregi_trading_histories.each do |snsth|
       if snsth.shokei_nebiki_kubun == "社割"
-        @staff_off[snsth.date][snsth.torihiki_id] = snsth.shikei_nebiki 
+        @staff_off[snsth.date][snsth.torihiki_id] = snsth.shokei_nebiki 
       elsif snsth.shokei_nebiki_kubun == "会員登録"
-        @kaiin_toroku_off[snsth.date][snsth.torihiki_id] = snsth.shikei_nebiki
+        @kaiin_toroku_off[snsth.date][snsth.torihiki_id] = snsth.shokei_nebiki
       else
-        @other_off[snsth.date][snsth.torihiki_id] = snsth.shikei_nebiki
+        @other_off[snsth.date][snsth.torihiki_id] = snsth.shokei_nebiki
       end
     end
 

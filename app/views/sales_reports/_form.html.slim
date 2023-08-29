@@ -1,18 +1,60 @@
 = form_with model: @sales_report do |f|
   = f.hidden_field :analysis_id
   = f.hidden_field :store_id
+  = f.hidden_field :date
+  p = "日付：#{@sales_report.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@sales_report.date.wday]})")}"
+  p = "店舗：#{Store.find(@sales_report.store_id).name}"
+  table.table
+    thead
+      tr
+        th 項目
+        th 予算
+        th 結果
+        th 達成率
+    tbody
+      tr
+        td 合計
+        td = "#{@budget.to_s(:delimited)}円"
+        td = "#{@analysis.ex_tax_sales_amount.to_s(:delimited)}円"
+        td = "#{(@analysis.ex_tax_sales_amount/@budget)*100}%"
+      tr
+        td rowspan=5 食品
+        td rowspan=5 = "#{@store_daily_menu.foods_budget.to_i.to_s(:delimited)}円"
+        td = "合計：#{@analysis.analysis_categories.where.not(smaregi_bumon_id:14).sum(:ex_tax_sales_amount).to_s(:delimited)}円"
+        td
+      tr
+        td = "惣菜：#{@analysis.analysis_categories.find_by(smaregi_bumon_id:1).ex_tax_sales_amount.to_s(:delimited)}円"
+        td
+      tr
+        td = "弁当：#{@analysis.analysis_categories.find_by(smaregi_bumon_id:1).ex_tax_sales_amount.to_s(:delimited)}円"
+        td
+      tr
+        td = "丼：#{@analysis.analysis_categories.find_by(smaregi_bumon_id:1).ex_tax_sales_amount.to_s(:delimited)}円"
+        td
+      tr
+        td = "飯物：#{@analysis.analysis_categories.find_by(smaregi_bumon_id:1).ex_tax_sales_amount.to_s(:delimited)}円"
+        td
+
+
+      tr
+        td 野菜
+        td = "#{@store_daily_menu.vegetables_budget.to_i.to_s(:delimited)}円"
+        td = "#{@analysis.analysis_categories.find_by(smaregi_bumon_id:14).ex_tax_sales_amount.to_s(:delimited)}円"
+        td
+  p = "来店数：#{@analysis.transaction_count}"
+  p = "値引き金額：#{@analysis.discount_amount.to_s(:delimited)}円"
+  p = "値引き率：#{((@analysis.discount_amount.to_f/@analysis.ex_tax_sales_amount)*100).round(1)}%"
+  p = "廃棄金額：#{@analysis.loss_amount.to_s(:delimited)}円"
+  p = "廃棄率：#{((@analysis.loss_amount.to_f/@analysis.ex_tax_sales_amount)*100).round(1)}%"
+  p = "ロス金額：#{(@analysis.loss_amount.to_f + @analysis.discount_amount.to_f).round(1)}"
+  p = "ロス率：#{(((@analysis.loss_amount.to_f + @analysis.discount_amount.to_f)/@analysis.ex_tax_sales_amount)*100).round(1)}%"
   .form-group
-    = f.hidden_field :date
-    p = "日付：#{@sales_report.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@sales_report.date.wday]})")}"
-    p = "店舗：#{Store.find(@sales_report.store_id).name}"
-    p = "売上：#{@analysis.ex_tax_sales_amount.to_s(:delimited)}円"
-    p = "来店数：#{@analysis.transaction_count}"
-    p = "値引き金額：#{@analysis.discount_amount.to_s(:delimited)}円"
-    p = "値引き率：#{((@analysis.discount_amount.to_f/@analysis.ex_tax_sales_amount)*100).round(1)}%"
-    p = "廃棄金額：#{@analysis.loss_amount.to_s(:delimited)}円"
-    p = "廃棄率：#{((@analysis.loss_amount.to_f/@analysis.ex_tax_sales_amount)*100).round(1)}%"
-    p = "ロス金額：#{(@analysis.loss_amount.to_f + @analysis.discount_amount.to_f).round(1)}"
-    p = "ロス率：#{(((@analysis.loss_amount.to_f + @analysis.discount_amount.to_f)/@analysis.ex_tax_sales_amount)*100).round(1)}%"
+    = f.label :staff_id, "スタッフ名"
+    = f.collection_select :staff_id, @staffs, :id, :name, {include_blank:true},class:'form-control', required:true
+  .form-group
+    = f.label :leaving_work, "退勤時間"
+    = f.time_field :leaving_work, class: "form-control", required: true
+
   .form-group
     = f.label :sozai_ureyuki, "お惣菜の在庫具合"
     = f.select :sozai_ureyuki,['在庫量が少なかった','良い感じだった','在庫量が多かった'],{include_blank:true},class:'form-control', required: true
@@ -30,9 +72,6 @@
     = f.label :cash_error, "現金誤差"
     = f.number_field :cash_error,class:'form-control', required: true
 
-  .form-group
-    = f.label :staff_id, "スタッフ名"
-    = f.collection_select :staff_id, @staffs, :id, :name, {include_blank:true},class:'form-control', required:true
   .form-group
     = f.label :good, "親切にできた点（自分・周りのスタッフ）"
     = f.text_area :good, class: "form-control", size: "10x7"

@@ -43,18 +43,18 @@ canvas#chart1
         - @stores.each do |store|
           th.text-center style="border-left: 1px solid #ddd;width:400px;" colspan=5 = store.name
       tr
-        th style='width:160px;background-color:white;' 日付
-        th style='width:80px;' 来客組数
-        th style='width:80px;' 売上
-        th style='width:80px;' 値引額
-        th style='width:80px;' 廃棄金額
-        th style='width:80px;' ロス率
+        th style='background-color:white;' 日付
+        th style='' 来客組数
+        th style='' 売上
+        th style='' 値引額
+        th style='' 廃棄金額
+        th style='' ロス率
         - @stores.each do |store|
-          th style="width:80px;border-left: 1px solid #ddd;" 来客組数
-          th style='width:80px;' 売上
-          th style='width:80px;' 値引額
-          th style='width:80px;' 廃棄金額
-          th style='width:80px;' ロス率
+          th style="border-left: 1px solid #ddd;" 来客組数
+          th style='' 売上
+          th style='' 値引額
+          th style='' 廃棄金額
+          th style='' ロス率
 
     tbody
       - @dates.reverse_each do |date|

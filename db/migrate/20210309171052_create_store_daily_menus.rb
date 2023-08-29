@@ -16,6 +16,9 @@ class CreateStoreDailyMenus < ActiveRecord::Migration[5.2]
       t.time :opentime_showcase_photo_uploaded
       t.string :event
       t.boolean :editable_flag,default:true,null:false
+      t.integer :foods_budget
+      t.integer :vegetables_budget
+      t.integer :goods_budget
     end
   end
 end

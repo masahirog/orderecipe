@@ -1,0 +1,5 @@
+$(".sdm_<%= @store_daily_menu.id %>").find('.date_budget').val(<%= @budget %>);
+$(".total_budget").text("<%= @total_budget.to_s(:delimited) %>円");
+$(".foods_total_budget").text("<%= @foods_total_budget.to_s(:delimited) %>円");
+$(".vegetables_total_budget").text("<%= @vegetables_total_budget.to_s(:delimited) %>円");
+$(".goods_total_budget").text("<%= @goods_total_budget.to_s(:delimited) %>円");

@@ -319,6 +319,8 @@ Rails.application.routes.draw do
   end
   resources :store_daily_menus do
     collection do
+      get :budget
+      post :budget_update
       get :barcode
       get :description
       get :ikkatsu

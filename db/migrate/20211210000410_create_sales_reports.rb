@@ -13,6 +13,7 @@ class CreateSalesReports < ActiveRecord::Migration[5.2]
       t.timestamps
       t.integer :cash_error
       t.text :excess_or_deficiency_number_memo
+      t.time :leaving_work
     end
   end
 end

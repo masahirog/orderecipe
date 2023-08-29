@@ -16,6 +16,8 @@ class SalesReportsController < ApplicationController
     store_id = params[:store_id]
     @analysis = Analysis.find_by(date:date,store_id:store_id)
     if @analysis.present?
+      @store_daily_menu = @analysis.store_daily_menu
+      @budget = @store_daily_menu.foods_budget.to_i + @store_daily_menu.vegetables_budget.to_i + @store_daily_menu.goods_budget.to_i
       moritsuke_gosa = ""
       @analysis.store_daily_menu.store_daily_menu_details.each do |sdmd|
         unless sdmd.excess_or_deficiency_number == 0
@@ -43,11 +45,13 @@ class SalesReportsController < ApplicationController
       if @sales_report.save
         analysis = @sales_report.analysis
         sales_form=" *#{analysis.store_daily_menu.start_time.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[analysis.store_daily_menu.start_time.wday]})")}*　*#{analysis.store.name}*　*#{Staff.find(@sales_report.staff_id).name}* \n"+
+        " *予算* ： #{analysis.ex_tax_sales_amount.to_s(:delimited)}円（#{analysis.transaction_count}組）\n"+
         " *売上(税抜)* ： #{analysis.ex_tax_sales_amount.to_s(:delimited)}円（#{analysis.transaction_count}組）\n"+
         " *値引き率* ： #{((analysis.discount_amount.to_f/analysis.ex_tax_sales_amount)*100).round(1)}%（#{analysis.discount_amount.to_s(:delimited)}円）\n"+
         " *廃棄率* ： #{((analysis.loss_amount.to_f/analysis.ex_tax_sales_amount)*100).round(1)}% （#{analysis.loss_amount.to_s(:delimited)}円）\n"+
         " *ロス率* ： #{(((analysis.loss_amount.to_f + analysis.discount_amount.to_f)/analysis.ex_tax_sales_amount)*100).round(1)}% （#{(analysis.loss_amount.to_f + analysis.discount_amount.to_f).round.to_s(:delimited)}円）\n"+
         " *現金誤差* ： #{@sales_report.cash_error}円\n"+
+        " *退勤時間* ： #{@sales_report.leaving_work.strftime("%-H:%M")}\n"+
         " *在庫感* ： 惣菜は#{sozai_ureyuki}、弁当は#{bento_ureyuki}、白米残#{kome_amari} kg\n\n"+
         " *課題に感じた点* ：\n#{@sales_report.issue}\n\n"+
         " *その他* ：\n#{@sales_report.other_memo}\n" +
@@ -141,6 +145,6 @@ class SalesReportsController < ApplicationController
     end
 
     def sales_report_params
-      params.require(:sales_report).permit(:store_id,:date,:staff_id,:sales_amount,:sales_count,:good,:issue,:other_memo,:analysis_id,:cash_error,:excess_or_deficiency_number_memo)
+      params.require(:sales_report).permit(:store_id,:date,:staff_id,:sales_amount,:sales_count,:good,:issue,:other_memo,:analysis_id,:cash_error,:excess_or_deficiency_number_memo,:leaving_work)
     end
 end

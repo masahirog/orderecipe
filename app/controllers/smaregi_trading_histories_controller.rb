@@ -176,7 +176,7 @@ class SmaregiTradingHistoriesController < AdminController
     end
 
     def smaregi_trading_history_params
-      params.require(:smaregi_trading_history).permit(:torihiki_id,:torihiki_nichiji,:tanka_nebikimae_shokei,:tanka_nebiki_shokei,:shokei,:shikei_nebiki,:shokei_waribikiritsu,
+      params.require(:smaregi_trading_history).permit(:torihiki_id,:torihiki_nichiji,:tanka_nebikimae_shokei,:tanka_nebiki_shokei,:shokei,:shokei_nebiki,:shokei_waribikiritsu,
       :point_nebiki,:gokei,:suryo_gokei,:henpinsuryo_gokei,:huyo_point,:shiyo_point,:genzai_point,:gokei_point,:tenpo_id,:kaiin_id,
       :kaiin_code,:tanmatsu_torihiki_id,:nenreiso,:kyakuso_id,:hanbaiin_id,:hanbaiin_mei,:torihikimeisai_id,:torihiki_meisaikubun,
       :shohin_id,:shohin_code,:hinban,:shohinmei,:shohintanka,:hanbai_tanka,:tanpin_nebiki,:tanpin_waribiki,:suryo,:nebikimaekei,
