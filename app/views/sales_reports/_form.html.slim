@@ -3,51 +3,216 @@
   = f.hidden_field :store_id
   = f.hidden_field :date
   p = "日付：#{@sales_report.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@sales_report.date.wday]})")}"
-  p = "店舗：#{Store.find(@sales_report.store_id).name}"
-  table.table
-    thead
-      tr
-        th 項目
-        th 予算
-        th 結果
-        th 達成率
-    tbody
-      tr
-        td 合計
-        td = "#{@budget.to_s(:delimited)}円"
-        td = "#{@analysis.ex_tax_sales_amount.to_s(:delimited)}円"
-        td = "#{(@analysis.ex_tax_sales_amount/@budget)*100}%"
-      tr
-        td rowspan=5 食品
-        td rowspan=5 = "#{@store_daily_menu.foods_budget.to_i.to_s(:delimited)}円"
-        td = "合計：#{@analysis.analysis_categories.where.not(smaregi_bumon_id:14).sum(:ex_tax_sales_amount).to_s(:delimited)}円"
-        td
-      tr
-        td = "惣菜：#{@analysis.analysis_categories.find_by(smaregi_bumon_id:1).ex_tax_sales_amount.to_s(:delimited)}円"
-        td
-      tr
-        td = "弁当：#{@analysis.analysis_categories.find_by(smaregi_bumon_id:1).ex_tax_sales_amount.to_s(:delimited)}円"
-        td
-      tr
-        td = "丼：#{@analysis.analysis_categories.find_by(smaregi_bumon_id:1).ex_tax_sales_amount.to_s(:delimited)}円"
-        td
-      tr
-        td = "飯物：#{@analysis.analysis_categories.find_by(smaregi_bumon_id:1).ex_tax_sales_amount.to_s(:delimited)}円"
-        td
+  p = "店舗：#{Store.find(@sales_report.store_id).name}　来店数：#{@analysis.transaction_count}"
+  .table-responsive style='overflow: scroll;'
+    table.table.layout-fixed style='border-collapse:separate;'
+      colgroup
+        col class="col1"
+        col class="col2"
+        col class="col3"
+        col class="col4"
+      thead style='position: sticky;top:0;background-color:white;z-index:3;'
+        tr
+          th 本日の結果
+          th 予算
+          th 結果
+          th 達成率
+      tbody
+        tr style='background-color:#ffffe0;font-weight:bold;'
+          td 売上
+          td = "#{@budget.to_s(:delimited)}円"
+          td = "#{@analysis.ex_tax_sales_amount.to_s(:delimited)}円"
+          td
+            = "#{((@analysis.ex_tax_sales_amount/@budget.to_f)*100).round}%" if @budget > 0
+        tr
+          td 　フード
+          td = "#{@store_daily_menu.foods_budget.to_i.to_s(:delimited)}円"
+          td
+            - vegetables_sales = 0
+            - @vegetable_analysis_category = @analysis.analysis_categories.find_by(smaregi_bumon_id:14)
+            - vegetables_sales = @vegetable_analysis_category.ex_tax_sales_amount if @vegetable_analysis_category.present?
+            - foods_sales = @analysis.analysis_categories.sum(:ex_tax_sales_amount) - vegetables_sales
+            = "#{foods_sales.to_s(:delimited)}円"
+            - bumon = {"1"=>"惣菜","2"=>"ご飯・丼","3"=>"ドリ・デザ","4"=>"備品","5"=>"お弁当","7"=>"スープ","8"=>"惣菜（仕入れ）","11"=>"オプション","14"=>"野菜"}
+            - @analysis.analysis_categories.each do |ac|
+              - unless ac.smaregi_bumon_id == 14
+                - if ac.smaregi_bumon_id.present?
+                  - bumon_mei = bumon[ac.smaregi_bumon_id.to_s]
+                - else
+                  - bumon_mei = "未登録"
+                br
+                span style="font-size:0.9em;" = "　#{bumon_mei}：#{ac.ex_tax_sales_amount.to_s(:delimited)} 円"
+
+          td
+            = "#{((foods_sales/@store_daily_menu.foods_budget.to_f)*100).round}%" if @store_daily_menu.foods_budget.to_f > 0
+
+        tr
+          td 　野菜
+          td = "#{@store_daily_menu.vegetables_budget.to_i.to_s(:delimited)}円"
+          td = "#{vegetables_sales.to_s(:delimited)}円"
+          td
+            = "#{((vegetables_sales/@store_daily_menu.vegetables_budget.to_f)*100).round}%" if @store_daily_menu.vegetables_budget.to_f > 0
+
+        tr style='background-color:#ffffe0;font-weight:bold;'
+          td ロス率
+          td 8%
+          td = "#{(((@analysis.discount_amount + @analysis.loss_amount)/@analysis.ex_tax_sales_amount.to_f)*100).round(1)}%（#{(@analysis.discount_amount+@analysis.loss_amount).round.to_s(:delimited)}円）"
+          td
+
+        tr style= "font-weight:bold;"
+          td 　値引き率
+          td 4%
+          td = "#{((@analysis.discount_amount.to_f/@analysis.ex_tax_sales_amount)*100).round(1)}%（#{(@analysis.discount_amount.to_f).round.to_s(:delimited)}円）"
+          td
+        tr
+          td 　　フード
+          td 4%
+          td
+            = "#{(((@analysis.discount_amount - @vegetable_analysis_category.discount_amount).to_f/foods_sales)*100).round(1)}%（#{(@analysis.discount_amount - @vegetable_analysis_category.discount_amount).to_s(:delimited)}円）" if @vegetable_analysis_category.present?
+          td
+        tr
+          td 　　野菜
+          td 4%
+          td
+            = "#{((@vegetable_analysis_category.discount_amount.to_f/vegetables_sales)*100).round(1)}%（#{@vegetable_analysis_category.discount_amount.to_s(:delimited)}円）" if @vegetable_analysis_category.present?
+          td
+        tr style= "font-weight:bold;"
+          td 　廃棄率
+          td 4%
+          td = "#{((@analysis.loss_amount.to_f/@analysis.ex_tax_sales_amount)*100).round(1)}%（#{@analysis.loss_amount.to_s(:delimited)}円）"
+          td
+        tr
+          td 　　フード
+          td 4%
+          td = "#{((@analysis.loss_amount.to_f/@analysis.ex_tax_sales_amount)*100).round(1)}%（#{@analysis.loss_amount.to_s(:delimited)}円）"
+          td
+        tr
+          td 　　野菜
+          td 4%
+          td 
+          td
+  .table-responsive style='overflow: scroll;'
+    table.table.layout-fixed style='border-collapse:separate;'
+      colgroup
+        col class="col5"
+        col class="col6"
+        col class="col7"
+        col class="col8"
+        col class="col9"
+      thead style='position: sticky;top:0;background-color:white;z-index:3;'
+        tr
+          th 月間予算進捗
+          th 予算
+          th 今日時点
+          th 着地予想
+          th 達成率
+      tbody
+        tr style='background-color:#ffffe0;font-weight:bold;'
+          td 売上
+          td = "#{@total_budget.to_s(:delimited)}円"
+          td = "#{@analyses.sum(:ex_tax_sales_amount).to_s(:delimited)}円"
+          td = "#{((@analyses.sum(:ex_tax_sales_amount)/@analyses.count)*@business_day_num).to_s(:delimited)}円"
+          td
+            = "#{((((@analyses.sum(:ex_tax_sales_amount)/@analyses.count)*@business_day_num).to_f/@total_budget)*100).round}%" if @total_budget > 0
+        tr
+          td 　フード
+          td = "#{@foods_total_budget.to_s(:delimited)}円"
+          td
+            = "#{(@analyses.sum(:ex_tax_sales_amount) - @bumon_ex_tax_sales_amount[14]).to_s(:delimited)}円" if @bumon_ex_tax_sales_amount[14].present?
+          td
+            = "#{(((@analyses.sum(:ex_tax_sales_amount) - @bumon_ex_tax_sales_amount[14])/@analyses.count)*@business_day_num).to_s(:delimited)}円" if @bumon_ex_tax_sales_amount[14].present?
+          td
+            = "#{(((((@analyses.sum(:ex_tax_sales_amount) - @bumon_ex_tax_sales_amount[14])/@analyses.count)*@business_day_num).to_f/@foods_total_budget)*100).round}%" if @bumon_ex_tax_sales_amount[14].present?
+        tr
+          td 　野菜
+          td = "#{@vegetables_total_budget.to_s(:delimited)}円"
+          td
+            = "#{@bumon_ex_tax_sales_amount[14].to_s(:delimited)}円" if @bumon_ex_tax_sales_amount[14].present?
+          td
+            = "#{((@bumon_ex_tax_sales_amount[14]/@analyses.count)*@business_day_num).to_s(:delimited)}円" if @bumon_ex_tax_sales_amount[14].present?
+          td
+            = "#{((((@bumon_ex_tax_sales_amount[14]/@analyses.count)*@business_day_num).to_f/@vegetables_total_budget)*100).round}%" if @bumon_ex_tax_sales_amount[14].present?
+        tr
+          td 　物販
+          td = "#{@goods_total_budget.to_s(:delimited)}円"
+          td = "0円"
+          td = "0円"
+          td = "0%"
+        tr style='background-color:#ffffe0;font-weight:bold;'
+          td ロス率
+          td = "8%（#{(@total_budget*0.08).round.to_s(:delimited)}円）"
+          td = "#{(((@analyses.sum(:discount_amount) + @analyses.sum(:loss_amount))/@analyses.sum(:ex_tax_sales_amount).to_f)*100).round}%（#{(@analyses.sum(:discount_amount) + @analyses.sum(:loss_amount)).to_s(:delimited)}円）"
+          td = "#{(((((@analyses.sum(:discount_amount) + @analyses.sum(:loss_amount))/@analyses.count)*@business_day_num)/((@analyses.sum(:ex_tax_sales_amount)/@analyses.count)*@business_day_num).to_f)*100).round}%（#{(((@analyses.sum(:discount_amount) + @analyses.sum(:loss_amount))/@analyses.count)*@business_day_num).to_s(:delimited)}円）"
+          td
+            = "#{(((((@analyses.sum(:discount_amount) + @analyses.sum(:loss_amount))/@analyses.count)*@business_day_num)/(@total_budget*0.08))*100).round}%" if @total_budget > 0
+
+        tr style='font-weight:bold;'
+          td 　値引き率
+          td = "4%（#{(@total_budget*0.04).round.to_s(:delimited)}円）"
+          td = "#{((@analyses.sum(:discount_amount)/@analyses.sum(:ex_tax_sales_amount).to_f)*100).round}%（#{@analyses.sum(:discount_amount).to_s(:delimited)}円）"
+          td = "#{((((@analyses.sum(:discount_amount)/@analyses.count)*@business_day_num)/((@analyses.sum(:ex_tax_sales_amount)/@analyses.count)*@business_day_num).to_f)*100).round}%（#{((@analyses.sum(:discount_amount)/@analyses.count)*@business_day_num).to_s(:delimited)}円）"
+          td
+            = "#{((((@analyses.sum(:discount_amount)/@analyses.count)*@business_day_num)/(@total_budget*0.04))*100).round}%" if @total_budget > 0
+        tr
+          td 　　フード
+          td = "4%（#{(@foods_total_budget*0.04).round.to_s(:delimited)}円）"
+          td
+            = "#{(((@analyses.sum(:discount_amount) - @bumon_discount_amount[14])/(@analyses.sum(:ex_tax_sales_amount) - @bumon_ex_tax_sales_amount[14]).to_f)*100).round}%（#{(@analyses.sum(:discount_amount) - @bumon_discount_amount[14]).to_s(:delimited)}円）" if @bumon_discount_amount[14].present?
+          td
+            = "#{(((((@analyses.sum(:discount_amount) - @bumon_discount_amount[14])/@analyses.count)*@business_day_num)/(((@analyses.sum(:ex_tax_sales_amount) - @bumon_ex_tax_sales_amount[14])/@analyses.count)*@business_day_num).to_f)*100).round}%（#{(((@analyses.sum(:discount_amount) - @bumon_discount_amount[14])/@analyses.count)*@business_day_num).to_s(:delimited)}円）" if @bumon_discount_amount[14].present?
+          td
+            = "#{((((@analyses.sum(:discount_amount) - @bumon_discount_amount[14])/@analyses.count)*@business_day_num).to_f/(@foods_total_budget*0.04)*100).round}%" if @bumon_discount_amount[14].present?
+        tr
+          td 　　野菜
+          td = "4%（#{(@vegetables_total_budget*0.04).round.to_s(:delimited)}円）"
+          td
+            = "#{((@bumon_discount_amount[14]/@bumon_ex_tax_sales_amount[14].to_f)*100).round}%（#{@bumon_discount_amount[14].to_s(:delimited)}円）" if @bumon_discount_amount[14].present?
+          td
+            = "#{((((@bumon_discount_amount[14]/@analyses.count)*@business_day_num)/((@bumon_ex_tax_sales_amount[14]/@analyses.count)*@business_day_num).to_f)*100).round}%（#{((@bumon_discount_amount[14]/@analyses.count)*@business_day_num).to_s(:delimited)}円）" if @bumon_discount_amount[14].present?
+          td
+            = "#{(((@bumon_discount_amount[14]/@analyses.count)*@business_day_num).to_f/(@vegetables_total_budget*0.04)*100).round}%" if @bumon_discount_amount[14].present?
+        tr
+          td 　　物販
+          td = "#{@goods_total_budget.to_s(:delimited)}円"
+          td = "0円"
+          td = "0円"
+          td = "0%"
 
 
-      tr
-        td 野菜
-        td = "#{@store_daily_menu.vegetables_budget.to_i.to_s(:delimited)}円"
-        td = "#{@analysis.analysis_categories.find_by(smaregi_bumon_id:14).ex_tax_sales_amount.to_s(:delimited)}円"
-        td
-  p = "来店数：#{@analysis.transaction_count}"
-  p = "値引き金額：#{@analysis.discount_amount.to_s(:delimited)}円"
-  p = "値引き率：#{((@analysis.discount_amount.to_f/@analysis.ex_tax_sales_amount)*100).round(1)}%"
-  p = "廃棄金額：#{@analysis.loss_amount.to_s(:delimited)}円"
-  p = "廃棄率：#{((@analysis.loss_amount.to_f/@analysis.ex_tax_sales_amount)*100).round(1)}%"
-  p = "ロス金額：#{(@analysis.loss_amount.to_f + @analysis.discount_amount.to_f).round(1)}"
-  p = "ロス率：#{(((@analysis.loss_amount.to_f + @analysis.discount_amount.to_f)/@analysis.ex_tax_sales_amount)*100).round(1)}%"
+        tr style='font-weight:bold;'
+          td 　廃棄率
+          td = "4%（#{(@total_budget*0.04).round.to_s(:delimited)}円）"
+          td = "#{((@analyses.sum(:loss_amount)/@analyses.sum(:ex_tax_sales_amount).to_f)*100).round}%（#{@analyses.sum(:loss_amount).to_s(:delimited)}円）"
+          td = "#{((((@analyses.sum(:loss_amount)/@analyses.count)*@business_day_num)/((@analyses.sum(:ex_tax_sales_amount)/@analyses.count)*@business_day_num).to_f)*100).round}%（#{((@analyses.sum(:loss_amount)/@analyses.count)*@business_day_num).to_s(:delimited)}円）"
+          td
+            = "#{((((@analyses.sum(:loss_amount)/@analyses.count)*@business_day_num)/(@total_budget*0.04))*100).round}%" if @total_budget > 0
+        tr
+          td 　　フード
+          td = "4%（#{(@foods_total_budget*0.04).round.to_s(:delimited)}円）"
+          td
+            = "#{(((@analyses.sum(:loss_amount) - @bumon_loss_amount[14])/(@analyses.sum(:ex_tax_sales_amount) - @bumon_ex_tax_sales_amount[14]).to_f)*100).round}%（#{(@analyses.sum(:loss_amount) - @bumon_loss_amount[14]).to_s(:delimited)}円）" if @bumon_ex_tax_sales_amount[14].present? && @bumon_loss_amount[14].present?
+          td
+            = "#{(((((@analyses.sum(:loss_amount) - @bumon_loss_amount[14])/@analyses.count)*@business_day_num)/(((@analyses.sum(:ex_tax_sales_amount) - @bumon_ex_tax_sales_amount[14])/@analyses.count)*@business_day_num).to_f)*100).round}%（#{(((@analyses.sum(:loss_amount) - @bumon_loss_amount[14])/@analyses.count)*@business_day_num).to_s(:delimited)}円）" if @bumon_ex_tax_sales_amount[14].present? &&  @bumon_loss_amount[14].present?
+          td
+            = "#{((((@analyses.sum(:loss_amount) - @bumon_loss_amount[14])/@analyses.count)*@business_day_num).to_f/(@foods_total_budget*0.04)*100).round}%" if  @bumon_ex_tax_sales_amount[14].present? && @bumon_loss_amount[14].present?
+        tr
+          td 　　野菜
+          td = "4%（#{(@vegetables_total_budget*0.04).round.to_s(:delimited)}円）"
+          td
+            = "#{((@bumon_loss_amount[14]/@bumon_ex_tax_sales_amount[14].to_f)*100).round}%（#{@bumon_loss_amount[14].to_s(:delimited)}円）" if @bumon_ex_tax_sales_amount[14].present? &&  @bumon_loss_amount[14].present?
+          td
+            = "#{((((@bumon_loss_amount[14]/@analyses.count)*@business_day_num)/((@bumon_ex_tax_sales_amount[14]/@analyses.count)*@business_day_num).to_f)*100).round}%（#{((@bumon_loss_amount[14]/@analyses.count)*@business_day_num).to_s(:delimited)}円）" if @bumon_ex_tax_sales_amount[14].present? &&  @bumon_loss_amount[14].present?
+          td
+            = "#{(((@bumon_loss_amount[14]/@analyses.count)*@business_day_num).to_f/(@vegetables_total_budget*0.04)*100).round}%" if @bumon_ex_tax_sales_amount[14].present? &&  @bumon_loss_amount[14].present?
+
+        tr
+          td 　　物販
+          td = "#{@goods_total_budget.to_s(:delimited)}円"
+          td = "0円"
+          td = "0円"
+          td = "0%"
+
+
   .form-group
     = f.label :staff_id, "スタッフ名"
     = f.collection_select :staff_id, @staffs, :id, :name, {include_blank:true},class:'form-control', required:true
@@ -91,3 +256,47 @@
 
   .actions
   = f.submit "保存する", data: { confirm: "確定する場合はSlackで通知してくださいね"} , class:"btn btn-primary"
+
+css:
+  .table-responsive th {
+    white-space: nowrap;
+    background-color:white;
+  }
+  table.layout-fixed {
+    table-layout: fixed;
+    border-collspace:separate;
+  }
+  .table th:first-child,td:first-child{
+    position: sticky;
+    left: 0;
+    background-color:white;
+  }
+  th,td {
+  }
+  .col1{
+    width:100px;
+  }
+  .col2{
+    width:110px;
+  }
+  .col3{
+    width:200px;
+  }
+  .col4{
+    width:100px;
+  }
+  .col5{
+    width:100px;
+  }
+  .col6{
+    width:150px;
+  }
+  .col7{
+    width:150px;
+  }
+  .col8{
+    width:150px;
+  }
+  .col9{
+    width:150px;
+  }

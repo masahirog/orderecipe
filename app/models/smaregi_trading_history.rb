@@ -70,8 +70,14 @@ class SmaregiTradingHistory < ApplicationRecord
       nebikimaekei = smaregi_trading_history.nebikimaekei.to_i
       uchishohizei = smaregi_trading_history.uchishohizei.to_i
       uchizeianbun = smaregi_trading_history.uchizeianbun.to_i
+      shokei_nebiki_anbun = smaregi_trading_history.shokei_nebiki_anbun.to_i
+      point_nebiki_anbun = smaregi_trading_history.point_nebiki_anbun.to_i
+      sotozei_anbun = smaregi_trading_history.sotozei_anbun.to_i
+      shain_nebiki_anbun = smaregi_trading_history.shain_nebiki_anbun.to_i
+      sale_nebiki_anbun = smaregi_trading_history.sale_nebiki_anbun.to_i
       tanpin_waribiki = smaregi_trading_history.tanpin_waribiki
       product_zeinuki_uriage = nebikigokei - uchizeianbun
+      nebiki_anubn = shokei_nebiki_anbun + point_nebiki_anbun + shain_nebiki_anbun + sale_nebiki_anbun
       analysis_category_hash[bumon_id] = {zeinuki_uriage:0,net_sales_amount:0,sales_number:0,sales_amount:0,discount_amount:0} unless analysis_category_hash[bumon_id].present?
       if hinban == 10459 ||hinban == 12899 ||hinban == 13179 ||hinban == 14099
         loss_ignore = true
@@ -111,11 +117,11 @@ class SmaregiTradingHistory < ApplicationRecord
           sixteen_transaction_count += 1 unless torihiki_ids.include?(torihiki_id)
         end
         # analysis_categoryの部分の更新
-        analysis_category_hash[bumon_id][:zeinuki_uriage] += product_zeinuki_uriage
-        analysis_category_hash[bumon_id][:net_sales_amount] += nebikigokei
+        analysis_category_hash[bumon_id][:zeinuki_uriage] += product_zeinuki_uriage - nebiki_anubn
+        analysis_category_hash[bumon_id][:net_sales_amount] += nebikigokei - nebiki_anubn
         analysis_category_hash[bumon_id][:sales_number] += suryo
         analysis_category_hash[bumon_id][:sales_amount] += nebikimaekei
-        analysis_category_hash[bumon_id][:discount_amount] += tanka_nebikikei
+        analysis_category_hash[bumon_id][:discount_amount] += tanka_nebikikei + nebiki_anubn
 
       elsif torihiki_meisaikubun == 2
         transaction_count -= 1 unless torihiki_ids.include?(torihiki_id)
@@ -134,11 +140,11 @@ class SmaregiTradingHistory < ApplicationRecord
           sixteen_transaction_count -= 1 unless torihiki_ids.include?(torihiki_id)
         end
         # analysis_categoryの部分の更新
-        analysis_category_hash[bumon_id][:zeinuki_uriage] -= product_zeinuki_uriage
-        analysis_category_hash[bumon_id][:net_sales_amount] -= nebikigokei
+        analysis_category_hash[bumon_id][:zeinuki_uriage] -= product_zeinuki_uriage + nebiki_anubn
+        analysis_category_hash[bumon_id][:net_sales_amount] -= nebikigokei + nebiki_anubn
         analysis_category_hash[bumon_id][:sales_number] -= suryo
         analysis_category_hash[bumon_id][:sales_amount] -= nebikimaekei
-        analysis_category_hash[bumon_id][:discount_amount] -= tanka_nebikikei
+        analysis_category_hash[bumon_id][:discount_amount] -= tanka_nebikikei - nebiki_anubn
 
       end
       # ▼analysisの更新部分
@@ -296,7 +302,11 @@ class SmaregiTradingHistory < ApplicationRecord
       uchizeianbun = row["内税按分"]
       shokei_nebiki_kubun = row["小計値引／割引区分"]
       tanpin_nebiki_kubun = row["単品値引／割引区分"]
-
+      shokei_nebiki_anbun = row["小計値引き按分"]
+      point_nebiki_anbun = row["ポイント値引き按分"]
+      sotozei_anbun = row["外税按分"]
+      shain_nebiki_anbun = row["社員値引き按分"]
+      sale_nebiki_anbun = row["セール値引き按分"]
       zeinuki_uriage = nebikigokei.to_i - uchizeianbun.to_i
       if date == form_date.to_date && smaregi_store_id == tenpo_id
         new_smaregi_trading_history = SmaregiTradingHistory.new(date:date,analysis_id:analysis_id,torihiki_id:torihiki_id,torihiki_nichiji:torihiki_nichiji,tanka_nebikimae_shokei:tanka_nebikimae_shokei,
@@ -308,7 +318,8 @@ class SmaregiTradingHistory < ApplicationRecord
           hinban:hinban,shohinmei:shohinmei,shohintanka:shohintanka,hanbai_tanka:hanbai_tanka,tanpin_nebiki:tanpin_nebiki,tanpin_waribiki:tanpin_waribiki,
           suryo:suryo,nebikimaekei:nebikimaekei,tanka_nebikikei:tanka_nebikikei,nebikigokei:nebikigokei,bumon_id:bumon_id,bumonmei:bumonmei,time:time,
           uchikeshi_torihiki_id:uchikeshi_torihiki_id,uchikeshi_kubun:uchikeshi_kubun,receipt_number:receipt_number,shiharaihouhou:shiharaihouhou,
-          uchishohizei:uchishohizei,uchizeianbun:uchizeianbun,zeinuki_uriage:zeinuki_uriage,shokei_nebiki_kubun:shokei_nebiki_kubun,tanpin_nebiki_kubun:tanpin_nebiki_kubun)
+          uchishohizei:uchishohizei,uchizeianbun:uchizeianbun,zeinuki_uriage:zeinuki_uriage,shokei_nebiki_kubun:shokei_nebiki_kubun,tanpin_nebiki_kubun:tanpin_nebiki_kubun,
+          shokei_nebiki_anbun:shokei_nebiki_anbun,point_nebiki_anbun:point_nebiki_anbun,sotozei_anbun:sotozei_anbun,shain_nebiki_anbun:shain_nebiki_anbun,sale_nebiki_anbun:sale_nebiki_anbun)
         smaregi_trading_histories_arr << new_smaregi_trading_history
       end
     end

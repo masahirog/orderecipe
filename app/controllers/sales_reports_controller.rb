@@ -13,22 +13,40 @@ class SalesReportsController < ApplicationController
   def new
     @staffs = Staff.where(group_id:current_user.group_id,employment_status:1,status:0)
     date = params[:date]
+    @business_day_num = Date.parse(date).end_of_month.day
     store_id = params[:store_id]
     @analysis = Analysis.find_by(date:date,store_id:store_id)
     if @analysis.present?
       @store_daily_menu = @analysis.store_daily_menu
       @budget = @store_daily_menu.foods_budget.to_i + @store_daily_menu.vegetables_budget.to_i + @store_daily_menu.goods_budget.to_i
       moritsuke_gosa = ""
+      date = @store_daily_menu.start_time
+      dates = (date.beginning_of_month..date.end_of_month).to_a
+      @store_daily_menus = StoreDailyMenu.includes(store_daily_menu_details:[:product]).where(start_time:dates,store_id:store_id)
+      @foods_total_budget = 0
+      @vegetables_total_budget = 0
+      @goods_total_budget = 0
+      @store_daily_menus.each do |sdm|
+        @foods_total_budget += sdm.foods_budget.to_i
+        @vegetables_total_budget += sdm.vegetables_budget.to_i
+        @goods_total_budget += sdm.goods_budget.to_i
+      end
+      @total_budget = @foods_total_budget+@vegetables_total_budget+@goods_total_budget
       @analysis.store_daily_menu.store_daily_menu_details.each do |sdmd|
         unless sdmd.excess_or_deficiency_number == 0
           moritsuke_gosa += "#{sdmd.product.name}：#{sdmd.excess_or_deficiency_number}食\n"
         end
       end
+      @analyses = Analysis.where(date:dates,store_id:store_id)
       @sales_report = SalesReport.new(date:date,store_id:store_id,analysis_id:@analysis.id,excess_or_deficiency_number_memo:moritsuke_gosa)
+      @bumon_loss_amount = [[14,0]].to_h
+
+      analysis_categories = AnalysisCategory.where(analysis_id:@analyses.ids)
+      @bumon_ex_tax_sales_amount = analysis_categories.group(:smaregi_bumon_id).sum(:ex_tax_sales_amount)
+      @bumon_discount_amount = analysis_categories.group(:smaregi_bumon_id).sum(:discount_amount)
     else
       redirect_to select_store_sales_reports_path,danger: "日付を確認するか、先にスマレジの情報をアップロードしてください。"
     end
-
   end
 
   def edit
