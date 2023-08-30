@@ -1,5 +1,12 @@
 h3 = "#{@store.name} 返金対応一覧"
-= link_to '新規作成', new_refund_support_path(store_id:@store.id),class:'btn btn-default'
+.clearfix
+  div style='width:150px;float:left;'
+    = link_to '新規作成', new_refund_support_path(store_id:@store.id),class:'btn btn-default'
+  div style='width:255px;float:left;'
+    = form_tag refund_supports_path, :method => 'get' do
+      = hidden_field_tag :store_id,params[:store_id]
+      = select_tag :status, options_for_select(RefundSupport.statuses.keys.to_a,params[:status]), include_blank: "ステータス", class:"form-control",style:'width:200px;float:left;'
+      = submit_tag "表示" ,class:"btn btn-primary float-left"
 table.table
   thead
     tr
@@ -11,7 +18,10 @@ table.table
 
   tbody
     - @refund_supports.each do |refund_support|
-      tr
+      - bg_color = "white"
+      - if refund_support.status == "done"
+        - bg_color = "silver"
+      tr style="background-color:#{bg_color}"
         td = link_to refund_support.occurred_at.strftime("%Y年%m月%d日 %H:%M"), edit_refund_support_path(refund_support)
         td = refund_support.status
         td = refund_support.staff_name

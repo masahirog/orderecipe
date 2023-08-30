@@ -1,9 +1,9 @@
 h3 = "#{@store.name} 予算"
 .clearfix
   .pull-left
-    = link_to "#{@date.last_month.month}月＜",shifts_path(date:@date.last_month,store_id:params[:store_id]),style:"font-size:1.5em;"
+    = link_to "#{@date.last_month.month}月＜",budget_store_daily_menus_path(date:@date.last_month,store_id:params[:store_id]),style:"font-size:1.5em;"
     span style='font-size:1.5em;' = "　#{@date.year}年#{@date.month}月　"
-    = link_to "＞#{@date.next_month.month}月",shifts_path(date:@date.next_month,store_id:params[:store_id]),style:"font-size:1.5em;"
+    = link_to "＞#{@date.next_month.month}月",budget_store_daily_menus_path(date:@date.next_month,store_id:params[:store_id]),style:"font-size:1.5em;"
 table.table
   thead
     tr

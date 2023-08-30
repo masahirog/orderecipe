@@ -478,31 +478,15 @@ class AnalysesController < AdminController
     redirect_to smaregi_members_analyses_path,notice:'更新しました。'
   end
   def sales
-    @stores = Store.where(group_id:current_user.group_id).where.not(id:39)
-    if params[:stores]
-      checked_store_ids = params['stores'].keys
+    @store = Store.find(params[:store_id])
+    if params[:date].present?
+      @date = params[:date].to_date
     else
-      checked_store_ids = @stores.ids
-      params[:stores] = {}
-      @stores.each do |store|
-        params[:stores][store.id.to_s] = true
-      end
+      @date = Date.today
     end
-    if params[:to]
-      @to = params[:to].to_date
-    else
-      @to = Date.today
-      params[:to] = @to
-    end
-    if params[:from]
-      @from = params[:from].to_date
-    else
-      @from = @to - 30
-      params[:from] = @from
-    end
-    @dates =(@from..@to).to_a
-    @period = (@to - @from).to_i
-    @analyses = Analysis.where(date:@from..@to).where(store_id:checked_store_ids).order(:date)
+    @dates =(@date.beginning_of_month..@date.end_of_month).to_a
+    @analyses = Analysis.where(date:@dates).where(store_id:@store.id).order(:date)
+    @date_analyses = @analyses.map{|analysis|[analysis.date,analysis]}.to_h
     @date_sales_amount = @analyses.group(:date).sum(:ex_tax_sales_amount)
     @date_loss_amount = @analyses.group(:date).sum(:loss_amount)
     @date_transaction_count = @analyses.group(:date).sum(:transaction_count)
@@ -510,6 +494,30 @@ class AnalysesController < AdminController
     @date_sales_number = @analyses.group(:date).sum(:transaction_count)
     # ????
     @date_discount_amount = @analyses.group(:date).sum(:discount_amount)
+
+
+    @business_day_num = @date.end_of_month.day
+    @store_daily_menus = StoreDailyMenu.where(start_time:@dates,store_id:@store.id)
+    @date_store_daily_menus = @store_daily_menus.map{|sdm|[sdm.start_time,sdm]}.to_h
+    @foods_total_budget = 0
+    @vegetables_total_budget = 0
+    @goods_total_budget = 0
+    @budget_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    @store_daily_menus.each do |sdm|
+      @budget_hash[sdm.start_time][:foods] = sdm.foods_budget.to_i
+      @budget_hash[sdm.start_time][:veges] = sdm.vegetables_budget.to_i
+      @budget_hash[sdm.start_time][:goods] = sdm.goods_budget.to_i
+      @budget_hash[sdm.start_time][:date] = sdm.foods_budget.to_i + sdm.vegetables_budget.to_i + sdm.goods_budget.to_i
+      @foods_total_budget += sdm.foods_budget.to_i
+      @vegetables_total_budget += sdm.vegetables_budget.to_i
+      @goods_total_budget += sdm.goods_budget.to_i
+    end
+    @total_budget = @foods_total_budget+@vegetables_total_budget+@goods_total_budget
+    @bumon_loss_amount = [[14,0]].to_h
+    analysis_categories = AnalysisCategory.where(analysis_id:@analyses.ids)
+    @bumon_ex_tax_sales_amount = analysis_categories.group(:smaregi_bumon_id).sum(:ex_tax_sales_amount)
+    @bumon_discount_amount = analysis_categories.group(:smaregi_bumon_id).sum(:discount_amount)
+
     respond_to do |format|
       format.html
       format.csv do
