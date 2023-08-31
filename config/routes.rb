@@ -146,6 +146,7 @@ Rails.application.routes.draw do
       get :repeat
       get :feedback
       get :product_sales
+      get :vegetable_sales
       get :smaregi_member_csv
       post :upload_smaregi_members
       get :member

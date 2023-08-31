@@ -664,6 +664,67 @@ class AnalysesController < AdminController
     @smaregi_members = @smaregi_members.page(params[:page]).per(50)
   end
 
+  def vegetable_sales
+    @stores = Store.where(group_id:current_user.group_id)
+    if params[:stores]
+      checked_store_ids = params['stores'].keys
+    else
+      checked_store_ids = @stores.ids
+      params[:stores] = {}
+      @stores.each do |store|
+        params[:stores][store.id.to_s] = true
+      end
+    end
+    if params[:from]
+      @from = params[:from].to_date
+    else
+      @from = Date.today.prev_occurring(:wednesday)
+      params[:from] = @from
+    end
+    if params[:to]
+      @to = params[:to].to_date
+    else
+      @to = @from + 6
+      params[:to] = @to
+    end
+    @dates = (@from..@to)
+    @smaregi_trading_histories = SmaregiTradingHistory.where(date:@dates,bumon_id:14)
+    @uniq_shohin_ids =[]
+    @sales_data = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    @smaregi_trading_histories.each do |sth|
+      @uniq_shohin_ids << sth.shohin_id unless @uniq_shohin_ids.include?(sth.shohin_id)
+      if @sales_data[sth.shohin_id].present?
+        if @sales_data[sth.shohin_id][:date][sth.date].present?
+          @sales_data[sth.shohin_id][:date][sth.date][:sales_num] += sth.suryo
+          @sales_data[sth.shohin_id][:date][sth.date][:sales_amount] += sth.nebikigokei
+        else
+          @sales_data[sth.shohin_id][:date][sth.date][:sales_num] = sth.suryo
+          @sales_data[sth.shohin_id][:date][sth.date][:sales_amount] = sth.nebikigokei
+        end
+        if @sales_data[sth.shohin_id][:time][sth.time.hour].present?
+          @sales_data[sth.shohin_id][:time][sth.time.hour][:sales_num] += sth.suryo
+          @sales_data[sth.shohin_id][:time][sth.time.hour][:sales_amount] += sth.nebikigokei
+        else
+          @sales_data[sth.shohin_id][:time][sth.time.hour][:sales_num] = sth.suryo
+          @sales_data[sth.shohin_id][:time][sth.time.hour][:sales_amount] = sth.nebikigokei
+        end
+        if @sales_data[sth.shohin_id][:sales_amount].present?
+          @sales_data[sth.shohin_id][:sales_amount] += sth.nebikigokei
+        else
+          @sales_data[sth.shohin_id][:sales_amount] = sth.nebikigokei
+        end
+        if @sales_data[sth.shohin_id][:sales_num].present?
+          @sales_data[sth.shohin_id][:sales_num] += sth.suryo
+        else
+          @sales_data[sth.shohin_id][:sales_num] = sth.suryo
+        end
+      else
+        @sales_data[sth.shohin_id][:name] = sth.shohinmei  
+      end      
+    end
+  end
+
+
   def product_sales
     @stores = Store.where(group_id:current_user.group_id)
     if params[:stores]
