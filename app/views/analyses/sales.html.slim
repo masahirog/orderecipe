@@ -56,16 +56,16 @@ h3 = "#{@store.name} 売上管理"
       tr style='background-color:#ffffe0;font-weight:bold;'
         td ロス率
         td = "8%（#{(@total_budget*0.08).round.to_s(:delimited)}円）"
-        td = "#{(((@analyses.sum(:discount_amount) + @analyses.sum(:loss_amount))/@analyses.sum(:ex_tax_sales_amount).to_f)*100).round}%（#{(@analyses.sum(:discount_amount) + @analyses.sum(:loss_amount)).to_s(:delimited)}円）" if @analyses.present?
-        td = "#{(((((@analyses.sum(:discount_amount) + @analyses.sum(:loss_amount))/@analyses.count)*@business_day_num)/((@analyses.sum(:ex_tax_sales_amount)/@analyses.count)*@business_day_num).to_f)*100).round}%（#{(((@analyses.sum(:discount_amount) + @analyses.sum(:loss_amount))/@analyses.count)*@business_day_num).to_s(:delimited)}円）" if @analyses.present?
+        td = "#{(((@analyses.sum(:discount_amount) + @analyses.sum(:loss_amount))/@analyses.sum(:ex_tax_sales_amount).to_f)*100).round}%（#{(@analyses.sum(:discount_amount) + @analyses.sum(:loss_amount)).to_s(:delimited)}円）" if @analyses.present? && @analyses.sum(:ex_tax_sales_amount) >0
+        td = "#{(((((@analyses.sum(:discount_amount) + @analyses.sum(:loss_amount))/@analyses.count)*@business_day_num)/((@analyses.sum(:ex_tax_sales_amount)/@analyses.count)*@business_day_num).to_f)*100).round}%（#{(((@analyses.sum(:discount_amount) + @analyses.sum(:loss_amount))/@analyses.count)*@business_day_num).to_s(:delimited)}円）" if @analyses.present? &&  @analyses.sum(:ex_tax_sales_amount) >0
         td
           = "#{(((((@analyses.sum(:discount_amount) + @analyses.sum(:loss_amount))/@analyses.count)*@business_day_num)/(@total_budget*0.08))*100).round}%" if @total_budget > 0
 
       tr style='font-weight:bold;'
         td 　値引き率
         td = "4%（#{(@total_budget*0.04).round.to_s(:delimited)}円）"
-        td = "#{((@analyses.sum(:discount_amount)/@analyses.sum(:ex_tax_sales_amount).to_f)*100).round}%（#{@analyses.sum(:discount_amount).to_s(:delimited)}円）" if @analyses.present?
-        td = "#{((((@analyses.sum(:discount_amount)/@analyses.count)*@business_day_num)/((@analyses.sum(:ex_tax_sales_amount)/@analyses.count)*@business_day_num).to_f)*100).round}%（#{((@analyses.sum(:discount_amount)/@analyses.count)*@business_day_num).to_s(:delimited)}円）" if @analyses.present?
+        td = "#{((@analyses.sum(:discount_amount)/@analyses.sum(:ex_tax_sales_amount).to_f)*100).round}%（#{@analyses.sum(:discount_amount).to_s(:delimited)}円）" if @analyses.present? && @analyses.sum(:ex_tax_sales_amount) >0
+        td = "#{((((@analyses.sum(:discount_amount)/@analyses.count)*@business_day_num)/((@analyses.sum(:ex_tax_sales_amount)/@analyses.count)*@business_day_num).to_f)*100).round}%（#{((@analyses.sum(:discount_amount)/@analyses.count)*@business_day_num).to_s(:delimited)}円）" if @analyses.present? && @analyses.sum(:ex_tax_sales_amount) >0
         td
           = "#{((((@analyses.sum(:discount_amount)/@analyses.count)*@business_day_num)/(@total_budget*0.04))*100).round}%" if @total_budget > 0
       tr
@@ -97,8 +97,8 @@ h3 = "#{@store.name} 売上管理"
       tr style='font-weight:bold;'
         td 　廃棄率
         td = "4%（#{(@total_budget*0.04).round.to_s(:delimited)}円）"
-        td = "#{((@analyses.sum(:loss_amount)/@analyses.sum(:ex_tax_sales_amount).to_f)*100).round}%（#{@analyses.sum(:loss_amount).to_s(:delimited)}円）" if @analyses.present?
-        td = "#{((((@analyses.sum(:loss_amount)/@analyses.count)*@business_day_num)/((@analyses.sum(:ex_tax_sales_amount)/@analyses.count)*@business_day_num).to_f)*100).round}%（#{((@analyses.sum(:loss_amount)/@analyses.count)*@business_day_num).to_s(:delimited)}円）" if @analyses.present?
+        td = "#{((@analyses.sum(:loss_amount)/@analyses.sum(:ex_tax_sales_amount).to_f)*100).round}%（#{@analyses.sum(:loss_amount).to_s(:delimited)}円）" if @analyses.present? && @analyses.sum(:ex_tax_sales_amount) >0
+        td = "#{((((@analyses.sum(:loss_amount)/@analyses.count)*@business_day_num)/((@analyses.sum(:ex_tax_sales_amount)/@analyses.count)*@business_day_num).to_f)*100).round}%（#{((@analyses.sum(:loss_amount)/@analyses.count)*@business_day_num).to_s(:delimited)}円）" if @analyses.present? && @analyses.sum(:ex_tax_sales_amount) >0
         td
           = "#{((((@analyses.sum(:loss_amount)/@analyses.count)*@business_day_num)/(@total_budget*0.04))*100).round}%" if @total_budget > 0
       tr
@@ -259,7 +259,10 @@ h3 = "#{@store.name} 売上管理"
 
 
           - else
-            td = date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})")
+            - if store_daily_menu.present?
+              td = link_to date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})"), analyses_path(analysis: {store_daily_menu_id:store_daily_menu.id}), method: :post
+            -else
+              td = date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})")
             td = @date_transaction_count[date] if @date_transaction_count[date]
             td = @budget_hash[date.to_date][:date].to_s(:delimited) if @budget_hash[date.to_date].present?
             td style="border-right:1px solid silver;"
