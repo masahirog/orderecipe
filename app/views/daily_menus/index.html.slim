@@ -41,7 +41,44 @@ button type="button" class="btn btn-default" data-toggle="modal" data-target="#u
           button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
           = submit_tag "アップロード",class:'btn btn-primary'
 
-= link_to "1ヶ月分の枠作成", {controller: "daily_menus", action: "create_1month", date: @date}, method: :post,class:'btn btn-default',style:'margin-right:10px;float:right;'
+
+
+
+button type="button" data-toggle="modal" data-target="#create_1month_modal" class='btn btn-default' style='margin-right:10px;float:right;' 1ヶ月分の枠を作成
+#create_1month_modal.modal.fade tabindex="-1"
+  = form_tag create_1month_daily_menus_path do
+    = hidden_field_tag :date,@date
+    .modal-dialog
+      .modal-content
+        .modal-header
+          h4.modal-title 店舗を選択
+        .modal-body.clearfix
+          table.table
+            thead
+              tr
+                th 店舗名
+                th チェック
+            tbody
+
+              - @stores.each do |store|
+                tr
+                  td = label_tag store.id,store.name
+                  td
+                    = check_box_tag "stores[#{store.id}]",true,false
+        .modal-footer
+          = submit_tag "更新" ,class:"btn btn-primary"
+          button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
+
+
+
+
+
+
+
+
+
+
+
 
 = month_calendar events: @daily_menus do |start_time, daily_menu|
   div style=''

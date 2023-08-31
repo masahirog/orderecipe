@@ -221,7 +221,10 @@ class DailyMenusController < AdminController
   end
   def create_1month
     date = params[:date]
-    DailyMenu.once_1month_create(date)
+    store_ids = params[:stores].keys
+    if store_ids.present?
+      DailyMenu.once_1month_create(date,store_ids)
+    end
     redirect_to daily_menus_path
   end
   def upload_menu

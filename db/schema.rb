@@ -620,7 +620,7 @@ ActiveRecord::Schema.define(version: 2023_06_29_230155) do
     t.integer "check_staff"
   end
 
-  create_table "sales_reports", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "sales_reports", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "analysis_id", null: false
     t.integer "store_id", null: false
     t.date "date", null: false
@@ -843,9 +843,9 @@ ActiveRecord::Schema.define(version: 2023_06_29_230155) do
   end
 
   create_table "store_daily_menus", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "daily_menu_id"
-    t.integer "store_id"
-    t.date "start_time"
+    t.integer "daily_menu_id", null: false
+    t.integer "store_id", null: false
+    t.date "start_time", null: false
     t.integer "total_num", default: 0, null: false
     t.integer "weather"
     t.integer "max_temperature"
@@ -859,9 +859,10 @@ ActiveRecord::Schema.define(version: 2023_06_29_230155) do
     t.time "opentime_showcase_photo_uploaded"
     t.string "event"
     t.boolean "editable_flag", default: true, null: false
-    t.integer "foods_budget"
-    t.integer "vegetables_budget"
-    t.integer "goods_budget"
+    t.integer "foods_budget", default: 0, null: false
+    t.integer "vegetables_budget", default: 0, null: false
+    t.integer "goods_budget", default: 0, null: false
+    t.index ["daily_menu_id", "store_id", "start_time"], name: "index_uniq", unique: true
   end
 
   create_table "store_shift_frames", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|

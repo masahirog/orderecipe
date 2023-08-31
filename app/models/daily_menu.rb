@@ -11,23 +11,23 @@ class DailyMenu < ApplicationRecord
   after_destroy :input_stock
   after_update :update_sdmd_row_order
 
-  def self.once_1month_create(params_date)
+  def self.once_1month_create(params_date,store_ids)
     new_arr = []
     new_store_daily_menu_arr = []
-    dates = []
-    (Date.parse(params_date).all_month).each do |date|
+    dates = (Date.parse(params_date).all_month)
+    dates.each do |date|
       if DailyMenu.find_by(start_time:date).present?
       else
         new_arr << DailyMenu.new(start_time:date)
-        dates << date
       end
     end
     DailyMenu.import new_arr if new_arr.present?
-
-    DailyMenu.where(start_time:dates).each do |date|
-      if DailyMenu.find_by(start_time:date).present?
-      else
-        new_store_daily_menu_arr << StoreDailyMenu.new(start_time:date)
+    daily_menus = DailyMenu.where(start_time:dates)
+    daily_menus.each do |dm|
+      created_store_ids = dm.store_daily_menus.map{|sdm|sdm.store_id.to_s}
+      new_store_ids = store_ids - created_store_ids
+      new_store_ids.each do |store_id|
+        new_store_daily_menu_arr << StoreDailyMenu.new(start_time:dm.start_time,daily_menu_id:dm.id,store_id:store_id)
       end
     end
     StoreDailyMenu.import new_store_daily_menu_arr if new_store_daily_menu_arr.present?

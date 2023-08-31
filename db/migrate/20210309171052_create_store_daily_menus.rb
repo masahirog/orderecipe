@@ -1,9 +1,9 @@
 class CreateStoreDailyMenus < ActiveRecord::Migration[5.2]
   def change
     create_table :store_daily_menus do |t|
-      t.integer :daily_menu_id
-      t.integer :store_id
-      t.date :start_time
+      t.integer :daily_menu_id,null:false
+      t.integer :store_id,null:false
+      t.date :start_time,null:false
       t.integer :total_num,null:false,default:0
       t.integer :weather
       t.integer :max_temperature
@@ -16,9 +16,10 @@ class CreateStoreDailyMenus < ActiveRecord::Migration[5.2]
       t.time :opentime_showcase_photo_uploaded
       t.string :event
       t.boolean :editable_flag,default:true,null:false
-      t.integer :foods_budget
-      t.integer :vegetables_budget
-      t.integer :goods_budget
+      t.integer :foods_budget,null:false,default:0
+      t.integer :vegetables_budget,null:false,default:0
+      t.integer :goods_budget,null:false,default:0
     end
+    add_index :store_daily_menus, [:daily_menu_id,:store_id,:start_time], unique: true, name: 'index_uniq'
   end
 end
