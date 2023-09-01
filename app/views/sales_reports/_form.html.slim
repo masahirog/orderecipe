@@ -227,11 +227,15 @@
     = f.label :bento_ureyuki, "弁当の在庫具合"
     = f.select :bento_ureyuki,['在庫量が少なかった','良い感じだった','在庫量が多かった'],{include_blank:true},class:'form-control', required: true
   .form-group
-    = f.label :kome_amari, "白米のあまり（kg）"
+    = f.label :kome_amari, "白米の廃棄量"
     .clearfix
-      = f.number_field :kome_amari,class:'form-control', required: true,style:'width:90%;float:left;',step: "0.1"
+      = f.number_field :kome_amari,class:'form-control', required: true,style:'width:250px;float:left;',step: "0.1"
       span style='float:left;margin-top:10px;margin-left:20px;' kg
-
+  .form-group
+    = f.label :vegetable_waste_amount, "野菜の廃棄金額"
+    .clearfix
+      = f.number_field :vegetable_waste_amount,class:'form-control', required: true,style:'width:250px;float:left;'
+      span style='float:left;margin-top:10px;margin-left:20px;' 円
 
   .form-group
     = f.label :cash_error, "現金誤差"
@@ -252,7 +256,7 @@
 
   .form-group
     = f.label :slack_notify, "Slack通知"
-    = f.select :slack_notify,[["通知しない",0],["通知する",1]],{include_blank:true}, required: true,class:'form-control', required: true
+    = f.select :slack_notify,[["通知する",1],["通知しない",0]],{}, required: true,class:'form-control'
 
   .actions
   = f.submit "保存する", data: { confirm: "確定する場合はSlackで通知してくださいね"} , class:"btn btn-primary"

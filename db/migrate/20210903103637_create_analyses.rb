@@ -21,6 +21,7 @@ class CreateAnalyses < ActiveRecord::Migration[5.2]
       t.integer :used_coupon_amount
       t.index [:date, :store_id], unique: true
       t.integer :store_daily_menu_id,null:false
+      t.integer :vegetable_waste_amount,null:false,default:0
     end
   end
 end

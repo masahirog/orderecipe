@@ -1205,6 +1205,6 @@ class AnalysesController < AdminController
     end
 
     def analysis_params
-      params.require(:analysis).permit(:store_id,:date,:store_daily_menu_id)
+      params.require(:analysis).permit(:store_id,:date,:store_daily_menu_id,:vegetable_waste_amount)
     end
 end

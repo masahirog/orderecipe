@@ -12,7 +12,7 @@
 
 ActiveRecord::Schema.define(version: 2023_06_29_230155) do
 
-  create_table "analyses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+  create_table "analyses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "store_id"
     t.date "date"
     t.integer "total_sales_amount"
@@ -33,6 +33,7 @@ ActiveRecord::Schema.define(version: 2023_06_29_230155) do
     t.integer "used_point_amount"
     t.integer "used_coupon_amount"
     t.integer "store_daily_menu_id", null: false
+    t.integer "vegetable_waste_amount", default: 0, null: false
     t.index ["date", "store_id"], name: "index_analyses_on_date_and_store_id", unique: true
   end
 
@@ -620,7 +621,7 @@ ActiveRecord::Schema.define(version: 2023_06_29_230155) do
     t.integer "check_staff"
   end
 
-  create_table "sales_reports", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+  create_table "sales_reports", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "analysis_id", null: false
     t.integer "store_id", null: false
     t.date "date", null: false
@@ -635,6 +636,7 @@ ActiveRecord::Schema.define(version: 2023_06_29_230155) do
     t.integer "cash_error"
     t.text "excess_or_deficiency_number_memo"
     t.time "leaving_work"
+    t.integer "vegetable_waste_amount", default: 0, null: false
   end
 
   create_table "serving_plates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

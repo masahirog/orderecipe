@@ -14,6 +14,7 @@ class CreateSalesReports < ActiveRecord::Migration[5.2]
       t.integer :cash_error
       t.text :excess_or_deficiency_number_memo
       t.time :leaving_work
+      t.integer :vegetable_waste_amount,null:false,default:0
     end
   end
 end
