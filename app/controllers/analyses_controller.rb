@@ -664,6 +664,88 @@ class AnalysesController < AdminController
     @smaregi_members = @smaregi_members.page(params[:page]).per(50)
   end
 
+  def vegetable_time_sales
+    @stores = Store.where(group_id:current_user.group_id)
+    if params[:stores]
+      checked_store_ids = params['stores'].keys
+    else
+      checked_store_ids = @stores.ids
+      params[:stores] = {}
+      @stores.each do |store|
+        params[:stores][store.id.to_s] = true
+      end
+    end
+    if params[:from]
+      @from = params[:from].to_date
+    else
+      @from = Date.today.prev_occurring(:wednesday)
+      params[:from] = @from
+    end
+    if params[:to]
+      @to = params[:to].to_date
+    else
+      @to = @from + 6
+      params[:to] = @to
+    end
+    @dates = (@from..@to)
+    @times = (10..21)
+    @smaregi_trading_histories = SmaregiTradingHistory.joins(:analysis).where(:analyses=>{store_id:checked_store_ids,date:@dates}).where(bumon_id:14)
+    @uniq_shohin_ids =[]
+    @sales_data = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    @time_data = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    @smaregi_trading_histories.each do |sth|
+      @uniq_shohin_ids << sth.shohin_id unless @uniq_shohin_ids.include?(sth.shohin_id)
+      if sth.torihiki_meisaikubun == 1 || sth.torihiki_meisaikubun == 3
+        suryo = sth.suryo
+        amount = sth.nebikigokei
+      elsif sth.torihiki_meisaikubun == 2
+        suryo = -sth.suryo
+        amount = -sth.nebikigokei
+      end
+
+      @sales_data[sth.shohin_id][:name] = sth.shohinmei unless @sales_data[sth.shohin_id].present?
+
+      if @sales_data[sth.shohin_id][:time][sth.time.hour].present?
+        @sales_data[sth.shohin_id][:time][sth.time.hour][:sales_num] += suryo
+        @sales_data[sth.shohin_id][:time][sth.time.hour][:sales_amount] += amount
+      else
+        @sales_data[sth.shohin_id][:time][sth.time.hour][:sales_num] = suryo
+        @sales_data[sth.shohin_id][:time][sth.time.hour][:sales_amount] = amount
+      end
+      if @sales_data[sth.shohin_id][:sales_amount].present?
+        @sales_data[sth.shohin_id][:sales_amount] += amount
+      else
+        @sales_data[sth.shohin_id][:sales_amount] = amount
+      end
+      if @sales_data[sth.shohin_id][:sales_num].present?
+        @sales_data[sth.shohin_id][:sales_num] += suryo
+      else
+        @sales_data[sth.shohin_id][:sales_num] = suryo
+      end
+      if @time_data[sth.time.hour].present?
+        @time_data[sth.time.hour][:num] += suryo
+        @time_data[sth.time.hour][:amount] += amount
+      else
+        @time_data[sth.time.hour][:num] = suryo
+        @time_data[sth.time.hour][:amount] = amount
+      end
+    end
+    gon.times = @times.to_a
+    gon.sales_num_data = []
+    gon.sales_amount_data = []
+    @times.each do |time|
+      if @time_data[time]
+        gon.sales_num_data << @time_data[time][:num]
+        gon.sales_amount_data << @time_data[time][:amount]
+      else
+        gon.sales_num_data << 0
+        gon.sales_amount_data << 0
+      end
+    end
+  end
+
+
+
   def vegetable_sales
     @stores = Store.where(group_id:current_user.group_id)
     if params[:stores]
@@ -688,39 +770,60 @@ class AnalysesController < AdminController
       params[:to] = @to
     end
     @dates = (@from..@to)
-    @smaregi_trading_histories = SmaregiTradingHistory.where(date:@dates,bumon_id:14)
+    @smaregi_trading_histories = SmaregiTradingHistory.joins(:analysis).where(:analyses=>{store_id:checked_store_ids,date:@dates}).where(bumon_id:14)
     @uniq_shohin_ids =[]
     @sales_data = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    @wday_data = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @smaregi_trading_histories.each do |sth|
       @uniq_shohin_ids << sth.shohin_id unless @uniq_shohin_ids.include?(sth.shohin_id)
-      if @sales_data[sth.shohin_id].present?
-        if @sales_data[sth.shohin_id][:date][sth.date].present?
-          @sales_data[sth.shohin_id][:date][sth.date][:sales_num] += sth.suryo
-          @sales_data[sth.shohin_id][:date][sth.date][:sales_amount] += sth.nebikigokei
-        else
-          @sales_data[sth.shohin_id][:date][sth.date][:sales_num] = sth.suryo
-          @sales_data[sth.shohin_id][:date][sth.date][:sales_amount] = sth.nebikigokei
-        end
-        if @sales_data[sth.shohin_id][:time][sth.time.hour].present?
-          @sales_data[sth.shohin_id][:time][sth.time.hour][:sales_num] += sth.suryo
-          @sales_data[sth.shohin_id][:time][sth.time.hour][:sales_amount] += sth.nebikigokei
-        else
-          @sales_data[sth.shohin_id][:time][sth.time.hour][:sales_num] = sth.suryo
-          @sales_data[sth.shohin_id][:time][sth.time.hour][:sales_amount] = sth.nebikigokei
-        end
-        if @sales_data[sth.shohin_id][:sales_amount].present?
-          @sales_data[sth.shohin_id][:sales_amount] += sth.nebikigokei
-        else
-          @sales_data[sth.shohin_id][:sales_amount] = sth.nebikigokei
-        end
-        if @sales_data[sth.shohin_id][:sales_num].present?
-          @sales_data[sth.shohin_id][:sales_num] += sth.suryo
-        else
-          @sales_data[sth.shohin_id][:sales_num] = sth.suryo
-        end
+      if sth.torihiki_meisaikubun == 1 || sth.torihiki_meisaikubun == 3
+        suryo = sth.suryo
+        amount = sth.nebikigokei
+      elsif sth.torihiki_meisaikubun == 2
+        suryo = -sth.suryo
+        amount = -sth.nebikigokei
+      end
+
+      @sales_data[sth.shohin_id][:name] = sth.shohinmei unless @sales_data[sth.shohin_id].present?
+
+      if @sales_data[sth.shohin_id][:date][sth.date].present?
+        @sales_data[sth.shohin_id][:date][sth.date][:sales_num] += suryo
+        @sales_data[sth.shohin_id][:date][sth.date][:sales_amount] += amount
       else
-        @sales_data[sth.shohin_id][:name] = sth.shohinmei  
-      end      
+        @sales_data[sth.shohin_id][:date][sth.date][:sales_num] = suryo
+        @sales_data[sth.shohin_id][:date][sth.date][:sales_amount] = amount
+      end
+
+      if @sales_data[sth.shohin_id][:sales_amount].present?
+        @sales_data[sth.shohin_id][:sales_amount] += amount
+      else
+        @sales_data[sth.shohin_id][:sales_amount] = amount
+      end
+      if @sales_data[sth.shohin_id][:sales_num].present?
+        @sales_data[sth.shohin_id][:sales_num] += suryo
+      else
+        @sales_data[sth.shohin_id][:sales_num] = suryo
+      end
+      if @wday_data[sth.date.wday].present?
+        @wday_data[sth.date.wday][:num] += suryo
+        @wday_data[sth.date.wday][:amount] += amount
+      else
+        @wday_data[sth.date.wday][:num] = suryo
+        @wday_data[sth.date.wday][:amount] = amount
+      end
+    end
+    wdays = [1,2,3,4,5,6,0]
+    gon.wdays = ["月","火","水","木","金","土","日"]
+    gon.sales_num_data = []
+    gon.sales_amount_data = []
+    wdays.each do |wday|
+      if @wday_data[wday]
+        gon.sales_num_data << @wday_data[wday][:num]
+        gon.sales_amount_data << @wday_data[wday][:amount]
+      else
+        gon.sales_num_data << 0
+        gon.sales_amount_data << 0
+      end
     end
   end
 
@@ -1007,8 +1110,6 @@ class AnalysesController < AdminController
     @store_daily_menus_hash = StoreDailyMenu.where(start_time:@date).map{|sdm|[sdm.store_id,sdm.id]}.to_h
   end
   def summary
-    gon.lat = 35.7058146
-    gon.lon = 139.6657874
     @stores = Store.where(group_id:current_user.group_id).where.not(id:39)
     unless params[:stores]
       params[:stores] = {}
@@ -1073,6 +1174,7 @@ class AnalysesController < AdminController
       gon.loss_data << (((@date_store_analyses[date].map{|hash|hash[1][:discount_amount].to_i}.sum.to_f + @date_store_analyses[date].map{|hash|hash[1][:loss_amount].to_i}.sum.to_f)/@date_store_analyses[date].map{|hash|hash[1][:sales_amount]}.sum)*100).round(1)
       gon.loss_mokuhyo_data << 7
     end
+
     respond_to do |format|
       format.html
       format.csv do

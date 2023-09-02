@@ -1,5 +1,5 @@
 div style='margin-bottom:20px;'
-  = form_tag vegetable_sales_analyses_path, :method => 'get' do
+  = form_tag vegetable_time_sales_analyses_path, :method => 'get' do
     .clearfix
       label style='float:left;' 店舗選択
       ul style="list-style:none;float:left;"
@@ -14,7 +14,8 @@ div style='margin-bottom:20px;'
       = date_field_tag :to, params[:to], class:"form-control",style:'width:200px;float:left;'
     = submit_tag "絞り込み" ,class:"btn btn-primary",style:"margin-left:20px;"
 
-h3 日別販売データ
+
+h3 時間帯別販売データ
 canvas#chart1
 
 
@@ -24,27 +25,21 @@ canvas#chart1
       col class=""
       col class="col1"
       col class="col1"
-      - @dates.each do |date|
+      - @times.each do |time|
         col class="col1"
         col class="col1"
     thead style='position: sticky;top:0;background-color:white;z-index:3;'
       tr
         th style='background-color:white;width:200px;' 商品名
-        th.fixed_second_thtd colspan=2 style='width:750px;' 期間
-        - @dates.each do |date|
-          - holiday = HolidayJapan.name(date)
-          - if holiday.present? || date.wday == 0
-            th colspan=2 style='width:480px;color:#f08080;' = date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})")
-          - elsif date.wday == 6
-            th colspan=2 style='width:480px;color:#87cefa;' = date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})")
-          - else
-            th colspan=2 style='width:480px;' = date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})")
+        th.fixed_second_thtd colspan=2 style='width:750px;' 全体
+        - @times.each do |time|
+          th colspan=2 = time
 
       tr
         th style='background-color:white;width:200px;'
         th.fixed_second_thtd style='width:70px;' 数
         th.fixed_third_thtd style='width:70px;' 金額
-        - @dates.each do |date|
+        - @times.each do |time|
           th.aaa style="" 数
           th.aaa style="" 金額
 
@@ -54,9 +49,9 @@ canvas#chart1
           td = @sales_data[shohin_id][:name]
           td.fixed_second_thtd = @sales_data[shohin_id][:sales_num] if @sales_data[shohin_id][:sales_num].present?
           td.fixed_third_thtd = @sales_data[shohin_id][:sales_amount].to_s(:delimited) if @sales_data[shohin_id][:sales_amount].present?
-          - @dates.each do |date|
-            td = @sales_data[shohin_id][:date][date][:sales_num] if @sales_data[shohin_id][:date][date].present?
-            td = @sales_data[shohin_id][:date][date][:sales_amount].to_s(:delimited) if @sales_data[shohin_id][:date][date].present?
+          - @times.each do |time|
+            td = @sales_data[shohin_id][:time][time][:sales_num] if @sales_data[shohin_id][:time][time].present?
+            td = @sales_data[shohin_id][:time][time][:sales_amount].to_s(:delimited) if @sales_data[shohin_id][:time][time].present?
 
 
 
@@ -98,6 +93,7 @@ css:
   tr:hover td {
     background-color: #faf0e6;
   }
+
 javascript:
   // 1個目のグラフ
   var ctx = document.getElementById("chart1").getContext('2d');
@@ -105,7 +101,7 @@ javascript:
   var chart1 = new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: gon.wdays,
+      labels: gon.times,
       datasets: [{
         type: 'line',
         label: "販売数",
