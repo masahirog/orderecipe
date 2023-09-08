@@ -1,3 +1,4 @@
+include ActionView::Helpers::NumberHelper
 module ApplicationHelper
   require "uri"
   def text_url_to_link text

@@ -1,68 +1,72 @@
 class MenuPdf < Prawn::Document
-  def initialize(menu,menu_materials)
+  def initialize(menu,menu_materials,num)
     # 初期設定。ここでは用紙のサイズを指定している。
     super(
       page_size: 'A4',
       page_layout: :portrait)
     #日本語のフォント
     font "vendor/assets/fonts/ipaexg.ttf"
-    header_table(menu)
-    header_table2(menu)
-    table_content(menu_materials)
-  end
-  def header_table(menu)
-    bounding_box([0, 750], :width => 520) do
-      data = [["メニュー名","原価","カテゴリ"],["#{menu.name}","#{menu.cost_price}","#{menu.category}"]]
-      table data, cell_style: { size: 10 } do
-        cells.padding = 2
-        row(0).borders = [:bottom]
-        columns(0..3).borders = []
-        row(0).columns(0..3).borders = [:bottom]
-        row(1).columns(4).borders = [:top]
-        cells.border_width = 0.2
-        row(0).border_width = 0.5
-        self.column_widths = [260,130,130]
-      end
+    text "#{menu.name}　レシピ", size: 12
+    move_down 5
+    text "【 調理メモ 】", size: 11,styles: :bold
+    move_down 2
+    text menu.cook_the_day_before, size: 10, :leading => 3
+    move_down 5
+    if menu.serving_memo.present?
+      text "【 盛付メモ 】", size: 11
+      move_down 2
+      text menu.serving_memo, size: 10
     end
-  end
-  def header_table2(menu)
-    bounding_box([0, 710], :width => 520) do
-      data=[["調理メモ","盛り付けメモ"],["#{menu.cook_the_day_before}","#{menu.serving_memo}"]]
-      table data, cell_style: { size: 10 } do
-        cells.padding = 2
-        row(0).borders = [:bottom]
-        columns(0..3).borders = []
-        row(0).columns(0..3).borders = [:bottom]
-        row(1).columns(4).borders = [:top]
-        cells.border_width = 0.2
-        row(0).border_width = 0.5
-        self.header = true
-        self.column_widths = [260,260]
-      end
+    move_down 3
+    table_content(menu_materials,num)
+    if menu.menu_processes.present?
+      start_new_page
+      table_process(menu)
     end
   end
 
 
-
-  def table_content(menu_materials)
-    bounding_box([0, 500], :width => 520) do
-      table line_item_rows(menu_materials) do
-      cells.padding = 3
-      cells.borders = [:bottom]
-      cells.border_width = 0.2
-      column(-2..-1).align = :right
-      row(0).border_width = 1
-      row(0).size = 10
-      self.header = true
-      self.column_widths = [180,80,100,80,70]
-      end
+  def table_content(menu_materials,num)
+    table line_item_rows(menu_materials,num) do
+    cells.padding = 3
+    cells.borders = [:bottom]
+    cells.border_width = 0.2
+    column(-2..-1).align = :right
+    row(0).border_width = 1
+    row(0).size = 10
+    self.header = true
+    self.column_widths = [160,20,80,120,60,80]
     end
   end
-  def line_item_rows(menu_materials)
-    data= [["食材・資材",{:content => "仕込み内容", :colspan => 2},"1人分","使用原価"]]
+  def line_item_rows(menu_materials,num)
+    data= [["食材","",{:content => "仕込み内容", :colspan => 2},"1人分","#{num}人前"]]
     menu_materials.each_with_index do |mm|
-        data << [{content:"#{mm.material.name}", size: 9},{content: "#{mm.post}", size: 9},{content:"#{mm.preparation}", size: 9},
-          {content:"#{mm.amount_used} #{mm.material.recipe_unit}", size: 9},{content:"#{(mm.material.cost_price * mm.amount_used).round(1)}", size: 9}]
+      amount = number_with_precision((mm.amount_used.to_f * num),precision:1, strip_insignificant_zeros: true, delimiter: ',')
+      data << [{content:"#{mm.material.name}", size: 9},{content: "#{mm.source_group}", size: 9},{content: "#{mm.post}", size: 9},{content:"#{mm.preparation}", size: 9},
+        {content:"#{mm.amount_used} #{mm.material.recipe_unit}", size: 9},{content:"#{amount} #{mm.material.recipe_unit}", size: 10}]
+    end
+    data
+  end
+
+
+  def table_process(menu)
+    table processes_rows(menu) do
+    cells.padding = 3
+    cells.borders = [:bottom]
+    cells.border_width = 0.2
+    row(0).border_width = 1
+    row(0).size = 10
+    self.column_widths = [220,300]
+    end
+  end
+  def processes_rows(menu)
+    data= [["工程","画像"]]
+    menu.menu_processes.each_with_index do |mp|
+      if mp.image.present?
+        data << [{content:"#{mp.memo}", size: 11},{:image => open("#{mp.image.url}"), image_width: 280}]
+      else
+        data << [{content:"#{mp.memo}", size: 11},""]
+      end
     end
     data
   end

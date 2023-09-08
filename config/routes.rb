@@ -200,7 +200,7 @@ Rails.application.routes.draw do
   resources :menus do
     put :sort
     collection do
-      get :print
+      post :print
       get :get_material
       get :get_food_ingredient
       get :include_menu

@@ -112,12 +112,13 @@ class MenusController < ApplicationController
   end
 
   def print
+    num = params[:num].to_i
     @menu = Menu.includes(menu_materials: :material).find(params[:id])
     @menu_materials = @menu.menu_materials
     respond_to do |format|
      format.html
      format.pdf do
-       pdf = MenuPdf.new(@menu,@menu_materials)
+       pdf = MenuPdf.new(@menu,@menu_materials,num)
        send_data pdf.render,
          filename:    "#{@menu.name}.pdf",
          type:        "application/pdf",
