@@ -42,13 +42,15 @@ table.table
       th FAX
   tbody
     - @order_materials.each do |om|
+      - order_amount = number_with_precision((om.order_quantity.to_f/om.material.recipe_unit_quantity)*om.material.order_unit_quantity,precision:1, strip_insignificant_zeros: true, delimiter: ',')
+      - cal_amount = number_with_precision(om.calculated_quantity,precision:1, strip_insignificant_zeros: true, delimiter: ',')
       tr class="om_tr_#{om.id}"
         td
           =  link_to om.material.name ,om.material,target:'_blank'
         td
-          = "#{((om.order_quantity.to_f/om.material.recipe_unit_quantity)*om.material.order_unit_quantity).round(1)} #{om.material.order_unit}"
+          = "#{order_amount} #{om.material.order_unit}"
         td
-          = "#{om.calculated_quantity} #{om.material.recipe_unit}"
+          = "#{cal_amount} #{om.material.recipe_unit}"
         td
           = om.material.vendor.name
         td

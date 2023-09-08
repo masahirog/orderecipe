@@ -78,8 +78,8 @@ class OrderPdf < Prawn::Document
     data= [[{:content => "#{date.strftime("%Y年%-m月%-d日(#{%w(日 月 火 水 木 金 土)[date.wday]})")} 納品分",colspan:4}]]
     data<< ["商品コード","品名","数量","備考"]
     arr.each do |mtv|
-      s_data = []
-      data << ["#{mtv.material.order_code}","#{mtv.material.order_name}","#{((mtv.order_quantity.to_f/mtv.material.recipe_unit_quantity)*mtv.material.order_unit_quantity).round(1)}  #{mtv.material.order_unit}","#{mtv.order_material_memo}"]
+      amount = number_with_precision((mtv.order_quantity.to_f/mtv.material.recipe_unit_quantity)*mtv.material.order_unit_quantity,precision:1, strip_insignificant_zeros: true, delimiter: ',')
+      data << ["#{mtv.material.order_code}","#{mtv.material.order_name}","#{amount}  #{mtv.material.order_unit}","#{mtv.order_material_memo}"]
     end
      data += [["","","",""]] * 2
   end

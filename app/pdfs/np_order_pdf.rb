@@ -56,9 +56,10 @@ class NpOrderPdf < Prawn::Document
     data = [["商品コード","品名",'入数',"発注数量","備考"]]
     arr.each do |mtv|
       s_data = []
-      ouq = ActiveSupport::NumberHelper.number_to_rounded(mtv.material.order_unit_quantity, strip_insignificant_zeros: true, :delimiter => ',')
-      ruq = ActiveSupport::NumberHelper.number_to_rounded(mtv.material.recipe_unit_quantity, strip_insignificant_zeros: true, :delimiter => ',')
-      order_quantity = ActiveSupport::NumberHelper.number_to_rounded(((mtv.order_quantity.to_f/mtv.material.recipe_unit_quantity)*mtv.material.order_unit_quantity).round(1), strip_insignificant_zeros: true, :delimiter => ',')
+      ouq = number_with_precision(mtv.material.order_unit_quantity,precision:1, strip_insignificant_zeros: true, delimiter: ',')
+      ruq = number_with_precision(mtv.material.recipe_unit_quantity,precision:1, strip_insignificant_zeros: true, delimiter: ',')
+      order_quantity = number_with_precision((mtv.order_quantity.to_f/mtv.material.recipe_unit_quantity)*mtv.material.order_unit_quantity,precision:1, strip_insignificant_zeros: true, delimiter: ',')
+
       data << ["#{mtv.material.order_code}","#{mtv.material.order_name}","#{ruq} #{mtv.material.recipe_unit}/#{mtv.material.order_unit}","#{order_quantity}  #{mtv.material.order_unit}","#{mtv.order_material_memo}"]
     end
      data += [["","","","",""]] * 2

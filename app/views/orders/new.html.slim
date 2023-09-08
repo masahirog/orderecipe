@@ -115,9 +115,9 @@
                         - if m.object.material_id.present?
                           - if @prev_stocks[m.object.material_id]
                             - if @prev_stocks[m.object.material_id].end_day_stock < 0
-                              span style='color:black;' = "#{(@prev_stocks[m.object.material_id].end_day_stock/material.accounting_unit_quantity).floor(1)} #{material.accounting_unit}：不足"
+                              span style='color:black;' = "#{number_with_precision(@prev_stocks[m.object.material_id].end_day_stock/material.accounting_unit_quantity,precision:1, strip_insignificant_zeros: true, delimiter: ',')} #{material.accounting_unit}：不足"
                             - else
-                              span style='color:lime;' = "残り：#{(@prev_stocks[m.object.material_id].end_day_stock/material.accounting_unit_quantity).floor(1)} #{material.accounting_unit} "
+                              span style='color:lime;' = "残り：#{number_with_precision(@prev_stocks[m.object.material_id].end_day_stock/material.accounting_unit_quantity,precision:1, strip_insignificant_zeros: true, delimiter: ',')} #{material.accounting_unit} "
                           - else
                             |0
 
@@ -129,7 +129,7 @@
 
               .text-right.change_unit.memo-tooltip style="float:left;width:40%;padding-left:5px;color:gray;"
                 - if m.object.material_id.present?
-                  = material.order_unit_quantity
+                  = number_with_precision(material.order_unit_quantity,precision:1, strip_insignificant_zeros: true, delimiter: ',')
                   = material.order_unit
                   |  ：
                   = material.recipe_unit_quantity.to_i.to_s(:delimited)
