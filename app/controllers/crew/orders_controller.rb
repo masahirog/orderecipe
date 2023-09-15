@@ -240,7 +240,11 @@ class Crew::OrdersController < ApplicationController
     if params[:store_orderable_all_flag] == 'true'
       order_products = []
       make_date = (Date.today+2)
-      @material_store_orderables = MaterialStoreOrderable.includes(material:[:vendor]).where(store_id:params[:store_id],orderable_flag:true)
+      if params[:vendor_id].present?
+        @material_store_orderables = MaterialStoreOrderable.includes(material:[:vendor]).where(:materials=>{vendor_id:params[:vendor_id]},store_id:params[:store_id],orderable_flag:true)
+      else
+        @material_store_orderables = MaterialStoreOrderable.includes(material:[:vendor]).where(store_id:params[:store_id],orderable_flag:true)
+      end
       @material_store_orderables.each do |mso|
         hash = {}
         material = mso.material
