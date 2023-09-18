@@ -74,7 +74,7 @@ table.table
             .col-12.clearfix style='padding:5px 0;'
               = check_box_tag "vendor_id[#{vendor['vendor_id']}]",true,false,class:'form-control',style:'width:40px;float:left;'
               label style='float:left;padding:10px 0px 0px 10px;'
-                = "#{vendor['company_name']} FAX:#{vendor['company_fax']}（#{vendor['efax_address']}）"
+                = "#{vendor['company_name']} FAX:#{vendor['company_fax']}"
         .modal-footer
           button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
           = submit_tag "送信する" ,class:"btn btn-primary", data: { confirm: "ほんまに送信するで？"}

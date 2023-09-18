@@ -327,6 +327,7 @@ class OrdersController < AdminController
         hash['delivery_deadline'] = material.delivery_deadline
         hash['order_material_memo'] =''
         hash["vendor_info"] = material.vendor.delivery_date
+        hash["vendor_delivery_able_wday"] = material.vendor.delivery_able_wday
         @arr << hash
       end
     elsif params[:wday_new_order] == 'true'
@@ -354,6 +355,7 @@ class OrdersController < AdminController
         hash['delivery_deadline'] = material.delivery_deadline
         hash['order_material_memo'] =''
         hash["vendor_info"] = material.vendor.delivery_date
+        hash["vendor_delivery_able_wday"] = material.vendor.delivery_able_wday
         hash["order_criterion"] = mso.order_criterion
         @arr << hash
       end
@@ -379,6 +381,7 @@ class OrdersController < AdminController
         hash['delivery_deadline'] = material.delivery_deadline
         hash['order_material_memo'] =''
         hash["vendor_info"] = material.vendor.delivery_date
+        hash["vendor_delivery_able_wday"] = material.vendor.delivery_able_wday
         hash["order_criterion"] = mso.order_criterion
         @arr << hash
       end
@@ -860,6 +863,7 @@ class OrdersController < AdminController
     hash['order_unit'] = menu_material.material.order_unit
     hash['delivery_deadline'] = menu_material.material.delivery_deadline
     hash['order_material_memo'] =''
+    hash["vendor_delivery_able_wday"] = menu_material.material.vendor.delivery_able_wday
     @arr << hash
     material_ids << menu_material.material_id
   end

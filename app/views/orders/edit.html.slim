@@ -80,7 +80,11 @@
               - if m.object.material.present?
                 input value="#{m.object.material.vendor_id}" style="display:none;"
                 span = m.object.material.vendor.name
+                span ="｜納品：#{m.object.material.vendor.delivery_date}"
                 span style='color:red;font-weight:bold;' = "【受注品】" if m.object.material.vendor_stock_flag == false
+                input value="#{m.object.material.vendor.delivery_able_wday}" class="delivery_able_date" style='display:none;'
+              - else
+                input value='0,1,2,3,4,5,6' class="delivery_able_date" style='display:none;'
           td.delivery_date style="min-width:186px;"
             - if m.object.delivery_date
               = m.date_field(:delivery_date,value:m.object.delivery_date,class:"form-control input_delivery_date date_input")
@@ -150,54 +154,54 @@ javascript:
     $(document).on("keypress", "input:not(.allow_submit)", function(event) {
       return event.which !== 13;
     });
-    var holidays = gon.holidays;
-    $('.date_input').datetimepicker({
-      scrollMonth : false,
-      scrollInput : false,
-      format: 'Y-m-d',
-      timepicker:false,
-      beforeShowDay: function (date) {
-        var ymd = date.getFullYear() + ('0' + (date.getMonth() + 1)).slice(-2) + ('0' +  date.getDate()).slice(-2);
-        if (holidays.indexOf(ymd) != -1 ||date.getDay() == 0 ) {
-          return [true, 'class-sunday-holiday',''];
-        } else if (date.getDay() == 6) {
-          return [true, 'class-saturday'];
-        } else {
-          return [true, ''];
-        }
-      }
-     });
+    // var holidays = gon.holidays;
+    // $('.date_input').datetimepicker({
+    //   scrollMonth : false,
+    //   scrollInput : false,
+    //   format: 'Y-m-d',
+    //   timepicker:false,
+    //   beforeShowDay: function (date) {
+    //     var ymd = date.getFullYear() + ('0' + (date.getMonth() + 1)).slice(-2) + ('0' +  date.getDate()).slice(-2);
+    //     if (holidays.indexOf(ymd) != -1 ||date.getDay() == 0 ) {
+    //       return [true, 'class-sunday-holiday',''];
+    //     } else if (date.getDay() == 6) {
+    //       return [true, 'class-saturday'];
+    //     } else {
+    //       return [true, ''];
+    //     }
+    //   }
+    //  });
   });
-sass:
-  input[type="time"]::-webkit-calendar-picker-indicator
-    display: none
+/ sass:
+/   input[type="time"]::-webkit-calendar-picker-indicator
+/     display: none
 
-  input[type="date"]::-webkit-calendar-picker-indicator
-    display: none
+/   input[type="date"]::-webkit-calendar-picker-indicator
+/     display: none
 
-  .class-sunday-holiday
-    color: red !important
-  .class-saturday
-    color: #1e90ff !important
+/   .class-sunday-holiday
+/     color: red !important
+/   .class-saturday
+/     color: #1e90ff !important
 
-  .stock-tooltip
-    .tooltip
-      width: 100%
-      font-size: 14px
-  .memo-tooltip
-    .tooltip
-      width: 300px
-      font-size: 14px
+/   .stock-tooltip
+/     .tooltip
+/       width: 100%
+/       font-size: 14px
+/   .memo-tooltip
+/     .tooltip
+/       width: 300px
+/       font-size: 14px
 
-  .tooltip-inner
-    max-width: 100%
+/   .tooltip-inner
+/     max-width: 100%
 
-  .tooltip .tooltip-inner
-    background-color: white
-    opacity: 1.0
-    border: 2px solid black
-    color: black
-    filter: alpha(opacity=100)
-  .tooltip.in
-    opacity: 1 !important
-    filter: alpha(opacity=100)
+/   .tooltip .tooltip-inner
+/     background-color: white
+/     opacity: 1.0
+/     border: 2px solid black
+/     color: black
+/     filter: alpha(opacity=100)
+/   .tooltip.in
+/     opacity: 1 !important
+/     filter: alpha(opacity=100)

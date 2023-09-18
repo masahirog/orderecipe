@@ -47,6 +47,7 @@
 
     .col-md-2 style="padding-top:25px;"
       = f.select :fixed_flag, options_for_select([['確定：在庫が変動します', true], ['未確定：在庫に影響しません', false]], f.object.fixed_flag),{},class:'form-control fixed_flag'
+
     .col-md-2 style="padding-top:25px;"
       - if f.object.fixed_flag == true
         = f.submit '確定で保存する',class:'btn btn-success pull-right save-btn order_submit', data: {disable_with: '保存中'},disabled:true
@@ -98,6 +99,9 @@
               span  = @b_hash[m.object.material_id]['vendor_name']
               - if m.object.material_id.present?
                 span ="｜納品：#{@b_hash[m.object.material_id]['vendor_info']}"
+                input value="#{@b_hash[m.object.material_id]['vendor_delivery_able_wday']}" class="delivery_able_date" style='display:none;'
+              - else
+                input value='0,1,2,3,4,5,6' class="delivery_able_date" style='display:none;'
           td class="quantity_#{m.object.material_id}" style="min-width:500px;"
             .clearfix.text-right
               div style="float:left;width:50%;"
@@ -183,23 +187,6 @@ javascript:
         clone.find("#order_order_materials_attributes_"+num+"_"+value).attr('id',id).attr('name',name);
       });
       $(this).parent().parent('.order_materials_tr').after(clone);
-      clone.find(".input_delivery_date").removeClass('hasDatepicker').datetimepicker({
-        scrollMonth : false,
-        scrollInput : false,
-        format: 'Y-m-d',
-        timepicker:false,
-        autoclose: true,
-        beforeShowDay: function (date) {
-          var ymd = date.getFullYear() + ('0' + (date.getMonth() + 1)).slice(-2) + ('0' +  date.getDate()).slice(-2);
-          if (holidays.indexOf(ymd) != -1 ||date.getDay() == 0 ) {
-            return [true, 'class-sunday-holiday',''];
-          } else if (date.getDay() == 6) {
-            return [true, 'class-saturday'];
-          } else {
-            return [true, ''];
-          }
-        }
-       });
     });
     $(document).on("keypress", "input:not(.allow_submit)", function(event) {
       return event.which !== 13;
@@ -208,30 +195,30 @@ javascript:
       $(".order_submit").prop("disabled", false);
     });
     var holidays = gon.holidays;
-    $('.date_input').datetimepicker({
-      scrollMonth : false,
-      scrollInput : false,
-      format: 'Y-m-d',
-      timepicker:false,
-      autohide: true,
-      beforeShowDay: function (date) {
-        var ymd = date.getFullYear() + ('0' + (date.getMonth() + 1)).slice(-2) + ('0' +  date.getDate()).slice(-2);
-        if (holidays.indexOf(ymd) != -1 ||date.getDay() == 0 ) {
-          return [true, 'class-sunday-holiday',''];
-        } else if (date.getDay() == 6) {
-          return [true, 'class-saturday'];
-        } else {
-          return [true, ''];
-        }
-      }
-    });
-    $(document).on( "change", ".date_input", function() {
-      $(this).datetimepicker('hide');
-    });
+    // $('.date_input').datetimepicker({
+    //   scrollMonth : false,
+    //   scrollInput : false,
+    //   format: 'Y-m-d',
+    //   timepicker:false,
+    //   autohide: true,
+    //   beforeShowDay: function (date) {
+    //     var ymd = date.getFullYear() + ('0' + (date.getMonth() + 1)).slice(-2) + ('0' +  date.getDate()).slice(-2);
+    //     if (holidays.indexOf(ymd) != -1 ||date.getDay() == 0 ) {
+    //       return [true, 'class-sunday-holiday',''];
+    //     } else if (date.getDay() == 6) {
+    //       return [true, 'class-saturday'];
+    //     } else {
+    //       return [true, ''];
+    //     }
+    //   }
+    // });
+    // $(document).on( "change", ".date_input", function() {
+    //   $(this).datetimepicker('hide');
+    // });
 
   });
 
-sass:
+/ sass:
   input[type="time"]::-webkit-calendar-picker-indicator
     display: none
 

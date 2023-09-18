@@ -12,7 +12,7 @@
 
 ActiveRecord::Schema.define(version: 2023_06_29_230155) do
 
-  create_table "analyses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "analyses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "store_id"
     t.date "date"
     t.integer "total_sales_amount"
@@ -621,7 +621,7 @@ ActiveRecord::Schema.define(version: 2023_06_29_230155) do
     t.integer "check_staff"
   end
 
-  create_table "sales_reports", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "sales_reports", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "analysis_id", null: false
     t.integer "store_id", null: false
     t.date "date", null: false
@@ -844,7 +844,7 @@ ActiveRecord::Schema.define(version: 2023_06_29_230155) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "store_daily_menus", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "store_daily_menus", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "daily_menu_id", null: false
     t.integer "store_id", null: false
     t.date "start_time", null: false
@@ -1005,7 +1005,6 @@ ActiveRecord::Schema.define(version: 2023_06_29_230155) do
     t.string "staff_phone"
     t.string "staff_mail"
     t.string "management_id"
-    t.string "efax_address"
     t.text "memo"
     t.string "delivery_date"
     t.integer "status", default: 0, null: false
@@ -1014,6 +1013,7 @@ ActiveRecord::Schema.define(version: 2023_06_29_230155) do
     t.boolean "fax_staff_name_display_flag", default: false, null: false
     t.integer "group_id", null: false
     t.string "name"
+    t.string "delivery_able_wday", default: "0,1,2,3,4,5,6", null: false
   end
 
   create_table "working_hours", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|

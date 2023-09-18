@@ -7,8 +7,13 @@ tr.order_materials_tr.nested-fields
     - else
       = f.collection_select :material_id, @materials, :id, :name,{include_blank: true}, class:'select_order_materials',style:"width:250px;"
     .vendor_company_name style="padding-top:3px;color:#A9A9A9;"
+      span.name
       - if f.object.material.present?
+        span ="｜納品：#{@b_hash[m.object.material_id]['vendor_info']}"
+        input value="#{f.object.material.vendor.delivery_able_wday}" class="delivery_able_date" style='display:none;'
         span style='color:red;font-weight:bold;' = "【受注品】" if f.object.material.vendor_stock_flag == false
+      - else
+        input value="" class="delivery_able_date" style='display:none;'
   td class="quantity_#{f.object.material_id}" style="min-width:500px;"
     .clearfix.text-right
       div style="float:left;width:50%;"

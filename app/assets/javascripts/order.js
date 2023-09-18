@@ -1,5 +1,5 @@
 $(document).on('turbolinks:load', function() {
-  change_color();
+  // change_color();
   $('[data-toggle="tooltip"]').tooltip();
   $('[data-toggle="popover"]').popover();
   first_input_check();
@@ -75,49 +75,24 @@ $(document).on('turbolinks:load', function() {
 
 
 
-  $("#all_make_date_change").on("change", function(){
-    var date = $(this).val()
-    $(".input_make_date").val(date)
-  });
-
-
-  $(".order_management_id_search").on("blur",function(){
-    var management_id =  parseInt($(this).val());
-    var inp = $(this).parent().parent().find(".input_select_product")
-    $.ajax({
-      url: "/orders/get_management_id",
-      data: { management_id : management_id },
-      dataType: "json",
-      async: false
-    })
-    .done(function(data){
-      if (data) {
-        var id = parseInt(data.id)
-        inp.val(id).change();
-      }else{
-        inp.val("").change();
-      }
-    });
-  });
-
-  $(".input_select_product").on("change",function(){
-    var id = $(this).val();
-    var inp_bentoid = $(this).parent().parent().find(".order_management_id_search")
-    $.ajax({
-      url: "/orders/check_management_id",
-      data: { id : id },
-      dataType: "json",
-      async: false
-    })
-    .done(function(data){
-      if (data) {
-        var management_id = parseInt(data.management_id)
-        inp_bentoid.val(management_id);
-      }else{
-        inp_bentoid.val("");
-      }
-    });
-  });
+  // $(".input_select_product").on("change",function(){
+  //   var id = $(this).val();
+  //   var inp_bentoid = $(this).parent().parent().find(".order_management_id_search")
+  //   $.ajax({
+  //     url: "/orders/check_management_id",
+  //     data: { id : id },
+  //     dataType: "json",
+  //     async: false
+  //   })
+  //   .done(function(data){
+  //     if (data) {
+  //       var management_id = parseInt(data.management_id)
+  //       inp_bentoid.val(management_id);
+  //     }else{
+  //       inp_bentoid.val("");
+  //     }
+  //   });
+  // });
 
 
   //indexで使用
@@ -137,19 +112,19 @@ $(document).on('turbolinks:load', function() {
   });
 
  //new_form
-  $(".input_select_product").on('change', function(){
-    var id = $(this).val();
-    var tr =  $(this).parent().parent("tr")
-    var index = $(".form_tr").index(tr)
-    $(".hidden_form").children().children("tr").eq(index).children(".select").children().val(id);
-  });
+  // $(".input_select_product").on('change', function(){
+  //   var id = $(this).val();
+  //   var tr =  $(this).parent().parent("tr")
+  //   var index = $(".form_tr").index(tr)
+  //   $(".hidden_form").children().children("tr").eq(index).children(".select").children().val(id);
+  // });
 
-  $(".input_cook_num").on('change', function(){
-    var num = $(this).val();
-    var tr =  $(this).parent().parent("tr")
-    var index = $(".form_tr").index(tr)
-    $(".hidden_form").children().children("tr").eq(index).children(".cook_num").children().val(num);
-  });
+  // $(".input_cook_num").on('change', function(){
+  //   var num = $(this).val();
+  //   var tr =  $(this).parent().parent("tr")
+  //   var index = $(".form_tr").index(tr)
+  //   $(".hidden_form").children().children("tr").eq(index).children(".cook_num").children().val(num);
+  // });
 
 //form(new|edit)
   $(".vendor_select").on("change",function(){
@@ -193,10 +168,12 @@ $(document).on('turbolinks:load', function() {
   	if ($(this).is(':checked')) {
       var tr = $(this).parent().parent("tr")
       destroy_color(tr);
+      change_color();
   	} else {
       var tr = $(this).parent().parent("tr")
       undestroy_color(tr);
-      input_check()
+      input_check();
+      change_color();
   	}
   });
 
@@ -234,19 +211,20 @@ $(document).on('turbolinks:load', function() {
       var recipe_unit_quantity = data.material.recipe_unit_quantity;
       var order_unit = data.material.order_unit;
       var order_unit_quantity = data.material.order_unit_quantity;
-      var delivery_deadline = data.material.delivery_deadline
+      var delivery_deadline = data.material.delivery_deadline;
+      var delivery_able_wday = data.material.vendor_delivery_able_wday;
       var change_unit = order_unit_quantity+order_unit+"："+ recipe_unit_quantity+" "+unit
       if (color=='') {
-        $(".order_materials_tr").eq(u).find(".vendor_company_name").text(vendor).css("color",'color:#A9A9A9;').css("font-weight",'normal');
+        $(".order_materials_tr").eq(u).find(".company_name").text(vendor).css("color",'color:#A9A9A9;').css("font-weight",'normal');
       }else{
-        $(".order_materials_tr").eq(u).find(".vendor_company_name").text(vendor).css("color",'red').css("font-weight",'bold');
+        $(".order_materials_tr").eq(u).find(".company_name").text(vendor).css("color",'red').css("font-weight",'bold');
       }
-      console.log(delivery_deadline);
+      $(".order_materials_tr").eq(u).find(".delivery_able_date").val(delivery_able_wday);
       $(".order_materials_tr").eq(u).find(".delivery_deadline_span").val(delivery_deadline);
       $(".order_materials_tr").eq(u).find(".order_material_unit").val(order_unit);
       $(".order_materials_tr").eq(u).find(".change_unit").text(change_unit);
-
     });
+    change_color();
   }});
   //送信前のバリデーション
   $('.order_submit').on('click', function check(){
@@ -265,46 +243,61 @@ $(document).on('turbolinks:load', function() {
     if (destroy_check == 1){
       return false;
     }else{
-      $('.edit_order').submit();
-      $('.new_order').submit();
     }
   });
 
-
-    $("#all_date_change").on("change", function(){
-      var date = $(this).val()
-      $('.order_materials_tr').each(function(){
-        if ($(this).is(':visible')){$(this).find(".input_delivery_date").val(date)}
-      });
-      change_color();
+  $("#all_date_change").on("change", function(){
+    var date = $(this).val()
+    $('.order_materials_tr').each(function(){
+      if ($(this).is(':visible')){$(this).find(".input_delivery_date").val(date)}
     });
+    change_color();
+  });
 
-    $("#order_materials_table").on("change",".input_delivery_date",function(){
-      change_color();
+  $("#order_materials_table").on("change",".input_delivery_date",function(){
+    change_color();
+  });
+
+  function change_color(){
+    $(".input_delivery_date").css("background-color","white")
+    var date_arr = []
+    var error = false
+    $('.order_materials_tr').each(function(){
+      var date = $(this).find(".input_delivery_date").val()
+      if(date){
+        if ($(this).find(".destroy_order_materials").prop("checked")==false) {
+          idate = new Date(date);
+          youbi = idate.getDay();
+          var delivery_able_date = $(this).find(".delivery_able_date").val()
+          var delivery_able_date_arr = delivery_able_date.split(',').map(Number)
+          if ($.inArray(youbi, delivery_able_date_arr) == -1) {
+            error = true
+          }
+        }
+      }
+      $(this).find(".input_delivery_date").removeClass().addClass("form-control input_delivery_date date_input "+date);
+      date_arr.push(date)
     });
+    if (error==true) {
+      $(".order_submit").attr('data-confirm', '業者の納品可能日以外の曜日を指定している商品があります。確認する場合はキャンセルを押して下さい。送信する場合はOKを押して下さい。');
+    }else{
+      $(".order_submit").removeAttr('data-confirm');
+    }
 
-    function change_color(){
-      $(".input_delivery_date").css("background-color","white")
-      var date_arr = []
-      $('.order_materials_tr').each(function(){
-        var date = $(this).find(".input_delivery_date").val()
-        $(this).find(".input_delivery_date").removeClass().addClass("form-control input_delivery_date date_input "+date);
-        date_arr.push(date)
-      });
-      var countDuplicate = function(arr){
-        return arr.reduce(function(counts, key){
-          counts[key] = (counts[key])? counts[key] + 1 : 1 ;
-          return counts;
-        }, {});
-      };
-      var uniq_arr = countDuplicate(date_arr);
-      var i = 0;
-      var color =["#FFF","#FFC7AF","#BAD3FF","#FFDDFF","#DDDDDD","#FFFFCC","#CCFFCC"];
-      $.each(uniq_arr,function(key,value){
-          $("."+key).css("background-color",color[i]);
-          i = i + 1;
-      });
+    var countDuplicate = function(arr){
+      return arr.reduce(function(counts, key){
+        counts[key] = (counts[key])? counts[key] + 1 : 1 ;
+        return counts;
+      }, {});
     };
+    var uniq_arr = countDuplicate(date_arr);
+    var i = 0;
+    var color =["#FFF","#FFC7AF","#BAD3FF","#FFDDFF","#DDDDDD","#FFFFCC","#CCFFCC"];
+    $.each(uniq_arr,function(key,value){
+        $("."+key).css("background-color",color[i]);
+        i = i + 1;
+    });
+  };
 
 
 
