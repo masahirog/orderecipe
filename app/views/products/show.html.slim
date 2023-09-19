@@ -1,4 +1,4 @@
-.col-md-12.form-inline
+.form-inline.clearfix
   = link_to '商品を編集',edit_product_path(@product),class: "btn btn-success",style:'margin:0 10px 0 0px;float:left;'
   = form_tag({:controller => "products", :action => "print", format: "pdf"},{:target => "_blank",style:'float:left;'}) do
     = number_field(:volume,:id,value:params[:id],style:"display:none;")
@@ -21,9 +21,20 @@
   - if @delete_flag == true
     = link_to "削除", @product, method: :delete,class:'btn btn-danger pull-right',data: { confirm: "ほんまに削除してええの？" },style:''
 
-table.table
-  thead
-    tr
+.table-responsive style='overflow: scroll;'
+  table.table.layout-fixed style='border-collapse:separate;'
+    colgroup
+      col class="col1"
+      col class="col1"
+      col class="col2"
+      col class="col1"
+      col class="col1"
+      col class="col1"
+      col class="col1"
+      col class="col1"
+      col class="col1"
+
+    thead style='position: sticky;top:0;background-color:white;z-index:3;'
       th ステータス
       th ブランド
       th 商品名
@@ -34,23 +45,23 @@ table.table
       th 原価価格
       th 原価率
 
-  tbody
-    tr
-      td = @product.status
-      td = @product.brand.name
-      td = @product.name
-      td = @product.product_category
-      td = @product.sub_category
-      td = @product.container.name if @product.container.present?
-      td = "#{@product.sell_price} 円"
-      td = "#{@product.cost_price} 円"
-      td = "#{((@product.cost_price/@product.sell_price)*100).round(1)}%"
-.col-md-12 style="padding:0;"
-  .col-md-6
+    tbody
+      tr
+        td = @product.status
+        td = @product.brand.name
+        td style="white-space: normal;" = @product.name
+        td = @product.product_category
+        td = @product.sub_category
+        td = @product.container.name if @product.container.present?
+        td = "#{@product.sell_price} 円"
+        td = "#{@product.cost_price} 円"
+        td = "#{((@product.cost_price/@product.sell_price)*100).round(1)}%"
+.clearfix style="padding:0;"
+  div style="width:50%;float:left;"
     label 商品特徴
     hr style='margin:0 0 8px 0;'
     = text_url_to_link(simple_format(h(@product.description))).html_safe
-  .col-md-6
+  div style="width:50%;float:left;"
     label 1人前盛り付け
     hr style='margin:0 0 8px 0;'
     = text_url_to_link(simple_format(h(@product.serving_infomation))).html_safe
@@ -70,15 +81,20 @@ table.table
           = link_to posi.image.to_s, "data-lightbox" => posi.image.to_s do
             = image_tag posi.image.to_s ,class:"text-center img-responsive center-block",style:'max-height:150px;'
 
+.table-responsive style='height:200px;overflow: scroll;'
+  table.table.layout-fixed style='border-collapse:separate;'
+    colgroup
+      col class="col2"
+      col class="col2"
+      col class="col2"
+      col class="col2"
 
-.table-responsive
-  table.table
-    thead
+    thead style='position: sticky;top:0;background-color:white;z-index:3;'
       tr
-        th.col-md-3 製造側写真
-        th.col-md-3 ポップ
-        th.col-md-3 1人前写真
-        th.col-md-3 1人前盛り
+        th 製造側写真
+        th ポップ
+        th 1人前写真
+        th 1人前盛り
     tbody
       tr
         td
@@ -103,13 +119,6 @@ table.table
             = image_tag @product.image_for_one_person.to_s ,class:"text-center img-responsive center-block",style:'max-height:150px;'
 
         td = text_url_to_link(simple_format(h(@product.serving_infomation))).html_safe
-  / tr
-  /   th.active.col-md-4 食品添加物
-  /   td = @additives.join('、')
-  / tr
-  /   th.active.col-md-4 カロリー
-  /   td = "#{MenuMaterial.where(menu_id:@product.menus.ids).sum(:calorie).round(2)} kcal"
-
 
 .table-responsive
   table.table
@@ -174,3 +183,20 @@ table.table
             td = "#{mm.amount_used} #{mm.material.recipe_unit}"
             td = (mm.amount_used * mm.material.cost_price).round(1)
             td = mm.preparation
+
+
+css:
+  .table-responsive th {
+    white-space: normal;
+  }
+  table.layout-fixed {
+    table-layout: fixed;
+    border-collspace:separate;
+  }
+
+  .col1{
+    width:100px;
+  }
+  .col2{
+    width:200px;
+  }
