@@ -71,10 +71,12 @@ class TasksController < ApplicationController
     Store.where(group_id:@group_id).each do |store|
       @stores_hash[store.id]=store.name
     end
+    task_created_staff_ids = []
     @task.task_stores.each do |ts|
       if ts.subject_flag == true
         ts.store.staffs.where(employment_status:1,status:0).each do|staff|
-          @task.task_staffs.build(staff_id:staff.id,read_flag:false)
+          @task.task_staffs.build(staff_id:staff.id,read_flag:false) unless task_created_staff_ids.include?(staff.id) 
+          task_created_staff_ids << staff.id
         end
       end
     end
