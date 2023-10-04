@@ -17,7 +17,7 @@ class StocksController < AdminController
   def make_this_month
     new_monthly_stocks = []
     date = Date.today.end_of_month
-    stores = Store.all
+    stores = Store.where(group_id:current_user.group_id)
     stores.each do |store|
       if MonthlyStock.find_by(date:date,store_id:store.id).present?
       else
@@ -113,18 +113,27 @@ class StocksController < AdminController
     monthly_stock.update_attributes(item_number:item_number,total_amount:total_amount.round,foods_amount:foods_amount.round,equipments_amount:equipments_amount.round,expendables_amount:expendables_amount.round)
     redirect_to monthly_stocks_path(date:date),notice:"#{monthly_stock.store.name}拠点の#{monthly_stock.date.month}月の棚卸しを更新しました。"
   end
+  def store_inventory
+    @store = Store.find(params[:store_id])
+    @monthly_stocks = MonthlyStock.where(store_id:@store.id).order("date DESC")
+    @foods_amount = @monthly_stocks.group(:date,:store_id).sum(:foods_amount)
+    @equipments_amount = @monthly_stocks.group(:date,:store_id).sum(:equipments_amount)
+    @expendables_amount = @monthly_stocks.group(:date,:store_id).sum(:expendables_amount)
+    @item_number = @monthly_stocks.group(:date,:store_id).sum(:item_number)
+
+  end
   def index
-    monthly_stocks = MonthlyStock.all
-    @month_counts = MonthlyStock.group(:date).count
+    @stores = current_user.group.stores
+    monthly_stocks = MonthlyStock.where(store_id:current_user.group.stores.ids)
     @dates = monthly_stocks.map{|ms|ms.date}.uniq.sort.reverse
-    @foods_amount = monthly_stocks.group(:date).sum(:foods_amount)
-    @equipments_amount = monthly_stocks.group(:date).sum(:equipments_amount)
-    @expendables_amount = monthly_stocks.group(:date).sum(:expendables_amount)
-    @item_number = monthly_stocks.group(:date).sum(:item_number)
+    @foods_amount = monthly_stocks.group(:date,:store_id).sum(:foods_amount)
+    @equipments_amount = monthly_stocks.group(:date,:store_id).sum(:equipments_amount)
+    @expendables_amount = monthly_stocks.group(:date,:store_id).sum(:expendables_amount)
+    @item_number = monthly_stocks.group(:date,:store_id).sum(:item_number)
     # @monthly_stocks = MonthlyStock.order('date DESC')
   end
   def monthly
-    @monthly_stocks = MonthlyStock.where(date:params[:date])
+    @monthly_stocks = MonthlyStock.where(date:params[:date],store_id:current_user.group.stores.ids)
   end
   # def new
   #   @stock = Stock.new

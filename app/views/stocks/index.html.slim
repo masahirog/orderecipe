@@ -1,37 +1,18 @@
 
 = link_to "今月の棚卸枠を作成",make_this_month_stocks_path, method: :post,class:'btn btn-primary'
-span 食材：肉、生野菜、調味料・既製品、その他野菜（冷凍・調理済み）、魚、米
-br
-span 包材：包材・容器
-br
-span その他：消耗品、調理用品
+
+
 table.table
   thead
     tr
-      th 年月
-      th 拠点数
-      th.text-right 品目数
-      th.text-right 合計金額
-      th.text-right 食材
-      th.text-right 包材
-      th.text-right その他
+      th
+      - @stores.each do |store|
+        th = link_to store.name,store_inventory_stocks_path(store_id:store.id)
   tbody
     - @dates.each do |date|
       tr
         td
-          -if Date.today < date
-            = link_to "#{date}（予想）",monthly_stocks_path(date:date)
+          = link_to date,monthly_stocks_path(date:date)
+        - @stores.each do |store|
+          td = "#{(@foods_amount[[date,store.id]].to_i+@equipments_amount[[date,store.id]].to_i+@expendables_amount[[date,store.id]].to_i).to_s(:delimited)} 円"
 
-          - else
-            = link_to "#{date}",monthly_stocks_path(date:date)
-        td = @month_counts[date]
-        td.text-right
-          = "#{@item_number[date]}"
-        td.text-right
-          = " #{(@foods_amount[date]+@equipments_amount[date]+@expendables_amount[date]).to_s(:delimited)} 円"
-        td.text-right
-          = "#{@foods_amount[date].to_s(:delimited)} 円"
-        td.text-right
-          = "#{@equipments_amount[date].to_s(:delimited)} 円"
-        td.text-right
-          = "#{@expendables_amount[date].to_s(:delimited)} 円"

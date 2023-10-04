@@ -1,0 +1,28 @@
+h3 = "#{@store.name} 月次棚卸し"
+
+table.table
+  thead
+    tr
+      th 年月
+      th
+      th 点数
+      th 合計
+      th 食材
+      th 包材
+      th その他
+
+  tbody
+    - @monthly_stocks.each do |monthly_stock|
+      tr
+        td = monthly_stock.date
+        td
+          = link_to "更新", {controller: "stocks", action: "update_monthly_stocks", date: monthly_stock.date,store_id:@store.id}, method: :post, data: { confirm: '更新しますか？' }
+        td = monthly_stock.item_number
+        td
+          = "#{monthly_stock.total_amount.to_s(:delimited)} 円"
+        td
+          = link_to "#{monthly_stock.foods_amount.to_s(:delimited)} 円",inventory_stocks_path(to:monthly_stock.date,categories:{meat:true,fish:true,vege:true,other_vege:true,other_food:true,other_food:true,rice:true},store_id:monthly_stock.store_id)
+        td
+          = link_to "#{monthly_stock.equipments_amount.to_s(:delimited)} 円",inventory_stocks_path(to:monthly_stock.date,categories:{packed:true},store_id:monthly_stock.store_id)
+        td
+          = link_to "#{monthly_stock.expendables_amount.to_s(:delimited)} 円",inventory_stocks_path(to:monthly_stock.date,categories:{consumable_item:true,cooking_item:true},store_id:monthly_stock.store_id)
