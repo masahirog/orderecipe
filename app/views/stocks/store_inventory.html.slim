@@ -4,19 +4,19 @@ table.table
   thead
     tr
       th 年月
-      th
+      th 
       th 点数
       th 合計
       th 食材
       th 包材
       th その他
+      th 
 
   tbody
     - @monthly_stocks.each do |monthly_stock|
       tr
         td = monthly_stock.date
-        td
-          = link_to "更新", {controller: "stocks", action: "update_monthly_stocks", date: monthly_stock.date,store_id:@store.id}, method: :post, data: { confirm: '更新しますか？' }
+        td = link_to '開始', inventory_stocks_path(to:monthly_stock.date,store_id:@store.id,order:"五十音"),class:"btn btn-primary btn-sm"
         td = monthly_stock.item_number
         td
           = "#{monthly_stock.total_amount.to_s(:delimited)} 円"
@@ -26,3 +26,5 @@ table.table
           = link_to "#{monthly_stock.equipments_amount.to_s(:delimited)} 円",inventory_stocks_path(to:monthly_stock.date,order:"金額",categories:{packed:true},store_id:monthly_stock.store_id)
         td
           = link_to "#{monthly_stock.expendables_amount.to_s(:delimited)} 円",inventory_stocks_path(to:monthly_stock.date,order:"金額",categories:{consumable_item:true,cooking_item:true},store_id:monthly_stock.store_id)
+        td
+          = link_to "更新", {controller: "stocks", action: "update_monthly_stocks", date: monthly_stock.date,store_id:@store.id}, method: :post, data: { confirm: "山下以外更新禁止！" },class:'btn btn-default btn-sm'
