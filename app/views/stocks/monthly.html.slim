@@ -25,8 +25,8 @@ table.table
         td.text-right
           = "#{ms.total_amount.to_s(:delimited)} 円"
         td.text-right
-          = link_to "#{ms.foods_amount.to_s(:delimited)} 円",inventory_stocks_path(to:ms.date,categories:{meat:true,fish:true,vege:true,other_vege:true,other_food:true,other_food:true,rice:true},store_id:ms.store_id)
+          = link_to "#{ms.foods_amount.to_s(:delimited)} 円",inventory_stocks_path(to:ms.date,order:"金額",categories:{meat:true,fish:true,vege:true,other_vege:true,other_food:true,other_food:true,rice:true},store_id:ms.store_id)
         td.text-right
-          = link_to "#{ms.equipments_amount.to_s(:delimited)} 円",inventory_stocks_path(to:ms.date,categories:{packed:true},store_id:ms.store_id)
+          = link_to "#{ms.equipments_amount.to_s(:delimited)} 円",inventory_stocks_path(to:ms.date,order:"金額",categories:{packed:true},store_id:ms.store_id)
         td.text-right
-          = link_to "#{ms.expendables_amount.to_s(:delimited)} 円",inventory_stocks_path(to:ms.date,categories:{consumable_item:true,cooking_item:true},store_id:ms.store_id)
+          = link_to "#{ms.expendables_amount.to_s(:delimited)} 円",inventory_stocks_path(to:ms.date,order:"金額",categories:{consumable_item:true,cooking_item:true},store_id:ms.store_id)

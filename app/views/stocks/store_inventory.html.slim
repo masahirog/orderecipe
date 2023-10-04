@@ -21,8 +21,8 @@ table.table
         td
           = "#{monthly_stock.total_amount.to_s(:delimited)} 円"
         td
-          = link_to "#{monthly_stock.foods_amount.to_s(:delimited)} 円",inventory_stocks_path(to:monthly_stock.date,categories:{meat:true,fish:true,vege:true,other_vege:true,other_food:true,other_food:true,rice:true},store_id:monthly_stock.store_id)
+          = link_to "#{monthly_stock.foods_amount.to_s(:delimited)} 円",inventory_stocks_path(to:monthly_stock.date,order:"金額",categories:{meat:true,fish:true,vege:true,other_vege:true,other_food:true,other_food:true,rice:true},store_id:monthly_stock.store_id)
         td
-          = link_to "#{monthly_stock.equipments_amount.to_s(:delimited)} 円",inventory_stocks_path(to:monthly_stock.date,categories:{packed:true},store_id:monthly_stock.store_id)
+          = link_to "#{monthly_stock.equipments_amount.to_s(:delimited)} 円",inventory_stocks_path(to:monthly_stock.date,order:"金額",categories:{packed:true},store_id:monthly_stock.store_id)
         td
-          = link_to "#{monthly_stock.expendables_amount.to_s(:delimited)} 円",inventory_stocks_path(to:monthly_stock.date,categories:{consumable_item:true,cooking_item:true},store_id:monthly_stock.store_id)
+          = link_to "#{monthly_stock.expendables_amount.to_s(:delimited)} 円",inventory_stocks_path(to:monthly_stock.date,order:"金額",categories:{consumable_item:true,cooking_item:true},store_id:monthly_stock.store_id)
