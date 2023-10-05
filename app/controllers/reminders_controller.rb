@@ -1,4 +1,4 @@
-class RemindersController < ApplicationController
+class RemindersController < AdminController
   before_action :set_reminder, only: %i[ show edit update destroy ]
   def clean
     if params[:date]

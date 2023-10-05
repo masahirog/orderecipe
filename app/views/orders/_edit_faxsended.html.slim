@@ -1,11 +1,17 @@
 = form_for(order_material, data: { remote: true }) do |f|
   = f.hidden_field :id,class:'order_material_id'
-  - if order_material.fax_sended_status == 1
+  - if order_material.status == 1
     - color = 'green'
-  - elsif order_material.fax_sended_status == 0
+  - elsif order_material.status == 0
     - color = 'gray'
-  - elsif order_material.fax_sended_status == 2
+  - elsif order_material.status == 2
     - color = 'red'
-  - elsif order_material.fax_sended_status == 3
+  - elsif order_material.status == 3
     - color = 'orange'
-  = f.select :fax_sended_status, [['OK',1],['NG',2],['Sending',3],['Unsend',0]],{}, class: "fax_status",style:"background-color:#{color};"
+  - elsif order_material.status == 4
+    - color = 'orange'
+  - elsif order_material.status == 5
+    - color = 'green'
+  - elsif order_material.status == 6
+    - color = 'blue'
+  = f.select :status, [['FAX送信完了',1],['FAX送信失敗',2],['FAX送信中',3],['メール送信',4],['未送信',0],["メール確認済み",5],['商品発送完了',6]],{}, class: "fax_status",style:"background-color:#{color};"

@@ -1,4 +1,4 @@
-class DefaultShiftsController < ApplicationController
+class DefaultShiftsController < AdminController
   before_action :set_default_shift, only: %i[ show edit update destroy ]
   def create_frame
     @wdays = [[1,'月'],[2,'火'],[3,'水'],[4,'木'],[5,'金'],[6,'土'],[0,'日']]

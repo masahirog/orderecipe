@@ -14,11 +14,47 @@ class Vendor < ApplicationRecord
     order = Order.find(params[:id])
     order_materials = OrderMaterial.includes(material:[:vendor]).where(order_id:order.id,un_order_flag:false)
     order_materials.each do |om|
+      vendor = om.material.vendor
       hash={}
       hash.store("vendor_id", om.material.vendor_id)
       hash.store("company_name", om.material.vendor.name)
       hash.store("company_fax", om.material.vendor.company_fax)
       hoge << hash
+    end
+    hoge.uniq!
+    return hoge
+  end
+
+  def self.vendor_fax_index(params)
+    hoge = []
+    order = Order.find(params[:id])
+    order_materials = OrderMaterial.includes(material:[:vendor]).where(order_id:order.id,un_order_flag:false)
+    order_materials.each do |om|
+      vendor = om.material.vendor
+      if vendor.company_fax.present?
+        hash={}
+        hash.store("vendor_id", om.material.vendor_id)
+        hash.store("company_name", om.material.vendor.name)
+        hash.store("company_fax", om.material.vendor.company_fax)
+        hoge << hash
+      end
+    end
+    hoge.uniq!
+    return hoge
+  end
+  def self.vendor_mail_index(params)
+    hoge = []
+    order = Order.find(params[:id])
+    order_materials = OrderMaterial.includes(material:[:vendor]).where(order_id:order.id,un_order_flag:false)
+    order_materials.each do |om|
+      vendor = om.material.vendor
+      if vendor.company_mail.present?
+        hash={}
+        hash.store("vendor_id", om.material.vendor_id)
+        hash.store("company_name", om.material.vendor.name)
+        hash.store("company_mail", om.material.vendor.company_mail)
+        hoge << hash
+      end
     end
     hoge.uniq!
     return hoge

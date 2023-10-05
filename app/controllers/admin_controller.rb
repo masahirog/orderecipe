@@ -4,7 +4,9 @@ class AdminController < ApplicationController
   #admniコントローラを継承しているページへの入り口ジャッジ
   def if_not_admin
     if current_user.admin?
-    else
+    elsif current_user.vendor_flag == true
+      redirect_to '/vendor/orders'
+     else
       redirect_to '/crew/stores'
     end
   end

@@ -1,4 +1,4 @@
-class StoreDailyMenuDetailsController < ApplicationController
+class StoreDailyMenuDetailsController < AdminController
   before_action :set_store_daily_menu_detail, only: %i[ show edit update destroy ]
 
   # def index

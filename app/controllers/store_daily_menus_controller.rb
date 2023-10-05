@@ -1,5 +1,5 @@
 require "csv"
-class StoreDailyMenusController < ApplicationController
+class StoreDailyMenusController < AdminController
   before_action :set_store_daily_menu, only: [:show, :edit, :update, :destroy]
   def budget_update
     @store_daily_menu = StoreDailyMenu.find(params[:store_daily_menu_id])

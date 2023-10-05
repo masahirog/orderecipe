@@ -23,7 +23,8 @@ table.table.table-list
     tr
       th 商品名
       th 発注数
-      th 惣菜？
+      th 店舗調理
+      th 分割目安
       th 仕入れ値
       th 1人前
       th 売価
@@ -32,13 +33,21 @@ table.table.table-list
 
   tbody
     -@store_daily_menu_details.each_with_index do |sdmd,index|
-      tr
+      - if sdmd.product.bejihan_only_flag == true
+        - bg_color = "silver"
+      - else
+        - bg_color = "white"
+      tr style="background-color:#{bg_color}"
         td
           = link_to sdmd.product.name,crew_product_path(sdmd.product)
         td
           = sdmd.number if sdmd.number > 0
         td
-          = "惣菜" if sdmd.product.bejihan_sozai_flag == true
+          - if MenuLastProcess.where(menu_id:sdmd.product.menus.ids).present?
+            |あり
+          - else
+        td
+          = sdmd.product.sky_split_information
         td
           = "#{sdmd.product.sky_wholesale_price}円" if sdmd.product.sky_wholesale_price.present?
         td

@@ -52,6 +52,10 @@
       -else
         = f.submit '未確定で保存する',class:'btn btn-danger pull-right save-btn order_submit', data: {disable_with: '保存中'}
 
+  .col-md-12 style="padding-bottom:10px;"
+    = f.label :memo, "社内メモ（送信先には表示されません）"
+    = f.text_area :memo,class:'form-control',placeholder:'メモ'
+
   table.table
     thead.order_materials_thead
       tr

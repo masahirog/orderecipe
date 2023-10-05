@@ -1,4 +1,4 @@
-class RefundSupportsController < ApplicationController
+class RefundSupportsController < AdminController
   before_action :set_refund_support, only: %i[ show edit update destroy ]
 
   def index

@@ -1,0 +1,2 @@
+module Vendor::OrdersHelper
+end

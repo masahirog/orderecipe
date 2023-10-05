@@ -1,0 +1,3 @@
+= form_tag "orders/status_change", remote: true do
+  = hidden_field_tag :order_material_id,order_material.id,class:'order_material_id'
+  = select_tag :status, options_for_select([['注文確認待ち',4],['注文確認済み',5],['商品発送完了',6]],order_material.status), class: "form-control status"

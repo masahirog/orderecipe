@@ -1,4 +1,4 @@
-class StoresController < ApplicationController
+class StoresController < AdminController
   before_action :set_store, only: [:show, :edit, :update, :destroy]
   def materials
     store_id = params[:store_id]

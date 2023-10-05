@@ -1,4 +1,4 @@
-class TemporaryMenuMaterialsController < ApplicationController
+class TemporaryMenuMaterialsController < AdminController
   before_action :set_temporary_menu_material, only: %i[ show edit update destroy ]
 
   def ikkatsu_update

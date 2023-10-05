@@ -8,7 +8,7 @@ class ApplicationController < ActionController::Base
   before_action :user_check
   def user_check
     @today = Date.today
-    if user_signed_in?
+    if user_signed_in? && current_user.group_id.present?
       @group_id = current_user.group_id
       @stores = Group.find(@group_id).stores
     end
@@ -21,6 +21,8 @@ class ApplicationController < ActionController::Base
       shifts_path(group_id:current_user.group_id,store_type:0)
     elsif current_user.id == 69
       crew_stores_path
+    elsif current_user.vendor_flag == true
+      vendor_orders_path
     end
   end
   def render_500(e)

@@ -1,4 +1,4 @@
-class SalesReportsController < ApplicationController
+class SalesReportsController < AdminController
   before_action :set_sales_report, only: %i[ show edit update destroy ]
 
   def index

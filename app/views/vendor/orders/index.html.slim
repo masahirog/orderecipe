@@ -1,0 +1,38 @@
+h3 = "#{@vendor.name} 様"
+ul.list-group
+	- @order_materials.each do |order_material|
+		- if order_material.status == 6
+			- bg_color = "#d3d3d3"
+		- elsif order_material.status == 4
+			- bg_color = "#fffacd"
+		- else
+			- bg_color = "white"
+		- order_amount = number_with_precision((order_material.order_quantity.to_f/order_material.material.recipe_unit_quantity)*order_material.material.order_unit_quantity,precision:1, strip_insignificant_zeros: true, delimiter: ',')
+		li.list-group-item class="#{order_material.id}" style="margin-bottom:14px;padding:5px 8px;background-color:#{bg_color}"
+			.mb-2 style='line-height:1.8em;'
+				span = "ID：#{order_material.order.id}"
+				br
+				span.fw-bold = "発注商品：#{order_material.material.name}"
+				br
+				span = "発注量：#{order_amount} #{order_material.material.order_unit}"
+				br
+				span = "納品希望日：#{order_material.delivery_date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[order_material.delivery_date.wday]})")}"
+				br
+				- if order_material.order_material_memo.present?
+					span style="color:red;" メモ
+					span = "：#{order_material.order_material_memo}"
+			.mb-2.clearfix
+				.float-start
+					= render partial: "status_change", locals: { order_material:order_material }
+        / span.float-end style='font-size:0.8em;' = "作成：#{order.created_at.strftime("%-m月%-d日(#{%w(日 月 火 水 木 金 土)[order.created_at.wday]}) %H:%M")}"
+br
+= paginate @order_materials
+
+
+javascript:
+  $(function() {
+    $(document).on("change", ".status", function(event) {
+      var om_id = $(this).parent().find('.order_material_id').val();
+      Rails.fire($(this).parents('form')[0], 'submit');
+    });
+  });

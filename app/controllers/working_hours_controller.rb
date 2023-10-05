@@ -1,4 +1,4 @@
-class WorkingHoursController < ApplicationController
+class WorkingHoursController < AdminController
   before_action :set_working_hour, only: %i[ show edit update destroy ]
   def result
     today = Date.today

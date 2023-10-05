@@ -1,4 +1,15 @@
 Rails.application.routes.draw do
+
+  namespace :vendor do
+    resources :orders do
+      collection do
+        post :status_change
+        get :index
+        get :show
+      end
+    end
+  end
+
   namespace :crew do
     root 'store_daily_menus#index'
     get '/products/ikkatsu' => 'products#ikkatsu'
@@ -249,6 +260,7 @@ Rails.application.routes.draw do
       get :suriho
       get :bejihan_store_orders_list
       get :send_order_fax
+      get :send_order_mail
       get :preparation_all
       get :monthly
       get :products_pdfs

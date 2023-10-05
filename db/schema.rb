@@ -465,7 +465,7 @@ ActiveRecord::Schema.define(version: 2023_06_29_230155) do
     t.date "delivery_date"
     t.text "menu_name"
     t.boolean "un_order_flag", default: false, null: false
-    t.integer "fax_sended_status", default: 0, null: false
+    t.integer "status", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -571,6 +571,8 @@ ActiveRecord::Schema.define(version: 2023_06_29_230155) do
     t.text "sky_serving_infomation"
     t.integer "group_id", null: false
     t.integer "sub_category"
+    t.string "sky_split_information"
+    t.boolean "bejihan_only_flag", default: false, null: false
   end
 
   create_table "refund_supports", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -989,7 +991,8 @@ ActiveRecord::Schema.define(version: 2023_06_29_230155) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "admin", default: false, null: false
-    t.integer "group_id", null: false
+    t.integer "group_id"
+    t.boolean "vendor_flag", default: false, null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
@@ -1014,6 +1017,7 @@ ActiveRecord::Schema.define(version: 2023_06_29_230155) do
     t.integer "group_id", null: false
     t.string "name"
     t.string "delivery_able_wday", default: "0,1,2,3,4,5,6", null: false
+    t.integer "user_id"
   end
 
   create_table "working_hours", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|

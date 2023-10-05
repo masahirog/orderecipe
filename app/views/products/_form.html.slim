@@ -1,3 +1,4 @@
+
 = form_for @product do |f|
   = f.hidden_field :cooking_rice_id,value:21
   = f.hidden_field :group_id,value:@group_id
@@ -11,13 +12,18 @@
           li
             = message
   .col-md-12.form-group
-    .col-md-3
+    .col-md-2
       = f.label :brand_id, "ブランド"
       = f.collection_select :brand_id, Brand.where(group_id:@group_id), :id, :name, {}, { class: "form-control"}
 
-    .col-md-5
+    .col-md-4
       = f.label :name, "商品名"
       = f.text_field :name, id: "menu_search", class:"name form-control"
+    .col-md-2
+      = f.label :status, "ステータス"
+      = f.select :status, options_for_select_from_enum(Product, :status),{include_blank:true}, { class: "form-control", required:true}
+
+
     .col-md-2
       = f.label :product_category, "カテゴリー"
       - if current_user.group_id == 9
@@ -33,16 +39,15 @@
         = f.select :sub_category, options_for_select(sub_categories,@product.sub_category), {include_blank:true}, class: 'form-control'
   .col-md-12.form-group
     .col-md-2
-      = f.label :status, "ステータス"
-      = f.select :status, options_for_select_from_enum(Product, :status),{include_blank:true}, { class: "form-control", required:true}
-
-    .col-md-2
       = f.label :container_id, "盛り付け容器・皿"
       = f.collection_select :container_id, Container.where(group_id:current_user.group_id), :id, :name, {include_blank:true}, { class: "form-control"}
-
-    .col-md-2
-      = f.label :product_category, "べじはん惣菜"
-      = f.check_box :bejihan_sozai_flag, class: "form-control"
+    - if current_user.group_id == 9
+      .col-md-2
+        = f.label :bejihan_only_flag, "べじはんのみ発注可"
+        = f.check_box :bejihan_only_flag, class: "form-control"
+      .col-md-2
+        = f.label :bejihan_sozai_flag, "べじはん惣菜"
+        = f.check_box :bejihan_sozai_flag, class: "form-control"
 
     .col-md-2
       = f.label :sell_price, "販売価格"
@@ -65,7 +70,10 @@
           input.cost_rate.form-control style="width:150px;" readonly='true'
         .form-group
           |%
-
+  .col-md-12.form-group
+    .col-md-12
+      = f.label :sky_split_information, "SKY卸時の分割目安 【1/2、1/3、1/4、分割不可】 等"
+      = f.text_field :sky_split_information, class:"form-control"
   .col-md-12.form-group
     .col-md-3
       = f.label :image, "公式写真"

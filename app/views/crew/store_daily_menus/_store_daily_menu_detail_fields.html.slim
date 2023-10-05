@@ -3,13 +3,28 @@
 - else
   -class_name = ''
 
-tr.nested-fields.item.daily_menu_detail_tr class=class_name
+- if f.object.product.bejihan_only_flag == true
+  - bg_color = "silver"
+- else
+  - bg_color = "white"
+
+tr.nested-fields.item.daily_menu_detail_tr class=class_name style="background-color:#{bg_color}"
   td.sell_price
     = f.object.product.sell_price
   td.wholesale_price
     = f.object.product.sky_wholesale_price
   td
+    - if MenuLastProcess.where(menu_id:f.object.product.menus.ids).present?
+      |あり
+    - else
+  td
+    = f.object.product.sky_split_information
+  td
     = link_to f.object.product.name,crew_product_path(f.object.product),target:"_blank"
   td
-    = f.number_field :sozai_number, class: 'form-control sozai_number input_number', min: 0
+    - if f.object.product.bejihan_only_flag == true
+      |発注不可
+      = f.number_field :sozai_number, class: 'form-control sozai_number input_number', min: 0,style:"display:none;"
+    - else
+      = f.number_field :sozai_number, class: 'form-control sozai_number input_number', min: 0
     = f.number_field :number, class: 'form-control total_number', min: 0,style:"display:none;"

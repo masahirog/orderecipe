@@ -235,9 +235,9 @@ class OrdersController < AdminController
     OrderMaterial.includes(material:[:vendor]).where(order_id:order_ids,un_order_flag:false).each do |om|
       if @vendors_hash[om.order_id][om.material.vendor_id].present?
         @vendors_hash[om.order_id][om.material.vendor_id][0] += 1
-        @vendors_hash[om.order_id][om.material.vendor_id][1] = om.fax_sended_status
+        @vendors_hash[om.order_id][om.material.vendor_id][1] = om.status
       else
-        @vendors_hash[om.order_id][om.material.vendor_id] = [1,om.fax_sended_status,om.material.vendor.name]
+        @vendors_hash[om.order_id][om.material.vendor_id] = [1,om.status,om.material.vendor.name]
       end
     end
     if params[:start_date].present?
@@ -711,6 +711,8 @@ class OrdersController < AdminController
     @order = Order.includes(order_products:[:product]).find(params[:id])
     @order_materials = OrderMaterial.includes(material:[:vendor]).where(order_id:@order.id,un_order_flag:false)
     @vendors = Vendor.vendor_index(params)
+    @fax_vendors = Vendor.vendor_fax_index(params)
+    @mail_vendors = Vendor.vendor_mail_index(params)
   end
 
   def order_print
@@ -774,8 +776,18 @@ class OrdersController < AdminController
     vendors.each do |vendor|
       NotificationMailer.send_fax_order(order,vendor).deliver
     end
-    order.order_materials.where(un_order_flag:false).joins(:material).where(:materials =>{vendor_id:vendor_ids}).update_all(fax_sended_status:3)
+    order.order_materials.where(un_order_flag:false).joins(:material).where(:materials =>{vendor_id:vendor_ids}).update_all(status:3)
     redirect_to order, notice: "#{vendors.length} 件のFAXを送信しました。しばらくたったあとにFAXが届いているか確認してください。"
+  end
+  def send_order_mail
+    vendor_ids = params['vendor_id'].keys
+    vendors = Vendor.where(id:vendor_ids)
+    order = Order.find(params[:order_id])
+    vendors.each do |vendor|
+      NotificationMailer.send_mail_order(order,vendor).deliver
+    end
+    order.order_materials.where(un_order_flag:false).joins(:material).where(:materials =>{vendor_id:vendor_ids}).update_all(status:3)
+    redirect_to order, notice: "#{vendors.length} 件のメールを送信しました。"
   end
 
   def get_management_id

@@ -1,4 +1,4 @@
-class StoreDailyMenuDetailHistoriesController < ApplicationController
+class StoreDailyMenuDetailHistoriesController < AdminController
   before_action :set_store_daily_menu_detail_history, only: %i[ update destroy ]
 
   def create

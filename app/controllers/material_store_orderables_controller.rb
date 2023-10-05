@@ -1,4 +1,4 @@
-class MaterialStoreOrderablesController < ApplicationController
+class MaterialStoreOrderablesController < AdminController
   before_action :set_material_store_orderable, only: %i[ show edit update destroy ]
 
   def index

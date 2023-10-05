@@ -19,6 +19,7 @@ class CreateVendors < ActiveRecord::Migration[4.2][5.0]
       t.integer :group_id, :null => false
       t.string :name
       t.string :delivery_able_wday, :null => false,default:'0,1,2,3,4,5,6'
+      t.integer :user_id
     end
   end
 end

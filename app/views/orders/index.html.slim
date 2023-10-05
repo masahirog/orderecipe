@@ -128,14 +128,19 @@ table.table
               - if id==559
               - else
                 - if @vendors_hash[order.id][id][1] == 1
-                  span style='margin-right:8px;' class="label label-success" OK
+                  span style='margin-right:8px;' class="label label-success" Fax完了
                 - elsif  @vendors_hash[order.id][id][1] == 2
-                  span style='margin-right:8px;' class="label label-danger" NG
+                  span style='margin-right:8px;' class="label label-danger" Fax失敗
                 - elsif  @vendors_hash[order.id][id][1] == 0
-                  span style='margin-right:8px;' class="label label-default" Unsend
+                  span style='margin-right:8px;' class="label label-default" 未処理
                 - elsif  @vendors_hash[order.id][id][1] == 3
-                  span style='margin-right:8px;' class="label label-warning" Sending
-
+                  span style='margin-right:8px;' class="label label-warning" Fax送中
+                - elsif  @vendors_hash[order.id][id][1] == 4
+                  span style='margin-right:8px;' class="label label-warning" Mail送信
+                - elsif  @vendors_hash[order.id][id][1] == 5
+                  span style='margin-right:8px;' class="label label-success" メール確認済
+                - elsif  @vendors_hash[order.id][id][1] == 6
+                  span style='margin-right:8px;' class="label label-info" 発送完了
               span style='padding:0;' = "#{@vendors_hash[order.id][id][2]}（#{@vendors_hash[order.id][id][0]}）"
 = paginate @orders
 css:

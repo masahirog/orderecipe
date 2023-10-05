@@ -1,4 +1,4 @@
-class FixShiftPatternsController < ApplicationController
+class FixShiftPatternsController < AdminController
   before_action :set_fix_shift_pattern, only: %i[ show edit update destroy ]
 
   def index

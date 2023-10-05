@@ -20,7 +20,9 @@ ul.list-group.col-md-12.form-group
 .col-md-12.clearfix style='padding-bottom:15px;'
   .clearfix style='float:left;'
     = link_to '発注内容の編集',edit_order_path(@order),class:"btn btn-primary",style:'float:left;margin-right:15px;'
-    button type="button" class="btn-success btn" data-toggle="modal" data-target="#sampleModal" style='float:left;' FAX送信
+    button type="button" class="btn-success btn" data-toggle="modal" data-target="#sampleModal" style='float:left;margin-right:15px;' FAX送信
+    button type="button" class="btn-success btn" data-toggle="modal" data-target="#sendMailModal" style='float:left;' メール送信
+
   .clearfix style='float:right;width:500px;'
     = link_to '全企業印刷',print_all_orders_path(id:@order.id,format: :pdf),target:'_blank',class:'btn btn-primary',style:'float:right;margin-left:5px;'
     = form_tag({:controller => "orders", :action => "order_print", format: "pdf"},{:target => "_blank"}) do
@@ -39,7 +41,8 @@ table.table
       th 仕入先
       th 備考
       th 納品日
-      th FAX
+      th 発注ステータス
+      
   tbody
     - @order_materials.each do |om|
       - order_amount = number_with_precision((om.order_quantity.to_f/om.material.recipe_unit_quantity)*om.material.order_unit_quantity,precision:1, strip_insignificant_zeros: true, delimiter: ',')
@@ -70,11 +73,29 @@ table.table
         .modal-header
           h4.modal-title 送信する企業にチェックを付けて下さい
         .modal-body
-          - @vendors.each_with_index do |vendor,i|
-            .col-12.clearfix style='padding:5px 0;'
-              = check_box_tag "vendor_id[#{vendor['vendor_id']}]",true,false,class:'form-control',style:'width:40px;float:left;'
-              label style='float:left;padding:10px 0px 0px 10px;'
-                = "#{vendor['company_name']} FAX:#{vendor['company_fax']}"
+          - if @fax_vendors.present?
+            - @fax_vendors.each_with_index do |vendor,i|
+              .col-12.clearfix style='padding:5px 0;'
+                = check_box_tag "vendor_id[#{vendor['vendor_id']}]",true,false,class:'form-control',style:'width:40px;float:left;'
+                label style='float:left;padding:10px 0px 0px 10px;'
+                  = "#{vendor['company_name']} FAX:#{vendor['company_fax']}"
+        .modal-footer
+          button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
+          = submit_tag "送信する" ,class:"btn btn-primary", data: { confirm: "ほんまに送信するで？"}
+#sendMailModal.modal.fade tabindex="-1"
+  = form_tag(send_order_mail_orders_path,method: :get) do
+    = hidden_field_tag 'order_id',@order.id
+    .modal-dialog
+      .modal-content
+        .modal-header
+          h4.modal-title 送信する企業にチェックを付けて下さい
+        .modal-body
+          - if @mail_vendors.present?
+            - @mail_vendors.each_with_index do |vendor,i|
+              .col-12.clearfix style='padding:5px 0;'
+                = check_box_tag "vendor_id[#{vendor['vendor_id']}]",true,false,class:'form-control',style:'width:40px;float:left;'
+                label style='float:left;padding:10px 0px 0px 10px;'
+                  = "#{vendor['company_name']} Mail:#{vendor['company_mail']}"
         .modal-footer
           button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
           = submit_tag "送信する" ,class:"btn btn-primary", data: { confirm: "ほんまに送信するで？"}

@@ -1,4 +1,4 @@
-class ReminderTemplatesController < ApplicationController
+class ReminderTemplatesController < AdminController
   before_action :set_reminder_template, only: %i[ show edit update destroy ]
 
   def hand_reflect

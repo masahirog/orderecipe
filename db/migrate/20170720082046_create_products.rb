@@ -31,6 +31,8 @@ class CreateProducts < ActiveRecord::Migration[4.2]
       t.text :sky_serving_infomation
       t.integer :group_id, :null => false
       t.integer :sub_category
+      t.string :sky_split_information
+      t.boolean :bejihan_only_flag, null: false, default: false
     end
   end
 end
