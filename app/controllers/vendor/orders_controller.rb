@@ -24,7 +24,7 @@ class Vendor::OrdersController < ApplicationController
 
 	def index
 		@vendor = Vendor.find_by(user_id:current_user.id)
-		@order_materials = OrderMaterial.includes(:order,:material).order("delivery_date DESC").joins(:material).where(un_order_flag:false,:materials => {vendor_id:@vendor.id}).page(params[:page]).per(20)
+		@order_materials = OrderMaterial.includes(:order,:material).order("delivery_date DESC").joins(:order,:material).where(un_order_flag:false,:orders => {fixed_flag:true},:materials => {vendor_id:@vendor.id}).page(params[:page]).per(20)
 	end
 
 	private

@@ -1,3 +1,5 @@
+- if @order.fixed_flag == false
+  h3 style='color:red;' ※未確定注文
 h4.pull-left = "#{@order.store.name}の発注"
 - if @order.order_products[0].present?
   h4.pull-right = "製造日：#{@order.order_products[0].make_date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@order.order_products[0].make_date.wday]})")}"
@@ -20,8 +22,9 @@ ul.list-group.col-md-12.form-group
 .col-md-12.clearfix style='padding-bottom:15px;'
   .clearfix style='float:left;'
     = link_to '発注内容の編集',edit_order_path(@order),class:"btn btn-primary",style:'float:left;margin-right:15px;'
-    button type="button" class="btn-success btn" data-toggle="modal" data-target="#sampleModal" style='float:left;margin-right:15px;' FAX送信
-    button type="button" class="btn-success btn" data-toggle="modal" data-target="#sendMailModal" style='float:left;' メール送信
+    - if @order.fixed_flag == true
+      button type="button" class="btn-success btn" data-toggle="modal" data-target="#sampleModal" style='float:left;margin-right:15px;' FAX送信
+      button type="button" class="btn-success btn" data-toggle="modal" data-target="#sendMailModal" style='float:left;' メール送信
 
   .clearfix style='float:right;width:500px;'
     = link_to '全企業印刷',print_all_orders_path(id:@order.id,format: :pdf),target:'_blank',class:'btn btn-primary',style:'float:right;margin-left:5px;'
