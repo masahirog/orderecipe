@@ -8,11 +8,18 @@ class Vendor::OrdersController < ApplicationController
 		@order_material.update(status:params[:status])
 		if @order_material.status == 6
 			@bg_color = "#d3d3d3"
+			status = "商品発送完了"
 		elsif @order_material.status == 4
 			@bg_color = "#fffacd"
+			status = "注文確認待ち"
+		elsif @order_material.status == 7
+			@bg_color = "silver"
+			status = "キャンセル"
 		else
+			status = "注文確認完了"
 			@bg_color = "white"
 		end
+		Slack::Notifier.new("https://hooks.slack.com/services/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", username: '監視君', icon_emoji: ':sunglasses:').ping("【注文ステータス変更】発注先：#{@order_material.material.vendor.company_name}　商品：#{@order_material.material.name}　ステータス：#{status}")
 	end
 
 	def index

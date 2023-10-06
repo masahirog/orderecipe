@@ -180,6 +180,9 @@ html
                       li = link_to "ブランド一覧",brands_path
                       li = link_to "お皿の設定",containers_path
                       li = link_to "ログアウト", destroy_user_session_path, :method => :delete
+              - else
+                ul.nav.navbar-nav
+                  li.menu_li = link_to "ログアウト", destroy_user_session_path, :method => :delete
 
 
     .all_body

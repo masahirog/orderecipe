@@ -141,6 +141,9 @@ table.table
                   span style='margin-right:8px;' class="label label-success" メール確認済
                 - elsif  @vendors_hash[order.id][id][1] == 6
                   span style='margin-right:8px;' class="label label-info" 発送完了
+                - elsif  @vendors_hash[order.id][id][1] == 7
+                  span style='margin-right:8px;' class="label label-default" キャンセル
+
               span style='padding:0;' = "#{@vendors_hash[order.id][id][2]}（#{@vendors_hash[order.id][id][0]}）"
 = paginate @orders
 css:

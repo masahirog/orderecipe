@@ -785,8 +785,9 @@ class OrdersController < AdminController
     order = Order.find(params[:order_id])
     vendors.each do |vendor|
       NotificationMailer.send_mail_order(order,vendor).deliver
+      Slack::Notifier.new("https://hooks.slack.com/services/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", username: '送信君', icon_emoji: ':face_with_monocle:').ping("【メール送信OK】ID：#{order.id} 発注先：#{vendor.company_name} 担当：#{order.staff_name}")
     end
-    order.order_materials.where(un_order_flag:false).joins(:material).where(:materials =>{vendor_id:vendor_ids}).update_all(status:3)
+    order.order_materials.where(un_order_flag:false).joins(:material).where(:materials =>{vendor_id:vendor_ids}).update_all(status:4)
     redirect_to order, notice: "#{vendors.length} 件のメールを送信しました。"
   end
 
