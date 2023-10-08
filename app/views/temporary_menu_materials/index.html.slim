@@ -1,20 +1,53 @@
-h3 今日以降の食材の変更一覧
-- if params[:past_include] == "true"
-  = link_to '本日以降',temporary_menu_materials_path(),class:"btn btn-default btn-sm pull-right"
-- else
-  = link_to '過去も含める',temporary_menu_materials_path(past_include:true),class:"btn btn-default btn-sm pull-right"
-table.table
-  thead
-    tr
-      th 日数
-      th メニュー名
-      th 食材
-      th 
+h3 食材変更一覧
 
-  tbody
-    - @uniq_tmms.each do |data|
-      tr
-        td = data[1]
-        td = link_to @uniq_mms_hash[data[0]].menu.name,@uniq_mms_hash[data[0]].menu
-        td = "#{@uniq_mms_hash[data[0]].material.name}｜#{@uniq_mms_hash[data[0]].material.vendor.name}"
-        td = link_to "確認",new_temporary_menu_material_path(menu_material_id:data[0]),class:'btn btn-primary btn-sm'
+.mobile_view
+  ul.list-group.clearfix style='margin-top:15px;'
+    - @dates.each do |date|
+      li.clearfix.list-group-item.float-left style='padding:5px 8px;'
+        h5 = link_to date.strftime("%-m/%-d"),@daily_menus[date]
+        hr style='margin:10px 2px;'
+        - if @hhash[date].present?
+          - @hhash[date].each do |data|
+            .clearfix style='margin-bottom:15px;'
+              .col-xs-8 style='padding:0 5px;' = link_to data[1][:material].name,data[1][:material]
+              .col-xs-1 style='padding:0 5px;'
+                = link_to data[1][:menu],target:"_blank" do
+                  i class="fa fa-external-link" aria-hidden="true"
+              .col-xs-3 style='padding:0 5px;text-align:right;'
+                = link_to "#{data[1][:amount_used]} #{data[1][:order_unit]}",new_temporary_menu_material_path(menu_material_id:data[1][:menu_material_id]),target:"_blank"
+
+
+.desctop_view
+  = month_calendar do |date|
+    div
+      = link_to date.strftime("%-m/%-d"),@daily_menus[date]
+    table.table
+      tbody
+        - if @hhash[date].present?
+          - @hhash[date].each do |data|
+            tr
+              td = link_to data[1][:material].name,data[1][:material]
+              td
+                = link_to data[1][:menu],target:"_blank" do
+                  i class="fa fa-external-link" aria-hidden="true"
+
+              td
+                = link_to "#{data[1][:amount_used]} #{data[1][:order_unit]}",new_temporary_menu_material_path(menu_material_id:data[1][:menu_material_id]),target:"_blank"
+
+css:
+  @media (min-width: 700px) {
+    .mobile_view {
+      display:none;
+    }
+    .desctop_view {
+      display:show;
+    }
+  }
+  @media (max-width: 700px) {
+    .mobile_view {
+      display:show;
+    }
+    .desctop_view {
+      display:none;
+    }
+  }

@@ -246,6 +246,8 @@ Rails.application.routes.draw do
   resources :customer_opinions
   resources :materials do
     collection do
+      get :used_products
+      get :materials_used_amount
       post :material_cut_patterns_once_update
       get :cut_patterns
       get :all_cut_patterns

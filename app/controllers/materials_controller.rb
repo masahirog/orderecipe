@@ -1,5 +1,50 @@
 class MaterialsController < ApplicationController
   protect_from_forgery :except => [:change_additives]
+  def materials_used_amount
+    date = @today - 365
+    materials = Material.where(vendor_id:151)
+    material_ids = materials.ids
+    @materials_hash = materials.map{|material|[material.id,material]}.to_h
+    @order_materials_quantity = OrderMaterial.where(material_id:material_ids,un_order_flag:false).where("delivery_date > ?",date).group(:material_id).sum(:order_quantity)
+    @order_materials_quantity.each {|k,v| @order_materials_quantity[k] = v.to_i}
+    year_ago_date = @today - 365
+    product_counts = DailyMenuDetail.joins(:daily_menu).where(:daily_menus =>{start_time:year_ago_date..@today}).group(:product_id).count
+    products = Product.where(id:product_counts.keys)
+    @material_used_product_count = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    Material.where(id:@order_materials_quantity.keys).each do |material|
+      menu_ids = material.menus.ids
+      @material_used_product_count[material.id] = Product.where(brand_id:111).joins(:product_menus).where(:product_menus => {menu_id:menu_ids}).count
+    end
+  end
+  def used_products
+    @material = Material.find(params[:material_id])
+    @menu_used = {}
+    @material.menu_materials.each do |mm|
+      if @menu_used[mm.menu_id].present?
+        @menu_used[mm.menu_id] += mm.amount_used
+      else
+        @menu_used[mm.menu_id] = mm.amount_used
+      end
+    end
+    menu_ids = @menu_used.keys
+    product_ids = Product.where(brand_id:111).joins(:product_menus).where(:product_menus => {menu_id:menu_ids}).ids
+    @daily_menu_detail_product_counts = DailyMenuDetail.joins(:daily_menu).where(:daily_menus => {start_time:(@today - 365)..@today}).where(product_id:product_ids).group(:product_id).count
+    priority_row_product_ids = @daily_menu_detail_product_counts.sort_by { |_, v| v }.reverse.to_h.keys
+    priority_products = Product.where(id:priority_row_product_ids)
+    other_products = Product.where(id:(product_ids - priority_row_product_ids))
+    product_ids = priority_row_product_ids + (product_ids - priority_row_product_ids)
+    @material_used_products = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    @products = Product.where(id:product_ids).order(['field(id, ?)', product_ids]).page(params[:page]).per(20)
+    @products.each do |product|
+      material_used = 0
+      product.menus.each do |menu|
+        material_used += @menu_used[menu.id].to_f
+      end
+      @material_used_products[product.id][:product] = product
+      @material_used_products[product.id][:used_amount] = material_used
+      @material_used_products[product.id][:sales_count] = @daily_menu_detail_product_counts[product.id]
+    end
+  end
   def index
     if params[:store_id]
       @store_id = params[:store_id]

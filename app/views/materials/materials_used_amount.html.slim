@@ -1,0 +1,18 @@
+h4 直近1年で発注した野菜（クイーンズファーム）
+table.table
+	thead
+		tr
+			th 食材名
+			th 使用量
+			th 仕入れ値
+			th ロット
+			th べじはん商品
+	tbody
+		- @order_materials_quantity.sort_by { |_, v| v }.reverse.each do |om|
+			- material = @materials_hash[om[0]]
+			tr
+				td = link_to @materials_hash[om[0]].name,@materials_hash[om[0]],target:'_blank'
+				td = "#{number_with_precision(om[1]/material.recipe_unit_quantity*material.order_unit_quantity,precision:1, strip_insignificant_zeros: true, delimiter: ',')} #{material.order_unit}"
+				td = "#{number_with_precision(material.order_unit_quantity,precision:1, strip_insignificant_zeros: true, delimiter: ',')} #{material.order_unit}：#{number_with_precision(material.recipe_unit_price,precision:1, strip_insignificant_zeros: true, delimiter: ',')}円"
+				td = "#{number_with_precision(material.order_unit_quantity,precision:1, strip_insignificant_zeros: true, delimiter: ',')} #{material.order_unit}：#{number_with_precision(material.recipe_unit_quantity,precision:1, strip_insignificant_zeros: true, delimiter: ',')}#{material.recipe_unit}"
+				td = link_to @material_used_product_count[om[0]],used_products_materials_path(material_id:om[0]),target:'_blank'

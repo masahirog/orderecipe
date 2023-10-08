@@ -1,0 +1,23 @@
+h4 = link_to @material.name,@material,target:'_blank'
+span = "価格：#{@material.order_unit_quantity}#{@material.order_unit} ＝ #{@material.recipe_unit_price} 円"
+table.table
+	thead
+		tr
+			th 商品名
+			th 写真
+			th 1人前使用量
+			th 直近1年の登場日数
+			th 使用量
+			th 
+	tbody
+		- @material_used_products.each do |data|
+			tr
+				td = link_to data[1][:product].name,data[1][:product]
+				td
+					= link_to data[1][:product].image_for_one_person.to_s, "data-lightbox" => data[1][:product].image_for_one_person.to_s do
+						= image_tag data[1][:product].image_for_one_person.to_s ,class:"text-center img-responsive center-block",style:'max-height:30px;'
+				td = "#{number_with_precision(data[1][:used_amount],precision:1, strip_insignificant_zeros: true, delimiter: ',')}#{@material.recipe_unit}"
+				td = data[1][:sales_count]
+				td 
+				td 
+= paginate @products

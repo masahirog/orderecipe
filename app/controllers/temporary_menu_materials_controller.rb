@@ -31,21 +31,39 @@ class TemporaryMenuMaterialsController < AdminController
     redirect_to new_temporary_menu_material_path(menu_material_id:menu_material_id),success:'情報を更新しました。'
   end
   def index
-    if params[:material_id].present?
-      if params[:past_include] == "true"
-        @temporary_menu_materials = TemporaryMenuMaterial.includes(:material,menu_material:[:material,:menu]).where(origin_material_id:params[:material_id])
-      else
-        @temporary_menu_materials = TemporaryMenuMaterial.includes(:material,menu_material:[:material,:menu]).where("date >= ?",@today).where(origin_material_id:params[:material_id])
-      end
+    if params[:start_date].present?
+      date = params[:start_date].to_date
     else
-      if params[:past_include] == "true"
-        @temporary_menu_materials = TemporaryMenuMaterial.includes(:material,menu_material:[:material,:menu]).all
-      else
-        @temporary_menu_materials = TemporaryMenuMaterial.includes(:material,menu_material:[:material,:menu]).where("date >= ?",@today)
-      end      
+      date = @today
     end
-    @uniq_tmms = @temporary_menu_materials.group(:menu_material_id).count
-    @uniq_mms_hash = MenuMaterial.includes(:menu,material:[:vendor]).where(id:@uniq_tmms.keys).map{|mm|[mm.id,mm]}.to_h
+    @dates = (date.beginning_of_month..date.end_of_month).to_a
+    @temporary_menu_materials = TemporaryMenuMaterial.includes(:material,menu_material:[:material,:menu]).where(date:@dates)
+    menu_ids = @temporary_menu_materials.map{|tmm|tmm.menu_material.menu_id}.uniq
+    product_ids = ProductMenu.where(menu_id:menu_ids).map{|pm|pm.product_id}.uniq
+    @hhash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    @calender_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    @temporary_menu_materials.each do |tmm|
+      @hash[tmm.date][tmm.menu_material_id][:material_id] = tmm.material_id
+      @hash[tmm.date][tmm.menu_material_id][:origin_material_id] = tmm.origin_material_id
+      @hash[tmm.date][tmm.menu_material_id][:material] = tmm.material
+      @hash[tmm.date][tmm.menu_material_id][:menu] = tmm.menu_material.menu
+      @hash[tmm.date][tmm.menu_material_id][:menu_material_id] = tmm.menu_material_id
+    end
+    DailyMenuDetail.includes(:daily_menu,product:[menus:[:menu_materials]]).joins(:daily_menu).where(:daily_menus =>{start_time:@dates}).where(product_id:product_ids).each do |dmd|
+      dmd.product.menus.each do |menu|
+        menu.menu_materials.each do |mm|
+          if @hash[dmd.daily_menu.start_time][mm.id].present?
+            @hhash[dmd.daily_menu.start_time][@hash[dmd.daily_menu.start_time][mm.id][:material_id]][:amount_used]= (((dmd.manufacturing_number * mm.amount_used)/@hash[dmd.daily_menu.start_time][mm.id][:material].recipe_unit_quantity)*@hash[dmd.daily_menu.start_time][mm.id][:material].order_unit_quantity).round(1).to_s(:delimited)
+            @hhash[dmd.daily_menu.start_time][@hash[dmd.daily_menu.start_time][mm.id][:material_id]][:order_unit]= @hash[dmd.daily_menu.start_time][mm.id][:material].order_unit
+            @hhash[dmd.daily_menu.start_time][@hash[dmd.daily_menu.start_time][mm.id][:material_id]][:material]= @hash[dmd.daily_menu.start_time][mm.id][:material]
+            @hhash[dmd.daily_menu.start_time][@hash[dmd.daily_menu.start_time][mm.id][:material_id]][:menu]= @hash[dmd.daily_menu.start_time][mm.id][:menu]
+            @hhash[dmd.daily_menu.start_time][@hash[dmd.daily_menu.start_time][mm.id][:material_id]][:menu_material_id]= @hash[dmd.daily_menu.start_time][mm.id][:menu_material_id]
+          end
+        end
+      end
+    end
+    @daily_menus = DailyMenu.where(start_time:@dates).map{|dm|[dm.start_time,dm]}.to_h
   end
 
   def material_date

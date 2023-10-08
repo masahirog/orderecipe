@@ -1,2 +1,0 @@
-module Crew::OrdersHelper
-end
