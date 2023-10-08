@@ -3,10 +3,10 @@ table.table
 	thead
 		tr
 			th 食材名
-			th 使用量
+			th 発注量
 			th 仕入れ値
 			th ロット
-			th べじはん商品
+			th 商品
 	tbody
 		- @order_materials_quantity.sort_by { |_, v| v }.reverse.each do |om|
 			- material = @materials_hash[om[0]]
