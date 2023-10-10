@@ -34,7 +34,7 @@ class CutList < Prawn::Document
           tmm = mm.temporary_menu_materials.find_by(date:date)
           if tmm.present?
             material_id = tmm.material_id
-            material_name = "#{tmm.material.name}\n#{tmm.material.roma_name}"
+            material_name = "★★白石さん手配★★ \n#{tmm.material.name}\n#{tmm.material.roma_name}"
           else
             material_id = mm.material_id
             material_name ="#{ mm.material.name}\n#{ mm.material.roma_name}"
