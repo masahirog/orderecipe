@@ -1,0 +1,47 @@
+td = "#{date.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[date.wday]})")}"
+td
+	- if @dates_stocks[date].present?
+		= form_with model: [:vendor, @dates_stocks[date]], data: {remote: true} do |f|
+			= f.number_field :new_stock_amount,class:'input new_stock_amount form-control',style:'width:70px;'
+			= f.hidden_field :shipping_amount
+	- else
+		= form_with model: [:vendor, MaterialVendorStock.new], data: {remote: true} do |f|
+			= f.number_field :new_stock_amount,class:'input new_stock_amount form-control',style:'width:70px;'
+			= f.hidden_field :date,value:date
+			= f.hidden_field :material_id,value:@material.id
+			= f.hidden_field :previous_end_day_stock,value:@previous_end_day_stock
+			= f.hidden_field :end_day_stock,value:@end_day_stock
+td 
+	- if @dates_stocks[date].present?
+		= form_with model: [:vendor, @dates_stocks[date]], data: {remote: true} do |f|
+			= f.number_field :shipping_amount,class:'input shipping_amount form-control',style:'width:70px;'
+			= f.hidden_field :new_stock_amount
+	- else
+		= form_with model: [:vendor, MaterialVendorStock.new], data: {remote: true} do |f|
+			= f.number_field :shipping_amount,class:'input shipping_amount form-control',style:'width:70px;'
+			= f.hidden_field :date,value:date
+			= f.hidden_field :material_id,value:@material.id
+			= f.hidden_field :previous_end_day_stock,value:@previous_end_day_stock
+			= f.hidden_field :end_day_stock,value:@end_day_stock
+td style="display:none;"
+	- if @dates_stocks[date].present?
+
+		= form_with model: [:vendor, @dates_stocks[date]], data: {remote: true} do |f|
+			= f.number_field :previous_end_day_stock,class:'input previous_end_day_stock form-control',style:'width:70px;'
+	- else
+		= form_with model: [:vendor, MaterialVendorStock.new], data: {remote: true} do |f|
+			= f.number_field :previous_end_day_stock,value:@previous_end_day_stock,class:'input previous_end_day_stock form-control',style:'width:70px;'
+			= f.hidden_field :date,value:date
+			= f.hidden_field :material_id,value:@material.id
+
+td
+	- if @dates_stocks[date].present?
+		- @end_day_stock = @dates_stocks[date].end_day_stock
+		- @previous_end_day_stock = @dates_stocks[date].end_day_stock
+		= form_with model: [:vendor, @dates_stocks[date]], data: {remote: true} do |f|
+			= f.number_field :end_day_stock,class:'input end_day_stock form-control',style:'width:70px;',readonly:true
+	- else
+		= form_with model: [:vendor, MaterialVendorStock.new], data: {remote: true} do |f|
+			= f.number_field :end_day_stock,value:@end_day_stock,class:'input end_day_stock form-control',style:'width:70px;',readonly:true
+			= f.hidden_field :date,value:date
+			= f.hidden_field :material_id,value:@material.id

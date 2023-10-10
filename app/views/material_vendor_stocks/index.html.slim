@@ -1,0 +1,15 @@
+h2 = "#{@vendor.company_name}"
+
+table.table
+  thead
+    tr
+      th 商品名
+      th = "はく刻側 在庫"
+      th
+
+  tbody
+    - @materials.each do |material|
+      tr
+        td = link_to material.name,material_material_vendor_stocks_path(material_id:material.id)
+        td = @hash[material.id][:latest_material_vendor_stock][0].end_day_stock if @hash[material.id][:latest_material_vendor_stock].present?
+        td

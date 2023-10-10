@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_06_29_230155) do
+ActiveRecord::Schema.define(version: 2023_10_08_120200) do
 
   create_table "analyses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "store_id"
@@ -328,6 +328,18 @@ ActiveRecord::Schema.define(version: 2023_06_29_230155) do
     t.boolean "sun", default: false, null: false
     t.date "last_inventory_date"
     t.index ["material_id", "store_id"], name: "index_material_store_orderables_on_material_id_and_store_id", unique: true
+  end
+
+  create_table "material_vendor_stocks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "material_id", null: false
+    t.date "date", null: false
+    t.integer "previous_end_day_stock", default: 0, null: false
+    t.integer "end_day_stock", default: 0, null: false
+    t.integer "shipping_amount", default: 0, null: false
+    t.integer "new_stock_amount", default: 0, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["date", "material_id"], name: "index_material_vendor_stocks_on_date_and_material_id", unique: true
   end
 
   create_table "materials", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

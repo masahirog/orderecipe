@@ -1,0 +1,2 @@
+module MaterialVendorStocksHelper
+end

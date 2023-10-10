@@ -1,0 +1,34 @@
+h4 = "#{@material.name} 在庫管理"
+= link_to "前月",material_material_vendor_stocks_path(material_id:@material.id,date:@previous_month)
+|　
+= link_to "翌月",material_material_vendor_stocks_path(material_id:@material.id,date:@next_month)
+
+table.table
+	thead
+		tr
+			th 日付
+			th 製造
+			th 出荷
+			/ th
+			th はく刻在庫
+	tbody
+		- if @bom_month_stock.present?
+			- @end_day_stock = @bom_month_stock.end_day_stock
+			- if @before_month_stock.present?
+				- @previous_end_day_stock = @before_month_stock.end_day_stock
+			- else
+				- @previous_end_day_stock = 0
+		- else
+			- if @before_month_stock.present?
+				- @end_day_stock = @before_month_stock.end_day_stock
+				- @previous_end_day_stock = @before_month_stock.end_day_stock
+			- else
+				- @end_day_stock = 0
+				- @previous_end_day_stock = 0
+		- @dates.each_with_index do |date,i|
+			- if date == @today
+				- bgcolor = '#fafad2'
+			- else
+				- bgcolor = '#ffffff'
+			tr class="tr_#{date}" style="background-color:#{bgcolor};"
+				= render partial: "tr", locals: { date:date }

@@ -1,0 +1,5 @@
+<% (@date..@date.end_of_month).to_a.each_with_index do |date,i| %>
+	$(".tr_<%= date %>").html("<%= escape_javascript(render partial: 'vendor/material_vendor_stocks/tr', locals: {date:date}) %>");
+<% end %>
+
+$(".tr_<%= @date %>").css("background-color","#fffaf0");

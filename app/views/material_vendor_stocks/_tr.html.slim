@@ -1,0 +1,12 @@
+td = "#{date.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[date.wday]})")}"
+td
+	= @dates_stocks[date].new_stock_amount if @dates_stocks[date].present? && @dates_stocks[date].new_stock_amount != 0
+td 
+	= @dates_stocks[date].shipping_amount if @dates_stocks[date].present? && @dates_stocks[date].shipping_amount != 0
+td
+	- if @dates_stocks[date].present?
+		- @end_day_stock = @dates_stocks[date].end_day_stock
+		- @previous_end_day_stock = @dates_stocks[date].end_day_stock
+		= @dates_stocks[date].end_day_stock
+	- else
+		= @end_day_stock

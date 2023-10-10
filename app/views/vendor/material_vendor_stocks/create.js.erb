@@ -1,0 +1,3 @@
+<% (@date..@date.end_of_month).to_a.each do |date| %>
+	$(".tr_<%= date %>").html("<%= escape_javascript(render partial: 'vendor/material_vendor_stocks/tr', locals: {date:date}) %>");
+<% end %>

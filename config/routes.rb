@@ -1,11 +1,14 @@
 Rails.application.routes.draw do
 
   namespace :vendor do
+    resources :material_vendor_stocks do
+      collection do
+        get :material
+      end
+    end
     resources :orders do
       collection do
         post :status_change
-        get :index
-        get :show
       end
     end
   end
@@ -57,6 +60,11 @@ Rails.application.routes.draw do
   resources :default_shifts do
     collection do
       post :create_frame
+    end
+  end
+  resources :material_vendor_stocks do
+    collection do
+      get :material
     end
   end
   resources :tasks do
