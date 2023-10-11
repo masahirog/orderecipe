@@ -1,4 +1,6 @@
-h4 = "#{@material.name} 在庫管理"
+h4
+	= "#{@material.name} 在庫管理　"
+	= "1#{@material.order_unit}：#{ActiveSupport::NumberHelper.number_to_rounded(@material.recipe_unit_quantity/@material.order_unit_quantity, strip_insignificant_zeros: true, :delimiter => ',', precision: 1)}#{@material.recipe_unit}"
 = link_to "前月",material_vendor_material_vendor_stocks_path(material_id:@material.id,date:@previous_month)
 |　
 = link_to "翌月",material_vendor_material_vendor_stocks_path(material_id:@material.id,date:@next_month)

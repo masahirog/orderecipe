@@ -370,6 +370,7 @@ ActiveRecord::Schema.define(version: 2023_10_08_120200) do
     t.integer "storage_place", default: 0, null: false
     t.boolean "subdivision_able", default: false, null: false
     t.integer "group_id", null: false
+    t.integer "target_material_id"
   end
 
   create_table "menu_cook_checks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|

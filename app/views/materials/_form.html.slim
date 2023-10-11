@@ -54,6 +54,11 @@
       .col-md-12.form-group
         = f.label :order_code, "業者管理コード"
         = f.text_field :order_code, class:'form-control'
+      - if current_user.admin?
+        .col-md-12.form-group
+          = f.label :target_material_id, "キッチン在庫管理同期食材"
+          = f.collection_select :target_material_id, @materials, :id, :name, {include_blank: true}, { class: "form-control input_select_material"}
+
     .col-md-6
       = f.label :image, "写真"
       = f.file_field :image
