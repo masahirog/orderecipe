@@ -13,8 +13,14 @@ table.table
     - @materials.each do |material|
       tr
         td = link_to material.name,edit_material_path(material),target:"_blank"
-        td = "#{@hash[material.id][:latest_material_vendor_stock][0].end_day_stock} #{material.order_unit}" if @hash[material.id][:latest_material_vendor_stock].present?
-        td = "#{(@hash[material.id][:latest_material_kitchen_stock][0].end_day_stock/@hash[material.id][:material].recipe_unit_quantity*@hash[material.id][:material].order_unit_quantity).to_i} #{material.order_unit}" if @hash[material.id][:latest_material_kitchen_stock].present?
+        td
+          - if @hash[material.id][:latest_material_vendor_stock].present?
+            = link_to material_material_vendor_stocks_path(material_id:material.id),target:'_blank' do
+              = "#{@hash[material.id][:latest_material_vendor_stock][0].end_day_stock} #{material.order_unit}" 
+        td
+          - if @hash[material.id][:latest_material_kitchen_stock].present?
+            = link_to history_stocks_path(material_id:material.id,store_id:39),target:'_blank' do
+              = "#{(@hash[material.id][:latest_material_kitchen_stock][0].end_day_stock/@hash[material.id][:material].recipe_unit_quantity*@hash[material.id][:material].order_unit_quantity).to_i} #{material.order_unit}"
         td = link_to @hash[material.id][:target_material].name,@hash[material.id][:target_material],target:"_blank" if @hash[material.id][:target_material].present?
         td
           - if @hash[material.id][:target_material].present?
