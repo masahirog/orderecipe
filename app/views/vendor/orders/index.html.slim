@@ -3,7 +3,7 @@ ul.list-group
 	- @order_materials.each do |order_material|
 		- if order_material.status == 6
 			- bg_color = "#d3d3d3"
-		- elsif order_material.status == 4
+		- elsif order_material.status == 4 ||order_material.status == 0
 			- bg_color = "#fffacd"
 		- elsif order_material.status == 7
 			- bg_color = "silver"
