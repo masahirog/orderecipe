@@ -1,13 +1,16 @@
-h2 = "#{@vendor.company_name}"
-h3 = "#{@today}時点での各在庫"
+h3 = "#{@vendor.company_name}"
+h4 style='float:left;' = "#{@today}時点での各在庫"
+= link_to "発注開始",new_order_path(vendor_id:@vendor.id,store_id:39),class:'btn btn-primary',style:'float:right;',target:'_blank'
 table.table
   thead
     tr
-      th 商品名
-      th はく刻側在庫
-      th キッチン在庫
-      th キッチン同期商品
-      th 在庫
+      th style='width:300px;background-color:#98fb98;' 商品名
+      th style='width:120px;background-color:#98fb98' はく刻側在庫
+      th style='width:120px;background-color:#98fb98' キッチン在庫
+      th style='width:50px;'
+      th style='width:300px;background-color:#ffdab9' キッチン同期商品
+      th style='width:120px;background-color:#ffdab9' 在庫
+      th
 
   tbody
     - @materials.each do |material|
@@ -19,10 +22,42 @@ table.table
               = "#{@hash[material.id][:latest_material_vendor_stock][0].end_day_stock} #{material.order_unit}" 
         td
           - if @hash[material.id][:latest_material_kitchen_stock].present?
+            = link_to history_stocks_path(material_id:material.id,store_id:39),target:'_blank',class:'stock-tooltip' do
+              span data-html="true" class="" aria-hidden="true"  data-toggle="tooltip" data-placement="bottom" title="<div style='padding:10px;'></div><table class='table tooltip-table table-striped'>#{@stock_hash[material.id].flatten.join('')}</table>"
+                = "#{(@hash[material.id][:latest_material_kitchen_stock][0].end_day_stock/@hash[material.id][:material].recipe_unit_quantity*@hash[material.id][:material].order_unit_quantity).to_i} #{material.order_unit}"
+          - else
             = link_to history_stocks_path(material_id:material.id,store_id:39),target:'_blank' do
-              = "#{(@hash[material.id][:latest_material_kitchen_stock][0].end_day_stock/@hash[material.id][:material].recipe_unit_quantity*@hash[material.id][:material].order_unit_quantity).to_i} #{material.order_unit}"
+              span ー
+        td
         td = link_to @hash[material.id][:target_material].name,@hash[material.id][:target_material],target:"_blank" if @hash[material.id][:target_material].present?
         td
           - if @hash[material.id][:target_material].present?
+            = link_to history_stocks_path(material_id:material.id,store_id:39),target:'_blank',class:'stock-tooltip' do
+              span data-html="true" class="" aria-hidden="true"  data-toggle="tooltip" data-placement="bottom" title="<div style='padding:10px;'></div><table class='table tooltip-table table-striped'>#{@stock_hash[material.target_material_id].flatten.join('')}</table>"
+                = "#{(@hash[material.id][:latest_target_material_kitchen_stock][0].end_day_stock/@hash[material.id][:target_material].recipe_unit_quantity*@hash[material.id][:target_material].order_unit_quantity).to_i}  #{@hash[material.id][:target_material].order_unit}"
+          - else
             = link_to history_stocks_path(material_id:material.target_material_id,store_id:39),target:'_blank' do
-              = "#{(@hash[material.id][:latest_target_material_kitchen_stock][0].end_day_stock/@hash[material.id][:target_material].recipe_unit_quantity*@hash[material.id][:target_material].order_unit_quantity).to_i}  #{@hash[material.id][:target_material].order_unit}" if @hash[material.id][:latest_target_material_kitchen_stock].present?
+              span -
+        td
+sass:
+  .stock-tooltip
+    .tooltip
+      width: 100%
+      font-size: 14px
+  .memo-tooltip
+    .tooltip
+      width: 300px
+      font-size: 14px
+
+  .tooltip-inner
+    max-width: 100%
+
+  .tooltip .tooltip-inner
+    background-color: white
+    opacity: 1.0
+    border: 2px solid black
+    color: black
+    filter: alpha(opacity=100)
+  .tooltip.in
+    opacity: 1 !important
+    filter: alpha(opacity=100)

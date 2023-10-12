@@ -6,7 +6,7 @@ class OrdersController < AdminController
     elsif params[:start_time].present?
       date = params[:start_time].to_date
     else
-      date = Date.today
+      date = @today
     end
     store_id = params[:store_id]
     @store = Store.find(store_id)
@@ -26,7 +26,7 @@ class OrdersController < AdminController
     if params[:date]
       @date = Date.parse(params[:date])
     else
-      @date = Date.today
+      @date = @today
     end
     if params[:store_id].present?
       store_ids = [params[:store_id]]
@@ -74,7 +74,7 @@ class OrdersController < AdminController
     if params[:date]
       @date = params[:date]
     else
-      @date = Date.today
+      @date = @today
     end
     store_id = params[:store_id]
     @store = Store.find(store_id)
@@ -105,8 +105,8 @@ class OrdersController < AdminController
   end
 
   def edit
-    gon.holidays = HolidayJapan.list_year(Date.today.year).map{|data|data[0].to_s.delete('-')}
-    today = Date.today
+    gon.holidays = HolidayJapan.list_year(@today.year).map{|data|data[0].to_s.delete('-')}
+    today = @today
     vendor_name = {}
     all_materials = Material.includes(:vendor).where(unused_flag:false)
     # @vendor_name =all_materials.map{|material|[material.id,material.vendor.name]}.to_h
@@ -220,7 +220,7 @@ class OrdersController < AdminController
   end
 
   def index
-    @today_wday = Date.today.wday
+    @today_wday = @today.wday
     @wdays = [['月曜日',1],['火曜日',2],['水曜日',3],['木曜日',4],['金曜日',5],['土曜日',6],['日曜日',7]]
     @materials = Material.all
     if params[:material_id]
@@ -243,7 +243,7 @@ class OrdersController < AdminController
     if params[:start_date].present?
       @date = params[:start_date]
     else
-      @date = Date.today
+      @date = @today
     end
     daily_menus = DailyMenu.where(start_time:@date.in_time_zone.all_month)
     @date_daily_menu_count= {}
@@ -274,7 +274,7 @@ class OrdersController < AdminController
 
   def new
     @temporary_menu_materials = {}
-    gon.holidays = HolidayJapan.list_year(Date.today.year).map{|data|data[0].to_s.delete('-')}
+    gon.holidays = HolidayJapan.list_year(@today.year).map{|data|data[0].to_s.delete('-')}
     orderable_material_ids = MaterialStoreOrderable.where(store_id:params[:store_id],orderable_flag:true).map{|mso|mso.material_id}
     material_ids = []
     @product_hash = {}
@@ -308,7 +308,7 @@ class OrdersController < AdminController
       @order.memo = "#{make_date.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[make_date.wday]})")} くる 製造分"
     elsif params[:bihin_flag] == 'true'
       order_products = []
-      make_date = (Date.today+2)
+      make_date = (@today+2)
       materials = Material.includes([:vendor]).joins(:material_store_orderables).where(category:5,unused_flag:false).where(:material_store_orderables => {store_id:params[:store_id],orderable_flag:true}).order(short_name:'asc')
       materials.each do |material|
         hash = {}
@@ -332,7 +332,7 @@ class OrdersController < AdminController
       end
     elsif params[:wday_new_order] == 'true'
       order_products = []
-      make_date = (Date.today+2)
+      make_date = (@today+2)
       @hash = {"1"=>'mon',"2"=>'tue',"3"=>'wed',"4"=>'thu',"5"=>'fri',"6"=>'sat',"7"=>'sun'}
       wday_nihongo_hash = {"1"=>'月曜日',"2"=>'火曜日',"3"=>'水曜日',"4"=>'木曜日',"5"=>'金曜日',"6"=>'土曜日',"7"=>'日曜日'}
       @youbi = wday_nihongo_hash[params[:wday]]
@@ -361,7 +361,7 @@ class OrdersController < AdminController
       end
     elsif params[:store_orderable_all_flag] == 'true'
       order_products = []
-      make_date = (Date.today+2)
+      make_date = (@today+2)
       @material_store_orderables = MaterialStoreOrderable.includes(material:[:vendor]).where(store_id:params[:store_id],orderable_flag:true)
       @material_store_orderables.each do |mso|
         hash = {}
@@ -484,9 +484,57 @@ class OrdersController < AdminController
         category = ["other_vege","other_food","packed","consumable_item","cooking_item",'fish','rice']
         # vendor_ids = Vendor.where.not(id:[121,131,21,441,529,509,151,489]).ids
       end
+    elsif params[:vendor_id].present?
+      order_products = []
+      make_date = @today
+      @materials = Material.where(vendor_id:params[:vendor_id])
+      @materials.each do |material|
+        hash = {}
+        hash['material'] = material
+        hash['make_num'] = 0
+        hash['product_id'] = ''
+        hash['menu_num'] = {'なし' => 0}
+        hash['material_id'] = material.id
+        hash['calculated_order_amount'] = 0
+        hash["recipe_unit_quantity"] = material.recipe_unit_quantity
+        hash["order_unit_quantity"] = material.order_unit_quantity
+        hash["vendor_id"] = material.vendor_id
+        hash["vendor_name"] = material.vendor.name.truncate(10)
+        hash['recipe_unit'] = material.recipe_unit
+        hash['order_unit'] = material.order_unit
+        hash['delivery_deadline'] = material.delivery_deadline
+        hash['order_material_memo'] =''
+        hash["vendor_info"] = material.vendor.delivery_date
+        hash["vendor_delivery_able_wday"] = material.vendor.delivery_able_wday
+        hash["order_criterion"] = ''
+        @arr << hash
+        if material.target_material_id
+          hash = {}
+          target_material = Material.find(material.target_material_id)
+          hash['material'] = target_material
+          hash['make_num'] = 0
+          hash['product_id'] = ''
+          hash['menu_num'] = {'なし' => 0}
+          hash['material_id'] = target_material.id
+          hash['calculated_order_amount'] = 0
+          hash["recipe_unit_quantity"] = target_material.recipe_unit_quantity
+          hash["order_unit_quantity"] = target_material.order_unit_quantity
+          hash["vendor_id"] = target_material.vendor_id
+          hash["vendor_name"] = target_material.vendor.name.truncate(10)
+          hash['recipe_unit'] = target_material.recipe_unit
+          hash['order_unit'] = target_material.order_unit
+          hash['delivery_deadline'] = target_material.delivery_deadline
+          hash['order_material_memo'] =''
+          hash["vendor_info"] = target_material.vendor.delivery_date
+          hash["vendor_delivery_able_wday"] = target_material.vendor.delivery_able_wday
+          hash["order_criterion"] = ''
+          @arr << hash
+        end
+      end
+
     else
       order_products = []
-      make_date = Date.today
+      make_date = @today
     end
     product_ids = order_products.map{|op|op[:product_id]}
     product_hash = Product.includes(:brand,:product_menus,[menus: [menu_materials: [material:[:vendor]]]]).where(id:product_ids).map{|product|[product.id,product]}.to_h

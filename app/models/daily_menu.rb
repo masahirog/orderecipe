@@ -142,4 +142,14 @@ class DailyMenu < ApplicationRecord
     end
     StoreDailyMenuDetail.import update_sdmds, on_duplicate_key_update:[:row_order]
   end
+  def self.store_order_close
+    store_daily_menus_arr = []
+    dates = (Date.today-2..Date.today+4).to_a
+    store_ids = Group.find(29).stores.ids
+    StoreDailyMenu.where(start_time:dates,store_id:store_ids).each do |sdm|
+      sdm.editable_flag = false
+      store_daily_menus_arr << sdm
+    end
+    StoreDailyMenu.import store_daily_menus_arr, on_duplicate_key_update:[:editable_flag] if store_daily_menus_arr.present?
+  end
 end

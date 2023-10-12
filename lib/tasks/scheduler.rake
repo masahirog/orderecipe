@@ -48,10 +48,17 @@ task :input_gss => :environment do
   Product.input_spreadsheet
 end
 
-task :pick_time_get => :environment do
-  KurumesiOrder.pick_time_scraping
-end
+# task :pick_time_get => :environment do
+#   KurumesiOrder.pick_time_scraping
+# end
 
 task :reminder_bulk_create => :environment do
   Reminder.reminder_bulk_create
 end
+
+task :store_order_close => :environment do
+  if Date.today.wday == 5
+    DailyMenu.store_order_close
+  end
+end
+

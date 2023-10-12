@@ -21,17 +21,27 @@ class MaterialVendorStocksController < ApplicationController
     @vendor = Vendor.find(params[:vendor_id])
     @materials = Material.where(vendor_id:@vendor.id,unused_flag:false)
     @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    stock_hash = {}
+    @stock_hash ={}
+    Stock.includes(:material).where(store_id:39).where(date:(@today - 10)..(@today + 10)).order('date ASC').map do |stock|
+      if stock_hash[stock.material_id].present?
+        stock_hash[stock.material_id] << stock
+      else
+        stock_hash[stock.material_id] = [stock]
+      end
+    end
     @materials.each do |material|
       @hash[material.id][:material]=material
       @hash[material.id][:latest_material_vendor_stock] = MaterialVendorStock.where("date <= ?",@today).where(material_id:material.id).order("date DESC").limit(1)
       @hash[material.id][:latest_material_kitchen_stock] = Stock.where("date <= ?",@today).where(material_id:material.id,store_id:39).order("date DESC").limit(1)
+      @stock_hash[material.id]=MaterialVendorStock.aaa(stock_hash,material.id,@today)
       if material.target_material_id.present?
         target_material = Material.find(material.target_material_id)
         @hash[material.id][:latest_target_material_kitchen_stock] = Stock.where("date <= ?",@today).where(material_id:material.target_material_id,store_id:39).order("date DESC").limit(1)
         @hash[material.id][:target_material] = target_material
+        @stock_hash[material.target_material_id]= MaterialVendorStock.aaa(stock_hash,material.target_material_id,@today)
       end
     end
-
   end
 
   def show
