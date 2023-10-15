@@ -54,11 +54,19 @@ class TemporaryMenuMaterialsController < AdminController
       dmd.product.menus.each do |menu|
         menu.menu_materials.each do |mm|
           if @hash[dmd.daily_menu.start_time][mm.id].present?
-            @hhash[dmd.daily_menu.start_time][@hash[dmd.daily_menu.start_time][mm.id][:material_id]][:amount_used]= (((dmd.manufacturing_number * mm.amount_used)/@hash[dmd.daily_menu.start_time][mm.id][:material].recipe_unit_quantity)*@hash[dmd.daily_menu.start_time][mm.id][:material].order_unit_quantity).round(1).to_s(:delimited)
-            @hhash[dmd.daily_menu.start_time][@hash[dmd.daily_menu.start_time][mm.id][:material_id]][:order_unit]= @hash[dmd.daily_menu.start_time][mm.id][:material].order_unit
-            @hhash[dmd.daily_menu.start_time][@hash[dmd.daily_menu.start_time][mm.id][:material_id]][:material]= @hash[dmd.daily_menu.start_time][mm.id][:material]
-            @hhash[dmd.daily_menu.start_time][@hash[dmd.daily_menu.start_time][mm.id][:material_id]][:menu]= @hash[dmd.daily_menu.start_time][mm.id][:menu]
-            @hhash[dmd.daily_menu.start_time][@hash[dmd.daily_menu.start_time][mm.id][:material_id]][:menu_material_id]= @hash[dmd.daily_menu.start_time][mm.id][:menu_material_id]
+            if @hhash[dmd.daily_menu.start_time][@hash[dmd.daily_menu.start_time][mm.id][:material_id]].present?
+              @hhash[dmd.daily_menu.start_time][@hash[dmd.daily_menu.start_time][mm.id][:material_id]][:amount_used] += ((dmd.manufacturing_number * mm.amount_used)/@hash[dmd.daily_menu.start_time][mm.id][:material].recipe_unit_quantity)*@hash[dmd.daily_menu.start_time][mm.id][:material].order_unit_quantity
+              @hhash[dmd.daily_menu.start_time][@hash[dmd.daily_menu.start_time][mm.id][:material_id]][:menus][menu.id] = @hash[dmd.daily_menu.start_time][mm.id][:menu]
+              @hhash[dmd.daily_menu.start_time][@hash[dmd.daily_menu.start_time][mm.id][:material_id]][:menu_materials][mm.id][:name] = mm.menu.name
+              @hhash[dmd.daily_menu.start_time][@hash[dmd.daily_menu.start_time][mm.id][:material_id]][:menu_materials][mm.id][:amount] = ((dmd.manufacturing_number * mm.amount_used)/@hash[dmd.daily_menu.start_time][mm.id][:material].recipe_unit_quantity)*@hash[dmd.daily_menu.start_time][mm.id][:material].order_unit_quantity
+            else
+              @hhash[dmd.daily_menu.start_time][@hash[dmd.daily_menu.start_time][mm.id][:material_id]][:amount_used]= ((dmd.manufacturing_number * mm.amount_used)/@hash[dmd.daily_menu.start_time][mm.id][:material].recipe_unit_quantity)*@hash[dmd.daily_menu.start_time][mm.id][:material].order_unit_quantity
+              @hhash[dmd.daily_menu.start_time][@hash[dmd.daily_menu.start_time][mm.id][:material_id]][:order_unit]= @hash[dmd.daily_menu.start_time][mm.id][:material].order_unit
+              @hhash[dmd.daily_menu.start_time][@hash[dmd.daily_menu.start_time][mm.id][:material_id]][:material]= @hash[dmd.daily_menu.start_time][mm.id][:material]
+              @hhash[dmd.daily_menu.start_time][@hash[dmd.daily_menu.start_time][mm.id][:material_id]][:menus][menu.id]= @hash[dmd.daily_menu.start_time][mm.id][:menu]
+              @hhash[dmd.daily_menu.start_time][@hash[dmd.daily_menu.start_time][mm.id][:material_id]][:menu_materials][mm.id][:name] = mm.menu.name
+              @hhash[dmd.daily_menu.start_time][@hash[dmd.daily_menu.start_time][mm.id][:material_id]][:menu_materials][mm.id][:amount] = ((dmd.manufacturing_number * mm.amount_used)/@hash[dmd.daily_menu.start_time][mm.id][:material].recipe_unit_quantity)*@hash[dmd.daily_menu.start_time][mm.id][:material].order_unit_quantity
+             end
           end
         end
       end

@@ -8,31 +8,34 @@ h3 食材変更一覧
         hr style='margin:10px 2px;'
         - if @hhash[date].present?
           - @hhash[date].each do |data|
-            .clearfix style='margin-bottom:15px;'
-              .col-xs-8 style='padding:0 5px;' = link_to data[1][:material].name,data[1][:material]
-              .col-xs-1 style='padding:0 5px;'
-                = link_to data[1][:menu],target:"_blank" do
-                  i class="fa fa-external-link" aria-hidden="true"
+            .clearfix
+              .col-xs-9 style='padding:0 5px;' = link_to data[1][:material].name,data[1][:material]
               .col-xs-3 style='padding:0 5px;text-align:right;'
-                = link_to "#{data[1][:amount_used]} #{data[1][:order_unit]}",new_temporary_menu_material_path(menu_material_id:data[1][:menu_material_id]),target:"_blank"
-
+                = "#{data[1][:amount_used].round(1).to_s(:delimited)} #{data[1][:order_unit]}"
+            .clearfix style='margin-bottom:15px;'
+              - data[1][:menu_materials].each do |menu_material|
+                = link_to new_temporary_menu_material_path(menu_material_id:menu_material[0]),target:"_blank"
+                  p style='font-size:0.8em;margin-bottom:4px;' = "・#{menu_material[1][:name]} #{menu_material[1][:amount].round(1).to_s(:delimited)}"
+            hr style='margin:10px 2px;'
 
 .desctop_view
   = month_calendar do |date|
     div
       = link_to date.strftime("%-m/%-d"),@daily_menus[date]
-    table.table
-      tbody
-        - if @hhash[date].present?
-          - @hhash[date].each do |data|
-            tr
-              td = link_to data[1][:material].name,data[1][:material]
-              td
-                = link_to data[1][:menu],target:"_blank" do
-                  i class="fa fa-external-link" aria-hidden="true"
+    ul.list-group
+      - if @hhash[date].present?
+        - @hhash[date].each do |data|
+          li.list-group-item.clearfix style=''
+            .clearfix style='margin-bottom:5px;'
+              div style='width:calc(100% - 70px);float:left;'
+                = link_to data[1][:material].name,data[1][:material]
+              div style='width:70px;float:right;text-align:right;font-size:1.2em;'
+                = "#{data[1][:amount_used].round(1).to_s(:delimited)} #{data[1][:order_unit]}"
+            div
+              - data[1][:menu_materials].each do |menu_material|
+                = link_to new_temporary_menu_material_path(menu_material_id:menu_material[0]),target:"_blank"
+                  p style='font-size:0.8em;margin-bottom:0;' = "・#{menu_material[1][:name]} #{menu_material[1][:amount].round(1).to_s(:delimited)}"
 
-              td
-                = link_to "#{data[1][:amount_used]} #{data[1][:order_unit]}",new_temporary_menu_material_path(menu_material_id:data[1][:menu_material_id]),target:"_blank"
 
 css:
   @media (min-width: 700px) {
