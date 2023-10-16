@@ -11,21 +11,22 @@ h3 = "店舗配送品一覧"
   table.table
     thead
       tr
-        th style="width:100px;" 担当
-        th style="width:100px;" オーダー
-        th style="width:200px;" 業者名
         th style="width:400px;" 商品名
         th.text-right style="width:100px;" 納品量
-        th メモ
+        th オーダー情報
 
     tbody
       - store_mateiral_order[1].each do |material_order_quantity|
+        - material = material_order_quantity[1][:material]
         tr
-          td = material_order_quantity[1][8]
-          td = link_to material_order_quantity[1][5],order_path(material_order_quantity[1][5]),target:'_blank'
-          td = material_order_quantity[1][6]
-          td = link_to material_order_quantity[1][2],material_path(material_order_quantity[0]),target:'_blank'
+          td = link_to material.order_name,material,target:'_blank'
           td.text-right
-            - order_amount = ActiveSupport::NumberHelper.number_to_rounded(((material_order_quantity[1][1] / material_order_quantity[1][0])*material_order_quantity[1][7]), strip_insignificant_zeros: true, :delimiter => ',')
-            = "#{order_amount} #{material_order_quantity[1][3]}"
-          td = material_order_quantity[1][4]
+            - order_amount = ActiveSupport::NumberHelper.number_to_rounded(((material_order_quantity[1][:order_quantity] / material.recipe_unit_quantity)*material.order_unit_quantity), strip_insignificant_zeros: true, :delimiter => ',')
+            = "#{order_amount} #{material.order_unit}"
+          td
+            - material_order_quantity[1][:orders].each do |data|
+              p
+                = link_to data[0],order_path(data[0]),target:'_blank'
+                = " ｜ #{data[1][:order].staff_name} ｜ メモ：#{data[1][:memo]}"
+              
+

@@ -16,7 +16,7 @@ h2 店舗一覧
         th 棚卸し
         th 店舗
     tbody
-      - group.stores.each do |store|
+      - group.stores.where(close_flag:false).each do |store|
         tr
           td
             - if @store_daily_menus[store.id]

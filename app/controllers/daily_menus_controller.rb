@@ -240,7 +240,7 @@ class DailyMenusController < AdminController
     end
     @daily_menus = DailyMenu.where(start_time:@date.in_time_zone.all_month).includes(daily_menu_details:[:product])
     @today_after_daily_menus = @daily_menus.where('start_time >= ?',today).order('start_time')
-    @stores = Store.all
+    @stores = Store.all.where(close_flag:false)
   end
 
   def show

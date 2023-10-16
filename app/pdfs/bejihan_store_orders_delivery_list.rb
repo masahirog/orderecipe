@@ -26,11 +26,19 @@ class BejihanStoreOrdersDeliveryList < Prawn::Document
     data= []
     data << ["check","品名","数量","単位","税別単価","金額","担当者","メモ"]
     store_material_order_list[1].each do |material_order_quantity|
-      amount = (material_order_quantity[1][1] / material_order_quantity[1][0])*material_order_quantity[1][7]
+      rowspan = material_order_quantity[1][:orders].count
+      material = material_order_quantity[1][:material]
+      amount = (material_order_quantity[1][:order_quantity] / material.recipe_unit_quantity)*material.order_unit_quantity
       amount_to_s = ActiveSupport::NumberHelper.number_to_rounded(amount, strip_insignificant_zeros: true, :delimiter => ',')
-      cost = ActiveSupport::NumberHelper.number_to_rounded(material_order_quantity[1][10], strip_insignificant_zeros: true, :delimiter => ',')
-      price = ActiveSupport::NumberHelper.number_to_rounded(material_order_quantity[1][10]*amount, strip_insignificant_zeros: true, :delimiter => ',')
-      data << ["",material_order_quantity[1][2],amount_to_s,material_order_quantity[1][3],cost,price,material_order_quantity[1][8],material_order_quantity[1][4]]
+      cost = ActiveSupport::NumberHelper.number_to_rounded(material.recipe_unit_price.round, strip_insignificant_zeros: true, :delimiter => ',')
+      price = ActiveSupport::NumberHelper.number_to_rounded(material.recipe_unit_price.round*amount, strip_insignificant_zeros: true, :delimiter => ',')
+      material_order_quantity[1][:orders].each_with_index do |order_material,i|
+        if i == 0
+          data << [{:content => "", :rowspan => rowspan},{:content => material.order_name, :rowspan => rowspan},{:content => amount_to_s, :rowspan => rowspan},{:content => material.order_unit, :rowspan => rowspan},{:content => cost, :rowspan => rowspan},{:content => price, :rowspan => rowspan},order_material[1][:order].staff_name,order_material[1][:memo]]
+        else
+          data << [order_material[1][:order].staff_name,order_material[1][:memo]]
+        end
+      end
     end
     data
   end

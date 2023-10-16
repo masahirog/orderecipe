@@ -330,7 +330,7 @@ ActiveRecord::Schema.define(version: 2023_10_08_120200) do
     t.index ["material_id", "store_id"], name: "index_material_store_orderables_on_material_id_and_store_id", unique: true
   end
 
-  create_table "material_vendor_stocks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "material_vendor_stocks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "material_id", null: false
     t.date "date", null: false
     t.integer "previous_end_day_stock", default: 0, null: false
@@ -892,7 +892,7 @@ ActiveRecord::Schema.define(version: 2023_10_08_120200) do
     t.index ["store_id", "shift_frame_id"], name: "index_store_shift_frames_on_store_id_and_shift_frame_id", unique: true
   end
 
-  create_table "stores", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+  create_table "stores", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name", null: false
     t.string "phone"
     t.string "fax"
@@ -916,6 +916,7 @@ ActiveRecord::Schema.define(version: 2023_10_08_120200) do
     t.integer "group_id"
     t.string "task_slack_url"
     t.integer "store_type", default: 0, null: false
+    t.boolean "close_flag", default: false, null: false
   end
 
   create_table "task_comments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|

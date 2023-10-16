@@ -32,7 +32,7 @@ table.table
         td = link_to @hash[material.id][:target_material].name,@hash[material.id][:target_material],target:"_blank" if @hash[material.id][:target_material].present?
         td
           - if @hash[material.id][:target_material].present?
-            = link_to history_stocks_path(material_id:material.id,store_id:39),target:'_blank',class:'stock-tooltip' do
+            = link_to history_stocks_path(material_id:@hash[material.id][:target_material].id,store_id:39),target:'_blank',class:'stock-tooltip' do
               span data-html="true" class="" aria-hidden="true"  data-toggle="tooltip" data-placement="bottom" title="<div style='padding:10px;'></div><table class='table tooltip-table table-striped'>#{@stock_hash[material.target_material_id].flatten.join('')}</table>"
                 = "#{(@hash[material.id][:latest_target_material_kitchen_stock][0].end_day_stock/@hash[material.id][:target_material].recipe_unit_quantity*@hash[material.id][:target_material].order_unit_quantity).to_i}  #{@hash[material.id][:target_material].order_unit}"
           - else

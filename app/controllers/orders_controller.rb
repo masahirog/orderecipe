@@ -30,7 +30,7 @@ class OrdersController < AdminController
     end
     if params[:store_id].present?
       store_ids = [params[:store_id]]
-      @stores = Store.find(params[:store_id])
+      @stores = Store.where(id:store_ids)
     else
       @stores = Store.all
       store_ids = @stores.ids
@@ -39,10 +39,13 @@ class OrdersController < AdminController
     @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @order_materials.each do |om|
       if @hash[om.order.store_id][om.material_id].present?
-        @hash[om.order.store_id][om.material_id][1] += om.order_quantity.to_f
+        @hash[om.order.store_id][om.material_id][:order_quantity] += om.order_quantity.to_f
       else
-        @hash[om.order.store_id][om.material_id] = [om.material.recipe_unit_quantity,om.order_quantity.to_f,om.material.order_name,om.material.order_unit,om.order_material_memo,om.order_id,om.material.vendor.name,om.material.order_unit_quantity,om.order.staff_name,om.order.store.name,om.material.recipe_unit_price.round]
+        @hash[om.order.store_id][om.material_id][:order_quantity] = om.order_quantity.to_f
+        @hash[om.order.store_id][om.material_id][:material] = om.material
       end
+      @hash[om.order.store_id][om.material_id][:orders][om.order_id][:memo] = om.order_material_memo
+      @hash[om.order.store_id][om.material_id][:orders][om.order_id][:order] = om.order
     end
     respond_to do |format|
       format.html

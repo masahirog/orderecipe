@@ -23,6 +23,7 @@ class CreateStores < ActiveRecord::Migration[5.2]
       t.integer :group_id
       t.string :task_slack_url
       t.integer :store_type,default:0,null:false
+      t.boolean :close_flag,default:false,null:false
     end
   end
 end

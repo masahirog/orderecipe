@@ -5,6 +5,7 @@
       ul
         - @store.errors.full_messages.each do |message|
           li = message
+
   .form-group
     = f.label :group_id, "所属のグループ"
     = f.collection_select :group_id, Group.all, :id, :name, {}, { class: "form-control"}
@@ -58,4 +59,8 @@
     = link_to_add_association '追加', f, :store_shift_frames,class:'btn btn-primary',style:'',
     data: {association_insertion_node: '#store_shift_frames-add-point',association_insertion_method: 'append' }
 
-  .text-center.actions = f.submit " 送　信 ",class:'btn btn-success'
+  .form-group style='margin-bottom:50px;'
+    = f.label :close_flag, "閉店チェック"
+    = f.check_box :close_flag, class:"form-control"
+
+  .text-center.actions = f.submit "送信する",class:'btn btn-success'

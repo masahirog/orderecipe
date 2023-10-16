@@ -1,0 +1,35 @@
+h2 = @group.name
+table.table
+  thead
+    tr
+      th 店名
+      th 電話番号
+      th FAX番号
+      th メールアドレス
+      th 郵便番号
+      th 住所
+      th 担当者名
+      th 担当者電話番号
+      th 担当者メールアドレス
+      th メモ
+      th 直営店舗？
+      th 管理アカウント
+  tbody
+    - @group.stores.each do |store|
+      - if store.close_flag == true
+        - bg = 'silver'
+      - else
+        - bg = 'white'
+      tr style="background-color:#{bg};"
+        td = link_to store.name, edit_store_path(store)
+        td = store.phone
+        td = store.fax
+        td = store.email
+        td = store.zip
+        td = store.address
+        td = store.staff_name
+        td = store.staff_phone
+        td = store.staff_email
+        td = store.memo
+        td = store.jfd
+        td = store.user_id
