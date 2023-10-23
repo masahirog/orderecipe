@@ -93,7 +93,6 @@ class Order < ApplicationRecord
     kitchen_order_materials = OrderMaterial.where(un_order_flag:false).joins(:material).where(:materials => {vendor_id:559}).joins(:order).where(:orders => {fixed_flag:true}).where(delivery_date:@dates)
     kitchen_order_materials_group = kitchen_order_materials.order('delivery_date asc').group('delivery_date').group('material_id').sum(:order_quantity)
     kitchen_materials_hash = Material.where(id:kitchen_order_materials.map{|om|om.material_id}.uniq).map{|material|[material.id,material]}.to_h
-    # binding.pry
     kitchen_order_materials_group.each do |omg|
       
       date = omg[0][0]
