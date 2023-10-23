@@ -62,15 +62,17 @@ class SalesReportsController < AdminController
     kome_amari = params[:sales_report][:kome_amari]
     respond_to do |format|
       if @sales_report.save
+        yosan = (@sales_report.analysis.store_daily_menu.foods_budget+@sales_report.analysis.store_daily_menu.vegetables_budget+@sales_report.analysis.store_daily_menu.goods_budget
+        ).to_i
         analysis = @sales_report.analysis
         analysis.update(vegetable_waste_amount:vegetable_waste_amount)
         sales_form=" *#{analysis.store_daily_menu.start_time.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[analysis.store_daily_menu.start_time.wday]})")}*　*#{analysis.store.name}*　*#{Staff.find(@sales_report.staff_id).name}* \n"+
-        " *予算* ： #{analysis.ex_tax_sales_amount.to_s(:delimited)}円（#{analysis.transaction_count}組）\n"+
+        " *予算* ： #{yosan.to_s(:delimited)}円\n"+
         " *売上(税抜)* ： #{analysis.ex_tax_sales_amount.to_s(:delimited)}円（#{analysis.transaction_count}組）\n"+
         " *値引き率* ： #{((analysis.discount_amount.to_f/analysis.ex_tax_sales_amount)*100).round(1)}%（#{analysis.discount_amount.to_s(:delimited)}円）\n"+
         " *廃棄率* ： #{((analysis.loss_amount.to_f/analysis.ex_tax_sales_amount)*100).round(1)}% （#{analysis.loss_amount.to_s(:delimited)}円）\n"+
         " *ロス率* ： #{(((analysis.loss_amount.to_f + analysis.discount_amount.to_f)/analysis.ex_tax_sales_amount)*100).round(1)}% （#{(analysis.loss_amount.to_f + analysis.discount_amount.to_f).round.to_s(:delimited)}円）\n"+
-        " *現金誤差* ： #{@sales_report.vegetable_waste_amount}円\n"+
+        " *野菜の廃棄* ： #{@sales_report.vegetable_waste_amount}円\n"+
         " *現金誤差* ： #{@sales_report.cash_error}円\n"+
         " *退勤時間* ： #{@sales_report.leaving_work.strftime("%-H:%M")}\n"+
         " *在庫感* ： 惣菜は#{sozai_ureyuki}、弁当は#{bento_ureyuki}、白米残#{kome_amari} kg\n\n"+

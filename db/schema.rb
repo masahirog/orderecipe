@@ -312,7 +312,7 @@ ActiveRecord::Schema.define(version: 2023_10_08_120200) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "material_store_orderables", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+  create_table "material_store_orderables", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "material_id", null: false
     t.integer "store_id", null: false
     t.boolean "orderable_flag", default: false, null: false

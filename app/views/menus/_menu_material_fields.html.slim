@@ -1,4 +1,4 @@
-li.add_li_material.col-md-12.list-group-item.item.nested-fields.field.table-striped
+li.add_li_material.col-md-12.col-xs-12.list-group-item.item.nested-fields.field.table-striped
   = f.hidden_field :calorie, class:'input_calorie'
   = f.hidden_field :protein, class:'input_protein'
   = f.hidden_field :lipid, class:'input_lipid'
@@ -19,7 +19,7 @@ li.add_li_material.col-md-12.list-group-item.item.nested-fields.field.table-stri
 
   = f.hidden_field :row_order, class:"input_row_order"
   = f.hidden_field :base_menu_material_id
-  .select_material.col-md-3[style="padding:3px;"]
+  .select_material.col-md-3.col-xs-6[style="padding:3px;"]
     - if @base_menu.present?
       = f.object.material.name
       = f.hidden_field :material_id
