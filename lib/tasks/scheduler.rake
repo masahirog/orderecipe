@@ -57,7 +57,7 @@ task :reminder_bulk_create => :environment do
 end
 
 task :store_order_close => :environment do
-  if Date.today.wday == 5
+  if Date.today.wday == 5 || Date.today.wday == 1
     DailyMenu.store_order_close
   end
 end

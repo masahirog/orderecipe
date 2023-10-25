@@ -144,7 +144,11 @@ class DailyMenu < ApplicationRecord
   end
   def self.store_order_close
     store_daily_menus_arr = []
-    dates = (Date.today-2..Date.today+4).to_a
+    if Date.today.wday == 5
+      dates = (Date.today+5..Date.today+7).to_a
+    elsif Date.today.wday == 1
+      dates = (Date.today+5..Date.today+8).to_a
+    end
     store_ids = Group.find(29).stores.ids
     StoreDailyMenu.where(start_time:dates,store_id:store_ids).each do |sdm|
       sdm.editable_flag = false
