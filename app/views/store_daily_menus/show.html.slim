@@ -28,7 +28,8 @@ button type="button" class="btn btn-default" data-toggle="modal" data-target="#s
           button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
           = submit_tag "登録",class:'btn btn-primary'
 = link_to "商品紹介",description_store_daily_menus_path(store_daily_menu_id:@store_daily_menu.id,format:'pdf'),class:'btn btn-default pull-right',style:'margin-right:20px;'
-= link_to "バーコード",barcode_store_daily_menus_path(store_daily_menu_id:@store_daily_menu.id,format:'pdf'),class:'btn btn-default pull-right',style:'margin-right:20px;'
+= link_to "ラベルCSV", label_store_daily_menus_path(store_daily_menu_id:@store_daily_menu.id,format:'csv'), method: :post, class: "btn btn-default",style:'float:right;margin-right:20px;'
+/ = link_to "バーコード",barcode_store_daily_menus_path(store_daily_menu_id:@store_daily_menu.id,format:'pdf'),class:'btn btn-default pull-right',style:'margin-right:20px;'
 = link_to "盛付準備", ikkatsu_store_daily_menus_path(id:@store_daily_menu.id),class:'btn btn-success pull-right',style:'margin-right:20px;'
 .clearfix
   h2 style='float:left;' = link_to "#{@store_daily_menu.store.name}店 ", store_daily_menus_path(store_id:@store_daily_menu.store_id),class:''
@@ -80,7 +81,6 @@ button type="button" class="btn btn-default" data-toggle="modal" data-target="#s
 .col-md-12
   label 予約：
   span style='color:red;' = "#{@store_daily_menu.event}"
-  / = link_to "在庫CSV", stock_store_daily_menus_path(store_daily_menu_id:@store_daily_menu.id,format:'csv'), class: "btn btn-default",style:'float:right;'
 table.table.table-list
   thead
     tr

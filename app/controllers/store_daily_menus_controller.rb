@@ -1,6 +1,19 @@
 require "csv"
 class StoreDailyMenusController < AdminController
   before_action :set_store_daily_menu, only: [:show, :edit, :update, :destroy]
+
+  def label
+    @store_daily_menu = StoreDailyMenu.find(params[:store_daily_menu_id])
+    date = @store_daily_menu.start_time
+    store_name = @store_daily_menu.store.name
+    respond_to do |format|
+      format.html
+      format.csv do
+        send_data render_to_string, filename: "#{date}_#{store_name}.csv", type: :csv
+      end
+    end
+  end
+
   def budget_update
     @store_daily_menu = StoreDailyMenu.find(params[:store_daily_menu_id])
     if params[:foods_budget].present?
@@ -193,9 +206,7 @@ class StoreDailyMenusController < AdminController
     DailyMenuDetail.import update_dmds, :on_duplicate_key_update => [:for_single_item_number,:manufacturing_number,:for_sub_item_number]
     redirect_to input_manufacturing_number_store_daily_menus_path(store_id:params['store_id'],store_daily_menu_ids:params['store_daily_menu_ids'].split(" ")),notice:'更新OK！'
   end
-  def stock
-    store_daily_menu = StoreDailyMenu.find(params[:store_daily_menu_id])
-  end
+
 
   def index
     if params[:start_date].present?
