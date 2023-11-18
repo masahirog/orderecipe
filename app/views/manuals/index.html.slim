@@ -1,0 +1,14 @@
+table
+  thead
+    tr
+      th
+      th
+      th
+
+  tbody
+    - @manuals.each do |manual|
+      tr
+
+br
+
+= link_to 'New Manual', new_manual_path

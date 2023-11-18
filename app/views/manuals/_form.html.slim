@@ -1,0 +1,8 @@
+= form_with model: @manual, local: true do |f|
+	= f.date_field :date
+	div class="img-upload"
+		div class="click-upload"
+			= f.label :video, placeholder: "video"
+	  	= f.file_field :video, :accept => 'video/*'
+
+	= f.submit

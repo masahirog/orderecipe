@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_10_08_120200) do
+ActiveRecord::Schema.define(version: 2023_11_18_042310) do
 
   create_table "analyses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "store_id"
@@ -296,6 +296,15 @@ ActiveRecord::Schema.define(version: 2023_10_08_120200) do
     t.text "kitchen_memo"
   end
 
+  create_table "manuals", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.date "date", null: false
+    t.text "content"
+    t.string "title"
+    t.string "video"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "material_cut_patterns", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "material_id", null: false
     t.string "name"
@@ -312,7 +321,7 @@ ActiveRecord::Schema.define(version: 2023_10_08_120200) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "material_store_orderables", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "material_store_orderables", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "material_id", null: false
     t.integer "store_id", null: false
     t.boolean "orderable_flag", default: false, null: false
@@ -892,7 +901,7 @@ ActiveRecord::Schema.define(version: 2023_10_08_120200) do
     t.index ["store_id", "shift_frame_id"], name: "index_store_shift_frames_on_store_id_and_shift_frame_id", unique: true
   end
 
-  create_table "stores", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "stores", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "name", null: false
     t.string "phone"
     t.string "fax"
