@@ -9,6 +9,7 @@ class ManualsController < ApplicationController
   end
 
   def new
+    @parent_manual = Manual.find(params[:parent_manual_id]) if params[:parent_manual_id].present?
     @manual = Manual.new
   end
 
@@ -16,7 +17,12 @@ class ManualsController < ApplicationController
   end
 
   def create
-    @manual = Manual.new(manual_params)
+    if params[:manual][:parent_manual_id].present?
+      @parent_manual = Manual.find(params[:manual][:parent_manual_id])
+      @manual = @parent_manual.children.new(manual_params)
+    else
+      @manual = Manual.new(manual_params)
+    end
 
     respond_to do |format|
       if @manual.save
@@ -56,6 +62,6 @@ class ManualsController < ApplicationController
     end
 
     def manual_params
-      params.require(:manual).permit(:id,:title,:video,:date)
+      params.require(:manual).permit(:id,:title,:video,:date,:parent_manual_id)
     end
 end

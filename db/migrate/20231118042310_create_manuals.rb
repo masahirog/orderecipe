@@ -6,6 +6,7 @@ class CreateManuals < ActiveRecord::Migration[6.0]
     	t.string :title
     	t.string :video
       t.timestamps
+			t.string :ancestry, index: true
     end
   end
 end

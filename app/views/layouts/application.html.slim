@@ -81,6 +81,7 @@ html
                       / li = link_to "進捗ボード",tasks_path(group_id:current_user.group_id)
                       li = link_to '販売レポート',select_store_sales_reports_path
                       li = link_to 'シフト',shifts_path(date:@today,group_id:current_user.group_id,store_type:0)
+                      li = link_to 'マニュアル',manuals_path
                   li.dropdown
                     a.dropdown-toggle href="#" data-toggle="dropdown" role="button"
                       |共通

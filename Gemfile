@@ -52,6 +52,7 @@ gem 'jquery-datetimepicker-rails'
 gem 'barby'
 gem 'chunky_png'
 gem 'slack-notifier'
+gem 'ancestry'
 
 
 group :development, :test do

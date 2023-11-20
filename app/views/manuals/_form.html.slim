@@ -1,8 +1,19 @@
 = form_with model: @manual, local: true do |f|
-	= f.date_field :date
-	div class="img-upload"
+	= f.hidden_field :parent_manual_id,value:@parent_manual.id if @parent_manual.present?
+	.form-group
+		= f.label :title, "タイトル"
+		= f.text_field :title, required: true, class:"form-control"
+	.form-group
+		= f.label :content, "内容"
+		= f.text_area :content, required: true, class:"form-control", style:"height:20em;"
+	.form-group
+		= f.label :date,"日付"
+		= f.date_field :date, class:"form-control"
+	
+	.form-group.img-upload
 		div class="click-upload"
-			= f.label :video, placeholder: "video"
+			= f.label :video,"動画アップロード"
 	  	= f.file_field :video, :accept => 'video/*'
 
-	= f.submit
+	.actions
+    = f.submit '登録する',class:'btn btn-success'

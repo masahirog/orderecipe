@@ -1,14 +1,17 @@
-table
+table.table
   thead
     tr
-      th
-      th
-      th
+      th ID
+      th タイトル
+      th 日付
 
   tbody
     - @manuals.each do |manual|
       tr
+      	td = link_to manual.id,manual
+      	td = manual.title
+      	td = manual.date
 
 br
 
-= link_to 'New Manual', new_manual_path
+= link_to '新規作成', new_manual_path,class:"btn btn-primary"
