@@ -5,10 +5,7 @@
 		= f.text_field :title, required: true, class:"form-control"
 	.form-group
 		= f.label :content, "内容"
-		= f.text_area :content, required: true, class:"form-control", style:"height:20em;"
-	.form-group
-		= f.label :date,"日付"
-		= f.date_field :date, class:"form-control"
+		= f.text_area :content, class:"form-control", style:"height:20em;"
 	
 	.form-group.img-upload
 		div class="click-upload"

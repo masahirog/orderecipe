@@ -297,7 +297,6 @@ ActiveRecord::Schema.define(version: 2023_11_18_042310) do
   end
 
   create_table "manuals", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.date "date", null: false
     t.text "content"
     t.string "title"
     t.string "video"

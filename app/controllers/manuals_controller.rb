@@ -2,7 +2,7 @@ class ManualsController < ApplicationController
   before_action :set_manual, only: %i[ show edit update destroy ]
 
   def index
-    @manuals = Manual.all
+    @manuals = Manual.where(ancestry:nil)
   end
 
   def show
@@ -19,13 +19,12 @@ class ManualsController < ApplicationController
   def create
     if params[:manual][:parent_manual_id].present?
       @parent_manual = Manual.find(params[:manual][:parent_manual_id])
-      @manual = @parent_manual.children.new(manual_params)
+      @manual = @parent_manual.children.create(manual_params)
     else
-      @manual = Manual.new(manual_params)
+      @manual = Manual.create(manual_params)
     end
-
     respond_to do |format|
-      if @manual.save
+      if @manual
         format.html { redirect_to manual_url(@manual), notice: "Manual was successfully created." }
         format.json { render :show, status: :created, location: @manual }
       else
@@ -62,6 +61,6 @@ class ManualsController < ApplicationController
     end
 
     def manual_params
-      params.require(:manual).permit(:id,:title,:video,:date,:parent_manual_id)
+      params.require(:manual).permit(:id,:title,:video)
     end
 end
