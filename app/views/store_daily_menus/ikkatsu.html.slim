@@ -96,5 +96,5 @@ javascript:
       dataType: 'script'
     })
   }
-  var interval = setInterval(sync, 10000)
+  var interval = setInterval(sync, 60000)
   $(document).on('turbolinks:before-cache turbolinks:before-render', () => clearTimeout(interval))

@@ -19,4 +19,4 @@
 			= text_url_to_link(simple_format(h(@manual.content))).html_safe
 		- if @manual.video.present?
 			div class='' style='height:100vh;width:100%;text-align:center;'
-				= video_tag(@manual.video.to_s, loop: true, autoplay: false, muted: true, controls: true,style:'max-height:100%;max-width:100%;')
+				= video_tag(@manual.video.to_s, loop: false, autoplay: false, muted: true, controls: true,style:'max-height:100%;max-width:100%;')
