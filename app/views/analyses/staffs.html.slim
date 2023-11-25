@@ -13,8 +13,9 @@ table.table
       th 新規会員
   tbody
     - @staffs.each do |staff|
-      tr
-        td = staff.name
-        td = @jobcounts[staff.id]
-        td = @clean_done[staff.id]
-        td = @staff_sinki_kaiin[staff.smaregi_hanbaiin_id]
+      - if staff.smaregi_hanbaiin_id.present? && staff.smaregi_hanbaiin_id > 0
+        tr
+          td = staff.name
+          td = @jobcounts[staff.id]
+          td = @clean_done[staff.id]
+          td = @staff_sinki_kaiin[staff.smaregi_hanbaiin_id]
