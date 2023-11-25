@@ -396,7 +396,7 @@ class AnalysesController < AdminController
     @stores = Store.where(id:store_ids)
     @fix_shift_patterns = FixShiftPattern.where(group_id:@group.id)
     @staffs = Staff.joins(:staff_stores).where(status:0,:staff_stores => {store_id:store_ids}).order(:row).uniq
-    @jobcounts = Shift.where(date:@from..@to).where.not(fix_shift_pattern_id:nil).group(:staff_id).count
+    @jobcounts = Shift.where(date:@from..@to).joins(:fix_shift_pattern).where.not(:fix_shift_patterns => {working_hour:0}).group(:staff_id).count
     @clean_done = Reminder.where(category:1).where(action_date:@from..@to).group(:do_staff).count
     smaregi_members = SmaregiMember.where(nyukaibi:@from..@to)
     kaiin_ids = smaregi_members.map{|sm|sm.kaiin_id}
