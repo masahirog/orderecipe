@@ -210,70 +210,44 @@ class MaterialsController < ApplicationController
     else
       @month = Date.today.month
     end
-    if params[:kubun].present?
-      kubun = params[:kubun]
-    else
-      kubun = '0'
-    end
-    if kubun == "0"
-      @kubun = "くるめし"
-    else
-      @kubun = "べじはん"
-    end
     from = Date.new(@year.to_i,@month.to_i,1)
     to = from.end_of_month
     @product_hash = {}
     @material_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @vendor_hash = Vendor.all.map{|vendor|[vendor.id,vendor.name]}.to_h
-    if kubun == '0'
-      kurumesi_order_ids = KurumesiOrder.where(start_time:from..to,canceled_flag:false)
-      KurumesiOrderDetail.where(kurumesi_order_id:kurumesi_order_ids).each do |kod|
-        if @product_hash[kod.product_id]
-          @product_hash[kod.product_id] += kod.number
+    kurumesi_order_ids = KurumesiOrder.where(start_time:from..to,canceled_flag:false)
+    KurumesiOrderDetail.where(kurumesi_order_id:kurumesi_order_ids).each do |kod|
+      if @product_hash[kod.product_id]
+        @product_hash[kod.product_id] += kod.number
+      else
+        @product_hash[kod.product_id] = kod.number
+      end
+    end
+    daily_menu_ids = DailyMenu.where(start_time:from..to)
+    DailyMenuDetail.where(daily_menu_id:daily_menu_ids).each do |dmd|
+      if @product_hash[dmd.product_id]
+        @product_hash[dmd.product_id] += dmd.manufacturing_number
+      else
+        @product_hash[dmd.product_id] = dmd.manufacturing_number
+      end
+    end
+    ProductMenu.includes([:menu]).where(product_id:@product_hash.keys).each do |pm|
+      num = @product_hash[pm.product_id]
+      pm.menu.menu_materials.includes([:material]).each do |mm|
+        if @material_hash[mm.material_id].present?
+          @material_hash[mm.material_id][:amount_used] += (mm.amount_used * num)
+          @material_hash[mm.material_id][:amount_price] += (mm.amount_used * num) * mm.material.cost_price
         else
-          @product_hash[kod.product_id] = kod.number
-        end
-      end
-      ProductMenu.includes([:menu]).where(product_id:@product_hash.keys).each do |pm|
-        num = @product_hash[pm.product_id]
-        pm.menu.menu_materials.includes([:material]).each do |mm|
-          if @material_hash[mm.material_id].present?
-            @material_hash[mm.material_id][:amount_used] += (mm.amount_used * num)
-            @material_hash[mm.material_id][:amount_price] += (mm.amount_used * num) * mm.material.cost_price
-          else
-            @material_hash[mm.material_id][:material] = mm.material
-            @material_hash[mm.material_id][:amount_used] = (mm.amount_used * num)
-            @material_hash[mm.material_id][:amount_price] = (mm.amount_used * num) * mm.material.cost_price
-          end
-        end
-      end
-    else
-      daily_menu_ids = DailyMenu.where(start_time:from..to)
-      DailyMenuDetail.where(daily_menu_id:daily_menu_ids).each do |dmd|
-        if @product_hash[dmd.product_id]
-          @product_hash[dmd.product_id] += dmd.manufacturing_number
-        else
-          @product_hash[dmd.product_id] = dmd.manufacturing_number
-        end
-      end
-      ProductMenu.includes([:menu]).where(product_id:@product_hash.keys).each do |pm|
-        num = @product_hash[pm.product_id]
-        pm.menu.menu_materials.includes([:material]).each do |mm|
-          if @material_hash[mm.material_id].present?
-            @material_hash[mm.material_id][:amount_used] += (mm.amount_used * num)
-            @material_hash[mm.material_id][:amount_price] += (mm.amount_used * num) * mm.material.cost_price
-          else
-            @material_hash[mm.material_id][:material] = mm.material
-            @material_hash[mm.material_id][:amount_used] = (mm.amount_used * num)
-            @material_hash[mm.material_id][:amount_price] = (mm.amount_used * num) * mm.material.cost_price
-          end
+          @material_hash[mm.material_id][:material] = mm.material
+          @material_hash[mm.material_id][:amount_used] = (mm.amount_used * num)
+          @material_hash[mm.material_id][:amount_price] = (mm.amount_used * num) * mm.material.cost_price
         end
       end
     end
     respond_to do |format|
       format.html
       format.csv do
-        send_data render_to_string, filename: "#{@year}_#{@month}_#{@kubun}.csv", type: :csv
+        send_data render_to_string, filename: "#{@year}_#{@month}.csv", type: :csv
       end
     end
   end
