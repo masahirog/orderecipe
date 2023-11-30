@@ -5,6 +5,8 @@ class ProductsController < ApplicationController
   def edit_bb
     @product = Product.find(params[:product_id])
     @product.product_bbs.build
+    staff_ids = StaffStore.joins(:store).where(:stores => {store_type:0,group_id:current_user.group_id}).map{|ss|ss.staff_id}.uniq
+    @staffs = Staff.where(status:0,id:staff_ids).order(row:'asc')
   end
   def black_board
     @date = Date.parse(params[:date])
