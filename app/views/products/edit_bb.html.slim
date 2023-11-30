@@ -4,15 +4,5 @@ h4 ブラックボード登録
 = form_for @product do |f|
   ul.list-group
     = f.fields_for :product_bbs do |bb|
-      li.list-group-item
-        = bb.file_field :image
-        - if bb.object.image.present?
-          = bb.hidden_field :image_cache
-        / = link_to "ダウンロード", download_products_path(:file_name => bb.object.image,:key => bb.object.image.path, :type => 'pdf'),target:'_blank',class:'col-md-12'
-        = bb.label :remove_image,"削除する"
-        = bb.check_box :remove_image
-        div
-        	= bb.label :staff_id,"スタッフ名"
-       		= bb.collection_select :staff_id, @staffs, :id, :name, {include_blank:true}, { class: "form-control",required:true}
-
+    	= render 'bb_fields', f:bb
   input.btn.btn-success[type="button" onclick="submit();" value="登録する"]

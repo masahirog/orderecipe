@@ -22,7 +22,7 @@
         td 売上
         td = "#{@total_budget.to_s(:delimited)}円"
         td = "#{@analyses.sum(:ex_tax_sales_amount).to_s(:delimited)}円"
-        td = "#{((@analyses.sum(:ex_tax_sales_amount)/@analyses.count)*@business_day_num).to_s(:delimited)}円"
+        td = "#{((@analyses.sum(:ex_tax_sales_amount)/@analyses.count)*@business_day_num).to_s(:delimited)}円" if @analyses.present?
         td
           = "#{((((@analyses.sum(:ex_tax_sales_amount)/@analyses.count)*@business_day_num).to_f/@total_budget)*100).round}%" if @total_budget > 0
       tr
@@ -52,8 +52,8 @@
       tr style='font-weight:bold;'
         td ロス率
         td = "8%（#{(@total_budget*0.08).round.to_s(:delimited)}円）"
-        td = "#{(((@analyses.sum(:discount_amount) + @analyses.sum(:loss_amount))/@analyses.sum(:ex_tax_sales_amount).to_f)*100).round}%（#{(@analyses.sum(:discount_amount) + @analyses.sum(:loss_amount)).to_s(:delimited)}円）"
-        td = "#{(((((@analyses.sum(:discount_amount) + @analyses.sum(:loss_amount))/@analyses.count)*@business_day_num)/((@analyses.sum(:ex_tax_sales_amount)/@analyses.count)*@business_day_num).to_f)*100).round}%（#{(((@analyses.sum(:discount_amount) + @analyses.sum(:loss_amount))/@analyses.count)*@business_day_num).to_s(:delimited)}円）"
+        td = "#{(((@analyses.sum(:discount_amount) + @analyses.sum(:loss_amount))/@analyses.sum(:ex_tax_sales_amount).to_f)*100).round}%（#{(@analyses.sum(:discount_amount) + @analyses.sum(:loss_amount)).to_s(:delimited)}円）" if @analyses.present?
+        td = "#{(((((@analyses.sum(:discount_amount) + @analyses.sum(:loss_amount))/@analyses.count)*@business_day_num)/((@analyses.sum(:ex_tax_sales_amount)/@analyses.count)*@business_day_num).to_f)*100).round}%（#{(((@analyses.sum(:discount_amount) + @analyses.sum(:loss_amount))/@analyses.count)*@business_day_num).to_s(:delimited)}円）" if @analyses.present?
         td
           = "#{(((((@analyses.sum(:discount_amount) + @analyses.sum(:loss_amount))/@analyses.count)*@business_day_num)/(@total_budget*0.08))*100).round}%" if @total_budget > 0
 

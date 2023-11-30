@@ -49,7 +49,6 @@ class StoresController < AdminController
 
     @reminders = @store.reminders.where(category:0,action_date:today)
     @yet_reminders = @reminders.where(status:"yet")
-
     @tasks = Task.joins(:task_stores).where(:task_stores => {store_id:@store.id,subject_flag:true})
     @doings = @tasks.where(status:1)
     @checks = @tasks.where(status:2)
