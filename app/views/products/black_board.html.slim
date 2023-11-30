@@ -1,0 +1,14 @@
+table.table
+	thead
+		tr
+			th 商品名
+			th
+	tbody
+		- @products.each do |product|
+			tr
+				td = link_to product.name,edit_bb_products_path(product_id:product.id)
+				td
+					- product.product_bbs.each do |bb|
+						- if bb.image.present?
+							= link_to bb.image.url, "data-lightbox" => bb.image.url do
+								= image_tag bb.image.url,style:'height:100px;width:200px;object-fit:cover;object-position: 0 0;' 

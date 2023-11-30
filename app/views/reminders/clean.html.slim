@@ -1,56 +1,58 @@
-.clearfix
-  = link_to 'テンプレート',reminder_templates_path(category:'clean'),class:'btn btn-primary btn-sm',style:'margin:18px 0 0 20px;float:right;'
-  h3 = "#{@bow.strftime("%-m月%-d日（#{%w(日 月 火 水 木 金 土)[@bow.wday]}）")}｜週1掃除リスト"
+h3 =@store.name
+div style='margin-bottom:20px;'
+  = form_tag clean_reminders_path, :method => 'get' do
+    = hidden_field_tag :store_id,@store.id
+    = date_field_tag :date, @date, class:"form-control float-left",style:'width:140px;float:left;'
+    = submit_tag "表示" ,class:"btn btn-default",style:"margin-left:20px;"
+
+
+h4 = "#{@bow.strftime("%-m月%-d日（#{%w(日 月 火 水 木 金 土)[@bow.wday]}）")}｜週次リスト"
 .table-responsive style='overflow: scroll;height:800px;'
   table.table.layout-fixed style='border-collapse:separate;'
+    colgroup
+      col class="col1"
+      col class="col1"
+      col class="col2"
+
     thead style='position: sticky;top:0;background-color:white;z-index:3;'
       tr
-        th style='width:300px;' 掃除箇所
-        th style='width:300px;' 内容
-        - @stores.each do |store|
-          th style='width:240px;' = store.name
+        th 掃除箇所
+        th
+        th 内容
 
 
     tbody
-      - @weekly_clean_reminder_templates.each do |rt|
+      - @weekly_clean_reminders.each do |reminder|
         tr
-          td = rt.content
-          td
-            = text_url_to_link(simple_format(h(rt.memo))).html_safe
-          - @stores.each do |store|
-            - if @weekly_clean_reminders[[rt.id,store.id]].present?
-              - reminder =  @weekly_clean_reminders[[rt.id,store.id]]
-              td class="clearfix clear_reminder_#{reminder.id}"
-                = render partial: "td", locals: { reminder:reminder }
-            - else
-              td class=""
+          td style="white-space:normal" = reminder.content
+          td class="clearfix clear_reminder_#{reminder.id}"
+            = render partial: "td", locals: { reminder:reminder }
+          td style="white-space:normal"
+            = text_url_to_link(simple_format(h(reminder.memo))).html_safe
 
 
-h3 = "#{@bom.month}月｜月1掃除リスト"
+h4 = "#{@bom.month}月｜月次リスト"
 .table-responsive style='overflow: scroll;height:800px;'
   table.table.layout-fixed style='border-collapse:separate;'
+    colgroup
+      col class="col1"
+      col class="col1"
+      col class="col2"
+
     thead style='position: sticky;top:0;background-color:white;z-index:3;'
       tr
-        th style='width:300px;' 掃除箇所
-        th style='width:300px;' 内容
-        - @stores.each do |store|
-          th style='width:240px;' = store.name
-
-
+        th 掃除箇所
+        th
+        th 内容
     tbody
-      - @monthly_clean_reminder_templates.each do |rt|
+      - @monthly_clean_reminders.each do |reminder|
         tr
-          td = rt.content
-          td
-            = text_url_to_link(simple_format(h(rt.memo))).html_safe
-          - @stores.each do |store|
-            - if @monthly_clean_reminders[[rt.id,store.id]].present?
-              - reminder =  @monthly_clean_reminders[[rt.id,store.id]]
-              td class="clearfix clear_reminder_#{reminder.id}"
-                = render partial: "td", locals: { reminder:reminder }
-            - else
-              td class=""
-
+          td style="white-space:normal" = reminder.content
+          td class="clearfix clear_reminder_#{reminder.id}"
+            = render partial: "td", locals: { reminder:reminder }
+          td style="white-space:normal"
+            = text_url_to_link(simple_format(h(reminder.memo))).html_safe
+= link_to 'リスト',reminder_templates_path(category:'clean'),class:'btn btn-primary btn-sm'
 javascript:
   $(function() {
     $(document).on("change", ".reminder_status", function(event) {
@@ -72,4 +74,11 @@ css:
     top:0;
     z-index:2;
     background-color:white;
+  }
+  .col1{
+    width:180px;
+  }
+
+  .col2{
+    width:300px;
   }

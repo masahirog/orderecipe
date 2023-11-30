@@ -16,6 +16,43 @@ class StoresController < AdminController
   end
 
   def show
+    today = Date.today
+    @store_daily_menu = StoreDailyMenu.find_by(start_time:today,store_id:@store.id)
+    @business_day_num = today.end_of_month.day
+    store_id = @store.id
+    @budget = @store_daily_menu.foods_budget.to_i + @store_daily_menu.vegetables_budget.to_i + @store_daily_menu.goods_budget.to_i
+    dates = (today.beginning_of_month..today.end_of_month).to_a
+    @store_daily_menus = StoreDailyMenu.where(start_time:dates,store_id:store_id)
+    @foods_total_budget = 0
+    @vegetables_total_budget = 0
+    @goods_total_budget = 0
+    @store_daily_menus.each do |sdm|
+      @foods_total_budget += sdm.foods_budget.to_i
+      @vegetables_total_budget += sdm.vegetables_budget.to_i
+      @goods_total_budget += sdm.goods_budget.to_i
+    end
+    @total_budget = @foods_total_budget+@vegetables_total_budget+@goods_total_budget
+    @analyses = Analysis.where(date:dates,store_id:store_id)
+    @bumon_loss_amount = [[14,0]].to_h
+    analysis_categories = AnalysisCategory.where(analysis_id:@analyses.ids)
+    @bumon_ex_tax_sales_amount = analysis_categories.group(:smaregi_bumon_id).sum(:ex_tax_sales_amount)
+    @bumon_discount_amount = analysis_categories.group(:smaregi_bumon_id).sum(:discount_amount)
+
+    @weekly_clean_reminder_templates = ReminderTemplate.where(category:1,repeat_type:11)
+    @monthly_clean_reminder_templates = ReminderTemplate.where(category:1,repeat_type:12)
+    @bow = today.beginning_of_week
+    @bom = today.beginning_of_month
+    @all_weekly_clean_reminders = Reminder.where(reminder_template_id:@weekly_clean_reminder_templates.ids,action_date:@bow,category:1,store_id:@store.id)
+    @all_monthly_clean_reminders = Reminder.where(reminder_template_id:@monthly_clean_reminder_templates.ids,action_date:@bom,category:1,store_id:@store.id)
+    @done_weekly_clean_reminders = @all_weekly_clean_reminders.where(status:1)
+    @done_monthly_clean_reminders = @all_monthly_clean_reminders.where(status:1)
+
+    @reminders = @store.reminders.where(category:0,action_date:today)
+    @yet_reminders = @reminders.where(status:"yet")
+
+    @tasks = Task.joins(:task_stores).where(:task_stores => {store_id:@store.id,subject_flag:true})
+    @doings = @tasks.where(status:1)
+    @checks = @tasks.where(status:2)
   end
 
   def new

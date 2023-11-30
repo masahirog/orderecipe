@@ -2,6 +2,17 @@ class ProductsController < ApplicationController
   require 'net/https'
   require 'json'
 
+  def edit_bb
+    @product = Product.find(params[:product_id])
+    @product.product_bbs.build
+  end
+  def black_board
+    @date = Date.parse(params[:date])
+    @daily_menu = DailyMenu.find_by(start_time:@date)
+    product_ids = DailyMenuDetail.joins(:daily_menu).where(:daily_menus => {id:@daily_menu.id}).map{|dmd|dmd.product_id}
+    @products = Product.where(id:product_ids)
+  end
+
   def get_menu
     @menus = Menu.where(group_id:@group_id).where("name LIKE ?", "%#{params[:q]}%").first(20)
     respond_to do |format|
@@ -296,6 +307,7 @@ class ProductsController < ApplicationController
                       :main_serving_plate_id,:sub_serving_plate_id,:container_id,:ozara_serving_infomation,:freezing_able_flag,:sky_split_information,:bejihan_only_flag,
                       :cost_price,:cooking_rice_id, product_menus_attributes: [:id, :product_id, :menu_id,:row_order, :_destroy],product_pops_attributes: [:id, :product_id,:image,:remove_image,:image_cache],
                     product_parts_attributes: [:id,:product_id,:name,:amount,:unit, :_destroy,:memo,:container,:sticker_print_flag],
-                    product_ozara_serving_informations_attributes: [:id, :product_id,:row_order,:content,:image, :_destroy])
+                    product_ozara_serving_informations_attributes: [:id, :product_id,:row_order,:content,:image, :_destroy],
+                    product_bbs_attributes: [:product_id,:image,:memo,:staff_id, :_destroy])
     end
 end

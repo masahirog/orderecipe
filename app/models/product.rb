@@ -5,6 +5,10 @@ class Product < ApplicationRecord
   belongs_to :brand
   belongs_to :container
 
+  has_many :product_bbs, dependent: :destroy
+  accepts_nested_attributes_for :product_bbs, allow_destroy: true
+
+
   has_many :product_pops, dependent: :destroy
   accepts_nested_attributes_for :product_pops, allow_destroy: true
 

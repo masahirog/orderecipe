@@ -7,16 +7,15 @@ class RemindersController < AdminController
       @date = Date.today
       params[:date]=@date
     end
-    @staffs = Staff.where(group_id:current_user.group_id,status:0)
-    @stores = Store.where(group_id:current_user.group_id).where.not(id:39)
+    staff_ids = StaffStore.joins(:store).where(:stores => {store_type:0,group_id:current_user.group_id}).map{|ss|ss.staff_id}.uniq
+    @staffs = Staff.where(id:staff_ids,status:0)
     @weekly_clean_reminder_templates = ReminderTemplate.where(category:1,repeat_type:11)
     @monthly_clean_reminder_templates = ReminderTemplate.where(category:1,repeat_type:12)
     @bow = @date.beginning_of_week
     @bom = @date.beginning_of_month
-    @weekly_clean_reminders = Reminder.where(action_date:@bow,category:1).map{|reminder|[[reminder.reminder_template_id,reminder.store_id],reminder]}.to_h
-    @monthly_clean_reminders = Reminder.where(action_date:@bom,category:1).map{|reminder|[[reminder.reminder_template_id,reminder.store_id],reminder]}.to_h
-    @reminder = Reminder.new
-
+    @weekly_clean_reminders = Reminder.where(reminder_template_id:@weekly_clean_reminder_templates.ids,action_date:@bow,category:1,store_id:params[:store_id])
+    @monthly_clean_reminders = Reminder.where(reminder_template_id:@monthly_clean_reminder_templates.ids,action_date:@bom,category:1,store_id:params[:store_id])
+    @store = Store.find(params[:store_id])
   end
   def store
     if params[:date]

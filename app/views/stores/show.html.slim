@@ -1,2 +1,175 @@
+.clearfix
+	h2 style='float:left;' = @store.name
+	= link_to edit_store_path(@store),class:'',style:'float:left;margin:30px 0 0 20px;' do
+		i class="fa-solid fa-pen-to-square"
+.table-responsive style='overflow: scroll;'
+  table.table.layout-fixed style='border-collapse:separate;'
+    colgroup
+      col class="col5"
+      col class="col6"
+      col class="col7"
+      col class="col8"
+      col class="col9"
+    thead style='position: sticky;top:0;background-color:white;z-index:3;'
+      tr
+        th 月間予算進捗
+        th 予算
+        th 今日時点
+        th 着地予想
+        th 達成率
+    tbody
+      tr style='font-weight:bold;'
+        td 売上
+        td = "#{@total_budget.to_s(:delimited)}円"
+        td = "#{@analyses.sum(:ex_tax_sales_amount).to_s(:delimited)}円"
+        td = "#{((@analyses.sum(:ex_tax_sales_amount)/@analyses.count)*@business_day_num).to_s(:delimited)}円"
+        td
+          = "#{((((@analyses.sum(:ex_tax_sales_amount)/@analyses.count)*@business_day_num).to_f/@total_budget)*100).round}%" if @total_budget > 0
+      tr
+        td 　フード
+        td = "#{@foods_total_budget.to_s(:delimited)}円"
+        td
+          = "#{(@analyses.sum(:ex_tax_sales_amount) - @bumon_ex_tax_sales_amount[14]).to_s(:delimited)}円" if @bumon_ex_tax_sales_amount[14].present?
+        td
+          = "#{(((@analyses.sum(:ex_tax_sales_amount) - @bumon_ex_tax_sales_amount[14])/@analyses.count)*@business_day_num).to_s(:delimited)}円" if @bumon_ex_tax_sales_amount[14].present?
+        td
+          = "#{(((((@analyses.sum(:ex_tax_sales_amount) - @bumon_ex_tax_sales_amount[14])/@analyses.count)*@business_day_num).to_f/@foods_total_budget)*100).round}%" if @bumon_ex_tax_sales_amount[14].present? && @foods_total_budget > 0
+      tr
+        td 　野菜
+        td = "#{@vegetables_total_budget.to_s(:delimited)}円"
+        td
+          = "#{@bumon_ex_tax_sales_amount[14].to_s(:delimited)}円" if @bumon_ex_tax_sales_amount[14].present?
+        td
+          = "#{((@bumon_ex_tax_sales_amount[14]/@analyses.count)*@business_day_num).to_s(:delimited)}円" if @bumon_ex_tax_sales_amount[14].present?
+        td
+          = "#{((((@bumon_ex_tax_sales_amount[14]/@analyses.count)*@business_day_num).to_f/@vegetables_total_budget)*100).round}%" if @bumon_ex_tax_sales_amount[14].present? && @vegetables_total_budget > 0
+      tr
+        td 　物販
+        td = "#{@goods_total_budget.to_s(:delimited)}円"
+        td = "0円"
+        td = "0円"
+        td = "0%"
+      tr style='font-weight:bold;'
+        td ロス率
+        td = "8%（#{(@total_budget*0.08).round.to_s(:delimited)}円）"
+        td = "#{(((@analyses.sum(:discount_amount) + @analyses.sum(:loss_amount))/@analyses.sum(:ex_tax_sales_amount).to_f)*100).round}%（#{(@analyses.sum(:discount_amount) + @analyses.sum(:loss_amount)).to_s(:delimited)}円）"
+        td = "#{(((((@analyses.sum(:discount_amount) + @analyses.sum(:loss_amount))/@analyses.count)*@business_day_num)/((@analyses.sum(:ex_tax_sales_amount)/@analyses.count)*@business_day_num).to_f)*100).round}%（#{(((@analyses.sum(:discount_amount) + @analyses.sum(:loss_amount))/@analyses.count)*@business_day_num).to_s(:delimited)}円）"
+        td
+          = "#{(((((@analyses.sum(:discount_amount) + @analyses.sum(:loss_amount))/@analyses.count)*@business_day_num)/(@total_budget*0.08))*100).round}%" if @total_budget > 0
 
-= link_to '編集', edit_store_path(@store)
+.Layout
+	.main
+		h2.Heading メニュー
+		ul.CardList
+			= link_to @store_daily_menu do
+				li.Card
+					h3 本日のメニュー
+			= link_to store_daily_menus_path(store_id:@store.id) do
+				li.Card
+					h3 今月の献立一覧
+			= link_to sales_analyses_path(store_id:@store.id) do
+				li.Card
+					h3 売上詳細
+			= link_to orders_path(store_id:@store.id) do
+				li.Card
+					h3 発 注
+
+			= link_to store_reminders_path(store_id:@store.id,status:'yet')
+				li.Card
+					.child
+						h3 リマインダー
+						div = "本日 進捗：#{@yet_reminders.count}/#{@reminders.count}"
+			= link_to clean_reminders_path(store_id:@store.id) do
+				li.Card
+					.child
+						h3 クレンリネス
+						div = "週次 進捗： #{@done_weekly_clean_reminders.count}/#{@all_weekly_clean_reminders.count}"
+						div = "月次 進捗： #{@done_monthly_clean_reminders.count}/#{@all_monthly_clean_reminders.count}"
+			= link_to tasks_path(store_id:@store.id) do
+				li.Card
+					.child
+						h3 進捗ボード
+						div = "進行中：#{@doings.count} 件"
+						div = "共有確認：#{@checks.count} 件"
+			= link_to refund_supports_path(status:"do",store_id:@store.id) do
+				li.Card
+					h3 返金対応
+			= link_to materials_stores_path(store_id:@store.id) do
+				li.Card
+					h3 商品一覧
+
+			= link_to store_inventory_stocks_path(store_id:@store.id) do
+				li.Card
+					h3 棚卸し
+			= link_to sales_reports_path(store_id:@store.id)
+				li.Card
+					h3 販売レポート一覧
+
+
+css:
+	.CardList {
+		padding:0;
+	  display: grid;
+	  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+	  gap: 24px 2%;
+	}
+	* {
+  	box-sizing: border-box;
+	}
+	.CardList a {
+	  text-decoration:none
+	}
+
+
+	.Card {
+		display: flex;
+	  justify-content: center;
+	  align-items: center;
+		text-align:center;
+		background-color:#e6cba5;
+		color:black;
+	  list-style: none;
+	  row-gap: 20px;
+	  min-height: 180px;
+	  padding: 20px;
+	  border-radius: 8px;
+	  box-shadow: 0 4px 8px rgb(0, 0, 0, 0.1);
+	}
+	h3 {
+		margin:10px 0;
+		font-weight:bold;
+		color:#ffffff;
+	}
+	.child{
+		
+	}
+
+
+	.Heading {
+	  display: grid;
+	  grid-template-columns: 1fr auto 1fr;
+	  column-gap: 20px;
+	  align-items: center;
+	  margin-top: 1em;
+	  margin-bottom: 1em;
+	  font-size: 3rem;
+	  font-weight: bold;
+	  &::before,
+	  &::after {
+	    min-width: 30px;
+	    height: 4px;
+	    content: '';
+	    border-top: 1px solid currentColor;
+	    border-bottom: 1px solid currentColor;
+	  }
+	}
+	.main {
+	  padding-top: 20px;
+	  padding-bottom: 100px;
+	}
+
+	.Layout {
+	  display: grid;
+	  grid-template-rows: auto auto 1fr;
+	  grid-template-columns: 1fr 0%;
+	}

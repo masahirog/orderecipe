@@ -230,6 +230,8 @@ Rails.application.routes.draw do
   end
   resources :products do
     collection do
+      get :edit_bb
+      get :black_board
       get :download
       get :bejihan_ss_cost_sync
       post :print

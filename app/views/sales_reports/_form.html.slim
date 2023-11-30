@@ -20,10 +20,10 @@
       tbody
         tr style='background-color:#ffffe0;font-weight:bold;'
           td 売上
-          td = "#{@budget.to_s(:delimited)}円"
+          td = "#{@budget.to_s(:delimited)}円" if @budgete.present?
           td = "#{@analysis.ex_tax_sales_amount.to_s(:delimited)}円"
           td
-            = "#{((@analysis.ex_tax_sales_amount/@budget.to_f)*100).round}%" if @budget > 0
+            = "#{((@analysis.ex_tax_sales_amount/@budget.to_f)*100).round}%"
         tr
           td 　フード
           td = "#{@store_daily_menu.foods_budget.to_i.to_s(:delimited)}円"
@@ -240,7 +240,6 @@
   .form-group
     = f.label :cash_error, "現金誤差"
     = f.number_field :cash_error,class:'form-control', required: true
-
   .form-group
     = f.label :good, "親切にできた点（自分・周りのスタッフ）"
     = f.text_area :good, class: "form-control", size: "10x7"
