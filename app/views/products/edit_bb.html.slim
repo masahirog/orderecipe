@@ -11,3 +11,4 @@ h4 ブラックボード登録
         / = link_to "ダウンロード", download_products_path(:file_name => bb.object.image,:key => bb.object.image.path, :type => 'pdf'),target:'_blank',class:'col-md-12'
         = bb.label :remove_image,"削除する"
         = bb.check_box :remove_image
+  input.btn.btn-success[type="button" onclick="submit();" value="登録する"]
