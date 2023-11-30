@@ -1,0 +1,8 @@
+li.list-group-item
+  = f.file_field :image
+  - if f.object.image.present?
+    = f.hidden_field :image_cache
+    = image_tag f.object.image.to_s,class:"img-responsive",style:'max-height:300px;'
+  .clearfix
+ 		= f.collection_select :staff_id, @staffs, :id, :name, {include_blank: true}, {class:"form-control",style:'width:200px;float:left;'}
+ 		= link_to_remove_association '削除',f,class:'btn btn-danger',style:"float:right;"
