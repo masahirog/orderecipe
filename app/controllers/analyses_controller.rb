@@ -971,7 +971,8 @@ class AnalysesController < AdminController
   def store_product_sales
     @product = Product.find(params[:product_id])
     @store = Store.find(params[:store_id])
-    @product_sales_potential= ProductSalesPotential.find_by(store_id:@store.id,product_id:@product.id)
+    @product_sales_potential = ProductSalesPotential.find_by(store_id:@store.id,product_id:@product.id)
+    @product_sales_potential = ProductSalesPotential.create(store_id:@store.id,product_id:@product.id,sales_potential:0) unless @product_sales_potential.present?
     analysis_ids = @store.analyses
     @analysis_products = AnalysisProduct.joins(:analysis).order("analyses.date desc").where(product_id:@product.id,analysis_id:analysis_ids)
   end

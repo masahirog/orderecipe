@@ -81,9 +81,10 @@ h3 = "#{@store.name}店 献立組み"
             div style='float:left;margin:0 4px 0 0;'
               -if @product_sales_potentials[product.id]
                 - potential = @product_sales_potentials[product.id]
+                span style='font-size:15px;' = link_to potential,store_product_sales_analyses_path(store_id:@store_id,product_id:product.id),target:'_blank'
+
               -else
-                - potential = ''
-              span style='font-size:15px;' = link_to potential,store_product_sales_analyses_path(store_id:@store_id,product_id:product.id),target:'_blank'
+                = link_to "作成",store_product_sales_analyses_path(product_id:product.id,store_id:@store_id),class:'btn btn-default btn-sm',target:"_blank"
               / - if product.bejihan_sozai_flag == true && @product_sales_potentials[product.id].present?
                 br
                 span style='font-size:12px;color:silver;' = "#{((@product_sales_potentials[product.id].to_f/@sozai_total_sales_potential)*100).round(1)}%"
