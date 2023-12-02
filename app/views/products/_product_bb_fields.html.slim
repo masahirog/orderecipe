@@ -1,0 +1,13 @@
+li.list-group-item.nested-fields.field.col-md-12
+  .col-md-3
+    = f.collection_select :staff_id, @staffs, :id, :name, {include_blank: "作成スタッフ"}, {class:"form-control",style:'width:200px;',required: true}
+  .col-md-4
+    = f.file_field :image
+    - if f.object.image.present?
+      = f.hidden_field :image_cache
+      = image_tag f.object.image.to_s,class:"img-responsive",style:'max-height:300px;'
+  .col-md-4
+    = f.text_area :memo,class:"form-control",placeholder:"メモ"
+
+  .col-md-1
+    = link_to_remove_association '削除',f,class:'btn btn-danger'

@@ -1,8 +1,14 @@
 h3 = @product.name
 
-h4 ブラックボード登録
-= form_for @product do |f|
-  ul.list-group
+/ = form_for(@product, data: {remote: true}) do |f|
+= form_with(model: @product,class:'new_task_form', data: {remote: true}) do |f|
+  = f.hidden_field :id
+  = f.hidden_field :edit_bb,value:true
+  h4 ブラックボード登録
+  ul.list-group#product_bbs-add-point.col-md-12
     = f.fields_for :product_bbs do |bb|
-    	= render 'bb_fields', f:bb
-  input.btn.btn-success[type="button" onclick="submit();" value="登録する"]
+    	= render 'product_bb_fields', f:bb
+  = link_to_add_association '写真追加', f, :product_bbs,class:'btn btn-primary',
+          data: {association_insertion_node: '#product_bbs-add-point',association_insertion_method: 'append' }
+
+  = f.submit '更新する',class:'btn btn-success pull-right'

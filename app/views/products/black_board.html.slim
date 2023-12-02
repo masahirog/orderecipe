@@ -6,7 +6,7 @@ table.table
 	tbody
 		- @products.each do |product|
 			tr
-				td = link_to product.name,edit_bb_products_path(product_id:product.id),target:"_blank"
+				td = link_to product.name,edit_bb_products_path(product_id:product.id)
 				td
 					- product.product_bbs.each do |bb|
 						- if bb.image.present?

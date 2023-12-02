@@ -4,7 +4,7 @@ class ProductsController < ApplicationController
 
   def edit_bb
     @product = Product.find(params[:product_id])
-    @product.product_bbs.build
+    # @product.product_bbs.build
     staff_ids = StaffStore.joins(:store).where(:stores => {store_type:0,group_id:current_user.group_id}).map{|ss|ss.staff_id}.uniq
     @staffs = Staff.where(status:0,id:staff_ids).order(row:'asc')
   end
@@ -132,10 +132,13 @@ class ProductsController < ApplicationController
 
   def update
     @product = Product.find(params[:id])
-
     respond_to do |format|
       if @product.update(product_create_update)
-        format.html { redirect_to @product, success: "更新！" }
+        if  params[:product][:edit_bb].present?
+          format.html { redirect_to black_board_products_path(date:@today), success: "更新！" }
+        else
+          format.html { redirect_to @product, success: "更新！" }
+        end
       else
         menu_ids = []
         params["product"]["product_menus_attributes"].each{|key,value|menu_ids << value['menu_id']}
