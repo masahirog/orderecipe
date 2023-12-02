@@ -23,7 +23,7 @@
           td = "#{@budget.to_s(:delimited)}円" if @budgete.present?
           td = "#{@analysis.ex_tax_sales_amount.to_s(:delimited)}円"
           td
-            = "#{((@analysis.ex_tax_sales_amount/@budget.to_f)*100).round}%"
+            = "#{((@analysis.ex_tax_sales_amount/@budget.to_f)*100).round}%" if @budget > 0
         tr
           td 　フード
           td = "#{@store_daily_menu.foods_budget.to_i.to_s(:delimited)}円"
