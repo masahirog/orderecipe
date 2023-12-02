@@ -1,14 +1,49 @@
-table.table
-	thead
-		tr
-			th 商品名
-			th
-	tbody
-		- @products.each do |product|
+h3 ="#{@date.strftime("%-Y/%-m/%-d(#{%w(日 月 火 水 木 金 土)[@date.wday]})")} ブラックボード"
+div style='margin-bottom:20px;'
+  = form_tag black_board_products_path, :method => 'get' do
+    = date_field_tag :date, @date, class:"form-control float-left",style:'width:140px;float:left;'
+    = submit_tag "表示" ,class:"btn btn-default",style:"margin-left:20px;"
+
+
+/ h4 = "#{@bow.strftime("%-m月%-d日（#{%w(日 月 火 水 木 金 土)[@bow.wday]}）")}｜週次リスト"
+.table-responsive style='overflow: scroll;'
+  	table.table.layout-fixed style='border-collapse:separate;'
+  		colgroup
+	        col class="col1"
+	        col class="col2"
+		thead
 			tr
-				td = link_to product.name,edit_bb_products_path(product_id:product.id)
-				td
-					- product.product_bbs.each do |bb|
-						- if bb.image.present?
-							= link_to bb.image.url, "data-lightbox" => bb.image.url do
-								= image_tag bb.image.url,style:'height:100px;width:200px;object-fit:cover;object-position: 0 0;' 
+				th 商品名
+				th
+		tbody
+			- @products.each do |product|
+				tr
+					td style="white-space:normal" = link_to product.name,edit_bb_products_path(product_id:product.id)
+					td.clearfix
+						- product.product_bbs.each do |bb|
+							- if bb.image.present?
+								div style='padding:5px;float: left;'
+									= link_to bb.image.url, "data-lightbox" => bb.image.url ,title:"#{simple_format(bb.memo)}" do
+										= image_tag bb.image.url,style:'height:50px;width:100px;object-fit:cover;object-position: 0 0;' 
+
+css:
+	 .table-responsive th {
+	 	white-space: nowrap;
+		background-color:white;
+	}
+	table.layout-fixed {
+		table-layout: fixed;
+		border-collspace:separate;
+	}
+	.table th:first-child,td:first-child{
+		position: sticky;
+		left: 0;
+		background-color:white;
+	}
+	.col1{
+		width:150px;
+	}
+	.col2{
+		width:500px;
+	}
+	
