@@ -44,7 +44,7 @@ class VideoUploader < CarrierWave::Uploader::Base
     %w(jpg jpeg gif png MOV wmv mp4)
   end
 
-  # version :thumb, if: :is_thumb?
+  version :thumb, if: :is_thumb?
 
   version :thumb do
     process resize_to_limit: [400, 400]
