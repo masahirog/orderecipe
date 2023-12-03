@@ -61,6 +61,6 @@ class ManualsController < ApplicationController
     end
 
     def manual_params
-      params.require(:manual).permit(:id,:title,:video)
+      params.require(:manual).permit(:id,:title,:video,:content)
     end
 end

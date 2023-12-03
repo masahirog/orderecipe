@@ -16,7 +16,15 @@
 		span = @manual.created_at.strftime("%Y/%-m/%-d(#{%w(日 月 火 水 木 金 土)[@manual.created_at.wday]})")
 		h3 = @manual.title
 		div class='' style='padding:10px 10px 30px 10px;'
-			= text_url_to_link(simple_format(h(@manual.content))).html_safe
-		- if @manual.video.present?
+			/ = text_url_to_link(simple_format(h(@manual.content))).html_safe
+			- if @manual.content
+				= markdown(@manual.content)
+		/ - if @manual.video.present?
 			div class='' style='height:100vh;width:100%;text-align:center;'
 				= video_tag(@manual.video.to_s, loop: false, autoplay: false, muted: true, controls: true,style:'max-height:100%;max-width:100%;')
+
+		-if @manual.video?
+		  - if @manual.video.file.content_type.include?('image/')
+		    = image_tag @manual.video.url(:thumb)
+		  - else
+		    = video_tag @manual.video.url, width: "30%", height: "30%", controls: true, autobuffer: true

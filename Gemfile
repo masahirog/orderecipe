@@ -53,7 +53,8 @@ gem 'barby'
 gem 'chunky_png'
 gem 'slack-notifier'
 gem 'ancestry'
-
+gem 'redcarpet', '~> 2.3.0'  # マークダウン形式での表示
+gem 'coderay'   
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
