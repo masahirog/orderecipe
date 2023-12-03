@@ -296,16 +296,6 @@ ActiveRecord::Schema.define(version: 2023_11_30_083316) do
     t.text "kitchen_memo"
   end
 
-  create_table "manuals", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
-    t.text "content"
-    t.string "title"
-    t.string "video"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.string "ancestry"
-    t.index ["ancestry"], name: "index_manuals_on_ancestry"
-  end
-
   create_table "material_cut_patterns", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "material_id", null: false
     t.string "name"
@@ -517,7 +507,7 @@ ActiveRecord::Schema.define(version: 2023_11_30_083316) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "product_bbs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "product_bbs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "product_id", null: false
     t.string "image"
     t.text "memo"
