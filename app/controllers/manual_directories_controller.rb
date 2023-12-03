@@ -11,7 +11,6 @@ class ManualDirectoriesController < ApplicationController
   def new
     @parent_manual_directory = ManualDirectory.find(params[:parent_manual_directory_id]) if params[:parent_manual_directory_id].present?
     @manual_directory = ManualDirectory.new
-    @manual_directory.manuals.build
   end
 
   def edit
