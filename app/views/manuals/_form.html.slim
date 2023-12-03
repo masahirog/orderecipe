@@ -10,7 +10,7 @@
 	.form-group.img-upload
 		div class="click-upload"
 			= f.label :video,"動画アップロード"
-	  	= f.file_field :video, :accept => 'video/*'
+	  	= f.file_field :video, accept: 'image/jpeg,image/gif,image/png,video/*'
 
 	.actions
     = f.submit '登録する',class:'btn btn-success'
