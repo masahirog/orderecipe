@@ -1,14 +1,14 @@
 class VideoUploader < CarrierWave::Uploader::Base
   # Include RMagick or MiniMagick support:
-  # include CarrierWave::RMagick
+  include CarrierWave::RMagick
   # include CarrierWave::MiniMagick
 
   if Rails.env.production? || Rails.env.staging?
     # storage :fog
     storage :fog
   else
-    storage :fog
-    # storage :file
+    # storage :fog
+    storage :file
   end
   # Override the directory where uploaded files will be stored.
   # This is a sensible default for uploaders that are meant to be mounted:
@@ -16,6 +16,7 @@ class VideoUploader < CarrierWave::Uploader::Base
     "uploads/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
   end
 
+  # process :resize_to_limit => [1400, 1400]
 
 
   # Provide a default URL as a default if there hasn't been a file uploaded:
@@ -47,7 +48,7 @@ class VideoUploader < CarrierWave::Uploader::Base
   version :thumb, if: :is_thumb?
 
   version :thumb do
-    process resize_to_limit: [400, 400]
+    process resize_to_limit: [1400, 1400]
   end
 
   private
