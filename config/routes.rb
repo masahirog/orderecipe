@@ -62,7 +62,7 @@ Rails.application.routes.draw do
       post :create_frame
     end
   end
-  resources :manuals
+  resources :manual_directories
   resources :material_vendor_stocks do
     collection do
       get :material

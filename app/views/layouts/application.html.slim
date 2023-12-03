@@ -88,7 +88,7 @@ html
                       li = link_to "試食コメント",weekly_tastings_path(date:@today)
                       li = link_to 'シフト',shifts_path(date:@today,group_id:current_user.group_id,store_type:0)
                       li = link_to "ブラックボード",black_board_products_path(date:@today)
-                      li = link_to 'マニュアル',manuals_path
+                      li = link_to 'マニュアル',manual_directories_path
 
                   li.dropdown
                     a.dropdown-toggle href="#" data-toggle="dropdown" role="button"

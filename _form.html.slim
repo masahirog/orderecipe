@@ -1,0 +1,8 @@
+= form_with model: @manual_directory, local: true do |f|
+	= f.hidden_field :parent_manual_directory_id,value:@parent_manual_directory.id if @parent_manual_directory.present?
+	.form-group
+		= f.label :title, "タイトル"
+		= f.text_field :title, required: true, class:"form-control"
+
+	.actions
+    = f.submit '登録する',class:'btn btn-success'

@@ -1,0 +1,29 @@
+.clearfix
+	div style='width:300px;float:left;background-color:#f5f5f5;min-height:100vh;padding:10px;'
+		= link_to "一覧",manual_directories_path
+		span ＞
+		- @manual_directory.ancestors.each do |manual_directory|
+			= link_to manual_directory.title,manual_directory
+			span ＞
+		h4 = link_to @manual_directory.title,@manual_directory
+		ul.list-group style='padding-left:15px;'
+			- @manual_directory.children.each do |md|
+				= link_to md do
+					li = "#{md.title}"
+		= link_to '追加', new_manual_directory_path(parent_manual_directory_id:@manual_directory.id),class:"btn btn-primary btn-sm"
+	div style='width:calc(100% - 300px);float:left;padding:10px;'
+		.text-right = link_to "編集",edit_manual_directory_path(@manual_directory),class:"btn btn-sm btn-default"
+		span = @manual_directory.created_at.strftime("%Y/%-m/%-d(#{%w(日 月 火 水 木 金 土)[@manual_directory.created_at.wday]})")
+		h3 = @manual_directory.title
+		div class='' style='padding:10px 10px 30px 10px;'
+			/ = text_url_to_link(simple_format(h(@manual_directory.content))).html_safe
+			- if @manual_directory.manuals.present?
+				- @manual_directory.manuals.each do |manual|
+					= markdown(manual.content)
+					-if manual.picture.present?
+						- if File.extname(manual.picture.url).in?(['.png', '.jpg', '.jpeg', '.gif'])
+					    	= link_to manual.picture.url, "data-lightbox" => manual.picture.url do
+					    		= image_tag manual.picture.url,style:'height:200px;width:200px;object-fit:cover;object-position: 0 0;' 
+
+					  	- elsif File.extname(manual.picture.url).in?(['.mp4', '.webm','.MOV','.wmv'])
+					    	= video_tag manual.picture.url, width: "30%", height: "30%", controls: true, autobuffer: true

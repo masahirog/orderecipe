@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_11_30_083316) do
+ActiveRecord::Schema.define(version: 2023_12_03_032047) do
 
   create_table "analyses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "store_id"
@@ -294,6 +294,23 @@ ActiveRecord::Schema.define(version: 2023_11_30_083316) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "kitchen_memo"
+  end
+
+  create_table "manual_directories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "title"
+    t.string "ancestry"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["ancestry"], name: "index_manual_directories_on_ancestry"
+  end
+
+  create_table "manuals", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "manual_directory_id", null: false
+    t.text "content"
+    t.string "picture"
+    t.integer "row_order", default: 0, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "material_cut_patterns", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|

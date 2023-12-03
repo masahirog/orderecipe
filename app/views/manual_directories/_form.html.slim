@@ -1,0 +1,12 @@
+= form_with model: @manual_directory, local: true do |f|
+	= f.hidden_field :parent_manual_directory_id,value:@parent_manual_directory.id if @parent_manual_directory.present?
+	.form-group
+		= f.label :title, "タイトル"
+		= f.text_field :title, required: true, class:"form-control"
+	h4 内容
+	ul.list-group#manuals-add-point.col-md-12
+		= f.fields_for :manuals do |manual|
+			= render 'manual_fields', f:manual
+	= link_to_add_association '追加', f, :manuals,class:'btn btn-primary',data: {association_insertion_node: '#manuals-add-point',association_insertion_method: 'append' }
+	.actions.text-right
+    	= f.submit '登録する',class:'btn btn-success'

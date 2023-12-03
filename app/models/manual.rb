@@ -1,4 +1,4 @@
 class Manual < ApplicationRecord
-	mount_uploader :video, VideoUploader
-	has_ancestry
+	mount_uploader :picture, VideoUploader
+	belongs_to :manual_directory
 end

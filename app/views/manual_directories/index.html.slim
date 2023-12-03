@@ -2,12 +2,12 @@
 .clearfix
   div style='width:300px;float:left;background-color:#f5f5f5;min-height:100vh;padding:10px;'
     h4 マニュアル一覧
-    - @manuals.each do |manual|
-      = link_to manual.title,manual
+    - @manual_directories.each do |manual_directory|
+      = link_to manual_directory.title,manual_directory
       ul
-        - manual.children.each do |cm|
+        - manual_directory.children.each do |cm|
           = link_to cm do
             li = "#{cm.title}"
-    = link_to '新規作成', new_manual_path(),class:"btn btn-primary btn-sm"
+    = link_to '新規作成', new_manual_directory_path(),class:"btn btn-primary btn-sm"
   div style='width:calc(100% - 300px);float:left;padding:10px;'
 
