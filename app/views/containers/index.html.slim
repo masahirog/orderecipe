@@ -4,12 +4,12 @@ table.table
   thead
     tr
       th 名称
+      th ラベル向き
       th
-      / th
 
   tbody
     - @containers.each do |container|
       tr
         td = container.name
+        td = "反転" if container.inversion_label_flag == true
         td = link_to '編集', edit_container_path(container)
-        / td = link_to 'Destroy', container, data: { confirm: 'Are you sure?' }, method: :delete

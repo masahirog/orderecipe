@@ -2,14 +2,29 @@ require "csv"
 class StoreDailyMenusController < AdminController
   before_action :set_store_daily_menu, only: [:show, :edit, :update, :destroy]
 
-  def label
+
+  def inversion_label
     @store_daily_menu = StoreDailyMenu.find(params[:store_daily_menu_id])
+    @store_daily_menu_details = @store_daily_menu.store_daily_menu_details
     date = @store_daily_menu.start_time
     store_name = @store_daily_menu.store.name
     respond_to do |format|
       format.html
       format.csv do
-        send_data render_to_string, filename: "#{date}_#{store_name}.csv", type: :csv
+        send_data render_to_string, filename: "#{store_name}_#{date}_反転.csv", type: :csv
+      end
+    end
+  end
+
+  def label
+    @store_daily_menu = StoreDailyMenu.find(params[:store_daily_menu_id])
+    @store_daily_menu_details = @store_daily_menu.store_daily_menu_details
+    date = @store_daily_menu.start_time
+    store_name = @store_daily_menu.store.name
+    respond_to do |format|
+      format.html
+      format.csv do
+        send_data render_to_string, filename: "#{store_name}_#{date}_正面.csv", type: :csv
       end
     end
   end

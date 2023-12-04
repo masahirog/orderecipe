@@ -89,11 +89,12 @@ ActiveRecord::Schema.define(version: 2023_12_03_032047) do
     t.integer "group_id", null: false
   end
 
-  create_table "containers", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+  create_table "containers", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "group_id", null: false
+    t.boolean "inversion_label_flag", default: true, null: false
   end
 
   create_table "cooking_rices", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

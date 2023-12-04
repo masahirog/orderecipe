@@ -3,5 +3,9 @@
     = f.label :name, "容器名"
     = f.text_field :name, required: true, class:"form-control"
     = f.hidden_field :group_id
+  .form-group
+    = f.label :inversion_label_flag, "ラベル反転チェック"
+    = f.check_box :inversion_label_flag,class:'form-control',style:'width:30px;'
+
   .actions
     = f.submit '登録する',class:'btn btn-success'

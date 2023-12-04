@@ -55,6 +55,6 @@ class ContainersController < ApplicationController
     end
 
     def container_params
-      params.require(:container).permit(:name,:group_id)
+      params.require(:container).permit(:name,:group_id,:inversion_label_flag)
     end
 end

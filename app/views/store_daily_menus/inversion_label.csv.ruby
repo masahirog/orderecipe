@@ -6,15 +6,10 @@ CSV.generate do |csv|
   @store_daily_menu_details.each do |sdmd|
     if sdmd.product.container_id.present?
       if sdmd.product.container.inversion_label_flag == true
-      else
         sdmd.sozai_number.times{
           csv << [sdmd.product_id,sdmd.product.name,date]
         }
       end
-    else
-      sdmd.sozai_number.times{
-        csv << [sdmd.product_id,sdmd.product.name,date]
-      }
     end
   end
 end
