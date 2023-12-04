@@ -48,7 +48,7 @@ class VideoUploader < CarrierWave::Uploader::Base
   version :thumb, if: :is_thumb?
 
   version :thumb do
-    process resize_to_limit: [1400, 1400]
+    process resize_to_limit: [800, 800]
   end
 
   private
