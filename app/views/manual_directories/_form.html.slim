@@ -15,11 +15,12 @@
 			div style="float:left;"
 				= link_to "一覧",manual_directories_path
 				span ＞
-				- @parent_manual_directory.ancestors.each do |manual_directory|
-					= link_to manual_directory.title,manual_directory
+				- if @parent_manual_directory.present?
+					- @parent_manual_directory.ancestors.each do |manual_directory|
+						= link_to manual_directory.title,manual_directory
+						span ＞
+					= link_to @parent_manual_directory.title,@parent_manual_directory
 					span ＞
-				= link_to @parent_manual_directory.title,@parent_manual_directory
-				span ＞
 				span = @manual_directory.title
 		- if @manual_directory.id.present?
 			- unless @manual_directory.children.present?

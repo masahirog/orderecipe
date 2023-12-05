@@ -45,14 +45,15 @@ class VideoUploader < CarrierWave::Uploader::Base
     %w(jpg jpeg gif png MOV wmv mp4)
   end
 
-  version :thumb, if: :is_thumb?
+  process :resize_to_limit => [2000, 2000], if: :image?
 
-  version :thumb do
-    process resize_to_limit: [100, 100]
-  end
+  # version :thumb, if: :is_thumb?
+  # version :thumb do
+  #   process resize_to_limit: [100, 100]
+  # end
 
   private
-    def is_thumb? picture
+    def image? picture
       picture.content_type.include?("image/")
     end
   # Override the filename of the uploaded files:
