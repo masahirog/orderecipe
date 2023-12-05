@@ -3,7 +3,7 @@
 		div.hover style='padding: 5px 10px;'
 			i class="fa-solid fa-circle-plus" style="margin-right:5px;padding: 0;"
 			= link_to '新規追加', new_manual_directory_path(parent_manual_directory_id:@manual_directory.id),style:'text-decoration:none;color:#73726e;font-size:1.2em;'
-		h4 ノート一覧
+		h4 BejihanBook
 		ul.list-group style='list-style: none;'
 			- @parent_manual_directories.each do |manual_directory|
 				= link_to manual_directory ,style:'text-decoration:none;color:#73726e;font-size:1.2em;' do
@@ -13,7 +13,7 @@
 	.col-md-9.col-xs-12
 		.clearfix style="margin-bottom:10px;"
 			div style="float:left;"
-				= link_to "一覧",manual_directories_path
+				= link_to "Top",manual_directories_path
 				span ＞
 				- if @parent_manual_directory.present?
 					- @parent_manual_directory.ancestors.each do |manual_directory|
