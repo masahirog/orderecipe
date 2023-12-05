@@ -1,16 +1,11 @@
 .clearfix
-	.desctop_view.col-md-3 style='background-color:#fbfbfa;min-height:100vh;padding:10px;'
+	.desctop_view.col-md-2 style='background-color:#fbfbfa;min-height:100vh;padding:10px;'
 		div.hover style='padding: 5px 10px;'
 			i class="fa-solid fa-circle-plus" style="margin-right:5px;padding: 0;"
 			= link_to '新規追加', new_manual_directory_path(parent_manual_directory_id:@manual_directory.id),style:'text-decoration:none;color:#73726e;font-size:1.2em;'
-		h4 BejihanBook
-		ul.list-group style='list-style: none;'
-			- @parent_manual_directories.each do |manual_directory|
-				= link_to manual_directory ,style:'text-decoration:none;color:#73726e;font-size:1.2em;' do
-					li.hover style='padding: 5px 10px;'
-						i class="fa-regular fa-note-sticky" style="margin-right:5px;padding: 0;"
-						span = manual_directory.title
-	.col-md-9.col-xs-12
+		h4 BejihanBook		
+		= render 'manual_directories', manual_directories: @parent_manual_directories
+	.col-md-10.col-xs-12
 		.clearfix style="margin-bottom:10px;"
 			div style="float:left;"
 				= link_to "Top",manual_directories_path
