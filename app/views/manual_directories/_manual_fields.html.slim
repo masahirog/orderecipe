@@ -1,14 +1,14 @@
-li.list-group-item.nested-fields.field.col-md-12 style="position: relative;"
-  div style="width:70%;float:left;padding: 10px;"
+li.list-group-item.nested-fields.field.col-md-12.col-xs-12
+  .col-md-8 style="padding: 10px;"
     = f.text_area :content, class:"form-control", style:"height:20em;"
 
-  .img-upload.clearfix style="width:calc(30% - 60px);float:left;padding: 10px;"
+  .col-md-3.img-upload.clearfix style="padding: 10px;"
     div class="click-upload"
       = f.file_field :picture, accept: 'image/jpeg,image/gif,image/png,video/*'
       - if f.object.picture.present?
         = f.hidden_field :picture_cache
         = image_tag f.object.picture.to_s,class:"img-responsive",style:'max-height:200px;'
 
-  .remove style="width:60px;float:left;text-align: right;"
+  .col-md-1.remove style="text-align: right;"
     = link_to_remove_association f do
-      i class="fa-solid fa-trash-can text-danger" style="position: absolute;bottom:10px;right:10px;margin: 0px;"
+      i class="fa-solid fa-trash-can text-danger" style=""

@@ -1,5 +1,5 @@
 .clearfix
-	div style='width:300px;float:left;background-color:#fbfbfa;min-height:100vh;padding:10px;'
+	.col-md-3.desctop_view style='background-color:#fbfbfa;min-height:100vh;padding:10px;'
 		div.hover style='padding: 5px 10px;'
 			i class="fa-solid fa-circle-plus" style="margin-right:5px;padding: 0;"
 			= link_to '新規追加', new_manual_directory_path(parent_manual_directory_id:@manual_directory.id),style:'text-decoration:none;color:#73726e;font-size:1.2em;'
@@ -10,7 +10,7 @@
 					li.hover style='padding: 5px 10px;'
 						i class="fa-regular fa-note-sticky" style="margin-right:5px;padding: 0;"
 						span = manual_directory.title
-	div style='width:calc(100% - 300px);float:left;padding:10px;'
+	.col-md-9.col-xs-12
 		.clearfix style="margin-bottom:10px;"
 			div style="float:left;"
 				= link_to "一覧",manual_directories_path
@@ -30,15 +30,38 @@
 
 		= form_with model: @manual_directory, local: true do |f|
 			= f.hidden_field :parent_manual_directory_id,value:@parent_manual_directory.id if @parent_manual_directory.present?
-			.form-group
+			.col-md-12.form-group
 				= f.label :title, "タイトル",style:'font-size:1.2em;'
 				= f.text_field :title, required: true, class:"form-control"
-			div style='font-size:1.2em;'
+			.col-md-12 style='font-size:1.2em;'
 				label style='margin-right: 10px;' 内容
 				= link_to_add_association f, :manuals,data: {association_insertion_node: '#manuals-add-point',association_insertion_method: 'append' } do
 					i class="fa-solid fa-circle-plus"
-			ul.list-group#manuals-add-point.col-md-12
+			ul.list-group#manuals-add-point.col-md-12.col-xs-12
 				= f.fields_for :manuals do |manual|
 					= render 'manual_fields', f:manual
 			.actions.text-right
 		    	= f.submit '登録する',class:'btn btn-primary btn-sm'
+css:
+	.col-xs-12{
+		padding: 0;
+	}
+	.hover:hover {
+    	background-color: #ebebea;
+  	}
+	@media (min-width: 700px) {
+	.mobile_view {
+	  display:none;
+	}
+	.desctop_view {
+	  display:show;
+	}
+	}
+	@media (max-width: 700px) {
+	.mobile_view {
+	  display:show;
+	}
+	.desctop_view {
+	  display:none;
+	}
+	}

@@ -1,4 +1,54 @@
-.clearfix
+.mobile_view
+	/ div style='width:300px;float:left;background-color:#fbfbfa;min-height:100vh;padding:10px;'
+		div.hover style='padding: 5px 10px;'
+			i class="fa-solid fa-circle-plus" style="margin-right:5px;padding: 0;"
+			= link_to '新規追加', new_manual_directory_path(parent_manual_directory_id:@manual_directory.id),style:'text-decoration:none;color:#73726e;font-size:1.2em;'
+		h4 ノート一覧
+		ul.list-group style='list-style: none;'
+			- @parent_manual_directories.each do |manual_directory|
+				= link_to manual_directory ,style:'text-decoration:none;color:#73726e;font-size:1.2em;' do
+					li.hover style='padding: 5px 10px;'
+						i class="fa-regular fa-note-sticky" style="margin-right:5px;padding: 0;"
+						span = manual_directory.title
+	div style='padding: 5px 0;'
+		= link_to "一覧",manual_directories_path
+		span ＞
+		- @manual_directory.ancestors.each do |manual_directory|
+			= link_to manual_directory.title,manual_directory
+			span ＞
+		span = @manual_directory.title
+
+	h3
+		= "#{@manual_directory.title}　"
+		= link_to edit_manual_directory_path(@manual_directory) do
+			i class="fa-regular fa-pen-to-square"
+	div class='' style='padding:10px;background-color:#fbfbfa;color:#73726e;'
+		h4
+			|子ページ一覧　
+			= link_to new_manual_directory_path(parent_manual_directory_id:@manual_directory.id),style:'text-decoration:none;color:#73726e;' do
+				i class="fa-solid fa-circle-plus" style="margin-right:5px;padding: 0;"
+		ul.list-group style='list-style: none;'
+			- @manual_directory.children.each do |manual_directory|
+				= link_to manual_directory ,style:'text-decoration:none;font-size:1.2em;color:#73726e;' do
+					li.hover style='padding: 5px 10px;'
+						i class="fa-regular fa-note-sticky" style="margin-right:5px;padding: 0;"
+						span = manual_directory.title
+
+	div class='' style='padding:10px 10px 30px 10px;'
+		/ = text_url_to_link(simple_format(h(@manual_directory.content))).html_safe
+		- if @manual_directory.manuals.present?
+			- @manual_directory.manuals.each do |manual|
+				= markdown(manual.content)
+				-if manual.picture.present?
+					- if File.extname(manual.picture.url).in?(['.png', '.jpg', '.jpeg', '.gif'])
+				    	= link_to manual.picture.url, "data-lightbox" => manual.picture.url do
+				    		= image_tag manual.picture.url,style:'height:200px;width:200px;object-fit:cover;object-position: 0 0;' 
+				  	- elsif File.extname(manual.picture.url).in?(['.mp4', '.webm','.MOV','.wmv','.mov'])
+				    	= video_tag manual.picture.url, width: "30%", height: "30%", controls: true, autobuffer: true
+	div.text-right style="color:#73726e;font-size:0.8em;" = "最終更新：#{@manual_directory.updated_at.strftime("%Y/%-m/%-d(#{%w(日 月 火 水 木 金 土)[@manual_directory.updated_at.wday]})")}"
+
+
+.clearfix.desctop_view
 	div style='width:300px;float:left;background-color:#fbfbfa;min-height:100vh;padding:10px;'
 		div.hover style='padding: 5px 10px;'
 			i class="fa-solid fa-circle-plus" style="margin-right:5px;padding: 0;"
@@ -53,3 +103,19 @@ css:
 	.hover:hover {
     	background-color: #ebebea;
   	}
+  @media (min-width: 700px) {
+    .mobile_view {
+      display:none;
+    }
+    .desctop_view {
+      display:show;
+    }
+  }
+  @media (max-width: 700px) {
+    .mobile_view {
+      display:show;
+    }
+    .desctop_view {
+      display:none;
+    }
+  }

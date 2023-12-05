@@ -1,5 +1,5 @@
 .clearfix
-  div style='width:300px;float:left;background-color:#fbfbfa;min-height:100vh;padding:10px;'
+  .col-md-3.desctop_view style='background-color:#fbfbfa;min-height:100vh;padding:10px;'
     div.hover style='padding: 5px 10px;'
       i class="fa-solid fa-circle-plus" style="margin-right:5px;padding: 0;"
       = link_to '新規追加', new_manual_directory_path,style:'text-decoration:none;color:#73726e;font-size:1.2em;'
@@ -10,7 +10,7 @@
           li.hover style='padding: 5px 10px;'
             i class="fa-regular fa-note-sticky" style="margin-right:5px;padding: 0;"
             span = manual_directory.title
-  div style='width:calc(100% - 300px);float:left;padding:10px;'
+  .col-md-9.col-xs-12 style=''
     div class='' style='padding:10px 10px 30px 10px;background-color:#fbfbfa;color:#73726e;'
       h4
         |ページ一覧
@@ -25,4 +25,20 @@
 css:
   .hover:hover {
       background-color: #ebebea;
+  }
+  @media (min-width: 700px) {
+    .mobile_view {
+      display:none;
     }
+    .desctop_view {
+      display:show;
+    }
+  }
+  @media (max-width: 700px) {
+    .mobile_view {
+      display:show;
+    }
+    .desctop_view {
+      display:none;
+    }
+  }
