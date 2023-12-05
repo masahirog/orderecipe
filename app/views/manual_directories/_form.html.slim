@@ -1,12 +1,43 @@
-= form_with model: @manual_directory, local: true do |f|
-	= f.hidden_field :parent_manual_directory_id,value:@parent_manual_directory.id if @parent_manual_directory.present?
-	.form-group
-		= f.label :title, "タイトル"
-		= f.text_field :title, required: true, class:"form-control"
-	h4 内容
-	ul.list-group#manuals-add-point.col-md-12
-		= f.fields_for :manuals do |manual|
-			= render 'manual_fields', f:manual
-	= link_to_add_association '追加', f, :manuals,class:'btn btn-primary',data: {association_insertion_node: '#manuals-add-point',association_insertion_method: 'append' }
-	.actions.text-right
-    	= f.submit '登録する',class:'btn btn-success'
+.clearfix
+	div style='width:300px;float:left;background-color:#fbfbfa;min-height:100vh;padding:10px;'
+		div.hover style='padding: 5px 10px;'
+			i class="fa-solid fa-circle-plus" style="margin-right:5px;padding: 0;"
+			= link_to '新規追加', new_manual_directory_path(parent_manual_directory_id:@manual_directory.id),style:'text-decoration:none;color:#73726e;font-size:1.2em;'
+		h4 ノート一覧
+		ul.list-group style='list-style: none;'
+			- @parent_manual_directories.each do |manual_directory|
+				= link_to manual_directory ,style:'text-decoration:none;color:#73726e;font-size:1.2em;' do
+					li.hover style='padding: 5px 10px;'
+						i class="fa-regular fa-note-sticky" style="margin-right:5px;padding: 0;"
+						span = manual_directory.title
+	div style='width:calc(100% - 300px);float:left;padding:10px;'
+		.clearfix style="margin-bottom:10px;"
+			div style="float:left;"
+				= link_to "一覧",manual_directories_path
+				span ＞
+				- @parent_manual_directory.ancestors.each do |manual_directory|
+					= link_to manual_directory.title,manual_directory
+					span ＞
+				= link_to @parent_manual_directory.title,@parent_manual_directory
+				span ＞
+				span = @manual_directory.title
+		- if @manual_directory.id.present?
+			- unless @manual_directory.children.present?
+				= link_to @manual_directory, method: :delete,data: { confirm: "完全に消去して大丈夫ですか？" },style:''
+					i.text-danger.fa-solid.fa-trash-can.pull-right style='margin:3px 0 0 10px;'
+			span.pull-right = "最終更新：#{@manual_directory.updated_at.strftime("%Y/%-m/%-d(#{%w(日 月 火 水 木 金 土)[@manual_directory.updated_at.wday]})")}"
+
+		= form_with model: @manual_directory, local: true do |f|
+			= f.hidden_field :parent_manual_directory_id,value:@parent_manual_directory.id if @parent_manual_directory.present?
+			.form-group
+				= f.label :title, "タイトル",style:'font-size:1.2em;'
+				= f.text_field :title, required: true, class:"form-control"
+			div style='font-size:1.2em;'
+				label style='margin-right: 10px;' 内容
+				= link_to_add_association f, :manuals,data: {association_insertion_node: '#manuals-add-point',association_insertion_method: 'append' } do
+					i class="fa-solid fa-circle-plus"
+			ul.list-group#manuals-add-point.col-md-12
+				= f.fields_for :manuals do |manual|
+					= render 'manual_fields', f:manual
+			.actions.text-right
+		    	= f.submit '登録する',class:'btn btn-primary btn-sm'

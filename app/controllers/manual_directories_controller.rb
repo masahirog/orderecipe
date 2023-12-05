@@ -2,18 +2,22 @@ class ManualDirectoriesController < ApplicationController
   before_action :set_manual_directory, only: %i[ show edit update destroy ]
 
   def index
-    @manual_directories = ManualDirectory.where(ancestry:nil)
+    @parent_manual_directories = ManualDirectory.where(ancestry:nil)
   end
 
   def show
+    @parent_manual_directories = ManualDirectory.where(ancestry:nil)
   end
 
   def new
+    @parent_manual_directories = ManualDirectory.where(ancestry:nil)
     @parent_manual_directory = ManualDirectory.find(params[:parent_manual_directory_id]) if params[:parent_manual_directory_id].present?
     @manual_directory = ManualDirectory.new
   end
 
   def edit
+    @parent_manual_directory = @manual_directory.parent
+    @parent_manual_directories = ManualDirectory.where(ancestry:nil)
   end
 
   def create

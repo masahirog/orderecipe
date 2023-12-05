@@ -69,6 +69,7 @@ html
                       li = link_to 'シフト',shifts_path(date:@today,group_id:current_user.group_id,store_type:1)
                       li = link_to 'シフトテンプレート',default_shifts_path(group_id:current_user.group_id,store_type:1)
                       li = link_to "キッチン設定",edit_store_path(id:39)
+                      li = link_to "全店舗一覧",stores_path()
 
 
                   li.dropdown
