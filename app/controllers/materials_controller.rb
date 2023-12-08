@@ -231,16 +231,22 @@ class MaterialsController < ApplicationController
         @product_hash[dmd.product_id] = dmd.manufacturing_number
       end
     end
+    menu_ids = ProductMenu.where(product_id:@product_hash.keys).map{|pm|pm.menu_id}.uniq
+    material_ids = MenuMaterial.where(menu_id:menu_ids).map{|mm|mm.material_id}.uniq
+    # material_ids = @material_hash.keys
+    material_id_order_amount = OrderMaterial.joins(:order).where(:orders => {store_id:39,fixed_flag:true}).where(material_id:material_ids,delivery_date:from..to,un_order_flag:false).group(:material_id).sum(:order_quantity).to_h
     ProductMenu.includes([:menu]).where(product_id:@product_hash.keys).each do |pm|
       num = @product_hash[pm.product_id]
       pm.menu.menu_materials.includes([:material]).each do |mm|
         if @material_hash[mm.material_id].present?
           @material_hash[mm.material_id][:amount_used] += (mm.amount_used * num)
           @material_hash[mm.material_id][:amount_price] += (mm.amount_used * num) * mm.material.cost_price
+          @material_hash[mm.material_id][:order_amount] += material_id_order_amount[mm.material_id].to_f
         else
           @material_hash[mm.material_id][:material] = mm.material
           @material_hash[mm.material_id][:amount_used] = (mm.amount_used * num)
           @material_hash[mm.material_id][:amount_price] = (mm.amount_used * num) * mm.material.cost_price
+          @material_hash[mm.material_id][:order_amount] = material_id_order_amount[mm.material_id].to_f
         end
       end
     end
