@@ -241,7 +241,6 @@ class MaterialsController < ApplicationController
         if @material_hash[mm.material_id].present?
           @material_hash[mm.material_id][:amount_used] += (mm.amount_used * num)
           @material_hash[mm.material_id][:amount_price] += (mm.amount_used * num) * mm.material.cost_price
-          @material_hash[mm.material_id][:order_amount] += material_id_order_amount[mm.material_id].to_f
         else
           @material_hash[mm.material_id][:material] = mm.material
           @material_hash[mm.material_id][:amount_used] = (mm.amount_used * num)
