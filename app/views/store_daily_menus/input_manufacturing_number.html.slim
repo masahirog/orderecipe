@@ -1,4 +1,5 @@
 h3 = "#{@store.name}店 献立組み"
+
 = form_with(url:input_multi_number_store_daily_menus_path, local: true) do |f|
   = f.hidden_field :store_id,value:@store.id
   = f.hidden_field :store_daily_menu_ids,value:params["store_daily_menu_ids"]
@@ -111,10 +112,13 @@ h3 = "#{@store.name}店 献立組み"
                   .clearfix
                     span style='width:60px;float:left;text-align:right;padding-top:5px;' 副菜：
                     = f.number_field "store_daily_menu_details[#{@store_daily_menu_detail_ids_hash[[sdm.id,product.id]]}][fukusai_number]",value:@store_daily_menu_details_bento_fukusai_hash[[sdm.id,product.id]], class:'form-control input-sdmd-bento-fukusai-number',style:"float:left;width:60px;", onClick:"this.select();"
-              - else
-
+                - elsif @store_daily_menu_details_bento_fukusai_hash[[sdm.id,product.id]] == 0
+                  .fukusai_zero.clearfix style="display:none;"
+                    span style='width:60px;float:left;text-align:right;padding-top:5px;color:silver;' 副菜：
+                    = f.number_field "store_daily_menu_details[#{@store_daily_menu_detail_ids_hash[[sdm.id,product.id]]}][fukusai_number]",value:@store_daily_menu_details_bento_fukusai_hash[[sdm.id,product.id]], class:'form-control input-sdmd-bento-fukusai-number',style:"float:left;width:60px;", onClick:"this.select();"
+button.btn.btn-default.fukusai_show 副菜枠 表示
+button.btn.btn-default.fukusai_hide style="display:none;" 副菜枠 非表示
 css:
-
   .popover{
     max-width: 100%; /* Max Width of the popover (depending on the container!) */
   }
@@ -239,4 +243,14 @@ javascript:
     var sales = 0;
     change(col,num)
     change_sales(col,sales)
+  });
+  $(".fukusai_show").on('click',function(){
+    $(".fukusai_zero").show();
+    $(this).hide();
+    $(".fukusai_hide").show();
+  });
+  $(".fukusai_hide").on('click',function(){
+    $(".fukusai_zero").hide();
+    $(this).hide();
+    $(".fukusai_show").show();
   });
