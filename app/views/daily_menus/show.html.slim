@@ -17,7 +17,6 @@ div
   = link_to "レシピ印刷",products_pdfs_daily_menus_path(daily_menu_id:@daily_menu.id, :format => :pdf),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
   / = link_to "タレレシピ",sources_daily_menus_path(daily_menu_id:@daily_menu.id, :format => :pdf),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
 
-
   button type="button" class="btn btn-default" data-toggle="modal" data-target="#source_recipe" style='float:left;margin-top:10px;margin-left:20px;' タレレシピ
   #source_recipe.modal.fade tabindex="-1"
     = form_tag sources_daily_menus_path(format: :pdf), :method => 'get' do
@@ -155,8 +154,8 @@ div
   / = link_to '惣菜数の一括変更', daily_menu_path(@daily_menu),class:"btn btn-primary",style:'float:right;margin-top:10px;margin-left:10px;', data: { confirm: "献立を削除してよろしいですか？" }
   = link_to "チェックリスト",cook_check_daily_menus_path(id:@daily_menu.id, :format => :pdf),class:"btn btn-default",:target=>"_blank",style:'margin-left:20px;margin-top:10px;'
 
-
-  button type="button" class="btn btn-danger pull-right" data-toggle="modal" data-target="#close_store_input" style='float:left;margin-top:10px;margin-left:20px;' 店舗発注締め切り
+  = link_to "削除", @daily_menu, method: :delete,class:'btn btn-default pull-right',data: { confirm: "ホンマに削除するで？" }, style:'margin-top:10px;margin-left:20px;'
+  button type="button" class="btn btn-danger pull-right" data-toggle="modal" data-target="#close_store_input" style='margin-top:10px;' 店舗発注締め切り
   #close_store_input.modal.fade tabindex="-1"
     = form_tag store_input_able_daily_menus_path do
       = hidden_field_tag :daily_menu_id,params[:id]
