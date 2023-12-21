@@ -37,7 +37,7 @@
 				- @manual_directory.manuals.each do |manual|
 					= markdown(manual.content)
 					-if manual.picture.present?
-						- if File.extname(manual.picture.url).in?(['.png', '.jpg', '.jpeg', '.gif'])
+						- if File.extname(manual.picture.url).downcase.in?(['.png', '.jpg', '.jpeg', '.gif'])
 					    	= link_to manual.picture.url, "data-lightbox" => manual.picture.url do
 					    		= image_tag manual.picture.url,style:'height:200px;width:200px;object-fit:cover;object-position: 0 0;' 
 					  	- elsif File.extname(manual.picture.url).in?(['.mp4', '.webm','.MOV','.wmv','.mov'])
