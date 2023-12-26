@@ -1,4 +1,5 @@
 class Store < ApplicationRecord
+  has_many :to_store_messages,through: :to_store_messages_stores
   belongs_to :user
   belongs_to :group
   has_many :store_daily_menus

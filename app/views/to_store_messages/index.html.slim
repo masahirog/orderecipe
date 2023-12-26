@@ -1,0 +1,21 @@
+h2 店舗インフォメーション一覧
+= link_to '新規追加', new_to_store_message_path,class:'btn btn-primary'
+table.table
+  thead
+    tr
+      th 表示日付
+      th 内容
+      th 店舗
+      th
+
+  tbody
+    - @to_store_messages.each do |to_store_message|
+      tr
+        td = link_to to_store_message.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[to_store_message.date.wday]})"), edit_to_store_message_path(to_store_message)
+        td
+          = text_url_to_link(simple_format(h(to_store_message.content))).html_safe
+        td
+          - to_store_message.to_store_message_stores.each do |tsms|
+            = "#{tsms.store.name}｜" if tsms.subject_flag == true
+        td
+          = link_to '削除', to_store_message_path(to_store_message), method: :delete,class:"btn btn-danger btn-sm", data: { confirm: "献立を削除してよろしいですか？" }

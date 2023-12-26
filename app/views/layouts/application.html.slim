@@ -84,6 +84,7 @@ html
                       |店舗業務
                       span.caret
                     ul.dropdown-menu role="menu" style='width:250px;'
+                      li = link_to '店舗へのインフォメーション',to_store_messages_path
                       li = link_to '販売レポート',select_store_sales_reports_path
                       li = link_to "お客さまの声",customer_opinions_path
                       li = link_to "試食コメント",weekly_tastings_path(date:@today)

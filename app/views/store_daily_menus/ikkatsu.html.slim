@@ -2,7 +2,15 @@ p
   = link_to "#{@store_daily_menu.store.name}店 #{@store_daily_menu.start_time.strftime("%-Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@store_daily_menu.start_time.wday]})")}", @store_daily_menu,style:'font-size:20px;margin-left:15px;'
   = link_to "献立表", store_daily_menus_path(store_id:@store_daily_menu.store_id),class:'btn btn-default pull-right'
   = link_to "写真アップロード", edit_store_daily_menu_path(@store_daily_menu),class:'btn btn-primary pull-right',style:'margin-right:20px;'
-ul.list-group.clearfix style='margin-top:15px;'
+- if @to_store_messages.present?
+  label インフォメーション：
+  - @to_store_messages.each do |to_store_message|
+    .col-md-12.alert.alert-info.alert-dismissible role="alert"
+      button type="button" class="close" data-dismiss="alert" aria-label="閉じる"
+        span aria-hidden="true" ×
+      = text_url_to_link(simple_format(h(to_store_message.content))).html_safe
+
+ul.col-md-12.list-group.clearfix style='margin-top:15px;'
   -@store_daily_menu_details.each do |sdmd|
     li.clearfix.list-group-item.float-left style='text-align: center;position:relative;'
       div style='width:380px;max-width:100%;height:300px;float:left;'

@@ -90,6 +90,7 @@ Rails.application.routes.draw do
       get :material_date
     end
   end
+  resources :to_store_messages
   resources :store_daily_menu_detail_histories
   resources :store_daily_menu_details
   resources :task_comments
