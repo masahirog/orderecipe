@@ -54,6 +54,6 @@ class BrandsController < ApplicationController
     end
 
     def brand_params
-      params.require(:brand).permit(:id,:name,:group_id,:store_path)
+      params.require(:brand).permit(:id,:name,:group_id)
     end
 end
