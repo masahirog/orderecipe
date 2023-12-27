@@ -12,7 +12,7 @@
             = message
   nav.alert.alert-danger.eos-alert.navbar-fixed-top style="display:none;"
     |  終売の食材を選択しています。食材を変更してください(((；ﾟДﾟ)))
-  .form-group.col-md-12
+  .col-md-12
     .col-md-4
       = f.label :name ,'メニュー名'
       = f.text_field :name, class: "form-control", id: "material_name",style:"width:100%;"
@@ -122,33 +122,31 @@
       td.menu_calcium
       td.menu_vitamin_c
       td.menu_salt
-  .material_area
-    .col-md-12 style="margin:5px;"
-      label.col-md-3 食材・資材名
-      label.col-md-1.text-center 単価
-      label.col-md-2 使用量
-      label.col-md-1.text-center 原価
-      label.col-md-2 仕込み内容
-      / label.col-md-1 持ち場
-      / label.col-md-1
-    - i=0
-    / コピーメニューは順番をいじれないように調整
-    - if @base_menu.present?
-      ul#detail-association-insertion-point.material_ul.list-group style="list-style-type:none;"
-        = f.fields_for :menu_materials do |m|
-          = render 'menu_material_fields',{f: m}
-          - i += 1
-    - else
-      ul#detail-association-insertion-point.material_ul.list-group.ul-sortable style="list-style-type:none;cursor:move;"
-        = f.fields_for :menu_materials do |m|
-          = render 'menu_material_fields',{f: m}
-          - i += 1
+  .col-md-12 style="margin:5px;"
+    label.col-md-3 食材・資材名
+    label.col-md-1.text-center 単価
+    label.col-md-2 使用量
+    label.col-md-1.text-center 原価
+    label.col-md-2 仕込み内容
+    / label.col-md-1 持ち場
+    / label.col-md-1
+  - i=0
+  / コピーメニューは順番をいじれないように調整
+  - if @base_menu.present?
+    ul.col-md-12.col-xs-12#detail-association-insertion-point.material_ul.list-group style="list-style-type:none;"
+      = f.fields_for :menu_materials do |m|
+        = render 'menu_material_fields',{f: m}
+        - i += 1
+  - else
+    ul.col-md-12#detail-association-insertion-point.material_ul.list-group.ul-sortable style="list-style-type:none;cursor:move;"
+      = f.fields_for :menu_materials do |m|
+        = render 'menu_material_fields',{f: m}
+        - i += 1
   - unless @base_menu.present?
     .col-md-12.form-group style="margin-top:20px;"
       = link_to_add_association '材料追加', f, :menu_materials,class: 'btn btn-default add_material_fields',data: {association_insertion_node: '#detail-association-insertion-point',association_insertion_method: 'append' }
-  .action.col-md-12
+  .col-md-12
     = f.hidden_field :back_to, :value => @back_to
-    / = f.submit '保存する',class:'btn btn-primary',onclick:"form.submit()"
     input.btn.btn-primary type="button" onclick="submit();" value="保存する"
 
 javascript:
