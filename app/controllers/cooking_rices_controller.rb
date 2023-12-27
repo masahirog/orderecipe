@@ -52,22 +52,16 @@ class CookingRicesController < AdminController
     @arr = []
     @make_products = {}
     date = params[:date]
-    bentos = KurumesiOrderDetail.joins(:kurumesi_order,:product).where(:kurumesi_orders => {start_time:date,canceled_flag:false},:products => {product_category:5}).group('product_id').sum(:number)
-    kurumesi_rice_hash = {}
     number = 0
     bentos.each do |data|
       product = Product.find(data[0])
       @make_products[product] = data[1]
       cooking_rice_id = product.cooking_rice_id
-      if kurumesi_rice_hash[cooking_rice_id]
-         kurumesi_rice_hash[cooking_rice_id] += data[1]
       else
-        kurumesi_rice_hash[cooking_rice_id] = data[1]
       end
     end
     test_hash = {}
     aa = {}
-    kurumesi_rice_hash.each do |data|
       cooking_rice = CookingRice.find(data[0])
       num = data[1]
       need_shou = num * cooking_rice.shoku_per_shou
@@ -79,8 +73,6 @@ class CookingRicesController < AdminController
       end
     end
     aa = aa.sort.to_h
-    aa.each do |kurumesi_rice|
-      test_hash[number] = {product_name:"#{kurumesi_rice[0]}",num:kurumesi_rice[1][:num],kurumesi_flag:true,need_shou:kurumesi_rice[1][:need_shou].ceil(2)}
       number += 1
     end
     @hash = {}
@@ -145,29 +137,18 @@ class CookingRicesController < AdminController
       end
       @hash
     end
-    @kurumesi_mazekomi = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @make_products.each do |key,value|
       product = key
       product.menus.includes(menu_materials:[:material]).where(category:1).each do |menu|
         menu.menu_materials.each do |mm|
           if mm.material_id == 3491 && menu.menu_materials.where(source_flag:true).exists?
-            if @kurumesi_mazekomi[menu.base_menu_id][mm.material_id].present?
-              @kurumesi_mazekomi[menu.base_menu_id][3491][1] += value
-              @kurumesi_mazekomi[menu.base_menu_id][3491][2] += (mm.amount_used * value * 2.17).round
             else
-              @kurumesi_mazekomi[menu.base_menu_id][3491] = ['ご飯 Rice',value,(mm.amount_used * value * 2.17).round,'g'] if menu.menu_materials.where(source_flag:true).exists?
             end
           end
           if mm.source_flag == true
-            if @kurumesi_mazekomi[menu.base_menu_id].present?
-              if @kurumesi_mazekomi[menu.base_menu_id][mm.material_id].present?
-                @kurumesi_mazekomi[menu.base_menu_id][mm.material_id][1] += value
-                @kurumesi_mazekomi[menu.base_menu_id][mm.material_id][2] += (mm.amount_used * value).round
               else
-                @kurumesi_mazekomi[menu.base_menu_id][mm.material_id] = ["#{mm.material.name}",value,(mm.amount_used * value).round,mm.material.recipe_unit]
               end
             else
-              @kurumesi_mazekomi[menu.base_menu_id] = {mm.material_id => ["#{mm.material.name}",value,(mm.amount_used * value).round,mm.material.recipe_unit]}
             end
           end
         end
@@ -176,7 +157,6 @@ class CookingRicesController < AdminController
     respond_to do |format|
      format.html
      format.pdf do
-       pdf = RiceSheet.new(@hash,date,@kurumesi_mazekomi)
        send_data pdf.render,
         filename:    "#{date}_rice.pdf",
         type:        "application/pdf",

@@ -206,8 +206,6 @@ class Crew::OrdersController < ApplicationController
     daily_menus = DailyMenu.where(start_time:@date.in_time_zone.all_month)
     @date_daily_menu_count= {}
     @date_daily_menu = {}
-    @date_confirm_order_count = KurumesiOrder.where(canceled_flag:false,start_time: @date.in_time_zone.all_month).group('start_time').count
-    @date_notconfirm_order_count = KurumesiOrder.where(canceled_flag:false,confirm_flag:false,start_time: @date.in_time_zone.all_month).group('start_time').count
     daily_menus.each do |dm|
       @date_daily_menu_count[dm.start_time] = dm.daily_menu_details.sum(:manufacturing_number)
       @date_daily_menu[dm.start_time] = dm

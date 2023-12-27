@@ -1,5 +1,5 @@
 - if @dates.present?
-  h4 = "#{@from.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[@from.wday]})")}〜#{@to.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[@to.wday]})")}までの期間のくるめし、べじはんの製造数を計算しています"
+  h4 = "#{@from.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[@from.wday]})")}〜#{@to.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[@to.wday]})")}までの期間のべじはんの製造数を計算しています"
 = form_for @order do |f|
   table.table
     thead

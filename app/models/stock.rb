@@ -106,7 +106,6 @@ class Stock < ApplicationRecord
 
     #dateの対象となるstockのused_amountを一旦0に
     initialize_stocks(previous_day,store_id)
-    #dateの対象となる、kurumesi_orderとdaily_menuかつ、fixしているものを、product_idと製造数を配列で習得
     date_manufacturing_products(date)
     #全部の弁当と製造数をeachでまわして、materialのuniqと使用量のハッシュ形式にする
     calculate_date_all_material_used_amount()
@@ -192,9 +191,8 @@ class Stock < ApplicationRecord
   end
 
   def self.date_manufacturing_products(date)
-    kurumesi_order_products = KurumesiOrderDetail.joins(:kurumesi_order).where(:kurumesi_orders => {start_time:date,canceled_flag:false}).group('product_id').sum(:number).to_a
     daily_menu_products = DailyMenuDetail.joins(:daily_menu).where(:daily_menus => {start_time:date}).group('product_id').sum(:manufacturing_number).to_a
-    @product_manufacturing = kurumesi_order_products + daily_menu_products
+    @product_manufacturing = daily_menu_products
   end
 
   def self.calculate_date_all_material_used_amount

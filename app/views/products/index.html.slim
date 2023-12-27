@@ -74,7 +74,7 @@ table.table
           - else
             span style='color:red;' = "#{((product.cost_price/product.sell_price)*100).round(1)}%"
         td.text-center
-          - unless product.order_products.present?||product.daily_menu_details.present?||product.kurumesi_order_details.present?
+          - unless product.order_products.present?||product.daily_menu_details.present?
             = link_to "削除", product, method: :delete,class:'btn btn-danger pull-right btn-sm',data: { confirm: "ほんまに削除してええの？" },style:''
 
 - if @search.size == 0 then

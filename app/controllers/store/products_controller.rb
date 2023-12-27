@@ -1,7 +1,7 @@
 class Store::ProductsController < ApplicationController
 
   def index
-    @search = Product.includes(:brand,:order_products,:daily_menu_details,:kurumesi_order_details).search(params).page(params[:page]).per(30)
+    @search = Product.includes(:brand,:order_products,:daily_menu_details).search(params).page(params[:page]).per(30)
   end
   def download
     # Dotenv.overload
@@ -25,8 +25,7 @@ class Store::ProductsController < ApplicationController
     @additives = Product.additive_seiri(@product)
     order_products = @product.order_products
     daily_menu_details = @product.daily_menu_details
-    kurumesi_order_details = @product.kurumesi_order_details
-    unless order_products.present?||daily_menu_details.present?||kurumesi_order_details.present?
+    unless order_products.present?||daily_menu_details.present?
       @delete_flag = true
     end
     respond_to do |format|

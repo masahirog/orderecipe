@@ -193,31 +193,6 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :kurumesi_orders do
-    collection do
-      get :sources
-      get :delivery_note
-      get :collation_sheet
-      get :mail_check
-      get :test
-      get :date
-      get :print_preparation
-      get :print_preparation_roma
-      get :receipt
-      post :print_receipt
-      get :accounting_copy
-      get :invoice
-      post :print_invoice
-      get :manufacturing_sheet
-      get :loading_sheet
-      get :material_preparation
-      get :today_check
-      get :paper_print
-      get :print_receipts
-      get :equipment
-      get :make_order
-    end
-  end
   resources :menus do
     put :sort
     collection do
@@ -338,7 +313,6 @@ Rails.application.routes.draw do
       post :upload_inventory_csv
     end
   end
-  resources :kurumesi_mails
   resources :brands
   resources :serving_plates
   resources :stores do

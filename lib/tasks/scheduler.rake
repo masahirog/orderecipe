@@ -20,13 +20,6 @@ end
 
 # masahiro11g@gmailのアカウントでGASを書いている。未開封の新着メールがあれば、下記の2個のタスクを実行するという流れ。
 # herokuの負荷を下げるために、こちらのスクリプトでチェックして必要なときだけOrderのタスクを実行する
-
-task :kurumesi_order_mail_check => :environment do
-  KurumesiMail.routine_check
-  KurumesiOrder.capacity_check
-  # Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'bot', icon_emoji: ':sunglasses:').ping("kurumesi_check_done")
-end
-
 task :order_fax_status_check => :environment do
   Order.fax_send_check
   # Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'bot', icon_emoji: ':sunglasses:').ping("movfax_check_done")
@@ -40,17 +33,10 @@ end
 #   end
 # end
 
-# task :capa_check => :environment do
-  # KurumesiOrder.capacity_check
-# end
-
 task :input_gss => :environment do
   Product.input_spreadsheet
 end
 
-# task :pick_time_get => :environment do
-#   KurumesiOrder.pick_time_scraping
-# end
 
 task :reminder_bulk_create => :environment do
   Reminder.reminder_bulk_create

@@ -152,11 +152,7 @@ class CutList < Prawn::Document
         end
         mch[1][3].each_with_index do |mm,index|
           menu_amount = ActiveSupport::NumberHelper.number_to_rounded((mm[0].amount_used * mm[1]), strip_insignificant_zeros: true, :delimiter => ',', precision: 1)
-          if mm[2]=='kurumesi'
-            flag = '★'
-          else
-            flag = ''
-          end
+          flag = ''
           if index == 0
             if i == 0
               if mmch[1].count > 1

@@ -215,14 +215,7 @@ class MaterialsController < ApplicationController
     @product_hash = {}
     @material_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @vendor_hash = Vendor.all.map{|vendor|[vendor.id,vendor.name]}.to_h
-    kurumesi_order_ids = KurumesiOrder.where(start_time:from..to,canceled_flag:false)
-    KurumesiOrderDetail.where(kurumesi_order_id:kurumesi_order_ids).each do |kod|
-      if @product_hash[kod.product_id]
-        @product_hash[kod.product_id] += kod.number
-      else
-        @product_hash[kod.product_id] = kod.number
-      end
-    end
+
     daily_menu_ids = DailyMenu.where(start_time:from..to)
     DailyMenuDetail.where(daily_menu_id:daily_menu_ids).each do |dmd|
       if @product_hash[dmd.product_id]
@@ -264,9 +257,7 @@ class MaterialsController < ApplicationController
     @material = Material.find(params[:id])
     material_id = @material.id
     used_product_ids = Product.joins(product_menus:[menu:[:menu_materials]]).where(:product_menus => {:menus => {:menu_materials => {material_id:material_id}}}).ids
-    shogun_bentos = DailyMenuDetail.joins(:daily_menu,:product).where(:daily_menus => {start_time:@month_ago..@today},:products => {id:used_product_ids}).group('product_id').sum(:manufacturing_number)
-    kurumesi_bentos = KurumesiOrderDetail.joins(:kurumesi_order,:product).where(:kurumesi_orders => {start_time:@month_ago..@today,canceled_flag:false},:products => {id:used_product_ids}).group('product_id').sum(:number)
-    month_bentos = shogun_bentos.merge(kurumesi_bentos)
+    month_bentos = DailyMenuDetail.joins(:daily_menu,:product).where(:daily_menus => {start_time:@month_ago..@today},:products => {id:used_product_ids}).group('product_id').sum(:manufacturing_number)
     month_bentos.each do |product_num|
       product = Product.find(product_num[0])
       menu_ids = product.menus.ids

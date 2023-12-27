@@ -1,6 +1,5 @@
 class Brand < ApplicationRecord
   has_many :products
-  has_many :kurumesi_orders
   has_many :reviews
 
   # 枡々

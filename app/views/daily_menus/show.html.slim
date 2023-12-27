@@ -74,14 +74,8 @@ div
             .col-md-12.form-group
               .col-md-2 計算範囲
               .col-md-3
-                = radio_button_tag("beji_kuru", "0",{:checked => true})
-                = label_tag("beji_kuru_0", "べじはん＋くるめし",style:'margin-left:10px;')
-              .col-md-3
-                = radio_button_tag("beji_kuru", "1")
+                = radio_button_tag("beji_kuru", "1",{:checked => true})
                 = label_tag("beji_kuru_1", "べじはん",style:'margin-left:10px;')
-              .col-md-3
-                = radio_button_tag("beji_kuru", "2")
-                = label_tag("beji_kuru_2", "くるめし",style:'margin-left:10px;')
 
             .col-md-12.form-group
               .col-md-2 出力パターン

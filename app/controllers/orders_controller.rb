@@ -251,8 +251,6 @@ class OrdersController < AdminController
     daily_menus = DailyMenu.where(start_time:@date.in_time_zone.all_month)
     @date_daily_menu_count= {}
     @date_daily_menu = {}
-    @date_confirm_order_count = KurumesiOrder.where(canceled_flag:false,start_time: @date.in_time_zone.all_month).group('start_time').count
-    @date_notconfirm_order_count = KurumesiOrder.where(canceled_flag:false,confirm_flag:false,start_time: @date.in_time_zone.all_month).group('start_time').count
     daily_menus.each do |dm|
       @date_daily_menu_count[dm.start_time] = dm.daily_menu_details.sum(:manufacturing_number)
       @date_daily_menu[dm.start_time] = dm
@@ -295,20 +293,6 @@ class OrdersController < AdminController
       end
       make_date = Date.parse(date)
       @order.memo = "#{make_date.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[make_date.wday]})")} べじ 製造分"
-    elsif params[:kurumesi_order_date]
-      order_products = []
-      date = params[:kurumesi_order_date]
-      # kurumesi_orders = KurumesiOrder.where(start_time:params[:kurumesi_order_date],canceled_flag:false)
-      # bentos_num_h = kurumesi_orders.joins(:kurumesi_order_details).group('kurumesi_order_details.product_id').sum('kurumesi_order_details.number')
-      params[:products].each do |id_num|
-        hash = {}
-        hash[:product_id] = id_num[1][:id].to_i
-        hash[:num] = id_num[1][:num]
-        hash[:make_date] = date
-        order_products << hash
-      end
-      make_date = Date.parse(date)
-      @order.memo = "#{make_date.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[make_date.wday]})")} くる 製造分"
     elsif params[:bihin_flag] == 'true'
       order_products = []
       make_date = (@today+2)
@@ -428,8 +412,7 @@ class OrdersController < AdminController
         redirect_to orders_path(store_id:params[:store_id]),:alert => '期間は7日以内で選択してください。'
       end
       order_products = []
-      kurumesi_orders = KurumesiOrder.where(start_time:@dates,canceled_flag:false)
-      bentos_num_h = kurumesi_orders.joins(kurumesi_order_details:[:product]).group('kurumesi_order_details.product_id').sum('kurumesi_order_details.number')
+      bentos_num_h = {}
       DailyMenuDetail.joins(:daily_menu).where(:daily_menus => {start_time:@dates}).each do|dmd|
         if bentos_num_h[dmd.product_id].present?
           bentos_num_h[dmd.product_id]+=dmd.manufacturing_number
@@ -461,9 +444,7 @@ class OrdersController < AdminController
     elsif params[:make_date].present?
       order_products = []
       date = params[:make_date]
-
-      kurumesi_orders = KurumesiOrder.where(start_time:date,canceled_flag:false)
-      bentos_num_h = kurumesi_orders.joins(kurumesi_order_details:[:product]).group('kurumesi_order_details.product_id').sum('kurumesi_order_details.number')
+      bentos_num_h = {}
       DailyMenu.find_by(start_time:date).daily_menu_details.each{|dmd|bentos_num_h[dmd.product_id]=dmd.manufacturing_number}
       bentos_num_h.each do |bn|
         hash = {}

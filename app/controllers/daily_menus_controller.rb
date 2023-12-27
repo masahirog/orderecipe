@@ -95,16 +95,6 @@ class DailyMenusController < AdminController
           @bentos_num_h[dmd.product_id] = [dmd.manufacturing_number,'bejihan']
         end
       end
-      @kurumesi_orders = KurumesiOrder.where(start_time:date,canceled_flag:false).order(:pick_time,:created_at)
-      kurumesi_order_ids = @kurumesi_orders.ids
-      @k_bentos_num_h = KurumesiOrderDetail.where(kurumesi_order_id:kurumesi_order_ids).group(:product_id).sum(:number)
-      @k_bentos_num_h.each do |pn|
-        if @bentos_num_h[pn[0]].present?
-          @bentos_num_h[pn[0]][0] += pn[1]
-        else
-          @bentos_num_h[pn[0]] = [pn[1],'kurumesi']
-        end
-      end
     elsif params['beji_kuru'] == "1"
       daily_menu = DailyMenu.find(params[:daily_menu_id])
       daily_menu.daily_menu_details.each do |dmd|
@@ -115,16 +105,6 @@ class DailyMenusController < AdminController
         end
       end
     elsif params['beji_kuru'] == "2"
-      @kurumesi_orders = KurumesiOrder.where(start_time:date,canceled_flag:false).order(:pick_time,:created_at)
-      kurumesi_order_ids = @kurumesi_orders.ids
-      @k_bentos_num_h = KurumesiOrderDetail.where(kurumesi_order_id:kurumesi_order_ids).group(:product_id).sum(:number)
-      @k_bentos_num_h.each do |pn|
-        if @bentos_num_h[pn[0]].present?
-          @bentos_num_h[pn[0]][0] += pn[1]
-        else
-          @bentos_num_h[pn[0]] = [pn[1],'kurumesi']
-        end
-      end
     end
     respond_to do |format|
       format.html

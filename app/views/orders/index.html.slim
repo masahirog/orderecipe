@@ -28,8 +28,6 @@
         .modal-content
           .modal-header
             h4.modal-title 発注する日付を選択してください
-            h4.modal-title ※発注開始する前に、該当日のくるめしオーダーとべじはん献立をよく確認してください。
-            span くるめしのカッコ内の数字は確認チェックがついていないオーダーの件数です。
           .modal-body
             = week_calendar(number_of_weeks: 2) do |date|
               div
@@ -40,13 +38,6 @@
                   p = link_to '肉カテゴリ',new_order_path(make_date:date,filter:"meat",store_id:params[:store_id]),class:'btn btn-default btn-sm'
                   p = link_to 'その他',new_order_path(make_date:date,filter:"not_veg_meat",store_id:params[:store_id]),class:'btn btn-default btn-sm'
                 div style=''
-                  p
-                    = link_to 'くるめし',date_kurumesi_orders_path(date:date)
-                    = "：#{@date_confirm_order_count[date]} 件"
-                    - if @date_notconfirm_order_count[date]
-                      span （
-                      span style='color:red;' = "#{@date_notconfirm_order_count[date]}"
-                      span ）
                   p
                     - if @date_daily_menu[date].present?
                       = link_to 'べじはん',daily_menu_path(@date_daily_menu[date])

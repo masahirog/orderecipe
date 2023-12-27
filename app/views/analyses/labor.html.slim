@@ -38,10 +38,6 @@ h4 直近1ヶ月
         td style='background-color:white;' べじはん
         - @dates.each do |date|
           td = @total_analyses[date].to_s(:delimited) if @total_analyses[date]
-      tr
-        td style='background-color:white;' くるめし
-        - @dates.each do |date|
-          td = @kurumesis[date].to_s(:delimited) if @kurumesis[date]
 
       tr
         td style='background-color:white;' 勤務時間

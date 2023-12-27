@@ -23,8 +23,7 @@ class VendorsController < ApplicationController
         # material_ids = vendor.materials.ids
         # used_product_ids = Product.joins(product_menus:[menu:[:menu_materials]]).where(:product_menus => {:menus => {:menu_materials => {material_id:material_ids}}}).ids
         bejihan_souzais = DailyMenuDetail.joins(:daily_menu,:product).where(:daily_menus => {start_time:from.in_time_zone.all_month}).group('product_id').sum(:manufacturing_number)
-        kurumesi_bentos = KurumesiOrderDetail.joins(:kurumesi_order,:product).where(:kurumesi_orders => {start_time:from.in_time_zone.all_month,canceled_flag:false}).group('product_id').sum(:number)
-        monthly_make_products = bejihan_souzais.merge(kurumesi_bentos)
+        monthly_make_products = bejihan_souzais
         monthly_make_products.each do |product_num|
           product = Product.find(product_num[0])
           product.product_menus.includes(menu:[menu_materials:[:material]]).each do |pm|
@@ -79,8 +78,7 @@ class VendorsController < ApplicationController
     # material_ids = vendor.materials.ids
     # used_product_ids = Product.joins(product_menus:[menu:[:menu_materials]]).where(:product_menus => {:menus => {:menu_materials => {material_id:material_ids}}}).ids
     bejihan_souzais = DailyMenuDetail.joins(:daily_menu,:product).where(:daily_menus => {start_time:date.in_time_zone.all_month}).group('product_id').sum(:manufacturing_number)
-    kurumesi_bentos = KurumesiOrderDetail.joins(:kurumesi_order,:product).where(:kurumesi_orders => {start_time:date.in_time_zone.all_month,canceled_flag:false}).group('product_id').sum(:number)
-    monthly_make_products = bejihan_souzais.merge(kurumesi_bentos)
+    monthly_make_products = bejihan_souzais
     monthly_make_products.each do |product_num|
       product = Product.find(product_num[0])
       product.product_menus.includes(:menu).each do |pm|

@@ -22,10 +22,6 @@ class Product < ApplicationRecord
   has_many :store_daily_menus, through: :store_daily_menu_details
   has_many :store_daily_menu_details
 
-  has_many :kurumesi_orders, through: :kurumesi_order_details
-  has_many :kurumesi_order_details
-
-
   has_many :order_products, dependent: :destroy
   has_many :orders, through: :order_products
 

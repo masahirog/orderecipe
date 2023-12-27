@@ -31,17 +31,4 @@ class NotificationMailer < ActionMailer::Base
       format.text
     end
   end
-
-  def send_error_notice(recieved_datetime,body)
-    @recieved_datetime = recieved_datetime.strftime("%Y/%m/%d/%H:%M")
-    @body = body
-    mail(
-      subject: "くるめし連携エラー", #メールのタイトル
-      to: 'bejihan.orderecipe@gmail.com',
-
-    ) do |format|
-      format.text
-    end
-  end
-
 end

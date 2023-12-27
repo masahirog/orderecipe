@@ -255,48 +255,6 @@ ActiveRecord::Schema.define(version: 2023_12_26_074422) do
     t.string "task_slack_url"
   end
 
-  create_table "kurumesi_mails", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "kurumesi_order_id"
-    t.string "subject"
-    t.text "body"
-    t.integer "summary"
-    t.datetime "recieved_datetime"
-    t.boolean "kurumesi_order_reflect_flag", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "kurumesi_order_details", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "kurumesi_order_id", null: false
-    t.integer "product_id", null: false
-    t.integer "number", default: 0, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "kurumesi_orders", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.date "start_time", null: false
-    t.integer "management_id", null: false
-    t.time "pick_time"
-    t.integer "payment", default: 0, null: false
-    t.boolean "canceled_flag", default: false, null: false
-    t.integer "billed_amount", default: 0, null: false
-    t.text "memo"
-    t.integer "brand_id", null: false
-    t.boolean "confirm_flag", default: false, null: false
-    t.time "delivery_time"
-    t.string "company_name"
-    t.string "staff_name"
-    t.string "delivery_address"
-    t.string "reciept_name"
-    t.string "proviso"
-    t.integer "total_price", default: 0
-    t.boolean "capture_done", default: false, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.text "kitchen_memo"
-  end
-
   create_table "manual_directories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "title"
     t.string "ancestry"

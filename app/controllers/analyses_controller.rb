@@ -248,7 +248,6 @@ class AnalysesController < AdminController
     @daily_working_hours = WorkingHour.where(date:@dates).group(:store_id,:date).sum(:working_time)
     @analyses = Analysis.where(date:@dates).map{|analysis|[[analysis.store_daily_menu.start_time,analysis.store_daily_menu.store_id],analysis.total_sales_amount]}.to_h
     @total_analyses = Analysis.where(date:@dates).group(:date).sum(:total_sales_amount)
-    @kurumesis = KurumesiOrder.where(start_time:@dates,canceled_flag:false).group(:start_time).sum("total_price")
     gon.dates = []
     gon.labor_data =[]
     (today-30..today).map do |date|
