@@ -1,4 +1,4 @@
-li.add_li_material.list-group-item.item.nested-fields.field
+li.add_li_material.col-md-12.col-xs-12.list-group-item.item.nested-fields.field.table-striped
   = f.hidden_field :calorie, class:'input_calorie'
   = f.hidden_field :protein, class:'input_protein'
   = f.hidden_field :lipid, class:'input_lipid'
@@ -19,38 +19,40 @@ li.add_li_material.list-group-item.item.nested-fields.field
 
   = f.hidden_field :row_order, class:"input_row_order"
   = f.hidden_field :base_menu_material_id
-  .select_material style="padding:3px;"
+  .select_material.col-md-3.col-xs-6[style="padding:3px;"]
     - if @base_menu.present?
       = f.object.material.name
       = f.hidden_field :material_id
     - else
       / = f.collection_select :material_id, @materials, :id, :name, {include_blank: true}, { class: "input_select_material col-md-12"}
       = f.collection_select :material_id, @materials, :id, :name, {include_blank: true}, { class: "input_select_material col-md-12",required: true}
-  .cost_price.text-center
+  .cost_price.col-md-1.form-inline.text-center
     = f.object.material.cost_price if f.object.material.present?
+
   .sales_check[style="display:none;"]
     = f.object.material.unused_flag if f.object.material.present?
-  .clearfix.col-xs-12
-    = f.number_field :amount_used, class:'amount_used_input form-control',required: true,placeholder:"使用量",style:"float:left;"
-    span.recipe_unit[style="float:left;padding-top:10px;"]
+  .amount_used.col-md-2[style="display:inline-flex"]
+    div[style="padding-right:10px;"]
+      = f.number_field :amount_used, class:'amount_used_input form-control',required: true,placeholder:"使用量"
+    span.recipe_unit[style="padding-top:10px;"]
       = f.object.material.recipe_unit if f.object.material.present?
-  .price_used.text-center
+  .price_used.col-md-1.text-center
     = (f.object.material.cost_price * f.object.amount_used).round(2) if f.object.material.present? && f.object.amount_used.present?
-  .preparation.clearfix
+  .preparation.col-md-5.clearfix
     = f.text_field :preparation, class:'preparation_input form-control',style:'float:left;width:calc(100% - 30px);',placeholder:"仕込みメモ"
     .remove_material style='float:left;text-align:center;'
       - unless @base_menu.present?
         = link_to_remove_association f do
           i class="fas fa-trash-alt" style='color:red;font-size:20px;margin:8px 0 0 8px;'
 
-  .menu_materials_li[style="padding:0;"]
-    / [style="padding:3px;"]
+  .col-md-12.menu_materials_li[style="padding:0;"]
+    / .col-md-3[style="padding:3px;"]
       - if @base_menu.present?
         = f.object.food_ingredient.name if f.object.food_ingredient_id.present?
         = f.hidden_field :food_ingredient_id
       - else
         = f.collection_select :food_ingredient_id, @food_ingredients, :id, :name, {include_blank: true},{ class: "form-control input_food_ingredient"}
-    / .name[style=""]
+    / .name.col-md-2[style="display:inline-flex"]
       div[style="padding-right:10px;"]
         - if f.object.material.nil?
           = f.number_field :gram_quantity,class:'form-control input_gram_quantity'
@@ -61,26 +63,26 @@ li.add_li_material.list-group-item.item.nested-fields.field
             = f.number_field :gram_quantity,class:'form-control input_gram_quantity',style:'background-color: #ffa2a2;'
       span[style="padding-top:10px;"]
         | g/ml
-    / .input_nutritions style="padding:0;"
+    / .col-md-3.input_nutritions style="padding:0;"
       span.view_food_ingredient
         = "カロリー:#{f.object.calorie}kcal" if f.object.calorie
-    .vendor
+    .vendor.col-md-3
       = f.object.material.vendor.name if f.object.material.present?
 
-    / .select_source_group
+    / .select_source_group.col-md-1
       span style="margin:8px 8px 0 0;float:left;" 急：
       = f.check_box :first_flag,class:'form-control',style:'width:20px;'
-    / .select_source_group
+    / .select_source_group.col-md-1
       span style="margin:8px 0px 0 0;float:left;" 機：
       = f.check_box :machine_flag,class:'form-control',style:'width:20px;'
-    .select_source_group.text-right.clearfix
+    .select_source_group.col-md-2.text-right
       span style="margin:8px 8px 0 0;float:left;width:70px;" グループ：
       = f.select :source_group, MenuMaterial.source_groups.keys.to_a, {include_blank:true}, class: 'form-control',style:'width:calc(100% - 80px);float:left;'
 
-    .select_post.text-right.clearfix
+    .select_post.col-md-2.text-right
       span style="margin:8px 8px 0 0;float:left;width:70px;" 担当：
       = f.select :post,MenuMaterial.posts.keys.to_a,{}, class: "form-control post",style:'width:calc(100% - 80px);float:left;'
-    .div_material_cut_pattern.clearfix
+    .div_material_cut_pattern.col-md-5.clearfix
       - if f.object.material.present?
         - material_id = f.object.material.id
         - cut_patterns = []
