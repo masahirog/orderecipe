@@ -823,22 +823,6 @@ class OrdersController < AdminController
     redirect_to order, notice: "#{vendors.length} 件のメールを送信しました。"
   end
 
-  def get_management_id
-    @product = Product.find_by(management_id: params[:management_id])
-    respond_to do |format|
-      format.html
-      format.json{render :json => @product}
-    end
-  end
-
-  def check_management_id
-    @product = Product.find(params[:id])
-    respond_to do |format|
-      format.html
-      format.json{render :json => @product}
-    end
-  end
-
   def preparation_all
     @order = Order.includes({products: {menus: :menu_materials, menus: :materials}}).find(params[:order_id])
     respond_to do |format|

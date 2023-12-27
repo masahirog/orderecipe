@@ -17,8 +17,8 @@ class ProductPdf < Prawn::Document
 
   def header_table(product,num)
     bounding_box([0, 530], :width => 650) do
-      data = [["商品名","management_id","製造数"],
-              ["#{product.name}","#{product.management_id}","#{num}人分"]]
+      data = [["商品名","製造数"],
+              ["#{product.name}","#{num}人分"]]
       table data, cell_style: { size: 9 } do
       cells.padding = 2
 

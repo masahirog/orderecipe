@@ -25,8 +25,6 @@ class Product < ApplicationRecord
   has_many :order_products, dependent: :destroy
   has_many :orders, through: :order_products
 
-  belongs_to :cooking_rice
-
   has_many :product_parts, dependent: :destroy
   accepts_nested_attributes_for :product_parts, allow_destroy: true
 
@@ -43,16 +41,11 @@ class Product < ApplicationRecord
   validates :name, presence: true, uniqueness: true, format: { with: /\A[^０-９ａ-ｚＡ-Ｚ]+\z/,message: "：全角英数字は使用出来ません。"}
   validates :sell_price, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
   validates :cost_price, presence: true, numericality: true
-  validates :management_id, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, :allow_nil => true
   enum sub_category: {グランドメニュー:1,週替わりメニュー:2,"1月":3,"2月":4,"3月":5,"4月":6,"5月":7,"6月":8,"7月":9,"8月":10,"9月":11,"10月":12,"11月":13,"12月":14,イベント:15}
   enum product_category: {惣菜:1,ご飯・丼:2,ドリンク:3,備品:4,お弁当:5,オードブル:6,スープ:7,惣菜（仕入れ）:8,レジ修正:9,オプション:11,その他:12,冷菜:13,温菜:14,揚げ物:15,焼き物:16,ご飯物:17,デザート:18}
   enum status: {販売中:1,販売停止:2,試作中:3}
   before_save :name_code
   before_destroy :clean_s3
-
-  def view_name_and_id
-    self.management_id.to_s + '｜' + self.name
-  end
 
   def self.search(params,group_id)
     data = Product.where(group_id:group_id).order(id: "DESC").all
@@ -66,14 +59,6 @@ class Product < ApplicationRecord
     end
   end
 
-  # def self.bentoid
-  #   max = Product.maximum(:management_id)
-  #   if max.nil?
-  #     data = 1
-  #   else
-  #     data = max + 1
-  #   end
-  # end
 
   def self.allergy_seiri(product)
     arr=[]
@@ -101,39 +86,6 @@ class Product < ApplicationRecord
     @brr = @brr.map{|br| FoodAdditive.find(br).name}
   end
 
-  # def self.make_katakana(kanji)
-  #   result = ''
-  #   app_id = "6e84997fe5d4d3865152e765091fd0faab2f76bfe5dba29d638cc6683efa1184"
-  #   header = {'Content-type'=>'application/json'}
-  #   https = Net::HTTP.new('labs.goo.ne.jp', 443)
-  #   https.use_ssl = true
-  #   sentence = kanji.gsub(/\r\n/, '|||').gsub(/\n/, '|||')
-  #   request_data = {'app_id'=>app_id, "sentence"=>sentence}.to_json
-  #   while result.blank? do
-  #     sleep(0.1)
-  #     response = https.post('/api/morph', request_data, header)
-  #     if JSON.parse(response.body)["word_list"].present?
-  #       result = JSON.parse(response.body)["word_list"]
-  #     end
-  #   end
-  #   @katakana = ''
-  #   if result.present?
-  #     result.flatten.in_groups_of(3).each do |ar|
-  #       if ar[1] == '句点'
-  #         @katakana += "。"
-  #       elsif ar[1] == '読点'
-  #         @katakana += "、"
-  #       elsif ar[1] == 'Number' || ar[0] == '-' || ar[1] == '括弧'|| ar[1] == "Alphabet" || ar[1] == "Symbol"
-  #         @katakana += ar[0]
-  #       elsif ar[1] == '空白'
-  #         @katakana += "　"
-  #       else
-  #         @katakana += ar[2]
-  #       end
-  #     end
-  #     @katakana = @katakana.gsub('|||',"\n").split("^^", -1)
-  #   end
-  # end
 
   def self.input_spreadsheet
     session = GoogleDrive::Session.from_config("config.json")

@@ -1,3 +1,0 @@
-class DateManufactureNumber < ApplicationRecord
-  
-end

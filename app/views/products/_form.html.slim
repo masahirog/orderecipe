@@ -1,6 +1,5 @@
 
 = form_for @product do |f|
-  = f.hidden_field :cooking_rice_id,value:21
   = f.hidden_field :group_id,value:@group_id
   - if @product.errors.any?
     #error_explanation
@@ -118,9 +117,6 @@
 
 
   / .col-md-12.form-group
-    / .col-md-2
-      = f.label :cooking_rice_id, "使用ライス"
-      = f.collection_select :cooking_rice_id, CookingRice.all, :id, :name, {}, { class: "form-control"}
     / .col-md-3
       = f.label :main_serving_plate_id, "大皿"
       = f.collection_select :main_serving_plate_id, ServingPlate.all, :id, :name, {include_blank:true}, { class: "form-control"}
@@ -132,18 +128,7 @@
       .col-md-6
         = f.label :food_label_content, "食品表示内容"
         = f.text_area :food_label_content, class:"form-control"
-
-      / .col-md-12.form-group
-      /   = f.label :short_name, "短縮名（例：9A←の9の部分を入力）"
-      /   = f.text_field :short_name,class:"form-control"
-      / .col-md-12.form-group
-      /   = f.label :symbol, "記号（例：9A←のAのイニシャル部分を入力）"
-      /   = f.text_field :symbol,class:"form-control"
-
-      / .col-md-12.form-group
-        = f.label :management_id, "管理ID（各ブランドの商品ID）"
-        = f.number_field :management_id, class:"management_id form-control"
-
+    
   .col-md-12.form-group
     .col-md-6
       = f.label :description, "商品特徴"

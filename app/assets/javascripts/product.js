@@ -8,10 +8,6 @@ $(document).on('turbolinks:load', function() {
   menu_select2();
   cost_rate_calc();
 
-  $('.name_search').select2({
-    height:"40px",
-    width:"100%"
-  });
 
   //addアクション、menuの追加
   $('.add_menu_fields').on('click',function(){
@@ -63,28 +59,6 @@ $(document).on('turbolinks:load', function() {
   }});
 
 
-  //englishページ検索ajax
-  $(".management_id_search_en").val("");
-  $(".management_id_search_en").on("blur",function(){
-    var management_id =  parseInt($(this).val());
-    var inp = $(this).parent().parent().find(".input_select_product_en")
-    $.ajax({
-      url: "/orders/get_management_id",
-      data: { management_id : management_id },
-      dataType: "json",
-      async: false
-    })
-    .done(function(data){
-      if (data) {
-        var id = parseInt(data.id)
-        inp.val(id).change();
-      }else{
-        inp.val("").change();
-      }
-    });
-  });
-
-
 
 
   //menuのdestroyのチェックtrueとtrのhide、原価再計算
@@ -114,63 +88,6 @@ $(document).on('turbolinks:load', function() {
    });
   });
 
-  //indexでの商品名でのリアルタイム検索
-  $(".id_search").on("input", function(){
-    $("#select2-name-container").text("")
-    var path = "get_products"
-    var class_name = ".id_search"
-    inputaaaaa(class_name,path);
-  });
-  $(".name_search").on("change", function(){
-    $(".id_search").val("")
-    var path = "input_name_get_products"
-    var class_name = ".name_search"
-      inputaaaaa(class_name,path);
-  });
-
-
-  function inputaaaaa(class_name,path){
-    var id = $(class_name).val();
-    if (id=="") {} else{
-    $.ajax({
-        url: "/products/"+path,
-        data: { id : id },
-        dataType: "json",
-        async: false
-    })
-    .done(function(data) {
-      $(".aaaad").children().remove()
-      $.each(data, function(i){
-        var li = '<tr class="products_li">'+
-        '<td>'+
-          data[i]['management_id']+
-        '</td>'+
-        '<td class="product_name">'+
-        '<a href=/products/'+data[i]['product_id']+'>'+data[i]['name']+'</a>'+
-        '</td>'+
-        '<td>'+
-         data[i]['brand']+
-        '</td>'+
-        '<td>'+
-        '</td>'+
-        '<td class="text-right">'+
-         data[i]['sell_price']+'円'+
-        '</td>'+
-        '<td class="text-right">'+
-         data[i]['cost_price']+'円'+
-        '</td>'+
-        '<td class="text-right">'+
-         data[i]['cost_rate']+'%'+
-        '</td>'+
-        '<td class="col-md-1">'+
-        '<img src= '+data[i]['image'].thumb.url+'>' +
-        '</td>'+
-        '</tr>';
-
-        $(".aaaad").append(li)
-      });
-      });
-    }};
 
   //原価計算
   function calculate_product_price(){

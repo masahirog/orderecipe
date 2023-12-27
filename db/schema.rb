@@ -80,9 +80,8 @@ ActiveRecord::Schema.define(version: 2023_12_26_074422) do
     t.float "nomination_rate", default: 0.0, null: false
   end
 
-  create_table "brands", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+  create_table "brands", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name", null: false
-    t.boolean "kurumesi_flag", default: false, null: false
     t.string "store_path"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -95,15 +94,6 @@ ActiveRecord::Schema.define(version: 2023_12_26_074422) do
     t.datetime "updated_at", null: false
     t.integer "group_id", null: false
     t.boolean "inversion_label_flag", default: true, null: false
-  end
-
-  create_table "cooking_rices", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.string "name", null: false
-    t.integer "base_rice", null: false
-    t.integer "serving_amount", null: false
-    t.float "shoku_per_shou", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "customer_opinions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -150,14 +140,6 @@ ActiveRecord::Schema.define(version: 2023_12_26_074422) do
     t.integer "sozai_manufacturing_number", default: 0, null: false
     t.string "event"
     t.boolean "stock_update_flag", default: false, null: false
-  end
-
-  create_table "date_manufacture_numbers", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.date "date"
-    t.integer "num"
-    t.boolean "notified_flag", default: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "default_shifts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -544,13 +526,9 @@ ActiveRecord::Schema.define(version: 2023_12_26_074422) do
     t.text "contents"
     t.float "cost_price"
     t.string "image"
-    t.integer "management_id"
-    t.string "short_name"
-    t.string "symbol"
     t.integer "status", default: 1, null: false
     t.integer "brand_id"
     t.integer "product_category", default: 1, null: false
-    t.integer "cooking_rice_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "bejihan_sozai_flag", default: false, null: false

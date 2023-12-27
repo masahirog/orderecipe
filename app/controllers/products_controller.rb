@@ -41,25 +41,12 @@ class ProductsController < ApplicationController
     end
   end
 
-  def get_products
-    @products = Product.where(['management_id LIKE ?', "%#{params["id"]}%"]).limit(10)
-    @product_hash = {}
-    @products.each_with_index do |product,i|
-      cost_rate = ((product.cost_price / product.sell_price)*100).round
-      @product_hash[i]= {name:product.name,product_id:product.id,management_id:product.management_id,brand:product.brand.name,image:product.image,
-        sell_price:product.sell_price,cost_price:product.cost_price,cost_rate:cost_rate}
-    end
-    respond_to do |format|
-      format.html
-      format.json { render 'index', json: @product_hash }
-    end
-  end
   def input_name_get_products
     @products = Product.includes(:brand).where(['name LIKE ?', "%#{params["id"]}%"]).limit(10)
     @product_hash = {}
     @products.each_with_index do |product,i|
       cost_rate = ((product.cost_price / product.sell_price)*100).round
-      @product_hash[i]= {name:product.name,product_id:product.id,management_id:product.management_id,brand:product.brand.name,image:product.image,
+      @product_hash[i]= {name:product.name,product_id:product.id,brand:product.brand.name,image:product.image,
         sell_price:product.sell_price,cost_price:product.cost_price,cost_rate:cost_rate}
     end
 
@@ -78,10 +65,9 @@ class ProductsController < ApplicationController
       original_product = Product.includes(product_menus:[menu:[menu_materials:[:material]]]).find(params[:product_id])
       original_product.name = "#{original_product.name}のコピー"
       @product = original_product.deep_clone(include: [:product_menus,:product_parts,:product_ozara_serving_informations])
-      flash.now[:notice] = "#{original_product.name}を複製しました。この商品を登録する前に、コピーした元の商品のmanagement_idを消してください。名前も変更してください。"
+      flash.now[:notice] = "#{original_product.name}を複製しました。名前を変更してください。"
       @menus = original_product.menus
     else
-      # @management_id = Product.bentoid()
       @product = Product.new(sell_price:0)
       @product.product_menus.build(row_order: 0)
       @menus = []
@@ -121,7 +107,6 @@ class ProductsController < ApplicationController
   end
 
   def edit
-    # @management_id = Product.bentoid()
     @product = Product.includes(:product_menus,{menus: [:menu_materials,:materials]}).find(params[:id])
     @product.product_pops.build
     @menus = @product.menus
@@ -305,11 +290,11 @@ class ProductsController < ApplicationController
 
   private
     def product_create_update
-      params.require(:product).permit(:name,:memo, :management_id,:short_name,:symbol, :sell_price, :description, :contents, :image,:brand_id,:product_category,:bejihan_sozai_flag,
+      params.require(:product).permit(:name,:memo, :sell_price, :description, :contents, :image,:brand_id,:product_category,:bejihan_sozai_flag,
                       :sky_wholesale_price,:sky_image,:sky_serving_infomation,:group_id,:sub_category,
                       :food_label_name,:food_label_content,:status,:remove_image, :image_cache,:display_image,:image_for_one_person,:serving_infomation,:carryover_able_flag,
                       :main_serving_plate_id,:sub_serving_plate_id,:container_id,:ozara_serving_infomation,:freezing_able_flag,:sky_split_information,:bejihan_only_flag,
-                      :cost_price,:cooking_rice_id, product_menus_attributes: [:id, :product_id, :menu_id,:row_order, :_destroy],product_pops_attributes: [:id, :product_id,:image,:remove_image,:image_cache],
+                      :cost_price, product_menus_attributes: [:id, :product_id, :menu_id,:row_order, :_destroy],product_pops_attributes: [:id, :product_id,:image,:remove_image,:image_cache],
                     product_parts_attributes: [:id,:product_id,:name,:amount,:unit, :_destroy,:memo,:container,:sticker_print_flag],
                     product_ozara_serving_informations_attributes: [:id, :product_id,:row_order,:content,:image, :_destroy],
                     product_bbs_attributes: [:id,:product_id,:image,:memo,:staff_id, :remove_image,:_destroy])

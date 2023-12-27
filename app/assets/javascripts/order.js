@@ -75,25 +75,6 @@ $(document).on('turbolinks:load', function() {
 
 
 
-  // $(".input_select_product").on("change",function(){
-  //   var id = $(this).val();
-  //   var inp_bentoid = $(this).parent().parent().find(".order_management_id_search")
-  //   $.ajax({
-  //     url: "/orders/check_management_id",
-  //     data: { id : id },
-  //     dataType: "json",
-  //     async: false
-  //   })
-  //   .done(function(data){
-  //     if (data) {
-  //       var management_id = parseInt(data.management_id)
-  //       inp_bentoid.val(management_id);
-  //     }else{
-  //       inp_bentoid.val("");
-  //     }
-  //   });
-  // });
-
 
   //indexで使用
   $(".index_vendor_select").on("change",function(){

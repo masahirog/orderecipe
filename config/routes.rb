@@ -27,8 +27,6 @@ Rails.application.routes.draw do
         get :monthly
         get :products_pdfs
         get :material_info
-        get :get_management_id
-        get :check_management_id
         get :print_all
         post :material_reload
         get :deliveried_list
@@ -216,7 +214,6 @@ Rails.application.routes.draw do
       get :serving
       get :get_product
       # get :recipe_romaji
-      get :get_products
       get :input_name_get_products
       post :print_preparation
       get :new_band
@@ -254,8 +251,6 @@ Rails.application.routes.draw do
       get :monthly
       get :products_pdfs
       get :material_info
-      get :get_management_id
-      get :check_management_id
       get :print_all
       post :material_reload
       get :deliveried_list
@@ -284,12 +279,6 @@ Rails.application.routes.draw do
       get :print_preparation
       get :sources
       get :loading
-    end
-  end
-  resources :cooking_rices do
-    collection do
-      get :date
-      get :rice_sheet
     end
   end
   resources :versions
