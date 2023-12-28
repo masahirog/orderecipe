@@ -2,7 +2,7 @@ class CreateProducts < ActiveRecord::Migration[4.2]
   def change
     create_table :products do |t|
       t.string :name, unique: true
-      t.integer :sell_price
+      t.integer :sell_price,null:false
       t.text :description
       t.text :contents
       t.float :cost_price
@@ -15,7 +15,7 @@ class CreateProducts < ActiveRecord::Migration[4.2]
       t.string :display_image
       t.string :image_for_one_person
       t.text :serving_infomation
-      t.string :food_label_name
+      t.string :food_label_name,null:false
       t.text :food_label_content
       t.boolean :carryover_able_flag, null: false, default: false
       t.integer :main_serving_plate_id
@@ -31,7 +31,7 @@ class CreateProducts < ActiveRecord::Migration[4.2]
       t.boolean :bejihan_only_flag, null: false, default: false
       t.string :smaregi_code
       t.boolean :warm_flag, null: false, default: false
-      t.integer :tax_including_sell_price
+      t.integer :tax_including_sell_price,null:false
     end
   end
 end
