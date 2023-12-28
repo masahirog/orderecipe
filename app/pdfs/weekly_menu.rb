@@ -2,7 +2,7 @@ require 'barby/barcode/code_128'
 require 'barby/outputter/png_outputter'
 require 'barby/barcode/qr_code'
 
-class Test < Prawn::Document
+class WeeklyMenu < Prawn::Document
   def initialize(daily_menu,daily_menu_details,bento_menus,next_menus,store)
     super(
       page_size: 'A4',
