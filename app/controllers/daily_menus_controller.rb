@@ -1,12 +1,25 @@
 class DailyMenusController < AdminController
   before_action :set_daily_menu, only: [:show, :update, :destroy]
   def barcode
+    @store = Store.find(params[:store_id])
     @daily_menu = DailyMenu.find(params[:daily_menu_id])
     @daily_menu_details = @daily_menu.daily_menu_details.map{|dmd|[dmd.paper_menu_number,dmd]}.to_h
+
+    @bento_menus = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    from = @daily_menu.start_time
+    to = from+6
+    next_week_day = from + 7
+    weekly_daily_menus = DailyMenu.where(start_time:from..to)
+    DailyMenuDetail.includes([:product,:daily_menu]).where(daily_menu_id:weekly_daily_menus.ids).where(paper_menu_number:[24,25]).each do |dmd|
+      @bento_menus[dmd.daily_menu.start_time][dmd.paper_menu_number] = dmd.product
+    end
+
+    next_week_product_ids = DailyMenu.find_by(start_time:next_week_day).daily_menu_details.where(paper_menu_number:(1..17).to_a).map{|dmd|dmd.product_id}
+    @next_menus = Product.where(id:next_week_product_ids)
     respond_to do |format|
       format.html
       format.pdf do
-        pdf = Test.new(@daily_menu,@daily_menu_details)
+        pdf = Test.new(@daily_menu,@daily_menu_details,@bento_menus,@next_menus,@store)
         send_data pdf.render,
         filename:    "#{@daily_menu.start_time}.pdf",
         type:        "application/pdf",

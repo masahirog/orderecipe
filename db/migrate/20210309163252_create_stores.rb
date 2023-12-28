@@ -24,6 +24,8 @@ class CreateStores < ActiveRecord::Migration[5.2]
       t.string :task_slack_url
       t.integer :store_type,default:0,null:false
       t.boolean :close_flag,default:false,null:false
+      t.string :yoyaku_url
+      t.string :line_url
     end
   end
 end

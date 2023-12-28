@@ -858,7 +858,7 @@ ActiveRecord::Schema.define(version: 2023_12_26_074422) do
     t.index ["store_id", "shift_frame_id"], name: "index_store_shift_frames_on_store_id_and_shift_frame_id", unique: true
   end
 
-  create_table "stores", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+  create_table "stores", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name", null: false
     t.string "phone"
     t.string "fax"
@@ -883,6 +883,8 @@ ActiveRecord::Schema.define(version: 2023_12_26_074422) do
     t.string "task_slack_url"
     t.integer "store_type", default: 0, null: false
     t.boolean "close_flag", default: false, null: false
+    t.string "yoyaku_url"
+    t.string "line_url"
   end
 
   create_table "task_comments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
