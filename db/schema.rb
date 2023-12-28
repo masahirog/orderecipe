@@ -109,7 +109,7 @@ ActiveRecord::Schema.define(version: 2023_12_26_074422) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "daily_menu_details", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+  create_table "daily_menu_details", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "daily_menu_id", null: false
     t.integer "product_id", null: false
     t.integer "manufacturing_number", default: 0, null: false
@@ -126,6 +126,7 @@ ActiveRecord::Schema.define(version: 2023_12_26_074422) do
     t.datetime "updated_at", null: false
     t.integer "adjustments", default: 0, null: false
     t.integer "sell_price", default: 0, null: false
+    t.integer "paper_menu_number"
   end
 
   create_table "daily_menus", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -548,6 +549,9 @@ ActiveRecord::Schema.define(version: 2023_12_26_074422) do
     t.integer "sub_category"
     t.string "sky_split_information"
     t.boolean "bejihan_only_flag", default: false, null: false
+    t.string "smaregi_code"
+    t.boolean "warm_flag", default: false, null: false
+    t.integer "tax_including_sell_price"
   end
 
   create_table "refund_supports", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

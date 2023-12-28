@@ -16,6 +16,7 @@ class CreateDailyMenuDetails < ActiveRecord::Migration[4.2][5.2]
       t.timestamps
       t.integer :adjustments, default: 0, null: false
       t.integer :sell_price, default: 0, null: false
+      t.integer :paper_menu_number
     end
   end
 end

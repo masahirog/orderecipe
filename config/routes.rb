@@ -258,6 +258,7 @@ Rails.application.routes.draw do
   end
   resources :daily_menus do
     collection do
+      get :barcode
       post :stock_reload
       post :store_input_able
       post :store_input_disable
@@ -313,7 +314,6 @@ Rails.application.routes.draw do
     collection do
       get :budget
       post :budget_update
-      get :barcode
       get :description
       get :ikkatsu
       post :input_multi_number

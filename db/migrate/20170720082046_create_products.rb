@@ -29,6 +29,9 @@ class CreateProducts < ActiveRecord::Migration[4.2]
       t.integer :sub_category
       t.string :sky_split_information
       t.boolean :bejihan_only_flag, null: false, default: false
+      t.string :smaregi_code
+      t.boolean :warm_flag, null: false, default: false
+      t.integer :tax_including_sell_price
     end
   end
 end

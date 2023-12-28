@@ -1,4 +1,3 @@
-
 = form_for @product do |f|
   = f.hidden_field :group_id,value:@group_id
   - if @product.errors.any?
@@ -37,22 +36,30 @@
         - sub_categories = Product.sub_categories.keys
         = f.select :sub_category, options_for_select(sub_categories,@product.sub_category), {include_blank:true}, class: 'form-control'
   .col-md-12.form-group
-    .col-md-2
-      = f.label :container_id, "盛り付け容器・皿"
-      = f.collection_select :container_id, Container.where(group_id:current_user.group_id), :id, :name, {include_blank:true}, { class: "form-control"}
     - if current_user.group_id == 9
-      .col-md-2
+      .col-md-1
+        = f.label :warm_flag, "温め商品"
+        = f.check_box :warm_flag, class: "form-control"
+
+      .col-md-1
         = f.label :bejihan_only_flag, "べじはんのみ発注可"
         = f.check_box :bejihan_only_flag, class: "form-control"
-      .col-md-2
+      .col-md-1
         = f.label :bejihan_sozai_flag, "べじはん惣菜"
         = f.check_box :bejihan_sozai_flag, class: "form-control"
 
     .col-md-2
-      = f.label :sell_price, "販売価格"
+      = f.label :sell_price, "税抜価格"
       .form-inline
         .form-group
           = f.number_field :sell_price, class:"price form-control text-right",style:'width:150px;'
+          .form-group
+            |円
+    .col-md-2
+      = f.label :tax_including_sell_price, "税込価格"
+      .form-inline
+        .form-group
+          = f.number_field :tax_including_sell_price, class:"price form-control text-right",style:'width:150px;'
           .form-group
             |円
     .col-md-2
@@ -70,7 +77,14 @@
         .form-group
           |%
   .col-md-12.form-group
-    .col-md-12
+    .col-md-2
+      = f.label :smaregi_code, "スマレジ商品コード"
+      = f.text_field :smaregi_code, class:"form-control"
+    .col-md-2
+      = f.label :container_id, "盛り付け容器・皿"
+      = f.collection_select :container_id, Container.where(group_id:current_user.group_id), :id, :name, {include_blank:true}, { class: "form-control"}
+
+    .col-md-6
       = f.label :sky_split_information, "SKY卸時の分割目安 【1/2、1/3、分割不可】 等"
       = f.text_field :sky_split_information, class:"form-control"
   .col-md-12.form-group

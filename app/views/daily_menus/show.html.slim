@@ -147,7 +147,7 @@ div
   / = link_to '献立の削除', daily_menu_path(@daily_menu), method: :delete,class:"btn btn-danger",style:'float:right;margin-top:10px;margin-left:10px;', data: { confirm: "献立を削除してよろしいですか？" }
   / = link_to '惣菜数の一括変更', daily_menu_path(@daily_menu),class:"btn btn-primary",style:'float:right;margin-top:10px;margin-left:10px;', data: { confirm: "献立を削除してよろしいですか？" }
   = link_to "チェックリスト",cook_check_daily_menus_path(id:@daily_menu.id, :format => :pdf),class:"btn btn-default",:target=>"_blank",style:'margin-left:20px;margin-top:10px;'
-
+  = link_to "バーコード",barcode_daily_menus_path(daily_menu_id:@daily_menu.id,format:'pdf'),class:'btn btn-default',style:'margin-left:20px;margin-top:10px;',:target=>"_blank"
   = link_to "削除", @daily_menu, method: :delete,class:'btn btn-default pull-right',data: { confirm: "ホンマに削除するで？" }, style:'margin-top:10px;margin-left:20px;'
   button type="button" class="btn btn-danger pull-right" data-toggle="modal" data-target="#close_store_input" style='margin-top:10px;' 店舗発注締め切り
   #close_store_input.modal.fade tabindex="-1"
@@ -198,6 +198,7 @@ table.table.table-list.table-striped
   thead
     tr
       th 商品名
+      th 紙表示
       th 売価
       th 原価
       th 原価率
@@ -216,6 +217,7 @@ table.table.table-list.table-striped
       tr
         td
           = link_to dmd.product.name,product_path(dmd.product)
+        td = dmd.paper_menu_number
         td = dmd.sell_price
         td = dmd.product.cost_price
         - if (dmd.product.cost_price/dmd.product.sell_price) > 0.35
