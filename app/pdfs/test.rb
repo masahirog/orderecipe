@@ -140,7 +140,7 @@ class Test < Prawn::Document
         end
         fill_color '000000'
         text_box(number[i-1],at: [80,left_sozai_height-4], width: 350, height: 40,size:12)
-        text_box(daily_menu_details[i].product.name,at: [95,left_sozai_height], width: 220, height: 20,size:10, valign: :center)
+        text_box(daily_menu_details[i].product.food_label_name,at: [95,left_sozai_height], width: 220, height: 20,size:10, valign: :center)
         text_box("#{daily_menu_details[i].product.sell_price}円",at: [317,left_sozai_height-5], width: 350, height: 40,size:10)
         text_box("税込",at: [350,left_sozai_height], width: 350, height: 40,size:6)
         text_box("#{daily_menu_details[i].product.tax_including_sell_price}円",at: [350,left_sozai_height-8], width: 350, height: 40,size:8)
@@ -155,7 +155,7 @@ class Test < Prawn::Document
         end
         fill_color '000000'
         text_box(number[i-1],at: [485,left_sozai_height-4], width: 30, height: 40,size:12)
-        text_box(daily_menu_details[i].product.name,at: [500,left_sozai_height], width: 220, height: 40,size:10)
+        text_box(daily_menu_details[i].product.food_label_name,at: [500,left_sozai_height], width: 220, height: 40,size:10)
         text_box("#{daily_menu_details[i].product.sell_price}円",at: [722,left_sozai_height-5], width: 350, height: 40,size:10)
         text_box("税込",at: [755,left_sozai_height], width: 350, height: 40,size:6)
         text_box("#{daily_menu_details[i].product.tax_including_sell_price}円",at: [755,left_sozai_height-8], width: 350, height: 40,size:8)
@@ -214,7 +214,7 @@ class Test < Prawn::Document
       stroke_bounds
     end
     text_box(number[22],at: [485,bento_height-15], width: 350, height: 40,size:12)
-    text_box(daily_menu_details[23].product.name,at: [500,bento_height-15], width: 220, height: 40,size:10)
+    text_box(daily_menu_details[23].product.food_label_name,at: [500,bento_height-15], width: 220, height: 40,size:10)
     text_box("#{daily_menu_details[23].product.sell_price}円",at: [720,bento_height-17], width: 350, height: 40,size:12)
     text_box("税込",at: [755,bento_height-17], width: 350, height: 40,size:6)
     text_box("#{daily_menu_details[23].product.tax_including_sell_price}円",at: [755,bento_height-25], width: 350, height: 40,size:8)

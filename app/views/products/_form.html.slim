@@ -10,14 +10,17 @@
           li
             = message
   .col-md-12.form-group
-    .col-md-2
+    .col-md-1
       = f.label :brand_id, "ブランド"
       = f.collection_select :brand_id, Brand.where(group_id:@group_id), :id, :name, {}, { class: "form-control"}
 
-    .col-md-4
+    .col-md-3
       = f.label :name, "商品名"
-      = f.text_field :name, id: "menu_search", class:"name form-control"
-    .col-md-2
+      = f.text_field :name,class:"name form-control", required:true
+    .col-md-3
+      = f.label :food_label_name, "正式名称"
+      = f.text_field :food_label_name, class:"form-control", required:true
+    .col-md-1
       = f.label :status, "ステータス"
       = f.select :status, options_for_select_from_enum(Product, :status),{include_blank:true}, { class: "form-control", required:true}
 
@@ -52,14 +55,14 @@
       = f.label :sell_price, "税抜価格"
       .form-inline
         .form-group
-          = f.number_field :sell_price, class:"price form-control text-right",style:'width:150px;'
+          = f.number_field :sell_price, class:"price form-control text-right",style:'width:150px;', required:true
           .form-group
             |円
     .col-md-2
       = f.label :tax_including_sell_price, "税込価格"
       .form-inline
         .form-group
-          = f.number_field :tax_including_sell_price, class:"price form-control text-right",style:'width:150px;'
+          = f.number_field :tax_including_sell_price, class:"price form-control text-right",style:'width:150px;', required:true
           .form-group
             |円
     .col-md-2
@@ -199,4 +202,4 @@
       = f.fields_for :product_menus do |pr|
         = render 'product_menu_fields', f: pr
   .action.col-md-12
-    input.btn.btn-success[type="button" onclick="submit();" value="登録する"]
+    = f.submit "登録する",class:'btn btn-success'
