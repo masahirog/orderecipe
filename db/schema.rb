@@ -521,7 +521,7 @@ ActiveRecord::Schema.define(version: 2023_12_26_074422) do
 
   create_table "products", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
-    t.integer "sell_price"
+    t.integer "sell_price", null: false
     t.text "description"
     t.text "contents"
     t.float "cost_price"
@@ -535,7 +535,7 @@ ActiveRecord::Schema.define(version: 2023_12_26_074422) do
     t.string "display_image"
     t.string "image_for_one_person"
     t.text "serving_infomation"
-    t.string "food_label_name"
+    t.string "food_label_name", null: false
     t.text "food_label_content"
     t.boolean "carryover_able_flag", default: false, null: false
     t.integer "main_serving_plate_id"
@@ -551,7 +551,7 @@ ActiveRecord::Schema.define(version: 2023_12_26_074422) do
     t.boolean "bejihan_only_flag", default: false, null: false
     t.string "smaregi_code"
     t.boolean "warm_flag", default: false, null: false
-    t.integer "tax_including_sell_price"
+    t.integer "tax_including_sell_price", null: false
   end
 
   create_table "refund_supports", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

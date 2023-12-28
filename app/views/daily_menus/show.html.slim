@@ -146,10 +146,10 @@ div
             = submit_tag "表示する" ,class:"btn btn-primary"
   / = link_to '献立の削除', daily_menu_path(@daily_menu), method: :delete,class:"btn btn-danger",style:'float:right;margin-top:10px;margin-left:10px;', data: { confirm: "献立を削除してよろしいですか？" }
   / = link_to '惣菜数の一括変更', daily_menu_path(@daily_menu),class:"btn btn-primary",style:'float:right;margin-top:10px;margin-left:10px;', data: { confirm: "献立を削除してよろしいですか？" }
-  = link_to "チェックリスト",cook_check_daily_menus_path(id:@daily_menu.id, :format => :pdf),class:"btn btn-default",:target=>"_blank",style:'margin-left:20px;margin-top:10px;'
+  = link_to "チェックリスト",cook_check_daily_menus_path(id:@daily_menu.id, :format => :pdf),class:"btn btn-default",:target=>"_blank",style:'margin-left:10px;margin-top:10px;'
   / = link_to "バーコード",barcode_daily_menus_path(daily_menu_id:@daily_menu.id,format:'pdf'),class:'btn btn-default',style:'margin-left:20px;margin-top:10px;',:target=>"_blank"
 
-  button type="button" class="btn btn-default" data-toggle="modal" data-target="#barcode" style='margin-top:10px;' メニュー表
+  button type="button" class="btn btn-default" data-toggle="modal" data-target="#barcode" style='margin-top:10px;margin-left:10px;' メニュー表
   #barcode.modal.fade tabindex="-1"
     = form_tag barcode_daily_menus_path(format: :pdf), :method => 'get' do
       = hidden_field_tag :daily_menu_id,@daily_menu.id
@@ -158,12 +158,7 @@ div
           .modal-header
             h4.modal-title 店舗選択
           .modal-body.clearfix
-            table.table
-              thead
-                tr
-                  th 店舗名
-              tbody
-                = select_tag :store_id, options_from_collection_for_select(Store.all, :id, :name,params[:store_id]),include_blank: true, class: "form-control",style:'width:200px;float:left;'
+            = select_tag :store_id, options_from_collection_for_select(current_user.group.stores, :id, :name,params[:store_id]), class: "form-control",style:'width:200px;float:left;'
           .modal-footer
             = submit_tag "更新" ,class:"btn btn-primary"
             button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる

@@ -18,7 +18,7 @@
       = f.label :name, "商品名"
       = f.text_field :name,class:"name form-control", required:true
     .col-md-3
-      = f.label :food_label_name, "正式名称"
+      = f.label :food_label_name, "正式名称（20字以上でスペース必要）"
       = f.text_field :food_label_name, class:"form-control", required:true
     .col-md-1
       = f.label :status, "ステータス"
@@ -147,10 +147,14 @@
         = f.text_area :food_label_content, class:"form-control"
     
   .col-md-12.form-group
-    .col-md-6
-      = f.label :description, "商品特徴"
+    .col-md-4
+      = f.label :contents, "お客様用商品紹介文 30-40字程度（メニュー、プライスカード）"
+      = f.text_area :contents, class:"form-control", style:"height:10em;"
+
+    .col-md-4
+      = f.label :description, "スタッフ用商品特徴メモ"
       = f.text_area :description, class:"form-control", style:"height:10em;"
-    .col-md-6
+    .col-md-4
       = f.label :serving_infomation, "1人前分量"
       = f.text_area :serving_infomation, class:"form-control", style:"height:10em;"
   table.table
