@@ -3,8 +3,12 @@ class ProductsController < ApplicationController
   require 'json'
 
   def price_card
+
     product_ids = params[:product_ids].values.reject(&:blank?)
-    products = Product.where(id:product_ids)
+    products = []
+    product_ids.each do |id|
+      products << Product.find(id)
+    end
     respond_to do |format|
       format.html
       format.pdf do
