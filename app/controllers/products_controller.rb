@@ -2,6 +2,21 @@ class ProductsController < ApplicationController
   require 'net/https'
   require 'json'
 
+  def price_card
+    product_ids = params[:product_ids].values.reject(&:blank?)
+    products = Product.where(id:product_ids)
+    respond_to do |format|
+      format.html
+      format.pdf do
+        pdf = PriceCard.new(products)
+        send_data pdf.render,
+        filename:    "price_card.pdf",
+        type:        "application/pdf",
+        disposition: "inline"
+      end
+    end
+  end
+
   def edit_bb
     @product = Product.find(params[:product_id])
     # @product.product_bbs.build

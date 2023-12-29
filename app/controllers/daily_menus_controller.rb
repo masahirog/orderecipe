@@ -286,7 +286,7 @@ class DailyMenusController < AdminController
         @total_sotei_uriage += sotei_uriage
       end
     end
-
+    @products = Product.where(id:@daily_menu_details.map{|dmd|dmd.product_id})
     respond_to do |format|
       format.html
       format.pdf do

@@ -204,6 +204,7 @@ Rails.application.routes.draw do
   end
   resources :products do
     collection do
+      get :price_card
       get :edit_bb
       get :black_board
       get :download

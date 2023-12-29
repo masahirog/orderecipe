@@ -172,6 +172,24 @@ div
             button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
 
 
+  button type="button" class="btn btn-default" data-toggle="modal" data-target="#pricecard" style='margin-top:10px;margin-left:10px;' プライスカード
+  #pricecard.modal.fade tabindex="-1"
+    = form_tag price_card_products_path(format: :pdf),:target => '_blank', :method => 'get' do
+      .modal-dialog
+        .modal-content
+          .modal-header
+            h4.modal-title 商品選択
+          .modal-body.clearfix
+            - [1,2,3,4].each do |i|
+              .col-md-12
+                label = i
+                br
+                = select_tag "product_ids[#{i}]", options_from_collection_for_select(@products, :id, :name), class: "form-control",include_blank:true
+              br
+          .modal-footer
+            = submit_tag "送信" ,class:"btn btn-primary"
+            button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
+
 
 
 
