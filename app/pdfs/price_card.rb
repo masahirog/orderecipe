@@ -19,7 +19,7 @@ class PriceCard < Prawn::Document
         stroke_color 'ececec'
         stroke_rectangle [10,h], 510, 184
         fill_color '000000'
-        text_box(product.food_label_name,at: [80,h-16], width: 300, height: 50,size:22,valign: :center)
+        text_box(product.food_label_name,at: [80,h-16], width: 500, height: 50,size:22,valign: :center)
 
 
         line_width 1
