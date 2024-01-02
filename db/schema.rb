@@ -127,6 +127,7 @@ ActiveRecord::Schema.define(version: 2023_12_26_074422) do
     t.integer "adjustments", default: 0, null: false
     t.integer "sell_price", default: 0, null: false
     t.integer "paper_menu_number"
+    t.index ["daily_menu_id", "paper_menu_number"], name: "index_daily_menu_details_on_daily_menu_id_and_paper_menu_number", unique: true
   end
 
   create_table "daily_menus", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
