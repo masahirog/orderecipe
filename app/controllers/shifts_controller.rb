@@ -135,10 +135,10 @@ class ShiftsController < ApplicationController
       @shift_patterns = ShiftPattern.all.order(pattern_name:'DESC')
       if @shifts.present?
       else
-        redirect_to check_shifts_path, :alert => 'シフトの申請枠が無いため、社員に連絡をしてください。'
+        redirect_to shifts_path(group_id:current_user.group_id,store_type:0,date:@date), :danger => 'シフトの申請枠が無いため、社員に連絡をしてください。'
       end
     else
-      redirect_to check_shifts_path, :alert => '頂いた情報では、シフトの申請は出来ません。'
+      redirect_to shifts_path(group_id:current_user.group_id,store_type:0,date:@date), :danger => '頂いた情報では、シフトの申請は出来ません。'
     end
   end
 
