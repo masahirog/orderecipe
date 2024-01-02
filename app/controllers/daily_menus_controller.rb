@@ -1,5 +1,25 @@
 class DailyMenusController < AdminController
   before_action :set_daily_menu, only: [:show, :update, :destroy]
+  def schedule
+    @from = Date.parse(params[:from])
+    @to = Date.parse(params[:to])
+    @daily_menus = DailyMenu.where(start_time:@from..@to)
+    @daily_menu_details = DailyMenuDetail.where(daily_menu_id:@daily_menus.ids)
+    product_ids = @daily_menu_details.map{|dmd|dmd.product_id}.uniq
+    @id_names = Product.where(id:product_ids).map{|product|[product.id,product.name]}.to_h
+    @daily_menu_details_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    @daily_menu_details.each do |dmd|
+      @daily_menu_details_hash[dmd.daily_menu_id][dmd.paper_menu_number] = dmd.product_id
+    end
+
+    # @create_from = Date.parse(params[:create_from])
+    # @create_to = Date.parse(params[:create_to])
+    @create_from = Date.parse('2024/01/10')
+    @create_to = Date.parse('2024/01/16')
+    @products = Product.where(status:1,brand_id:111)
+    @create_daily_menus = DailyMenu.where(start_time:[@create_from..@create_to])
+  end
+
   def barcode
     @store = Store.find(params[:store_id])
     @daily_menu = DailyMenu.find(params[:daily_menu_id])

@@ -259,6 +259,7 @@ Rails.application.routes.draw do
   end
   resources :daily_menus do
     collection do
+      get :schedule
       get :barcode
       post :stock_reload
       post :store_input_able
