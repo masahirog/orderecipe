@@ -1,9 +1,58 @@
 class DailyMenusController < AdminController
   before_action :set_daily_menu, only: [:show, :update, :destroy]
+  def bulk_update
+    new_arr = []
+    update_arr = []
+    delete_dmd_ids_arr = []
+    update_sdmd_arr = []
+    daily_menu_ids = params[:daily_menus].keys
+    @dmd_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    DailyMenuDetail.where(daily_menu_id:daily_menu_ids).each do |dmd|
+      @dmd_hash[dmd.daily_menu_id.to_s][dmd.paper_menu_number.to_s] = dmd if dmd.paper_menu_number.present?
+    end
+    daily_menu_ids.each do |daily_menu_id|
+      params[:daily_menus][daily_menu_id]["paper_menu_numbers"].each do |num_product_id|
+        paper_menu_number = num_product_id[0]
+        product_id = num_product_id[1]
+        daily_menu_detail = @dmd_hash[daily_menu_id][paper_menu_number]
+        if daily_menu_detail.present?
+          if product_id.present?
+            product_id_was = daily_menu_detail.product_id
+            daily_menu_detail.product_id = product_id
+            update_arr << daily_menu_detail
+            if product_id_was == product_id
+            else
+              store_daily_menu_ids = daily_menu_detail.daily_menu.store_daily_menus.ids
+              store_daily_menu_details = StoreDailyMenuDetail.where(store_daily_menu_id:store_daily_menu_ids,product_id:product_id_was)
+              store_daily_menu_details.each do |sdmd|
+                sdmd.product_id = product_id
+                update_sdmd_arr << sdmd
+              end
+            end
+
+          else
+            delete_dmd_ids_arr << daily_menu_detail.id
+          end
+        else
+          if product_id.present?
+            product = Product.find(product_id)
+            new_arr << DailyMenuDetail.new(daily_menu_id:daily_menu_id,product_id:product_id,manufacturing_number:0,cost_price_per_product:product.cost_price,
+              total_cost_price:0,for_single_item_number:0,for_sub_item_number:0,sell_price:product.sell_price,paper_menu_number:paper_menu_number)
+          end
+        end
+      end
+    end
+    DailyMenuDetail.import new_arr
+    DailyMenuDetail.import update_arr, on_duplicate_key_update:[:product_id]
+    StoreDailyMenuDetail.import update_sdmd_arr, on_duplicate_key_update:[:product_id]
+    DailyMenuDetail.where(id:delete_dmd_ids_arr).destroy_all
+    redirect_to schedule_daily_menus_path(from:params[:from],to:params[:to],pattern:params[:pattern],create_from:params[:create_from]), :success => "更新完了！"
+  end
+
   def schedule
     @from = Date.parse(params[:from])
     @to = Date.parse(params[:to])
-    @daily_menus = DailyMenu.where(start_time:@from..@to)
+    @daily_menus = DailyMenu.where(start_time:@from..@to).order(:start_time)
     @daily_menu_details = DailyMenuDetail.where(daily_menu_id:@daily_menus.ids)
     product_ids = @daily_menu_details.map{|dmd|dmd.product_id}.uniq
     @id_names = Product.where(id:product_ids).map{|product|[product.id,product.name]}.to_h
@@ -11,13 +60,25 @@ class DailyMenusController < AdminController
     @daily_menu_details.each do |dmd|
       @daily_menu_details_hash[dmd.daily_menu_id][dmd.paper_menu_number] = dmd.product_id
     end
-
-    # @create_from = Date.parse(params[:create_from])
-    # @create_to = Date.parse(params[:create_to])
-    @create_from = Date.parse('2024/01/10')
-    @create_to = Date.parse('2024/01/16')
     @products = Product.where(status:1,brand_id:111)
-    @create_daily_menus = DailyMenu.where(start_time:[@create_from..@create_to])
+    @pattern = params[:pattern]
+    if @pattern.present?
+      if @pattern == "0"
+        # 1週間分の献立作成
+        @create_from = Date.parse(params[:create_from])
+        @create_to = @create_from + 6
+        days = [@create_from..@create_to]
+      elsif @pattern == "1"
+        # 5週間分の献立作成（水曜日のみ）
+        @create_from = Date.parse(params[:create_from])
+        days = [@create_from,@create_from+7,@create_from+14,@create_from+21,@create_from+28]
+      end
+      @create_daily_menus = DailyMenu.where(start_time:days).order(:start_time)
+      @create_menu_details_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+      DailyMenuDetail.where(daily_menu_id:@create_daily_menus.ids).each do |dmd|
+        @create_menu_details_hash[dmd.daily_menu_id][dmd.paper_menu_number] = dmd.product_id
+      end
+    end
   end
 
   def barcode
@@ -513,6 +574,7 @@ class DailyMenusController < AdminController
         daily_menu_id = dms[0]
         daily_menu = DailyMenu.find(daily_menu_id)
         store_ids.each do |store_id|
+          store = Store.find(store_id)
           store_daily_menu = StoreDailyMenu.find_by(daily_menu_id:daily_menu_id,store_id:store_id)
           if store_daily_menu.present?
           else
@@ -527,7 +589,16 @@ class DailyMenusController < AdminController
             dmds = daily_menu.daily_menu_details
           end
           dmds.each do |dmd|
-            store_daily_menu_details_arr << StoreDailyMenuDetail.new(store_daily_menu_id:store_daily_menu.id,product_id:dmd.product_id,row_order:dmd.row_order)
+            sell_price = dmd.sell_price
+            if dmd.paper_menu_number == 2 ||dmd.paper_menu_number == 3
+              if store.group_id == 9
+                store_daily_menu_details_arr << StoreDailyMenuDetail.new(store_daily_menu_id:store_daily_menu.id,product_id:dmd.product_id,row_order:dmd.row_order,bento_fukusai_number:8,number:8,price:sell_price)
+              else
+                store_daily_menu_details_arr << StoreDailyMenuDetail.new(store_daily_menu_id:store_daily_menu.id,product_id:dmd.product_id,row_order:dmd.row_order,price:sell_price)
+              end
+            else
+              store_daily_menu_details_arr << StoreDailyMenuDetail.new(store_daily_menu_id:store_daily_menu.id,product_id:dmd.product_id,row_order:dmd.row_order,price:sell_price)
+            end
           end
         end
       end

@@ -17,14 +17,16 @@ button type="button" class="btn btn-default" data-toggle="modal" data-target="#s
             tbody
               - @today_after_daily_menus.each do |dm|
                 tr
-                  td = dm.start_time.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[dm.start_time.wday]})")
+                  td.date
+                    span = dm.start_time.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[dm.start_time.wday]})")
+                    input.all_box type="checkbox"
                   - @stores.each do |store|
                     td.clearfix
                       div style='float:left;'
                         - sdmds_count = 0
                         - sdmds_count = dm.store_daily_menus.find_by(store_id:store.id).store_daily_menu_details.count if dm.store_daily_menus.find_by(store_id:store.id)
                         span style="color:red;" = (dm.daily_menu_details.count - sdmds_count) if dm.daily_menu_details.count - sdmds_count > 0
-                      = check_box_tag "daily_menu_store[#{dm.id}][reflect_flag][#{store.id}]",true,false,class:'form-control',style:'height:1em;width:100px;float:left;'
+                      = check_box_tag "daily_menu_store[#{dm.id}][reflect_flag][#{store.id}]",true,false,class:'form-control reflect_check',style:'height:1em;width:100px;float:left;'
                     = hidden_field_tag "daily_menu_store[#{dm.id}][start_time]",dm.start_time
         .modal-footer
           button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
@@ -86,3 +88,17 @@ button type="button" data-toggle="modal" data-target="#create_1month_modal" clas
             = link_to dmd.product.name,product_path(dmd.product)
           td.text-right style='font-size:11px;'
             = dmd.manufacturing_number
+
+javascript:
+  $(".all_box").on("change",function(){
+    if ( $(this).is(':checked') ){
+      $(this).parents("tr").find(".reflect_check").attr("checked", true).prop("checked", true).change();
+    }else{
+      $(this).parents("tr").find(".reflect_check").attr("checked", false).prop("checked", false).change();
+    }
+  });
+    
+
+  // $(".date").on('click',function(){
+  //   $(this).parents("tr").find(".reflect_check").attr("checked", true).prop("checked", true).change();
+  // });

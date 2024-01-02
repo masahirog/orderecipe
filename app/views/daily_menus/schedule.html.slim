@@ -1,56 +1,115 @@
-.clearfix
+.col-md-12.clearfix
   = form_tag schedule_daily_menus_path, :method => 'get' do
-    .clearfix
-      = date_field_tag :from, params[:from], class:"form-control float-left",style:'width:200px;float:left;'
+    div style='width:450px;float:left;'
+      label.col-md-12 スケジュール期間
+      = date_field_tag :from, params[:from], class:"form-control",style:'width:200px;float:left;'
       div style="float:left;padding:8px;" 〜
       = date_field_tag :to, params[:to], class:"form-control",style:'width:200px;float:left;'
-      = submit_tag "更新" ,class:"btn btn-primary",style:"float:left;margin-left:10px;"
+    div style='width:200px;float:left;'
+      label 更新パターン
+      = select_tag :pattern, options_for_select([["1週間分",0],["水曜のみ（5週分）",1]],params[:pattern]),include_blank:true, class: "form-control"
+    div style='width:200px;float:left;margin-left: 20px;'
+      label style="float:left;" 更新開始日
+      = date_field_tag :create_from, params[:create_from], class:"form-control float-left"
+    div style='width:200px;float:left;margin-left: 20px;margin-top: 25px;'
+      = submit_tag "送信" ,class:"btn btn-primary"
 
 
+.col-md-12.table-responsive.schedule_table style="overflow: scroll;overscroll-behavior-x: contain;height:calc(100vh - 460px);padding:0;"
+  table.table.layout-fixed style='border-collapse:separate;'
+    colgroup
+        col class="col1"
+        - (1..28).to_a.each do |i|
+          col class="col2"
 
+    thead style="position: sticky;top:0;background-color:white;z-index:3;"
+      tr
+        th スケジュール一覧
 
-.table-responsive style='overflow: scroll;overscroll-behavior-x: contain;height:400px;'
-    table.table.layout-fixed style='border-collapse:separate;'
-      colgroup
-          col class="col1"
+        - (1..28).to_a.each do |i|
+          th style='text-align: center;' = i
+    tbody
+      - daily_menu_id = ""
+      - @daily_menus.each do |daily_menu|
+        - date = daily_menu.start_time
+        - display = "none;"
+        - bc_color = "ffffff;"
+        - class_name = "daily_menu_#{daily_menu_id}_not_wed"
+        - if date.wday == 3
+          - display = "show;"
+          - bc_color = "#ffffe0;"
+          - daily_menu_id = daily_menu.id
+          - class_name = "daily_menu_#{daily_menu_id}"
+        tr class="#{class_name}" style="display:#{display}background-color:#{bc_color}"
+          td style="background-color:#{bc_color}text-align:center;"
+            = date.strftime("%-y/%-m/%-d(#{%w(日 月 火 水 木 金 土)[date.wday]})")
+            - if date.wday == 3
+              i class="fa-solid fa-angles-down show_btn pull-right" style='cursor: pointer;margin-left: 10px;margin-top:5px;'
+              i class="fa-solid fa-angles-up hide_btn pull-right" style='display:none;cursor: pointer;margin-top:5px;'
           - (1..28).to_a.each do |i|
-            col class="col2"
-
-      thead
-        tr
-          th 日付
-          - (1..28).to_a.each do |i|
-            th = i
-      tbody
-        - @daily_menus.each do |daily_menu|
-          tr
-            td = daily_menu.start_time
-            - (1..28).to_a.each do |i|
-              td = @id_names[@daily_menu_details_hash[daily_menu.id][i]]
-
-
-= form_tag
-  .table-responsive style='overflow: scroll;overscroll-behavior-x: contain;height:400px;'
-      table.table.layout-fixed style='border-collapse:separate;'
-        colgroup
-            col class="col1"
-            - (1..28).to_a.each do |i|
-              col class="col2"
-
-        thead
-          tr
-            th 日付
-            - (1..28).to_a.each do |i|
-              th = i
-        tbody
-          - @create_daily_menus.each do |daily_menu|
-            tr
-              td = daily_menu.start_time
+            td.product_name style="cursor: pointer;font-size:0.9em;color:black;" = @id_names[@daily_menu_details_hash[daily_menu.id][i]]
+- if @pattern.present?
+  .col-md-12
+    = form_tag bulk_update_daily_menus_path do
+      .table-responsive style='overflow: scroll;overscroll-behavior-x: contain;height:300px;'
+        table.table.layout-fixed style='border-collapse:separate;'
+          colgroup
+              col class="col1"
               - (1..28).to_a.each do |i|
-                td = select_tag "daily_menu_id[#{daily_menu.id}]product_id[#{i}]", options_from_collection_for_select(@products, :id, :name),include_blank:true, class: "form-control"
+                col class="col2"
+
+          thead style="position: sticky;top:0;background-color:white;z-index:3;"
+            tr
+              th 更新欄
+              - (1..28).to_a.each do |i|
+                th class="#{i}" style='text-align: center;'
+                  = i
+                  i class="fa-solid fa-clone syn_top_product" style="margin-left: 10px;"
+          tbody
+            - @create_daily_menus.each_with_index do |daily_menu,index|
+              - date = daily_menu.start_time
+              tr class="tr_#{index} create_schedule_tr"
+                td style="background-color:white;z-index:4;" = date.strftime("%-Y/%-m/%-d(#{%w(日 月 火 水 木 金 土)[date.wday]})")
+                - (1..28).to_a.each do |i|
+                  td class="td_#{i}" style="background-color:white;"
+                    = select_tag "daily_menus[#{daily_menu.id}]paper_menu_numbers[#{i}]", options_from_collection_for_select(@products, :id, :name,@create_menu_details_hash[daily_menu.id][i]),include_blank:true, class: "form-control input_select_product"
+        = hidden_field_tag :from ,params[:from]
+        = hidden_field_tag :to,params[:to]
+        = hidden_field_tag :pattern,params[:pattern]
+        = hidden_field_tag :create_from,params[:create_from]
+        = submit_tag "更新する",class:"btn btn-success"
+
+javascript:
+  var obj = document.getElementsByClassName("schedule_table")[0];
+  var bottom = obj.scrollHeight - obj.clientHeight;
+  obj.scrollTop = bottom;
+
+  $('.show_btn').on("click",function(){
+    var class_name = $(this).parents('tr').attr("class");
+    $("."+class_name+"_not_wed").show();
+    $(this).parent().children(".hide_btn").show();
+    $(this).hide();
+  });
+  $('.hide_btn').on("click",function(){
+    var class_name = $(this).parents('tr').attr("class");
+    $("."+class_name+"_not_wed").hide();
+    $(this).parent().children(".show_btn").show();
+    $(this).hide();
+  });
+
+  $(".syn_top_product").on('click',function(){
+    var i = $(this).parent('th').attr("class");
+    var product_id = $(".tr_0").find(".td_"+i).children(".input_select_product").val();
+    $('.create_schedule_tr').not('.tr_0').find(".td_"+i).children(".input_select_product").val(product_id).trigger('change');
+  });
+
+  $('.product_name').on('click', function(){
+    var text = $(this).text();
+    navigator.clipboard.writeText(text);
+  });
 
 css:
-   .table-responsive th {
+  .table-responsive th {
     white-space: nowrap;
     background-color:white;
   }
@@ -61,12 +120,11 @@ css:
   .table th:first-child,td:first-child{
     position: sticky;
     left: 0;
-    background-color:white;
   }
   .col1{
-    width:100px;
+    width:120px;
   }
   .col2{
-    width:150px;
+    width:200px;
   }
   
