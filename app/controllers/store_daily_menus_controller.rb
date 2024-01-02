@@ -2,6 +2,16 @@ require "csv"
 class StoreDailyMenusController < AdminController
   before_action :set_store_daily_menu, only: [:show, :edit, :update, :destroy]
 
+  def ou_menu_update
+    @store_daily_menu = StoreDailyMenu.find(params[:store_daily_menu_id])
+    @store_daily_menu_details = @store_daily_menu.store_daily_menu_details
+    @hash = {}
+    @store_daily_menu_details.each do |sdmd|
+      product = sdmd.product
+      store_daily_menu_ids = StoreDailyMenu.where(store_id:@store_daily_menu.store_id).where("id < ?",@store_daily_menu.id)
+      @hash[sdmd.product_id] = product.store_daily_menu_details.where(store_daily_menu_id:store_daily_menu_ids).count
+    end
+  end
 
   def inversion_label
     @store_daily_menu = StoreDailyMenu.find(params[:store_daily_menu_id])

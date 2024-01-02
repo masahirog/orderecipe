@@ -341,14 +341,12 @@ class DailyMenusController < AdminController
     end
     @daily_menus = DailyMenu.where(start_time:@date.in_time_zone.all_month).includes(daily_menu_details:[:product])
     @today_after_daily_menus = @daily_menus.where('start_time >= ?',today).order('start_time')
-    @stores = Store.all.where(close_flag:false)
   end
 
   def show
     @total_cost = 0
     @total_sotei_uriage = 0
     @store_daily_menu_idhash = {}
-    @stores = Store.all
     @date = @daily_menu.start_time
     @tommoroww = DailyMenu.find_by(start_time:@date+1)
     @yesterday = DailyMenu.find_by(start_time:@date-1)
