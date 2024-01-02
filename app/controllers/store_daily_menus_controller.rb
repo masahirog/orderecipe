@@ -13,28 +13,34 @@ class StoreDailyMenusController < AdminController
     end
   end
 
-  def inversion_label
-    @store_daily_menu = StoreDailyMenu.find(params[:store_daily_menu_id])
-    @store_daily_menu_details = @store_daily_menu.store_daily_menu_details
-    date = @store_daily_menu.start_time
-    store_name = @store_daily_menu.store.name
-    respond_to do |format|
-      format.html
-      format.csv do
-        send_data render_to_string, filename: "#{store_name}_#{date}_反転.csv", type: :csv
-      end
-    end
-  end
-
   def label
     @store_daily_menu = StoreDailyMenu.find(params[:store_daily_menu_id])
-    @store_daily_menu_details = @store_daily_menu.store_daily_menu_details
     date = @store_daily_menu.start_time
     store_name = @store_daily_menu.store.name
+    normal_labels = []
+    inversion_labels = []
+    @store_daily_menu.store_daily_menu_details.each do |sdmd|
+      if sdmd.product.container_id.present?
+        if sdmd.product.container.inversion_label_flag == true
+          inversion_labels << sdmd
+        else
+          normal_labels << sdmd
+        end
+      else
+        normal_labels << sdmd
+      end
+    end
+    if params[:pattern] == "inversion"
+      pattern = "反転"
+      @store_daily_menu_details = inversion_labels
+    else
+      pattern = "正面"
+      @store_daily_menu_details = normal_labels
+    end
     respond_to do |format|
       format.html
       format.csv do
-        send_data render_to_string, filename: "#{store_name}_#{date}_正面.csv", type: :csv
+        send_data render_to_string, filename: "#{store_name}_#{date}_#{pattern}_.csv", type: :csv
       end
     end
   end
