@@ -128,44 +128,50 @@ class WeeklyMenu < Prawn::Document
     self.line_width = 1
     number = ["①","②",'③','④','⑤','⑥','⑦','⑧','⑨','⑩','⑪','⑫','⑬','⑭','⑮','⑯','⑰','⑱','⑲','⑳','㉑','㉒','㉓','㉔','㉕','㉖','㉗','㉘','㉙']
     left_sozai_height = left_sozai_height - 30
-    [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17].each do |i|
-      if daily_menu_details[i].product.smaregi_code.present?
-        barcode = Barby::Code128.new daily_menu_details[i].product.smaregi_code
+    [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,22].each do |i|
+      dmd = daily_menu_details[i]
+      if dmd.present?
+        product = dmd.product
+      else
+        product = Product.find(16094)
+      end
+      if product.smaregi_code.present?
+        barcode = Barby::Code128.new product.smaregi_code
         barcode_blob = Barby::PngOutputter.new(barcode).to_png
         barcode_io = StringIO.new(barcode_blob)
         barcode_io.rewind
       end
       left_sozai_height = 530 if i == 11
       if i < 11
-        image barcode_io, at: [-10,left_sozai_height], width: 40,height:20 if daily_menu_details[i].product.smaregi_code.present?
+        image barcode_io, at: [-10,left_sozai_height], width: 40,height:20 if product.smaregi_code.present?
         bounding_box([31, left_sozai_height-2], width: 26, height: 16) do
           stroke_bounds
         end
-        if daily_menu_details[i].product.warm_flag == true
+        if product.warm_flag == true
           fill_color 'ea9999'
           text_box("●",at: [63,left_sozai_height-4], width: 350, height: 40,size:12)
         end
         fill_color '000000'
         text_box(number[i-1],at: [80,left_sozai_height-4], width: 350, height: 40,size:12)
-        text_box(daily_menu_details[i].product.food_label_name,at: [95,left_sozai_height+2], width: 210, height: 20,size:10, valign: :center)
-        text_box("<font size='10'>#{daily_menu_details[i].product.sell_price}</font> 円",at: [317,left_sozai_height-5], width: 350, height: 40,size:8,inline_format: true)
+        text_box(product.food_label_name,at: [95,left_sozai_height+2], width: 210, height: 20,size:10, valign: :center)
+        text_box("<font size='10'>#{product.sell_price}</font> 円",at: [317,left_sozai_height-5], width: 350, height: 40,size:8,inline_format: true)
         text_box("税込",at: [350,left_sozai_height], width: 350, height: 40,size:6)
-        text_box("<font size='8'>#{daily_menu_details[i].product.tax_including_sell_price}</font> 円",at: [350,left_sozai_height-8], width: 350, height: 40,size:6,inline_format: true)
+        text_box("<font size='8'>#{product.tax_including_sell_price}</font> 円",at: [350,left_sozai_height-8], width: 350, height: 40,size:6,inline_format: true)
       else
-        image barcode_io, at: [395,left_sozai_height], width: 40,height:20 if daily_menu_details[i].product.smaregi_code.present?
+        image barcode_io, at: [395,left_sozai_height], width: 40,height:20 if product.smaregi_code.present?
         bounding_box([436, left_sozai_height-2], width: 26, height: 16) do
           stroke_bounds
         end
-        if daily_menu_details[i].product.warm_flag == true
+        if product.warm_flag == true
           fill_color 'ea9999'
           text_box("●",at: [468,left_sozai_height-4], width: 350, height: 40,size:12)
         end
         fill_color '000000'
         text_box(number[i-1],at: [485,left_sozai_height-4], width: 30, height: 40,size:12)
-        text_box(daily_menu_details[i].product.food_label_name,at: [500,left_sozai_height+2], width: 210, height: 20,size:10, valign: :center)
-        text_box("<font size='10'>#{daily_menu_details[i].product.sell_price}</font> 円",at: [722,left_sozai_height-5], width: 350, height: 40,size:8,inline_format: true)
+        text_box(product.food_label_name,at: [500,left_sozai_height+2], width: 210, height: 20,size:10, valign: :center)
+        text_box("<font size='10'>#{product.sell_price}</font> 円",at: [722,left_sozai_height-5], width: 350, height: 40,size:8,inline_format: true)
         text_box("税込",at: [755,left_sozai_height], width: 350, height: 40,size:6)
-        text_box("<font size='8'>#{daily_menu_details[i].product.tax_including_sell_price}</font> 円",at: [755,left_sozai_height-8], width: 350, height: 40,size:6,inline_format: true)
+        text_box("<font size='8'>#{product.tax_including_sell_price}</font> 円",at: [755,left_sozai_height-8], width: 350, height: 40,size:6,inline_format: true)
       end
       left_sozai_height -= 32
     end
@@ -470,6 +476,7 @@ class WeeklyMenu < Prawn::Document
 
 
   def a3_ue(daily_menu,from,to,daily_menu_details)
+
     stroke do
       fill_color '000000'
       fill_rounded_rectangle [-5,525], 770, 80, 4
@@ -538,33 +545,40 @@ class WeeklyMenu < Prawn::Document
     stroke_color 'a3a3a3'
     number = ["①","②",'③','④','⑤','⑥','⑦','⑧','⑨','⑩','⑪','⑫','⑬','⑭','⑮','⑯','⑰','⑱','⑲','⑳','㉑','㉒','㉓','㉔','㉕','㉖','㉗','㉘','㉙']
     left_sozai_height = left_sozai_height - 30
-    [1,2,3,4,12,13,14,15,16,17].each do |i|
+    [1,2,3,4,12,13,14,15,16,22].each do |i|
+      dmd = daily_menu_details[i]
+      if dmd.present?
+        product = dmd.product
+      else
+        product = Product.find(16094)
+      end
+
       left_sozai_height = 410 if i == 12
       if i < 12
-        if daily_menu_details[i].product.warm_flag == true
+        if product.warm_flag == true
           fill_color 'ea9999'
           text_box("●",at: [-5,left_sozai_height-8], width: 350, height: 40,size:14)
         end
         fill_color '000000'
         text_box(number[i-1],at: [15,left_sozai_height-8], width: 350, height: 40,size:14)
-        text_box(daily_menu_details[i].product.food_label_name,at: [35,left_sozai_height], width: 250, height: 30,size:14, valign: :center)
-        text_box("#{daily_menu_details[i].product.sell_price}<font size='10'>円</font>",inline_format: true,at: [310,left_sozai_height-5], width: 350, height: 40,size:14)
+        text_box(product.food_label_name,at: [35,left_sozai_height], width: 250, height: 30,size:14, valign: :center)
+        text_box("#{product.sell_price}<font size='10'>円</font>",inline_format: true,at: [310,left_sozai_height-5], width: 350, height: 40,size:14)
         text_box("税込",at: [350,left_sozai_height-5], width: 350, height: 40,size:6)
-        text_box("#{daily_menu_details[i].product.tax_including_sell_price}円",at: [350,left_sozai_height-12], width: 350, height: 40,size:8)
-        text_box(daily_menu_details[i].product.contents,at: [40,left_sozai_height-30], width: 320, height: 30,size:9, valign: :center)
+        text_box("#{product.tax_including_sell_price}円",at: [350,left_sozai_height-12], width: 350, height: 40,size:8)
+        text_box(product.contents,at: [40,left_sozai_height-30], width: 320, height: 30,size:9, valign: :center)
       else
         
-        if daily_menu_details[i].product.warm_flag == true
+        if product.warm_flag == true
           fill_color 'ea9999'
           text_box("●",at: [410,left_sozai_height-8], width: 350, height: 40,size:14)
         end
         fill_color '000000'
         text_box(number[i-1],at: [430,left_sozai_height-8], width: 30, height: 40,size:14)
-        text_box(daily_menu_details[i].product.food_label_name,at: [450,left_sozai_height], width: 250, height: 30,size:14, valign: :center)
-        text_box("#{daily_menu_details[i].product.sell_price}<font size='10'>円</font>",inline_format: true,at: [705,left_sozai_height-5], width: 350, height: 40,size:14)
+        text_box(product.food_label_name,at: [450,left_sozai_height], width: 250, height: 30,size:14, valign: :center)
+        text_box("#{product.sell_price}<font size='10'>円</font>",inline_format: true,at: [705,left_sozai_height-5], width: 350, height: 40,size:14)
         text_box("税込",at: [745,left_sozai_height-5], width: 350, height: 40,size:6)
-        text_box("#{daily_menu_details[i].product.tax_including_sell_price}円",at: [745,left_sozai_height-12], width: 350, height: 40,size:8)
-        text_box(daily_menu_details[i].product.contents,at: [455,left_sozai_height-30], width: 320, height: 30,size:9, valign: :center)
+        text_box("#{product.tax_including_sell_price}円",at: [745,left_sozai_height-12], width: 350, height: 40,size:8)
+        text_box(product.contents,at: [455,left_sozai_height-30], width: 320, height: 30,size:9, valign: :center)
       end
       left_sozai_height -= 70
     end
@@ -576,17 +590,23 @@ class WeeklyMenu < Prawn::Document
     left_sozai_height = 520
     [5,6,7,8,9,10,11].each do |i|
       left_sozai_height = 410 if i == 12
-      if daily_menu_details[i].product.warm_flag == true
+      dmd = daily_menu_details[i]
+      if dmd.present?
+        product = dmd.product
+      else
+        product = Product.find(16094)
+      end
+      if product.warm_flag == true
         fill_color 'ea9999'
         text_box("●",at: [-5,left_sozai_height-8], width: 350, height: 40,size:14)
       end
       fill_color '000000'
       text_box(number[i-1],at: [15,left_sozai_height-8], width: 350, height: 40,size:14)
-      text_box(daily_menu_details[i].product.food_label_name,at: [35,left_sozai_height], width: 250, height: 30,size:14, valign: :center)
-      text_box("#{daily_menu_details[i].product.sell_price}<font size='10'>円</font>",inline_format: true,at: [310,left_sozai_height-5], width: 350, height: 40,size:14)
+      text_box(product.food_label_name,at: [35,left_sozai_height], width: 250, height: 30,size:14, valign: :center)
+      text_box("#{product.sell_price}<font size='10'>円</font>",inline_format: true,at: [310,left_sozai_height-5], width: 350, height: 40,size:14)
       text_box("税込",at: [350,left_sozai_height-5], width: 350, height: 40,size:6)
-      text_box("#{daily_menu_details[i].product.tax_including_sell_price}円",at: [350,left_sozai_height-12], width: 350, height: 40,size:8)
-      text_box(daily_menu_details[i].product.contents,at: [40,left_sozai_height-30], width: 320, height: 30,size:9, valign: :center)
+      text_box("#{product.tax_including_sell_price}円",at: [350,left_sozai_height-12], width: 350, height: 40,size:8)
+      text_box(product.contents,at: [40,left_sozai_height-30], width: 320, height: 30,size:9, valign: :center)
       left_sozai_height -= 65
     end
 

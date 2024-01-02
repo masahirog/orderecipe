@@ -105,7 +105,6 @@ class DailyMenusController < AdminController
         @bento_menus[dmd.daily_menu.start_time][dmd.paper_menu_number] = dmd.product
       end
     end
-
     respond_to do |format|
       format.html
       format.pdf do
