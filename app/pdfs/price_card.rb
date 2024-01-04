@@ -36,7 +36,7 @@ class PriceCard < Prawn::Document
         text_box("（税込 #{product.tax_including_sell_price} 円）",at: [420, h - 153], width: 100, height: 40,size:11)
 
         font "vendor/assets/fonts/ipaexg.ttf"
-        if product.product_category == "ドリンク"
+        if product.product_category == "スイーツ・ドリンク"
           fill_color 'F2684A'
           fill_rounded_rectangle [30,h-110], 54, 54, 27
           fill_color 'ffffff'
