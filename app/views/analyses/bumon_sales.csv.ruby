@@ -13,10 +13,14 @@ CSV.generate do |csv|
     end
     csv_data =[date,sum]
     @bumon.each do |data|
-      if @pattern == "0"
-        csv_data << @hash[analysis.id][data[0].to_i].ex_tax_sales_amount if @hash[analysis.id][data[0].to_i].present?
+      if @hash[analysis.id][data[0].to_i].present?
+        if @pattern == "0"
+          csv_data << @hash[analysis.id][data[0].to_i].ex_tax_sales_amount
+        else
+          csv_data << @hash[analysis.id][data[0].to_i].sales_number
+        end
       else
-        csv_data << @hash[analysis.id][data[0].to_i].sales_number if @hash[analysis.id][data[0].to_i].present?
+        csv_data << 0
       end
     end
     csv << csv_data
