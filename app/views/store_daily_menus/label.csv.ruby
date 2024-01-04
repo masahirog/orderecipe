@@ -1,6 +1,5 @@
 require 'csv'
-bom = "\uFEFF"
-CSV.generate(bom) do |csv|
+CSV.generate(encoding: Encoding::SJIS, row_sep: "\r\n", force_quotes: true) do |csv|
   csv_column_names = %w(商品名 税抜き 税込み バーコード)
   csv << csv_column_names
   @store_daily_menu_details.each do |sdmd|
