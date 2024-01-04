@@ -1,5 +1,5 @@
 require 'csv'
-bom = %w[EF BB BF].map { |e| e.hex.chr }.join
+bom = "\uFEFF"
 CSV.generate(bom) do |csv|
   csv_column_names = %w(商品名 税抜き 税込み バーコード)
   csv << csv_column_names
