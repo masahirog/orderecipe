@@ -1,6 +1,33 @@
 class AnalysesController < AdminController
   before_action :set_analysis, only: %i[ show edit update destroy ]
+  def bumon_sales
+    @to = Date.today
+    @from = @to - 30
+    @from = params[:from].to_date if params[:from]
+    @to = params[:to].to_date if params[:to]
+    @dates =(@from..@to).to_a
+    @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    @bumon = {"1"=>"惣菜","2"=>"ご飯・丼","3"=>"ドリ・デザ","4"=>"備品","5"=>"お弁当","6"=>"オードブル","7"=>"スープ","8"=>"惣菜（仕入れ）","9"=>"レジ修正","11"=>"オプション","14"=>"野菜","15"=>"物産","16"=>"予約ギフト"}
+    if params[:store_id]
+      @store = Store.find(params[:store_id])
+      @pattern = params[:pattern]
+      @analyses = Analysis.where(date:@dates).where(store_id:@store.id).order(:date)
+      AnalysisCategory.where(analysis_id:@analyses.ids).each do |ac|
+        @hash[ac.analysis_id][ac.smaregi_bumon_id] = ac
+      end
+    else
+      @store = []
+      @analyses = []
+      @analysis_categories = []
+    end
 
+    respond_to do |format|
+      format.html
+      format.csv do
+        send_data render_to_string, filename: "#{@store.id}_analysis_category.csv", type: :csv
+      end
+    end
+  end
   def loss
     @stores = Store.where(group_id:current_user.group_id).where.not(id:39)
     if params[:stores]

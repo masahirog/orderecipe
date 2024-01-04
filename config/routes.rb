@@ -149,6 +149,7 @@ Rails.application.routes.draw do
   resources :analysis_products
   resources :analyses do
     collection do
+      get :bumon_sales
       get :loss
       post :loss_update
       get :monthly_timezone

@@ -1,0 +1,44 @@
+h3 部門販売データ
+= form_tag bumon_sales_analyses_path(format: :csv), :method => 'get' do
+	= hidden_field_tag :store_id,params[:store_id]
+	= hidden_field_tag :pattern,params[:pattern]
+	= hidden_field_tag :from,params[:from]
+	= hidden_field_tag :to,params[:to]
+	= submit_tag "CSV" ,class:"btn btn-primary pull-right"
+
+= form_tag bumon_sales_analyses_path, :method => 'get' do
+	.clearfix
+		label style='float:left;' 店舗選択
+		= select_tag :store_id, options_from_collection_for_select(@stores, :id, :name,params[:store_id]),include_blank: true, class: "form-control",style:'width:200px;float:left;'
+		label style='float:left;' 項目選択
+		= select_tag :pattern, options_for_select([["金額",0],["アイテム数",1]],params[:pattern]), class: "form-control",style:'width:200px;float:left;'
+
+
+		label style='float:left;margin-right:10px;' 表示期間
+		= date_field_tag :from, @from, class:"form-control float-left",style:'width:200px;float:left;'
+		div style="float:left;padding:8px;" 〜
+		= date_field_tag :to, @to, class:"form-control",style:'width:200px;float:left;'
+		= submit_tag "絞り込み" ,class:"btn btn-primary"
+
+table.table
+	thead
+		tr
+			th 日付
+			th 合計
+			- @bumon.each do |data|
+				th = "#{data[1]}(#{data[0]})"
+	tbody
+		- @analyses.each do |analysis|
+			tr
+				td = analysis.date
+				td
+					- if @pattern == "0"
+						= @hash[analysis.id].values.map{|ac|ac.ex_tax_sales_amount}.sum
+					- else
+						= @hash[analysis.id].values.map{|ac|ac.sales_number}.sum
+				- @bumon.each do |data|
+					td
+						- if @pattern == "0"
+							= @hash[analysis.id][data[0].to_i].ex_tax_sales_amount if @hash[analysis.id][data[0].to_i].present?
+						- else
+							= @hash[analysis.id][data[0].to_i].sales_number if @hash[analysis.id][data[0].to_i].present?
