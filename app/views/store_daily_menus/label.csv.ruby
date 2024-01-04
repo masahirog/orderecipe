@@ -1,5 +1,6 @@
 require 'csv'
-CSV.generate do |csv|
+bom = %w[EF BB BF].map { |e| e.hex.chr }.join
+CSV.generate(bom) do |csv|
   csv_column_names = %w(商品名 税抜き 税込み バーコード)
   csv << csv_column_names
   @store_daily_menu_details.each do |sdmd|
