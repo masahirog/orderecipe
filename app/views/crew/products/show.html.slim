@@ -1,4 +1,5 @@
-h3 = @product.name
+h3 = "#{@product.food_label_name}"
+h4 = "（#{@product.name}）"
 .box26.clearfix
   span class="box-title" SKY情報
   .col-md-12
@@ -13,6 +14,16 @@ h3 = @product.name
   = link_to "編集する",edit_crew_product_path(@product),class:'btn btn-primary pull-right'
 .box26.clearfix
   span class="box-title" べじはん情報
+  .col-md-12
+    label 温め
+
+    - if @product.warm_flag == true
+      p あり
+    - else
+      p 無し
+  .col-md-12
+    label お客様用一言文言
+    = text_url_to_link(simple_format(h(@product.contents))).html_safe
   .col-md-12
     label 商品特徴
     = text_url_to_link(simple_format(h(@product.description))).html_safe

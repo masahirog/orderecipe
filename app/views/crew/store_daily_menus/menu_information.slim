@@ -1,0 +1,17 @@
+h3 = "#{@store_daily_menu.start_time.strftime("%-Y/%-m/%-d(#{%w(日 月 火 水 木 金 土)[@store_daily_menu.start_time.wday]})")}からのメニュー"
+table.table
+	thead
+		tr
+			th 過去販売
+			th 商品名
+			th 温め
+			th 説明文
+	tbody
+		- @store_daily_menu_details.each do |sdmd|
+			- bgcolor = "#ffffff"
+			- bgcolor = "#ffc0cb" if @hash[sdmd.product_id] < 3
+			tr style="background-color:#{bgcolor};"
+				td = @hash[sdmd.product_id]
+				td = link_to sdmd.product.food_label_name,crew_product_path(sdmd.product)
+				td = "●" if sdmd.product.warm_flag == true
+				td = sdmd.product.contents

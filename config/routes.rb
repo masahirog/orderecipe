@@ -16,7 +16,11 @@ Rails.application.routes.draw do
   namespace :crew do
     root 'store_daily_menus#index'
     get '/products/ikkatsu' => 'products#ikkatsu'
-    resources :store_daily_menus
+    resources :store_daily_menus do
+      collection do
+        get :menu_information
+      end
+    end
     resources :stores
     resources :products
     resources :orders do

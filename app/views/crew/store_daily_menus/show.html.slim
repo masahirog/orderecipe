@@ -5,6 +5,7 @@
   label 予約：
   span style='color:red;' = "#{@store_daily_menu.event}"
 
+= link_to "メニュー紹介",menu_information_crew_store_daily_menus_path(store_daily_menu_id:@store_daily_menu.id),class:'btn btn-default pull-right',style:'margin-right:20px;'
 table.table.table-list
   thead
     tr
