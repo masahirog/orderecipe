@@ -15,7 +15,7 @@ tr.nested-fields.item.daily_menu_detail_tr class=class_name
   td
     = f.collection_select :product_id, @products, :id, :name, {include_blank:true},class:'form-control input_select_product'
   td
-    = f.select :paper_menu_number,options_for_select([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,23,24,25],f.object.paper_menu_number),{include_blank:true}, class: "form-control"
+    = f.select :paper_menu_number,options_for_select((1..30).to_a,f.object.paper_menu_number),{include_blank:true}, class: "form-control"
   td = f.number_field :sell_price, class: 'form-control', min: 0
   td.bejihan_sozai_flag_td
   - @store_daily_menus.each do |sdm_hash|
