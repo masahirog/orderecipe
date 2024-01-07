@@ -11,14 +11,22 @@ class DailyMenusController < AdminController
       @dmd_hash[dmd.daily_menu_id.to_s][dmd.paper_menu_number.to_s] = dmd if dmd.paper_menu_number.present?
     end
     daily_menu_ids.each do |daily_menu_id|
-      params[:daily_menus][daily_menu_id]["paper_menu_numbers"].each do |num_product_id|
-        paper_menu_number = num_product_id[0]
-        product_id = num_product_id[1]
+      params[:daily_menus][daily_menu_id]["paper_menu_numbers"].each do |data|
+        paper_menu_number = data[0]
+        product_id = data[1]["product_id"]
+        sell_price = data[1]["sell_price"]
+        if data[1]["change_flag"]=='true'
+          change_flag = true
+        else
+          change_flag = false
+        end
         daily_menu_detail = @dmd_hash[daily_menu_id][paper_menu_number]
         if daily_menu_detail.present?
           if product_id.present?
             product_id_was = daily_menu_detail.product_id
             daily_menu_detail.product_id = product_id
+            daily_menu_detail.sell_price = sell_price
+            daily_menu_detail.change_flag = change_flag
             update_arr << daily_menu_detail
             if product_id_was == product_id
             else
@@ -29,7 +37,6 @@ class DailyMenusController < AdminController
                 update_sdmd_arr << sdmd
               end
             end
-
           else
             delete_dmd_ids_arr << daily_menu_detail.id
           end
@@ -37,13 +44,13 @@ class DailyMenusController < AdminController
           if product_id.present?
             product = Product.find(product_id)
             new_arr << DailyMenuDetail.new(daily_menu_id:daily_menu_id,product_id:product_id,manufacturing_number:0,cost_price_per_product:product.cost_price,
-              total_cost_price:0,for_single_item_number:0,for_sub_item_number:0,sell_price:product.sell_price,paper_menu_number:paper_menu_number)
+              total_cost_price:0,for_single_item_number:0,for_sub_item_number:0,sell_price:sell_price,paper_menu_number:paper_menu_number,change_flag:change_flag)
           end
         end
       end
     end
     DailyMenuDetail.import new_arr
-    DailyMenuDetail.import update_arr, on_duplicate_key_update:[:product_id]
+    DailyMenuDetail.import update_arr, on_duplicate_key_update:[:product_id,:sell_price,:change_flag]
     StoreDailyMenuDetail.import update_sdmd_arr, on_duplicate_key_update:[:product_id]
     DailyMenuDetail.where(id:delete_dmd_ids_arr).destroy_all
     redirect_to schedule_daily_menus_path(from:params[:from],to:params[:to],pattern:params[:pattern],create_from:params[:create_from]), :success => "更新完了！"
@@ -76,7 +83,9 @@ class DailyMenusController < AdminController
       @create_daily_menus = DailyMenu.where(start_time:days).order(:start_time)
       @create_menu_details_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
       DailyMenuDetail.where(daily_menu_id:@create_daily_menus.ids).each do |dmd|
-        @create_menu_details_hash[dmd.daily_menu_id][dmd.paper_menu_number] = dmd.product_id
+        @create_menu_details_hash[dmd.daily_menu_id][dmd.paper_menu_number]["product_id"] = dmd.product_id
+        @create_menu_details_hash[dmd.daily_menu_id][dmd.paper_menu_number]["sell_price"] = dmd.sell_price
+        @create_menu_details_hash[dmd.daily_menu_id][dmd.paper_menu_number]["change_flag"] = dmd.change_flag
       end
     end
   end

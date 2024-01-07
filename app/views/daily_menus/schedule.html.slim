@@ -72,12 +72,19 @@
                 td style="background-color:white;z-index:4;" = date.strftime("%-Y/%-m/%-d(#{%w(日 月 火 水 木 金 土)[date.wday]})")
                 - (1..28).to_a.each do |i|
                   td class="td_#{i}" style="background-color:white;"
-                    = select_tag "daily_menus[#{daily_menu.id}]paper_menu_numbers[#{i}]", options_from_collection_for_select(@products, :id, :name,@create_menu_details_hash[daily_menu.id][i]),include_blank:true, class: "form-control input_select_product"
+                    = select_tag "daily_menus[#{daily_menu.id}]paper_menu_numbers[#{i}][product_id]", options_from_collection_for_select(@products, :id, :name,@create_menu_details_hash[daily_menu.id][i]['product_id']),include_blank:true, class: "form-control input_select_product"
+                    br
+                    .clearfix style='margin-top: 3px;'
+                      = number_field_tag "daily_menus[#{daily_menu.id}]paper_menu_numbers[#{i}][sell_price]",@create_menu_details_hash[daily_menu.id][i]["sell_price"], class: "form-control",style:'width:100px;float:left;'
+                      - if @create_menu_details_hash[daily_menu.id][i]["change_flag"].present?
+                        = check_box_tag "daily_menus[#{daily_menu.id}]paper_menu_numbers[#{i}][change_flag]",true,@create_menu_details_hash[daily_menu.id][i]["change_flag"], class: "form-control",style:'width:70px;height:25px;float:left;margin:5px 0;'
+                      - else
+                        = check_box_tag "daily_menus[#{daily_menu.id}]paper_menu_numbers[#{i}][change_flag]",true,false, class: "form-control",style:'width:70px;height:25px;float:left;margin:5px 0;'
         = hidden_field_tag :from ,params[:from]
         = hidden_field_tag :to,params[:to]
         = hidden_field_tag :pattern,params[:pattern]
         = hidden_field_tag :create_from,params[:create_from]
-        = submit_tag "更新する",class:"btn btn-success"
+      = submit_tag "更新する",class:"btn btn-success"
 
 javascript:
   var obj = document.getElementsByClassName("schedule_table")[0];

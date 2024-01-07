@@ -18,6 +18,7 @@ class CreateDailyMenuDetails < ActiveRecord::Migration[4.2][5.2]
       t.integer :sell_price, default: 0, null: false
       t.integer :paper_menu_number
       t.index [:daily_menu_id,:paper_menu_number], unique: true
+      t.boolean :change_flag, default: 0, null: false
     end
   end
 end
