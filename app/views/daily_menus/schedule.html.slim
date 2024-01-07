@@ -42,12 +42,17 @@
           - class_name = "daily_menu_#{daily_menu_id}"
         tr class="#{class_name}" style="display:#{display}background-color:#{bc_color}"
           td style="background-color:#{bc_color}text-align:center;"
-            = date.strftime("%-y/%-m/%-d(#{%w(日 月 火 水 木 金 土)[date.wday]})")
+            = link_to date.strftime("%-y/%-m/%-d(#{%w(日 月 火 水 木 金 土)[date.wday]})"),daily_menu,target:"_blank"
             - if date.wday == 3
               i class="fa-solid fa-angles-down show_btn pull-right" style='cursor: pointer;margin-left: 10px;margin-top:5px;'
               i class="fa-solid fa-angles-up hide_btn pull-right" style='display:none;cursor: pointer;margin-top:5px;'
           - (1..28).to_a.each do |i|
-            td.product_name style="cursor: pointer;font-size:0.9em;color:black;" = @id_names[@daily_menu_details_hash[daily_menu.id][i]]
+            td.product_name style="cursor: pointer;font-size:0.9em;color:black;" 
+              span = @id_names[@daily_menu_details_hash[daily_menu.id][i]]
+              - if @daily_menu_details_hash[daily_menu.id][i].present?
+                = link_to product_path(id:@daily_menu_details_hash[daily_menu.id][i]),target:"_blank"
+                  i class="fa-solid fa-up-right-from-square" style='cursor: pointer;margin-left: 10px;'
+
 - if @pattern.present?
   .col-md-12
     = form_tag bulk_update_daily_menus_path do
@@ -65,21 +70,23 @@
                 th class="#{i}" style='text-align: center;'
                   = i
                   i class="fa-solid fa-clone syn_top_product" style="margin-left: 10px;"
+                  input.all_check type="checkbox" style="margin-left: 10px;"
+
           tbody
             - @create_daily_menus.each_with_index do |daily_menu,index|
               - date = daily_menu.start_time
               tr class="tr_#{index} create_schedule_tr"
-                td style="background-color:white;z-index:4;" = date.strftime("%-Y/%-m/%-d(#{%w(日 月 火 水 木 金 土)[date.wday]})")
+                td style="background-color:white;z-index:4;" = link_to date.strftime("%-Y/%-m/%-d(#{%w(日 月 火 水 木 金 土)[date.wday]})"),daily_menu,target:"_blank"
                 - (1..28).to_a.each do |i|
                   td class="td_#{i}" style="background-color:white;"
                     = select_tag "daily_menus[#{daily_menu.id}]paper_menu_numbers[#{i}][product_id]", options_from_collection_for_select(@products, :id, :name,@create_menu_details_hash[daily_menu.id][i]['product_id']),include_blank:true, class: "form-control input_select_product"
                     br
                     .clearfix style='margin-top: 3px;'
-                      = number_field_tag "daily_menus[#{daily_menu.id}]paper_menu_numbers[#{i}][sell_price]",@create_menu_details_hash[daily_menu.id][i]["sell_price"], class: "form-control",style:'width:100px;float:left;'
+                      = number_field_tag "daily_menus[#{daily_menu.id}]paper_menu_numbers[#{i}][sell_price]",@create_menu_details_hash[daily_menu.id][i]["sell_price"], class: "sell_price",style:'width:70px;float:left;'
                       - if @create_menu_details_hash[daily_menu.id][i]["change_flag"].present?
-                        = check_box_tag "daily_menus[#{daily_menu.id}]paper_menu_numbers[#{i}][change_flag]",true,@create_menu_details_hash[daily_menu.id][i]["change_flag"], class: "form-control",style:'width:70px;height:25px;float:left;margin:5px 0;'
+                        = check_box_tag "daily_menus[#{daily_menu.id}]paper_menu_numbers[#{i}][change_flag]",true,@create_menu_details_hash[daily_menu.id][i]["change_flag"], class: "change_flag_check",style:'width:70px;height:15px;float:left;margin:5px 0;'
                       - else
-                        = check_box_tag "daily_menus[#{daily_menu.id}]paper_menu_numbers[#{i}][change_flag]",true,false, class: "form-control",style:'width:70px;height:25px;float:left;margin:5px 0;'
+                        = check_box_tag "daily_menus[#{daily_menu.id}]paper_menu_numbers[#{i}][change_flag]",true,false, class: "change_flag_check",style:'width:70px;height:15px;float:left;margin:5px 0;'
         = hidden_field_tag :from ,params[:from]
         = hidden_field_tag :to,params[:to]
         = hidden_field_tag :pattern,params[:pattern]
@@ -110,10 +117,35 @@ javascript:
     $('.create_schedule_tr').not('.tr_0').find(".td_"+i).children(".input_select_product").val(product_id).trigger('change');
   });
 
+  $(".all_check").on("change",function(){
+    var i = $(this).parent('th').attr("class");
+    var prop = $(this).prop('checked');
+    $('.create_schedule_tr').find(".td_"+i).find(".change_flag_check").prop('checked',prop);
+  });
+
+
   $('.product_name').on('click', function(){
     var text = $(this).text();
     navigator.clipboard.writeText(text);
   });
+
+
+  $(".input_select_product").on("change",function(){
+    var product_id = parseInt($(this).val());
+    var td = $(this).parent('td').attr("class");
+    var tr = $(this).parents('tr').attr("class").split(' ')[0];
+    $.ajax({
+      url: "/products/get_product",
+      data: { product_id : product_id },
+      dataType: "json",
+      async: false
+    })
+    .done(function(data){
+      console.log(tr);
+      $("."+tr).children("."+td).find(".sell_price").val(data.sell_price);
+    });
+  });
+
 
 css:
   .table-responsive th {

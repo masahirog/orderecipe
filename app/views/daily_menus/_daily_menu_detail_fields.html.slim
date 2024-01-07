@@ -17,7 +17,8 @@ tr.nested-fields.item.daily_menu_detail_tr class=class_name
   td
     = f.select :paper_menu_number,options_for_select((1..30).to_a,f.object.paper_menu_number),{include_blank:true}, class: "form-control"
   td = f.number_field :sell_price, class: 'form-control', min: 0
-  td.bejihan_sozai_flag_td
+  td
+    = f.check_box :change_flag,class:'form-control',style:'width:30px;'
   - @store_daily_menus.each do |sdm_hash|
     td = sdm_hash[1][f.object.product_id][:number] if sdm_hash[1][f.object.product_id]
   td
