@@ -38,10 +38,6 @@ button type="button" class="btn btn-default" data-toggle="modal" data-target="#l
         = link_to "ラベル反転", label_store_daily_menus_path(store_daily_menu_id:@store_daily_menu.id,pattern:"inversion" ,format:'csv'), method: :post, class: "btn btn-default",style:'margin-left:20px;'
       .modal-footer
         button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
-= link_to "O&U",ou_menu_update_store_daily_menus_path(store_daily_menu_id:@store_daily_menu.id),class:'btn btn-default pull-right',style:'margin-right:20px;'
-
-
-= link_to "商品紹介",description_store_daily_menus_path(store_daily_menu_id:@store_daily_menu.id,format:'pdf'),class:'btn btn-default pull-right',style:'margin-right:20px;'
 
 
 = link_to "盛付準備", ikkatsu_store_daily_menus_path(id:@store_daily_menu.id),class:'btn btn-success pull-right',style:'margin-right:20px;'

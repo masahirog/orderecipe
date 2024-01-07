@@ -1,4 +1,3 @@
-
 div
   - if @yesterday
     = link_to "前日",@yesterday
@@ -9,8 +8,6 @@ div
     = link_to "翌日",@tommoroww
   - else
     = link_to "翌日",new_daily_menu_path(start_time:@date+1)
-
-
 
 .form-group.clearfix
   = link_to "編集する", edit_daily_menu_path(@daily_menu),class:'btn btn-primary',style:'float:left;margin-left:20px;margin-top:10px;'
@@ -148,47 +145,6 @@ div
   / = link_to '惣菜数の一括変更', daily_menu_path(@daily_menu),class:"btn btn-primary",style:'float:right;margin-top:10px;margin-left:10px;', data: { confirm: "献立を削除してよろしいですか？" }
   = link_to "チェックリスト",cook_check_daily_menus_path(id:@daily_menu.id, :format => :pdf),class:"btn btn-default",:target=>"_blank",style:'margin-left:10px;margin-top:10px;'
   / = link_to "バーコード",barcode_daily_menus_path(daily_menu_id:@daily_menu.id,format:'pdf'),class:'btn btn-default',style:'margin-left:20px;margin-top:10px;',:target=>"_blank"
-
-  button type="button" class="btn btn-default" data-toggle="modal" data-target="#barcode" style='margin-top:10px;margin-left:10px;' メニュー表
-  #barcode.modal.fade tabindex="-1"
-    = form_tag barcode_daily_menus_path(format: :pdf),:target => '_blank', :method => 'get' do
-      = hidden_field_tag :daily_menu_id,@daily_menu.id
-      .modal-dialog
-        .modal-content
-          .modal-header
-            h4.modal-title 選択
-          .modal-body.clearfix
-            .col-md-12
-              label メニュータイプ
-              br
-              = select_tag :menu_type, options_for_select([["週間メニュー",0],["弁当",1]]), class: "form-control",style:'width:200px;float:left;'
-            br
-            .col-md-12
-              label 店舗
-              br
-              = select_tag :store_id, options_from_collection_for_select(current_user.group.stores, :id, :name,params[:store_id]), class: "form-control",style:'width:200px;float:left;'
-          .modal-footer
-            = submit_tag "更新" ,class:"btn btn-primary"
-            button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
-
-
-  button type="button" class="btn btn-default" data-toggle="modal" data-target="#pricecard" style='margin-top:10px;margin-left:10px;' プライスカード
-  #pricecard.modal.fade tabindex="-1"
-    = form_tag price_card_products_path(format: :pdf),:target => '_blank', :method => 'get' do
-      .modal-dialog
-        .modal-content
-          .modal-header
-            h4.modal-title 商品選択
-          .modal-body.clearfix
-            - [1,2,3,4].each do |i|
-              .col-md-12
-                label = i
-                br
-                = select_tag "product_ids[#{i}]", options_from_collection_for_select(@products, :id, :name), class: "form-control",include_blank:true
-              br
-          .modal-footer
-            = submit_tag "送信" ,class:"btn btn-primary"
-            button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
 
 
 

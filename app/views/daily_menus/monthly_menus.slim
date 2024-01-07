@@ -1,0 +1,11 @@
+h1 = "#{@date.month}月の献立"
+= month_calendar events: @daily_menus do |start_time, daily_menu|
+  div style='font-size:16px;'
+    = link_to start_time.strftime("%-m月%-d日"), day_menus_daily_menus_path(start_time:start_time)
+  - if daily_menu[0]
+    table.table
+      - daily_menu[0].daily_menu_details.each do |dmd|
+        tr
+          td style='font-size: 0.9em;'
+            = dmd.product.name
+

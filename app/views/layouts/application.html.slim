@@ -81,11 +81,11 @@ html lang="ja"
                       span.caret
                     ul.dropdown-menu role="menu" style='width:250px;'
                       li = link_to '店舗へのインフォメーション',to_store_messages_path
+                      li = link_to 'メニュー表',monthly_menus_daily_menus_path
                       li = link_to '販売レポート',select_store_sales_reports_path
                       li = link_to "お客さまの声",customer_opinions_path
                       li = link_to "試食コメント",weekly_tastings_path(date:@today)
                       li = link_to 'シフト',shifts_path(date:@today,group_id:current_user.group_id,store_type:0)
-                      li = link_to "ブラックボード",black_board_products_path(date:@today)
                       li = link_to 'BejihanBook',manual_directories_path
 
                   li.dropdown

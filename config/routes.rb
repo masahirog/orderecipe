@@ -264,6 +264,9 @@ Rails.application.routes.draw do
   end
   resources :daily_menus do
     collection do
+      get :description
+      get :monthly_menus
+      get :day_menus
       post :bulk_update
       get :schedule
       get :barcode
@@ -323,7 +326,6 @@ Rails.application.routes.draw do
       get :ou_menu_update
       get :budget
       post :budget_update
-      get :description
       get :ikkatsu
       post :input_multi_number
       get :input_manufacturing_number

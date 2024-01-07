@@ -1,5 +1,41 @@
 class DailyMenusController < AdminController
   before_action :set_daily_menu, only: [:show, :update, :destroy]
+  def description
+    @daily_menu = DailyMenu.find(params[:daily_menu_id])
+    respond_to do |format|
+      format.html
+      format.pdf do
+        pdf = DailyMenuDescription.new(@daily_menu)
+        send_data pdf.render,
+        filename:    "#{@daily_menu.start_time}.pdf",
+        type:        "application/pdf",
+        disposition: "inline"
+      end
+    end
+  end
+
+  def monthly_menus
+    if params[:start_date].present?
+      @date = params[:start_date].to_date
+    else
+      @date = @today
+    end
+    @daily_menus = DailyMenu.where(start_time:@date.in_time_zone.all_month).includes(daily_menu_details:[:product])
+    # @today_after_daily_menus = @daily_menus.where('start_time >= ?',@today).order('start_time')    
+  end
+  def day_menus
+    @date = params[:start_time].to_date
+    @daily_menu = DailyMenu.find_by(start_time:@date)
+    @daily_menu_details = @daily_menu.daily_menu_details.includes([:product])
+    @products = []
+    @hash = {}
+    @daily_menu_details.each do |dmd|
+      product = dmd.product
+      @products << product
+      daily_menu_ids = DailyMenu.where("id < ?",@daily_menu.id)
+      @hash[dmd.product_id] = product.daily_menu_details.where(daily_menu_id:daily_menu_ids).count
+    end
+  end
   def bulk_update
     new_arr = []
     update_arr = []

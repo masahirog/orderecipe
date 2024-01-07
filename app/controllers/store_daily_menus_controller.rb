@@ -94,21 +94,6 @@ class StoreDailyMenusController < AdminController
     @total_budget = @foods_total_budget+@vegetables_total_budget+@goods_total_budget
   end
 
-  def description
-    @store_daily_menu = StoreDailyMenu.find(params[:store_daily_menu_id])
-    respond_to do |format|
-      format.html
-      format.pdf do
-        pdf = StoreDailyMenuDescription.new(@store_daily_menu)
-        send_data pdf.render,
-        filename:    "#{@store_daily_menu.start_time}.pdf",
-        type:        "application/pdf",
-        disposition: "inline"
-      end
-    end
-  end
-
-
   def input_manufacturing_number
     @store_id = params[:store_id]
     @store = Store.find(@store_id)
