@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_12_26_074422) do
+ActiveRecord::Schema.define(version: 2024_01_07_152345) do
 
   create_table "analyses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "store_id"
@@ -109,7 +109,34 @@ ActiveRecord::Schema.define(version: 2023_12_26_074422) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "daily_menu_details", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "daily_item_stores", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "daily_item_id"
+    t.integer "store_id"
+    t.integer "subordinate_amount"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "daily_items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.date "date", null: false
+    t.integer "purpose", null: false
+    t.integer "item_id", null: false
+    t.text "memo"
+    t.integer "sell_price", default: 0, null: false
+    t.integer "tax_including_sell_price", default: 0, null: false
+    t.integer "purchase_price", default: 0, null: false
+    t.integer "tax_including_purchase_price", default: 0, null: false
+    t.integer "delivery_fee", default: 0, null: false
+    t.integer "tax_including_delivery_fee", default: 0, null: false
+    t.integer "subtotal_price", default: 0, null: false
+    t.integer "tax_including_subtotal_price", default: 0, null: false
+    t.integer "unit"
+    t.integer "delivery_amount", default: 0, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "daily_menu_details", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "daily_menu_id", null: false
     t.integer "product_id", null: false
     t.integer "manufacturing_number", default: 0, null: false
@@ -237,6 +264,40 @@ ActiveRecord::Schema.define(version: 2023_12_26_074422) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "task_slack_url"
+  end
+
+  create_table "item_vendors", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "store_name"
+    t.string "producer_name"
+    t.string "area"
+    t.integer "payment"
+    t.string "bank_name"
+    t.string "bank_store_name"
+    t.string "bank_category"
+    t.string "account_number"
+    t.string "account_title"
+    t.string "zip_code"
+    t.string "address"
+    t.string "tel"
+    t.string "charge_person"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "variety"
+    t.integer "category"
+    t.text "memo"
+    t.integer "reduced_tax_flag", default: 1, null: false
+    t.integer "sell_price"
+    t.integer "tax_including_sell_price"
+    t.integer "purchase_price"
+    t.integer "tax_including_purchase_price"
+    t.integer "unit"
+    t.integer "item_vendor_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "manual_directories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|

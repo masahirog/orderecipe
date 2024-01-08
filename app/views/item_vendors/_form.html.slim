@@ -1,0 +1,45 @@
+= form_for @item_vendor do |f|
+  .form-group
+    = f.label :store_name, "屋号"
+    = f.text_field :store_name, class:"form-control"
+  .form-group
+    = f.label :producer_name, "生産者名"
+    = f.text_field :producer_name, class:"form-control"
+  .form-group
+    = f.label :area, "産地"
+    = f.text_field :area, class:"form-control"
+  .form-group
+    = f.label :charge_person, "担当者名"
+    = f.text_field :charge_person, class:"form-control"
+  .form-group
+    = f.label :zip_code, "郵便番号"
+    = f.text_field :zip_code, class:"form-control"
+  .form-group
+    = f.label :address, "住所"
+    = f.text_field :address, class:"form-control"
+  .form-group
+    = f.label :tel, "電話番号"
+    = f.text_field :tel, class:"form-control"
+
+
+  .form-group
+    = f.label :payment, "支払い方法"
+    = f.select :payment, options_for_select_from_enum(ItemVendor, :payment),{}, { class: "form-control"}
+
+  .form-group
+    = f.label :bank_name, "銀行名"
+    = f.text_field :bank_name, class:"form-control"
+  .form-group
+    = f.label :bank_store_name, "支店名"
+    = f.text_field :bank_store_name, class:"form-control"
+  .form-group
+    = f.label :bank_category, "種類"
+    = f.text_field :bank_category, class:"form-control"
+  .form-group
+    = f.label :account_number, "口座番号"
+    = f.text_field :account_number, class:"form-control"
+  .form-group
+    = f.label :account_title, "口座名義"
+    = f.text_field :account_title, class:"form-control"
+  .actions = f.submit "保存する",class:'btn btn-primary'
+  

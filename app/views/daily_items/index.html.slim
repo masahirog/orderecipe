@@ -1,0 +1,19 @@
+h1 Listing daily_items
+
+table
+  thead
+    tr
+      th
+      th
+      th
+
+  tbody
+    - @daily_items.each do |daily_item|
+      tr
+        td = link_to 'Show', daily_item
+        td = link_to 'Edit', edit_daily_item_path(daily_item)
+        td = link_to 'Destroy', daily_item, data: { confirm: 'Are you sure?' }, method: :delete
+
+br
+
+= link_to 'New Daily item', new_daily_item_path

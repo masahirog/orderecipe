@@ -53,7 +53,7 @@ class WeeklyMenu < Prawn::Document
     stroke_color 'd8d8d8'
     stroke
     gyusuji_height = 415
-    barcode = Barby::Code128.new 374
+    barcode = Barby::Code128.new 155
     barcode_blob = Barby::PngOutputter.new(barcode).to_png
     barcode_io = StringIO.new(barcode_blob)
     barcode_io.rewind
@@ -69,7 +69,7 @@ class WeeklyMenu < Prawn::Document
     text_box("<font size='8'>475</font>円",at: [145,gyusuji_height-10], width: 350, height: 40,size:6,inline_format: true)
 
 
-    barcode = Barby::Code128.new 373
+    barcode = Barby::Code128.new 154
     barcode_blob = Barby::PngOutputter.new(barcode).to_png
     barcode_io = StringIO.new(barcode_blob)
     barcode_io.rewind
@@ -198,7 +198,7 @@ class WeeklyMenu < Prawn::Document
     down_height = 32
     bento_height = bento_height - down_height
     
-    barcode = Barby::Code128.new 417
+    barcode = Barby::Code128.new 467
     barcode_blob = Barby::PngOutputter.new(barcode).to_png
     barcode_io = StringIO.new(barcode_blob)
     image barcode_io, at: [395,bento_height-13], width: 40,height:20
@@ -234,7 +234,7 @@ class WeeklyMenu < Prawn::Document
 
     bento_height -= down_height
     
-    barcode = Barby::Code128.new 417
+    barcode = Barby::Code128.new 132
     barcode_blob = Barby::PngOutputter.new(barcode).to_png
     barcode_io = StringIO.new(barcode_blob)
     image barcode_io, at: [395,bento_height-13], width: 40,height:20

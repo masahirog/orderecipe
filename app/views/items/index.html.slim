@@ -1,0 +1,37 @@
+h2 一覧
+= link_to '新規登録',new_item_path,class:'btn btn-primary'
+
+table.table.table-striped
+  thead
+    tr
+      th 名前
+      th 品種
+      th 仕入先
+      th カテゴリ
+      th 単位
+      th 軽減税率
+      th 税込販売価格
+      th 販売価格
+      th 税込仕入れ値格
+      th 仕入れ値
+      th メモ
+
+  tbody
+    - @items.each do |item|
+      tr
+        td = item.name
+        td = item.variety
+        td = item.item_vendor_id
+        td = item.category
+        td = item.unit
+        td = item.reduced_tax_flag
+        td = item.tax_including_sell_price
+        td = item.sell_price
+        td = item.tax_including_purchase_price
+        td = item.purchase_price
+        td = item.memo
+
+
+
+
+

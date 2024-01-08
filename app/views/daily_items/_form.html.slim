@@ -1,0 +1,9 @@
+= form_for @daily_item do |f|
+  - if @daily_item.errors.any?
+    #error_explanation
+      h2 = "#{pluralize(@daily_item.errors.count, "error")} prohibited this daily_item from being saved:"
+      ul
+        - @daily_item.errors.full_messages.each do |message|
+          li = message
+
+  .actions = f.submit

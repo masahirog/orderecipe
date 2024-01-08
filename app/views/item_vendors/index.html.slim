@@ -1,0 +1,44 @@
+h2 一覧
+= link_to '新規登録',new_item_vendor_path,class:'btn btn-primary'
+
+table.table.table-striped
+  thead
+    tr
+      th 屋号
+      th 生産者名
+      th 産地
+      th 担当者名
+      th 郵便番号
+      th 住所
+      th 電話番号
+      th 支払い方法
+      th 銀行名
+      th 支店名
+      th 種類
+      th 口座番号
+      th 口座名義
+
+  tbody
+    - @item_vendors.each do |item_vendor|
+      tr
+        td = item_vendor.store_name
+        td = item_vendor.producer_name
+        td = item_vendor.area
+        td = item_vendor.charge_person
+        td = item_vendor.zip_code
+        td = item_vendor.address
+        td = item_vendor.tel
+        td = item_vendor.payment
+        td = item_vendor.bank_name
+        td = item_vendor.bank_store_name
+        td = item_vendor.bank_category
+        td = item_vendor.account_number
+        td = item_vendor.account_title
+
+
+
+
+
+
+
+
