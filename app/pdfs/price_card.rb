@@ -39,21 +39,21 @@ class PriceCard < Prawn::Document
 
           if product.product_category == "スイーツ・ドリンク"
             fill_color 'F2684A'
-            fill_rounded_rectangle [415,h-10], 36, 36, 18
+            fill_rounded_rectangle [460,h-10], 36, 36, 18
             fill_color 'ffffff'
-            text_box("甘味",at: [417, h - 23], width: 36, height: 36, rotate_around: :center,align: :center,size:10)
+            text_box("甘味",at: [461, h - 23], width: 36, height: 36, rotate_around: :center,align: :center,size:10)
           else
             fill_color '78B86D'
-            fill_rounded_rectangle [415,h-10], 36, 36, 18
+            fill_rounded_rectangle [460,h-10], 36, 36, 18
             fill_color 'ffffff'
-            text_box("週替り",at: [416, h - 23], width: 36, height: 36, rotate_around: :center,align: :center,size:9)
+            text_box("週替り",at: [460, h - 23], width: 36, height: 36, rotate_around: :center,align: :center,size:9)
           end
 
           if product.warm_flag == true
             fill_color 'ce5242'
-            fill_rounded_rectangle [460,h-10], 36, 36, 18
+            fill_rounded_rectangle [415,h-10], 36, 36, 18
             fill_color 'ffffff'
-            text_box("温め",at: [461, h - 23], width: 36, height: 36, rotate_around: :center,align: :center,size:11)
+            text_box("温め",at: [417, h - 23], width: 36, height: 36, rotate_around: :center,align: :center,size:11)
           end
         end
       else
@@ -82,21 +82,21 @@ class PriceCard < Prawn::Document
 
           if product.product_category == "スイーツ・ドリンク"
             fill_color 'F2684A'
-            fill_rounded_rectangle [415,h-10], 36, 36, 18
+            fill_rounded_rectangle [460,h-10], 36, 36, 18
             fill_color 'ffffff'
-            text_box("甘味",at: [417, h - 23], width: 36, height: 36, rotate_around: :center,align: :center,size:10)
+            text_box("甘味",at: [461, h - 23], width: 36, height: 36, rotate_around: :center,align: :center,size:10)
           else
             fill_color '78B86D'
-            fill_rounded_rectangle [415,h-10], 36, 36, 18
+            fill_rounded_rectangle [460,h-10], 36, 36, 18
             fill_color 'ffffff'
-            text_box("週替り",at: [416, h - 23], width: 36, height: 36, rotate_around: :center,align: :center,size:9)
+            text_box("週替り",at: [461, h - 23], width: 36, height: 36, rotate_around: :center,align: :center,size:9)
           end
 
           if product.warm_flag == true
             fill_color 'ce5242'
-            fill_rounded_rectangle [460,h-10], 36, 36, 18
+            fill_rounded_rectangle [415,h-10], 36, 36, 18
             fill_color 'ffffff'
-            text_box("温め",at: [461, h - 23], width: 36, height: 36, rotate_around: :center,align: :center,size:11)
+            text_box("温め",at: [417, h - 23], width: 36, height: 36, rotate_around: :center,align: :center,size:11)
           end
         end
       end
