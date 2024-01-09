@@ -92,7 +92,11 @@ Rails.application.routes.draw do
       get :material_date
     end
   end
-  resources :items
+  resources :items do
+    collection do
+      get :get_vendor_items
+    end
+  end
   resources :item_vendors
   resources :daily_items
   resources :to_store_messages

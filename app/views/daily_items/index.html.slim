@@ -1,19 +1,113 @@
-h1 Listing daily_items
+= form_tag daily_items_path, :method => 'get' do
+  = date_field_tag :date, params[:date], class:"form-control",style:'width:200px;float:left;'
+  .kensaku.col-md-1
+    = submit_tag "表示" ,class:"btn btn-primary"
 
-table
+.daily_item_form_area
+  = render partial: "daily_item_form", locals: { daily_item:@daily_item}
+
+- sales = @daily_items.map{|di|di.delivery_amount*di.sell_price}.sum
+- cost = @daily_items.sum(:subtotal_price)
+- arari = sales - cost
+table.table
   thead
+    tr
+      th 用途
+      th 生産者
+      th 商品
+      th 納品量
+      th メモ
+      th 売価
+      th 仕入値
+      th 送料
+      th 仕入小計
+      th 見込売上
+      th 粗利
+      th 
     tr
       th
       th
       th
+      th
+      th
+      th
+      th = "#{@daily_items.map{|di|di.delivery_amount*di.purchase_price}.sum.to_s(:delimited)}円"
+      th = "#{@daily_items.sum(:delivery_fee).to_s(:delimited)}円"
+      th = "#{@daily_items.sum(:subtotal_price).to_s(:delimited)}円"
+      th = "#{sales.to_s(:delimited)}円"
+      th = "#{arari.to_s(:delimited)}円"
+      th = "#{(arari/sales.to_f)*100.round(1)}%"
 
-  tbody
+
+  tbody.add_point
     - @daily_items.each do |daily_item|
-      tr
-        td = link_to 'Show', daily_item
-        td = link_to 'Edit', edit_daily_item_path(daily_item)
-        td = link_to 'Destroy', daily_item, data: { confirm: 'Are you sure?' }, method: :delete
+      = render partial: "tr", locals: { daily_item:daily_item}
 
-br
 
-= link_to 'New Daily item', new_daily_item_path
+javascript:
+  $(".sell_price_input").on("change",function(){
+    var komi = Math.floor($(this).val()*1.08);
+    $(".tax_including_sell_price_input").val(komi);
+    calculate();
+  });
+  $(".delivery_fee_input").on("change",function(){
+    var komi = Math.floor($(this).val()*1.1);
+    $(".tax_including_delivery_fee_input").val(komi);
+    calculate();
+  });
+  $(".tax_including_purchase_price_input").on("change",function(){
+    var nuki = Math.ceil($(this).val()/1.08);
+    $(".purchase_price_input").val(nuki);
+    calculate();
+  });
+
+  $(".delivery_amount_input").on("change",function(){
+    calculate();
+    subordinate();
+  });
+
+  $('.item_vendor_select').change(function() {
+    $.get({
+      url: "#{get_vendor_items_items_path}",
+      data: { item_vendor_id: $(this).val() }
+    });
+  });
+  $("input[type='number']").focus(function(){
+    $(this).select();
+  });
+
+  $(".dis_check_box").on("change",function(){
+    subordinate();
+  });
+  function subordinate(){
+    var delivery_amount = Number($(".delivery_amount_input").val());
+    var checked_count = $('input:checkbox:checked').length;
+    var subordinate_amount = Math.round(delivery_amount / checked_count)
+    console.log(subordinate_amount);
+    $(".dis_td").each(function(){
+      if ( $(this).find(".dis_check_box").is(':checked') ){
+        $(this).find(".subordinate_amount_input").val(subordinate_amount);
+      }else{
+        $(this).find(".subordinate_amount_input").val(0);
+      }
+
+    });    
+  }
+
+  function calculate(){
+    var delivery_amount = Number($(".delivery_amount_input").val());
+    var unit_sell_price = Number($(".sell_price_input").val());
+    var tax_including_unit_sell_price = Number($(".tax_including_sell_price_input").val());
+    var unit_cost_price = Number($(".purchase_price_input").val());
+    var tax_including_unit_cost_price = Number($(".tax_including_purchase_price_input").val());
+    var delivery_fee = Number($(".delivery_fee_input").val());
+    var tax_including_delivery_fee = Number($(".tax_including_delivery_fee_input").val());
+    var cost = unit_cost_price * delivery_amount + delivery_fee
+    var sales = unit_sell_price * delivery_amount
+    var arari_rate = Math.round(((sales - cost) / sales)*100, 1)
+    $(".subtotal_price_input").val(cost);
+    $(".tax_including_subtotal_price_input").val(tax_including_unit_cost_price * delivery_amount + tax_including_delivery_fee);
+    $(".ararirate").val(arari_rate+"%");
+    var sales = String(sales - cost).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+    $(".arari").val(sales+"円");
+  }

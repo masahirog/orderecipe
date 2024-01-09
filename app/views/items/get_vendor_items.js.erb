@@ -1,0 +1,1 @@
+$('.item_select').html('<%= j(options_for_select(@items.map{|item|["#{item.name} #{item.variety}",item.id]})) %>');

@@ -1,9 +1,22 @@
-= form_for @daily_item do |f|
-  - if @daily_item.errors.any?
-    #error_explanation
-      h2 = "#{pluralize(@daily_item.errors.count, "error")} prohibited this daily_item from being saved:"
-      ul
-        - @daily_item.errors.full_messages.each do |message|
-          li = message
+= form_with(model: @daily_item, data: {remote: true}) do |f|
+  .form-group.clearfix
+    = f.date_field :date, class:"form-control",style:'float:left;width:120px;'
+    = f.select :purpose,[['物販',0],['惣菜',1]],{}, class:"form-control",style:"width:100px;float:left;"
+    = f.collection_select :item_id, @items, :id, :name, {include_blank:true},class:'form-control',style:"width:200px;float:left;"
+    = f.number_field :sell_price,class:'form-control',style:"width:50px;float:left;"
+    = f.number_field :tax_including_sell_price,class:'form-control',style:"width:50px;float:left;"
+    = f.number_field :purchase_price,class:'form-control',style:"width:50px;float:left;"
+    = f.number_field :tax_including_purchase_price,class:'form-control',style:"width:50px;float:left;"
+    = f.number_field :delivery_fee,class:'form-control',style:"width:50px;float:left;"
+    = f.number_field :tax_including_delivery_fee,class:'form-control',style:"width:50px;float:left;"
+    = f.number_field :subtotal_price,class:'form-control',style:"width:50px;float:left;"
+    = f.number_field :tax_including_subtotal_price,class:'form-control',style:"width:50px;float:left;"
+    = f.number_field :delivery_amount,class:'form-control',style:"width:50px;float:left;"
+    = f.select :unit, options_for_select_from_enum(Item, :unit),{}, { class: "form-control",style:"width:50px;float:left;"}
+    = f.text_area :memo, class:"form-control",style:"height:2em;float:left;width:120px;"
+    = f.fields_for :daily_item_stores do |dis|
+      = dis.hidden_field :store_id
+      = dis.number_field :subordinate_amount,class:'form-control',style:"width:50px;float:left;"
+    = f.submit '更新する',class:'btn btn-primary pull-right btn-sm'
 
-  .actions = f.submit
+

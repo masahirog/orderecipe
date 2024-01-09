@@ -1,6 +1,10 @@
 class ItemsController < ApplicationController
   before_action :set_item, only: %i[ show edit update destroy ]
 
+  def get_vendor_items
+    item_vendor_id = params[:item_vendor_id]
+    @items = Item.where(item_vendor_id:item_vendor_id).order(:name)
+  end
   def index
     @items = Item.all
   end
@@ -17,7 +21,6 @@ class ItemsController < ApplicationController
 
   def create
     @item = Item.new(item_params)
-
     respond_to do |format|
       if @item.save
         format.html { redirect_to item_url(@item), notice: "Item was successfully created." }

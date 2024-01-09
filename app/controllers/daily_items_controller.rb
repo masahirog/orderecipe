@@ -2,14 +2,26 @@ class DailyItemsController < ApplicationController
   before_action :set_daily_item, only: %i[ show edit update destroy ]
 
   def index
-    @daily_items = DailyItem.all
+    @item_vendors = ItemVendor.all
+    params[:date] = @today unless params[:date].present?
+    @daily_items = DailyItem.includes(:item).where(date:params[:date])
+    @items = Item.includes([:item_vendor]).all
+    @daily_item = DailyItem.new(date:params[:date])
+    @stores.each do |store|
+      @daily_item.daily_item_stores.build(store_id:store.id,subordinate_amount:0)
+    end
+
   end
 
   def show
   end
 
   def new
+    @items = Item.all
     @daily_item = DailyItem.new
+    @stores.each do |store|
+      @daily_item.daily_item_stores.build(store_id:store.id,subordinate_amount:0)
+    end
   end
 
   def edit
@@ -17,11 +29,16 @@ class DailyItemsController < ApplicationController
 
   def create
     @daily_item = DailyItem.new(daily_item_params)
-
     respond_to do |format|
       if @daily_item.save
+        @new_daily_item = DailyItem.new(date:@daily_item.date)
+        @items = Item.all
+        @item_vendors = ItemVendor.all
+        @stores.each do |store|
+          @new_daily_item.daily_item_stores.build(store_id:store.id,subordinate_amount:0)
+        end
         format.html { redirect_to daily_item_url(@daily_item), notice: "Daily item was successfully created." }
-        format.json { render :show, status: :created, location: @daily_item }
+        format.js
       else
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @daily_item.errors, status: :unprocessable_entity }
