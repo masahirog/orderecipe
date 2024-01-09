@@ -151,6 +151,6 @@ table.table
 					- else
 						spna style='color:red;font-weight: bold;' 入力！
 				td = dmd.sell_price
-				td = (dmd.sell_price*1.08).ceil
-				td = ((dmd.sell_price*1.08).ceil * 1.6 / 10).ceil*10
+				td = (dmd.sell_price*1.08).floor
+				td = ((dmd.sell_price*1.08).floor * 1.6 / 10).ceil*10
 				td = dmd.product.contents
