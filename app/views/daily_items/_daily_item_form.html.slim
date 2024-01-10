@@ -6,12 +6,12 @@
         th
           span.required 商品
           i class="fa-solid fa-circle-plus" data-toggle="modal" data-target="#new_item_add" style='margin-left:10px;'
-        th 販売単価（税別/税込） 
+        th style='width: 140px;' 販売単価
         th.required 仕入れ量
-        th 仕入単価（税別/税込）
-        th 送料（税別/税込）
-        th 仕入小計（税別/税込）
-        th 粗利率・粗利額
+        th style='width: 140px;' 仕入単価
+        th style='width: 140px;' 送料
+        th style='width: 140px;' 仕入小計
+        th style='width: 120px;' 粗利率・粗利額
         - f.object.daily_item_stores.each do |dis|
           th = dis.store.short_name
         th
@@ -32,7 +32,7 @@
             = f.number_field :tax_including_sell_price,class:'form-control tax_including_sell_price_input',style:"width:100px;float:left;",readonly:true, required:true
             span style='float:left;margin-top:10px;margin-left:5px;' 円
         td.clearfix style='width: 330px;'
-          = f.select :purpose,[['物販',0],['惣菜',1],['送料',2]],{}, class:"form-control",style:"width:100px;float:left;margin-bottom:5px;margin-right:5px;", required:true
+          = f.select :unit, options_for_select_from_enum(DailyItem, :purpose),{}, { class: "form-control",style:"float:left;width:100px;argin-bottom:5px;margin-right:5px;"}
           = f.number_field :delivery_amount,class:'form-control delivery_amount_input',style:"float:left;width:100px;margin-bottom:5px;margin-right:5px;", required:true
           = f.select :unit, options_for_select_from_enum(DailyItem, :unit),{}, { class: "form-control",style:"float:left;width:100px;"}
           = f.text_field :memo,class:'form-control',placeholder:'メモ',style:'width:100%;'

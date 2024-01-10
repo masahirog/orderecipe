@@ -52,6 +52,13 @@ table.table
 
 
 javascript:
+  $('body').on('change', '.item_vendor_select' , function() {
+    $.get({
+      url: "#{get_vendor_items_items_path}",
+      data: { item_vendor_id: $(this).val() }
+    });
+  });
+  
   $(".sell_price_input").on("change",function(){
     var komi = Math.floor($(this).val()*1.08);
     $(".tax_including_sell_price_input").val(komi);
@@ -73,12 +80,7 @@ javascript:
     subordinate();
   });
 
-  $('.item_vendor_select').change(function() {
-    $.get({
-      url: "#{get_vendor_items_items_path}",
-      data: { item_vendor_id: $(this).val() }
-    });
-  });
+
   $("input[type='number']").focus(function(){
     $(this).select();
   });

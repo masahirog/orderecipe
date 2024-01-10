@@ -22,6 +22,7 @@ class DailyItemsController < ApplicationController
     end
     @items = Item.includes([:item_vendor]).all
     @daily_item = DailyItem.new(date:@date)
+    @stores = current_user.group.stores
     @stores.each do |store|
       @daily_item.daily_item_stores.build(store_id:store.id,subordinate_amount:0)
     end
