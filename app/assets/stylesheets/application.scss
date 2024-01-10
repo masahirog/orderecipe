@@ -17,7 +17,11 @@
 @import "print.scss";
 @import 'jquery-ui';
 
-
+  .required::after {
+    content: " *";
+    color: red;
+    vertical-align: middle;
+  }
   .class-holiday > .ui-state-default {
   background: #FFFFCC !important;
   color: red !important;

@@ -3,52 +3,67 @@
   table.table
     thead
       tr
-        / th 日付
-        th 用途
-        th 商品
-        th 販売単価
-        th style='width:220px;' 仕入量
-        th 仕入単価
-        th 送料
-        th 仕入小計
+        th
+          span.required 商品
+          i class="fa-solid fa-circle-plus" data-toggle="modal" data-target="#new_item_add" style='margin-left:10px;'
+        th 販売単価（税別/税込） 
+        th.required 仕入れ量
+        th 仕入単価（税別/税込）
+        th 送料（税別/税込）
+        th 仕入小計（税別/税込）
         th 粗利率・粗利額
         - f.object.daily_item_stores.each do |dis|
           th = dis.store.short_name
         th
     tbody
       tr
-        / td = f.date_field :date,value:params[:date], class:"form-control",style:'float:left;width:120px;'
-        td = f.select :purpose,[['物販',0],['惣菜',1],['送料',2]],{}, class:"form-control",style:"width:100px;float:left;"
         td
-          select.form-control.item_vendor_select style="width:200px;"
+          select.form-control.item_vendor_select style="width:200px;margin-bottom:5px;"
             option value="" --
             - @item_vendors.each do |iv|
               option value="#{iv.id}" = iv.store_name
 
           = f.collection_select :item_id, @items, :id, :view_name_and_variety, {include_blank:true},class:'form-control item_select',style:"width:200px;"
         td
-          = f.number_field :sell_price,class:'form-control sell_price_input',style:""
-          = f.number_field :tax_including_sell_price,class:'form-control tax_including_sell_price_input',style:"",readonly:true
-
-        td.clearfix
-          = f.number_field :delivery_amount,class:'form-control delivery_amount_input',style:"float:left;width:100px;"
+          .clearfix
+            = f.number_field :sell_price,class:'form-control sell_price_input',style:"margin-bottom:5px;width:100px;float:left;", required:true
+            span style='float:left;margin-top:10px;margin-left:5px;' 円
+          .clearfix
+            = f.number_field :tax_including_sell_price,class:'form-control tax_including_sell_price_input',style:"width:100px;float:left;",readonly:true, required:true
+            span style='float:left;margin-top:10px;margin-left:5px;' 円
+        td.clearfix style='width: 330px;'
+          = f.select :purpose,[['物販',0],['惣菜',1],['送料',2]],{}, class:"form-control",style:"width:100px;float:left;margin-bottom:5px;margin-right:5px;", required:true
+          = f.number_field :delivery_amount,class:'form-control delivery_amount_input',style:"float:left;width:100px;margin-bottom:5px;margin-right:5px;", required:true
           = f.select :unit, options_for_select_from_enum(DailyItem, :unit),{}, { class: "form-control",style:"float:left;width:100px;"}
-          = f.text_field :memo,class:'form-control',placeholder:'メモ'
+          = f.text_field :memo,class:'form-control',placeholder:'メモ',style:'width:100%;'
         td
-          = f.number_field :purchase_price,class:'form-control purchase_price_input',style:"",readonly:true
-          = f.number_field :tax_including_purchase_price,class:'form-control tax_including_purchase_price_input',style:""
+          .clearfix
+            = f.number_field :purchase_price,class:'form-control purchase_price_input',style:"margin-bottom:5px;width:100px;float:left;",readonly:true, required:true
+            span style='float:left;margin-top:10px;margin-left:5px;' 円
+          .clearfix
+            = f.number_field :tax_including_purchase_price,class:'form-control tax_including_purchase_price_input',style:"width:100px;float:left;", required:true
+            span style='float:left;margin-top:10px;margin-left:5px;' 円
         td
-          = f.number_field :delivery_fee,class:'form-control delivery_fee_input',style:""
-          = f.number_field :tax_including_delivery_fee,class:'form-control tax_including_delivery_fee_input',style:"",readonly:true
+          .clearfix
+            = f.number_field :delivery_fee,class:'form-control delivery_fee_input',style:"margin-bottom:5px;width:100px;float:left;", required:true
+            span style='float:left;margin-top:10px;margin-left:5px;' 円
+          .clearfix
+            = f.number_field :tax_including_delivery_fee,class:'form-control tax_including_delivery_fee_input',style:"margin-bottom:5px;width:100px;float:left;",readonly:true, required:true
+            span style='float:left;margin-top:10px;margin-left:5px;' 円
         td
-          = f.number_field :subtotal_price,class:'form-control subtotal_price_input',style:"",readonly:true
-          = f.number_field :tax_including_subtotal_price,class:'form-control tax_including_subtotal_price_input',style:"",readonly:true
+          .clearfix
+            = f.number_field :subtotal_price,class:'form-control subtotal_price_input',style:"margin-bottom:5px;width:100px;float:left;",readonly:true, required:true
+            span style='float:left;margin-top:10px;margin-left:5px;' 円
+          .clearfix
+            = f.number_field :tax_including_subtotal_price,class:'form-control tax_including_subtotal_price_input',style:"width:100px;float:left;",readonly:true, required:true
+            span style='float:left;margin-top:10px;margin-left:5px;' 円
         td
-          input.form-control.ararirate readonly="true"
+          input.form-control.ararirate readonly="true" style='margin-bottom:5px;'
           input.form-control.arari readonly="true"
         = f.fields_for :daily_item_stores do |dis|
           = dis.hidden_field :store_id
           td.text-center.dis_td
             input.form-control.dis_check_box type="checkbox" style='height:15px;margin: 8px 0;'
-            = dis.number_field :subordinate_amount,class:' subordinate_amount_input',style:"width:50px;float:left;height:30px;text-align:center;"
-        td = f.submit '追加',class:'btn btn-primary pull-right btn-sm'
+            = dis.number_field :subordinate_amount,class:' subordinate_amount_input',style:"width:50px;float:left;height:30px;text-align:center;", required:true
+        td
+          = f.submit '追 加',class:'btn btn-success btn-sm',style:'width:100%;'

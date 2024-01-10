@@ -98,7 +98,11 @@ Rails.application.routes.draw do
     end
   end
   resources :item_vendors
-  resources :daily_items
+  resources :daily_items do
+    collection do
+      get :calendar
+    end
+  end
   resources :to_store_messages
   resources :store_daily_menu_detail_histories
   resources :store_daily_menu_details

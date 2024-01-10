@@ -42,7 +42,7 @@ class TemporaryMenuMaterialsController < AdminController
     product_ids = ProductMenu.where(menu_id:menu_ids).map{|pm|pm.product_id}.uniq
     @hhash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    @calender_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    @calendar_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @temporary_menu_materials.each do |tmm|
       @hash[tmm.date][tmm.menu_material_id][:material_id] = tmm.material_id
       @hash[tmm.date][tmm.menu_material_id][:origin_material_id] = tmm.origin_material_id

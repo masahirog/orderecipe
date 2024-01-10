@@ -1,0 +1,13 @@
+h3 野菜仕入れスケジュール
+= month_calendar events: @daily_items, attribute: :date do |date, daily_items|
+  - if daily_items.count > 0
+    - sales = daily_items.map{|di|di.sell_price*di.delivery_amount}.sum
+    - cost = daily_items.map{|di|di.purchase_price*di.delivery_amount + di.delivery_fee}.sum
+    - arari = sales - cost
+    - arari_rate = ((arari.to_f/sales)*100).round(1)
+  div style=''
+    = link_to date.strftime("%-m月%-d日"), daily_items_path(date:date)
+  p = "売価合計：#{sales.to_s(:delimited)}円" if daily_items.count > 0
+  p = "仕入れ合計：#{cost.to_s(:delimited)}円" if daily_items.count > 0
+  p = "粗利額：#{arari.to_s(:delimited)}円" if daily_items.count > 0
+  p = "粗利率：#{arari_rate}%" if daily_items.count > 0

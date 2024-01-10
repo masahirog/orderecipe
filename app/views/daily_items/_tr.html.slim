@@ -48,5 +48,8 @@ tr class="tr_#{daily_item.id}"
     span style='font-size:0.9em;' （
     span style='font-size:0.9em;' = (arari / sales.to_f * 100).round if sales > 0
     span style='font-size:0.9em;' %）
+  - @stores.each do |store|
+    td = @hash[daily_item.id][store.id]
+
   td
     = link_to '削除', daily_item_path(daily_item), method: :delete, data: { confirm: '本当にOK？' }, method: :delete

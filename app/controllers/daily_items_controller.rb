@@ -1,12 +1,27 @@
 class DailyItemsController < ApplicationController
   before_action :set_daily_item, only: %i[ show edit update destroy ]
-
+  def calendar
+    @daily_items = DailyItem.includes(:item).order("id DESC")
+  end
   def index
     @item_vendors = ItemVendor.all
-    params[:date] = @today unless params[:date].present?
-    @daily_items = DailyItem.includes(:item).where(date:params[:date])
+    if params[:date].present?
+      @date = params[:date].to_date
+    else
+      @date = @today 
+    end
+    @item = Item.new
+    @daily_items = DailyItem.includes(:item).where(date:@date).order("id DESC")
+    @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    DailyItemStore.where(daily_item_id:@daily_items.ids).each do |dis|
+      if dis.subordinate_amount > 0
+        @hash[dis.daily_item_id][dis.store_id] = dis.subordinate_amount
+      else
+        @hash[dis.daily_item_id][dis.store_id] = ''
+      end
+    end
     @items = Item.includes([:item_vendor]).all
-    @daily_item = DailyItem.new(date:params[:date])
+    @daily_item = DailyItem.new(date:@date)
     @stores.each do |store|
       @daily_item.daily_item_stores.build(store_id:store.id,subordinate_amount:0)
     end
@@ -31,6 +46,14 @@ class DailyItemsController < ApplicationController
     @daily_item = DailyItem.new(daily_item_params)
     respond_to do |format|
       if @daily_item.save
+        @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+        @daily_item.daily_item_stores.each do |dis|
+          if dis.subordinate_amount > 0
+            @hash[dis.daily_item_id][dis.store_id] = dis.subordinate_amount
+          else
+            @hash[dis.daily_item_id][dis.store_id] = ''
+          end
+        end
         @new_daily_item = DailyItem.new(date:@daily_item.date)
         @items = Item.all
         @item_vendors = ItemVendor.all

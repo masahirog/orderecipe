@@ -23,8 +23,9 @@ class ItemsController < ApplicationController
     @item = Item.new(item_params)
     respond_to do |format|
       if @item.save
+        @new_item = Item.new
         format.html { redirect_to item_url(@item), notice: "Item was successfully created." }
-        format.json { render :show, status: :created, location: @item }
+        format.js
       else
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @item.errors, status: :unprocessable_entity }
