@@ -88,7 +88,7 @@ javascript:
   });
   function subordinate(){
     var delivery_amount = Number($(".delivery_amount_input").val());
-    var checked_count = $('input:checkbox:checked').length;
+    var checked_count = $('input.dis_check_box:checked').length;
     var subordinate_amount = Math.round(delivery_amount / checked_count)
     console.log(subordinate_amount);
     $(".dis_td").each(function(){
