@@ -19,7 +19,7 @@ table.table.table-striped
   tbody
     - @items.each do |item|
       tr
-        td = item.name
+        td = link_to item.name,edit_item_path(item)
         td = item.variety
         td = item.item_vendor.store_name
         td = item.category

@@ -1,7 +1,7 @@
 = form_for @item_vendor do |f|
   .form-group
-    = f.label :store_name, "屋号"
-    = f.text_field :store_name, class:"form-control"
+    = f.label :store_name, "屋号",class:"required"
+    = f.text_field :store_name, class:"form-control", required:true
   .form-group
     = f.label :producer_name, "生産者名"
     = f.text_field :producer_name, class:"form-control"
