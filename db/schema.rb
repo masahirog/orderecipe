@@ -115,6 +115,8 @@ ActiveRecord::Schema.define(version: 2024_01_07_152345) do
     t.integer "subordinate_amount"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "sell_price", default: 0, null: false
+    t.integer "tax_including_sell_price", default: 0, null: false
   end
 
   create_table "daily_items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -122,8 +124,8 @@ ActiveRecord::Schema.define(version: 2024_01_07_152345) do
     t.integer "purpose", null: false
     t.integer "item_id", null: false
     t.text "memo"
-    t.integer "sell_price", default: 0, null: false
-    t.integer "tax_including_sell_price", default: 0, null: false
+    t.integer "estimated_sales", default: 0, null: false
+    t.integer "tax_including_estimated_sales", default: 0, null: false
     t.integer "purchase_price", default: 0, null: false
     t.integer "tax_including_purchase_price", default: 0, null: false
     t.integer "delivery_fee", default: 0, null: false

@@ -95,6 +95,7 @@ Rails.application.routes.draw do
   resources :items do
     collection do
       get :get_vendor_items
+      get :get_item
     end
   end
   resources :item_vendors

@@ -1,8 +1,8 @@
 h3 野菜仕入れスケジュール
 = month_calendar events: @daily_items, attribute: :date do |date, daily_items|
   - if daily_items.count > 0
-    - sales = daily_items.map{|di|di.sell_price*di.delivery_amount}.sum
-    - cost = daily_items.map{|di|di.purchase_price*di.delivery_amount + di.delivery_fee}.sum
+    - sales = daily_items.map{|di|di.estimated_sales}.sum
+    - cost = daily_items.map{|di|di.subtotal_price}.sum
     - arari = sales - cost
     - arari_rate = ((arari.to_f/sales)*100).round(1)
   div style=''

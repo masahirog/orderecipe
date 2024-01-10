@@ -5,6 +5,8 @@ class CreateDailyItemStores < ActiveRecord::Migration[6.0]
       t.integer :store_id
       t.integer :subordinate_amount
       t.timestamps
+      t.integer :sell_price,default:0,null:false
+      t.integer :tax_including_sell_price,default:0,null:false
     end
   end
 end

@@ -8,44 +8,52 @@
 .new_item_partial
   = render partial: "new_item", locals: { item:@item}
 
-- sales = @daily_items.map{|di|di.delivery_amount*di.sell_price}.sum
-- cost = @daily_items.sum(:subtotal_price)
-- arari = sales - cost
+table.table
+  thead
+    tr
+      th 物販内訳
+      th 想定売上
+      th 仕入価格
+      th 送料
+      th 原価
+      th 粗利
+  tbody
+    tr
+      th 合計
+      th = "#{@buppan_sum["estimated_sales_sum"].to_s(:delimited)}円"
+      th = "#{@buppan_sum["purchase_price_sum"].to_s(:delimited)}円"
+      th = "#{@buppan_sum["delivery_fee_sum"].to_s(:delimited)}円"
+      th = "#{@buppan_sum["subtotal_price_sum"].to_s(:delimited)}円"
+      th
+        = "#{@buppan_sum["arari_sum"].to_s(:delimited)}円"
+        = "｜#{(@buppan_sum["arari_sum"]/@buppan_sum["estimated_sales_sum"].to_f*100).round(1)}%"
+    - @category_sum.each do |data|
+      tr
+        td = data[0]
+        td = "#{data[1]['estimated_sales_sum'].to_s(:delimited)}円"
+        td = "#{data[1]['purchase_price_sum'].to_s(:delimited)}円"
+        td = "#{data[1]['delivery_fee_sum'].to_s(:delimited)}円"
+        td = "#{data[1]['subtotal_price_sum'].to_s(:delimited)}円"
+        td
+          = "#{data[1]['arari_sum'].to_s(:delimited)}円"
+          = "｜#{data[1]["arari_rate"]}%" if data[1]["arari_rate"].present?
+
 table.table
   thead
     tr
       th 用途
+      th カテゴリ
       th 生産者
       th 商品
       th 納品量
       th メモ
-      th 売価
       th 仕入値
       th 送料
       th 仕入小計
       th 見込売上
       th 粗利
       - @stores.each do |store|
-        th = store.short_name
-    tr
-      th
-      th
-      th
-      th
-      th
-      th
-      th = "#{@daily_items.map{|di|di.delivery_amount*di.purchase_price}.sum.to_s(:delimited)}円"
-      th = "#{@daily_items.sum(:delivery_fee).to_s(:delimited)}円"
-      th = "#{@daily_items.sum(:subtotal_price).to_s(:delimited)}円"
-      th = "#{sales.to_s(:delimited)}円"
-      th
-        = "#{arari.to_s(:delimited)}円｜"
-        = "#{((arari/sales.to_f)*100).round(1)}%"
-      - @stores.each do |store|
-        th
-      th
-
-
+        th.text-center = store.short_name
   tbody.add_point
     - @daily_items.each do |daily_item|
       = render partial: "tr", locals: { daily_item:daily_item}
@@ -56,14 +64,15 @@ javascript:
     $.get({
       url: "#{get_vendor_items_items_path}",
       data: { item_vendor_id: $(this).val() }
+    }).done(function(data){
+      item_select_change();
     });
   });
-  
-  $(".sell_price_input").on("change",function(){
-    var komi = Math.floor($(this).val()*1.08);
-    $(".tax_including_sell_price_input").val(komi);
-    calculate();
+
+  $('body').on('change', '.item_select' , function() {
+    item_select_change();
   });
+  
   $(".delivery_fee_input").on("change",function(){
     var komi = Math.floor($(this).val()*1.1);
     $(".tax_including_delivery_fee_input").val(komi);
@@ -76,8 +85,8 @@ javascript:
   });
 
   $(".delivery_amount_input").on("change",function(){
-    calculate();
     subordinate();
+    calculate();
   });
 
 
@@ -87,17 +96,44 @@ javascript:
 
   $(".dis_check_box").on("change",function(){
     subordinate();
+    calculate();
   });
+
+  $(".dis_sell_price_input").on("change",function(){
+    var sell_price = $(this).val();
+    var reduce_tax_flag = $(".item_reduce_tax_flag").val();
+    console.log(reduce_tax_flag)
+    if (reduce_tax_flag == "1") {
+      var tax_rate = 1.08
+    }else{
+      var tax_rate = 1.1
+    }
+    var tax_including_sell_price = Math.floor(sell_price * tax_rate );
+    $(this).siblings(".dis_tax_including_sell_price_input").val(tax_including_sell_price);
+    calculate();
+  });
+
+  function item_select_change(){
+    var item_id = $(".item_select").val();
+    $.get({
+      url: "#{get_item_items_path}",
+      data: { id: item_id }
+    }).done(function(data){
+      calculate();
+    });
+  }
+
   function subordinate(){
     var delivery_amount = Number($(".delivery_amount_input").val());
     var checked_count = $('input.dis_check_box:checked').length;
     var subordinate_amount = Math.round(delivery_amount / checked_count)
-    console.log(subordinate_amount);
-    $(".dis_td").each(function(){
+    // console.log(subordinate_amount);
+    $(".dis_th").each(function(){
+      var store_id = $(this).find(".store_id").val();
       if ( $(this).find(".dis_check_box").is(':checked') ){
-        $(this).find(".subordinate_amount_input").val(subordinate_amount);
+        $(".dis_td_"+store_id).find(".subordinate_amount_input").val(subordinate_amount);
       }else{
-        $(this).find(".subordinate_amount_input").val(0);
+        $(".dis_td_"+store_id).find(".subordinate_amount_input").val(0);
       }
 
     });    
@@ -112,11 +148,26 @@ javascript:
     var delivery_fee = Number($(".delivery_fee_input").val());
     var tax_including_delivery_fee = Number($(".tax_including_delivery_fee_input").val());
     var cost = unit_cost_price * delivery_amount + delivery_fee
-    var sales = unit_sell_price * delivery_amount
-    var arari_rate = Math.round(((sales - cost) / sales)*100, 1)
+
+    var sales = 0
+    var tax_including_sales = 0
+    $(".dis_sell_price_input").each(function(){
+      var sell_price = Number($(this).val());
+      var tax_including_sell_price = Number($(this).siblings('.dis_tax_including_sell_price_input').val());
+      var subordinate_amount = Number($(this).parent().find(".subordinate_amount_input").val());
+      sales = sales + (sell_price * subordinate_amount);
+      tax_including_sales = tax_including_sales + (tax_including_sell_price * subordinate_amount);
+    });
+    var arari = sales - cost
+    var arari_rate = Math.round((arari / sales)*100, 1)
+
+    $(".estimated_sales_input").val(sales);
+    $(".tax_including_estimated_sales_input").val(tax_including_sales);
     $(".subtotal_price_input").val(cost);
     $(".tax_including_subtotal_price_input").val(tax_including_unit_cost_price * delivery_amount + tax_including_delivery_fee);
     $(".ararirate").val(arari_rate+"%");
-    var sales = String(sales - cost).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
-    $(".arari").val(sales+"円");
+    arari = String(arari).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+    $(".arari").val(arari+"円");
+
+
   }

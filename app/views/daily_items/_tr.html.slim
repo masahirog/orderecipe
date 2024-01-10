@@ -1,18 +1,23 @@
 - color = 'white'
 - if daily_item.purpose == "惣菜"
   - color = '#f5f5dc'
+
+- if daily_item.item.category == "野菜"
+  - class_names = "label label-success"
+- elsif daily_item.item.category == "果物"
+  - class_names = "label label-warning"
+- elsif daily_item.item.category == "物産"
+  - class_names = "label label-primary"
+- elsif daily_item.item.category == "送料"
+  - class_names = "label label-default"
 tr class="tr_#{daily_item.id}" style="background-color:#{color}"
   td = daily_item.purpose
+  td
+    span class="#{class_names}" = daily_item.item.category
   td = link_to daily_item.item.item_vendor.store_name,edit_item_vendor_path(daily_item.item.item_vendor),target:'_blank'
   td = link_to "#{daily_item.item.name} #{daily_item.item.variety}",edit_item_path(daily_item.item),target:'_blank'
   td = "#{daily_item.delivery_amount} #{daily_item.unit}"
   td = daily_item.memo
-  td
-    span = daily_item.sell_price.to_s(:delimited)
-    br
-    span style='font-size:0.8em;'（
-    span style='font-size:0.8em;' = daily_item.tax_including_sell_price
-    span style='font-size:0.8em;' ）
   td
     span = daily_item.purchase_price.to_s(:delimited)
     br
@@ -32,23 +37,25 @@ tr class="tr_#{daily_item.id}" style="background-color:#{color}"
     span style='font-size:0.8em;' =  daily_item.tax_including_subtotal_price.to_s(:delimited)
     span style='font-size:0.8em;' ）
   td
-    - sales = daily_item.sell_price * daily_item.delivery_amount
-    - tax_in_sales = daily_item.tax_including_sell_price * daily_item.delivery_amount
-    span = sales.to_s(:delimited)
+    span = daily_item.estimated_sales.to_s(:delimited)
     br
-    span style='font-size:0.8em;' （
-    span style='font-size:0.8em;' = tax_in_sales.to_s(:delimited)
+    span style='font-size:0.8em;'（
+    span style='font-size:0.8em;' = daily_item.tax_including_estimated_sales.to_s(:delimited)
     span style='font-size:0.8em;' ）
 
   td
-    - arari = sales - daily_item.subtotal_price
+    - arari = daily_item.estimated_sales - daily_item.subtotal_price
     span = arari.to_s(:delimited)
     br
     span style='font-size:0.9em;' （
-    span style='font-size:0.9em;' = (arari / sales.to_f * 100).round if sales > 0
+    span style='font-size:0.9em;' = (arari / daily_item.estimated_sales.to_f * 100).round if daily_item.estimated_sales > 0
     span style='font-size:0.9em;' %）
   - @stores.each do |store|
-    td = @hash[daily_item.id][store.id]
+    td.text-center
+      = "#{@hash[daily_item.id][store.id]['sell_price']}"
+      br
+      = "#{@hash[daily_item.id][store.id]['subordinate_amount']}#{@hash[daily_item.id][store.id]['unit']}"
+      
 
   td
     = link_to '削除', daily_item_path(daily_item), method: :delete, data: { confirm: '本当にOK？' }, method: :delete

@@ -5,8 +5,8 @@ class CreateDailyItems < ActiveRecord::Migration[6.0]
       t.integer :purpose,null:false
       t.integer :item_id,null:false
       t.text :memo
-      t.integer :sell_price,default:0,null:false
-      t.integer :tax_including_sell_price,default:0,null:false
+      t.integer :estimated_sales,default:0,null:false
+      t.integer :tax_including_estimated_sales,default:0,null:false
       t.integer :purchase_price,default:0,null:false
       t.integer :tax_including_purchase_price,default:0,null:false
       t.integer :delivery_fee,default:0,null:false

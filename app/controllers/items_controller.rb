@@ -1,12 +1,17 @@
 class ItemsController < ApplicationController
   before_action :set_item, only: %i[ show edit update destroy ]
 
+  def get_item
+    id = params[:id]
+    @item = Item.find(id)
+  end
+
   def get_vendor_items
     item_vendor_id = params[:item_vendor_id]
     @items = Item.where(item_vendor_id:item_vendor_id).order(:name)
   end
   def index
-    @items = Item.all
+    @items = Item.includes([:item_vendor]).all
   end
 
   def show
