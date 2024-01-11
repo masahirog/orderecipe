@@ -1,5 +1,21 @@
 class DailyItemsController < ApplicationController
   before_action :set_daily_item, only: %i[ show edit update destroy ]
+
+  def label
+    store_id = params[:store_id]
+    labels = []
+    @date = params[:date]
+    @daily_items = DailyItem.includes(:item).where(date:@date).order("id DESC")
+    @daily_item_stores = DailyItemStore.where(daily_item_id:@daily_items.ids,store_id:store_id)
+    respond_to do |format|
+      format.html
+      format.csv do
+        send_data render_to_string, filename: "#{@date}_buppan_label_.csv", type: :csv
+      end
+    end
+  end
+
+
   def calendar
     if params[:start_date]
       date = params[:start_date].to_date

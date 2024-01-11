@@ -53,7 +53,8 @@ table.table
       th 見込売上
       th 粗利
       - @stores.each do |store|
-        th.text-center = store.short_name
+        th.text-center
+          = link_to store.short_name, label_daily_items_path(store_id:store.id,date:params[:date],format:'csv'), method: :post
   tbody.add_point
     - @daily_items.each do |daily_item|
       = render partial: "tr", locals: { daily_item:daily_item}

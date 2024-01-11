@@ -101,6 +101,7 @@ Rails.application.routes.draw do
   resources :item_vendors
   resources :daily_items do
     collection do
+      post :label
       get :calendar
     end
   end
