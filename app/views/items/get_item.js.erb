@@ -1,4 +1,6 @@
 $('.item_reduce_tax_flag').val(<%= @item.reduced_tax_flag %>);
+$('.unit_input').val("<%= @item.unit %>");
+
 if (<%= @item.reduced_tax_flag == 1 %>) {
 	$('.tax_rate_span').text('8%');
 }else{
