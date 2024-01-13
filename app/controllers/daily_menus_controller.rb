@@ -98,10 +98,19 @@ class DailyMenusController < AdminController
     @daily_menus = DailyMenu.where(start_time:@from..@to).order(:start_time)
     @daily_menu_details = DailyMenuDetail.where(daily_menu_id:@daily_menus.ids)
     product_ids = @daily_menu_details.map{|dmd|dmd.product_id}.uniq
-    @id_names = Product.where(id:product_ids).map{|product|[product.id,product.name]}.to_h
+    @id_names = Product.where(id:product_ids).map{|product|[product.id,product]}.to_h
     @daily_menu_details_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @daily_menu_details.each do |dmd|
-      @daily_menu_details_hash[dmd.daily_menu_id][dmd.paper_menu_number] = dmd.product_id
+      product = @id_names[dmd.product_id]
+      cost = product.cost_price
+      @daily_menu_details_hash[dmd.daily_menu_id][dmd.paper_menu_number]['product_id'] = dmd.product_id
+      @daily_menu_details_hash[dmd.daily_menu_id][dmd.paper_menu_number]['change_flag'] = dmd.change_flag
+      @daily_menu_details_hash[dmd.daily_menu_id][dmd.paper_menu_number]['sell_price'] = dmd.sell_price
+      if dmd.sell_price > 0
+        @daily_menu_details_hash[dmd.daily_menu_id][dmd.paper_menu_number]['cost_rate'] = ((cost/dmd.sell_price.to_f)*100).round(1)
+      else
+        @daily_menu_details_hash[dmd.daily_menu_id][dmd.paper_menu_number]['cost_rate'] = ''
+      end
     end
     @products = Product.where(status:1,brand_id:111)
     @pattern = params[:pattern]
