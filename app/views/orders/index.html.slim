@@ -2,6 +2,21 @@
   h3 style='margin-right:40px;float:left;font-size:20px;' ="#{@store.name}　発注一覧"
   - if @store.id == 39
     = link_to "単品発注", new_order_path(store_id:params[:store_id]),class:"order btn btn-primary btn-sm",style:"float:left;margin-top:15px;"
+    button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#product_order_modal" style='float:left;margin-top:15px;margin-left:10px;' 商品発注
+    #product_order_modal.modal.fade tabindex="-1"
+      .modal-dialog
+        .modal-content
+          .modal-header
+            h4.modal-title 発注する商品と食数を選択
+          .modal-body.clearfix
+            = form_tag new_order_path, :method => 'get' do
+              = hidden_field_tag :store_id,39
+              .form-group.select_modal_div
+                = select_tag :product_id, options_from_collection_for_select(Product.all, :id, :name),include_blank: true, class: "form-control select_product",style:'width:100%;'
+              .form-group
+                = number_field_tag :num,0, class: "form-control"
+              .form-group
+                = submit_tag "発注開始" ,class:"btn btn-primary",style:''
     button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#kitchen_days_order_modal" style='float:left;margin-top:15px;margin-left:10px;' 期間発注
     #kitchen_days_order_modal.modal.fade tabindex="-1"
       .modal-dialog
@@ -161,3 +176,6 @@ css:
     border-radius:3px;
     padding:4px 6px;
   }
+
+javascript:
+  $('.select_product').select2({dropdownParent: $('#product_order_modal')})

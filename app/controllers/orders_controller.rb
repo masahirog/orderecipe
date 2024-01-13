@@ -281,7 +281,14 @@ class OrdersController < AdminController
     @product_hash = {}
     @arr = []
     @order = Order.new(store_id:params[:store_id])
-    if params[:daily_menu_start_time]
+    if params[:product_id]
+      product = Product.find(params[:product_id])
+      order_products = []
+      hash = {product_id:product.id,num:params[:num]}
+      order_products = [hash]
+      make_date = (@today+2)
+      @order.memo = "#{product.name} #{params[:num]}食分の製造分"
+    elsif params[:daily_menu_start_time]
       order_products = []
       date = params[:daily_menu_start_time]
       params[:products].each do |id_num|
