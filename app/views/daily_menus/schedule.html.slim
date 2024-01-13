@@ -56,9 +56,9 @@
                 - cost_color = 'red'
               - else
                 - cost_color = 'black'
-              td.product_name style="cursor: pointer;font-size:0.9em;" 
+              td.product_name_td style="cursor: pointer;font-size:0.9em;" 
                 - if @id_names[@daily_menu_details_hash[daily_menu.id][i]['product_id']].present?
-                  span style="color:#{color};" = @id_names[@daily_menu_details_hash[daily_menu.id][i]['product_id']].food_label_name
+                  span.product_name style="color:#{color};" = @id_names[@daily_menu_details_hash[daily_menu.id][i]['product_id']].name
                   span style="color:#{cost_color};" = "｜#{@daily_menu_details_hash[daily_menu.id][i]['sell_price']}｜#{@daily_menu_details_hash[daily_menu.id][i]['cost_rate']}%"
                   - if @daily_menu_details_hash[daily_menu.id][i]['product_id'].present?
                     = link_to product_path(id:@daily_menu_details_hash[daily_menu.id][i]['product_id']),target:"_blank"
@@ -137,8 +137,8 @@ javascript:
   });
 
 
-  $('.product_name').on('click', function(){
-    var text = $(this).text();
+  $('.product_name_td').on('click', function(){
+    var text = $(this).children(".product_name").text();
     navigator.clipboard.writeText(text);
   });
 
