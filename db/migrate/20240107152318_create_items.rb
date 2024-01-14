@@ -14,6 +14,7 @@ class CreateItems < ActiveRecord::Migration[6.0]
       t.integer :item_vendor_id,null:false
       t.timestamps
       t.string :smaregi_code
+      t.string :sales_life
     end
   end
 end

@@ -302,6 +302,7 @@ ActiveRecord::Schema.define(version: 2024_01_07_152345) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "smaregi_code"
+    t.string "sales_life"
   end
 
   create_table "manual_directories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|

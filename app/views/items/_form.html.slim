@@ -34,6 +34,10 @@
     = f.label :tax_including_purchase_price, "仕入れ単価（税込）"
     = f.number_field :tax_including_purchase_price, class:"form-control tax_including_purchase_price"
   .form-group
+    = f.label :sales_life, "販売日数目安"
+    = f.text_field :sales_life, class:"form-control"
+
+  .form-group
     = f.label :memo, "メモ"
     = f.text_area :memo, class:"form-control",style:"height:10em;"
 

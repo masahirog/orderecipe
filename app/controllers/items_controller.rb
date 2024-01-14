@@ -66,6 +66,6 @@ class ItemsController < ApplicationController
 
     def item_params
       params.require(:item).permit(:name,:variety,:category,:memo,:reduced_tax_flag,:sell_price,:tax_including_sell_price,
-        :purchase_price,:tax_including_purchase_price,:unit,:item_vendor_id,:smaregi_code)
+        :purchase_price,:tax_including_purchase_price,:unit,:item_vendor_id,:smaregi_code,:sales_life)
     end
 end
