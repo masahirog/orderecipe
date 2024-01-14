@@ -6,8 +6,11 @@ CSV.generate(encoding: Encoding::SJIS, row_sep: "\r\n", force_quotes: true) do |
   @daily_item_stores.each do |dis|
     if dis.subordinate_amount > 0
       item = dis.daily_item.item
+      sell_price = dis.tax_including_sell_price.to_s
+      sell_price_length = sell_price.length
+      sell_price = "0"*(5 - sell_price_length) + sell_price
       dis.subordinate_amount.times{
-        csv << ["321234530#{dis.tax_including_sell_price}3","#{item.item_vendor.area} #{item.item_vendor.store_name}","#{item.name} #{item.variety}",dis.sell_price,"(税込#{dis.tax_including_sell_price}円)",day]
+        csv << ["12#{item.smaregi_code}#{sell_price}","#{item.item_vendor.area} #{item.item_vendor.store_name}","#{item.name} #{item.variety}",dis.sell_price,"(税込#{dis.tax_including_sell_price}円)",day]
       }
     end
   end

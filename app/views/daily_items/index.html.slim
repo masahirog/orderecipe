@@ -74,18 +74,19 @@ javascript:
     item_select_change();
   });
   
-  $(".delivery_fee_input").on("change",function(){
+  $('body').on('change', '.delivery_fee_input' , function() {
     var komi = Math.floor($(this).val()*1.1);
     $(".tax_including_delivery_fee_input").val(komi);
     calculate();
   });
-  $(".tax_including_purchase_price_input").on("change",function(){
+
+  $('body').on('change', '.tax_including_purchase_price_input' , function() {
     var nuki = Math.ceil($(this).val()/1.08);
     $(".purchase_price_input").val(nuki);
     calculate();
   });
 
-  $(".delivery_amount_input").on("change",function(){
+  $('body').on('change', '.delivery_amount_input' , function() {
     subordinate();
     calculate();
   });
@@ -95,26 +96,25 @@ javascript:
     $(this).select();
   });
 
-  $(".dis_check_box").on("change",function(){
+  $('body').on('change', '.dis_check_box' , function() {
     subordinate();
     calculate();
   });
 
-
-  $(".item_sell_price").on("change",function(){
+  $('body').on('change', '.item_sell_price' , function() {
     calculate_tax_including_sell_price();
   });
-  $(".item_tax_including_purchase_price").on("change",function(){
+
+  $('body').on('change', '.item_tax_including_purchase_price' , function() {
     calculate_purchase_price();
   });
 
-  $(".item_reduced_tax_flag").on("change",function(){
+  $('body').on('change', '.item_reduced_tax_flag' , function() {
     calculate_tax_including_sell_price();
     calculate_purchase_price();
   });
 
-
-  $(".dis_sell_price_input").on("change",function(){
+  $('body').on('change', '.dis_sell_price_input' , function() {
     var sell_price = $(this).val();
     var reduce_tax_flag = $(".item_reduce_tax_flag").val();
     if (reduce_tax_flag == "1") {
