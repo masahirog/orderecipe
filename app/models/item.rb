@@ -7,7 +7,7 @@ class Item < ApplicationRecord
 	end
 
 	def self.search(params)
-		data = Item.all
+		data = Item.order("id DESC")
 		if params
 			data = data.where(['items.name LIKE ?', "%#{params["name"]}%"]) if params["name"].present?
 			data = data.where(['items.variety LIKE ?', "%#{params["variety"]}%"]) if params["variety"].present?
