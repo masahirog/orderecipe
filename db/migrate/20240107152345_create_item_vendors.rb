@@ -15,6 +15,7 @@ class CreateItemVendors < ActiveRecord::Migration[6.0]
       t.string :tel
       t.string :charge_person
       t.timestamps
+      t.boolean :unused_flag,null:false,default:false
     end
   end
 end

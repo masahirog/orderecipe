@@ -42,7 +42,7 @@
             select.form-control.item_vendor_select style="width:100%;margin-bottom:5px;"
               option value="" --
               - @item_vendors.each do |iv|
-                option value="#{iv.id}" = iv.store_name
+                option value="#{iv.id}" = "#{iv.producer_name}｜#{iv.store_name}"
 
             = f.collection_select :item_id, @items, :id, :view_name_and_variety, {include_blank:true},class:'form-control item_select',style:"width:width:100%;"
             input.item_reduce_tax_flag style='display: none;'
@@ -94,6 +94,7 @@
             input.form-control.arari readonly="true"
           td style="text-align: right"
             label style='margin-top:10px;' 売価
+            br
             label style='margin-top:10px;' 数
           = f.fields_for :daily_item_stores do |dis|
             = dis.hidden_field :store_id

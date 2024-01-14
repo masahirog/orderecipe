@@ -67,6 +67,16 @@ html lang="ja"
                       li = link_to "キッチン設定",edit_store_path(id:39)
                       li = link_to "全店舗一覧",stores_path()
 
+                  li.dropdown
+                    a.dropdown-toggle href="#" data-toggle="dropdown" role="button"
+                      |レシピ
+                      span.caret
+                    ul.dropdown-menu role="menu" style='width:250px;'
+                      li = link_to "商品一覧",products_path
+                      li = link_to "メニュー",menus_path
+                      li = link_to "食材・資材",materials_path
+                      li = link_to "食材月間使用確認",monthly_used_amount_materials_path
+                      li = link_to "野菜の使用量",materials_used_amount_materials_path
 
                   li.dropdown
                     a.dropdown-toggle href="#" data-toggle="dropdown" role="button"
@@ -96,16 +106,6 @@ html lang="ja"
                       li = link_to '仕入先一覧',item_vendors_path
                       li = link_to '商品一覧',items_path
 
-                  li.dropdown
-                    a.dropdown-toggle href="#" data-toggle="dropdown" role="button"
-                      |レシピ
-                      span.caret
-                    ul.dropdown-menu role="menu" style='width:250px;'
-                      li = link_to "商品一覧",products_path
-                      li = link_to "メニュー",menus_path
-                      li = link_to "食材・資材",materials_path
-                      li = link_to "食材月間使用確認",monthly_used_amount_materials_path
-                      li = link_to "野菜の使用量",materials_used_amount_materials_path
                   li.dropdown
                     a.dropdown-toggle href="#" data-toggle="dropdown" role="button"
                       |データ

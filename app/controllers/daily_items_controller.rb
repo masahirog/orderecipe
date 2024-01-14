@@ -27,7 +27,7 @@ class DailyItemsController < ApplicationController
   end
   def index
     @stores = current_user.group.stores
-    @item_vendors = ItemVendor.all
+    @item_vendors = ItemVendor.where(unused_flag:false)
     if params[:date].present?
       @date = params[:date].to_date
     else
@@ -57,7 +57,7 @@ class DailyItemsController < ApplicationController
       @category_sum[category]["arari_rate"] = (arari/estimated_sales.to_f*100).round(1) if estimated_sales > 0
     end
     @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    DailyItemStore.includes([:daily_item]).where(daily_item_id:@daily_items.ids).each do |dis|
+    DailyItemStore.includes(:daily_item).where(daily_item_id:@daily_items.ids).each do |dis|
       if dis.subordinate_amount > 0
         @hash[dis.daily_item_id][dis.store_id]["subordinate_amount"] = dis.subordinate_amount
         @hash[dis.daily_item_id][dis.store_id]["unit"] = dis.daily_item.unit
@@ -125,7 +125,7 @@ class DailyItemsController < ApplicationController
   def update
     respond_to do |format|
       if @daily_item.update(daily_item_params)
-        format.html { redirect_to daily_item_url(@daily_item), info: "更新しました。" }
+        format.html { redirect_to daily_items_path(date:@daily_item.date), info: "#{@daily_item.item.item_vendor.store_name} の #{@daily_item.item.name}/#{@daily_item.item.variety} を更新しました。" }
         format.json { render :show, status: :ok, location: @daily_item }
       else
         format.html { render :edit, status: :unprocessable_entity }

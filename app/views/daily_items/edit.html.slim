@@ -1,8 +1,171 @@
-h1 Editing daily_item
+= form_with(model: @daily_item, data: {remote: true}) do |f|
+  .form-group
+    h3 = "#{f.object.item.name}/#{f.object.item.variety}｜#{f.object.item.item_vendor.store_name}"
+    input.item_reduce_tax_flag style='display:none;' value="#{@daily_item.item.reduced_tax_flag}"
+  .form-group.col-md-12
+    = f.label :date,"納品日"
+    h4 = f.object.date
 
-== render 'form'
+  .form-group.col-md-2
+    = f.label :purpose,"目的"
+    = f.select :purpose, options_for_select_from_enum(DailyItem, :purpose),{}, { class: "form-control",style:""}
+  .form-group.col-md-2
+    = f.label :delivery_amount,"納品量"
+    .clearfix
+      = f.number_field :delivery_amount,class:'form-control delivery_amount_input',style:"float:left;width:100px;margin-bottom:5px;margin-right:5px;", required:true
+      = f.select :unit, options_for_select_from_enum(DailyItem, :unit),{}, { class: "form-control unit_input",style:"float:left;width:100px;"}
+  .form-group.col-md-12
+    = f.label :purchase_price,"メモ"
+    = f.text_field :memo,class:'form-control',placeholder:'メモ'
+  .form-group.clearfix.col-md-12
+    h4 仕入れ単価
+    = f.label :purchase_price,"税抜：",style:"float:left;margin:10px 5px 0 0;"
+    = f.number_field :purchase_price,class:'form-control purchase_price_input',style:"margin-bottom:5px;width:100px;float:left;",readonly:true, required:true
+    span style='float:left;margin-top:10px;margin-left:5px;' 円
+    = f.label :purchase_price,"税込：",style:"float:left;margin:10px 5px 0 20px;"
+    = f.number_field :tax_including_purchase_price,class:'form-control tax_including_purchase_price_input',style:"width:100px;float:left;", required:true
+    span style='float:left;margin-top:10px;margin-left:5px;' 円
+  .form-group.clearfix.col-md-12
+    h4 送料
+    = f.label :delivery_fee,"税抜：",style:"float:left;margin:10px 5px 0 0;"
+    = f.number_field :delivery_fee,class:'form-control delivery_fee_input',style:"margin-bottom:5px;width:100px;float:left;", required:true
+    span style='float:left;margin-top:10px;margin-left:5px;' 円
+    = f.label :tax_including_delivery_fee,"税込：",style:"float:left;margin:10px 5px 0 20px;"
+    = f.number_field :tax_including_delivery_fee,class:'form-control tax_including_delivery_fee_input',style:"margin-bottom:5px;width:100px;float:left;",readonly:true, required:true
+    span style='float:left;margin-top:10px;margin-left:5px;' 円
+  .form-group.clearfix.col-md-12
+    h4 仕入れ小計
+    = f.label :subtotal_price,"税抜：",style:"float:left;margin:10px 5px 0 0;"
+    = f.number_field :subtotal_price,class:'form-control subtotal_price_input',style:"margin-bottom:5px;width:100px;float:left;",readonly:true, required:true
+    span style='float:left;margin-top:10px;margin-left:5px;' 円
+    = f.label :tax_including_subtotal_price,"税込：",style:"float:left;margin:10px 5px 0 20px;"
+    = f.number_field :tax_including_subtotal_price,class:'form-control tax_including_subtotal_price_input',style:"width:100px;float:left;",readonly:true, required:true
+    span style='float:left;margin-top:10px;margin-left:5px;' 円
+  .form-group.clearfix.col-md-12
+    h4 想定売上
+    = f.label :estimated_sales,"税抜：",style:"float:left;margin:10px 5px 0 0;"
+    = f.number_field :estimated_sales,class:'form-control estimated_sales_input',style:"margin-bottom:5px;width:100px;float:left;",readonly:true, required:true
+    span style='float:left;margin-top:10px;margin-left:5px;' 円
+    = f.label :tax_including_estimated_sales,"税込：",style:"float:left;margin:10px 5px 0 20px;"
+    = f.number_field :tax_including_estimated_sales,class:'form-control tax_including_estimated_sales_input',style:"width:100px;float:left;",readonly:true, required:true
+    span style='float:left;margin-top:10px;margin-left:5px;' 円
+  .form-group.clearfix.col-md-12
+    h4 粗利
+    label style="float:left;margin:10px 5px 0 0;" 粗利率：
+    input.form-control.ararirate readonly="true" style='margin-bottom:5px;width:150px;float:left;'
+    label style="float:left;margin:10px 5px 0 20px;" 粗利額：
+    input.form-control.arari readonly="true" style="width:150px;float:left;"
+  table.table
+    thead
+      tr
+        th 店舗名
+        th 均等割振チェック
+        th 税抜き販売単価
+        th 配下数
+        th
+    tbody
+      = f.fields_for :daily_item_stores do |dis|
+        tr class="dis_tr dis_tr_#{dis.object.store_id}"
+          td style="width:200px;"
+            = dis.object.store.short_name
+          td style="width:150px;"
+            = dis.hidden_field :store_id,class:"store_id"
+            input.dis_check_box type="checkbox"
+          td style="width:200px;"
+            = dis.number_field :sell_price,class:'dis_sell_price_input form-control', required:true
+            = dis.hidden_field :tax_including_sell_price,class:'dis_tax_including_sell_price_input form-control'
+          td style="width:200px;" = dis.number_field :subordinate_amount,class:' subordinate_amount_input form-control', required:true
+          td
+  .form-group
+    = f.submit '更　新',class:'btn btn-success',style:'width:200px;'
+    = link_to '削除', daily_item_path(@daily_item), method: :delete, data: { confirm: '本当にOK？' }, method: :delete,class:'btn btn-danger',style:'width:150px;margin-left:50px;'
 
-=> link_to 'Show', @daily_item
-'|
-=< link_to 'Back', daily_items_path
+javascript:
+  calculate();
+  $('body').on('change', '.delivery_fee_input' , function() {
+    var komi = Math.floor($(this).val()*1.1);
+    $(".tax_including_delivery_fee_input").val(komi);
+    calculate();
+  });
 
+  $('body').on('change', '.tax_including_purchase_price_input' , function() {
+    var nuki = Math.ceil($(this).val()/1.08);
+    $(".purchase_price_input").val(nuki);
+    calculate();
+  });
+
+  $('body').on('change', '.delivery_amount_input' , function() {
+    subordinate();
+    calculate();
+  });
+
+  $("input[type='number']").focus(function(){
+    $(this).select();
+  });
+
+  $('body').on('change', '.dis_check_box' , function() {
+    subordinate();
+    calculate();
+  });
+  $('body').on('change', '.subordinate_amount_input' , function() {
+    calculate();
+  });
+
+  $('body').on('change', '.dis_sell_price_input' , function() {
+    var sell_price = $(this).val();
+    var reduce_tax_flag = $(".item_reduce_tax_flag").val();
+    if (reduce_tax_flag == "true") {
+      var tax_rate = 1.08
+    }else{
+      var tax_rate = 1.1
+    }
+    var tax_including_sell_price = Math.floor(sell_price * tax_rate );
+    $(this).siblings(".dis_tax_including_sell_price_input").val(tax_including_sell_price);
+    calculate();
+  });
+
+  function subordinate(){
+    var delivery_amount = Number($(".delivery_amount_input").val());
+    var checked_count = $('input.dis_check_box:checked').length;
+    var subordinate_amount = Math.round(delivery_amount / checked_count)
+    // console.log(subordinate_amount);
+    $(".dis_tr").each(function(){
+      var store_id = $(this).find(".store_id").val();
+      if ( $(this).find(".dis_check_box").is(':checked') ){
+        $(".dis_tr_"+store_id).find(".subordinate_amount_input").val(subordinate_amount);
+      }else{
+        $(".dis_tr_"+store_id).find(".subordinate_amount_input").val(0);
+      }
+
+    });    
+  }
+
+  function calculate(){
+    var delivery_amount = Number($(".delivery_amount_input").val());
+    var unit_cost_price = Number($(".purchase_price_input").val());
+    var tax_including_unit_cost_price = Number($(".tax_including_purchase_price_input").val());
+    var delivery_fee = Number($(".delivery_fee_input").val());
+    var tax_including_delivery_fee = Number($(".tax_including_delivery_fee_input").val());
+    var cost = unit_cost_price * delivery_amount + delivery_fee
+
+    var sales = 0
+    var tax_including_sales = 0
+    $(".dis_sell_price_input").each(function(){
+      var sell_price = Number($(this).val());
+      var tax_including_sell_price = Number($(this).siblings('.dis_tax_including_sell_price_input').val());
+      var subordinate_amount = Number($(this).parents("tr").find(".subordinate_amount_input").val());
+      sales = sales + (sell_price * subordinate_amount);
+      tax_including_sales = tax_including_sales + (tax_including_sell_price * subordinate_amount);
+    });
+    var arari = sales - cost
+    var arari_rate = Math.round((arari / sales)*100, 1)
+
+    $(".estimated_sales_input").val(sales);
+    $(".tax_including_estimated_sales_input").val(tax_including_sales);
+    $(".subtotal_price_input").val(cost);
+    $(".tax_including_subtotal_price_input").val(tax_including_unit_cost_price * delivery_amount + tax_including_delivery_fee);
+    $(".ararirate").val(arari_rate+"%");
+    arari = String(arari).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+    $(".arari").val(arari+"円");
+  }
+  

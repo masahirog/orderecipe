@@ -41,6 +41,7 @@ table.table
 table.table
   thead
     tr
+      th
       th 用途
       th カテゴリ
       th 生産者
@@ -58,8 +59,6 @@ table.table
   tbody.add_point
     - @daily_items.each do |daily_item|
       = render partial: "tr", locals: { daily_item:daily_item}
-
-
 javascript:
   $('body').on('change', '.item_vendor_select' , function() {
     $.get({

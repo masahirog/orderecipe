@@ -11,7 +11,10 @@
 - elsif daily_item.item.category == "送料"
   - class_names = "label label-default"
 tr class="tr_#{daily_item.id}" style="background-color:#{color}"
-  td = daily_item.purpose
+  td
+    = link_to '編集',edit_daily_item_path(daily_item)
+  td
+    = daily_item.purpose
   td
     span class="#{class_names}" = daily_item.item.category
   td = link_to daily_item.item.item_vendor.store_name,edit_item_vendor_path(daily_item.item.item_vendor),target:'_blank'

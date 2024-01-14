@@ -20,7 +20,11 @@ table.table.table-striped
 
   tbody
     - @item_vendors.each do |item_vendor|
-      tr
+      - if item_vendor.unused_flag == true
+        - color = "silver"
+      - else
+        - color = "ffffff"
+      tr style="background-color:#{color}"
         td = link_to item_vendor.store_name,edit_item_vendor_path(item_vendor)
         td = item_vendor.producer_name
         td = item_vendor.area

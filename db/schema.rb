@@ -269,7 +269,7 @@ ActiveRecord::Schema.define(version: 2024_01_07_152345) do
     t.string "task_slack_url"
   end
 
-  create_table "item_vendors", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+  create_table "item_vendors", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "store_name"
     t.string "producer_name"
     t.string "area"
@@ -285,6 +285,7 @@ ActiveRecord::Schema.define(version: 2024_01_07_152345) do
     t.string "charge_person"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.boolean "unused_flag", default: false, null: false
   end
 
   create_table "items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
