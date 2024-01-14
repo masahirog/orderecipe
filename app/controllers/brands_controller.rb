@@ -54,6 +54,6 @@ class BrandsController < ApplicationController
     end
 
     def brand_params
-      params.require(:brand).permit(:id,:name,:group_id)
+      params.require(:brand).permit(:id,:name,:group_id,:unused_flag)
     end
 end

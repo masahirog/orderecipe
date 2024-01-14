@@ -100,10 +100,23 @@ javascript:
     calculate();
   });
 
+
+  $(".item_sell_price").on("change",function(){
+    calculate_tax_including_sell_price();
+  });
+  $(".item_tax_including_purchase_price").on("change",function(){
+    calculate_purchase_price();
+  });
+
+  $(".item_reduced_tax_flag").on("change",function(){
+    calculate_tax_including_sell_price();
+    calculate_purchase_price();
+  });
+
+
   $(".dis_sell_price_input").on("change",function(){
     var sell_price = $(this).val();
     var reduce_tax_flag = $(".item_reduce_tax_flag").val();
-    console.log(reduce_tax_flag)
     if (reduce_tax_flag == "1") {
       var tax_rate = 1.08
     }else{
@@ -170,7 +183,31 @@ javascript:
     arari = String(arari).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
     $(".arari").val(arari+"円");
   }
+  
+  function calculate_tax_including_sell_price(){
+    var sell_price = $(".item_sell_price").val();
+    var reduce_tax_flag = $(".item_reduced_tax_flag").prop("checked");
 
+    if (reduce_tax_flag == true) {
+      var tax_rate = 1.08
+    }else{
+      var tax_rate = 1.1
+    }
+    var tax_including_sell_price = Math.floor(sell_price * tax_rate );
+    $(".item_tax_including_sell_price").val(tax_including_sell_price);
+  };
+
+  function calculate_purchase_price(){
+    var tax_including_purchase_price = $(".item_tax_including_purchase_price").val();
+    var reduce_tax_flag = $(".item_reduced_tax_flag").prop("checked");
+    if (reduce_tax_flag == true) {
+      var tax_rate = 1.08
+    }else{
+      var tax_rate = 1.1
+    }
+    var purchase_price = Math.ceil(tax_including_purchase_price / tax_rate );
+    $(".item_purchase_price").val(purchase_price);
+  };
 
 
 css:

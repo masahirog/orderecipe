@@ -11,8 +11,13 @@
             = message
   .col-md-12.form-group
     .col-md-2
-      = f.label :brand_id, "ブランド"
-      = f.collection_select :brand_id, Brand.where(group_id:@group_id), :id, :name, {}, { class: "form-control"}
+      - if @product.brand_id.nil? || @brands.map{|brand|brand.id}.include?(@product.brand_id) 
+        = f.label :brand_id, "ブランド"
+        = f.collection_select :brand_id, @brands, :id, :name, {}, { class: "form-control"}
+      - else
+        label ブランド
+        br
+        span = @product.brand.name
 
     .col-md-3
       = f.label :name, "商品名"
@@ -53,20 +58,20 @@
 
     .col-md-1
       = f.label :reduced_tax_flag, "軽減税率"
-      = f.check_box :reduced_tax_flag, class: "form-control"
+      = f.check_box :reduced_tax_flag, class: "form-control reduced_tax_flag"
 
     .col-md-2
       = f.label :sell_price, "税抜価格"
       .form-inline
         .form-group
-          = f.number_field :sell_price, class:"price form-control text-right",style:'width:150px;', required:true
+          = f.number_field :sell_price, class:"sell_price form-control text-right",style:'width:150px;', required:true
           .form-group
             |円
     .col-md-2
       = f.label :tax_including_sell_price, "税込価格"
       .form-inline
         .form-group
-          = f.number_field :tax_including_sell_price, class:"price form-control text-right",style:'width:150px;', required:true,readonly:true
+          = f.number_field :tax_including_sell_price, class:"tax_including_sell_price form-control text-right",style:'width:150px;', required:true,readonly:true
           .form-group
             |円
     .col-md-2
@@ -214,3 +219,24 @@
 
 
 javascript:
+  $(".sell_price").on("change",function(){
+    calculate_tax_including_sell_price();
+  });
+
+  $(".reduced_tax_flag").on("change",function(){
+    calculate_tax_including_sell_price();
+    calculate_purchase_price();
+  });
+  
+  function calculate_tax_including_sell_price(){
+    var sell_price = $(".sell_price").val();
+    var reduce_tax_flag = $(".reduced_tax_flag").prop("checked");
+
+    if (reduce_tax_flag == true) {
+      var tax_rate = 1.08
+    }else{
+      var tax_rate = 1.1
+    }
+    var tax_including_sell_price = Math.floor(sell_price * tax_rate );
+    $(".tax_including_sell_price").val(tax_including_sell_price);
+  };

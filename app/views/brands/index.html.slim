@@ -8,6 +8,10 @@ table.table
 
   tbody
     - @brands.each do |brand|
-      tr
+      - if brand.unused_flag == true
+        - bg_color = "silver"
+      - else
+        - bg_color = "ffffff"
+      tr style="background-color:#{bg_color}"
         td = brand.name
         td = link_to '編集', edit_brand_path(brand)

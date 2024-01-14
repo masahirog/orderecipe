@@ -80,11 +80,12 @@ ActiveRecord::Schema.define(version: 2024_01_07_152345) do
     t.float "nomination_rate", default: 0.0, null: false
   end
 
-  create_table "brands", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+  create_table "brands", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "group_id", null: false
+    t.boolean "unused_flag", default: false, null: false
   end
 
   create_table "containers", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|

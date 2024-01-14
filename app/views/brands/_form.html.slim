@@ -3,5 +3,9 @@
 		= f.label :name, "ブランド名"
 		= f.text_field :name, required: true, class:"form-control"
 		= f.hidden_field :group_id, class:"form-control"
+  .form-group
+		= f.label :unused_flag, "停止中"
+		= f.check_box :unused_flag, class: "form-control"
+
   .actions
     = f.submit '登録する',class:'btn btn-success'
