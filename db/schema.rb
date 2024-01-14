@@ -109,7 +109,7 @@ ActiveRecord::Schema.define(version: 2024_01_07_152345) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "daily_item_stores", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "daily_item_stores", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "daily_item_id"
     t.integer "store_id"
     t.integer "subordinate_amount"
@@ -119,7 +119,7 @@ ActiveRecord::Schema.define(version: 2024_01_07_152345) do
     t.integer "tax_including_sell_price", default: 0, null: false
   end
 
-  create_table "daily_items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "daily_items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.date "date", null: false
     t.integer "purpose", null: false
     t.integer "item_id", null: false
@@ -268,7 +268,7 @@ ActiveRecord::Schema.define(version: 2024_01_07_152345) do
     t.string "task_slack_url"
   end
 
-  create_table "item_vendors", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "item_vendors", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "store_name"
     t.string "producer_name"
     t.string "area"
@@ -291,7 +291,7 @@ ActiveRecord::Schema.define(version: 2024_01_07_152345) do
     t.string "variety"
     t.integer "category"
     t.text "memo"
-    t.integer "reduced_tax_flag", default: 1, null: false
+    t.boolean "reduced_tax_flag", default: true, null: false
     t.integer "sell_price"
     t.integer "tax_including_sell_price"
     t.integer "purchase_price"
@@ -300,6 +300,7 @@ ActiveRecord::Schema.define(version: 2024_01_07_152345) do
     t.integer "item_vendor_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "smaregi_code"
   end
 
   create_table "manual_directories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -611,6 +612,7 @@ ActiveRecord::Schema.define(version: 2024_01_07_152345) do
     t.string "smaregi_code"
     t.boolean "warm_flag", default: false, null: false
     t.integer "tax_including_sell_price", null: false
+    t.boolean "reduced_tax_flag", default: true, null: false
   end
 
   create_table "refund_supports", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

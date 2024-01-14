@@ -10,7 +10,7 @@
           li
             = message
   .col-md-12.form-group
-    .col-md-1
+    .col-md-2
       = f.label :brand_id, "ブランド"
       = f.collection_select :brand_id, Brand.where(group_id:@group_id), :id, :name, {}, { class: "form-control"}
 
@@ -45,11 +45,15 @@
         = f.check_box :warm_flag, class: "form-control"
 
       .col-md-1
-        = f.label :bejihan_only_flag, "べじはんのみ発注可"
+        = f.label :bejihan_only_flag, "べじはんのみ"
         = f.check_box :bejihan_only_flag, class: "form-control"
       .col-md-1
         = f.label :bejihan_sozai_flag, "べじはん惣菜"
         = f.check_box :bejihan_sozai_flag, class: "form-control"
+
+    .col-md-1
+      = f.label :reduced_tax_flag, "軽減税率"
+      = f.check_box :reduced_tax_flag, class: "form-control"
 
     .col-md-2
       = f.label :sell_price, "税抜価格"
@@ -62,7 +66,7 @@
       = f.label :tax_including_sell_price, "税込価格"
       .form-inline
         .form-group
-          = f.number_field :tax_including_sell_price, class:"price form-control text-right",style:'width:150px;', required:true
+          = f.number_field :tax_including_sell_price, class:"price form-control text-right",style:'width:150px;', required:true,readonly:true
           .form-group
             |円
     .col-md-2
@@ -207,3 +211,6 @@
         = render 'product_menu_fields', f: pr
   .action.col-md-12
     = f.submit "登録する",class:'btn btn-success'
+
+
+javascript:

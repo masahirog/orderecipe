@@ -5,7 +5,7 @@ class CreateItems < ActiveRecord::Migration[6.0]
       t.string :variety
       t.integer :category
       t.text :memo
-      t.integer :reduced_tax_flag,null:false,default:true
+      t.boolean :reduced_tax_flag,null:false,default:true
       t.integer :sell_price
       t.integer :tax_including_sell_price
       t.integer :purchase_price
@@ -13,6 +13,7 @@ class CreateItems < ActiveRecord::Migration[6.0]
       t.integer :unit
       t.integer :item_vendor_id,null:false
       t.timestamps
+      t.string :smaregi_code
     end
   end
 end

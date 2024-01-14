@@ -7,6 +7,9 @@
     = f.label :variety, "品種"
     = f.text_field :variety, class:"form-control"
   .form-group
+    = f.label :smaregi_code, "スマレジ商品コード 5桁"
+    = f.text_field :smaregi_code, class:"form-control"
+  .form-group
     = f.label :item_vendor_id, "仕入先",class:'required'
     = f.collection_select :item_vendor_id, ItemVendor.all, :id, :store_name, {}, { class: "form-control"}
   .form-group
@@ -15,7 +18,6 @@
   .form-group
     = f.label :unit, "単位"
     = f.select :unit, options_for_select_from_enum(Item, :unit),{}, { class: "form-control"}
-
   .form-group
     = f.label :reduced_tax_flag, "軽減税率",class:'required'
     = f.check_box :reduced_tax_flag,class:'form-control',style:'width:30px;'
