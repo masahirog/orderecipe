@@ -40,6 +40,7 @@ table.table
       th style='width:400px;' 商品名
       th style="size:10px;" 皿容器
       th カテゴリ（サブ）
+      th スマレジコード
       th.text-right 売価
       th.text-right 原価
       th.text-right 原価率
@@ -64,6 +65,11 @@ table.table
           span = product.product_category
           - if product.sub_category.present?
             span = "（#{product.sub_category}）"
+        td
+          - if product.smaregi_code.length == 5
+            = link_to product.smaregi_code,"https://www1.smaregi.jp/control/master/product/detail.html?productId=#{product.smaregi_code}",target:"_blank"
+          - else
+            = product.smaregi_code
         td.text-right = "#{product.sell_price}円"
         td.price.text-right = "#{product.cost_price}円"
         td.text-right

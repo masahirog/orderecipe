@@ -14,6 +14,7 @@ table.table.table-striped
       th 名前
       th 品種
       th 仕入先
+      th スマレジコード
       th カテゴリ
       th 単位
       th 軽減税率
@@ -29,6 +30,9 @@ table.table.table-striped
         td = link_to item.name,edit_item_path(item)
         td = item.variety
         td = item.item_vendor.store_name
+        td
+          - if item.smaregi_code
+            = link_to item.smaregi_code,"https://www1.smaregi.jp/control/master/product/detail.html?productId=#{item.smaregi_code}",target:"_blank"
         td = item.category
         td = item.unit
         td = item.reduced_tax_flag

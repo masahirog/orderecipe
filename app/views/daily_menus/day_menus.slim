@@ -147,7 +147,10 @@ table.table
 
 				td
 					- if dmd.product.smaregi_code.present?
-						= dmd.product.smaregi_code
+						- if dmd.product.smaregi_code.length == 5
+							= link_to dmd.product.smaregi_code,"https://www1.smaregi.jp/control/master/product/detail.html?productId=#{dmd.product.smaregi_code}",target:"_blank"
+						- else
+							= dmd.product.smaregi_code
 					- else
 						spna style='color:red;font-weight: bold;' 入力！
 				td = dmd.sell_price
