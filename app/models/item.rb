@@ -5,4 +5,14 @@ class Item < ApplicationRecord
 	def view_name_and_variety
 		self.name + "　" + self.variety
 	end
+
+	def self.search(params)
+		data = Item.all
+		if params
+			data = data.where(['items.name LIKE ?', "%#{params["name"]}%"]) if params["name"].present?
+			data = data.where(['items.variety LIKE ?', "%#{params["variety"]}%"]) if params["variety"].present?
+			data = data.where(item_vendor_id: params["item_vendor_id"]) if params["item_vendor_id"].present?
+			data
+		end
+	end
 end

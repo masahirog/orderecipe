@@ -11,7 +11,7 @@ class ItemsController < ApplicationController
     @items = Item.where(item_vendor_id:item_vendor_id).order(:name)
   end
   def index
-    @items = Item.includes([:item_vendor]).all
+    @search = Item.includes([:item_vendor]).search(params).page(params[:page]).per(50)
   end
 
   def show
