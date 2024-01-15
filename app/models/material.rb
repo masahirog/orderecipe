@@ -115,6 +115,17 @@ class Material < ApplicationRecord
     @ar = ar
   end
 
+  def self.cost_price_update
+    update_materials = []
+    Material.all.each do |material|
+      if material.recipe_unit_quantity > 0
+        material.cost_price = (material.recipe_unit_price / material.recipe_unit_quantity.to_f).round(2)
+        update_materials << material        
+      end
+    end
+    Material.import update_materials, on_duplicate_key_update:[:cost_price]
+  end
+
   def reject_additives(attributed)
      attributed['food_additive_id'].blank?
   end
