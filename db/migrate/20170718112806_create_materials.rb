@@ -28,6 +28,7 @@ class CreateMaterials < ActiveRecord::Migration[4.2]
       t.boolean :subdivision_able, :null => false, :default => false
       t.integer :group_id, :null => false
       t.integer :target_material_id
+      t.date :price_update_date
     end
   end
 end

@@ -398,6 +398,7 @@ ActiveRecord::Schema.define(version: 2024_01_07_152345) do
     t.boolean "subdivision_able", default: false, null: false
     t.integer "group_id", null: false
     t.integer "target_material_id"
+    t.date "price_update_date"
   end
 
   create_table "menu_cook_checks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
