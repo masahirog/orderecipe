@@ -17,7 +17,7 @@ tr class="tr_#{daily_item.id}" style="background-color:#{color}"
     = daily_item.purpose
   td
     span class="#{class_names}" = daily_item.item.category
-  td = link_to daily_item.item.item_vendor.store_name,edit_item_vendor_path(daily_item.item.item_vendor),target:'_blank'
+  td = link_to "#{daily_item.item.item_vendor.store_name}",edit_item_vendor_path(daily_item.item.item_vendor),target:'_blank'
   td = link_to "#{daily_item.item.name} #{daily_item.item.variety}",edit_item_path(daily_item.item),target:'_blank'
   td = "#{daily_item.delivery_amount} #{daily_item.unit}"
   td = daily_item.memo
@@ -49,10 +49,14 @@ tr class="tr_#{daily_item.id}" style="background-color:#{color}"
   td
     - arari = daily_item.estimated_sales - daily_item.subtotal_price
     span = arari.to_s(:delimited)
-    br
-    span style='font-size:0.9em;' （
-    span style='font-size:0.9em;' = (arari / daily_item.estimated_sales.to_f * 100).round if daily_item.estimated_sales > 0
-    span style='font-size:0.9em;' %）
+    - if daily_item.estimated_sales > 0
+      - arari_rate = (arari / daily_item.estimated_sales.to_f * 100).round 
+      - if arari_rate < 30
+        - color = "red"
+      - else
+        - color = "000000"
+      br
+      span style='font-size:0.9em;color:#{color};' = "（#{arari_rate}%）"
   - @stores.each do |store|
     td.text-center
       = "#{@hash[daily_item.id][store.id]['sell_price']}"

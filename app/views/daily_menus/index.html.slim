@@ -10,17 +10,17 @@ button type="button" class="btn btn-default" data-toggle="modal" data-target="#s
             thead
               tr
                 th 日付
-                - @stores.each do |store|
+                - @all_stores.each do |store|
                   th
                     div
-                    div = store.name
+                    div = store.short_name
             tbody
               - @today_after_daily_menus.each do |dm|
                 tr
                   td.date
                     span = dm.start_time.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[dm.start_time.wday]})")
                     input.all_box type="checkbox"
-                  - @stores.each do |store|
+                  - @all_stores.each do |store|
                     td.clearfix
                       div style='float:left;'
                         - sdmds_count = 0

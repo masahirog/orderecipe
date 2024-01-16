@@ -23,8 +23,30 @@ class DailyItemsController < ApplicationController
       date = @today
     end
     dates =(date.beginning_of_month..date.end_of_month).to_a
-    @daily_items = DailyItem.where(date:dates)
+    @daily_items = DailyItem.where(date:dates,purpose:"物販")
+    @category_sum = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    @buppan_sum = {"estimated_sales_sum"=>0,"subtotal_price_sum"=>0,"arari_sum"=>0,"purchase_price_sum"=>0,"delivery_fee_sum"=>0}
+    ["野菜","果物","物産","送料"].each do |category|
+      daily_items = @daily_items.joins(:item).where(:items => {category:category})
+      subtotal_price_sum = daily_items.sum(:subtotal_price)
+      delivery_fee_sum = daily_items.sum(:delivery_fee)
+      purchase_price_sum = daily_items.map{|di|di.purchase_price * di.delivery_amount}.sum
+      estimated_sales = daily_items.sum(:estimated_sales)
+      arari = estimated_sales - subtotal_price_sum
+      @buppan_sum["estimated_sales_sum"] += estimated_sales
+      @buppan_sum["subtotal_price_sum"] += subtotal_price_sum
+      @buppan_sum["purchase_price_sum"] += purchase_price_sum
+      @buppan_sum["delivery_fee_sum"] += delivery_fee_sum
+      @buppan_sum["arari_sum"] += arari
+      @category_sum[category]["estimated_sales_sum"] = estimated_sales
+      @category_sum[category]["purchase_price_sum"] = purchase_price_sum
+      @category_sum[category]["delivery_fee_sum"] = delivery_fee_sum
+      @category_sum[category]["subtotal_price_sum"] = subtotal_price_sum
+      @category_sum[category]["arari_sum"] = arari
+      @category_sum[category]["arari_rate"] = (arari/estimated_sales.to_f*100).round(1) if estimated_sales > 0
+    end
   end
+
   def index
     @stores = current_user.group.stores
     @item_vendors = ItemVendor.where(unused_flag:false)

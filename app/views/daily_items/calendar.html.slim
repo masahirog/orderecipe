@@ -1,4 +1,36 @@
-h3 野菜仕入れスケジュール
+h3 物販スケジュール
+table.table
+  thead
+    tr
+      th 月次合計
+      th 想定売上
+      th 仕入価格
+      th 送料
+      th 原価
+      th 粗利
+  tbody
+    - @category_sum.each do |data|
+      tr
+        td = data[0]
+        td = "#{data[1]['estimated_sales_sum'].to_s(:delimited)}円"
+        td = "#{data[1]['purchase_price_sum'].to_s(:delimited)}円"
+        td = "#{data[1]['delivery_fee_sum'].to_s(:delimited)}円"
+        td = "#{data[1]['subtotal_price_sum'].to_s(:delimited)}円"
+        td
+          = "#{data[1]['arari_sum'].to_s(:delimited)}円"
+          = "｜#{data[1]["arari_rate"]}%" if data[1]["arari_rate"].present?
+    tr
+      th 合計
+      th = "#{@buppan_sum["estimated_sales_sum"].to_s(:delimited)}円"
+      th = "#{@buppan_sum["purchase_price_sum"].to_s(:delimited)}円"
+      th = "#{@buppan_sum["delivery_fee_sum"].to_s(:delimited)}円"
+      th = "#{@buppan_sum["subtotal_price_sum"].to_s(:delimited)}円"
+      th
+        = "#{@buppan_sum["arari_sum"].to_s(:delimited)}円"
+        = "｜#{(@buppan_sum["arari_sum"]/@buppan_sum["estimated_sales_sum"].to_f*100).round(1)}%"
+
+
+
 = month_calendar events: @daily_items, attribute: :date do |date, daily_items|
   - if daily_items.count > 0
     - sales = daily_items.map{|di|di.estimated_sales}.sum

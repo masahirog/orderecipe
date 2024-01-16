@@ -1,8 +1,10 @@
-.clearfix
-  = form_tag daily_items_path, :method => 'get' do
-    = date_field_tag :date, params[:date], class:"form-control",style:'width:200px;float:left;'
-    = submit_tag "表示" ,class:"btn btn-primary",style:'float:left;margin-left:10px;'
-  span style='font-size:2em;margin-left: 20px;' = "#{@date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@date.wday]})")}の仕入れ一覧"
+
+div
+  = link_to "#{@date.month}月カレンダー",calendar_daily_items_path,style:"margin-right:50px;"
+  = link_to "#{(@date - 1).strftime("%Y年%-m月%-d日(#{%w(日 月 火 水 木 金 土)[(@date-1).wday]})＜＜")}",daily_items_path(date:@date - 1)
+  span style='margin:0 15px;font-size:1.5em;' = @date.strftime("%Y年%-m月%-d日(#{%w(日 月 火 水 木 金 土)[@date.wday]})")
+  = link_to "#{(@date + 1).strftime("＞＞%Y年%-m月%-d日(#{%w(日 月 火 水 木 金 土)[(@date+1).wday]})")}",daily_items_path(date:@date + 1)
+
 .daily_item_form_area
   = render partial: "daily_item_form", locals: { daily_item:@daily_item,item:@item}
 .new_item_partial
@@ -18,15 +20,6 @@ table.table
       th 原価
       th 粗利
   tbody
-    tr
-      th 合計
-      th = "#{@buppan_sum["estimated_sales_sum"].to_s(:delimited)}円"
-      th = "#{@buppan_sum["purchase_price_sum"].to_s(:delimited)}円"
-      th = "#{@buppan_sum["delivery_fee_sum"].to_s(:delimited)}円"
-      th = "#{@buppan_sum["subtotal_price_sum"].to_s(:delimited)}円"
-      th
-        = "#{@buppan_sum["arari_sum"].to_s(:delimited)}円"
-        = "｜#{(@buppan_sum["arari_sum"]/@buppan_sum["estimated_sales_sum"].to_f*100).round(1)}%"
     - @category_sum.each do |data|
       tr
         td = data[0]
@@ -37,6 +30,15 @@ table.table
         td
           = "#{data[1]['arari_sum'].to_s(:delimited)}円"
           = "｜#{data[1]["arari_rate"]}%" if data[1]["arari_rate"].present?
+    tr
+      th 合計
+      th = "#{@buppan_sum["estimated_sales_sum"].to_s(:delimited)}円"
+      th = "#{@buppan_sum["purchase_price_sum"].to_s(:delimited)}円"
+      th = "#{@buppan_sum["delivery_fee_sum"].to_s(:delimited)}円"
+      th = "#{@buppan_sum["subtotal_price_sum"].to_s(:delimited)}円"
+      th
+        = "#{@buppan_sum["arari_sum"].to_s(:delimited)}円"
+        = "｜#{(@buppan_sum["arari_sum"]/@buppan_sum["estimated_sales_sum"].to_f*100).round(1)}%"
 
 table.table
   thead
