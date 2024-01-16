@@ -23,13 +23,11 @@ class PriceCard < Prawn::Document
           fill_color '000000'
 
           if product.food_label_name.length < 15
-            text_box(product.food_label_name,at: [215,h-15], width: 280, height: 50,size:21,valign: :bottom, leading: 3,align: :center)
-          elsif product.food_label_name.length < 17
-            text_box(product.food_label_name,at: [215,h-15], width: 280, height: 50,size:19,valign: :bottom, leading: 3,align: :center)
+            text_box(product.food_label_name,at: [210,h-15], width: 290, height: 50,size:20,valign: :bottom, leading: 3,align: :center)
           elsif product.food_label_name.length < 19
-            text_box(product.food_label_name,at: [215,h-15], width: 280, height: 50,size:18,valign: :bottom, leading: 3,align: :center)
+            text_box(product.food_label_name,at: [210,h-15], width: 290, height: 50,size:18,valign: :bottom, leading: 3,align: :center)
           else
-            text_box(product.food_label_name,at: [215,h-15], width: 280, height: 50,size:17,valign: :bottom, leading: 4,align: :center)
+            text_box(product.food_label_name,at: [210,h-15], width: 290, height: 50,size:17,valign: :bottom, leading: 4,align: :center)
           end
 
 
@@ -75,13 +73,13 @@ class PriceCard < Prawn::Document
           stroke_color 'ececec'
           stroke_rectangle [10,h], 510, 184
           if product.food_label_name.length < 15
-            text_box(product.food_label_name,at: [40,h-20], width: 450, height: 50,size:32,valign: :bottom, leading: 5,align: :center)
-          elsif product.food_label_name.length < 17
             text_box(product.food_label_name,at: [40,h-20], width: 450, height: 50,size:30,valign: :bottom, leading: 5,align: :center)
+          elsif product.food_label_name.length < 17
+            text_box(product.food_label_name,at: [40,h-20], width: 450, height: 50,size:27,valign: :bottom, leading: 5,align: :center)
           elsif product.food_label_name.length < 19
             text_box(product.food_label_name,at: [40,h-20], width: 450, height: 50,size:25,valign: :bottom, leading: 5,align: :center)
           else
-            text_box(product.food_label_name,at: [65,h-20], width: 400, height: 50,size:21,valign: :bottom, leading: 5,align: :center)
+            text_box(product.food_label_name,at: [65,h-20], width: 400, height: 50,size:22,valign: :bottom, leading: 5,align: :center)
           end
 
           line_width 2
