@@ -40,30 +40,48 @@ table.table
         = "#{@buppan_sum["arari_sum"].to_s(:delimited)}円"
         = "｜#{(@buppan_sum["arari_sum"]/@buppan_sum["estimated_sales_sum"].to_f*100).round(1)}%"
 
-table.table
-  thead
-    tr
-      th
-      th 用途
-      th カテゴリ
-      th 生産者
-      th 商品
-      th 納品量
-      th メモ
-      th 仕入値
-      th 送料
-      th 仕入小計
-      th 見込売上
-      th 粗利
+.table-responsive style="overflow: scroll;overscroll-behavior-x: contain;"
+  table.table.layout-fixed style='border-collapse:separate;'
+    colgroup
+      col class="col90"
+      col class="col90"
+      col class="col90"
+      col class="col140"
+      col class="col240"
+      col class="col140"
+      col class="col240"
+      col class="col140"
+      col class="col140"
+      col class="col140"
+      col class="col90"
       - @stores.each do |store|
-        th.text-center
-          = link_to store.short_name, label_daily_items_path(store_id:store.id,date:params[:date],format:'csv'), method: :post
-  tbody.add_point
-    - @buppan_daily_items.each do |daily_item|
-      = render partial: "tr", locals: { daily_item:daily_item,purpose:"物販"}
-    - @sozai_daily_items.each do |daily_item|
-      = render partial: "tr", locals: { daily_item:daily_item,purpose:"惣菜"}
+        col class="col90"
+      col class="col90"
+    thead
+      tr
+        th
+        th 用途
+        th カテゴリ
+        th 生産者
+        th 商品
+        th 納品量
+        th メモ
+        th 仕入値
+        th 送料
+        th 仕入小計
+        th 見込売上
+        th 粗利
+        - @stores.each do |store|
+          th.text-center
+            = link_to store.short_name, label_daily_items_path(store_id:store.id,date:params[:date],format:'csv'), method: :post
+        th
+    tbody.add_point
+      - @buppan_daily_items.each do |daily_item|
+        = render partial: "tr", locals: { daily_item:daily_item,purpose:"物販"}
+      - @sozai_daily_items.each do |daily_item|
+        = render partial: "tr", locals: { daily_item:daily_item,purpose:"惣菜"}
 javascript:
+  $(".item_select2").select2({width:"230px"});
   $('body').on('change', '.item_vendor_select' , function() {
     $.get({
       url: "#{get_vendor_items_items_path}",
@@ -240,4 +258,18 @@ css:
   }
   .col90{
     width:90px;
+  }
+  .select2-results , .select2-results__options {
+    max-height: 500px !important;
+    height: 500px !important;
+  }
+  .select2-selection__rendered {
+    line-height: 28px !important;
+  }
+  .select2-container .select2-selection--single {
+      height: 34px !important;
+      border-color: #cccccc;
+  }
+  .select2-selection__arrow {
+      height: 31px !important;
   }

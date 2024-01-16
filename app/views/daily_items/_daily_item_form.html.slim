@@ -1,6 +1,6 @@
 = form_with(model: daily_item, data: {remote: true}) do |f|
   = f.hidden_field :date
-  .col-md-12.table-responsive.schedule_table style="overflow: scroll;overscroll-behavior-x: contain;"
+  .table-responsive.schedule_table style="overflow: scroll;overscroll-behavior-x: contain;"
     table.table.layout-fixed style='border-collapse:separate;'
       colgroup
           col class="col240"
@@ -38,13 +38,14 @@
           th
       tbody
         tr
-          td
-            select.form-control.item_vendor_select style="width:100%;margin-bottom:5px;"
-              option value="" --
-              - @item_vendors.each do |iv|
-                option value="#{iv.id}" = "#{iv.producer_name}｜#{iv.store_name}"
-
-            = f.collection_select :item_id, @items, :id, :view_name_and_variety, {include_blank:true},class:'form-control item_select',style:"width:width:100%;"
+          td style="background-color:#ffffff;"
+            div style='margin-bottom: 5px;'
+              select.item_select2.form-control.item_vendor_select
+                option value="" --
+                - @item_vendors.each do |iv|
+                  option value="#{iv.id}" = "#{iv.producer_name}｜#{iv.store_name}"
+            div
+              = f.collection_select :item_id, @items, :id, :view_name_and_variety, {include_blank:true},class:'form-control item_select item_select2'
             input.item_reduce_tax_flag style='display: none;'
           td.clearfix
             = f.select :purpose, options_for_select_from_enum(DailyItem, :purpose),{}, { class: "form-control",style:"float:left;width:100px;argin-bottom:5px;margin-right:5px;"}

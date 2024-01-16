@@ -24,6 +24,7 @@ $(document).on("turbolinks:before-cache", function() {
   $('.select_order_materials').select2('destroy');
   $('.material_search').select2('destroy');
   $('.input-stock-materials-name').select2('destroy');
+  $('.item_select2').select2('destroy');
 });
 
 $(document).on('select2:open', () => {
