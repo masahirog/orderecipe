@@ -2,7 +2,7 @@
 	label メニュー名：
 	h4 = @menu_material.menu.name
 	label デフォルトの食材：
-	h4 = "#{@menu_material.material.name} 1人前あたり #{@menu_material.amount_used}#{@menu_material.material.recipe_unit} 使用"
+	h4 = "【 #{@menu_material.material.name} 】 1人前あたり #{@menu_material.amount_used}#{@menu_material.material.recipe_unit} 使用"
 .form-group
 	= link_to "＜#{@last.month}月",new_temporary_menu_material_path(date:@last,menu_material_id:@menu_material.id)
 	span ="　　#{@date.month}月　　"
@@ -10,33 +10,92 @@
 = form_tag(:controller => "temporary_menu_materials", :action => "ikkatsu_update") do
 	= hidden_field_tag :menu_material_id,@menu_material.id
 	= submit_tag "材料の変更", class:"btn btn-success pull-right", data: { confirm: "変更してよろしいですか？"}
+
 	table.table
 		thead
 			tr
 				th 日付
 				th 食数
 				th 使用量
-				th 変更後の食材
-				th 解除
+				th
+					input.all_checked type="checkbox"
+				td style='width: 200px;'
+					label 食材の変更
+					select.input_select_material.form-control.bulk_change
+	  					option value="" 一括変更 （チェック済みを変更）
+
+				th.text-right 解除
 		tbody
-			- @dates.each_with_index do |date,i|
-				- tmm = @hash[date]
-				- if tmm.present?
-					- material_id = tmm.material_id
-					- bg = '#fafad2'
+			- @dmds_hash.each do |data|
+				- if @hash[data[0]]
+					- material_id = @hash[data[0]].material_id 
 				- else
 					- material_id = ''
-					- bg = '#ffffff'
-				tr style="background-color:#{bg}"
-					td = date.strftime("%Y/%-m/%-d(#{%w(日 月 火 水 木 金 土)[date.wday]})")
-					td = @dmds_hash[date].manufacturing_number if @dmds_hash[date]
-					td = "#{(@dmds_hash[date].manufacturing_number*@menu_material.amount_used).round.to_s(:delimited)} #{@menu_material.material.recipe_unit}" if @dmds_hash[date]
+				tr
+					td = data[0].strftime("%Y/%-m/%-d(#{%w(日 月 火 水 木 金 土)[data[0].wday]})")
+					td = data[1].manufacturing_number
+					td = "#{(data[1].manufacturing_number*@menu_material.amount_used).round.to_s(:delimited)} #{@menu_material.material.recipe_unit}"
+					td
+						input.tmm_check_box type="checkbox"
 					td
 						/ = select_tag :shohin_id, options_for_select(@shohin_ids,params[:shohin_id]),include_blank:'商品ID' , class: "form-control",placeholder:'商品ID'
-						= select_tag("temporary_menu_material_#{date}_material_id", options_for_select(@materials,material_id), include_blank: true,class:"input_select_material", name:"temporary_menu_material[#{date}][material_id]",style:'width:300px;')
-					td
+						= select_tag("temporary_menu_material_#{data[0]}_material_id", options_for_select(@materials,material_id), include_blank: true,class:"input_select_material", name:"temporary_menu_material[#{data[0]}][material_id]",style:'width:300px;')
+					td.text-right
 						input type="button" class='clear-btn btn btn-danger btn-sm' value="解除"
+
+			/ - @dates.each_with_index do |date,i|
+			/ 	- tmm = @hash[date]
+			/ 	- if tmm.present?
+			/ 		- material_id = tmm.material_id
+			/ 		- bg = '#fafad2'
+			/ 	- else
+			/ 		- material_id = ''
+			/ 		- bg = '#ffffff'
+			/ 	tr style="background-color:#{bg}"
+			/ 		td = date.strftime("%Y/%-m/%-d(#{%w(日 月 火 水 木 金 土)[date.wday]})")
+			/ 		td = @dmds_hash[date].manufacturing_number if @dmds_hash[date]
+			/ 		td = "#{(@dmds_hash[date].manufacturing_number*@menu_material.amount_used).round.to_s(:delimited)} #{@menu_material.material.recipe_unit}" if @dmds_hash[date]
+			/ 		td
+			/ 			/ = select_tag :shohin_id, options_for_select(@shohin_ids,params[:shohin_id]),include_blank:'商品ID' , class: "form-control",placeholder:'商品ID'
+			/ 			= select_tag("temporary_menu_material_#{date}_material_id", options_for_select(@materials,material_id), include_blank: true,class:"input_select_material", name:"temporary_menu_material[#{date}][material_id]",style:'width:300px;')
+			/ 		td
+			/ 			input type="button" class='clear-btn btn btn-danger btn-sm' value="解除"
 javascript:
 	$(".clear-btn").on('click',function(){
 		$(this).parents('tr').find(".input_select_material").val(null).trigger("change");
 	});
+	$('.all_checked').on('change', function() {
+    	if ( $(this).is(':checked') ){
+    		$(".tmm_check_box").prop('checked', true);
+    	}else{
+    		$(".tmm_check_box").prop('checked', false);
+    	}
+  	});
+  	$(".all_select_menu").on("change",function(){
+  		var id = $(this).val();
+  		var name = $(".all_select_menu option:selected").text();
+  		$(".product_include_menu").each(function(){
+  			var prop = $(this).children(".product_check").children().prop('checked');
+			if (prop) {
+				var j = $(this).children(".select_menu").children().val();
+				$(this).children(".select_menu").children().val(id);
+				$(this).children(".select_menu").find(".select2-selection__rendered").text(name);
+			}else{
+			};
+  	  });
+  	});
+
+
+  	$(".bulk_change").on('change',function(){
+  		var material_id = $(this).val();
+  		var name = $(".bulk_change option:selected").text();
+  		$("tr").each(function(){
+  			if ( $(this).find(".tmm_check_box").is(':checked') ){
+  				console.log(material_id)
+  				console.log(name)
+  				$(this).find(".input_select_material").val(material_id);
+				$(this).find(".select2-selection__rendered").text(name);
+  			}else{
+  			}
+  		});
+  	});
