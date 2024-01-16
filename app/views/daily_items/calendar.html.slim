@@ -4,6 +4,7 @@ table.table
     tr
       th 月次合計
       th 想定売上
+      th 売上比率
       th 仕入価格
       th 送料
       th 原価
@@ -13,6 +14,7 @@ table.table
       tr
         td = data[0]
         td = "#{data[1]['estimated_sales_sum'].to_s(:delimited)}円"
+        td = "#{((data[1]['estimated_sales_sum']/@buppan_sum["estimated_sales_sum"].to_f)*100).round(1)}%"
         td = "#{data[1]['purchase_price_sum'].to_s(:delimited)}円"
         td = "#{data[1]['delivery_fee_sum'].to_s(:delimited)}円"
         td = "#{data[1]['subtotal_price_sum'].to_s(:delimited)}円"
@@ -22,6 +24,7 @@ table.table
     tr
       th 合計
       th = "#{@buppan_sum["estimated_sales_sum"].to_s(:delimited)}円"
+      th 
       th = "#{@buppan_sum["purchase_price_sum"].to_s(:delimited)}円"
       th = "#{@buppan_sum["delivery_fee_sum"].to_s(:delimited)}円"
       th = "#{@buppan_sum["subtotal_price_sum"].to_s(:delimited)}円"

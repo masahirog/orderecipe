@@ -59,8 +59,10 @@ table.table
         th.text-center
           = link_to store.short_name, label_daily_items_path(store_id:store.id,date:params[:date],format:'csv'), method: :post
   tbody.add_point
-    - @daily_items.each do |daily_item|
-      = render partial: "tr", locals: { daily_item:daily_item}
+    - @buppan_daily_items.each do |daily_item|
+      = render partial: "tr", locals: { daily_item:daily_item,purpose:"物販"}
+    - @sozai_daily_items.each do |daily_item|
+      = render partial: "tr", locals: { daily_item:daily_item,purpose:"惣菜"}
 javascript:
   $('body').on('change', '.item_vendor_select' , function() {
     $.get({

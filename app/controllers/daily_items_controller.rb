@@ -56,11 +56,13 @@ class DailyItemsController < ApplicationController
       @date = @today 
     end
     @item = Item.new
-    @daily_items = DailyItem.includes(:item).where(date:@date).order("id DESC")
+    @daily_items = DailyItem.where(date:@date)
+    @buppan_daily_items = DailyItem.where(date:@date,purpose:"物販").joins(:item).order('items.category').order("id DESC")
+    @sozai_daily_items = DailyItem.where(date:@date,purpose:"惣菜").joins(:item).order('items.category').order("id DESC")
     @category_sum = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @buppan_sum = {"estimated_sales_sum"=>0,"subtotal_price_sum"=>0,"arari_sum"=>0,"purchase_price_sum"=>0,"delivery_fee_sum"=>0}
     ["野菜","果物","物産","送料"].each do |category|
-      daily_items = DailyItem.joins(:item).where(:items => {category:category}).where(purpose:"物販",date:@date).order("id DESC")
+      daily_items = DailyItem.joins(:item).where(:items => {category:category}).where(purpose:"物販",date:@date)
       subtotal_price_sum = daily_items.sum(:subtotal_price)
       delivery_fee_sum = daily_items.sum(:delivery_fee)
       purchase_price_sum = daily_items.map{|di|di.purchase_price * di.delivery_amount}.sum
