@@ -24,7 +24,7 @@ class PriceCard < Prawn::Document
 
           if product.food_label_name.length < 15
             text_box(product.food_label_name,at: [210,h-15], width: 290, height: 50,size:20,valign: :bottom, leading: 3,align: :center)
-          elsif product.food_label_name.length < 19
+          elsif product.food_label_name.length < 17
             text_box(product.food_label_name,at: [210,h-15], width: 290, height: 50,size:18,valign: :bottom, leading: 3,align: :center)
           else
             text_box(product.food_label_name,at: [210,h-15], width: 290, height: 50,size:17,valign: :bottom, leading: 4,align: :center)
