@@ -11,7 +11,15 @@ class ItemsController < ApplicationController
     @items = Item.where(item_vendor_id:item_vendor_id).order(:name)
   end
   def index
-    @search = Item.includes([:item_vendor]).search(params).page(params[:page]).per(50)
+    @search = Item.includes(:item_vendor,:daily_items).search(params).page(params[:page]).per(50)
+    @hash = {}
+    @search.each do |item|
+      if item.daily_items.present?
+        @hash[item.id] = true
+      else
+        @hash[item.id] = false
+      end
+    end
   end
 
   def show

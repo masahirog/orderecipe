@@ -1,0 +1,1 @@
+$(".tr_<%= @daily_item.id %> ").insertAfter(("<%= escape_javascript(render partial: 'daily_items/tr', locals: {daily_item:@daily_item,purpose:@daily_item.purpose}) %>");

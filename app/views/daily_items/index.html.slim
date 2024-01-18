@@ -80,6 +80,27 @@ table.table
         = render partial: "tr", locals: { daily_item:daily_item,purpose:"物販"}
       - @sozai_daily_items.each do |daily_item|
         = render partial: "tr", locals: { daily_item:daily_item,purpose:"惣菜"}
+- @daily_items.each do |daily_item|
+  .modal.fade class="modal_#{daily_item.id}" tabindex="-1"
+    = form_with(model: daily_item, data: {remote: true}) do |f|
+      .modal-dialog
+        .modal-content
+          .modal-header
+            h4.modal-title 新規作成
+          .modal-body
+            = f.hidden_field :date
+            .form-group.clearfix
+              = f.fields_for :daily_item_stores do |dis|
+                .col-md-2
+                  = dis.hidden_field :store_id
+                  label = dis.object.store.short_name
+                  = dis.number_field :sell_price,class:'dis_sell_price_input form-control',style:"text-align:center;margin-bottom:5px;", required:true
+                  = dis.hidden_field :tax_including_sell_price,class:'dis_tax_including_sell_price_input form-control'
+                  = dis.number_field :subordinate_amount,class:' subordinate_amount_input form-control',style:"text-align:center;", required:true
+            .action
+              = f.submit '更新する',class:'btn btn-success'
+          .modal-footer
+            button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
 javascript:
   $(".item_select2").select2({width:"230px"});
   $('body').on('change', '.item_vendor_select' , function() {

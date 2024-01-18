@@ -56,7 +56,7 @@ class DailyItemsController < ApplicationController
       @date = @today 
     end
     @item = Item.new
-    @daily_items = DailyItem.where(date:@date)
+    @daily_items = DailyItem.includes(daily_item_stores:[:store]).where(date:@date)
     @buppan_daily_items = DailyItem.where(date:@date,purpose:"物販").joins(:item).order('items.category').order("id DESC")
     @sozai_daily_items = DailyItem.where(date:@date,purpose:"惣菜").joins(:item).order('items.category').order("id DESC")
     @category_sum = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
@@ -149,8 +149,20 @@ class DailyItemsController < ApplicationController
   def update
     respond_to do |format|
       if @daily_item.update(daily_item_params)
+        @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+        @daily_item.daily_item_stores.each do |dis|
+          if dis.subordinate_amount > 0
+            @hash[dis.daily_item_id][dis.store_id]["subordinate_amount"] = dis.subordinate_amount
+            @hash[dis.daily_item_id][dis.store_id]["unit"] = dis.daily_item.unit
+            @hash[dis.daily_item_id][dis.store_id]["sell_price"] = "#{dis.sell_price}円"
+          else
+            @hash[dis.daily_item_id][dis.store_id]["subordinate_amount"] = ''
+            @hash[dis.daily_item_id][dis.store_id]["unit"] = ''
+            @hash[dis.daily_item_id][dis.store_id]["sell_price"] = ''
+          end
+        end
         format.html { redirect_to daily_items_path(date:@daily_item.date), info: "#{@daily_item.item.item_vendor.store_name} の #{@daily_item.item.name}/#{@daily_item.item.variety} を更新しました。" }
-        format.json { render :show, status: :ok, location: @daily_item }
+        format.js
       else
         format.html { render :edit, status: :unprocessable_entity }
         format.json { render json: @daily_item.errors, status: :unprocessable_entity }
