@@ -1,4 +1,4 @@
-= form_with(model: @daily_item, data: {remote: true}) do |f|
+= form_with(model: @daily_item, data: {remote: false}) do |f|
   .form-group
     h3 = "#{f.object.item.name}/#{f.object.item.variety}｜#{f.object.item.item_vendor.store_name}"
     input.item_reduce_tax_flag style='display:none;' value="#{@daily_item.item.reduced_tax_flag}"
