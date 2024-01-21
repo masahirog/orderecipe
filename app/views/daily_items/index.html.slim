@@ -5,8 +5,10 @@ div
   span style='margin:0 15px;font-size:1.5em;' = @date.strftime("%Y年%-m月%-d日(#{%w(日 月 火 水 木 金 土)[@date.wday]})")
   = link_to "#{(@date + 1).strftime("＞＞%Y年%-m月%-d日(#{%w(日 月 火 水 木 金 土)[(@date+1).wday]})")}",daily_items_path(date:@date + 1)
 
+
+
 .daily_item_form_area
-  = render partial: "daily_item_form", locals: { daily_item:@daily_item,item:@item}
+  = render partial: "daily_item_form", locals: { daily_item:@daily_item,target_id:"modal_new_daily_item"}
 .new_item_partial
   = render partial: "new_item", locals: { item:@item}
 
@@ -46,20 +48,21 @@ table.table
       col class="col90"
       col class="col90"
       col class="col90"
-      col class="col140"
+      col class="col120"
       col class="col240"
-      col class="col140"
+      col class="col120"
       col class="col240"
-      col class="col140"
-      col class="col140"
-      col class="col140"
-      col class="col90"
+      col class="col120"
+      col class="col120"
+      col class="col120"
+      col class="col120"
+      col class="col120"
       - @stores.each do |store|
         col class="col90"
-      col class="col90"
     thead
       tr
         th
+          button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#modal_new_daily_item" 追加
         th 用途
         th カテゴリ
         th 生産者
@@ -74,63 +77,49 @@ table.table
         - @stores.each do |store|
           th.text-center
             = link_to store.short_name, label_daily_items_path(store_id:store.id,date:params[:date],format:'csv'), method: :post
-        th
     tbody.add_point
       - @buppan_daily_items.each do |daily_item|
         = render partial: "tr", locals: { daily_item:daily_item,purpose:"物販"}
       - @sozai_daily_items.each do |daily_item|
         = render partial: "tr", locals: { daily_item:daily_item,purpose:"惣菜"}
-- @daily_items.each do |daily_item|
-  .modal.fade class="modal_#{daily_item.id}" tabindex="-1"
-    = form_with(model: daily_item, data: {remote: true}) do |f|
-      .modal-dialog
-        .modal-content
-          .modal-header
-            h4.modal-title 新規作成
-          .modal-body
-            = f.hidden_field :date
-            .form-group.clearfix
-              = f.fields_for :daily_item_stores do |dis|
-                .col-md-2
-                  = dis.hidden_field :store_id
-                  label = dis.object.store.short_name
-                  = dis.number_field :sell_price,class:'dis_sell_price_input form-control',style:"text-align:center;margin-bottom:5px;", required:true
-                  = dis.hidden_field :tax_including_sell_price,class:'dis_tax_including_sell_price_input form-control'
-                  = dis.number_field :subordinate_amount,class:' subordinate_amount_input form-control',style:"text-align:center;", required:true
-            .action
-              = f.submit '更新する',class:'btn btn-success'
-          .modal-footer
-            button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
+.daily_items_modal_area
+  - @daily_items.each do |daily_item|
+    = render partial: "daily_item_form", locals: { daily_item:daily_item,target_id:"modal_#{daily_item.id}"}
 javascript:
-  $(".item_select2").select2({width:"230px"});
+  $('.item_select2').select2({width:"100%",dropdownParent: $('#modal_new_daily_item')})
   $('body').on('change', '.item_vendor_select' , function() {
+    var id = $(this).parents('.modal').attr('id');
     $.get({
       url: "#{get_vendor_items_items_path}",
       data: { item_vendor_id: $(this).val() }
     }).done(function(data){
-      item_select_change();
+      item_select_change(id);
     });
   });
 
   $('body').on('change', '.item_select' , function() {
-    item_select_change();
+    var id = $(this).parents('.modal').attr('id');
+    item_select_change(id);
   });
   
   $('body').on('change', '.delivery_fee_input' , function() {
+    var id = $(this).parents('.modal').attr('id');
     var komi = Math.floor($(this).val()*1.1);
     $(".tax_including_delivery_fee_input").val(komi);
-    calculate();
+    calculate(id);
   });
 
   $('body').on('change', '.tax_including_purchase_price_input' , function() {
+    var id = $(this).parents('.modal').attr('id');
     var nuki = Math.ceil($(this).val()/1.08);
     $(".purchase_price_input").val(nuki);
-    calculate();
+    calculate(id);
   });
 
   $('body').on('change', '.delivery_amount_input' , function() {
-    subordinate();
-    calculate();
+    var id = $(this).parents('.modal').attr('id');
+    subordinate(id);
+    calculate(id);
   });
 
 
@@ -139,8 +128,9 @@ javascript:
   });
 
   $('body').on('change', '.dis_check_box' , function() {
-    subordinate();
-    calculate();
+    var id = $(this).parents('.modal').attr('id');
+    subordinate(id);
+    calculate(id);
   });
 
   $('body').on('change', '.item_sell_price' , function() {
@@ -148,6 +138,7 @@ javascript:
   });
 
   $('body').on('change', '.item_tax_including_purchase_price' , function() {
+    var id = $(this).parents('.modal').attr('id');
     calculate_purchase_price();
   });
 
@@ -156,7 +147,8 @@ javascript:
     calculate_purchase_price();
   });
 
-  $('body').on('change', '.dis_sell_price_input' , function() {
+  $('body').on('change', '.sell_price' , function() {
+    var id = $(this).parents('.modal').attr('id');
     var sell_price = $(this).val();
     var reduce_tax_flag = $(".item_reduce_tax_flag").val();
     if (reduce_tax_flag == "1") {
@@ -165,65 +157,71 @@ javascript:
       var tax_rate = 1.1
     }
     var tax_including_sell_price = Math.floor(sell_price * tax_rate );
-    $(this).siblings(".dis_tax_including_sell_price_input").val(tax_including_sell_price);
-    calculate();
+    $(this).siblings(".tax_including_sell_price").val(tax_including_sell_price);
+    calculate(id);
+  });
+  $('body').on('change', '.subordinate_amount_input' , function() {
+    var id = $(this).parents('.modal').attr('id');
+    calculate(id);
   });
 
-  function item_select_change(){
+  function item_select_change(id){
     var item_id = $(".item_select").val();
     $.get({
       url: "#{get_item_items_path}",
-      data: { id: item_id }
+      data: { id: item_id ,target_id:id}
     }).done(function(data){
-      calculate();
+      calculate(id);
     });
   }
 
-  function subordinate(){
-    var delivery_amount = Number($(".delivery_amount_input").val());
-    var checked_count = $('input.dis_check_box:checked').length;
+  function subordinate(id){
+    var delivery_amount = Number($("#"+id).find(".delivery_amount_input").val());
+    var checked_count = $("#"+id).find('input.dis_check_box:checked').length;
+    console.log(delivery_amount);
+    console.log(checked_count);
     var subordinate_amount = Math.round(delivery_amount / checked_count)
-    // console.log(subordinate_amount);
-    $(".dis_th").each(function(){
+    console.log(subordinate_amount);
+    $("#"+id).find(".daily_item_store").each(function(){
       var store_id = $(this).find(".store_id").val();
       if ( $(this).find(".dis_check_box").is(':checked') ){
-        $(".dis_td_"+store_id).find(".subordinate_amount_input").val(subordinate_amount);
+        $(this).find(".subordinate_amount_input").val(subordinate_amount);
       }else{
-        $(".dis_td_"+store_id).find(".subordinate_amount_input").val(0);
+        $(this).find(".subordinate_amount_input").val(0);
       }
 
     });    
   }
 
-  function calculate(){
-    var delivery_amount = Number($(".delivery_amount_input").val());
-    var unit_sell_price = Number($(".sell_price_input").val());
-    var tax_including_unit_sell_price = Number($(".tax_including_sell_price_input").val());
-    var unit_cost_price = Number($(".purchase_price_input").val());
-    var tax_including_unit_cost_price = Number($(".tax_including_purchase_price_input").val());
-    var delivery_fee = Number($(".delivery_fee_input").val());
-    var tax_including_delivery_fee = Number($(".tax_including_delivery_fee_input").val());
+  function calculate(id){
+    var delivery_amount = Number($("#"+id).find(".delivery_amount_input").val());
+    var unit_sell_price = Number($("#"+id).find(".sell_price").val());
+    var tax_including_unit_sell_price = Number($("#"+id).find(".tax_including_sell_price").val());
+    var unit_cost_price = Number($("#"+id).find(".purchase_price_input").val());
+    var tax_including_unit_cost_price = Number($("#"+id).find(".tax_including_purchase_price_input").val());
+    var delivery_fee = Number($("#"+id).find(".delivery_fee_input").val());
+    var tax_including_delivery_fee = Number($("#"+id).find(".tax_including_delivery_fee_input").val());
     var cost = unit_cost_price * delivery_amount + delivery_fee
 
     var sales = 0
     var tax_including_sales = 0
-    $(".dis_sell_price_input").each(function(){
-      var sell_price = Number($(this).val());
-      var tax_including_sell_price = Number($(this).siblings('.dis_tax_including_sell_price_input').val());
-      var subordinate_amount = Number($(this).parent().find(".subordinate_amount_input").val());
+    $("#"+id).find(".daily_item_store").each(function(){
+      var sell_price = Number($(this).find(".sell_price").val());
+      var tax_including_sell_price = Number($(this).find(".tax_including_sell_price").val());
+      var subordinate_amount = Number($(this).find(".subordinate_amount_input").val());
       sales = sales + (sell_price * subordinate_amount);
       tax_including_sales = tax_including_sales + (tax_including_sell_price * subordinate_amount);
     });
     var arari = sales - cost
     var arari_rate = Math.round((arari / sales)*100, 1)
 
-    $(".estimated_sales_input").val(sales);
-    $(".tax_including_estimated_sales_input").val(tax_including_sales);
-    $(".subtotal_price_input").val(cost);
-    $(".tax_including_subtotal_price_input").val(tax_including_unit_cost_price * delivery_amount + tax_including_delivery_fee);
-    $(".ararirate").val(arari_rate+"%");
+    $("#"+id).find(".estimated_sales_input").val(sales);
+    $("#"+id).find(".tax_including_estimated_sales_input").val(tax_including_sales);
+    $("#"+id).find(".subtotal_price_input").val(cost);
+    $("#"+id).find(".tax_including_subtotal_price_input").val(tax_including_unit_cost_price * delivery_amount + tax_including_delivery_fee);
+    $("#"+id).find(".ararirate").val(arari_rate+"%");
     arari = String(arari).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
-    $(".arari").val(arari+"円");
+    $("#"+id).find(".arari").val(arari+"円");
   }
   
   function calculate_tax_including_sell_price(){
@@ -271,6 +269,10 @@ css:
   .col330{
     width:330px;
   }
+  .col120{
+    width:120px;
+  }
+
   .col140{
     width:140px;
   }

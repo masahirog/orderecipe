@@ -1,1 +1,2 @@
-$(".tr_<%= @daily_item.id %> ").insertAfter(("<%= escape_javascript(render partial: 'daily_items/tr', locals: {daily_item:@daily_item,purpose:@daily_item.purpose}) %>");
+$(".tr_<%= @daily_item.id %> ").replaceWith("<%= escape_javascript(render partial: 'tr', locals: {daily_item:@daily_item,purpose:@daily_item.purpose}) %>");
+$('.modal').modal('hide');

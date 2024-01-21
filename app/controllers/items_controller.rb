@@ -4,6 +4,7 @@ class ItemsController < ApplicationController
   def get_item
     id = params[:id]
     @item = Item.find(id)
+    @target_id = params[:target_id]
   end
 
   def get_vendor_items

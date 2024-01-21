@@ -1,3 +1,4 @@
-$(".daily_item_form_area").html("<%= escape_javascript(render partial: 'daily_items/daily_item_form', locals: {daily_item:@new_daily_item}) %>");
+$(".daily_item_form_area").html("<%= escape_javascript(render partial: 'daily_items/daily_item_form', locals: {daily_item:@new_daily_item,target_id:"modal_new_daily_item"}) %>");
 $('.add_point').prepend("<%= escape_javascript(render partial: 'tr', locals: {daily_item:@daily_item,purpose:@daily_item.purpose}) %>");
-$(".item_select2").select2();
+$('.item_select2').select2({width:"100%",dropdownParent: $('#modal_new_daily_item')});
+$(".daily_items_modal_area").append("<%= escape_javascript(render partial: 'daily_items/daily_item_form', locals: {daily_item:@daily_item,target_id:"modal_#{@daily_item.id}"}) %>");

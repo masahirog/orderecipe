@@ -7,17 +7,17 @@ if (<%= @item.reduced_tax_flag == 1 %>) {
 	$('.tax_rate_span').text('10%');
 };
 if (<%= @item.tax_including_purchase_price.present? %>) {
-	$('.tax_including_purchase_price_input').val(<%= @item.tax_including_purchase_price %>);
-	$('.purchase_price_input').val(<%= @item.purchase_price %>);
+	$("#<%= @target_id %>").find('.tax_including_purchase_price_input').val(<%= @item.tax_including_purchase_price %>);
+	$("#<%= @target_id %>").find('.purchase_price_input').val(<%= @item.purchase_price %>);
 }else{
-	$('.tax_including_purchase_price_input').val(0);
-	$('.purchase_price_input').val(0);
+	$("#<%= @target_id %>").find('.tax_including_purchase_price_input').val(0);
+	$("#<%= @target_id %>").find('.purchase_price_input').val(0);
 };
 
 if (<%= @item.sell_price.present? %>) {
-	$('.dis_tax_including_sell_price_input').val(<%= @item.tax_including_sell_price %>);
-	$('.dis_sell_price_input').val(<%= @item.sell_price %>);
+	$("#<%= @target_id %>").find('.tax_including_sell_price').val(<%= @item.tax_including_sell_price %>);
+	$("#<%= @target_id %>").find('.sell_price').val(<%= @item.sell_price %>);
 }else{
-	$('.dis_tax_including_sell_price_input').val(0);
-	$('.dis_sell_price_input').val(0);
+	$("#<%= @target_id %>").find('.tax_including_sell_price').val(0);
+	$("#<%= @target_id %>").find('.sell_price').val(0);
 };

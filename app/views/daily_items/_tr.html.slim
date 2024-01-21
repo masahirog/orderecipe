@@ -1,3 +1,4 @@
+
 - if purpose == "物販"
   - color = 'white'
 - else
@@ -13,7 +14,7 @@
   - class_names = "label label-default"
 tr class="tr_#{daily_item.id}" style="background-color:#{color}"
   td
-    = link_to '編集',edit_daily_item_path(daily_item)
+    button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal_#{daily_item.id}" 編集
   td
     = daily_item.purpose
   td
@@ -46,7 +47,6 @@ tr class="tr_#{daily_item.id}" style="background-color:#{color}"
     span style='font-size:0.8em;'（
     span style='font-size:0.8em;' = daily_item.tax_including_estimated_sales.to_s(:delimited)
     span style='font-size:0.8em;' ）
-
   td
     - arari = daily_item.estimated_sales - daily_item.subtotal_price
     span = arari.to_s(:delimited)
@@ -63,8 +63,3 @@ tr class="tr_#{daily_item.id}" style="background-color:#{color}"
       = "#{@hash[daily_item.id][store.id]['sell_price']}"
       br
       = "#{@hash[daily_item.id][store.id]['subordinate_amount']}#{@hash[daily_item.id][store.id]['unit']}"
-      
-
-  td
-    / button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target=".modal_#{daily_item.id}" 編集
-    = link_to '削除', daily_item_path(daily_item), method: :delete, data: { confirm: '本当にOK？' }, method: :delete

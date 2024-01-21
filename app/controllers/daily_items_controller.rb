@@ -147,6 +147,7 @@ class DailyItemsController < ApplicationController
   end
 
   def update
+    @stores = current_user.group.stores
     respond_to do |format|
       if @daily_item.update(daily_item_params)
         @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
