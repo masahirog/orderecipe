@@ -101,8 +101,10 @@ Rails.application.routes.draw do
   resources :item_vendors
   resources :daily_items do
     collection do
-      post :label
+      get :loading_sheet
+      get :label
       get :calendar
+      post :barcode_csv
     end
   end
   resources :to_store_messages

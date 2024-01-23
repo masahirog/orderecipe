@@ -4,13 +4,30 @@ div
   = link_to "#{(@date - 1).strftime("%Y年%-m月%-d日(#{%w(日 月 火 水 木 金 土)[(@date-1).wday]})＜＜")}",daily_items_path(date:@date - 1)
   span style='margin:0 15px;font-size:1.5em;' = @date.strftime("%Y年%-m月%-d日(#{%w(日 月 火 水 木 金 土)[@date.wday]})")
   = link_to "#{(@date + 1).strftime("＞＞%Y年%-m月%-d日(#{%w(日 月 火 水 木 金 土)[(@date+1).wday]})")}",daily_items_path(date:@date + 1)
+  button type="button" class="btn btn-sm btn-default" data-toggle="modal" data-target="#modal_label_download" バーコード
+  #modal_label_download.modal.fade tabindex="-1"
+    = form_tag label_daily_items_path, :method => 'get' do
+      .modal-dialog style='width:1000px;'
+        .modal-content
+          .modal-header
+          .modal-body
+            .form-group
+              h4 お店を選択
+              = select_tag :store_id, options_from_collection_for_select(@stores, :id, :name), class: "form-control"
+              = hidden_field_tag :date,@date
+            .action
+              = submit_tag "送信" ,class:"btn btn-primary"
+          .modal-footer
+            button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
 
-
+  = link_to "仕分け表",loading_sheet_daily_items_path(date:@date, :format => :pdf),class:"btn btn-default btn-sm",style:'margin-left:20px;'
 
 .daily_item_form_area
   = render partial: "daily_item_form", locals: { daily_item:@daily_item,target_id:"modal_new_daily_item"}
 .new_item_partial
   = render partial: "new_item", locals: { item:@item}
+
+
 
 table.table
   thead

@@ -1,0 +1,24 @@
+
+= form_tag barcode_csv_daily_items_path(format: :csv), :method => 'get' do
+	table.table
+		thead
+			tr
+				th スマレジコード
+				th 産地
+				th 商品名
+				th 税抜
+				th 税込
+				th 日付
+		tbody
+			- @daily_items.each do |daily_item|
+				- item = daily_item.item
+			    - sell_price = 100
+				tr
+					td = item.smaregi_code
+					td = "#{item.item_vendor.area} #{item.item_vendor.store_name}"
+					td = "#{item.name} #{item.variety}"
+					td = number_field_tag 
+					td
+					td
+	= submit_tag "CSV" ,class:"btn btn-primary pull-right"
+

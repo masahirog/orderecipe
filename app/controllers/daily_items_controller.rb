@@ -1,7 +1,29 @@
 class DailyItemsController < ApplicationController
   before_action :set_daily_item, only: %i[ show edit update destroy ]
 
+  def loading_sheet
+    @date = params[:date]
+    @daily_items = DailyItem.where(date:@date)
+    respond_to do |format|
+      format.html
+      format.pdf do
+        pdf = DailyItemLoadingSheet.new(@date,@daily_items)
+        send_data pdf.render,
+        filename:    "#{@date}.pdf",
+        type:        "application/pdf",
+        disposition: "inline"
+      end
+
+    end
+  end
+
   def label
+    @store = Store.find(params[:store_id])
+    @date = params[:date]
+    @daily_items = DailyItem.where(date:@date)
+  end
+
+  def barcode_csv
     store_id = params[:store_id]
     labels = []
     @date = params[:date]
