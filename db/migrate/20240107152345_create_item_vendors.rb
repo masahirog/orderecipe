@@ -16,6 +16,7 @@ class CreateItemVendors < ActiveRecord::Migration[6.0]
       t.string :charge_person
       t.timestamps
       t.boolean :unused_flag,null:false,default:false
+      t.integer :sorting_base_id,null:false,default:0
     end
   end
 end

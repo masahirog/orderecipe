@@ -3,8 +3,11 @@ div
   = link_to "#{@date.month}月カレンダー",calendar_daily_items_path,style:"margin-right:50px;"
   = link_to "#{(@date - 1).strftime("%Y年%-m月%-d日(#{%w(日 月 火 水 木 金 土)[(@date-1).wday]})＜＜")}",daily_items_path(date:@date - 1)
   span style='margin:0 15px;font-size:1.5em;' = @date.strftime("%Y年%-m月%-d日(#{%w(日 月 火 水 木 金 土)[@date.wday]})")
+
   = link_to "#{(@date + 1).strftime("＞＞%Y年%-m月%-d日(#{%w(日 月 火 水 木 金 土)[(@date+1).wday]})")}",daily_items_path(date:@date + 1)
-  button type="button" class="btn btn-sm btn-default" data-toggle="modal" data-target="#modal_label_download" バーコード
+  = link_to "仕分け表",loading_sheet_daily_items_path(date:@date, :format => :pdf),class:"btn btn-primary btn-sm",style:'margin-left:20px;float:right;'
+
+  button type="button" class="btn btn-sm btn-primary pull-right" data-toggle="modal" data-target="#modal_label_download" バーコード
   #modal_label_download.modal.fade tabindex="-1"
     = form_tag label_daily_items_path, :method => 'get' do
       .modal-dialog style='width:1000px;'
@@ -20,7 +23,6 @@ div
           .modal-footer
             button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
 
-  = link_to "仕分け表",loading_sheet_daily_items_path(date:@date, :format => :pdf),class:"btn btn-default btn-sm",style:'margin-left:20px;'
 
 .daily_item_form_area
   = render partial: "daily_item_form", locals: { daily_item:@daily_item,target_id:"modal_new_daily_item"}

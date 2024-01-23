@@ -3,11 +3,12 @@ class DailyItemsController < ApplicationController
 
   def loading_sheet
     @date = params[:date]
-    @daily_items = DailyItem.where(date:@date)
+    @daily_items = DailyItem.includes(:daily_item_stores,item:[:item_vendor]).joins(:item => :item_vendor).where(:item => {:item_vendors => {sorting_base_id:"SKL練馬"}}).where(date:@date)
+    @stores = current_user.group.stores
     respond_to do |format|
       format.html
       format.pdf do
-        pdf = DailyItemLoadingSheet.new(@date,@daily_items)
+        pdf = DailyItemLoadingSheet.new(@date,@daily_items,@stores)
         send_data pdf.render,
         filename:    "#{@date}.pdf",
         type:        "application/pdf",

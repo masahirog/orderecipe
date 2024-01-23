@@ -57,6 +57,6 @@ class ItemVendorsController < ApplicationController
 
     def item_vendor_params
       params.require(:item_vendor).permit(:store_name,:producer_name,:area,:payment,:bank_name,:bank_store_name,:bank_category,:account_number,
-        :account_title,:zip_code,:address,:tel,:charge_person,:unused_flag)
+        :account_title,:zip_code,:address,:tel,:charge_person,:unused_flag,:sorting_base_id)
     end
 end

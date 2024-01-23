@@ -9,6 +9,10 @@
     = f.label :area, "産地"
     = f.text_field :area, class:"form-control"
   .form-group
+    = f.label :sorting_base_id, "仕分け拠点"
+    = f.select :sorting_base_id, options_for_select_from_enum(ItemVendor, :sorting_base_id),{}, { class: "form-control"}
+
+  .form-group
     = f.label :charge_person, "担当者名"
     = f.text_field :charge_person, class:"form-control"
   .form-group
