@@ -4,6 +4,7 @@ h2 一覧
 table.table.table-striped
   thead
     tr
+      th 仕分け拠点
       th 屋号
       th 生産者名
       th 産地
@@ -13,10 +14,6 @@ table.table.table-striped
       th 電話番号
       th 支払い方法
       th 銀行名
-      th 支店名
-      th 種類
-      th 口座番号
-      th 口座名義
 
   tbody
     - @item_vendors.each do |item_vendor|
@@ -25,6 +22,7 @@ table.table.table-striped
       - else
         - color = "ffffff"
       tr style="background-color:#{color}"
+        td = item_vendor.sorting_base_id
         td = link_to item_vendor.store_name,edit_item_vendor_path(item_vendor)
         td = item_vendor.producer_name
         td = item_vendor.area
@@ -34,11 +32,6 @@ table.table.table-striped
         td = item_vendor.tel
         td = item_vendor.payment
         td = item_vendor.bank_name
-        td = item_vendor.bank_store_name
-        td = item_vendor.bank_category
-        td = item_vendor.account_number
-        td = item_vendor.account_title
-
 
 
 
