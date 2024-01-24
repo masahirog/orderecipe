@@ -28,8 +28,12 @@ class DailyItemsController < ApplicationController
     store_id = params[:store_id]
     labels = []
     @date = params[:date]
-    @daily_items = DailyItem.includes(:item).where(date:@date).order("id DESC")
-    @daily_item_stores = DailyItemStore.where(daily_item_id:@daily_items.ids,store_id:store_id)
+    @daily_items = DailyItem.includes(:daily_item_stores,item:[:item_vendor]).joins(:item => :item_vendor).where(:item => {:item_vendors => {sorting_base_id:"SKL練馬"}}).where(date:@date).order("id DESC")
+    if store_id.present?
+      @daily_item_stores = DailyItemStore.where(daily_item_id:@daily_items.ids,store_id:store_id)
+    else
+      @daily_item_stores = DailyItemStore.where(daily_item_id:@daily_items.ids)
+    end
     respond_to do |format|
       format.html
       format.csv do
@@ -77,6 +81,11 @@ class DailyItemsController < ApplicationController
       @date = params[:date].to_date
     else
       @date = @today 
+    end
+    @buppan_schedule = BuppanSchedule.find_by(date:@date)
+    if @buppan_schedule.present?
+    else
+      @buppan_schedule = BuppanSchedule.new(date:@date)
     end
     @item = Item.new
     @daily_items = DailyItem.includes(daily_item_stores:[:store]).where(date:@date)

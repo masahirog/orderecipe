@@ -64,6 +64,7 @@ Rails.application.routes.draw do
       post :create_frame
     end
   end
+  resources :buppan_schedules
   resources :manual_directories
   resources :material_vendor_stocks do
     collection do

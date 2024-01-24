@@ -1,14 +1,25 @@
 
 div
-  = link_to "#{@date.month}月カレンダー",calendar_daily_items_path,style:"margin-right:50px;"
-  = link_to "#{(@date - 1).strftime("%Y年%-m月%-d日(#{%w(日 月 火 水 木 金 土)[(@date-1).wday]})＜＜")}",daily_items_path(date:@date - 1)
-  span style='margin:0 15px;font-size:1.5em;' = @date.strftime("%Y年%-m月%-d日(#{%w(日 月 火 水 木 金 土)[@date.wday]})")
+  div style="float:left"
+    = link_to "#{@date.month}月カレンダー",calendar_daily_items_path,style:"margin-right:50px;"
+    = link_to "#{(@date - 1).strftime("%Y年%-m月%-d日(#{%w(日 月 火 水 木 金 土)[(@date-1).wday]})＜＜")}",daily_items_path(date:@date - 1)
+    span style='margin:0 15px;font-size:1.5em;' = @date.strftime("%Y年%-m月%-d日(#{%w(日 月 火 水 木 金 土)[@date.wday]})")
+    = link_to "#{(@date + 1).strftime("＞＞%Y年%-m月%-d日(#{%w(日 月 火 水 木 金 土)[(@date+1).wday]})")}",daily_items_path(date:@date + 1)
+  div style="float:left;margin-left:20px;"
+    = form_with model: @buppan_schedule, local: true do |f|
+      = f.hidden_field :date,value:@date
+      = f.select :fixed_flag, options_for_select([['確定', true], ['未確定', false]], f.object.fixed_flag),{},class:'form-control fixed_flag',style:'height:30px;float:left;width:100px;'
+      = f.submit '更新',class:'btn btn-success btn-sm',style:'float:left;margin-left:10px;'
 
-  = link_to "#{(@date + 1).strftime("＞＞%Y年%-m月%-d日(#{%w(日 月 火 水 木 金 土)[(@date+1).wday]})")}",daily_items_path(date:@date + 1)
-  = link_to "仕分け表",loading_sheet_daily_items_path(date:@date, :format => :pdf),class:"btn btn-primary btn-sm",style:'margin-left:20px;float:right;'
+  - if @buppan_schedule.fixed_flag == true
 
-  button type="button" class="btn btn-sm btn-primary pull-right" data-toggle="modal" data-target="#modal_label_download" バーコード
-  #modal_label_download.modal.fade tabindex="-1"
+    = link_to "仕分け表",loading_sheet_daily_items_path(date:@date, :format => :pdf),class:"btn btn-primary btn-sm",style:'margin-left:20px;float:right;'
+
+    = link_to "SKLバーコード（全店）", barcode_csv_daily_items_path(date:params[:date],format:'csv'), method: :post,class:"btn btn-sm btn-primary pull-right"
+
+
+  / button type="button" class="btn btn-sm btn-primary pull-right" data-toggle="modal" data-target="#modal_label_download" バーコード
+  / #modal_label_download.modal.fade tabindex="-1"
     = form_tag label_daily_items_path, :method => 'get' do
       .modal-dialog style='width:1000px;'
         .modal-content
@@ -16,7 +27,7 @@ div
           .modal-body
             .form-group
               h4 お店を選択
-              = select_tag :store_id, options_from_collection_for_select(@stores, :id, :name), class: "form-control"
+              = select_tag :store_id, options_from_collection_for_select(@stores, :id, :name), class: "form-control",include_blank:"全店"
               = hidden_field_tag :date,@date
             .action
               = submit_tag "送信" ,class:"btn btn-primary"
@@ -95,7 +106,7 @@ table.table
         th 粗利
         - @stores.each do |store|
           th.text-center
-            = link_to store.short_name, label_daily_items_path(store_id:store.id,date:params[:date],format:'csv'), method: :post
+            = link_to store.short_name, barcode_csv_daily_items_path(store_id:store.id,date:params[:date],format:'csv'), method: :post
     tbody.add_point
       - @buppan_daily_items.each do |daily_item|
         = render partial: "tr", locals: { daily_item:daily_item,purpose:"物販"}

@@ -1,0 +1,19 @@
+h1 Listing buppan_schedules
+
+table
+  thead
+    tr
+      th
+      th
+      th
+
+  tbody
+    - @buppan_schedules.each do |buppan_schedule|
+      tr
+        td = link_to 'Show', buppan_schedule
+        td = link_to 'Edit', edit_buppan_schedule_path(buppan_schedule)
+        td = link_to 'Destroy', buppan_schedule, data: { confirm: 'Are you sure?' }, method: :delete
+
+br
+
+= link_to 'New Buppan schedule', new_buppan_schedule_path

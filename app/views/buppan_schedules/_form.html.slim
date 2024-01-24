@@ -1,0 +1,9 @@
+= form_for @buppan_schedule do |f|
+  - if @buppan_schedule.errors.any?
+    #error_explanation
+      h2 = "#{pluralize(@buppan_schedule.errors.count, "error")} prohibited this buppan_schedule from being saved:"
+      ul
+        - @buppan_schedule.errors.full_messages.each do |message|
+          li = message
+
+  .actions = f.submit

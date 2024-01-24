@@ -1,0 +1,2 @@
+class BuppanSchedule < ApplicationRecord
+end
