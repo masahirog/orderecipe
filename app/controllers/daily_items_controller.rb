@@ -28,10 +28,11 @@ class DailyItemsController < ApplicationController
     store_id = params[:store_id]
     labels = []
     @date = params[:date]
-    @daily_items = DailyItem.includes(:daily_item_stores,item:[:item_vendor]).joins(:item => :item_vendor).where(:item => {:item_vendors => {sorting_base_id:"SKL練馬"}}).where(date:@date).order("id DESC")
     if store_id.present?
+      @daily_items = DailyItem.includes(:daily_item_stores,item:[:item_vendor]).where(date:@date).order("id DESC")
       @daily_item_stores = DailyItemStore.where(daily_item_id:@daily_items.ids,store_id:store_id)
     else
+      @daily_items = DailyItem.includes(:daily_item_stores,item:[:item_vendor]).joins(:item => :item_vendor).where(:item => {:item_vendors => {sorting_base_id:"SKL練馬"}}).where(date:@date).order("id DESC")
       @daily_item_stores = DailyItemStore.where(daily_item_id:@daily_items.ids)
     end
     respond_to do |format|
