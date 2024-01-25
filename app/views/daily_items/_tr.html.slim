@@ -18,7 +18,7 @@ tr class="tr_#{daily_item.id}" style="background-color:#{color}"
   td
     = daily_item.purpose
   td
-    = daily_item.item.item_vendor.sorting_base_id
+    = daily_item.item.item_vendor.sorting_base_id if daily_item.item.item_vendor.read_attribute_before_type_cast(:sorting_base_id).to_i > 1
   td
     span class="#{class_names}" = daily_item.item.category
   td = link_to "#{daily_item.item.item_vendor.store_name}",edit_item_vendor_path(daily_item.item.item_vendor),target:'_blank'
