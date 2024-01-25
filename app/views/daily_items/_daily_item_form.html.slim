@@ -77,8 +77,14 @@
                   input.form-control.arari readonly="true" value="#{(daily_item.estimated_sales-daily_item.subtotal_price)}円"
           .form-group.clearfix
             h4 各店舗仕分け
+            div style="width:50px;float: left;"
+              label style="margin-top:3px;" 店名
+              br
+              label style="margin-top:7px;" 売価
+              br
+              label style="margin-top:10px;" 数
             = f.fields_for :daily_item_stores do |dis|
-              .col-md-2.daily_item_store
+              .daily_item_store style="width:100px;float: left;margin-left:8px;"
                 = dis.hidden_field :store_id,class:'store_id'
                 label = dis.object.store.short_name[0..1]
                 input.dis_check_box type="checkbox"

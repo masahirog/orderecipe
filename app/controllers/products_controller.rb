@@ -282,10 +282,6 @@ class ProductsController < ApplicationController
       format.json { head :no_content }
     end
   end
-  def bejihan_ss_cost_sync
-    Product.input_spreadsheet
-    redirect_to products_path, success: 'スプレッドシートに連携しました！'
-  end
 
   # def download
   #   url = URI.encode(params[:file_name])

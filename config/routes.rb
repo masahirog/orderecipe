@@ -229,7 +229,6 @@ Rails.application.routes.draw do
       get :edit_bb
       get :black_board
       get :download
-      get :bejihan_ss_cost_sync
       post :print
       get :get_menu_cost_price
       get :serving_kana

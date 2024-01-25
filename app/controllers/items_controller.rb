@@ -9,7 +9,11 @@ class ItemsController < ApplicationController
 
   def get_vendor_items
     item_vendor_id = params[:item_vendor_id]
-    @items = Item.where(item_vendor_id:item_vendor_id).order(:name)
+    if item_vendor_id.present?
+      @items = Item.where(item_vendor_id:item_vendor_id).order(:name)
+    else
+      @items = Item.all.order(:name)
+    end
   end
   def index
     @search = Item.includes(:item_vendor,:daily_items).search(params).page(params[:page]).per(50)

@@ -33,10 +33,6 @@ end
 #   end
 # end
 
-task :input_gss => :environment do
-  Product.input_spreadsheet
-end
-
 
 task :reminder_bulk_create => :environment do
   Reminder.reminder_bulk_create

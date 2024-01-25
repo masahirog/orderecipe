@@ -86,39 +86,6 @@ class Product < ApplicationRecord
     @brr = @brr.map{|br| FoodAdditive.find(br).name}
   end
 
-
-  def self.input_spreadsheet
-    session = GoogleDrive::Session.from_config("config.json")
-    sheet = session.spreadsheet_by_key("1hZ00gO4ur_jvwzuj6BHMqJXLq3J1zJTchoGH19lLVt0").worksheet_by_title("原価OR連携")
-    last_row = sheet.num_rows
-    for i in 2..last_row do
-      id = sheet[i, 1]
-      if id.present?
-        product = Product.find_by_id(id)
-        if product.present?
-          sheet[i, 2] = product.cost_price
-          if product.serving_infomation.present?
-            sheet[i, 3] = product.serving_infomation.gsub("\b","")
-          else
-            sheet[i, 3] = ""
-          end
-          if product.main_serving_plate_id.present?
-            sheet[i, 4] = ServingPlate.find(product.main_serving_plate_id).name
-          else
-            sheet[i, 4] = ""
-          end
-          if product.container_id.present?
-            sheet[i, 5] = product.container.name
-          else
-            sheet[i, 5] = ""
-          end
-
-        end
-      end
-    end
-    sheet.save
-  end
-
   private
     def name_code
       #波ダッシュなどの置換

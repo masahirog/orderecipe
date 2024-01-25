@@ -1,4 +1,3 @@
-
 div
   div style="float:left"
     = link_to "#{@date.month}月カレンダー",calendar_daily_items_path,style:"margin-right:50px;"
@@ -17,22 +16,6 @@ div
 
     = link_to "SKLバーコード（全店）", barcode_csv_daily_items_path(date:params[:date],format:'csv'), method: :post,class:"btn btn-sm btn-primary pull-right"
 
-
-  / button type="button" class="btn btn-sm btn-primary pull-right" data-toggle="modal" data-target="#modal_label_download" バーコード
-  / #modal_label_download.modal.fade tabindex="-1"
-    = form_tag label_daily_items_path, :method => 'get' do
-      .modal-dialog style='width:1000px;'
-        .modal-content
-          .modal-header
-          .modal-body
-            .form-group
-              h4 お店を選択
-              = select_tag :store_id, options_from_collection_for_select(@stores, :id, :name), class: "form-control",include_blank:"全店"
-              = hidden_field_tag :date,@date
-            .action
-              = submit_tag "送信" ,class:"btn btn-primary"
-          .modal-footer
-            button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
 
 
 .daily_item_form_area
