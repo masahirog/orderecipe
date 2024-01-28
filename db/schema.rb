@@ -146,7 +146,7 @@ ActiveRecord::Schema.define(version: 2024_01_24_025317) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "daily_menu_details", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+  create_table "daily_menu_details", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "daily_menu_id", null: false
     t.integer "product_id", null: false
     t.integer "manufacturing_number", default: 0, null: false
@@ -166,6 +166,7 @@ ActiveRecord::Schema.define(version: 2024_01_24_025317) do
     t.integer "paper_menu_number"
     t.boolean "change_flag", default: false, null: false
     t.index ["daily_menu_id", "paper_menu_number"], name: "index_daily_menu_details_on_daily_menu_id_and_paper_menu_number", unique: true
+    t.index ["daily_menu_id", "product_id"], name: "index_daily_menu_details_on_daily_menu_id_and_product_id", unique: true
   end
 
   create_table "daily_menus", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -868,7 +869,7 @@ ActiveRecord::Schema.define(version: 2024_01_24_025317) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "store_daily_menu_details", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+  create_table "store_daily_menu_details", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "store_daily_menu_id", null: false
     t.integer "product_id", null: false
     t.integer "number", default: 0, null: false
@@ -889,6 +890,7 @@ ActiveRecord::Schema.define(version: 2024_01_24_025317) do
     t.integer "showcase_type"
     t.integer "prepared_number", default: 0
     t.integer "excess_or_deficiency_number", default: 0
+    t.index ["store_daily_menu_id", "product_id"], name: "index_uniq", unique: true
   end
 
   create_table "store_daily_menu_photos", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
