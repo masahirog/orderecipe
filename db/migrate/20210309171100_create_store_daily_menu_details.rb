@@ -21,6 +21,6 @@ class CreateStoreDailyMenuDetails < ActiveRecord::Migration[5.2]
       t.integer :prepared_number,default:0
       t.integer :excess_or_deficiency_number,default:0
     end
-    add_index :store_daily_menu_details, [:store_daily_menu_id,:product_id], unique: true,name: 'index_uniq'
+    # add_index :store_daily_menu_details, [:store_daily_menu_id,:product_id], unique: true,name: 'index_uniq'
   end
 end
