@@ -26,7 +26,8 @@
             = f.select :purpose, options_for_select_from_enum(DailyItem, :purpose),{}, { class: "form-control",style:"float:left;width:32%;argin-bottom:5px;margin-right:5px;"}
             = f.number_field :delivery_amount,class:'form-control delivery_amount_input',style:"float:left;width:32%;margin-bottom:5px;margin-right:5px;", required:true
             = f.select :unit, options_for_select_from_enum(DailyItem, :unit),{}, { class: "form-control unit_input",style:"float:left;width:32%;"}
-            = f.text_field :memo,class:'form-control',placeholder:'メモ',style:'width:100%;'
+            = f.text_field :memo,class:'form-control',placeholder:'管理側メモ',style:'width:100%;margin-bottom:5px;'
+            = f.text_field :sorting_memo,class:'form-control',placeholder:'仕分け時メモ',style:'width:100%;'
           table.table
             thead
               tr
@@ -37,10 +38,10 @@
               tr
                 td 仕入れ単価
                 td
-                  = f.number_field :purchase_price,class:'form-control purchase_price_input',style:"margin-bottom:5px;width:100px;float:left;",readonly:true, required:true
+                  = f.number_field :purchase_price,class:'form-control purchase_price_input',style:"margin-bottom:5px;width:100px;float:left;", required:true
                   span style='float:left;margin-top:10px;margin-left:5px;' 円
                 td
-                  = f.number_field :tax_including_purchase_price,class:'form-control tax_including_purchase_price_input',style:"width:100px;float:left;", required:true
+                  = f.number_field :tax_including_purchase_price,class:'form-control tax_including_purchase_price_input',style:"width:100px;float:left;", required:true,readonly:true
                   span style='float:left;margin-top:10px;margin-left:5px;' 円
               tr
                 td 配送料

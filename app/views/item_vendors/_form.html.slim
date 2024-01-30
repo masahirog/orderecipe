@@ -27,26 +27,40 @@
   .form-group
     = f.label :payment, "支払い方法"
     = f.select :payment, options_for_select_from_enum(ItemVendor, :payment),{}, { class: "form-control"}
-
-  .form-group
-    = f.label :bank_name, "銀行名"
-    = f.text_field :bank_name, class:"form-control"
-  .form-group
-    = f.label :bank_store_name, "支店名"
-    = f.text_field :bank_store_name, class:"form-control"
-  .form-group
-    = f.label :bank_category, "種類"
-    = f.text_field :bank_category, class:"form-control"
-  .form-group
-    = f.label :account_number, "口座番号"
-    = f.text_field :account_number, class:"form-control"
-  .form-group
-    = f.label :account_title, "口座名義"
-    = f.text_field :account_title, class:"form-control"
-  
   .form-group
     = f.label :unused_flag, "非表示"
     = f.check_box :unused_flag, class: "form-control"
+  .form-group
+    label 口座情報を表示する
+    .input-group
+      span class="input-group-btn"
+        button type="button" class="btn btn-default pass_ok" OK
+      input class="form-control pass" type="text" placeholder="パスワード入力"
+  .bank_info style="display: none;"
+    .form-group
+      = f.label :bank_name, "銀行名"
+      = f.text_field :bank_name, class:"form-control"
+    .form-group
+      = f.label :bank_store_name, "支店名"
+      = f.text_field :bank_store_name, class:"form-control"
+    .form-group
+      = f.label :bank_category, "種類"
+      = f.text_field :bank_category, class:"form-control"
+    .form-group
+      = f.label :account_number, "口座番号"
+      = f.text_field :account_number, class:"form-control"
+    .form-group
+      = f.label :account_title, "口座名義"
+      = f.text_field :account_title, class:"form-control"
+    
 
   .actions = f.submit "保存する",class:'btn btn-primary'
   
+
+javascript:
+  $(".pass_ok").on('click',function(){
+    var pass = $(".pass").val();
+    if (pass == "831bank") {
+      $(".bank_info").show();
+    }
+  });

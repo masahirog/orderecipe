@@ -20,7 +20,7 @@ class BuppanSchedulesController < ApplicationController
 
     respond_to do |format|
       if @buppan_schedule.save
-        format.html { redirect_to daily_items_path(date:@buppan_schedule.date), notice: "ステータス変更" }
+        format.html { redirect_to daily_items_path(date:@buppan_schedule.date), success: "更新しました。" }
         format.json { render :show, status: :created, location: @buppan_schedule }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -32,7 +32,7 @@ class BuppanSchedulesController < ApplicationController
   def update
     respond_to do |format|
       if @buppan_schedule.update(buppan_schedule_params)
-        format.html { redirect_to daily_items_path(date:@buppan_schedule.date), notice: "ステータス変更" }
+        format.html { redirect_to daily_items_path(date:@buppan_schedule.date), success: "更新しました。" }
         format.json { render :show, status: :ok, location: @buppan_schedule }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -45,7 +45,7 @@ class BuppanSchedulesController < ApplicationController
     @buppan_schedule.destroy
 
     respond_to do |format|
-      format.html { redirect_to buppan_schedules_url, notice: "Buppan schedule was successfully destroyed." }
+      format.html { redirect_to buppan_schedules_url, danger: "Buppan schedule was successfully destroyed." }
       format.json { head :no_content }
     end
   end
@@ -56,6 +56,6 @@ class BuppanSchedulesController < ApplicationController
     end
 
     def buppan_schedule_params
-      params.require(:buppan_schedule).permit(:date,:fixed_flag)
+      params.require(:buppan_schedule).permit(:date,:fixed_flag,:memo)
     end
 end

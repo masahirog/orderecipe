@@ -106,6 +106,7 @@ Rails.application.routes.draw do
       get :label
       get :calendar
       post :barcode_csv
+      post :store_barcode_csv
     end
   end
   resources :to_store_messages

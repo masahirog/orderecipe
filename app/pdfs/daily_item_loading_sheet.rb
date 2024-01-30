@@ -1,5 +1,5 @@
 class DailyItemLoadingSheet < Prawn::Document
-  def initialize(date,daily_items,stores)
+  def initialize(date,daily_items,stores,buppan_schedule)
     super(
       page_size: 'A4',
       margin:10
@@ -18,13 +18,17 @@ class DailyItemLoadingSheet < Prawn::Document
       end
     end
 
-    table_content(date,daily_items,hash,stores)
+    table_content(date,daily_items,hash,stores,buppan_schedule)
   end
 
-  def table_content(date,daily_items,hash,stores)
+  def table_content(date,daily_items,hash,stores,buppan_schedule)
     bounding_box([10, 800], :width => 560) do
       text "発行時間：#{Time.now.strftime("%Y年 %m月 %d日　%H:%M")}",size:8,:align => :right
       text "#{date}仕訳表"
+      move_down 10
+      text "仕分け備考：",size:10
+      move_down 5
+      text "#{buppan_schedule.memo}",size:9
       move_down 10
       table line_item_rows(daily_items,hash) do
         self.row_colors = ["FFFFFF","E5E5E5"]
@@ -36,8 +40,18 @@ class DailyItemLoadingSheet < Prawn::Document
         # cells.valign = :center
         # columns(-2).align = :center
         self.header = true
-        self.column_widths = [120,90,50,50,50,50,50,50]
+        self.column_widths = [30,120,120,40,40,40,40,40,40]
       end
+      sorting_memo_index = 1
+      daily_items.each do |di|
+        if di.sorting_memo.present?
+          memo = "※ #{sorting_memo_index}：#{di.sorting_memo}"
+          sorting_memo_index += 1
+          move_down 5
+          text memo,size:9
+        end
+      end
+
       stores.each do |store|
         store_amount = hash.values.sum { |data| data[store.id].to_i}
         if store_amount > 0
@@ -63,9 +77,17 @@ class DailyItemLoadingSheet < Prawn::Document
   end
 
   def line_item_rows(daily_items,hash)
-    data = [["生産者","商品","合計","東中野店","新中野店","新高円寺店","沼袋店","荻窪店","キッチン"]]
+    data = [["メモ","生産者","商品","合計","東中野","新中野","新高円寺","沼袋","荻窪","キッチン"]]
+    sorting_memo_index = 1
+    sorting_memo = 
     daily_items.each do |di|
-      data << ["#{di.item.item_vendor.id} #{di.item.item_vendor.store_name}","#{di.item.name} #{di.item.variety}","#{di.delivery_amount} #{di.unit}",
+      if di.sorting_memo.present?
+        memo_flag = "※ #{sorting_memo_index}"
+        sorting_memo_index += 1
+      else
+        memo_flag = ""
+      end
+      data << [memo_flag,"#{di.item.item_vendor.id} #{di.item.item_vendor.store_name}","#{di.item.name} #{di.item.variety}","#{di.delivery_amount} #{di.unit}",
                 hash[di.id][9],hash[di.id][19],hash[di.id][29],hash[di.id][154],hash[di.id][164],hash[di.id][39]]
     end
     data

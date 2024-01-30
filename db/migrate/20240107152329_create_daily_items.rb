@@ -16,6 +16,7 @@ class CreateDailyItems < ActiveRecord::Migration[6.0]
       t.integer :unit
       t.integer :delivery_amount,default:0,null:false
       t.timestamps
+      t.text :sorting_memo
     end
   end
 end

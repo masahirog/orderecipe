@@ -3,12 +3,13 @@ class DailyItemsController < ApplicationController
 
   def loading_sheet
     @date = params[:date]
+    @buppan_schedule = BuppanSchedule.find_by(date:@date)
     @daily_items = DailyItem.includes(:daily_item_stores,item:[:item_vendor]).joins(:item => :item_vendor).where(:item => {:item_vendors => {sorting_base_id:"SKL練馬"}}).where(date:@date)
     @stores = current_user.group.stores
     respond_to do |format|
       format.html
       format.pdf do
-        pdf = DailyItemLoadingSheet.new(@date,@daily_items,@stores)
+        pdf = DailyItemLoadingSheet.new(@date,@daily_items,@stores,@buppan_schedule)
         send_data pdf.render,
         filename:    "#{@date}.pdf",
         type:        "application/pdf",
@@ -22,6 +23,7 @@ class DailyItemsController < ApplicationController
     @store = Store.find(params[:store_id])
     @date = params[:date]
     @daily_items = DailyItem.where(date:@date)
+    @daily_item_stores = DailyItemStore.where(daily_item_id:@daily_items.ids,store_id:@store.id).where('subordinate_amount > ?',0)
   end
 
   def barcode_csv
@@ -35,6 +37,18 @@ class DailyItemsController < ApplicationController
       @daily_items = DailyItem.includes(:daily_item_stores,item:[:item_vendor]).joins(:item => :item_vendor).where(:item => {:item_vendors => {sorting_base_id:"SKL練馬"}}).where(date:@date).order("id DESC")
       @daily_item_stores = DailyItemStore.where(daily_item_id:@daily_items.ids)
     end
+    respond_to do |format|
+      format.html
+      format.csv do
+        send_data render_to_string, filename: "#{@date}_buppan_label_.csv", type: :csv
+      end
+    end
+  end
+
+  def store_barcode_csv
+    store_id = params[:store_id]
+    @date = params[:date]
+    @hash = params["daily_item_store"]
     respond_to do |format|
       format.html
       format.csv do
@@ -218,7 +232,7 @@ class DailyItemsController < ApplicationController
     end
 
     def daily_item_params
-      params.require(:daily_item).permit(:date,:purpose,:item_id,:memo,:estimated_sales,:tax_including_estimated_sales,:purchase_price,
+      params.require(:daily_item).permit(:date,:purpose,:item_id,:memo,:estimated_sales,:tax_including_estimated_sales,:purchase_price,:sorting_memo,
         :tax_including_purchase_price,:delivery_fee,:tax_including_delivery_fee,:subtotal_price,:tax_including_subtotal_price,:unit,:delivery_amount,
         daily_item_stores_attributes:[:id,:daily_item_id,:store_id,:subordinate_amount,:sell_price,:tax_including_sell_price,:_destroy]
         )

@@ -93,6 +93,7 @@ ActiveRecord::Schema.define(version: 2024_01_24_025317) do
     t.boolean "fixed_flag", default: false, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.text "memo"
   end
 
   create_table "containers", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -127,7 +128,7 @@ ActiveRecord::Schema.define(version: 2024_01_24_025317) do
     t.integer "tax_including_sell_price", default: 0, null: false
   end
 
-  create_table "daily_items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+  create_table "daily_items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.date "date", null: false
     t.integer "purpose", null: false
     t.integer "item_id", null: false
@@ -144,6 +145,7 @@ ActiveRecord::Schema.define(version: 2024_01_24_025317) do
     t.integer "delivery_amount", default: 0, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.text "sorting_memo"
   end
 
   create_table "daily_menu_details", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

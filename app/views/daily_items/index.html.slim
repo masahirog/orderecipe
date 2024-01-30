@@ -1,14 +1,27 @@
-div
+.clearfix
   div style="float:left"
     = link_to "#{@date.month}月カレンダー",calendar_daily_items_path,style:"margin-right:50px;"
     = link_to "#{(@date - 1).strftime("%Y年%-m月%-d日(#{%w(日 月 火 水 木 金 土)[(@date-1).wday]})＜＜")}",daily_items_path(date:@date - 1)
     span style='margin:0 15px;font-size:1.5em;' = @date.strftime("%Y年%-m月%-d日(#{%w(日 月 火 水 木 金 土)[@date.wday]})")
     = link_to "#{(@date + 1).strftime("＞＞%Y年%-m月%-d日(#{%w(日 月 火 水 木 金 土)[(@date+1).wday]})")}",daily_items_path(date:@date + 1)
   div style="float:left;margin-left:20px;"
-    = form_with model: @buppan_schedule, local: true do |f|
-      = f.hidden_field :date,value:@date
-      = f.select :fixed_flag, options_for_select([['確定', true], ['未確定', false]], f.object.fixed_flag),{},class:'form-control fixed_flag',style:'height:30px;float:left;width:100px;'
-      = f.submit '更新',class:'btn btn-success btn-sm',style:'float:left;margin-left:10px;'
+    button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#sampleModal" ステータス変更
+    #sampleModal.modal.fade tabindex="-1"
+      = form_with model: @buppan_schedule, local: true do |f|
+        = f.hidden_field :date,value:@date      
+        .modal-dialog
+          .modal-content
+            .modal-header
+              h4.modal-title ステータス変更
+            .modal-body
+              .form-group
+                = f.select :fixed_flag, options_for_select([['確定', true], ['未確定', false]], f.object.fixed_flag),{},class:'form-control fixed_flag'
+              .form-group
+                = f.text_area :memo,class:'form-control',placeholder:'仕分け備考（仕分け表に表示されます）'
+              .action
+                = f.submit '更新する',class:'btn btn-success btn-sm'
+            .modal-footer
+              button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
 
   - if @buppan_schedule.fixed_flag == true
 
@@ -16,7 +29,14 @@ div
 
     = link_to "SKLバーコード（全店）", barcode_csv_daily_items_path(date:params[:date],format:'csv'), method: :post,class:"btn btn-sm btn-primary pull-right"
 
-
+.clearfix
+  - if @buppan_schedule.fixed_flag == true
+    label ステータス：確定
+  - else
+    label ステータス：未確定
+  br
+    label 仕分け備考：
+    = @buppan_schedule.memo
 
 .daily_item_form_area
   = render partial: "daily_item_form", locals: { daily_item:@daily_item,target_id:"modal_new_daily_item"}
@@ -66,6 +86,7 @@ table.table
       col class="col240"
       col class="col120"
       col class="col240"
+      col class="col240"
       col class="col120"
       col class="col120"
       col class="col120"
@@ -83,7 +104,8 @@ table.table
         th 生産者
         th 商品
         th 納品量
-        th メモ
+        th 仕分メモ
+        th 管理メモ
         th 仕入値
         th 送料
         th 仕入小計
@@ -91,7 +113,8 @@ table.table
         th 粗利
         - @stores.each do |store|
           th.text-center
-            = link_to store.short_name, barcode_csv_daily_items_path(store_id:store.id,date:params[:date],format:'csv'), method: :post
+            / = link_to store.short_name, barcode_csv_daily_items_path(store_id:store.id,date:params[:date],format:'csv'), method: :post
+            = link_to store.short_name, label_daily_items_path(store_id:store.id,date:params[:date])
     tbody.add_point
       - @buppan_daily_items.each do |daily_item|
         = render partial: "tr", locals: { daily_item:daily_item,purpose:"物販"}
@@ -112,6 +135,19 @@ javascript:
     });
   });
 
+  $('body').on('change', '.subordinate_amount_input' , function() {
+    var id = $(this).parents('.modal').attr('id');
+    var delivery_amount = Number($("#"+id).find(".delivery_amount_input").val());
+    var total = 0
+    $("#"+id).find(".daily_item_store").each(function(){
+      total = total + Number($(this).find(".subordinate_amount_input").val());
+    });
+    if (total == delivery_amount) {
+      $("#"+id).find(".subordinate_amount_input").css('background-color','white');
+    }else{
+      $("#"+id).find(".subordinate_amount_input").css('background-color','pink');
+    };
+  });
   $('body').on('change', '.item_select' , function() {
     var id = $(this).parents('.modal').attr('id');
     item_select_change(id);
@@ -120,14 +156,14 @@ javascript:
   $('body').on('change', '.delivery_fee_input' , function() {
     var id = $(this).parents('.modal').attr('id');
     var komi = Math.floor($(this).val()*1.1);
-    $(".tax_including_delivery_fee_input").val(komi);
+    $("#"+id).find(".tax_including_delivery_fee_input").val(komi);
     calculate(id);
   });
 
-  $('body').on('change', '.tax_including_purchase_price_input' , function() {
+  $('body').on('change', '.purchase_price_input' , function() {
     var id = $(this).parents('.modal').attr('id');
-    var nuki = Math.ceil($(this).val()/1.08);
-    $(".purchase_price_input").val(nuki);
+    var komi = Math.floor($(this).val()*1.08);
+    $("#"+id).find(".tax_including_purchase_price_input").val(komi);
     calculate(id);
   });
 
@@ -191,21 +227,26 @@ javascript:
   }
 
   function subordinate(id){
+    $("#"+id).find(".subordinate_amount_input").css('background-color','white');
     var delivery_amount = Number($("#"+id).find(".delivery_amount_input").val());
     var checked_count = $("#"+id).find('input.dis_check_box:checked').length;
-    console.log(delivery_amount);
-    console.log(checked_count);
     var subordinate_amount = Math.round(delivery_amount / checked_count)
-    console.log(subordinate_amount);
+    var amari = delivery_amount % checked_count
+    var subordinate_amount = Math.round((delivery_amount - amari) / checked_count)
     $("#"+id).find(".daily_item_store").each(function(){
+      if (amari > 0) {
+        var add = 1
+        amari = amari - 1
+      }else{
+        var add = 0
+      }
       var store_id = $(this).find(".store_id").val();
       if ( $(this).find(".dis_check_box").is(':checked') ){
-        $(this).find(".subordinate_amount_input").val(subordinate_amount);
+        $(this).find(".subordinate_amount_input").val(subordinate_amount + add);
       }else{
         $(this).find(".subordinate_amount_input").val(0);
       }
-
-    });    
+    });
   }
 
   function calculate(id){
