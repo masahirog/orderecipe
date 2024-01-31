@@ -57,14 +57,14 @@ class WeeklyMenu < Prawn::Document
     barcode_blob = Barby::PngOutputter.new(barcode).to_png
     barcode_io = StringIO.new(barcode_blob)
     barcode_io.rewind
-    image barcode_io, at: [-10, gyusuji_height], width: 40,height:20
+    image barcode_io, at: [-10, gyusuji_height], width: 50,height:25
     self.line_width = 1
     stroke_color 'd8d8d8'
-    bounding_box([31, gyusuji_height-2], width: 26, height: 16) do
+    bounding_box([41, gyusuji_height-4], width: 26, height: 16) do
       stroke_bounds
     end
-    text_box("単品",at: [65,gyusuji_height-2], width: 350, height: 40,size:16)
-    text_box("<font size='13'>440</font>円",at: [105,gyusuji_height-5], width: 350, height: 40,size:9,inline_format: true)
+    text_box("単品",at: [75,gyusuji_height-2], width: 350, height: 40,size:16)
+    text_box("<font size='13'>440</font>円",at: [110,gyusuji_height-5], width: 350, height: 40,size:9,inline_format: true)
     text_box("税込",at: [145,gyusuji_height-2], width: 350, height: 40,size:6)
     text_box("<font size='8'>475</font>円",at: [145,gyusuji_height-10], width: 350, height: 40,size:6,inline_format: true)
 
@@ -73,12 +73,12 @@ class WeeklyMenu < Prawn::Document
     barcode_blob = Barby::PngOutputter.new(barcode).to_png
     barcode_io = StringIO.new(barcode_blob)
     barcode_io.rewind
-    image barcode_io, at: [200, gyusuji_height], width: 40,height:20
-    bounding_box([240, gyusuji_height-2], width: 26, height: 16) do
+    image barcode_io, at: [200, gyusuji_height], width: 50,height:25
+    bounding_box([250, gyusuji_height-4], width: 26, height: 16) do
       stroke_bounds
     end
-    text_box("丼",at: [270,gyusuji_height-2], width: 350, height: 40,size:16)
-    text_box("<font size='13'>640</font>円",at: [290,gyusuji_height-5], width: 350, height: 40,size:9,inline_format: true)
+    text_box("丼",at: [280,gyusuji_height-2], width: 350, height: 40,size:16)
+    text_box("<font size='13'>640</font>円",at: [300,gyusuji_height-5], width: 350, height: 40,size:9,inline_format: true)
     text_box("税込",at: [335,gyusuji_height-2], width: 350, height: 40,size:6)
     text_box("<font size='8'>691</font>円",at: [335,gyusuji_height-10], width: 350, height: 40,size:6,inline_format: true)
 
@@ -143,13 +143,13 @@ class WeeklyMenu < Prawn::Document
       end
       left_sozai_height = 530 if i == 11
       if i < 11
-        image barcode_io, at: [-10,left_sozai_height], width: 40,height:20 if product.smaregi_code.present?
-        bounding_box([31, left_sozai_height-2], width: 26, height: 16) do
+        image barcode_io, at: [-10,left_sozai_height +2], width: 50,height:25 if product.smaregi_code.present?
+        bounding_box([40, left_sozai_height-2], width: 26, height: 16) do
           stroke_bounds
         end
         if product.warm_flag == true
           fill_color 'ea9999'
-          text_box("●",at: [63,left_sozai_height-4], width: 350, height: 40,size:12)
+          text_box("●",at: [67,left_sozai_height-4], width: 350, height: 40,size:12)
         end
         fill_color '000000'
         text_box(number[i-1],at: [80,left_sozai_height-4], width: 350, height: 40,size:12)
@@ -158,13 +158,13 @@ class WeeklyMenu < Prawn::Document
         text_box("税込",at: [350,left_sozai_height], width: 350, height: 40,size:6)
         text_box("<font size='8'>#{product.tax_including_sell_price}</font> 円",at: [350,left_sozai_height-8], width: 350, height: 40,size:6,inline_format: true)
       else
-        image barcode_io, at: [395,left_sozai_height], width: 40,height:20 if product.smaregi_code.present?
-        bounding_box([436, left_sozai_height-2], width: 26, height: 16) do
+        image barcode_io, at: [395,left_sozai_height+2], width: 50,height:25 if product.smaregi_code.present?
+        bounding_box([445, left_sozai_height-2], width: 26, height: 16) do
           stroke_bounds
         end
         if product.warm_flag == true
           fill_color 'ea9999'
-          text_box("●",at: [468,left_sozai_height-4], width: 350, height: 40,size:12)
+          text_box("●",at: [472,left_sozai_height-4], width: 350, height: 40,size:12)
         end
         fill_color '000000'
         text_box(number[i-1],at: [485,left_sozai_height-4], width: 30, height: 40,size:12)
@@ -186,7 +186,7 @@ class WeeklyMenu < Prawn::Document
     self.line_width = 1
 
     bento_height = 288
-    bounding_box([436, bento_height-15], width: 26, height: 16) do
+    bounding_box([445, bento_height-15], width: 26, height: 16) do
       stroke_bounds
     end
     text_box("⑳日替わり弁当 お肉 ㉑日替わり弁当 お魚",at: [485,bento_height-15], width: 220, height: 40,size:10)
@@ -201,9 +201,9 @@ class WeeklyMenu < Prawn::Document
     barcode = Barby::Code128.new 467
     barcode_blob = Barby::PngOutputter.new(barcode).to_png
     barcode_io = StringIO.new(barcode_blob)
-    image barcode_io, at: [395,bento_height-13], width: 40,height:20
+    image barcode_io, at: [395,bento_height-11], width: 50,height:25
 
-    bounding_box([436, bento_height-15], width: 26, height: 16) do
+    bounding_box([445, bento_height-15], width: 26, height: 16) do
       stroke_bounds
     end
     text_box(number[21],at: [485,bento_height-15], width: 350, height: 40,size:12)
@@ -219,10 +219,10 @@ class WeeklyMenu < Prawn::Document
       barcode = Barby::Code128.new daily_menu_details[23].product.smaregi_code
       barcode_blob = Barby::PngOutputter.new(barcode).to_png
       barcode_io = StringIO.new(barcode_blob)
-      image barcode_io, at: [395,bento_height-13], width: 40,height:20
+      image barcode_io, at: [395,bento_height-11], width: 50,height:25
     end
 
-    bounding_box([436, bento_height-15], width: 26, height: 16) do
+    bounding_box([445, bento_height-15], width: 26, height: 16) do
       stroke_bounds
     end
     text_box(number[22],at: [485,bento_height-15], width: 350, height: 40,size:12)
@@ -237,9 +237,9 @@ class WeeklyMenu < Prawn::Document
     barcode = Barby::Code128.new 132
     barcode_blob = Barby::PngOutputter.new(barcode).to_png
     barcode_io = StringIO.new(barcode_blob)
-    image barcode_io, at: [395,bento_height-13], width: 40,height:20
+    image barcode_io, at: [395,bento_height-11], width: 50,height:25
 
-    bounding_box([436, bento_height-15], width: 26, height: 16) do
+    bounding_box([445, bento_height-15], width: 26, height: 16) do
       stroke_bounds
     end
     text_box(number[23],at: [485,bento_height-15], width: 350, height: 40,size:12)
@@ -382,7 +382,7 @@ class WeeklyMenu < Prawn::Document
       else
         fill_color "000000"
       end
-      text_box(date,at: [-5,height], width: 45, height: 180,size:9,align: :center)
+      text_box(date,at: [-10,height], width: 45, height: 180,size:9,align: :center)
       fill_color "000000"
       bm[1].each_with_index do |data|
         product = data[1]
@@ -393,9 +393,9 @@ class WeeklyMenu < Prawn::Document
           barcode_io.rewind
         end
 
-        image barcode_io, at: [40,bento_height], width: 40,height:20 if product.smaregi_code.present?
+        image barcode_io, at: [35,bento_height+2], width: 50,height:25 if product.smaregi_code.present?
         stroke_color 'd8d8d8'
-        bounding_box([81, bento_height-2], width: 26, height: 16) do
+        bounding_box([86, bento_height-2], width: 26, height: 16) do
           stroke_bounds
         end
         text_box(product.food_label_name,at: [115,bento_height], width: 200, height: 20,size:9, valign: :center)
