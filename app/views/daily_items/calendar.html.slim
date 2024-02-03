@@ -1,4 +1,7 @@
-h3 物販スケジュール
+h3
+  |物販スケジュール
+  = link_to "月次集計",monthly_daily_items_path(date:@date),class:"pull-right btn btn-sm btn-default",style:'margin-right:10px;'
+  = link_to "仕入先集計",vendor_daily_items_path(date:@date),class:"pull-right btn btn-sm btn-default",style:'margin-right:10px;'
 table.table
   thead
     tr

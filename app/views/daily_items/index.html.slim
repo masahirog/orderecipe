@@ -1,6 +1,6 @@
 .clearfix
   div style="float:left"
-    = link_to "#{@date.month}月カレンダー",calendar_daily_items_path,style:"margin-right:50px;"
+    = link_to "#{@date.month}月カレンダー",calendar_daily_items_path(start_date:@date),style:"margin-right:50px;"
     = link_to "#{(@date - 1).strftime("%Y年%-m月%-d日(#{%w(日 月 火 水 木 金 土)[(@date-1).wday]})＜＜")}",daily_items_path(date:@date - 1)
     span style='margin:0 15px;font-size:1.5em;' = @date.strftime("%Y年%-m月%-d日(#{%w(日 月 火 水 木 金 土)[@date.wday]})")
     = link_to "#{(@date + 1).strftime("＞＞%Y年%-m月%-d日(#{%w(日 月 火 水 木 金 土)[(@date+1).wday]})")}",daily_items_path(date:@date + 1)

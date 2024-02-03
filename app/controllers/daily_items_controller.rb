@@ -1,6 +1,77 @@
 class DailyItemsController < ApplicationController
   before_action :set_daily_item, only: %i[ show edit update destroy ]
 
+  def monthly
+    if params[:month].present?
+      date = "#{params[:month]}-01".to_date
+      @month = params[:month]
+    else
+      date = params[:date].to_date
+      @month = "#{date.year}-#{sprintf("%02d",date.month)}"
+    end
+
+    if params[:item_vendor_id].present?
+      item_vendors = ItemVendor.where(id:params[:item_vendor_id])
+    else
+      item_vendors = ItemVendor.all
+    end
+    item_vendors = item_vendors.where(payment:params[:payment]) if params[:payment].present?
+
+    @dates =(date.beginning_of_month..date.end_of_month).to_a
+    @daily_items = DailyItem.includes(item:[:item_vendor]).joins(:item).where(:items => {item_vendor_id:item_vendors.ids},date:@dates).order(:date)
+    @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    @daily_items.each do |di|
+      @hash[di.item.item_vendor_id][:daily_items][di.id] = di
+      if @hash[di.item.item_vendor_id][:reduced_tax_subject].present?
+        if di.item.reduced_tax_flag == true
+          @hash[di.item.item_vendor_id][:reduced_tax_subject] += (di.tax_including_purchase_price * di.delivery_amount)
+          @hash[di.item.item_vendor_id][:normal_tax_subject] += di.tax_including_delivery_fee
+        else
+          @hash[di.item.item_vendor_id][:normal_tax_subject] += di.tax_including_subtotal_price
+        end
+      else
+        if di.item.reduced_tax_flag == true
+          @hash[di.item.item_vendor_id][:reduced_tax_subject] = (di.tax_including_purchase_price * di.delivery_amount)
+          @hash[di.item.item_vendor_id][:normal_tax_subject] = di.tax_including_delivery_fee
+        else
+          @hash[di.item.item_vendor_id][:reduced_tax_subject] = 0
+          @hash[di.item.item_vendor_id][:normal_tax_subject] = di.tax_including_subtotal_price
+        end
+      end
+    end
+    @item_vendors = ItemVendor.where(id:@hash.keys)
+    respond_to do |format|
+      format.html
+      format.pdf do
+        pdf = DailyItemInvoice.new(date,@item_vendors,@hash)
+        send_data pdf.render,
+        filename:    "#{@date}.pdf",
+        type:        "application/pdf",
+        disposition: "inline"
+      end
+      format.csv do
+        send_data render_to_string, filename: "daily_items.csv", type: :csv
+      end
+    end
+  end
+
+  def vendor
+    @date = params[:date].to_date
+    @dates =(@date.beginning_of_month..@date.end_of_month).to_a
+    @monthly_datas = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }    
+    DailyItem.where(date:@dates).each do |di|
+      if @monthly_datas[di.item.item_vendor_id].present?
+        @monthly_datas[di.item.item_vendor_id][:purchase_price_sum] += di.purchase_price
+        @monthly_datas[di.item.item_vendor_id][:tax_including_purchase_price_sum] += di.tax_including_purchase_price
+      else
+        @monthly_datas[di.item.item_vendor_id][:store_name] = di.item.item_vendor.store_name
+        @monthly_datas[di.item.item_vendor_id][:purchase_price_sum] = di.purchase_price
+        @monthly_datas[di.item.item_vendor_id][:tax_including_purchase_price_sum] = di.tax_including_purchase_price
+      end
+    end
+    
+  end
+
   def loading_sheet
     @date = params[:date]
     @buppan_schedule = BuppanSchedule.find_by(date:@date)
@@ -60,11 +131,11 @@ class DailyItemsController < ApplicationController
 
   def calendar
     if params[:start_date]
-      date = params[:start_date].to_date
+      @date = params[:start_date].to_date
     else
-      date = @today
+      @date = @today
     end
-    dates =(date.beginning_of_month..date.end_of_month).to_a
+    dates =(@date.beginning_of_month..@date.end_of_month).to_a
     @daily_items = DailyItem.where(date:dates,purpose:"物販")
     @category_sum = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @buppan_sum = {"estimated_sales_sum"=>0,"subtotal_price_sum"=>0,"arari_sum"=>0,"purchase_price_sum"=>0,"delivery_fee_sum"=>0}

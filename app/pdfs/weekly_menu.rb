@@ -9,7 +9,8 @@ class WeeklyMenu < Prawn::Document
       page_layout: :landscape,
       :top_margin    => 0 )
     #日本語のフォント
-    font "vendor/assets/fonts/ipaexm.ttf"
+    # font "vendor/assets/fonts/NotoSansJP-Black.ttf"
+    font "vendor/assets/fonts/NotoSansJP-Medium.ttf"
     from = daily_menu.start_time
     to = from + 6
 
@@ -33,7 +34,7 @@ class WeeklyMenu < Prawn::Document
       fill_color 'ffffff'
       text_box("<font size='18'>#{from.month}</font>月<font size='18'>#{from.day}</font>日（水）〜<font size='18'>#{to.month}</font>月<font size='18'>#{to.day}</font>日（火）",
        inline_format: true,color:'ffffff',at: [-5,520],align: :center, width: 370, height: 40)
-      text_box("今週のべじはんメニュー",at: [-5,498], width: 370, height: 40,align: :center,size:20)
+      text_box("今週のべじはんメニュー",at: [-5,498], width: 370, height: 40,align: :center,size:20, styles:[:bold] )
       text_box("毎週水曜日にメニューがすべて入れ替わります",at: [-5,473], width: 370, height: 40,align: :center,size:9)
       fill_color 'cc0000'
       fill_rounded_rectangle [-15,540], 50, 50, 25

@@ -90,7 +90,7 @@ class PriceCard < Prawn::Document
           fill_color '000000'
           text_box("<font size='30'>#{product.sell_price}</font> 円",at: [255, h - 123], width: 100, height: 40,size:15,inline_format: true)
 
-          font "vendor/assets/fonts/NotoSansJP-Medium.ttf"          
+          font "vendor/assets/fonts/NotoSansJP-Medium.ttf"
           text_box(product.contents,at: [35,h-90], width: 465, height: 30,size:11,valign: :top,align: :center, leading: 3)
           text_box("一人前",at: [210, h - 138], width: 100, height: 40,size:12)
           text_box("（税込 #{product.tax_including_sell_price} 円）",at: [224, h - 155], width: 100, height: 40,size:13)

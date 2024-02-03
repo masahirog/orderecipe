@@ -29,10 +29,10 @@
     = f.number_field :tax_including_sell_price, class:"form-control tax_including_sell_price",readonly:true
   .form-group
     = f.label :purchase_price, "仕入れ単価"
-    = f.number_field :purchase_price, class:"form-control purchase_price",readonly:true
+    = f.number_field :purchase_price, class:"form-control purchase_price"
   .form-group
     = f.label :tax_including_purchase_price, "仕入れ単価（税込）"
-    = f.number_field :tax_including_purchase_price, class:"form-control tax_including_purchase_price"
+    = f.number_field :tax_including_purchase_price, class:"form-control tax_including_purchase_price",readonly:true
   .form-group
     = f.label :sales_life, "販売日数目安"
     = f.text_field :sales_life, class:"form-control"
@@ -49,13 +49,13 @@ javascript:
   $(".sell_price").on("change",function(){
     calculate_tax_including_sell_price();
   });
-  $(".tax_including_purchase_price").on("change",function(){
-    calculate_purchase_price();
+  $(".purchase_price").on("change",function(){
+    calculate_tax_including_purchase_price();
   });
 
   $(".reduced_tax_flag").on("change",function(){
     calculate_tax_including_sell_price();
-    calculate_purchase_price();
+    calculate_tax_including_purchase_price();
   });
   
   function calculate_tax_including_sell_price(){
@@ -71,14 +71,14 @@ javascript:
     $(".tax_including_sell_price").val(tax_including_sell_price);
   };
 
-  function calculate_purchase_price(){
-    var tax_including_purchase_price = $(".tax_including_purchase_price").val();
+  function calculate_tax_including_purchase_price(){
+    var purchase_price = $(".purchase_price").val();
     var reduce_tax_flag = $(".reduced_tax_flag").prop("checked");
     if (reduce_tax_flag == true) {
       var tax_rate = 1.08
     }else{
       var tax_rate = 1.1
     }
-    var purchase_price = Math.ceil(tax_including_purchase_price / tax_rate );
-    $(".purchase_price").val(purchase_price);
+    var tax_including_purchase_price = Math.floor(purchase_price * tax_rate );
+    $(".tax_including_purchase_price").val(tax_including_purchase_price);
   };
