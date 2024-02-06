@@ -18,7 +18,7 @@ class PriceCard < Prawn::Document
           image open(product.image.url), at: [10, h], width:184
           fill_color '000000'
           line_width 0.1
-          stroke_color 'ececec'
+          stroke_color '808080'
           stroke_rectangle [10,h], 510, 184
           fill_color '000000'
 
@@ -70,7 +70,7 @@ class PriceCard < Prawn::Document
           font "vendor/assets/fonts/NotoSansJP-Black.ttf"
           fill_color '000000'
           line_width 0.1
-          stroke_color 'ececec'
+          stroke_color '808080'
           stroke_rectangle [10,h], 510, 184
           if product.food_label_name.length < 15
             text_box(product.food_label_name,at: [40,h-20], width: 450, height: 50,size:30,valign: :bottom, leading: 5,align: :center)
