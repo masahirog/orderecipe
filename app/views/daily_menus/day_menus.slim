@@ -81,8 +81,8 @@ table.table
 						i class="fa-solid fa-plus" style='cursor: pointer;'
 				td
 					- if dmd.product.product_bbs.present?
-						button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#bb" style='' BB
-						#bb.modal.fade tabindex="-1"
+						button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#bb_#{dmd.id}" style='' BB
+						.modal.fade id="bb_#{dmd.id}" tabindex="-1"
 							.modal-dialog style='width:1000px;'
 								.modal-content
 									.modal-header
