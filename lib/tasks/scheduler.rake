@@ -44,3 +44,7 @@ task :store_order_close => :environment do
   end
 end
 
+
+task :item_expiration_date_notice => :environment do
+  ItemExpirationDate.expiration_date_notice
+end

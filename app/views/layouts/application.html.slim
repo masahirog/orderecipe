@@ -97,6 +97,7 @@ html lang="ja"
                       li = link_to "試食コメント",weekly_tastings_path(date:@today)
                       li = link_to 'シフト',shifts_path(date:@today,group_id:current_user.group_id,store_type:0)
                       li = link_to 'BejihanBook',manual_directories_path
+
                   li.dropdown
                     a.dropdown-toggle href="#" data-toggle="dropdown" role="button"
                       |物販
@@ -105,7 +106,8 @@ html lang="ja"
                       li = link_to 'スケジュール',calendar_daily_items_path
                       li = link_to '仕入先一覧',item_vendors_path
                       li = link_to '商品一覧',items_path
-
+                      li = link_to '店舗',stores_item_store_stocks_path
+                      li = link_to '賞味期限管理',item_expiration_dates_path
                   li.dropdown
                     a.dropdown-toggle href="#" data-toggle="dropdown" role="button"
                       |データ

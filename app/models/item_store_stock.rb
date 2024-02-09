@@ -1,0 +1,2 @@
+class ItemStoreStock < ApplicationRecord
+end

@@ -1,0 +1,19 @@
+h1 Listing item_store_stocks
+
+table
+  thead
+    tr
+      th
+      th
+      th
+
+  tbody
+    - @item_store_stocks.each do |item_store_stock|
+      tr
+        td = link_to 'Show', item_store_stock
+        td = link_to 'Edit', edit_item_store_stock_path(item_store_stock)
+        td = link_to 'Destroy', item_store_stock, data: { confirm: 'Are you sure?' }, method: :delete
+
+br
+
+= link_to 'New Item store stock', new_item_store_stock_path

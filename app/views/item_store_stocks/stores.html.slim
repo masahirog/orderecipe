@@ -1,0 +1,11 @@
+table.table
+	thead
+		tr
+			th 店舗名
+			th アイテム一覧
+
+	tbody
+		- @stores.each do |store|
+			tr
+				td = store.short_name
+				td = link_to "詳細",store_items_path(store_id:store.id)

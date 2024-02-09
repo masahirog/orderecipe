@@ -64,6 +64,13 @@ Rails.application.routes.draw do
       post :create_frame
     end
   end
+  resources :item_expiration_dates
+  resources :item_store_stocks do
+    collection do
+      get :stores
+      get :items
+    end
+  end
   resources :buppan_schedules
   resources :manual_directories
   resources :material_vendor_stocks do
@@ -97,6 +104,7 @@ Rails.application.routes.draw do
     collection do
       get :get_vendor_items
       get :get_item
+      get :store
     end
   end
   resources :item_vendors

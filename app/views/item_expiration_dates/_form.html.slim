@@ -1,0 +1,27 @@
+= form_for @item_expiration_date do |f|
+  .form-group
+    = f.label :item_id, "商品",class:'required'
+    = f.collection_select :item_id, @items, :id, :view_name_and_variety, {}, { class: "form-control item_select2",required:true}
+  .form-group
+    = f.label :expiration_date, "期限",class:'required'
+    = f.date_field :expiration_date, class:"form-control",required:true
+  .form-group
+    = f.label :number, "数"
+    = f.number_field :number, class:"form-control"
+  .form-group
+    = f.label :notice_date, "通知日"
+    = f.date_field :notice_date, class:"form-control"
+
+  .form-group
+    = f.label :memo, "メモ"
+    = f.text_area :memo, class:"form-control",style:"height:10em;"
+
+  .col-md-12.form-group
+    = f.label :done_flag, "完了"
+    = f.check_box :done_flag, class: "form-control"
+
+  .actions = f.submit "保存する",class:'btn btn-primary'
+
+
+javascript:
+  $('.item_select2').select2({width:"100%"})
