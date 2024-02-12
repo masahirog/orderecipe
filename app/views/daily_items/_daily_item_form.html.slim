@@ -5,9 +5,8 @@
         .modal-header
           h4.modal-title 編集
         .modal-body
-          = f.hidden_field :date
-          .form-group.clearfix
-            - if target_id == "modal_new_daily_item"
+          - if target_id == "modal_new_daily_item"
+            .form-group.clearfix
               div style='margin-bottom: 5px;'
                 select.item_select2.form-control.item_vendor_select
                   option value="" --
@@ -17,10 +16,14 @@
                 = f.collection_select :item_id, @items, :id, :view_name_and_variety, {include_blank:true},class:'form-control item_select item_select2'
               button class="btn btn-sm btn-default pull-right" data-toggle="modal" data-target="#new_item_add" style='margin-left:10px;' 商品新規追加
               input.item_reduce_tax_flag style='display: none;'
-            - else
+              = f.hidden_field :date
+          - else
+            .form-group.clearfix
               h3 = "#{f.object.item.name}/#{f.object.item.variety}｜#{f.object.item.item_vendor.store_name}"
               input.item_reduce_tax_flag style='display:none;' value="#{f.object.item.reduced_tax_flag}"
-
+            .form-group.clearfix
+              h4 日付
+              = f.date_field :date,class: "form-control",style:"float:left;width:32%;margin-bottom:5px;margin-right:5px;"
           .form-group.clearfix
             h4 仕入れ量
             = f.select :purpose, options_for_select_from_enum(DailyItem, :purpose),{}, { class: "form-control",style:"float:left;width:32%;argin-bottom:5px;margin-right:5px;"}
