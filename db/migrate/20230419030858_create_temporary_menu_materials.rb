@@ -7,6 +7,7 @@ class CreateTemporaryMenuMaterials < ActiveRecord::Migration[6.0]
       t.timestamps
       t.integer :origin_material_id
       t.index [:date, :menu_material_id], unique: true
+      t.string :memo
     end
   end
 end

@@ -29,6 +29,8 @@ h3 食材変更一覧
             .clearfix style='margin-bottom:5px;'
               div style='width:calc(100% - 70px);float:left;'
                 = link_to data[1][:material].name,data[1][:material]
+                br
+                = "└ #{data[1][:memo]}"
               div style='width:70px;float:right;text-align:right;font-size:1.2em;'
                 = "#{data[1][:amount_used].round(1).to_s(:delimited)} #{data[1][:order_unit]}"
             div

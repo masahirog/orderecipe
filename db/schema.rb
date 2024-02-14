@@ -1049,13 +1049,14 @@ ActiveRecord::Schema.define(version: 2024_02_09_040627) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "temporary_menu_materials", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+  create_table "temporary_menu_materials", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "menu_material_id", null: false
     t.integer "material_id", null: false
     t.date "date"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.integer "origin_material_id"
+    t.string "memo"
     t.index ["date", "menu_material_id"], name: "index_temporary_menu_materials_on_date_and_menu_material_id", unique: true
   end
 

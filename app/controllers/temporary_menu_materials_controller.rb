@@ -9,24 +9,25 @@ class TemporaryMenuMaterialsController < AdminController
     dates = params["temporary_menu_material"].keys
     tmms_hash = TemporaryMenuMaterial.where(menu_material_id:menu_material_id,date:dates).map{|tmm|[tmm.date,tmm]}.to_h
     params["temporary_menu_material"].each do |temporary_menu_material_params|
-      
       date = temporary_menu_material_params[0].to_date
       # 既存のtmmがあるかどうか？
       temporary_menu_material = tmms_hash[date]
 
       material_id = temporary_menu_material_params[1]["material_id"]
+      memo = temporary_menu_material_params[1]["memo"]
       if material_id.present?
         if temporary_menu_material.present?
           temporary_menu_material.material_id = material_id
+          temporary_menu_material.memo = memo
           update_arr << temporary_menu_material
         else
-          new_arr << TemporaryMenuMaterial.new(date:date,material_id:material_id,menu_material_id:menu_material_id,origin_material_id:menu_material.material_id)
+          new_arr << TemporaryMenuMaterial.new(date:date,material_id:material_id,menu_material_id:menu_material_id,origin_material_id:menu_material.material_id,memo:memo)
         end
       else
         temporary_menu_material.destroy if temporary_menu_material.present?
       end
     end
-    TemporaryMenuMaterial.import update_arr, on_duplicate_key_update:[:material_id]
+    TemporaryMenuMaterial.import update_arr, on_duplicate_key_update:[:material_id,:memo]
     TemporaryMenuMaterial.import new_arr
     redirect_to new_temporary_menu_material_path(menu_material_id:menu_material_id),success:'情報を更新しました。'
   end
@@ -49,6 +50,7 @@ class TemporaryMenuMaterialsController < AdminController
       @hash[tmm.date][tmm.menu_material_id][:material] = tmm.material
       @hash[tmm.date][tmm.menu_material_id][:menu] = tmm.menu_material.menu
       @hash[tmm.date][tmm.menu_material_id][:menu_material_id] = tmm.menu_material_id
+      @hash[tmm.date][tmm.menu_material_id][:memo] = tmm.memo
     end
     DailyMenuDetail.includes(:daily_menu,product:[menus:[:menu_materials]]).joins(:daily_menu).where(:daily_menus =>{start_time:@dates}).where(product_id:product_ids).each do |dmd|
       dmd.product.menus.each do |menu|
@@ -60,6 +62,7 @@ class TemporaryMenuMaterialsController < AdminController
               @hhash[dmd.daily_menu.start_time][@hash[dmd.daily_menu.start_time][mm.id][:material_id]][:menu_materials][mm.id][:name] = mm.menu.name
               @hhash[dmd.daily_menu.start_time][@hash[dmd.daily_menu.start_time][mm.id][:material_id]][:menu_materials][mm.id][:amount] = ((dmd.manufacturing_number * mm.amount_used)/@hash[dmd.daily_menu.start_time][mm.id][:material].recipe_unit_quantity)*@hash[dmd.daily_menu.start_time][mm.id][:material].order_unit_quantity
             else
+              @hhash[dmd.daily_menu.start_time][@hash[dmd.daily_menu.start_time][mm.id][:material_id]][:memo] = @hash[dmd.daily_menu.start_time][mm.id][:memo]
               @hhash[dmd.daily_menu.start_time][@hash[dmd.daily_menu.start_time][mm.id][:material_id]][:amount_used]= ((dmd.manufacturing_number * mm.amount_used)/@hash[dmd.daily_menu.start_time][mm.id][:material].recipe_unit_quantity)*@hash[dmd.daily_menu.start_time][mm.id][:material].order_unit_quantity
               @hhash[dmd.daily_menu.start_time][@hash[dmd.daily_menu.start_time][mm.id][:material_id]][:order_unit]= @hash[dmd.daily_menu.start_time][mm.id][:material].order_unit
               @hhash[dmd.daily_menu.start_time][@hash[dmd.daily_menu.start_time][mm.id][:material_id]][:material]= @hash[dmd.daily_menu.start_time][mm.id][:material]
@@ -111,11 +114,11 @@ class TemporaryMenuMaterialsController < AdminController
     @menu_material = MenuMaterial.find(params[:menu_material_id])
     product_ids = Product.joins(:product_menus).where(:product_menus=>{menu_id:@menu_material.menu_id}).ids
     dmds = DailyMenuDetail.joins(:daily_menu).where(:daily_menus =>{start_time:@dates}).where(product_id:product_ids)
-    @dmds_hash = DailyMenuDetail.joins(:daily_menu).where(:daily_menus =>{start_time:@dates}).where(product_id:product_ids).map{|dmd|[dmd.daily_menu.start_time,dmd]}.to_h
+    @dmds_hash = DailyMenuDetail.includes(:daily_menu).joins(:daily_menu).where(:daily_menus =>{start_time:@dates}).where(product_id:product_ids).map{|dmd|[dmd.daily_menu.start_time,dmd]}.to_h
     # dms = DailyMenu.where(start_time:@dates).joins(:daily_menu_details).where(:daily_menu_details =>{product_id:product_ids})
     @temporary_menu_materials = TemporaryMenuMaterial.where(date:@dates,menu_material_id:@menu_material.id)
     material_ids = @temporary_menu_materials.map{|tmm|tmm.material_id}
-    @materials = Material.where(unused_flag:false).map{|material|["#{material.name}｜#{material.vendor.name}",material.id]}
+    @materials = Material.includes(:vendor).where(unused_flag:false).map{|material|["#{material.name}｜#{material.vendor.name}",material.id]}
     @hash = @temporary_menu_materials.map{|tmm|[tmm.date,tmm]}.to_h
   end
 
@@ -163,6 +166,6 @@ class TemporaryMenuMaterialsController < AdminController
     end
 
     def temporary_menu_material_params
-      params.require(:temporary_menu_material).permit(:menu_material_id,:material_id,:date,:origin_material_id)
+      params.require(:temporary_menu_material).permit(:menu_material_id,:material_id,:date,:origin_material_id,:memo)
     end
 end

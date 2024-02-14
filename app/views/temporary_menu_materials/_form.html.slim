@@ -23,7 +23,11 @@
 					label 食材の変更
 					select.input_select_material.form-control.bulk_change
 	  					option value="" 一括変更 （チェック済みを変更）
-
+	  			th
+	  				.input-group
+						input type="text" class="form-control origin_memo" placeholder="メモ"
+						span class="input-group-btn"
+							button type="button" class="btn btn-primary reflect_memo" 反映
 				th.text-right 解除
 		tbody
 			- @dmds_hash.each do |data|
@@ -31,6 +35,7 @@
 					- material_id = @hash[data[0]].material_id 
 				- else
 					- material_id = ''
+
 				tr
 					td = data[0].strftime("%Y/%-m/%-d(#{%w(日 月 火 水 木 金 土)[data[0].wday]})")
 					td = data[1].manufacturing_number
@@ -40,6 +45,8 @@
 					td
 						/ = select_tag :shohin_id, options_for_select(@shohin_ids,params[:shohin_id]),include_blank:'商品ID' , class: "form-control",placeholder:'商品ID'
 						= select_tag("temporary_menu_material_#{data[0]}_material_id", options_for_select(@materials,material_id), include_blank: true,class:"input_select_material", name:"temporary_menu_material[#{data[0]}][material_id]",style:'width:300px;')
+					td
+						= text_field_tag "temporary_menu_material[#{data[0]}][memo]",@hash[data[0]].memo,class:"form-control memo"
 					td.text-right
 						input type="button" class='clear-btn btn btn-danger btn-sm' value="解除"
 
@@ -85,7 +92,6 @@ javascript:
   	  });
   	});
 
-
   	$(".bulk_change").on('change',function(){
   		var material_id = $(this).val();
   		var name = $(".bulk_change option:selected").text();
@@ -95,6 +101,16 @@ javascript:
   				console.log(name)
   				$(this).find(".input_select_material").val(material_id);
 				$(this).find(".select2-selection__rendered").text(name);
+  			}else{
+  			}
+  		});
+  	});
+
+  	$(".reflect_memo").on('click',function(){
+  		var memo = $(".origin_memo").val();
+  		$("tr").each(function(){
+  			if ( $(this).find(".tmm_check_box").is(':checked') ){
+  				$(this).find(".memo").val(memo);
   			}else{
   			}
   		});
