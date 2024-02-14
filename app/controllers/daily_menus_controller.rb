@@ -27,6 +27,18 @@ class DailyMenusController < AdminController
     @date = params[:start_time].to_date
     @daily_menu = DailyMenu.find_by(start_time:@date)
     @daily_menu_details = @daily_menu.daily_menu_details.includes([:product])
+    @store_daily_menus = @daily_menu.store_daily_menus.includes(:store_daily_menu_details,:store)
+    @price_card_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    @store_daily_menus.each do |sdm|
+      @price_card_hash[sdm.store.id]["store_daily_menu_id"] = sdm.id
+      @price_card_hash[sdm.store.id]["price_card_num"] = 0
+      sdm.store_daily_menu_details.each do |sdmd|
+        @price_card_hash[sdm.store.id]["product_id"][sdmd.product_id] = sdmd.pricecard_need_flag
+        if sdmd.pricecard_need_flag == true
+          @price_card_hash[sdm.store.id]["price_card_num"] += 1
+        end
+      end
+    end
     @products = []
     @hash = {}
     @daily_menu_details.each do |dmd|

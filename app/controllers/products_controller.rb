@@ -2,8 +2,24 @@ class ProductsController < ApplicationController
   require 'net/https'
   require 'json'
 
-  def price_card
+  def store_price_card
+    if params["store_daily_menu_ids"].present?
+      store_daily_menu_ids = params["store_daily_menu_ids"].values
+    end
+    respond_to do |format|
+      format.html
+      format.pdf do
+        pdf = StorePriceCard.new(store_daily_menu_ids)
+        send_data pdf.render,
+        filename:    "price_card.pdf",
+        type:        "application/pdf",
+        disposition: "inline"
+      end
+    end
+  end
 
+
+  def price_card
     product_ids = params[:product_ids].values.reject(&:blank?)
     products = []
     product_ids.each do |id|
