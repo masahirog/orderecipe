@@ -497,6 +497,6 @@ class StoreDailyMenusController < AdminController
         store_daily_menu_photos_attributes: [:id,:store_daily_menu_id,:image],
         store_daily_menu_details_attributes: [:id,:store_daily_menu_id,:product_id,:number,:row_order,:_destroy,
           :actual_inventory,:carry_over,:sold_out_flag,:serving_plate_id,:signboard_flag,
-          :window_pop_flag,:stock_deficiency_excess,:sozai_number,:bento_fukusai_number])
+          :pricecard_need_flag,:stock_deficiency_excess,:sozai_number,:bento_fukusai_number])
     end
 end

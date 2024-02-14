@@ -279,7 +279,7 @@ ActiveRecord::Schema.define(version: 2024_02_09_040627) do
     t.string "task_slack_url"
   end
 
-  create_table "item_expiration_dates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "item_expiration_dates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.date "expiration_date", null: false
     t.integer "item_id", null: false
     t.integer "number"
@@ -290,7 +290,7 @@ ActiveRecord::Schema.define(version: 2024_02_09_040627) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "item_store_stocks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "item_store_stocks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.date "date"
     t.integer "item_id", null: false
     t.integer "store_id", null: false
@@ -895,7 +895,7 @@ ActiveRecord::Schema.define(version: 2024_02_09_040627) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "store_daily_menu_details", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+  create_table "store_daily_menu_details", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "store_daily_menu_id", null: false
     t.integer "product_id", null: false
     t.integer "number", default: 0, null: false
@@ -909,7 +909,7 @@ ActiveRecord::Schema.define(version: 2024_02_09_040627) do
     t.boolean "sold_out_flag", default: false, null: false
     t.integer "serving_plate_id"
     t.boolean "signboard_flag", default: false, null: false
-    t.boolean "window_pop_flag", default: false, null: false
+    t.boolean "pricecard_need_flag", default: false, null: false
     t.integer "stock_deficiency_excess", default: 0, null: false
     t.integer "sozai_number", default: 0, null: false
     t.integer "bento_fukusai_number", default: 0, null: false

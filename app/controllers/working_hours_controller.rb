@@ -86,7 +86,7 @@ class WorkingHoursController < AdminController
 
   def index
     today = Date.today
-    @group = Group.find(params[:group_id])
+    @group = current_user.group
     @staffs = WorkingHour.where(group_id:@group.id).pluck(:name).uniq
     if params[:from]
       @from = params[:from]

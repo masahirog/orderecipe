@@ -107,6 +107,7 @@ table.table.table-list
           = link_to "編集", edit_store_daily_menu_path(@store_daily_menu),class:'btn btn-primary btn-sm',style:''
         - else
           button.btn.btn-default disabled=true 締切
+      th PC
       th 名称
       th 売価
       th 工程
@@ -126,6 +127,9 @@ table.table.table-list
     -@store_daily_menu_details.includes([:serving_plate]).each_with_index do |sdmd,index|
       tr
         td.text-center = sdmd.row_order
+        td
+          - if sdmd.pricecard_need_flag == true
+            |●
         td
           = link_to sdmd.product.name,product_path(sdmd.product)
         td
