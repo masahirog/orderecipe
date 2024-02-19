@@ -46,7 +46,10 @@
 						/ = select_tag :shohin_id, options_for_select(@shohin_ids,params[:shohin_id]),include_blank:'商品ID' , class: "form-control",placeholder:'商品ID'
 						= select_tag("temporary_menu_material_#{data[0]}_material_id", options_for_select(@materials,material_id), include_blank: true,class:"input_select_material", name:"temporary_menu_material[#{data[0]}][material_id]",style:'width:300px;')
 					td
-						= text_field_tag "temporary_menu_material[#{data[0]}][memo]",@hash[data[0]].memo,class:"form-control memo"
+						- if @hash[data[0]].present?
+							= text_field_tag "temporary_menu_material[#{data[0]}][memo]",@hash[data[0]].memo,class:"form-control memo"
+						- else
+							= text_field_tag "temporary_menu_material[#{data[0]}][memo]",'',class:"form-control memo"
 					td.text-right
 						input type="button" class='clear-btn btn btn-danger btn-sm' value="解除"
 
