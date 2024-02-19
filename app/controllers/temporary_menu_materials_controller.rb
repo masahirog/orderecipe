@@ -38,7 +38,7 @@ class TemporaryMenuMaterialsController < AdminController
       date = @today
     end
     @dates = (date.beginning_of_month..date.end_of_month).to_a
-    @temporary_menu_materials = TemporaryMenuMaterial.includes(:material,menu_material:[:material,:menu]).where(date:@dates)
+    @temporary_menu_materials = TemporaryMenuMaterial.includes(:material,menu_material:[:menu]).where(date:@dates)
     menu_ids = @temporary_menu_materials.map{|tmm|tmm.menu_material.menu_id}.uniq
     product_ids = ProductMenu.where(menu_id:menu_ids).map{|pm|pm.product_id}.uniq
     @hhash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
@@ -52,9 +52,11 @@ class TemporaryMenuMaterialsController < AdminController
       @hash[tmm.date][tmm.menu_material_id][:menu_material_id] = tmm.menu_material_id
       @hash[tmm.date][tmm.menu_material_id][:memo] = tmm.memo
     end
+    menu_material_ids = @temporary_menu_materials.map{|tmm|tmm.menu_material_id}.uniq
     DailyMenuDetail.includes(:daily_menu,product:[menus:[:menu_materials]]).joins(:daily_menu).where(:daily_menus =>{start_time:@dates}).where(product_id:product_ids).each do |dmd|
-      dmd.product.menus.each do |menu|
-        menu.menu_materials.each do |mm|
+      dmd.product.product_menus.where(menu_id:menu_ids).each do |pm|
+        menu = pm.menu
+        pm.menu.menu_materials.where(id:menu_material_ids).each do |mm|
           if @hash[dmd.daily_menu.start_time][mm.id].present?
             if @hhash[dmd.daily_menu.start_time][@hash[dmd.daily_menu.start_time][mm.id][:material_id]].present?
               @hhash[dmd.daily_menu.start_time][@hash[dmd.daily_menu.start_time][mm.id][:material_id]][:amount_used] += ((dmd.manufacturing_number * mm.amount_used)/@hash[dmd.daily_menu.start_time][mm.id][:material].recipe_unit_quantity)*@hash[dmd.daily_menu.start_time][mm.id][:material].order_unit_quantity
