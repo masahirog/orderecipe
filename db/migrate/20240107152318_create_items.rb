@@ -1,9 +1,7 @@
 class CreateItems < ActiveRecord::Migration[6.0]
   def change
     create_table :items do |t|
-      t.string :name,null:false
-      t.string :variety
-      t.integer :category
+      t.integer :variety_id
       t.text :memo
       t.boolean :reduced_tax_flag,null:false,default:true
       t.integer :sell_price

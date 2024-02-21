@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_02_09_040627) do
+ActiveRecord::Schema.define(version: 2024_02_19_132751) do
 
   create_table "analyses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "store_id"
@@ -301,6 +301,32 @@ ActiveRecord::Schema.define(version: 2024_02_09_040627) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["date", "item_id", "store_id"], name: "index_item_store_stocks_on_date_and_item_id_and_store_id", unique: true
+  end
+
+  create_table "item_tipes", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "name", null: false
+    t.integer "genre"
+    t.integer "category"
+    t.text "storage"
+    t.text "display"
+    t.text "feature"
+    t.text "cooking"
+    t.text "choice"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "item_varieties", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "item_type_id", null: false
+    t.string "name", null: false
+    t.string "image"
+    t.text "storage"
+    t.text "display"
+    t.text "feature"
+    t.text "cooking"
+    t.text "choice"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "item_vendors", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -895,7 +921,7 @@ ActiveRecord::Schema.define(version: 2024_02_09_040627) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "store_daily_menu_details", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "store_daily_menu_details", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "store_daily_menu_id", null: false
     t.integer "product_id", null: false
     t.integer "number", default: 0, null: false
@@ -1049,14 +1075,14 @@ ActiveRecord::Schema.define(version: 2024_02_09_040627) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "temporary_menu_materials", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "temporary_menu_materials", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "menu_material_id", null: false
     t.integer "material_id", null: false
     t.date "date"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.integer "origin_material_id"
-    t.string "memo"
+    t.string "memo", collation: "utf8_general_ci"
     t.index ["date", "menu_material_id"], name: "index_temporary_menu_materials_on_date_and_menu_material_id", unique: true
   end
 

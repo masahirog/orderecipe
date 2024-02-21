@@ -1,0 +1,9 @@
+= form_for @item_variety do |f|
+  - if @item_variety.errors.any?
+    #error_explanation
+      h2 = "#{pluralize(@item_variety.errors.count, "error")} prohibited this item_variety from being saved:"
+      ul
+        - @item_variety.errors.full_messages.each do |message|
+          li = message
+
+  .actions = f.submit

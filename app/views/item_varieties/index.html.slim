@@ -1,0 +1,19 @@
+h1 Listing item_varieties
+
+table
+  thead
+    tr
+      th
+      th
+      th
+
+  tbody
+    - @item_varieties.each do |item_variety|
+      tr
+        td = link_to 'Show', item_variety
+        td = link_to 'Edit', edit_item_variety_path(item_variety)
+        td = link_to 'Destroy', item_variety, data: { confirm: 'Are you sure?' }, method: :delete
+
+br
+
+= link_to 'New Item variety', new_item_variety_path

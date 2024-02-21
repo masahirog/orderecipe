@@ -1,0 +1,2 @@
+class ItemVariety < ApplicationRecord
+end
