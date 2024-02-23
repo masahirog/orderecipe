@@ -3,7 +3,7 @@ class CreateAnalysisProducts < ActiveRecord::Migration[5.2]
     create_table :analysis_products do |t|
       t.integer :analysis_id
       t.integer :smaregi_shohin_id
-      t.string :smaregi_shohin_name
+      t.text :smaregi_shohin_name
       t.integer :smaregi_shohintanka
       t.integer :product_id
       t.integer :orderecipe_sell_price

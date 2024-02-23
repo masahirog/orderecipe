@@ -49,10 +49,10 @@ ActiveRecord::Schema.define(version: 2024_02_23_151704) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "analysis_products", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+  create_table "analysis_products", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "analysis_id"
     t.integer "smaregi_shohin_id"
-    t.string "smaregi_shohin_name"
+    t.text "smaregi_shohin_name"
     t.integer "smaregi_shohintanka"
     t.integer "product_id"
     t.integer "orderecipe_sell_price"
