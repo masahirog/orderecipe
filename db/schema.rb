@@ -875,7 +875,9 @@ ActiveRecord::Schema.define(version: 2024_02_23_151704) do
     t.integer "sotozei_anbun"
     t.integer "shain_nebiki_anbun"
     t.integer "sale_nebiki_anbun"
-    t.index ["date", "analysis_id", "kaiin_id"], name: "sth_index"
+    t.index ["analysis_id"], name: "index_smaregi_trading_histories_on_analysis_id"
+    t.index ["date"], name: "index_smaregi_trading_histories_on_date"
+    t.index ["kaiin_id"], name: "index_smaregi_trading_histories_on_kaiin_id"
   end
 
   create_table "staff_stores", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
