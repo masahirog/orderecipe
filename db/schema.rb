@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_02_19_132751) do
+ActiveRecord::Schema.define(version: 2024_02_23_151704) do
 
   create_table "analyses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "store_id"
@@ -875,6 +875,7 @@ ActiveRecord::Schema.define(version: 2024_02_19_132751) do
     t.integer "sotozei_anbun"
     t.integer "shain_nebiki_anbun"
     t.integer "sale_nebiki_anbun"
+    t.index ["date", "analysis_id", "kaiin_id"], name: "sth_index"
   end
 
   create_table "staff_stores", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
