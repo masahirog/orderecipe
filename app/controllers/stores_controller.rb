@@ -20,7 +20,9 @@ class StoresController < AdminController
     @store_daily_menu = StoreDailyMenu.find_by(start_time:today,store_id:@store.id)
     @business_day_num = today.end_of_month.day
     store_id = @store.id
-    @budget = @store_daily_menu.foods_budget.to_i + @store_daily_menu.vegetables_budget.to_i + @store_daily_menu.goods_budget.to_i
+    if @store_daily_menu
+      @budget = @store_daily_menu.foods_budget.to_i + @store_daily_menu.vegetables_budget.to_i + @store_daily_menu.goods_budget.to_i
+    end
     dates = (today.beginning_of_month..today.end_of_month).to_a
     @store_daily_menus = StoreDailyMenu.where(start_time:dates,store_id:store_id)
     @foods_total_budget = 0
@@ -55,14 +57,17 @@ class StoresController < AdminController
   end
 
   def new
-    @store = Store.new
+    @store = Store.new(group_id:params[:group_id])
+    ssf_ids = @store.shift_frames.ids
+    @group = Group.find(params[:group_id])
+    @shift_frames = @group.shift_frames
   end
 
   def edit
     ssf_ids = @store.shift_frames.ids
-    group = @store.group
-    if current_user.group_id == group.id
-      @shift_frames = group.shift_frames
+    @group = @store.group
+    if current_user.group_id == @group.id
+      @shift_frames = @group.shift_frames
     else
       @shift_frames = []
     end
@@ -108,7 +113,7 @@ class StoresController < AdminController
     end
 
     def store_params
-      params.require(:store).permit(:name,:phone,:fax,:email,:zip,:address,:staff_name,:orikane_store_code,:close_flag,
+      params.require(:store).permit(:name,:phone,:fax,:email,:zip,:address,:staff_name,:orikane_store_code,:close_flag,:short_name,
         :staff_phone,:staff_email,:memo,:jfd,:user_id,:lunch_default_shift,:dinner_default_shift,:group_id,:store_type,
       store_shift_frames_attributes:[:id,:store_id,:shift_frame_id,:default_number,:default_working_hour,:_destroy])
     end

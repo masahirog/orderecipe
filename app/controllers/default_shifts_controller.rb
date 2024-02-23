@@ -34,12 +34,10 @@ class DefaultShiftsController < AdminController
   end
 
   def index
-
-
     @group = Group.find(params[:group_id])
     if params[:store_type].present?
       @store_type = params[:store_type]
-      @stores = @group.stores.includes(:fix_shift_pattern_stores,store_shift_frames:[:shift_frame]).where(store_type:@store_type)
+      @stores = @group.stores.includes(store_shift_frames:[:shift_frame]).where(store_type:@store_type)
     else
       @store_type = nil
       @stores = @group.stores.includes(:fix_shift_pattern_stores,store_shift_frames:[:shift_frame])
@@ -58,7 +56,7 @@ class DefaultShiftsController < AdminController
     staff_ids = @checked_stores.map{|store|store.staffs.ids}.flatten.uniq
     @staffs = Staff.where(status:0,id:staff_ids).order(row:'asc')
     @wdays = [[1,'月'],[2,'火'],[3,'水'],[4,'木'],[5,'金'],[6,'土'],[0,'日']]
-    default_shifts = DefaultShift.where(staff_id:@staffs.ids)
+    default_shifts = DefaultShift.includes(:store,fix_shift_pattern:[:shift_frames]).where(staff_id:@staffs.ids)
     @default_shifts = default_shifts.map{|default_shift|[[default_shift.staff_id,default_shift.weekday],default_shift]}.to_h
     # @shift_frames = @group.shift_frames
 

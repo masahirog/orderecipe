@@ -656,12 +656,12 @@ class DailyMenusController < AdminController
             sell_price = dmd.sell_price
             if dmd.paper_menu_number == 2 ||dmd.paper_menu_number == 3
               if store.group_id == 9
-                store_daily_menu_details_arr << StoreDailyMenuDetail.new(store_daily_menu_id:store_daily_menu.id,product_id:dmd.product_id,row_order:dmd.row_order,bento_fukusai_number:8,number:8,price:sell_price)
+                store_daily_menu_details_arr << StoreDailyMenuDetail.new(store_daily_menu_id:store_daily_menu.id,product_id:dmd.product_id,row_order:dmd.paper_menu_number,bento_fukusai_number:8,number:8,price:sell_price)
               else
-                store_daily_menu_details_arr << StoreDailyMenuDetail.new(store_daily_menu_id:store_daily_menu.id,product_id:dmd.product_id,row_order:dmd.row_order,price:sell_price)
+                store_daily_menu_details_arr << StoreDailyMenuDetail.new(store_daily_menu_id:store_daily_menu.id,product_id:dmd.product_id,row_order:dmd.paper_menu_number,price:sell_price)
               end
             else
-              store_daily_menu_details_arr << StoreDailyMenuDetail.new(store_daily_menu_id:store_daily_menu.id,product_id:dmd.product_id,row_order:dmd.row_order,price:sell_price)
+              store_daily_menu_details_arr << StoreDailyMenuDetail.new(store_daily_menu_id:store_daily_menu.id,product_id:dmd.product_id,row_order:dmd.paper_menu_number,price:sell_price)
             end
           end
         end

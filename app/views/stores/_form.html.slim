@@ -8,7 +8,8 @@
 
   .form-group
     = f.label :group_id, "所属のグループ"
-    = f.collection_select :group_id, Group.all, :id, :name, {}, { class: "form-control"}
+    = @group.name
+    = f.hidden_field :group_id
 
   .form-group
     = f.label :store_type, "店舗種類"
@@ -18,6 +19,10 @@
   .form-group
     = f.label :name, "店名"
     = f.text_field :name, required: true, class:"form-control"
+  .form-group
+    = f.label :short_name, "短縮名"
+    = f.text_field :short_name, required: true, class:"form-control"
+
   .form-group
     = f.label :phone, "電話番号"
     = f.text_field :phone, class:"form-control"

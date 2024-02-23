@@ -73,7 +73,7 @@
               = submit_tag "送信する",class:'btn btn-primary',data: { confirm: "選択した店舗のシフトがテンプレで上書きされます。元にもどす事が出来ません。本当によろしいですか？"}
 
 
-    = link_to "公開ステータス", fixed_shifts_path(date:params[:date],group_id:@group.id,stores:params[:stores].to_unsafe_h), class: "btn btn-default pull-right",style:'margin-right:20px;'
+    = link_to "公開ステータス", fixed_shifts_path(date:params[:date],group_id:@group.id,store_type:params[:store_type]), class: "btn btn-default pull-right",style:'margin-right:20px;'
     = link_to "枠作成",create_frame_shifts_path(date:params[:date],group_id:params[:group_id],store_type:params[:store_type]),{method: :post,class:'btn btn-default pull-right',style:'margin-right:20px;'}
 
 
@@ -129,19 +129,13 @@
                 br
                 button.hide_store_tr.btn.btn-default.btn-sm style='padding:2px 4px;font-size:10px;' 非表示
                 input.store_id value= "#{store.id}" style="display:none;"
-              td.fixed_second_thtd.mobile_view_hide style="padding:4px;background-color:#a9a9a9;color:white;"
-              td.fixed_third_thtd.mobile_view_hide style='font-size:0.8em;border-right: 1px silver solid;background-color:#a9a9a9;color:white;' 合計
-
-              - @one_month.each do |date|
-                td style='border-right: 1px silver solid;padding:4px;background-color:#a9a9a9;color:white;' colspan=2
-                  span.total_worker_number style='font-weight:normal;'
-                    = @date_store_working_count[[date,store.id]]
-                  span.total_working_time style='font-weight:normal;'
-                    = "（#{@date_store_working_hour[[date,store.id]].to_i.round}）"
           tr.mobile_view_hide.shift_amount_tr class="store_#{store.id}_tr"
             td.fixed_second_thtd.mobile_view_hide style="padding:4px;"
             td.fixed_third_thtd.mobile_view_hide style='font-size:0.8em;border-right: 1px silver solid;'
-              = "#{ssf.shift_frame.name}：#{ssf.default_number}"
+              - if current_user.id == 74
+                = link_to "#{ssf.shift_frame.name}：#{ssf.default_number}",ssf.shift_frame
+              - else
+                = "#{ssf.shift_frame.name}：#{ssf.default_number}"
               input.default_shift_value value="#{ssf.default_number}" style='display:none;'
             - @one_month.each do |date|
               - bg_color = '#f0c0c0'
@@ -165,7 +159,7 @@
     tbody
       - @staffs.each do |staff|
         tr.fix_shift_tr class="fix_shift_tr_#{staff.id}"
-          td.staff_name style='line-height:0.9em;color:black;text-align:center;vertical-align:middle;z-index:3;'
+          td.staff_name style='line-height:0.9em;color:black;text-align:center;vertical-align:middle;z-index:3;white-space: normal;'
             - if current_user.id == 74
               = link_to staff.name,edit_staff_path(staff)
             - else
@@ -191,26 +185,22 @@
             - if @shifts[[staff.id,date]].present?
               td class="td_shift_form td_#{@shifts[[staff.id,date]].id} clearfix" style='padding:3px;border-right: 1px silver solid;'
                 input.staff_id value="#{staff.id}" style='display:none;'
-                - if @shifts[[staff.id,date]].fixed_flag == true
-                  - if @shifts[[staff.id,date]].fix_shift_pattern_id.present?
-                    input.working_hour style='display:none;' value="#{@shifts[[staff.id,date]].fix_shift_pattern.working_hour}"
-                    .fix_shift style="font-size:12px;background-color:#{@shifts[[staff.id,date]].fix_shift_pattern.bg_color_code};color:#{@shifts[[staff.id,date]].fix_shift_pattern.color_code};"
-                      span.fix_store_name
-                        - if @shifts[[staff.id,date]].store_id.present?
-                          = @shifts[[staff.id,date]].store.short_name
-                      br
-                        span.fix_shift_pattern = @shifts[[staff.id,date]].fix_shift_pattern.pattern_name
-                  - else
-                    input.working_hour value=0 style='display:none;'
-                    .fix_shift style="font-size:12px;"
-                      span.fix_store_name
-                        - if @shifts[[staff.id,date]].store_id.present?
-                          = @shifts[[staff.id,date]].store.short_name
-                      br
-                        span.fix_shift_pattern
+                - if @shifts[[staff.id,date]].fix_shift_pattern_id.present?
+                  input.working_hour style='display:none;' value="#{@shifts[[staff.id,date]].fix_shift_pattern.working_hour}"
+                  .fix_shift style="font-size:12px;background-color:#{@shifts[[staff.id,date]].fix_shift_pattern.bg_color_code};color:#{@shifts[[staff.id,date]].fix_shift_pattern.color_code};"
+                    span.fix_store_name
+                      - if @shifts[[staff.id,date]].store_id.present?
+                        = @shifts[[staff.id,date]].store.short_name
+                    br
+                      span.fix_shift_pattern = @shifts[[staff.id,date]].fix_shift_pattern.pattern_name
                 - else
-                  .fix_shift
-                    span style='color:gray;' 調整中
+                  input.working_hour style='display:none;' value=0
+                  .fix_shift style="font-size:12px;"
+                    span.fix_store_name
+                      - if @shifts[[staff.id,date]].store_id.present?
+                        = @shifts[[staff.id,date]].store.short_name
+                    br
+                      span.fix_shift_pattern
 
                 - if current_user.id == 74
                   .edit_fix_shift_form style='display:none;'
@@ -273,7 +263,7 @@
 / 画面が狭いので2列目はスマホでは非表示
 css:
   .table-responsive{
-    height:800px;
+    height:100vh;
   }
   .bootstrap-time {
     display: inline-block;

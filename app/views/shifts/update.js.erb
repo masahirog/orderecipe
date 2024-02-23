@@ -1,12 +1,12 @@
 <% if @before_fix_shift_pattern.present? && @before_store_id.present? %>
-    <% @before_shift_frames.each do |sf| %>
-
-      var count = $(".<%= @shift.date.day %>_store_<%= @before_store_id %>_sf_<%= sf.id %>").find(".fix_shift_count").text()
-      count = Number(count) - 1;
-      var working_hour = $(".<%= @shift.date.day %>_store_<%= @before_store_id %>_sf_<%= sf.id %>").find(".working_hour").text()
-      working_hour = Number(working_hour) - <%= @before_fix_shift_pattern.working_hour %>;
-      $(".<%= @shift.date.day %>_store_<%= @before_store_id %>_sf_<%= sf.id %>").find(".fix_shift_count").text(count);
-      $(".<%= @shift.date.day %>_store_<%= @before_store_id %>_sf_<%= sf.id %>").find(".working_hour").text(working_hour);
+  <% @before_shift_frames.each do |sf| %>
+    var count = $(".<%= @shift.date.day %>_store_<%= @before_store_id %>_sf_<%= sf.id %>").find(".fix_shift_count").text()
+    count = Number(count) - 1;
+    var working_hour = $(".<%= @shift.date.day %>_store_<%= @before_store_id %>_sf_<%= sf.id %>").find(".working_hour").text()
+    working_hour = Number(working_hour) - <%= @before_fix_shift_pattern.working_hour %>;
+    $(".<%= @shift.date.day %>_store_<%= @before_store_id %>_sf_<%= sf.id %>").find(".fix_shift_count").text(count);
+    $(".<%= @shift.date.day %>_store_<%= @before_store_id %>_sf_<%= sf.id %>").find(".working_hour").text(working_hour);
+    <% if @before_store.store_shift_frames.present? %>
       var default_number = "<%= @before_store.store_shift_frames.find_by(shift_frame_id:sf.id).default_number %>"
       if (count < default_number) {
         $(".<%= @shift.date.day %>_store_<%= @before_store_id %>_sf_<%= sf.id %>").css("background-color",'#f0c0c0 ');
@@ -17,25 +17,23 @@
       };
     <% end %>
   <% end %>
-  var val = 0
-  var total = 0
-  var working_count = 0
-  <% if @shift.fix_shift_pattern.present? && @store.present? %>
-    <% @shift_frames.each do |sf| %>
-      var count = $(".<%= @shift.date.day %>_store_<%= @store.id %>_sf_<%= sf.id %>").find(".fix_shift_count").text();
-      console.log("<%= sf.name %>")
-      if (count=='0' || count=="") {
-        count = 1;
-      }else{
-        count = Number(count) + 1;
-      }
-      $(".<%= @shift.date.day %>_store_<%= @store.id %>_sf_<%= sf.id %>").find(".fix_shift_count").text(count);
-      var working_hour = $(".<%= @shift.date.day %>_store_<%= @store.id %>_sf_<%= sf.id %>").find(".working_hour").text();
-      console.log(working_hour)
-      working_hour = Number(working_hour) + <%= @shift.fix_shift_pattern.working_hour %>;
-      $(".<%= @shift.date.day %>_store_<%= @store.id %>_sf_<%= sf.id %>").find(".working_hour").text(working_hour);
-
-
+<% end %>
+var val = 0
+var total = 0
+var working_count = 0
+<% if @shift.fix_shift_pattern.present? && @store.present? %>
+  <% @shift_frames.each do |sf| %>
+    var count = $(".<%= @shift.date.day %>_store_<%= @store.id %>_sf_<%= sf.id %>").find(".fix_shift_count").text();
+    if (count=='0' || count=="") {
+      count = 1;
+    }else{
+      count = Number(count) + 1;
+    }
+    $(".<%= @shift.date.day %>_store_<%= @store.id %>_sf_<%= sf.id %>").find(".fix_shift_count").text(count);
+    var working_hour = $(".<%= @shift.date.day %>_store_<%= @store.id %>_sf_<%= sf.id %>").find(".working_hour").text();
+    working_hour = Number(working_hour) + <%= @shift.fix_shift_pattern.working_hour %>;
+    $(".<%= @shift.date.day %>_store_<%= @store.id %>_sf_<%= sf.id %>").find(".working_hour").text(working_hour);
+    <% if @store.store_shift_frames.present? %>
       var default_number = "<%= @store.store_shift_frames.find_by(shift_frame_id:sf.id).default_number %>"
       if (count < default_number) {
         $(".<%= @shift.date.day %>_store_<%= @store.id %>_sf_<%= sf.id %>").css("background-color",'#f0c0c0');
@@ -45,45 +43,46 @@
         $(".<%= @shift.date.day %>_store_<%= @store.id %>_sf_<%= sf.id %>").css("background-color",'#f5f5f5');
       };
     <% end %>
-    var working_hour = <%= @shift.fix_shift_pattern.working_hour %>
-    var bg_color_code = "<%= @shift.fix_shift_pattern.bg_color_code %>"
-    var color_code = "<%= @shift.fix_shift_pattern.color_code %>"
-    $(".td_<%= @shift.id %>").find(".fix_shift_pattern").text("<%= @shift.fix_shift_pattern.pattern_name %>")
-  <% else %>
-    var working_hour = 0
-    var color_code = 'black'
-    var bg_color_code = '#f5f5f5'
-    $(".td_<%= @shift.id %>").find(".fix_shift_pattern").text("")
   <% end %>
-  $(".td_<%= @shift.id %>").find('.working_hour').val(working_hour);
-  $(".fix_shift_tr_<%= @shift.staff_id %>").find('.working_hour').each(function(){
-    val = Number($(this).val());
-    total = total + val;
-    if (val > 0 ) {working_count += 1};
-  });
-  $(".working_hours_<%= @shift.staff_id %>").text(total);
-  $(".working_count_<%= @shift.staff_id %>").text(working_count);
-  <% if @shift.store_id.present? %>
-    <% if @shift.staff.stores.ids.include?(@shift.store_id) %>
-      $(".td_<%= @shift.id %>").find(".fix_shift_select_store_id").css('background-color','#f5f5f5');
-    <% else %>
-      $(".td_<%= @shift.id %>").find(".fix_shift_select_store_id").css('background-color','#90ee90');
-    <% end %>
-    <% if @shift.fix_shift_pattern_id.present? %>
-      $(".td_<%= @shift.id %>").find(".fix_shift_select").css('background-color','#f5f5f5');
-    <% else %>
-      $(".td_<%= @shift.id %>").find(".fix_shift_select").css('background-color','pink');
-    <% end %>
-    $(".td_<%= @shift.id %>").find(".fix_store_name").text("<%= @shift.store.short_name %>")
+  var working_hour = <%= @shift.fix_shift_pattern.working_hour %>
+  var bg_color_code = "<%= @shift.fix_shift_pattern.bg_color_code %>"
+  var color_code = "<%= @shift.fix_shift_pattern.color_code %>"
+  $(".td_<%= @shift.id %>").find(".fix_shift_pattern").text("<%= @shift.fix_shift_pattern.pattern_name %>")
+<% else %>
+  var working_hour = 0
+  var color_code = 'black'
+  var bg_color_code = '#f5f5f5'
+  $(".td_<%= @shift.id %>").find(".fix_shift_pattern").text("")
+<% end %>
+$(".td_<%= @shift.id %>").find('.working_hour').val(working_hour);
+$(".fix_shift_tr_<%= @shift.staff_id %>").find('.working_hour').each(function(){
+  val = Number($(this).val());
+  total = total + val;
+  if (val > 0 ) {working_count += 1};
+});
+$(".working_hours_<%= @shift.staff_id %>").text(total);
+$(".working_count_<%= @shift.staff_id %>").text(working_count);
+<% if @shift.store_id.present? %>
+  <% if @shift.staff.stores.ids.include?(@shift.store_id) %>
+    $(".td_<%= @shift.id %>").find(".fix_shift_select_store_id").css('background-color','#f5f5f5');
   <% else %>
-    <% if @shift.fix_shift_pattern_id.present? %>
-      $(".td_<%= @shift.id %>").find(".fix_shift_select_store_id").css('background-color','pink');
-    <% else %>
-      $(".td_<%= @shift.id %>").find(".fix_shift_select_store_id").css('background-color','#f5f5f5');
-    <% end %>
-    $(".td_<%= @shift.id %>").find(".fix_store_name").text("")
+    $(".td_<%= @shift.id %>").find(".fix_shift_select_store_id").css('background-color','#90ee90');
   <% end %>
-  $(".td_<%= @shift.id %>").find(".fix_shift_select").css('background-color',bg_color_code).css('color',color_code);
+  <% if @shift.fix_shift_pattern_id.present? %>
+    $(".td_<%= @shift.id %>").find(".fix_shift_select").css('background-color','#f5f5f5');
+  <% else %>
+    $(".td_<%= @shift.id %>").find(".fix_shift_select").css('background-color','pink');
+  <% end %>
+  $(".td_<%= @shift.id %>").find(".fix_store_name").text("<%= @shift.store.short_name %>")
+<% else %>
+  <% if @shift.fix_shift_pattern_id.present? %>
+    $(".td_<%= @shift.id %>").find(".fix_shift_select_store_id").css('background-color','pink');
+  <% else %>
+    $(".td_<%= @shift.id %>").find(".fix_shift_select_store_id").css('background-color','#f5f5f5');
+  <% end %>
+  $(".td_<%= @shift.id %>").find(".fix_store_name").text("")
+<% end %>
+$(".td_<%= @shift.id %>").find(".fix_shift_select").css('background-color',bg_color_code).css('color',color_code);
 var start_time = ""
 var end_time = ""
 var rest_start_time = ""

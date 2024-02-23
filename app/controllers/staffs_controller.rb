@@ -2,14 +2,15 @@ class StaffsController < ApplicationController
   before_action :set_staff, only: %i[ show edit update destroy ]
   def row_order_update
     staffs_arr = []
-    staffs = Staff.all
-    group_id = params[:group_id]
+    staff_ids = params[:row].keys
+    staffs = Staff.where(id:staff_ids)
+    group_id = current_user.group_id
     staffs.each do |staff|
       staff.row = params['row'][staff.id.to_s].to_i
       staffs_arr << staff
     end
     Staff.import staffs_arr, :on_duplicate_key_update => [:row]
-    redirect_to staffs_path(group_id:group_id),notice:'並び更新しました。'
+    redirect_to staffs_path(status:params[:status],store_type:params[:store_type]),notice:'並び更新しました。'
   end
   def index
     group_id = current_user.group_id
@@ -19,13 +20,9 @@ class StaffsController < ApplicationController
     else
       status = 0
     end
-    if params[:store_type].present?
-      @stores = @group.stores.where(store_type:params[:store_type])
-      staff_ids = @stores.map{|store|store.staffs.ids}.flatten.uniq
-      @staffs = Staff.where(id:staff_ids,status:status).order(row:'asc')
-    else
-      @staffs = Staff.where(group_id:group_id,status:status).order(row:'asc')
-    end
+    stores = @group.stores.where(store_type:params[:store_type])
+    staff_ids = stores.map{|store|store.staffs.ids}.flatten.uniq
+    @staffs = Staff.where(id:staff_ids,status:status).order(row:'asc')
   end
 
   def show

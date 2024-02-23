@@ -109,17 +109,66 @@ class StoreDailyMenusController < AdminController
       @store_daily_menu_details_bento_fukusai_hash[[sdmd.store_daily_menu_id,sdmd.product_id]]= sdmd.bento_fukusai_number
     end
     product_ids = store_daily_menu_details.order(:row_order).map{|sdmd|sdmd.product_id}.uniq
-    @products = Product.where(id: product_ids).order(['field(id, ?)', product_ids])
+    # @products = Product.where(id: product_ids).order(['field(id, ?)', product_ids])
+    @products = Product.where(id: product_ids).order(:product_category)
     product_sales_potentials = ProductSalesPotential.where(store_id:@store_id,product_id:product_ids)
     @product_sales_potentials = product_sales_potentials.map{|psp|[psp.product_id,psp.sales_potential]}.to_h
     sozai_ids = Product.where(id:product_ids).where(bejihan_sozai_flag:true).ids
     @sozai_total_sales_potential = product_sales_potentials.where(product_id:sozai_ids).sum(:sales_potential)
     min_date = @store_daily_menus.map{|sdm|sdm.start_time}.min
     @analyses = Analysis.includes(:store_daily_menu).where(store_id:@store_id).where('date > ?',min_date-60)
-    @date_sales_sozai_number = []
+    @date_sales_sozai_number = @analyses.map{|analysis|[analysis.date,analysis.total_sozai_sales_number]}.to_h
     @weekday_sales_sozai_number = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    date_weather = StoreDailyMenu.where('start_time > ?',min_date-60).where(store_id:@store_id).map{|sdm|[sdm.start_time,sdm.weather]}.to_h
+    analysis_products_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    sozai_analysis_products = AnalysisProduct.joins(:product).where(:products => {bejihan_sozai_flag:true}).where(analysis_id:@analyses.ids)
+    sozai_analysis_products.each do |ap|
+      if analysis_products_hash[ap.analysis_id][:sozai].present?
+        analysis_products_hash[ap.analysis_id][:sozai][:discount_number] += ap.discount_number
+        analysis_products_hash[ap.analysis_id][:sozai][:loss_number] += ap.loss_number.to_i if ap.loss_ignore == false
+        analysis_products_hash[ap.analysis_id][:sozai][:manufacturing_number] += ap.manufacturing_number.to_i
+        analysis_products_hash[ap.analysis_id][:sozai][:carry_over] += ap.carry_over.to_i
+      else
+        analysis_products_hash[ap.analysis_id][:sozai][:discount_number] = ap.discount_number
+        if ap.loss_ignore == false
+          analysis_products_hash[ap.analysis_id][:sozai][:loss_number] = ap.loss_number.to_i
+        else
+          analysis_products_hash[ap.analysis_id][:sozai][:loss_number] = 0
+        end
+        analysis_products_hash[ap.analysis_id][:sozai][:manufacturing_number] = ap.manufacturing_number.to_i
+        analysis_products_hash[ap.analysis_id][:sozai][:carry_over] = ap.carry_over.to_i
+      end
+    end
+    bento_analysis_products = AnalysisProduct.joins(:product).where(:products => {product_category:5}).where(analysis_id:@analyses.ids)
+    bento_analysis_products.each do |ap|
+      if analysis_products_hash[ap.analysis_id][:bento].present?
+        analysis_products_hash[ap.analysis_id][:bento][:discount_number] += ap.discount_number.to_i
+        analysis_products_hash[ap.analysis_id][:bento][:loss_number] += ap.loss_number.to_i if ap.loss_ignore == false
+        analysis_products_hash[ap.analysis_id][:bento][:manufacturing_number] += ap.manufacturing_number.to_i
+        analysis_products_hash[ap.analysis_id][:bento][:sales_number] += ap.sales_number.to_i
+      else
+        analysis_products_hash[ap.analysis_id][:bento][:discount_number] = ap.discount_number.to_i
+        if ap.loss_ignore == false
+          analysis_products_hash[ap.analysis_id][:bento][:loss_number] = ap.loss_number.to_i
+        else
+          analysis_products_hash[ap.analysis_id][:bento][:loss_number] = 0
+        end
+        analysis_products_hash[ap.analysis_id][:bento][:manufacturing_number] = ap.manufacturing_number.to_i
+        analysis_products_hash[ap.analysis_id][:bento][:sales_number] = ap.sales_number.to_i
+      end
+    end
+
     @analyses.map do |analysis|
-      @date_sales_sozai_number << [analysis.store_daily_menu.start_time,analysis.total_sozai_sales_number]
+      discount_sozai_number = analysis_products_hash[analysis.id][:sozai][:discount_number]
+      loss_sozai_number = analysis_products_hash[analysis.id][:sozai][:loss_number]
+      sozai_zaiko = analysis_products_hash[analysis.id][:sozai][:manufacturing_number]
+      sozai_kurikoshi = analysis_products_hash[analysis.id][:sozai][:carry_over]
+
+      total_number_sales_bento = analysis_products_hash[analysis.id][:bento][:sales_number]
+      discount_bento_number = analysis_products_hash[analysis.id][:bento][:discount_number]
+      loss_bento_number = analysis_products_hash[analysis.id][:bento][:loss_number]
+      bento_zaiko = analysis_products_hash[analysis.id][:bento][:manufacturing_number]
+
       if @weekday_sales_sozai_number[analysis.store_daily_menu.start_time.wday].present?
         @weekday_sales_sozai_number[analysis.store_daily_menu.start_time.wday]['total_num'] += analysis.total_sozai_sales_number
         @weekday_sales_sozai_number[analysis.store_daily_menu.start_time.wday]['count'] += 1
@@ -128,20 +177,18 @@ class StoreDailyMenusController < AdminController
         @weekday_sales_sozai_number[analysis.store_daily_menu.start_time.wday]['count'] = 1
       end
       transaction_count = analysis.transaction_count
-      analysis_products = analysis.analysis_products
-      discount_sozai_number = analysis_products.joins(:product).where(:products => {bejihan_sozai_flag:true}).sum(:discount_number)
-      fixed_price_sales_sozai_number = analysis.total_sozai_sales_number - discount_sozai_number
-      loss_sozai_number = analysis_products.joins(:product).where(:products => {bejihan_sozai_flag:true}).where(loss_ignore:false).where('loss_number > ?', 0).sum(:loss_number)
-      total_number_sales_bento =  analysis_products.joins(:product).where(:products => {product_category:5}).sum(:sales_number)
-      discount_bento_number = analysis_products.joins(:product).where(:products => {product_category:5}).sum(:discount_number)
-      fixed_price_sales_bento_number = total_number_sales_bento - discount_bento_number
-      loss_bento_number = analysis_products.joins(:product).where(:products => {product_category:5}).where(loss_ignore:false).where('loss_number > ?', 0).sum(:loss_number)
-      sdm = StoreDailyMenu.find_by(start_time:analysis.store_daily_menu.start_time,store_id:analysis.store_daily_menu.store_id)
-      sozai_zaiko = analysis_products.joins(:product).where(:products => {bejihan_sozai_flag:true}).sum(:manufacturing_number)
-      sozai_kurikoshi = analysis_products.joins(:product).where(:products => {bejihan_sozai_flag:true}).sum(:carry_over)
-      bento_zaiko = analysis_products.joins(:product).where(:products => {product_category:5}).sum(:manufacturing_number)
-      if sdm.present?
-        weather = sdm.weather
+      if discount_sozai_number.present?
+        fixed_price_sales_sozai_number = analysis.total_sozai_sales_number - discount_sozai_number
+      else
+        fixed_price_sales_sozai_number = ''
+      end
+      if total_number_sales_bento.present?
+        fixed_price_sales_bento_number = total_number_sales_bento - discount_bento_number
+      else
+        fixed_price_sales_bento_number = ''
+      end
+      if date_weather[analysis.date].present?
+        weather = date_weather[analysis.date]
       else
         weather = ''
       end
@@ -174,7 +221,6 @@ class StoreDailyMenusController < AdminController
       end
       @tbody_contents[wday[0]] = @tbody_contents[wday[0]].join
     end
-    @date_sales_sozai_number = @date_sales_sozai_number.to_h
   end
   def input_multi_number
     update_arr = []

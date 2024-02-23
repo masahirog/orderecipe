@@ -9,7 +9,7 @@ class FixShiftPatternsController < AdminController
   end
 
   def new
-    group_id = params[:group_id]
+    group_id = current_user.group_id
     @group = Group.find(group_id)
     @stores = @group.stores
     @shift_frames = ShiftFrame.where(group_id:group_id)

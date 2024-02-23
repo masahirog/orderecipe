@@ -1253,8 +1253,7 @@ class AnalysesController < AdminController
     @shohin_id = params[:shohin_id]
     @hinban = params[:hinban]
     @shohinmei = params[:shohinmei]
-    @smaregi_trading_histories = SmaregiTradingHistory.all
-    @smaregi_trading_histories = @smaregi_trading_histories.where(analysis_id:@analysis.id)
+    @smaregi_trading_histories = SmaregiTradingHistory.where(analysis_id:@analysis.id)
     @shohin_ids = @smaregi_trading_histories.map{|sth|sth.shohin_id}.uniq
     @product_ids = @smaregi_trading_histories.map{|sth|sth.hinban}.uniq
     @shohinmeis = @smaregi_trading_histories.map{|sth|sth.shohinmei}.uniq

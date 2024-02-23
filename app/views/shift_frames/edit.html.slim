@@ -1,8 +1,5 @@
-h1 Editing shift_frame
+h1 編集
 
 == render 'form'
-
-=> link_to 'Show', @shift_frame
-'|
-=< link_to 'Back', shift_frames_path
-
+br
+= link_to '削除', @shift_frame, data: { confirm: 'OK?' }, method: :delete
