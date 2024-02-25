@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_02_23_151704) do
+ActiveRecord::Schema.define(version: 2024_02_25_140619) do
 
   create_table "analyses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "store_id"
@@ -282,15 +282,16 @@ ActiveRecord::Schema.define(version: 2024_02_23_151704) do
     t.string "task_slack_url"
   end
 
-  create_table "item_expiration_dates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+  create_table "item_expiration_dates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.date "expiration_date", null: false
-    t.integer "item_id", null: false
+    t.bigint "item_id"
     t.integer "number"
     t.date "notice_date"
     t.boolean "done_flag", default: false, null: false
     t.text "memo"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["item_id"], name: "index_item_expiration_dates_on_item_id"
   end
 
   create_table "item_store_stocks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -306,9 +307,8 @@ ActiveRecord::Schema.define(version: 2024_02_23_151704) do
     t.index ["date", "item_id", "store_id"], name: "index_item_store_stocks_on_date_and_item_id_and_store_id", unique: true
   end
 
-  create_table "item_tipes", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "item_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name", null: false
-    t.integer "genre"
     t.integer "category"
     t.text "storage"
     t.text "display"
@@ -320,7 +320,7 @@ ActiveRecord::Schema.define(version: 2024_02_23_151704) do
   end
 
   create_table "item_varieties", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "item_type_id", null: false
+    t.bigint "item_type_id"
     t.string "name", null: false
     t.string "image"
     t.text "storage"
@@ -330,6 +330,7 @@ ActiveRecord::Schema.define(version: 2024_02_23_151704) do
     t.text "choice"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["item_type_id"], name: "index_item_varieties_on_item_type_id"
   end
 
   create_table "item_vendors", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -352,10 +353,9 @@ ActiveRecord::Schema.define(version: 2024_02_23_151704) do
     t.integer "sorting_base_id", default: 0, null: false
   end
 
-  create_table "items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+  create_table "items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name", null: false
-    t.string "variety"
-    t.integer "category"
+    t.bigint "item_variety_id"
     t.text "memo"
     t.boolean "reduced_tax_flag", default: true, null: false
     t.integer "sell_price"
@@ -363,11 +363,13 @@ ActiveRecord::Schema.define(version: 2024_02_23_151704) do
     t.integer "purchase_price"
     t.integer "tax_including_purchase_price"
     t.integer "unit"
-    t.integer "item_vendor_id", null: false
+    t.bigint "item_vendor_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.string "smaregi_code"
     t.string "sales_life"
+    t.index ["item_variety_id"], name: "index_items_on_item_variety_id"
+    t.index ["item_vendor_id"], name: "index_items_on_item_vendor_id"
   end
 
   create_table "manual_directories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|

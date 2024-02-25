@@ -108,6 +108,8 @@ Rails.application.routes.draw do
     end
   end
   resources :item_vendors
+  resources :item_types
+  resources :item_varieties
   resources :daily_items do
     collection do
       get :loading_sheet

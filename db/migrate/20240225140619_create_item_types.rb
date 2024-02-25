@@ -1,8 +1,7 @@
-class CreateItemTipes < ActiveRecord::Migration[6.0]
+class CreateItemTypes < ActiveRecord::Migration[6.0]
   def change
-    create_table :item_tipes do |t|
+    create_table :item_types do |t|
       t.string :name,null:false
-      t.integer :genre
       t.integer :category
       t.text :storage
       t.text :display

@@ -53,7 +53,12 @@ class DailyItemLoadingSheet < Prawn::Document
       end
 
       stores.each do |store|
-        store_amount = hash.values.sum { |data| data[store.id].to_i}
+        store_amount = 0
+        hash.values.each do |data|
+          if data[store.id].present?
+            store_amount += data[store.id].to_i
+          end
+        end
         if store_amount > 0
           start_new_page
           text "発行時間：#{Time.now.strftime("%Y年 %m月 %d日　%H:%M")}",size:8,:align => :right
@@ -87,7 +92,7 @@ class DailyItemLoadingSheet < Prawn::Document
       else
         memo_flag = ""
       end
-      data << [memo_flag,"#{di.item.item_vendor.id} #{di.item.item_vendor.store_name}","#{di.item.name} #{di.item.variety}","#{di.delivery_amount} #{di.unit}",
+      data << [memo_flag,"#{di.item.item_vendor.id} #{di.item.item_vendor.store_name}","#{di.item.name}","#{di.delivery_amount} #{di.unit}",
                 hash[di.id][9],hash[di.id][19],hash[di.id][29],hash[di.id][154],hash[di.id][164],hash[di.id][39]]
     end
     data
@@ -96,7 +101,7 @@ class DailyItemLoadingSheet < Prawn::Document
   def delivery_slip_line_item_rows(daily_items,hash,store)
     data = [["生産者","商品","納品数"]]
     daily_items.each do |di|
-      data << ["#{di.item.item_vendor.id} #{di.item.item_vendor.store_name}","#{di.item.name} #{di.item.variety}",hash[di.id][store.id]]
+      data << ["#{di.item.item_vendor.id} #{di.item.item_vendor.store_name}","#{di.item.name}",hash[di.id][store.id]]
     end
     data
   end

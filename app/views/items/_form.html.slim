@@ -1,20 +1,17 @@
 = form_for @item do |f|
 
   .form-group
-    = f.label :name, "商品名",class:'required'
-    = f.text_field :name, class:"form-control", required:true
+    = f.label :item_variety_id, "品種・品目",class:'required'
+    = f.collection_select :item_variety_id, @item_varieties, :id, :view_variety_and_type, {include_blank:true},class:'form-control item_select2', required:true
   .form-group
-    = f.label :variety, "品種"
-    = f.text_field :variety, class:"form-control"
+    = f.label :name, "商品名（バーコード等に出ます）",class:'required'
+    = f.text_field :name, class:"form-control", required:true
   .form-group
     = f.label :smaregi_code, "スマレジ商品コード 5桁"
     = f.text_field :smaregi_code, class:"form-control"
   .form-group
     = f.label :item_vendor_id, "仕入先",class:'required'
     = f.collection_select :item_vendor_id, ItemVendor.all, :id, :store_name, {}, { class: "form-control"}
-  .form-group
-    = f.label :category, "カテゴリ"
-    = f.select :category, options_for_select_from_enum(Item, :category),{}, { class: "form-control"}
   .form-group
     = f.label :unit, "単位"
     = f.select :unit, options_for_select_from_enum(Item, :unit),{}, { class: "form-control"}
@@ -46,6 +43,7 @@
 
 
 javascript:
+  $('.item_select2').select2({width:"100%"})
   $(".sell_price").on("change",function(){
     calculate_tax_including_sell_price();
   });

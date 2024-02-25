@@ -13,13 +13,13 @@
                   - @item_vendors.each do |iv|
                     option value="#{iv.id}" = "#{iv.producer_name}｜#{iv.store_name}"
               div style='margin-bottom: 10px  ;'
-                = f.collection_select :item_id, @items, :id, :view_name_and_variety, {include_blank:true},class:'form-control item_select item_select2'
+                = f.collection_select :item_id, @items, :id, :view_name_and_vendor, {include_blank:true},class:'form-control item_select item_select2'
               button class="btn btn-sm btn-default pull-right" data-toggle="modal" data-target="#new_item_add" style='margin-left:10px;' 商品新規追加
               input.item_reduce_tax_flag style='display: none;'
               = f.hidden_field :date
           - else
             .form-group.clearfix
-              h3 = "#{f.object.item.name}/#{f.object.item.variety}｜#{f.object.item.item_vendor.store_name}"
+              h3 = "#{f.object.item.name}｜#{f.object.item.item_vendor.store_name}"
               input.item_reduce_tax_flag style='display:none;' value="#{f.object.item.reduced_tax_flag}"
             .form-group.clearfix
               h4 日付

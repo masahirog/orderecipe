@@ -125,13 +125,15 @@ table.table
     = render partial: "daily_item_form", locals: { daily_item:daily_item,target_id:"modal_#{daily_item.id}"}
 javascript:
   $('.item_select2').select2({width:"100%",dropdownParent: $('#modal_new_daily_item')})
+  $('.variety_select2').select2({width:"100%",dropdownParent: $('#new_item_add')})
   $('body').on('change', '.item_vendor_select' , function() {
     var id = $(this).parents('.modal').attr('id');
     $.get({
       url: "#{get_vendor_items_items_path}",
       data: { item_vendor_id: $(this).val() }
     }).done(function(data){
-      item_select_change(id);
+      console.log(data)
+      // item_select_change(id);
     });
   });
 
@@ -188,7 +190,7 @@ javascript:
     calculate_tax_including_sell_price();
   });
 
-  $('body').on('change', '.item_tax_including_purchase_price' , function() {
+  $('body').on('change', '.item_purchase_price' , function() {
     var id = $(this).parents('.modal').attr('id');
     calculate_purchase_price();
   });
@@ -197,6 +199,12 @@ javascript:
     calculate_tax_including_sell_price();
     calculate_purchase_price();
   });
+
+  $('body').on('change', '.variety_select2' , function() {
+    var selected = $(this).children("option:selected");
+    $(".item_name").val(selected.text());
+  });
+
 
   $('body').on('change', '.sell_price' , function() {
     var id = $(this).parents('.modal').attr('id');
@@ -294,15 +302,15 @@ javascript:
   };
 
   function calculate_purchase_price(){
-    var tax_including_purchase_price = $(".item_tax_including_purchase_price").val();
+    var purchase_price = $(".item_purchase_price").val();
     var reduce_tax_flag = $(".item_reduced_tax_flag").prop("checked");
     if (reduce_tax_flag == true) {
       var tax_rate = 1.08
     }else{
       var tax_rate = 1.1
     }
-    var purchase_price = Math.ceil(tax_including_purchase_price / tax_rate );
-    $(".item_purchase_price").val(purchase_price);
+    var tax_including_purchase_price = Math.floor(purchase_price * tax_rate );
+    $(".item_tax_including_purchase_price").val(tax_including_purchase_price);
   };
 
 

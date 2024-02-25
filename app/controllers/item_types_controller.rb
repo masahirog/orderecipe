@@ -1,25 +1,20 @@
 class ItemTypesController < ApplicationController
   before_action :set_item_type, only: %i[ show edit update destroy ]
 
-  # GET /item_types or /item_types.json
   def index
     @item_types = ItemType.all
   end
 
-  # GET /item_types/1 or /item_types/1.json
   def show
   end
 
-  # GET /item_types/new
   def new
     @item_type = ItemType.new
   end
 
-  # GET /item_types/1/edit
   def edit
   end
 
-  # POST /item_types or /item_types.json
   def create
     @item_type = ItemType.new(item_type_params)
 
@@ -34,7 +29,6 @@ class ItemTypesController < ApplicationController
     end
   end
 
-  # PATCH/PUT /item_types/1 or /item_types/1.json
   def update
     respond_to do |format|
       if @item_type.update(item_type_params)
@@ -47,7 +41,6 @@ class ItemTypesController < ApplicationController
     end
   end
 
-  # DELETE /item_types/1 or /item_types/1.json
   def destroy
     @item_type.destroy
 
@@ -58,13 +51,11 @@ class ItemTypesController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
     def set_item_type
       @item_type = ItemType.find(params[:id])
     end
 
-    # Only allow a list of trusted parameters through.
     def item_type_params
-      params.fetch(:item_type, {})
+      params.require(:item_type).permit(:name,:category,:storage,:display,:feature,:cooking,:choice)
     end
 end

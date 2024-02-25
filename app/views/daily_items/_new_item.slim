@@ -5,17 +5,14 @@
         .modal-header
         .modal-body
           .form-group
-            = f.label :name, "名前",class:'required'
-            = f.text_field :name, class:"form-control", required:true
+            = f.label :item_variety_id, "品種・品目",class:'required'
+            = f.collection_select :item_variety_id, @item_varieties, :id, :view_variety_and_type, {include_blank:true},class:'form-control variety_select2', required:true
           .form-group
-            = f.label :variety, "品種"
-            = f.text_field :variety, class:"form-control"
+            = f.label :name, "名前（バーコード等の表示、基本は品種＋品目名）",class:'required'
+            = f.text_field :name, class:"form-control item_name", required:true
           .form-group
             = f.label :item_vendor_id, "仕入先",class:'required'
             = f.collection_select :item_vendor_id, ItemVendor.all, :id, :store_name, {include_blank: true}, { class: "form-control", required:true}
-          .form-group
-            = f.label :category, "カテゴリ"
-            = f.select :category, options_for_select_from_enum(Item, :category),{}, { class: "form-control"}
           .form-group
             = f.label :smaregi_code, "スマレジ商品コード 5桁"
             = f.text_field :smaregi_code, class:"form-control"
@@ -33,10 +30,10 @@
             = f.number_field :tax_including_sell_price, class:"form-control item_tax_including_sell_price",readonly:true
           .form-group
             = f.label :purchase_price, "仕入れ単価"
-            = f.number_field :purchase_price, class:"form-control item_purchase_price",readonly:true
+            = f.number_field :purchase_price, class:"form-control item_purchase_price"
           .form-group
             = f.label :tax_including_purchase_price, "仕入れ単価（税込）"
-            = f.number_field :tax_including_purchase_price, class:"form-control item_tax_including_purchase_price"
+            = f.number_field :tax_including_purchase_price, class:"form-control item_tax_including_purchase_price",readonly:true
           .form-group
             = f.label :sales_life, "販売日数目安"
             = f.text_field :sales_life, class:"form-control"

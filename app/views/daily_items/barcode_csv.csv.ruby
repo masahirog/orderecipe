@@ -10,7 +10,7 @@ CSV.generate(encoding: Encoding::SJIS, row_sep: "\r\n", force_quotes: true) do |
       tax_including_sell_price_length = tax_including_sell_price.length
       barcode_price = "0"*(5 - tax_including_sell_price_length) + tax_including_sell_price
       dis.subordinate_amount.times{
-        csv << ["12#{item.smaregi_code}#{barcode_price}","#{item.item_vendor.area} #{item.item_vendor.store_name}","#{item.name} #{item.variety}",dis.sell_price,"税込#{dis.tax_including_sell_price}円","#{day}#{item.sales_life}"]
+        csv << ["12#{item.smaregi_code}#{barcode_price}","#{item.item_vendor.area} #{item.item_vendor.store_name}","#{item.name}",dis.sell_price,"税込#{dis.tax_including_sell_price}円","#{day}#{item.sales_life}"]
       }
     end
   end

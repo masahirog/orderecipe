@@ -139,8 +139,10 @@ class DailyItemsController < ApplicationController
     @daily_items = DailyItem.where(date:dates,purpose:"物販")
     @category_sum = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @buppan_sum = {"estimated_sales_sum"=>0,"subtotal_price_sum"=>0,"arari_sum"=>0,"purchase_price_sum"=>0,"delivery_fee_sum"=>0}
-    ["野菜","果物","物産","送料"].each do |category|
-      daily_items = @daily_items.joins(:item).where(:items => {category:category})
+    ["野菜","果実","物産品","送料"].each do |category|
+      item_varieties = ItemVariety.joins(:item_type).where(:item_types => {category:category})
+      items = Item.where(item_variety_id:item_varieties.ids)
+      daily_items = @daily_items.where(item_id:items.ids)
       subtotal_price_sum = daily_items.sum(:subtotal_price)
       delivery_fee_sum = daily_items.sum(:delivery_fee)
       purchase_price_sum = daily_items.map{|di|di.purchase_price * di.delivery_amount}.sum
@@ -161,6 +163,7 @@ class DailyItemsController < ApplicationController
   end
 
   def index
+    @item_varieties = ItemVariety.includes(:item_type).all
     @stores = current_user.group.stores
     @item_vendors = ItemVendor.where(unused_flag:false)
     if params[:date].present?
@@ -174,13 +177,15 @@ class DailyItemsController < ApplicationController
       @buppan_schedule = BuppanSchedule.new(date:@date)
     end
     @item = Item.new
-    @daily_items = DailyItem.includes(daily_item_stores:[:store]).where(date:@date)
-    @buppan_daily_items = DailyItem.where(date:@date,purpose:"物販").joins(:item).order('items.category').order("id DESC")
-    @sozai_daily_items = DailyItem.where(date:@date,purpose:"惣菜").joins(:item).order('items.category').order("id DESC")
+    @daily_items = DailyItem.includes(item:[:item_variety],daily_item_stores:[:store]).where(date:@date)
+    @buppan_daily_items = @daily_items.where(purpose:"物販").order("id DESC")
+    @sozai_daily_items = @daily_items.where(purpose:"惣菜").order("id DESC")
     @category_sum = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @buppan_sum = {"estimated_sales_sum"=>0,"subtotal_price_sum"=>0,"arari_sum"=>0,"purchase_price_sum"=>0,"delivery_fee_sum"=>0}
-    ["野菜","果物","物産","送料"].each do |category|
-      daily_items = DailyItem.joins(:item).where(:items => {category:category}).where(purpose:"物販",date:@date)
+    ["野菜","果実","物産品","送料"].each do |category|
+      item_varieties = ItemVariety.joins(:item_type).where(:item_types => {category:category})
+      items = Item.where(item_variety_id:item_varieties.ids)
+      daily_items = @daily_items.where(item_id:items.ids,purpose:"物販")
       subtotal_price_sum = daily_items.sum(:subtotal_price)
       delivery_fee_sum = daily_items.sum(:delivery_fee)
       purchase_price_sum = daily_items.map{|di|di.purchase_price * di.delivery_amount}.sum
@@ -199,7 +204,7 @@ class DailyItemsController < ApplicationController
       @category_sum[category]["arari_rate"] = (arari/estimated_sales.to_f*100).round(1) if estimated_sales > 0
     end
     @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    DailyItemStore.includes(:daily_item).where(daily_item_id:@daily_items.ids).each do |dis|
+    DailyItemStore.where(daily_item_id:@daily_items.ids).each do |dis|
       if dis.subordinate_amount > 0
         @hash[dis.daily_item_id][dis.store_id]["subordinate_amount"] = dis.subordinate_amount
         @hash[dis.daily_item_id][dis.store_id]["unit"] = dis.daily_item.unit
@@ -237,6 +242,7 @@ class DailyItemsController < ApplicationController
     @daily_item = DailyItem.new(daily_item_params)
     respond_to do |format|
       if @daily_item.save
+        @item_varieties = ItemVariety.includes(:item_type).all
         @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
         @daily_item.daily_item_stores.each do |dis|
           if dis.subordinate_amount > 0
@@ -268,6 +274,7 @@ class DailyItemsController < ApplicationController
     @stores = current_user.group.stores
     respond_to do |format|
       if @daily_item.update(daily_item_params)
+        @item_varieties = ItemVariety.includes(:item_type).all
         @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
         @daily_item.daily_item_stores.each do |dis|
           if dis.subordinate_amount > 0

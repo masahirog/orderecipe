@@ -1,7 +1,7 @@
 class CreateItemVarieties < ActiveRecord::Migration[6.0]
   def change
     create_table :item_varieties do |t|
-      t.integer :item_type_id,null:false
+      t.references :item_type
       t.string :name,null:false
       t.string :image
       t.text :storage
