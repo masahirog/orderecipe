@@ -10,8 +10,8 @@ class Item < ApplicationRecord
 	end
 
 	def self.search(params)
-		item_varieties = ItemVariety.joins(:item_type).where(:item_types => {category:'物産品'})
-		data = Item.where(item_variety_id:item_varieties.ids).order("id DESC")
+		# item_varieties = ItemVariety.joins(:item_type).where(:item_types => {category:'物産品'})
+		data = Item.order("id DESC")
 		if params
 			data = data.where(['items.name LIKE ?', "%#{params["name"]}%"]) if params["name"].present?
 			data = data.where(item_vendor_id: params["item_vendor_id"]) if params["item_vendor_id"].present?
