@@ -2,7 +2,10 @@ class ItemTypesController < ApplicationController
   before_action :set_item_type, only: %i[ show edit update destroy ]
 
   def index
-    @item_types = ItemType.all
+    @item_types = ItemType.includes(:item_varieties).order('id desc')
+    @item_types = @item_types.where(category:params[:category]) if params[:category].present?
+    @item_types = @item_types.where(['item_types.name LIKE ?', "%#{params["name"]}%"]) if params["name"].present?
+    @item_types = @item_types.page(params[:page]).per(50)
   end
 
   def show

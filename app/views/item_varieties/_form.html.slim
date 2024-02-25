@@ -1,9 +1,27 @@
 = form_for @item_variety do |f|
-  - if @item_variety.errors.any?
-    #error_explanation
-      h2 = "#{pluralize(@item_variety.errors.count, "error")} prohibited this item_variety from being saved:"
-      ul
-        - @item_variety.errors.full_messages.each do |message|
-          li = message
+  .form-group  
+    = f.label :item_type_id, "品目",class:'required'
+    = f.collection_select :item_type_id, @item_types, :id, :name, {include_blank:true},class:'form-control item_select2', required:true
+  .form-group
+    = f.label :name, "品種名"
+    br
+    label ※品目の一つしたの階層。ナスでいうと、鶴丸や筑陽などの品種のグループ。栽培方法、容量や細かい違いはここではなく、商品で差を付けてください。
+    = f.text_field :name, class:"form-control"
+  .form-group
+    = f.label :storage, "保管方法"
+    = f.text_area :storage, class:"form-control",style:"height:10em;"
+  .form-group
+    = f.label :display, "陳列メモ"
+    = f.text_area :display, class:"form-control",style:"height:10em;"
+  .form-group
+    = f.label :feature, "特徴"
+    = f.text_area :feature, class:"form-control",style:"height:10em;"
+  .form-group
+    = f.label :cooking, "料理方法"
+    = f.text_area :cooking, class:"form-control",style:"height:10em;"
+  .form-group
+    = f.label :choice, "選び方"
+    = f.text_area :choice, class:"form-control",style:"height:10em;"
 
-  .actions = f.submit
+  .actions
+    = f.submit "更新",class:"btn btn-primary"

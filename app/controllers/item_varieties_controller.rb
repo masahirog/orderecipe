@@ -10,9 +10,11 @@ class ItemVarietiesController < ApplicationController
 
   def new
     @item_variety = ItemVariety.new
+    @item_types = ItemType.all
   end
 
   def edit
+    @item_types = ItemType.all
   end
 
   def create
