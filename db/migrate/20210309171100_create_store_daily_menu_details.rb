@@ -1,8 +1,8 @@
 class CreateStoreDailyMenuDetails < ActiveRecord::Migration[5.2]
   def change
     create_table :store_daily_menu_details do |t|
-      t.integer :store_daily_menu_id, null: false
-      t.integer :product_id, null: false
+      t.references :store_daily_menu
+      t.references :product
       t.integer :number, default: 0, null: false
       t.float :price, default: 0, null: false
       t.integer :total_price, default: 0, null: false

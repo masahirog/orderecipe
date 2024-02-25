@@ -37,8 +37,8 @@ ActiveRecord::Schema.define(version: 2024_02_23_151704) do
     t.index ["date", "store_id"], name: "index_analyses_on_date_and_store_id", unique: true
   end
 
-  create_table "analysis_categories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
-    t.integer "analysis_id"
+  create_table "analysis_categories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "analysis_id"
     t.integer "smaregi_bumon_id"
     t.integer "sales_number"
     t.integer "sales_amount"
@@ -47,6 +47,7 @@ ActiveRecord::Schema.define(version: 2024_02_23_151704) do
     t.integer "ex_tax_sales_amount"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["analysis_id"], name: "index_analysis_categories_on_analysis_id"
   end
 
   create_table "analysis_products", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -148,9 +149,9 @@ ActiveRecord::Schema.define(version: 2024_02_23_151704) do
     t.text "sorting_memo"
   end
 
-  create_table "daily_menu_details", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
-    t.integer "daily_menu_id", null: false
-    t.integer "product_id", null: false
+  create_table "daily_menu_details", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "daily_menu_id"
+    t.bigint "product_id"
     t.integer "manufacturing_number", default: 0, null: false
     t.float "cost_price_per_product", default: 0.0, null: false
     t.integer "total_cost_price", default: 0, null: false
@@ -169,6 +170,8 @@ ActiveRecord::Schema.define(version: 2024_02_23_151704) do
     t.boolean "change_flag", default: false, null: false
     t.index ["daily_menu_id", "paper_menu_number"], name: "index_daily_menu_details_on_daily_menu_id_and_paper_menu_number", unique: true
     t.index ["daily_menu_id", "product_id"], name: "index_daily_menu_details_on_daily_menu_id_and_product_id", unique: true
+    t.index ["daily_menu_id"], name: "index_daily_menu_details_on_daily_menu_id"
+    t.index ["product_id"], name: "index_daily_menu_details_on_product_id"
   end
 
   create_table "daily_menus", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -559,8 +562,8 @@ ActiveRecord::Schema.define(version: 2024_02_23_151704) do
   end
 
   create_table "order_materials", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "order_id", null: false
-    t.integer "material_id", null: false
+    t.integer "order_id"
+    t.integer "material_id"
     t.string "order_quantity", default: "0", null: false
     t.float "calculated_quantity"
     t.string "order_material_memo"
@@ -570,6 +573,9 @@ ActiveRecord::Schema.define(version: 2024_02_23_151704) do
     t.integer "status", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["material_id"], name: "index_order_materials_on_material_id"
+    t.index ["order_id"], name: "index_order_materials_on_order_id"
+    t.index ["un_order_flag"], name: "index_order_materials_on_un_order_flag"
   end
 
   create_table "order_products", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -770,10 +776,10 @@ ActiveRecord::Schema.define(version: 2024_02_23_151704) do
     t.integer "group_id"
   end
 
-  create_table "shifts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+  create_table "shifts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.date "date"
     t.integer "store_id"
-    t.integer "staff_id"
+    t.bigint "staff_id"
     t.integer "shift_pattern_id"
     t.integer "fix_shift_pattern_id"
     t.text "memo"
@@ -784,6 +790,8 @@ ActiveRecord::Schema.define(version: 2024_02_23_151704) do
     t.time "end_time"
     t.time "rest_start_time"
     t.time "rest_end_time"
+    t.index ["date"], name: "index_shifts_on_date"
+    t.index ["staff_id"], name: "index_shifts_on_staff_id"
   end
 
   create_table "smaregi_member_products", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -904,7 +912,7 @@ ActiveRecord::Schema.define(version: 2024_02_23_151704) do
   end
 
   create_table "stocks", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "material_id", null: false
+    t.integer "material_id"
     t.date "date", null: false
     t.float "start_day_stock", default: 0.0, null: false
     t.float "end_day_stock", default: 0.0, null: false
@@ -913,8 +921,11 @@ ActiveRecord::Schema.define(version: 2024_02_23_151704) do
     t.boolean "inventory_flag", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "store_id", null: false
+    t.integer "store_id"
     t.index ["date", "material_id", "store_id"], name: "index_stocks_on_date_and_material_id_and_store_id", unique: true
+    t.index ["date"], name: "index_stocks_on_date"
+    t.index ["material_id"], name: "index_stocks_on_material_id"
+    t.index ["store_id"], name: "index_stocks_on_store_id"
   end
 
   create_table "store_daily_menu_detail_histories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -924,9 +935,9 @@ ActiveRecord::Schema.define(version: 2024_02_23_151704) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "store_daily_menu_details", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
-    t.integer "store_daily_menu_id", null: false
-    t.integer "product_id", null: false
+  create_table "store_daily_menu_details", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "store_daily_menu_id"
+    t.bigint "product_id"
     t.integer "number", default: 0, null: false
     t.float "price", default: 0.0, null: false
     t.integer "total_price", default: 0, null: false
@@ -945,7 +956,9 @@ ActiveRecord::Schema.define(version: 2024_02_23_151704) do
     t.integer "showcase_type"
     t.integer "prepared_number", default: 0
     t.integer "excess_or_deficiency_number", default: 0
+    t.index ["product_id"], name: "index_store_daily_menu_details_on_product_id"
     t.index ["store_daily_menu_id", "product_id"], name: "index_uniq", unique: true
+    t.index ["store_daily_menu_id"], name: "index_store_daily_menu_details_on_store_daily_menu_id"
   end
 
   create_table "store_daily_menu_photos", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
