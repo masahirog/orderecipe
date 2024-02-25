@@ -12,10 +12,10 @@ table.table.table-striped
   thead
     tr
       th 名前
+      th 品目
       th 品種
       th 在庫
       th 仕入先
-      th カテゴリ
       th 単位
       th 仕入れ単価
 
@@ -23,7 +23,8 @@ table.table.table-striped
     - @search.each do |item|
       tr
         td = link_to item.name,edit_item_path(item)
-        td = item.variety
+        td = item.item_variety.item_type.name
+        td = item.item_variety.name
         td
           = form_with(model: ItemStoreStock.new, data: {remote: true}) do |f|
             = f.hidden_field :store_id,value:@store.id
@@ -31,7 +32,6 @@ table.table.table-striped
             span.accounting_unit_span style='float:left;padding-top:10px;' = item.unit
 
         td = item.item_vendor.store_name
-        td = item.category
         td = item.unit
         td = item.purchase_price
 
