@@ -42,6 +42,7 @@ class ItemsController < ApplicationController
   end
 
   def show
+    @item_varieties = ItemVariety.where(item_type_id:@item.item_variety.item_type_id)
   end
 
   def new

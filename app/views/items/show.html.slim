@@ -1,6 +1,69 @@
-p#notice = notice
+.clearfix
+	h3.pull-left = "商品名：#{@item.name}"
+	= link_to "編集", edit_item_path(@item),class:"btn btn-primary pull-left",style:'margin-left:20px;margin-top:15px;'
+br
+table.table
+	thead
+		tr
+			th カテゴリー
+			th 商品名
+			th 仕入先
+			th 品目
+			th 品種
+			th スマレジ
+	tbody
+		tr
+			td = @item.item_variety.item_type.category
+			td = @item.name
+			td = @item.item_vendor.store_name
+			td = @item.item_variety.item_type.name
+			td = @item.item_variety.name
+			td = @item.smaregi_code
 
 
-=> link_to 'Edit', edit_item_path(@item)
-'|
-=< link_to 'Back', items_path
+.col-md-12.clearfix
+	h4 style="float:left;" = "品目名：#{@item.item_variety.item_type.name}"
+	= link_to "編集",edit_item_type_path(@item.item_variety.item_type),class:'btn btn-primary btn-sm pull-right'
+
+table.table
+	tbody
+		tr
+			th.col-md-2 品種一覧
+			td = link_to @item_varieties.length,item_type_path(id:@item.item_variety.item_type_id)
+		tr
+			th 保存メモ
+			td = text_url_to_link(simple_format(h(@item.item_variety.item_type.storage))).html_safe 
+		tr
+			th 陳列メモ
+			td = text_url_to_link(simple_format(h(@item.item_variety.item_type.display))).html_safe 
+		tr
+			th 特徴
+			td = text_url_to_link(simple_format(h(@item.item_variety.item_type.feature))).html_safe 
+		tr
+			th 食べ方
+			td = text_url_to_link(simple_format(h(@item.item_variety.item_type.cooking))).html_safe 
+		tr
+			th 選び方
+			td = text_url_to_link(simple_format(h(@item.item_variety.item_type.choice))).html_safe 
+
+.col-md-12.clearfix
+	h4 style="float:left;" = "品種名：#{@item.item_variety.name}"
+	= link_to "編集",edit_item_variety_path(@item.item_variety),class:'btn btn-primary btn-sm pull-right'
+
+table.table
+	tbody
+		tr
+			th 保存メモ
+			td = text_url_to_link(simple_format(h(@item.item_variety.storage))).html_safe 
+		tr
+			th 陳列メモ
+			td = text_url_to_link(simple_format(h(@item.item_variety.display))).html_safe 
+		tr
+			th 特徴
+			td = text_url_to_link(simple_format(h(@item.item_variety.feature))).html_safe 
+		tr
+			th 食べ方
+			td = text_url_to_link(simple_format(h(@item.item_variety.cooking))).html_safe 
+		tr
+			th 選び方
+			td = text_url_to_link(simple_format(h(@item.item_variety.choice))).html_safe 

@@ -183,7 +183,7 @@ class DailyItemsController < ApplicationController
     @category_sum = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @buppan_sum = {"estimated_sales_sum"=>0,"subtotal_price_sum"=>0,"arari_sum"=>0,"purchase_price_sum"=>0,"delivery_fee_sum"=>0}
     ["野菜","果実","物産品","送料"].each do |category|
-      item_varieties = ItemVariety.joins(:item_type).where(:item_types => {category:category})
+      item_varieties = ItemVariety.includes(:item_type).where(:item_types => {category:category})
       items = Item.where(item_variety_id:item_varieties.ids)
       daily_items = @daily_items.where(item_id:items.ids,purpose:"物販")
       subtotal_price_sum = daily_items.sum(:subtotal_price)

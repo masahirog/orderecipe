@@ -1,6 +1,6 @@
 .clearfix
 	h3.pull-left = "品目：#{@item_type.name}"
-	= link_to "編集", edit_item_type_path(@item_type),class:"btn btn-primary pull-left",style:'margin-left:20px;margin-top:15px;'
+	= link_to "編集", edit_item_type_path(@item_type),class:"btn-sm btn btn-primary pull-left",style:'margin-left:20px;margin-top:20px;'
 br
 table.table
 	tbody
@@ -22,14 +22,15 @@ table.table
 		tr
 			th 選び方
 			td = text_url_to_link(simple_format(h(@item_type.choice))).html_safe
-
-h4 品種一覧
+.clearfix
+	h4.pull-left 品種一覧
+	= link_to '品種作成',new_item_variety_path(item_type_id:@item_type.id),class:'btn btn-primary btn-sm pull-left',style:'margin-left:20px;margin-top:6px;'
 table.table
 	thead
 		tr
 			th ID
-			th 品種名
-			th 生産者件数
+			th.col-md-1 品種名
+			th.col-md-1 生産者数
 			th 保存メモ
 			th 陳列メモ
 			th 特徴
