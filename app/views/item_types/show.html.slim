@@ -30,7 +30,9 @@ table.table
 		tr
 			th ID
 			th.col-md-1 品種名
+			th 商品追加
 			th.col-md-1 生産者数
+			
 			th 保存メモ
 			th 陳列メモ
 			th 特徴
@@ -41,6 +43,7 @@ table.table
 			tr
 				td = iv.id
 				td = link_to iv.name,edit_item_variety_path(iv)
+				td = link_to "＋",new_item_path(item_variety_id:iv.id)
 				td = link_to iv.items.length,items_path(item_variety_id:iv.id,)
 				td = iv.storage
 				td = iv.display

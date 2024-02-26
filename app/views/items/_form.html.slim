@@ -2,10 +2,10 @@
 
   .form-group
     = f.label :item_variety_id, "品種・品目",class:'required'
-    = f.collection_select :item_variety_id, @item_varieties, :id, :view_variety_and_type, {include_blank:true},class:'form-control item_select2', required:true
+    = f.collection_select :item_variety_id, @item_varieties, :id, :view_variety_and_type, {include_blank:true},class:'form-control variety_select2', required:true
   .form-group
     = f.label :name, "商品名（バーコード等に出ます）",class:'required'
-    = f.text_field :name, class:"form-control", required:true
+    = f.text_field :name, class:"form-control item_name", required:true
   .form-group
     = f.label :smaregi_code, "スマレジ商品コード 5桁"
     = f.text_field :smaregi_code, class:"form-control"
@@ -43,7 +43,7 @@
 
 
 javascript:
-  $('.item_select2').select2({width:"100%"})
+  $('.variety_select2').select2({width:"100%"})
   $(".sell_price").on("change",function(){
     calculate_tax_including_sell_price();
   });
@@ -56,6 +56,13 @@ javascript:
     calculate_tax_including_purchase_price();
   });
   
+
+
+  $('body').on('change', '.variety_select2' , function() {
+    var selected = $(this).children("option:selected");
+    $(".item_name").val(selected.text());
+  });
+
   function calculate_tax_including_sell_price(){
     var sell_price = $(".sell_price").val();
     var reduce_tax_flag = $(".reduced_tax_flag").prop("checked");

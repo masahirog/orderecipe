@@ -46,7 +46,12 @@ class ItemsController < ApplicationController
   end
 
   def new
-    @item = Item.new
+    if params[:item_variety_id].present?
+      iv = ItemVariety.find(params[:item_variety_id])
+      @item = Item.new(item_variety_id:params[:item_variety_id],name:"#{iv.item_type.name} #{iv.name}")
+    else
+      @item = Item.new
+    end
     @item_varieties = ItemVariety.all
   end
 
