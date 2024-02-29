@@ -16,6 +16,8 @@ class StoresController < AdminController
   end
 
   def show
+    @sales_hash = {veges:0,goods:0,foods:0}
+    @discount_hash = {veges:0,goods:0,foods:0}
     today = Date.today
     @store_daily_menu = StoreDailyMenu.find_by(start_time:today,store_id:@store.id)
     @business_day_num = today.end_of_month.day
@@ -35,10 +37,22 @@ class StoresController < AdminController
     end
     @total_budget = @foods_total_budget+@vegetables_total_budget+@goods_total_budget
     @analyses = Analysis.where(date:dates,store_id:store_id)
-    @bumon_loss_amount = [[14,0]].to_h
     analysis_categories = AnalysisCategory.where(analysis_id:@analyses.ids)
     @bumon_ex_tax_sales_amount = analysis_categories.group(:smaregi_bumon_id).sum(:ex_tax_sales_amount)
     @bumon_discount_amount = analysis_categories.group(:smaregi_bumon_id).sum(:discount_amount)
+    analysis_categories.each do |ac|
+      if [14,16,17,18].include?(ac.smaregi_bumon_id)
+        @sales_hash[:veges] += ac.ex_tax_sales_amount
+        @discount_hash[:veges] += ac.discount_amount
+      elsif ac.smaregi_bumon_id == 15
+        @sales_hash[:goods] += ac.ex_tax_sales_amount
+        @discount_hash[:goods] += ac.discount_amount
+      else
+        @sales_hash[:foods] += ac.ex_tax_sales_amount
+        @discount_hash[:foods] += ac.discount_amount
+      end
+    end
+
 
     @weekly_clean_reminder_templates = ReminderTemplate.where(category:1,repeat_type:11)
     @monthly_clean_reminder_templates = ReminderTemplate.where(category:1,repeat_type:12)
