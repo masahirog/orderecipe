@@ -1,7 +1,7 @@
 class CreateAnalysisProducts < ActiveRecord::Migration[5.2]
   def change
     create_table :analysis_products do |t|
-      t.integer :analysis_id
+      t.references :analysis
       t.integer :smaregi_shohin_id
       t.text :smaregi_shohin_name
       t.integer :smaregi_shohintanka
@@ -28,6 +28,7 @@ class CreateAnalysisProducts < ActiveRecord::Migration[5.2]
       t.boolean :loss_ignore,default:false,null:false
       t.integer :discount_number,default:0
       t.float :nomination_rate,default:0,null:false
+      t.index [:analysis_id, :product_id], unique: true
     end
   end
 end

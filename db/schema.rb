@@ -47,11 +47,12 @@ ActiveRecord::Schema.define(version: 2024_02_25_140619) do
     t.integer "ex_tax_sales_amount"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["analysis_id", "smaregi_bumon_id"], name: "index_analysis_categories_on_analysis_id_and_smaregi_bumon_id", unique: true
     t.index ["analysis_id"], name: "index_analysis_categories_on_analysis_id"
   end
 
   create_table "analysis_products", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "analysis_id"
+    t.bigint "analysis_id"
     t.integer "smaregi_shohin_id"
     t.text "smaregi_shohin_name"
     t.integer "smaregi_shohintanka"
@@ -79,6 +80,8 @@ ActiveRecord::Schema.define(version: 2024_02_25_140619) do
     t.boolean "loss_ignore", default: false, null: false
     t.integer "discount_number", default: 0
     t.float "nomination_rate", default: 0.0, null: false
+    t.index ["analysis_id", "product_id"], name: "index_analysis_products_on_analysis_id_and_product_id", unique: true
+    t.index ["analysis_id"], name: "index_analysis_products_on_analysis_id"
   end
 
   create_table "brands", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -149,7 +152,7 @@ ActiveRecord::Schema.define(version: 2024_02_25_140619) do
     t.text "sorting_memo"
   end
 
-  create_table "daily_menu_details", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "daily_menu_details", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "daily_menu_id"
     t.bigint "product_id"
     t.integer "manufacturing_number", default: 0, null: false
@@ -282,7 +285,7 @@ ActiveRecord::Schema.define(version: 2024_02_25_140619) do
     t.string "task_slack_url"
   end
 
-  create_table "item_expiration_dates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "item_expiration_dates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.date "expiration_date", null: false
     t.bigint "item_id"
     t.integer "number"
@@ -307,7 +310,7 @@ ActiveRecord::Schema.define(version: 2024_02_25_140619) do
     t.index ["date", "item_id", "store_id"], name: "index_item_store_stocks_on_date_and_item_id_and_store_id", unique: true
   end
 
-  create_table "item_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "item_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.integer "category"
     t.text "storage"
@@ -319,7 +322,7 @@ ActiveRecord::Schema.define(version: 2024_02_25_140619) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "item_varieties", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "item_varieties", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "item_type_id"
     t.string "name", null: false
     t.string "image"
@@ -353,7 +356,7 @@ ActiveRecord::Schema.define(version: 2024_02_25_140619) do
     t.integer "sorting_base_id", default: 0, null: false
   end
 
-  create_table "items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.bigint "item_variety_id"
     t.text "memo"
@@ -563,7 +566,7 @@ ActiveRecord::Schema.define(version: 2024_02_25_140619) do
     t.index ["date", "store_id"], name: "index_monthly_stocks_on_date_and_store_id", unique: true
   end
 
-  create_table "order_materials", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "order_materials", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.integer "order_id"
     t.integer "material_id"
     t.string "order_quantity", default: "0", null: false
@@ -778,7 +781,7 @@ ActiveRecord::Schema.define(version: 2024_02_25_140619) do
     t.integer "group_id"
   end
 
-  create_table "shifts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "shifts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.date "date"
     t.integer "store_id"
     t.bigint "staff_id"
@@ -913,7 +916,7 @@ ActiveRecord::Schema.define(version: 2024_02_25_140619) do
     t.integer "group_id", null: false
   end
 
-  create_table "stocks", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "stocks", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.integer "material_id"
     t.date "date", null: false
     t.float "start_day_stock", default: 0.0, null: false
@@ -937,7 +940,7 @@ ActiveRecord::Schema.define(version: 2024_02_25_140619) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "store_daily_menu_details", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "store_daily_menu_details", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "store_daily_menu_id"
     t.bigint "product_id"
     t.integer "number", default: 0, null: false

@@ -504,6 +504,8 @@ class AnalysesController < AdminController
     redirect_to smaregi_members_analyses_path,notice:'更新しました。'
   end
   def sales
+    @sales_hash = {veges:0,goods:0,foods:0}
+    @discount_hash = {veges:0,goods:0,foods:0}
     @store = Store.find(params[:store_id])
     if params[:date].present?
       @date = params[:date].to_date
@@ -513,14 +515,42 @@ class AnalysesController < AdminController
     @dates =(@date.beginning_of_month..@date.end_of_month).to_a
     @analyses = Analysis.where(date:@dates).where(store_id:@store.id).order(:date)
     @date_analyses = @analyses.map{|analysis|[analysis.date,analysis]}.to_h
+    @date_analysis_categories = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    @analyses.each do |analysis|
+      @date_analysis_categories[analysis.date][:foods][:ex_tax_sales_amount] = 0
+      @date_analysis_categories[analysis.date][:foods][:discount_amount] = 0
+      @date_analysis_categories[analysis.date][:foods][:sales_number] = 0
+      @date_analysis_categories[analysis.date][:veges][:ex_tax_sales_amount] = 0
+      @date_analysis_categories[analysis.date][:veges][:discount_amount] = 0
+      @date_analysis_categories[analysis.date][:veges][:sales_number] = 0
+      @date_analysis_categories[analysis.date][:goods][:ex_tax_sales_amount] = 0
+      @date_analysis_categories[analysis.date][:goods][:discount_amount] = 0
+      @date_analysis_categories[analysis.date][:goods][:sales_number] = 0
+      analysis.analysis_categories.each do |ac|
+        if [14,16,17,18].include?(ac.smaregi_bumon_id)
+          @date_analysis_categories[analysis.date][:veges][:ex_tax_sales_amount] += ac.ex_tax_sales_amount
+          @date_analysis_categories[analysis.date][:veges][:discount_amount] += ac.discount_amount
+          @date_analysis_categories[analysis.date][:veges][:sales_number] += ac.sales_number
+          @sales_hash[:veges] += ac.ex_tax_sales_amount
+          @discount_hash[:veges] += ac.discount_amount
+        elsif ac.smaregi_bumon_id == 15
+          @date_analysis_categories[analysis.date][:goods][:ex_tax_sales_amount] += ac.ex_tax_sales_amount
+          @date_analysis_categories[analysis.date][:goods][:discount_amount] += ac.discount_amount
+          @date_analysis_categories[analysis.date][:goods][:sales_number] += ac.sales_number
+          @sales_hash[:goods] += ac.ex_tax_sales_amount
+          @discount_hash[:goods] += ac.discount_amount
+        else
+          @date_analysis_categories[analysis.date][:foods][:ex_tax_sales_amount] += ac.ex_tax_sales_amount
+          @date_analysis_categories[analysis.date][:foods][:discount_amount] += ac.discount_amount
+          @date_analysis_categories[analysis.date][:foods][:sales_number] += ac.sales_number
+          @sales_hash[:foods] += ac.ex_tax_sales_amount
+          @discount_hash[:foods] += ac.discount_amount
+        end
+      end
+    end
     @date_sales_amount = @analyses.group(:date).sum(:ex_tax_sales_amount)
     @date_loss_amount = @analyses.group(:date).sum(:loss_amount)
     @date_transaction_count = @analyses.group(:date).sum(:transaction_count)
-    # ????
-    @date_sales_number = @analyses.group(:date).sum(:transaction_count)
-    # ????
-    @date_discount_amount = @analyses.group(:date).sum(:discount_amount)
-
 
     @business_day_num = @date.end_of_month.day
     @store_daily_menus = StoreDailyMenu.where(start_time:@dates,store_id:@store.id)
@@ -539,11 +569,9 @@ class AnalysesController < AdminController
       @goods_total_budget += sdm.goods_budget.to_i
     end
     @total_budget = @foods_total_budget+@vegetables_total_budget+@goods_total_budget
-    @bumon_loss_amount = [[14,0]].to_h
-    analysis_categories = AnalysisCategory.where(analysis_id:@analyses.ids)
-    @bumon_ex_tax_sales_amount = analysis_categories.group(:smaregi_bumon_id).sum(:ex_tax_sales_amount)
-    @bumon_discount_amount = analysis_categories.group(:smaregi_bumon_id).sum(:discount_amount)
-
+    # analysis_categories = AnalysisCategory.where(analysis_id:@analyses.ids)
+    # @bumon_ex_tax_sales_amount = analysis_categories.group(:smaregi_bumon_id).sum(:ex_tax_sales_amount)
+    # @bumon_discount_amount = analysis_categories.group(:smaregi_bumon_id).sum(:discount_amount)
     respond_to do |format|
       format.html
       format.csv do
