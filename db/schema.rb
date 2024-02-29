@@ -297,10 +297,10 @@ ActiveRecord::Schema.define(version: 2024_02_25_140619) do
     t.index ["item_id"], name: "index_item_expiration_dates_on_item_id"
   end
 
-  create_table "item_store_stocks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+  create_table "item_store_stocks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.date "date"
-    t.integer "item_id", null: false
-    t.integer "store_id", null: false
+    t.bigint "item_id", null: false
+    t.bigint "store_id", null: false
     t.integer "unit", null: false
     t.integer "unit_price", null: false
     t.float "stock", default: 0.0, null: false
@@ -308,6 +308,8 @@ ActiveRecord::Schema.define(version: 2024_02_25_140619) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["date", "item_id", "store_id"], name: "index_item_store_stocks_on_date_and_item_id_and_store_id", unique: true
+    t.index ["item_id"], name: "index_item_store_stocks_on_item_id"
+    t.index ["store_id"], name: "index_item_store_stocks_on_store_id"
   end
 
   create_table "item_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|

@@ -3,7 +3,10 @@ h2 一覧
   = link_to '新規登録',new_item_path,class:'btn btn-primary',style:'float:left;margin-right:100px;'
   = form_tag items_path, :method => 'get' do
     = text_field_tag :name, params[:name], class:"form-control",placeholder:'名前',style:"width:300px;float:left;margin-right:10px;"
-    = text_field_tag :variety, params[:variety], class:"form-control",placeholder:'品種',style:"width:300px;float:left;margin-right:10px;"
+    / = text_field_tag :variety, params[:variety], class:"form-control",placeholder:'品種',style:"width:300px;float:left;margin-right:10px;"
+    = select_tag :item_type_id, options_from_collection_for_select(ItemType.all, :id, :name),include_blank: '品目', class: "form-control select2",style:"width:200px;float:left;margin-right:10px;"
+    = select_tag :item_variety_id, options_from_collection_for_select(ItemVariety.all, :id, :name),include_blank: '品種', class: "form-control select2",style:"width:200px;float:left;margin-right:10px;"
+    = select_tag :category,options_for_select(options_for_select_from_enum(ItemType, :category),params[:category]),include_blank:true , class: "form-control",style:"width:150px;float:left;margin-right:10px;"
     = select_tag :item_vendor_id, options_from_collection_for_select(ItemVendor.all, :id, :store_name,params[:item_vendor_id]),include_blank: true, class: "form-control",style:"width:200px;float:left;margin-right:10px;"
     = submit_tag "検索" ,class:"btn btn-primary",style:"float:left;"
 

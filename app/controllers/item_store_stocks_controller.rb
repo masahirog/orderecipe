@@ -9,6 +9,7 @@ class ItemStoreStocksController < ApplicationController
     store_id = params[:store_id]
     date = params[:date]
     @item_store_stocks = ItemStoreStock.where(date:date,store_id:store_id)
+    binding.pry
   end
 
   def show

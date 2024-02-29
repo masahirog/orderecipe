@@ -1,5 +1,20 @@
 class ItemsController < ApplicationController
   before_action :set_item, only: %i[ show edit update destroy ]
+
+  def stocks
+    store_id = params[:store_id]
+    date = params[:date]
+    item_store_stocks = ItemStoreStock.where(store_id:store_id,date:date)
+    item_ids = item_store_stocks.map{|iss|iss.item_id}
+    binding.pry
+    item_types = ItemType.where(category:"物産品")
+    new_items = Item.joins(:item_variety).where(:item_varieties => {item_type_id:item_types.ids}).where.not(id:item_ids)
+    new_item_store_stocks = []
+    new_items.each do |item|
+      new_item_store_stocks << ItemStoreStock.new(item_id:item.id,date:date,store_id:store_id,)
+    end
+  end
+
   def store
     @store = Store.find(params[:store_id])
     @search = Item.includes(:item_vendor,:daily_items).search(params).page(params[:page]).per(50)

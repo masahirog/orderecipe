@@ -105,6 +105,7 @@ Rails.application.routes.draw do
       get :get_vendor_items
       get :get_item
       get :store
+      get :stocks
     end
   end
   resources :item_vendors
