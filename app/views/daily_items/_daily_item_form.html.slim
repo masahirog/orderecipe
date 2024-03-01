@@ -14,7 +14,9 @@
                     option value="#{iv.id}" = "#{iv.producer_name}｜#{iv.store_name}"
               div style='margin-bottom: 10px  ;'
                 = f.collection_select :item_id, @items, :id, :view_name_and_vendor, {include_blank:true},class:'form-control item_select item_select2'
+              .item_info style='float:left;'
               button class="btn btn-sm btn-default pull-right" data-toggle="modal" data-target="#new_item_add" style='margin-left:10px;' 商品新規追加
+              = link_to "商品編集",'/',class:"btn btn-sm btn-primary pull-right item_edit_url",style:'display:none;',target:"_blank"
               input.item_reduce_tax_flag style='display: none;'
               = f.hidden_field :date
           - else
@@ -27,8 +29,11 @@
           .form-group.clearfix
             h4 仕入れ量
             = f.select :purpose, options_for_select_from_enum(DailyItem, :purpose),{}, { class: "form-control",style:"float:left;width:32%;argin-bottom:5px;margin-right:5px;"}
-            = f.number_field :delivery_amount,class:'form-control delivery_amount_input',style:"float:left;width:32%;margin-bottom:5px;margin-right:5px;", required:true
-            = f.select :unit, options_for_select_from_enum(DailyItem, :unit),{}, { class: "form-control unit_input",style:"float:left;width:32%;"}
+            = f.number_field :delivery_amount,class:'form-control delivery_amount_input',style:"float:left;width:150px;margin-bottom:5px;margin-right:5px;", required:true
+            span.order_unit style="float:left;margin-top: 5px;font-size:1.5em;"
+            input class='form-control' style="float:left;width:150px;margin-bottom:5px;margin-right:5px;" readonly='true'
+            span.order_unit_amount
+            = f.hidden_field :unit
             = f.text_field :memo,class:'form-control',placeholder:'管理側メモ',style:'width:100%;margin-bottom:5px;'
             = f.text_field :sorting_memo,class:'form-control',placeholder:'仕分け時メモ',style:'width:100%;'
           table.table

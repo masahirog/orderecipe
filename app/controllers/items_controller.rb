@@ -14,7 +14,7 @@ class ItemsController < ApplicationController
       new_item_store_stocks << ItemStoreStock.new(item_id:item.id,date:date,store_id:store_id,unit:item.unit_before_type_cast,unit_price:item.purchase_price,stock:0,stock_price:0,)
     end
     ItemStoreStock.import new_item_store_stocks
-    @item_store_stocks = ItemStoreStock.includes(:item).where(store_id:store_id,date:date)
+    @item_store_stocks = ItemStoreStock.includes(item:[:item_vendor]).where(store_id:store_id,date:date)
   end
 
   def store

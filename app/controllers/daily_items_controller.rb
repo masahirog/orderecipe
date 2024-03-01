@@ -18,7 +18,7 @@ class DailyItemsController < ApplicationController
     item_vendors = item_vendors.where(payment:params[:payment]) if params[:payment].present?
 
     @dates =(date.beginning_of_month..date.end_of_month).to_a
-    @daily_items = DailyItem.includes(item:[:item_vendor]).joins(:item).where(:items => {item_vendor_id:item_vendors.ids},date:@dates).order(:date)
+    @daily_items = DailyItem.includes(item:[:item_vendor,item_variety:[:item_type]]).joins(:item).where(:items => {item_vendor_id:item_vendors.ids},date:@dates).order(:date)
     @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @daily_items.each do |di|
       @hash[di.item.item_vendor_id][:daily_items][di.id] = di

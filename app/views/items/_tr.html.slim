@@ -1,6 +1,7 @@
 tr class="tr_#{iss.id}"
 	td = link_to iss.item.name,iss.item
-	td = "1#{iss.item.unit}：#{iss.item.purchase_price}円"
+	td = iss.item.item_vendor.store_name
+	td = "1#{iss.item.unit}：#{iss.item.purchase_price.to_s(:delimited)}円"
 	td
 		= form_with(model: iss, data: {remote: true}) do |f|
 			= f.number_field :stock,value:iss.stock,class:'form-control',style:'width:120px;float:left;margin-right:10px;', :step => 1

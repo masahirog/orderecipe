@@ -132,8 +132,7 @@ javascript:
       url: "#{get_vendor_items_items_path}",
       data: { item_vendor_id: $(this).val() }
     }).done(function(data){
-      console.log(data)
-      // item_select_change(id);
+      $(".item_edit_url").hide();
     });
   });
 
@@ -226,6 +225,12 @@ javascript:
 
   function item_select_change(id){
     var item_id = $(".item_select").val();
+    if (item_id == "") {
+      $(".item_edit_url").hide();
+    }else{
+      $(".item_edit_url").show();
+      $("a.item_edit_url").attr("href","/items/"+item_id+"/edit");
+    }
     $.get({
       url: "#{get_item_items_path}",
       data: { id: item_id ,target_id:id}

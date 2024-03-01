@@ -56,9 +56,9 @@
         td ロス率
         td = "9%（#{(@total_budget*0.09).round.to_s(:delimited)}円）"
         td
-        	= "#{(((@analyses.sum(:discount_amount) + @analyses.sum(:loss_amount) + @analyses.sum(:used_point_amount))/@analyses.sum(:ex_tax_sales_amount).to_f)*100).round}%（#{(@analyses.sum(:discount_amount) + @analyses.sum(:loss_amount) + @analyses.sum(:used_point_amount)).to_s(:delimited)}円）" if @analyses.present?
+        	= "#{(((@analyses.sum(:discount_amount) + @analyses.sum(:loss_amount) + @analyses.sum(:used_point_amount))/@analyses.sum(:ex_tax_sales_amount).to_f)*100).round}%（#{(@analyses.sum(:discount_amount) + @analyses.sum(:loss_amount) + @analyses.sum(:used_point_amount)).to_s(:delimited)}円）" if @analyses.present? && @analyses.sum(:ex_tax_sales_amount)>0
         td
-        	= "#{(((((@analyses.sum(:discount_amount) + @analyses.sum(:loss_amount) + @analyses.sum(:used_point_amount))/@analyses.count)*@business_day_num)/((@analyses.sum(:ex_tax_sales_amount)/@analyses.count)*@business_day_num).to_f)*100).round}%（#{(((@analyses.sum(:discount_amount) + @analyses.sum(:loss_amount) + @analyses.sum(:used_point_amount))/@analyses.count)*@business_day_num).to_s(:delimited)}円）" if @analyses.present?
+        	= "#{(((((@analyses.sum(:discount_amount) + @analyses.sum(:loss_amount) + @analyses.sum(:used_point_amount))/@analyses.count)*@business_day_num)/((@analyses.sum(:ex_tax_sales_amount)/@analyses.count)*@business_day_num).to_f)*100).round}%（#{(((@analyses.sum(:discount_amount) + @analyses.sum(:loss_amount) + @analyses.sum(:used_point_amount))/@analyses.count)*@business_day_num).to_s(:delimited)}円）" if @analyses.present? && @analyses.sum(:ex_tax_sales_amount)>0
         td
         	= "#{(((((@analyses.sum(:discount_amount) + @analyses.sum(:loss_amount) + @analyses.sum(:used_point_amount))/@analyses.count)*@business_day_num)/(@total_budget*0.09))*100).round(1)}%" if @total_budget > 0 && @analyses.count > 0
       tr style='font-weight:bold;'

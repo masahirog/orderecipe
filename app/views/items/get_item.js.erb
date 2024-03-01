@@ -1,6 +1,7 @@
 $('.item_reduce_tax_flag').val(<%= @item.reduced_tax_flag %>);
 $('.unit_input').val("<%= @item.unit %>");
-
+$('.item_info').text("販売単位：1<%= @item.unit %>、発注単位：1<%= @item.order_unit %>（<%= @item.order_unit_amount %> <%= @item.unit %> ）")
+$('.order_unit').text("<%= @item.order_unit %>")
 if (<%= @item.reduced_tax_flag == 1 %>) {
 	$('.tax_rate_span').text('8%');
 }else{

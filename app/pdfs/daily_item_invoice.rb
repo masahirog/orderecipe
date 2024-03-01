@@ -65,7 +65,7 @@ class DailyItemInvoice < Prawn::Document
     		else
     			reduce_tax_item = ""
     		end
-      		data << [daily_item.date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[daily_item.date.wday]})"),"#{daily_item.item.name} #{daily_item.item.variety} #{reduce_tax_item}",
+      		data << [daily_item.date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[daily_item.date.wday]})"),"#{daily_item.item.name} #{reduce_tax_item}",
       		"#{daily_item.delivery_amount} #{daily_item.unit}",daily_item.tax_including_purchase_price.to_s(:delimited),daily_item.tax_including_delivery_fee.to_s(:delimited),daily_item.tax_including_subtotal_price.to_s(:delimited)]
     	end
     	data << ["","","","","計","#{daily_items.map{|di|di.tax_including_subtotal_price}.sum.to_s(:delimited)} 円"]
