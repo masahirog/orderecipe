@@ -2,18 +2,18 @@ h2 一覧
 .col-md-12.form-group.clearfix
   = link_to '新規登録',new_item_path,class:'btn btn-primary',style:'float:left;margin-right:100px;'
   = form_tag items_path, :method => 'get' do
-    = text_field_tag :name, params[:name], class:"form-control",placeholder:'名前',style:"width:300px;float:left;margin-right:10px;"
-    / = text_field_tag :variety, params[:variety], class:"form-control",placeholder:'品種',style:"width:300px;float:left;margin-right:10px;"
-    = select_tag :item_type_id, options_from_collection_for_select(ItemType.all, :id, :name),include_blank: '品目', class: "form-control select2",style:"width:200px;float:left;margin-right:10px;"
-    = select_tag :item_variety_id, options_from_collection_for_select(ItemVariety.all, :id, :name),include_blank: '品種', class: "form-control select2",style:"width:200px;float:left;margin-right:10px;"
-    = select_tag :category,options_for_select(options_for_select_from_enum(ItemType, :category),params[:category]),include_blank:true , class: "form-control",style:"width:150px;float:left;margin-right:10px;"
-    = select_tag :item_vendor_id, options_from_collection_for_select(ItemVendor.all, :id, :store_name,params[:item_vendor_id]),include_blank: true, class: "form-control",style:"width:200px;float:left;margin-right:10px;"
+    = text_field_tag :name, params[:name], class:"form-control",placeholder:'名前',style:"width:200px;float:left;margin-right:10px;"
+    div style="float:left;margin-right:10px;"
+      = select_tag :item_type_id, options_from_collection_for_select(ItemType.all, :id, :name),include_blank: '品目', class: "form-control item_type_select2" ,style:"height:100px;"
+    div style="float:left;margin-right:10px;"
+      = select_tag :item_variety_id, options_from_collection_for_select(ItemVariety.all, :id, :name),include_blank: '品種', class: "form-control item_variety_select2"
+    = select_tag :category,options_for_select(options_for_select_from_enum(ItemType, :category),params[:category]),include_blank:'カテゴリ' , class: "form-control",style:"width:150px;float:left;margin-right:10px;"
+    = select_tag :item_vendor_id, options_from_collection_for_select(ItemVendor.all, :id, :store_name,params[:item_vendor_id]),include_blank: '仕入先', class: "form-control",style:"width:200px;float:left;margin-right:10px;"
     = submit_tag "検索" ,class:"btn btn-primary",style:"float:left;"
-
-= paginate @search
 table.table.table-striped
   thead
     tr
+      th id
       th 名前
       th 品目
       th 品種
@@ -31,6 +31,7 @@ table.table.table-striped
   tbody
     - @search.each do |item|
       tr
+        td = item.id
         td = link_to item.name,edit_item_path(item)
         td = link_to item.item_variety.item_type.name,item.item_variety.item_type
         td = link_to item.item_variety.name,item.item_variety
@@ -49,8 +50,22 @@ table.table.table-striped
           - if @hash[item.id]==false
             = link_to '削除', item, data: { confirm: 'Are you sure?' }, method: :delete
 
+/ = paginate @search
 
 
 
 
+javascript:
+  $(".item_type_select2").select2({width:'200px'});
+  $(".item_variety_select2").select2({width:'200px'});
 
+css:
+  .select2-selection__rendered {
+    line-height: 31px !important;
+  }
+  .select2-container .select2-selection--single {
+    height: 34px !important;
+  }
+  .select2-selection__arrow {
+    height: 33px !important;
+  }

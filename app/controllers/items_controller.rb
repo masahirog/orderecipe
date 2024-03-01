@@ -6,13 +6,14 @@ class ItemsController < ApplicationController
     date = params[:date]
     item_store_stocks = ItemStoreStock.where(store_id:store_id,date:date)
     item_ids = item_store_stocks.map{|iss|iss.item_id}
-    binding.pry
     item_types = ItemType.where(category:"物産品")
     new_items = Item.joins(:item_variety).where(:item_varieties => {item_type_id:item_types.ids}).where.not(id:item_ids)
     new_item_store_stocks = []
     new_items.each do |item|
       new_item_store_stocks << ItemStoreStock.new(item_id:item.id,date:date,store_id:store_id,)
     end
+    ItemStoreStock.import new_item_store_stocks
+    @item_store_stocks = ItemStoreStock.where(store_id:store_id,date:date)
   end
 
   def store
@@ -45,7 +46,7 @@ class ItemsController < ApplicationController
   end
 
   def index
-    @search = Item.includes(:item_vendor,:daily_items,item_variety:[:item_type]).search(params).page(params[:page]).per(50)
+    @search = Item.includes(:item_vendor,:daily_items,item_variety:[:item_type]).search(params)
     @hash = {}
     @search.each do |item|
       if item.daily_items.present?

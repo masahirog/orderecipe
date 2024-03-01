@@ -358,16 +358,16 @@ ActiveRecord::Schema.define(version: 2024_02_25_140619) do
     t.integer "sorting_base_id", default: 0, null: false
   end
 
-  create_table "items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name", null: false
     t.bigint "item_variety_id"
     t.text "memo"
     t.boolean "reduced_tax_flag", default: true, null: false
-    t.integer "sell_price"
-    t.integer "tax_including_sell_price"
-    t.integer "purchase_price"
-    t.integer "tax_including_purchase_price"
-    t.integer "unit"
+    t.integer "sell_price", default: 0, null: false
+    t.integer "tax_including_sell_price", default: 0, null: false
+    t.integer "purchase_price", null: false
+    t.integer "tax_including_purchase_price", null: false
+    t.integer "unit", null: false
     t.bigint "item_vendor_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
