@@ -13,22 +13,22 @@
     = f.label :item_vendor_id, "仕入先",class:'required'
     = f.collection_select :item_vendor_id, ItemVendor.all, :id, :store_name, {}, { class: "form-control"}
   .form-group
-    = f.label :unit, "単位"
-    = f.select :unit, options_for_select_from_enum(Item, :unit),{}, { class: "form-control"}, required:true
+    = f.label :unit, "単位",class:'required'
+    = f.select :unit, options_for_select_from_enum(Item, :unit),{}, { class: "form-control",required:true}
   .form-group
     = f.label :reduced_tax_flag, "軽減税率",class:'required'
     = f.check_box :reduced_tax_flag,class:'form-control reduced_tax_flag',style:'width:30px;'
   .form-group
-    = f.label :sell_price, "販売単価"
+    = f.label :sell_price, "販売単価",class:'required'
     = f.number_field :sell_price, class:"form-control sell_price", required:true
   .form-group
-    = f.label :tax_including_sell_price, "販売単価（税込）"
+    = f.label :tax_including_sell_price, "販売単価（税込）",class:'required'
     = f.number_field :tax_including_sell_price, class:"form-control tax_including_sell_price",readonly:true, required:true
   .form-group
-    = f.label :purchase_price, "仕入れ単価"
+    = f.label :purchase_price, "仕入れ単価",class:'required'
     = f.number_field :purchase_price, class:"form-control purchase_price", required:true
   .form-group
-    = f.label :tax_including_purchase_price, "仕入れ単価（税込）"
+    = f.label :tax_including_purchase_price, "仕入れ単価（税込）",class:'required'
     = f.number_field :tax_including_purchase_price, class:"form-control tax_including_purchase_price",readonly:true, required:true
   .form-group
     = f.label :sales_life, "販売日数目安"
