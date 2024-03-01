@@ -23,11 +23,10 @@ class ItemStoreStocksController < ApplicationController
 
   def create
     @item_store_stock = ItemStoreStock.new(item_store_stock_params)
-
     respond_to do |format|
       if @item_store_stock.save
         format.html { redirect_to item_store_stock_url(@item_store_stock), notice: "Item store stock was successfully created." }
-        format.json { render :show, status: :created, location: @item_store_stock }
+        format.js
       else
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @item_store_stock.errors, status: :unprocessable_entity }
@@ -36,10 +35,14 @@ class ItemStoreStocksController < ApplicationController
   end
 
   def update
+    stock = params[:item_store_stock][:stock].to_f
+    stock_price = (stock * @item_store_stock.unit_price).floor(1)
     respond_to do |format|
-      if @item_store_stock.update(item_store_stock_params)
-        format.html { redirect_to item_store_stock_url(@item_store_stock), notice: "Item store stock was successfully updated." }
-        format.json { render :show, status: :ok, location: @item_store_stock }
+      if @item_store_stock.update(item_store_stock_params.merge(stock_price: stock_price))
+        date = @item_store_stock.date
+        store_id = @item_store_stock.store_id
+        format.html { redirect_to stocks_items_path(date:date,store_id:store_id), notice: "Item store stock was successfully updated." }
+        format.js
       else
         format.html { render :edit, status: :unprocessable_entity }
         format.json { render json: @item_store_stock.errors, status: :unprocessable_entity }
@@ -62,6 +65,6 @@ class ItemStoreStocksController < ApplicationController
     end
 
     def item_store_stock_params
-      params.fetch(:item_store_stock, {})
+      params.require(:item_store_stock).permit(:stock)
     end
 end

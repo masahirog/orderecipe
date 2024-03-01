@@ -14,6 +14,8 @@ class CreateItems < ActiveRecord::Migration[6.0]
       t.timestamps
       t.string :smaregi_code
       t.string :sales_life
+      t.integer :order_unit,null:false
+      t.integer :order_unit_amount,null:false
     end
   end
 end

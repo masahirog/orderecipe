@@ -303,7 +303,7 @@ ActiveRecord::Schema.define(version: 2024_02_25_140619) do
     t.bigint "store_id", null: false
     t.integer "unit", null: false
     t.integer "unit_price", null: false
-    t.float "stock", default: 0.0, null: false
+    t.integer "stock", default: 0, null: false
     t.integer "stock_price", default: 0, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -373,6 +373,8 @@ ActiveRecord::Schema.define(version: 2024_02_25_140619) do
     t.datetime "updated_at", precision: 6, null: false
     t.string "smaregi_code"
     t.string "sales_life"
+    t.integer "order_unit", null: false
+    t.integer "order_unit_amount", null: false
     t.index ["item_variety_id"], name: "index_items_on_item_variety_id"
     t.index ["item_vendor_id"], name: "index_items_on_item_vendor_id"
   end

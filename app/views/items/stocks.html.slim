@@ -1,10 +1,12 @@
+h3 = "#{params[:date]} #{@store.short_name} 物産品棚卸し"
 table.table
 	thead
 		tr
 			th 商品名
+			th 仕入れ値
 			th 在庫
+			th 在庫金額
+			th
 	tbody
 		- @item_store_stocks.each do |iss|
-			tr
-				td = iss.item.name
-				td
+			= render partial: "tr", locals: { iss:iss }

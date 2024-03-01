@@ -3,6 +3,7 @@ class ItemsController < ApplicationController
 
   def stocks
     store_id = params[:store_id]
+    @store = Store.find(store_id)
     date = params[:date]
     item_store_stocks = ItemStoreStock.where(store_id:store_id,date:date)
     item_ids = item_store_stocks.map{|iss|iss.item_id}
@@ -10,10 +11,10 @@ class ItemsController < ApplicationController
     new_items = Item.joins(:item_variety).where(:item_varieties => {item_type_id:item_types.ids}).where.not(id:item_ids)
     new_item_store_stocks = []
     new_items.each do |item|
-      new_item_store_stocks << ItemStoreStock.new(item_id:item.id,date:date,store_id:store_id,)
+      new_item_store_stocks << ItemStoreStock.new(item_id:item.id,date:date,store_id:store_id,unit:item.unit_before_type_cast,unit_price:item.purchase_price,stock:0,stock_price:0,)
     end
     ItemStoreStock.import new_item_store_stocks
-    @item_store_stocks = ItemStoreStock.where(store_id:store_id,date:date)
+    @item_store_stocks = ItemStoreStock.includes(:item).where(store_id:store_id,date:date)
   end
 
   def store
@@ -72,7 +73,7 @@ class ItemsController < ApplicationController
   end
 
   def edit
-    @item_varieties = ItemVariety.all
+    @item_varieties = ItemVariety.includes(:item_type).all
   end
 
   def create
@@ -118,7 +119,7 @@ class ItemsController < ApplicationController
     end
 
     def item_params
-      params.require(:item).permit(:name,:item_variety_id,:memo,:reduced_tax_flag,:sell_price,:tax_including_sell_price,
+      params.require(:item).permit(:name,:item_variety_id,:memo,:reduced_tax_flag,:sell_price,:tax_including_sell_price,:order_unit_amount,:order_unit,
         :purchase_price,:tax_including_purchase_price,:unit,:item_vendor_id,:smaregi_code,:sales_life)
     end
 end

@@ -1,0 +1,2 @@
+$(".tr_<%= @item_store_stock.id %>").find('.stock_price').text("<%= @item_store_stock.stock_price.to_s(:delimited) %>円");
+$(".tr_<%= @item_store_stock.id %>").find('.inventory_flag').text("OK");
