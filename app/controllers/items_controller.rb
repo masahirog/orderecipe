@@ -46,7 +46,7 @@ class ItemsController < ApplicationController
   end
 
   def index
-    @search = Item.includes(:item_vendor,:daily_items,item_variety:[:item_type]).search(params)
+    @search = Item.includes(:item_vendor,:daily_items,item_variety:[:item_type]).search(params).page(params[:page]).per(50)
     @hash = {}
     @search.each do |item|
       if item.daily_items.present?
