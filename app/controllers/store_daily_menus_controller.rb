@@ -302,7 +302,7 @@ class StoreDailyMenusController < AdminController
     @store_daily_menu = StoreDailyMenu.find(params[:id])
     store_id = @store_daily_menu.store_id
     @date = @store_daily_menu.start_time
-    @to_store_messages = ToStoreMessage.joins(:to_store_message_stores).where(:to_store_message_stores => {store_id:@store_daily_menu.store_id}).where(date:@date)
+    @to_store_messages = ToStoreMessage.joins(:to_store_message_stores).where(:to_store_message_stores => {store_id:@store_daily_menu.store_id,subject_flag:true}).where(date:@date)
     @tommoroww = StoreDailyMenu.find_by(store_id:store_id,start_time:@date+1)
     @yesterday = StoreDailyMenu.find_by(store_id:store_id,start_time:@date-1)
     @store_daily_menu_details = @store_daily_menu.store_daily_menu_details.order("row_order ASC").includes(product:[:container,:product_ozara_serving_informations])
