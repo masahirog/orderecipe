@@ -1,5 +1,7 @@
 require 'csv'
 class WorkingHour < ApplicationRecord
+  belongs_to :staff
+  belongs_to :store
   attr_accessor :position
   def self.upload_data(file,group_id)
     new_datas = []

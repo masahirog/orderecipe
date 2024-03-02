@@ -1,104 +1,35 @@
 .clearfix.form-group
   div style='float:left;'
     label
-      = link_to (@date-1).strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[(@date-1).wday]})＜　"),staff_input_working_hours_path(date:@date-1,group_id:current_user.group_id)
-      = link_to @date.strftime("%-Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@date.wday]})"),staff_input_working_hours_path(date:@date,group_id:current_user.group_id)
-      =
-      = link_to (@date+1).strftime("　＞%-m/%-d (#{%w(日 月 火 水 木 金 土)[(@date+1).wday]})"),staff_input_working_hours_path(date:@date+1,group_id:current_user.group_id)
+      = link_to (@date-1).strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[(@date-1).wday]})＜　"),staff_input_working_hours_path(date:@date-1)
+      = link_to @date.strftime("%-Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@date.wday]})"),staff_input_working_hours_path(date:@date)
+      = link_to (@date+1).strftime("　＞%-m/%-d (#{%w(日 月 火 水 木 金 土)[(@date+1).wday]})"),staff_input_working_hours_path(date:@date+1)
 
-  = link_to '結果',result_working_hours_path(group_id:current_user.group_id),class:'btn btn-sm btn-primary',style:'float:right;margin-left:20px;'
-  = link_to 'スタッフ更新', create_work_times_working_hours_path(date:@date,group_id:current_user.group_id), method: :post,class:'btn btn-sm btn-primary',style:'float:right;',data:{confirm:'スタッフの枠を作成しますか？'}
+  = link_to '結果',result_working_hours_path,class:'btn btn-sm btn-primary',style:'float:right;margin-left:20px;'
+  = link_to 'スタッフ更新', create_work_times_working_hours_path(date:@date), method: :post,class:'btn btn-sm btn-primary',style:'float:right;',data:{confirm:'スタッフの枠を作成しますか？'}
 .table-responsive style='height: 80vh;overflow: scroll;'
   table.table.layout-fixed.table-striped style='border-collapse:separate;'
     thead style='position: sticky;top:0;background-color:white;z-index:3;'
       tr
-        - if params[:staff_id]
-          th style='width:80px;' 日付
-        th style='width:100px;' スタッフ名
-        th style='width:40px;' 確認
-        th style='width:80px;'
-        th style='width:70px;' JC時間
-        th style='width:70px;' 勤務時間
-        th style='width:100px;' もりつけ
-        th style='width:100px;' きりだし
-        th style='width:100px;' ちょうりば
-        th style='width:100px;' せきさい
-        th style='width:100px;' たれ
-        th style='width:100px;' あらいもの
-        th style='width:100px;' そのほか
+        th 日付
+        th スタッフ名
+        th 開始時間
+        th 終了時間
+        th 勤務時間
     tbody
       - @working_hours.each do |wh|
-        - if wh.working_time.present? && (wh.working_time.to_f - wh.kari_working_time.to_f).abs > 1
-          - bg_color = "#FFD5EC	"
-        - else
-          - bg_color = ""
-        tr class="wh_tr_#{wh.id} working_hour_tr" style="background-color:#{bg_color}"
-          - if params[:staff_id]
-            td = wh.date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[wh.date.wday]})")
-
-          td style="overflow:auto;"
-            = link_to wh.name,staff_input_working_hours_path(staff_id:wh.staff_id)
-          td = link_to @staff_working_hours[wh.staff_id].count,staff_input_working_hours_path(staff_id:wh.staff_id,alert_flag:true),style:'color:red;' if @staff_working_hours[wh.staff_id].present?
+        tr class="wh_tr_#{wh.id} working_hour_tr"
+          td = wh.date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[wh.date.wday]})")
+          td = link_to wh.staff.name,staff_input_working_hours_path()
           td
+            = render partial: "start_time", locals: { working_hour:wh }
           td
-            - if wh.working_time
-              = "#{wh.working_time.to_i}:#{sprintf("%02d", ((wh.working_time.to_f - wh.working_time.to_i)*60).round)}"
-          td.kari_working_time_td = wh.kari_working_time
-          td.edit_moritsuke_td
-            = render partial: "edit_moritsuke", locals: { working_hour:wh,position:'moritsuke' }
-          td.edit_kiridashi_td
-            = render partial: "edit_kiridashi", locals: { working_hour:wh,position:'kiridashi' }
-          td.edit_chori_td
-            = render partial: "edit_chori", locals: { working_hour:wh,position:'chori' }
-          td.edit_sekisai_td
-            = render partial: "edit_sekisai", locals: { working_hour:wh,position:'sekisai' }
-          td.edit_tare_td
-            = render partial: "edit_tare", locals: { working_hour:wh,position:'tare' }
-          td.edit_tare_td
-            = render partial: "edit_washing", locals: { working_hour:wh,position:'washing' }
-          td.edit_sonota_td
-            = render partial: "edit_sonota", locals: { working_hour:wh,position:'sonota' }
+            = render partial: "end_time", locals: { working_hour:wh }
+          td
+            input.form-control readonly=true value="8"
 
 javascript:
   $(function() {
-    $(document).on("change", ".select_working_time", function(event) {
-      var wh_id = $(this).parent().find('.working_hour_id').val();
-      var position = $(this).parent().find('.position').val();
-      Rails.fire($('.working_hour_'+position+'_' + wh_id)[0], 'submit');
-      var time = 0
-      $(this).parents('tr').find(".select_working_time").each(function(select) {
-        time += Number($(this).val());
-      });
-      var hour = Math.floor(time);
-      var minute = parseFloat("0."+(String(time)).split(".")[1])*60.0;
-      if (time==0) {
-        $(this).parents("tr").find(".kari_working_time_td").text('');
-      }else{
-        if (minute==0) {
-          $(this).parents("tr").find(".kari_working_time_td").text(String(hour)+":00");
-        }else{
-          $(this).parents("tr").find(".kari_working_time_td").text(String(hour)+":"+String(minute));
-        }
-      }
-
-    });
-    $(".working_hour_tr").each(function(){
-      var time = 0
-      $(this).find(".select_working_time").each(function(select) {
-        time += Number($(this).val());
-      });
-      var hour = Math.floor(time);
-      var minute = parseFloat("0."+(String(time)).split(".")[1])*60.0;
-      if (time==0) {
-        $(this).find(".kari_working_time_td").text('');
-      }else{
-        if (minute==0) {
-          $(this).find(".kari_working_time_td").text(String(hour)+":00");
-        }else{
-          $(this).find(".kari_working_time_td").text(String(hour)+":"+String(minute));
-        }
-      }
-    });
   });
 
 css:

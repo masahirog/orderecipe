@@ -23,6 +23,7 @@ class Store < ApplicationRecord
   has_many :fix_shift_patterns, through: :fix_shift_pattern_stores
   has_many :daily_item_stores
   has_many :item_store_stocks
+  has_many :working_hours
 
 
   enum store_type: {sales:0,kitchen:1}

@@ -37,7 +37,7 @@ ActiveRecord::Schema.define(version: 2024_02_25_140619) do
     t.index ["date", "store_id"], name: "index_analyses_on_date_and_store_id", unique: true
   end
 
-  create_table "analysis_categories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "analysis_categories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "analysis_id"
     t.integer "smaregi_bumon_id"
     t.integer "sales_number"
@@ -51,7 +51,7 @@ ActiveRecord::Schema.define(version: 2024_02_25_140619) do
     t.index ["analysis_id"], name: "index_analysis_categories_on_analysis_id"
   end
 
-  create_table "analysis_products", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "analysis_products", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "analysis_id"
     t.integer "smaregi_shohin_id"
     t.text "smaregi_shohin_name"
@@ -297,7 +297,7 @@ ActiveRecord::Schema.define(version: 2024_02_25_140619) do
     t.index ["item_id"], name: "index_item_expiration_dates_on_item_id"
   end
 
-  create_table "item_store_stocks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "item_store_stocks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.date "date"
     t.bigint "item_id", null: false
     t.bigint "store_id", null: false
@@ -358,7 +358,7 @@ ActiveRecord::Schema.define(version: 2024_02_25_140619) do
     t.integer "sorting_base_id", default: 0, null: false
   end
 
-  create_table "items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.bigint "item_variety_id"
     t.text "memo"
@@ -1170,23 +1170,18 @@ ActiveRecord::Schema.define(version: 2024_02_25_140619) do
     t.integer "user_id"
   end
 
-  create_table "working_hours", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+  create_table "working_hours", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "store_id"
+    t.bigint "staff_id"
     t.date "date"
-    t.string "name"
-    t.integer "staff_id"
+    t.time "start_time"
+    t.time "end_time"
     t.float "working_time"
-    t.integer "store_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.integer "group_id"
-    t.float "kari_working_time"
-    t.float "chori_of_working_time"
-    t.float "kiridashi_of_working_time"
-    t.float "moritsuke_of_working_time"
-    t.float "sekisai_of_working_time"
-    t.float "sonota_of_working_time"
-    t.float "tare_of_working_time"
-    t.float "washing_of_working_time"
+    t.index ["staff_id"], name: "index_working_hours_on_staff_id"
+    t.index ["store_id", "staff_id", "date"], name: "index_working_hours_on_store_id_and_staff_id_and_date", unique: true
+    t.index ["store_id"], name: "index_working_hours_on_store_id"
   end
 
 end

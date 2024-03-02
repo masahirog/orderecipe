@@ -13,23 +13,9 @@ table.table
       th 日付
       th 合計
       th 入力合計
-      th 調理場
-      th 切出し
-      th 盛付
-      th 積載
-      th タレ
-      th 洗い場
-      th その他
   tbody
     - (@from..@to).sort.reverse.each do |date|
       tr class=""
         td = link_to date.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[date.wday]})"),staff_input_working_hours_path(date:date,group_id:current_user.group_id),target:"_blunk"
         td
         td = @kari_working_time[date].to_f.round(1)
-        td = @chori_of_working_time[date]
-        td = @kiridashi_of_working_time[date]
-        td = @moritsuke_of_working_time[date]
-        td = @sekisai_of_working_time[date]
-        td = @tare_of_working_time[date]
-        td = @washing_of_working_time[date]
-        td = @sonota_of_working_time[date]

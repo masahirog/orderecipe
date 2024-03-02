@@ -1,4 +1,0 @@
-= form_for(working_hour, data: { remote: true }, html: { class: "working_hour_#{position}_#{working_hour.id}" }) do |f|
-  = f.hidden_field :id,class:'working_hour_id'
-  = f.hidden_field :position,class:'position',value:position
-  = f.select :washing_of_working_time, options_for_select(@times,f.object.washing_of_working_time),{include_blank:true}, class:"form-control select_working_time"

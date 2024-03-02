@@ -15,23 +15,13 @@ class WorkingHoursController < AdminController
       @to = today
     end
     @working_hours = WorkingHour.where(date:@from..@to).where(group_id:@group.id)
-    @working_hours = @working_hours.group(:date).sum(:working_time)
-    @kari_working_time = @working_hours.group(:date).sum(:kari_working_time)
-    @chori_of_working_time = @working_hours.group(:date).sum(:chori_of_working_time)
-    @kiridashi_of_working_time = @working_hours.group(:date).sum(:kiridashi_of_working_time)
-    @moritsuke_of_working_time = @working_hours.group(:date).sum(:moritsuke_of_working_time)
-    @sekisai_of_working_time = @working_hours.group(:date).sum(:sekisai_of_working_time)
-    @sonota_of_working_time = @working_hours.group(:date).sum(:sonota_of_working_time)
-    @tare_of_working_time = @working_hours.group(:date).sum(:tare_of_working_time)
-    @washing_of_working_time = @working_hours.group(:date).sum(:washing_of_working_time)
 
   end
   def staff_input
-    today = Date.today
     if params[:date]
       @date = Date.parse(params[:date])
     else
-      @date = today
+      @date = Date.today
     end
     if params[:staff_id].present?
       if params[:alert_flag] == "true"
@@ -45,7 +35,7 @@ class WorkingHoursController < AdminController
         @working_hours = WorkingHour.where(staff_id:params[:staff_id]).where("date > ?",'2022/11/16').where("working_time > ?",0)
       end
     else
-      @working_hours = WorkingHour.where(date:@date).where(group_id:current_user.group_id)
+      @working_hours = WorkingHour.where(date:@date)
     end
     @times = []
     15.times do |hour|
@@ -55,12 +45,10 @@ class WorkingHoursController < AdminController
     end
     @staff_working_hours = {}
     WorkingHour.where("date > ?",'2022/11/16').where("working_time > ?",0).each do |wh|
-      if (wh.working_time.to_f - wh.kari_working_time.to_f).abs > 1
-        if @staff_working_hours[wh.staff_id].present?
-          @staff_working_hours[wh.staff_id] << wh
-        else
-          @staff_working_hours[wh.staff_id] = [wh]
-        end
+      if @staff_working_hours[wh.staff_id].present?
+        @staff_working_hours[wh.staff_id] << wh
+      else
+        @staff_working_hours[wh.staff_id] = [wh]
       end
     end
   end
@@ -68,14 +56,15 @@ class WorkingHoursController < AdminController
     new_arr = []
     @date = Date.parse(params[:date])
     working_hour_hash = WorkingHour.where(date:params[:date]).map{|wh|[[wh.date,wh.staff_id],wh]}.to_h
-    Staff.where(group_id:current_user.group_id,employment_status:1,status:0).where(status:0).each do |staff|
+    staff_ids = StaffStore.where(store_id:39).map{|ss|ss.staff_id}.uniq
+    Staff.where(id:staff_ids,status:0).each do |staff|
       if working_hour_hash[[@date,staff.id]].present?
       else
-        new_arr << WorkingHour.new(date:@date,group_id:current_user.group_id,staff_id:staff.id,name:staff.name,store_id:39)
+        new_arr << WorkingHour.new(date:@date,staff_id:staff.id,store_id:39,working_time:0)
       end
     end
     WorkingHour.import new_arr
-    redirect_to staff_input_working_hours_path(date:@date,group_id:current_user.group_id)
+    redirect_to staff_input_working_hours_path(date:@date)
   end
 
   def upload_data
@@ -157,9 +146,8 @@ class WorkingHoursController < AdminController
     end
 
     def working_hour_params
-      params.require(:working_hour).permit(:id,:date,:name,:working_time,:store_id,:group_id,:position,
-      :kari_working_time,:chori_of_working_time,:kiridashi_of_working_time,:moritsuke_of_working_time,:sekisai_of_working_time,
-      :sonota_of_working_time,:tare_of_working_time,:washing_of_working_time)
+      params.require(:working_hour).permit(:id,:store_id,:staff_id,:date,:start_time,:end_time,:working_time)
 
     end
 end
+
