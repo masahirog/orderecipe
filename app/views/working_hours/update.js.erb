@@ -1,7 +1,2 @@
-<% if @position.present? %>
-  
-<% else %>
-  $(".wh_tr_<%= @working_hour.id %>").css('background-color','#ffffe0');
-  $(".wh_tr_<%= @working_hour.id %>").find('.edit_store_td').html("<%= escape_javascript(render partial: 'working_hours/edit_store', locals: {working_hour:@working_hour}) %>");
-  $(".wh_tr_<%= @working_hour.id %>").find('.edit_group_td').html("<%= escape_javascript(render partial: 'working_hours/edit_group', locals: {working_hour:@working_hour}) %>");
-<% end %>
+$(".tr_<%= @working_hour.id %>").find(".save_flag").text("save!");
+$(".tr_<%= @working_hour.id %>").find(".working_time").text("<%= @working_hour.working_time %>時間");

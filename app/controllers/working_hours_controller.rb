@@ -117,12 +117,9 @@ class WorkingHoursController < AdminController
   end
 
   def update
-    @position = params["working_hour"]["position"]
+    working_time = ((params[:working_hour][:end_time].to_time - params[:working_hour][:start_time].to_time)/3600).round(2)
     respond_to do |format|
-      if @working_hour.update(working_hour_params)
-        columns = [:chori_of_working_time,:kiridashi_of_working_time,:moritsuke_of_working_time,:sekisai_of_working_time,:tare_of_working_time,:washing_of_working_time,:sonota_of_working_time]
-        kari_working_time = columns.map { |c| @working_hour.send(c).to_f }.sum
-        @working_hour.update(kari_working_time:kari_working_time)
+      if @working_hour.update(working_hour_params.merge(working_time: working_time))
         format.html
         format.js
       else

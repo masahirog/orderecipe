@@ -13,23 +13,27 @@
       tr
         th 日付
         th スタッフ名
-        th 開始時間
-        th 終了時間
         th 勤務時間
+        th style='width: 400px;' 開始時間 ｜ 終了時間
+        th
     tbody
       - @working_hours.each do |wh|
-        tr class="wh_tr_#{wh.id} working_hour_tr"
+        tr class="tr_#{wh.id} working_hour_tr"
           td = wh.date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[wh.date.wday]})")
           td = link_to wh.staff.name,staff_input_working_hours_path()
-          td
+          td.working_time
+            - if wh.working_time.present? && wh.working_time > 0
+              = "#{wh.working_time}時間"
+          td.clearfix
             = render partial: "start_time", locals: { working_hour:wh }
-          td
-            = render partial: "end_time", locals: { working_hour:wh }
-          td
-            input.form-control readonly=true value="8"
+          td.save_flag
 
 javascript:
   $(function() {
+    // $(".input_time").on("change",function(){
+    //   var start_time = $(this).parents('tr').find(".input_start_time").val();
+    //   var end_time = $(this).parents('tr').find(".input_end_time").val();
+    // });
   });
 
 css:
