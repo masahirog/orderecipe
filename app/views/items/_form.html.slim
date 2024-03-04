@@ -26,7 +26,7 @@
         = f.object.order_unit if f.object.present?
       span あたり税抜
     .float-left style='float:left;margin-top: 26px;'
-      input type='number' class="form-control order_unit_price" style='width:100px;' value="#{f.object.purchase_price * f.object.order_unit_amount}"
+      input type='number' class="form-control order_unit_price" style='width:100px;' value="#{f.object.purchase_price.to_i * f.object.order_unit_amount.to_i}"
     .float-left style='float:left;margin-top:35px;margin-left:5px;font-size:1.2em'
       span 円
   .form-group.clearfix
