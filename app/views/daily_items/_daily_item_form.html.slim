@@ -37,7 +37,7 @@
                 span style="float:left;margin-top:8px;" 販売単位変換：
                 span.span_order_unit style="float:left;font-size:1.2em;margin:5px 5px 0 0;" = "1#{daily_item.order_unit}あたり"
                 - if daily_item.order_unit_amount >0
-                  - val = daily_item.order_unit_amount
+                  - val = daily_item.delivery_amount / daily_item.order_unit_amount
                 -else
                   - val = ''
                 input.item_order_unit_amount.form-control style="float:left;width:150px;margin-bottom:5px;margin-right:5px;" value="#{val}"
