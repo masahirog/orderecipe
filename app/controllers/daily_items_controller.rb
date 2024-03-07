@@ -75,12 +75,18 @@ class DailyItemsController < ApplicationController
   def loading_sheet
     @date = params[:date]
     @buppan_schedule = BuppanSchedule.find_by(date:@date)
-    @daily_items = DailyItem.includes(:daily_item_stores,item:[:item_vendor]).joins(:item => :item_vendor).where(:item => {:item_vendors => {sorting_base_id:"SKL練馬"}}).where(date:@date)
-    @stores = current_user.group.stores
+    if params[:sorting_base_id].present?
+      @sorting_base = ItemVendor.sorting_base_ids.invert[params[:sorting_base_id].to_i]
+      @daily_items = DailyItem.includes(:daily_item_stores,item:[:item_vendor]).joins(:item => :item_vendor).where(:item => {:item_vendors => {sorting_base_id:params[:sorting_base_id]}}).where(date:@date)
+    else
+      @sorting_base = "全て"
+      @daily_items = DailyItem.includes(:daily_item_stores,item:[:item_vendor]).where(date:@date)
+    end
+    @stores = current_user.group.stores.where.not(store_type:'head_office')
     respond_to do |format|
       format.html
       format.pdf do
-        pdf = DailyItemLoadingSheet.new(@date,@daily_items,@stores,@buppan_schedule)
+        pdf = DailyItemLoadingSheet.new(@date,@daily_items,@stores,@buppan_schedule,@sorting_base)
         send_data pdf.render,
         filename:    "#{@date}.pdf",
         type:        "application/pdf",
@@ -105,7 +111,7 @@ class DailyItemsController < ApplicationController
       @daily_items = DailyItem.includes(:daily_item_stores,item:[:item_vendor]).where(date:@date).order("id DESC")
       @daily_item_stores = DailyItemStore.where(daily_item_id:@daily_items.ids,store_id:store_id)
     else
-      @daily_items = DailyItem.includes(:daily_item_stores,item:[:item_vendor]).joins(:item => :item_vendor).where(:item => {:item_vendors => {sorting_base_id:"SKL練馬"}}).where(date:@date).order("id DESC")
+      @daily_items = DailyItem.includes(:daily_item_stores,item:[:item_vendor]).joins(:item => :item_vendor).where(:item => {:item_vendors => {sorting_base_id:"SKL練馬"}}).where(date:@date)
       @daily_item_stores = DailyItemStore.where(daily_item_id:@daily_items.ids)
     end
     respond_to do |format|
@@ -164,7 +170,7 @@ class DailyItemsController < ApplicationController
 
   def index
     @item_varieties = ItemVariety.includes(:item_type).all
-    @stores = current_user.group.stores
+    @stores = current_user.group.stores.where.not(store_type:'head_office')
     @item_vendors = ItemVendor.where(unused_flag:false)
     if params[:date].present?
       @date = params[:date].to_date
@@ -207,7 +213,7 @@ class DailyItemsController < ApplicationController
     DailyItemStore.where(daily_item_id:@daily_items.ids).each do |dis|
       if dis.subordinate_amount > 0
         @hash[dis.daily_item_id][dis.store_id]["subordinate_amount"] = dis.subordinate_amount
-        @hash[dis.daily_item_id][dis.store_id]["unit"] = dis.daily_item.unit
+        @hash[dis.daily_item_id][dis.store_id]["unit"] = dis.daily_item.item.unit
         @hash[dis.daily_item_id][dis.store_id]["sell_price"] = "#{dis.sell_price}円"
       else
         @hash[dis.daily_item_id][dis.store_id]["subordinate_amount"] = ''
@@ -238,7 +244,7 @@ class DailyItemsController < ApplicationController
   end
 
   def create
-    @stores = current_user.group.stores
+    @stores = current_user.group.stores.where.not(store_type:'head_office')
     @daily_item = DailyItem.new(daily_item_params)
     respond_to do |format|
       if @daily_item.save
@@ -247,7 +253,7 @@ class DailyItemsController < ApplicationController
         @daily_item.daily_item_stores.each do |dis|
           if dis.subordinate_amount > 0
             @hash[dis.daily_item_id][dis.store_id]["subordinate_amount"] = dis.subordinate_amount
-            @hash[dis.daily_item_id][dis.store_id]["unit"] = dis.daily_item.unit
+            @hash[dis.daily_item_id][dis.store_id]["unit"] = dis.daily_item.item.unit
             @hash[dis.daily_item_id][dis.store_id]["sell_price"] = "#{dis.sell_price}円"
           else
             @hash[dis.daily_item_id][dis.store_id]["subordinate_amount"] = ''
@@ -271,7 +277,7 @@ class DailyItemsController < ApplicationController
   end
 
   def update
-    @stores = current_user.group.stores
+    @stores = current_user.group.stores.where.not(store_type:'head_office')
     respond_to do |format|
       if @daily_item.update(daily_item_params)
         @item_varieties = ItemVariety.includes(:item_type).all
@@ -279,15 +285,15 @@ class DailyItemsController < ApplicationController
         @daily_item.daily_item_stores.each do |dis|
           if dis.subordinate_amount > 0
             @hash[dis.daily_item_id][dis.store_id]["subordinate_amount"] = dis.subordinate_amount
-            @hash[dis.daily_item_id][dis.store_id]["unit"] = dis.daily_item.unit
+            @hash[dis.daily_item_id][dis.store_id]["order_unit"] = dis.daily_item.order_unit
             @hash[dis.daily_item_id][dis.store_id]["sell_price"] = "#{dis.sell_price}円"
           else
             @hash[dis.daily_item_id][dis.store_id]["subordinate_amount"] = ''
-            @hash[dis.daily_item_id][dis.store_id]["unit"] = ''
+            @hash[dis.daily_item_id][dis.store_id]["order_unit"] = ''
             @hash[dis.daily_item_id][dis.store_id]["sell_price"] = ''
           end
         end
-        format.html { redirect_to daily_items_path(date:@daily_item.date), info: "#{@daily_item.item.item_vendor.store_name} の #{@daily_item.item.name}/#{@daily_item.item.variety} を更新しました。" }
+        format.html { redirect_to daily_items_path(date:@daily_item.date), info: "#{@daily_item.item.item_vendor.store_name} の #{@daily_item.item.name}を更新しました。" }
         format.js
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -310,8 +316,8 @@ class DailyItemsController < ApplicationController
     end
 
     def daily_item_params
-      params.require(:daily_item).permit(:date,:purpose,:item_id,:memo,:estimated_sales,:tax_including_estimated_sales,:purchase_price,:sorting_memo,
-        :tax_including_purchase_price,:delivery_fee,:tax_including_delivery_fee,:subtotal_price,:tax_including_subtotal_price,:unit,:delivery_amount,
+      params.require(:daily_item).permit(:date,:purpose,:item_id,:memo,:estimated_sales,:tax_including_estimated_sales,:purchase_price,:sorting_memo,:adjustment_subtotal,
+        :tax_including_purchase_price,:delivery_fee,:tax_including_delivery_fee,:subtotal_price,:tax_including_subtotal_price,:order_unit,:delivery_amount,:order_unit_amount,
         daily_item_stores_attributes:[:id,:daily_item_id,:store_id,:subordinate_amount,:sell_price,:tax_including_sell_price,:_destroy]
         )
     end

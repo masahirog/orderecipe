@@ -13,10 +13,12 @@ class CreateDailyItems < ActiveRecord::Migration[6.0]
       t.integer :tax_including_delivery_fee,default:0,null:false
       t.integer :subtotal_price,default:0,null:false
       t.integer :tax_including_subtotal_price,default:0,null:false
-      t.integer :unit
+      t.integer :order_unit
       t.integer :delivery_amount,default:0,null:false
       t.timestamps
       t.text :sorting_memo
+      t.integer :order_unit_amount,default:0,null:false
+      t.integer :adjustment_subtotal,default:0,null:false
     end
   end
 end

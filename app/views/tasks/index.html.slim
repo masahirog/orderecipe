@@ -3,7 +3,7 @@
   button.btn.btn-primary.btn-sm data-toggle="modal" data-target="#modal_new_task" style="float:left;" 新規カードを追加
   
   = form_tag tasks_path, :method => 'get',class:'pull-right' do
-    = select_tag :store_id, options_from_collection_for_select(Store.where(group_id:@group_id), :id, :name,params[:store_id]),include_blank:true, class: "form-control",style:'float:left;width:200px;margin-right:5px;'
+    = select_tag :store_id, options_from_collection_for_select(Store.where(group_id:current_user.group_id), :id, :name,params[:store_id]),include_blank:true, class: "form-control",style:'float:left;width:200px;margin-right:5px;'
     = submit_tag '店舗を選択',class:'btn btn-primary',style:'float:left;'
 
 #modal_new_task.modal.fade tabindex="-1"
@@ -12,7 +12,7 @@
       .modal-body
         .clearfix
           = form_with(model: @task,class:'new_task_form', data: {remote: true}) do |f|
-            = f.hidden_field :group_id,value:@group_id
+            = f.hidden_field :group_id
             .form-group.clearfix
               = f.text_field :title, class:"form-control", required:true,placeholder:'タイトル',style:'width:calc(100% - 140px);float:left;'
               = f.text_field :drafter, class:"form-control",placeholder:'投稿者名',style:'float:left;width:120px;margin-left:10px;', required:true

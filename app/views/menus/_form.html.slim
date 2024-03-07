@@ -1,6 +1,6 @@
 = form_for @menu do |f|
   = f.hidden_field :base_menu_id
-  = f.hidden_field :group_id,value:@group_id
+  = f.hidden_field :group_id,value:current_user.group_id
   - if @menu.errors.any?
     #error_explanation
       b

@@ -132,7 +132,7 @@ ActiveRecord::Schema.define(version: 2024_02_25_140619) do
     t.integer "tax_including_sell_price", default: 0, null: false
   end
 
-  create_table "daily_items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+  create_table "daily_items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.date "date", null: false
     t.integer "purpose", null: false
     t.integer "item_id", null: false
@@ -145,11 +145,13 @@ ActiveRecord::Schema.define(version: 2024_02_25_140619) do
     t.integer "tax_including_delivery_fee", default: 0, null: false
     t.integer "subtotal_price", default: 0, null: false
     t.integer "tax_including_subtotal_price", default: 0, null: false
-    t.integer "unit"
+    t.integer "order_unit"
     t.integer "delivery_amount", default: 0, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.text "sorting_memo"
+    t.integer "order_unit_amount", default: 0, null: false
+    t.integer "adjustment_subtotal", default: 0, null: false
   end
 
   create_table "daily_menu_details", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|

@@ -39,7 +39,7 @@ class ReminderTemplatesController < AdminController
       category = 0
     end
     @reminder_template = ReminderTemplate.new(category:category)
-    @stores = Store.where(group_id:current_user.group_id).where.not(id:39)
+    @stores = Store.where(group_id:current_user.group_id,store_type:'sales')
     new_store_ids = @stores.ids
     @stores_hash = {}
     @stores.each do |store|
@@ -51,7 +51,7 @@ class ReminderTemplatesController < AdminController
   def edit
     @category = @reminder_template.category
     store_ids = @reminder_template.reminder_template_stores.pluck(:store_id)
-    @stores = Store.where(group_id:current_user.group_id).where.not(id:39)
+    @stores = Store.where(group_id:current_user.group_id,store_type:'sales')
     all_store_ids = @stores.ids
     new_store_ids = all_store_ids - store_ids
     @stores_hash = {}

@@ -1,5 +1,14 @@
 class StaffsController < ApplicationController
   before_action :set_staff, only: %i[ show edit update destroy ]
+  def date_attendance
+    @date = params[:date]
+    @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    Shift.includes(:staff,:fix_shift_pattern).order("staffs.staff_code").where(date:@date).where.not(fix_shift_pattern_id: nil).where.not(:fix_shift_patterns => {working_hour:0}).each do |shift|
+      @hash[shift.store_id][shift.staff.staff_code][:staff] = shift.staff
+      @hash[shift.store_id][shift.staff.staff_code][:fix_shift] = shift.fix_shift_pattern
+    end
+  end
+
   def row_order_update
     staffs_arr = []
     staff_ids = params[:row].keys

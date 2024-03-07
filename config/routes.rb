@@ -151,6 +151,7 @@ Rails.application.routes.draw do
   end
   resources :staffs do
     collection do
+      get :date_attendance
       post :row_order_update
     end
   end

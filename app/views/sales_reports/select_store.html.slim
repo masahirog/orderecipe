@@ -4,5 +4,5 @@
     = date_field_tag :date,{}, required: true, class:"form-control",value:Date.today
   .form-group
     label 店舗
-    = select_tag "store_id", options_from_collection_for_select(current_user.group.stores,:id,:name),include_blank:'店舗を選択',required: true, class: "form-control"
+    = select_tag "store_id", options_from_collection_for_select(current_user.group.stores.where(store_type:'sales'),:id,:name),include_blank:'店舗を選択',required: true, class: "form-control"
   = submit_tag "レポート作成する" ,class:"btn btn-primary"

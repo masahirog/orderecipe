@@ -32,7 +32,11 @@
   .form-group.clearfix
     .float-left style='float:left;'
       = f.label :order_unit_amount, "販売単位",class:'required',style:'width:100%;'
-      = f.select :unit, options_for_select_from_enum(Item, :unit),{}, { class: "form-control unit",required:true,style:'float:left;width:100px;'}
+      - if action_name == "new"
+        = f.select :unit, options_for_select_from_enum(Item, :unit),{}, { class: "form-control unit",required:true,style:'float:left;width:100px;'}
+      - else
+        div.edit_unit style='float:left;width:100px;border: 1px solid silver;border-radius:3px;padding:5px 10px;background-color:#EEEEEE' = f.object.unit
+
     .float-left style='float:left;margin-top: 35px;margin-right:5px;font-size: 1.2em;'
       span 1 
       span.order_unit_span

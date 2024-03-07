@@ -1,5 +1,5 @@
 = form_for @product do |f|
-  = f.hidden_field :group_id,value:@group_id
+  = f.hidden_field :group_id,value:current_user.group_id
   - if @product.errors.any?
     #error_explanation
       h2

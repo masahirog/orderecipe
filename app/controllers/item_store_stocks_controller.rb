@@ -3,7 +3,6 @@ class ItemStoreStocksController < ApplicationController
 
   def stores
     @stores = current_user.group.stores
-    
   end
   def index
     store_id = params[:store_id]

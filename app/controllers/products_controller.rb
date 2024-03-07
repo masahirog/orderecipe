@@ -51,7 +51,7 @@ class ProductsController < ApplicationController
   end
 
   def get_menu
-    @menus = Menu.where(group_id:@group_id).where("name LIKE ?", "%#{params[:q]}%").first(20)
+    @menus = Menu.where(group_id:current_user.group_id).where("name LIKE ?", "%#{params[:q]}%").first(20)
     respond_to do |format|
       format.json { render json: @menus }
     end
@@ -92,11 +92,11 @@ class ProductsController < ApplicationController
   end
 
   def index
-    @search = Product.includes(:brand,:order_products,:daily_menu_details,:container).search(params,@group_id).page(params[:page]).per(30)
+    @search = Product.includes(:brand,:order_products,:daily_menu_details,:container).search(params,current_user.group_id).page(params[:page]).per(30)
   end
 
   def new
-    @brands = Brand.where(group_id:@group_id,unused_flag:false)
+    @brands = Brand.where(group_id:current_user.group_id,unused_flag:false)
     if params[:copy_flag]=='true'
       original_product = Product.includes(product_menus:[menu:[menu_materials:[:material]]]).find(params[:product_id])
       original_product.name = "#{original_product.name}のコピー"
@@ -129,7 +129,7 @@ class ProductsController < ApplicationController
 
 
   def create
-    @brands = Brand.where(group_id:@group_id,unused_flag:false)
+    @brands = Brand.where(group_id:current_user.group_id,unused_flag:false)
     @product = Product.new(product_create_update)
     respond_to do |format|
       if @product.save
@@ -144,7 +144,7 @@ class ProductsController < ApplicationController
   end
 
   def edit
-    @brands = Brand.where(group_id:@group_id,unused_flag:false)
+    @brands = Brand.where(group_id:current_user.group_id,unused_flag:false)
     @product = Product.includes(:product_menus,{menus: [:menu_materials,:materials]}).find(params[:id])
     @product.product_pops.build
     @menus = @product.menus
@@ -153,7 +153,7 @@ class ProductsController < ApplicationController
   end
 
   def update
-    @brands = Brand.where(group_id:@group_id,unused_flag:false)
+    @brands = Brand.where(group_id:current_user.group_id,unused_flag:false)
     @product = Product.find(params[:id])
     respond_to do |format|
       if @product.update(product_create_update)

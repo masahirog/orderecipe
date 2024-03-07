@@ -15,7 +15,7 @@
               div style='margin-bottom: 10px  ;'
                 = f.collection_select :item_id, @items, :id, :view_name_and_vendor, {include_blank:true},class:'form-control item_select item_select2'
               .item_info style='float:left;'
-              button class="btn btn-sm btn-default pull-right" data-toggle="modal" data-target="#new_item_add" style='margin-left:10px;' 商品新規追加
+              div class="btn btn-sm btn-default pull-right" data-toggle="modal" data-target="#new_item_add" style='margin-left:10px;' 商品新規追加
               = link_to "商品編集",'/',class:"btn btn-sm btn-primary pull-right item_edit_url",style:'display:none;',target:"_blank"
               input.item_reduce_tax_flag style='display: none;'
               = f.hidden_field :date
@@ -26,16 +26,38 @@
             .form-group.clearfix
               h4 日付
               = f.date_field :date,class: "form-control",style:"float:left;width:32%;margin-bottom:5px;margin-right:5px;"
-          .form-group.clearfix
-            h4 仕入れ量
-            = f.select :purpose, options_for_select_from_enum(DailyItem, :purpose),{}, { class: "form-control",style:"float:left;width:32%;argin-bottom:5px;margin-right:5px;"}
-            = f.number_field :delivery_amount,class:'form-control delivery_amount_input',style:"float:left;width:150px;margin-bottom:5px;margin-right:5px;", required:true
-            span.order_unit style="float:left;margin-top: 5px;font-size:1.5em;"
-            input class='form-control' style="float:left;width:150px;margin-bottom:5px;margin-right:5px;" readonly='true'
-            span.order_unit_amount
-            = f.hidden_field :unit
-            = f.text_field :memo,class:'form-control',placeholder:'管理側メモ',style:'width:100%;margin-bottom:5px;'
-            = f.text_field :sorting_memo,class:'form-control',placeholder:'仕分け時メモ',style:'width:100%;'
+          - if daily_item.item_id.present?
+            .form-group
+              h4 発注情報
+              .clearfix
+                = f.select :purpose, options_for_select_from_enum(DailyItem, :purpose),{}, { class: "form-control",style:"float:left;width:32%;argin-bottom:5px;margin-right:5px;"}
+                = f.number_field :order_unit_amount,class:'form-control order_unit_amount',style:"float:left;width:32%;margin-bottom:5px;margin-right:5px;",'min' => '1'
+                = f.select :order_unit, options_for_select_from_enum(DailyItem, :order_unit),{}, { class: "form-control order_unit",style:"float:left;width:32%;margin-right:10px;"}
+              .clearfix
+                span style="float:left;margin-top:8px;" 販売単位変換：
+                span.span_order_unit style="float:left;font-size:1.2em;margin:5px 5px 0 0;" = "1#{daily_item.order_unit}あたり"
+                input.item_order_unit_amount.form-control style="float:left;width:150px;margin-bottom:5px;margin-right:5px;" value="#{daily_item.delivery_amount/daily_item.order_unit_amount}"
+                span.unit style="float:left;margin: 5px 5px 0 5px;font-size:1.2em;" = daily_item.item.unit
+                span style="float:left;margin-top: 5px;font-size:1.2em;"　、合計発注数：
+                = f.number_field :delivery_amount,class:'form-control delivery_amount',style:"float:left;width:150px;margin-bottom:5px;margin-right:5px;", required:true,readonly:true
+                span.unit style="float:left;margin: 5px 5px 0 5px;font-size:1.2em;" = daily_item.item.unit
+          - else
+            .form-group
+              h4 発注情報
+              .clearfix
+                = f.select :purpose, options_for_select_from_enum(DailyItem, :purpose),{}, { class: "form-control",style:"float:left;width:32%;argin-bottom:5px;margin-right:5px;"}
+                = f.number_field :order_unit_amount,class:'form-control order_unit_amount',style:"float:left;width:32%;margin-bottom:5px;margin-right:5px;",'min' => '1'
+                = f.select :order_unit, options_for_select_from_enum(DailyItem, :order_unit),{}, { class: "form-control order_unit",style:"float:left;width:32%;margin-right:10px;"}
+              .clearfix
+                span style="float:left;margin-top:8px;" 販売単位変換：
+                span.span_order_unit style="float:left;font-size:1.2em;margin:5px 5px 0 0;"
+                input.item_order_unit_amount.form-control style="float:left;width:150px;margin-bottom:5px;margin-right:5px;" value=0
+                span.unit style="float:left;margin: 5px 5px 0 5px;font-size:1.2em;"
+                span style="float:left;margin-top: 5px;font-size:1.2em;"　、合計発注数：
+                = f.number_field :delivery_amount,class:'form-control delivery_amount',style:"float:left;width:150px;margin-bottom:5px;margin-right:5px;", required:true,readonly:true
+                span.unit style="float:left;margin: 5px 15px 0 5px;font-size:1.2em;"
+          = f.text_field :memo,class:'form-control',placeholder:'管理側メモ',style:'width:100%;margin-bottom:5px;'
+          = f.text_field :sorting_memo,class:'form-control',placeholder:'仕分け時メモ',style:'width:100%;'
           table.table
             thead
               tr
@@ -58,6 +80,12 @@
                   span style='float:left;margin-top:10px;margin-left:5px;' 円
                 td
                   = f.number_field :tax_including_delivery_fee,class:'form-control tax_including_delivery_fee_input',style:"margin-bottom:5px;width:100px;float:left;",readonly:true, required:true
+                  span style='float:left;margin-top:10px;margin-left:5px;' 円
+              tr
+                td 消費税調整
+                td ※税以外の調整は不可
+                td
+                  = f.number_field :adjustment_subtotal,class:'form-control adjustment_subtotal_input',style:"margin-bottom:5px;width:100px;float:left;", required:true,'max' => '100'
                   span style='float:left;margin-top:10px;margin-left:5px;' 円
               tr
                 td 原価小計

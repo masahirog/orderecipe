@@ -51,7 +51,7 @@ class MaterialsController < ApplicationController
     else
       @store_id = 39
     end
-    @search = Material.includes(:vendor).search(params,@group_id).page(params[:page]).per(50)
+    @search = Material.includes(:vendor).search(params,current_user.group_id).page(params[:page]).per(50)
     @ids = @search.ids
     @materials_order_quantity = OrderMaterial.joins(:order).where(un_order_flag:false,orders:{fixed_flag:1}).where(delivery_date:(Date.today - 31)..Date.today,material_id:@ids).group(:material_id).sum(:order_quantity)
     respond_to do |format|
@@ -61,7 +61,7 @@ class MaterialsController < ApplicationController
   end
 
   def new
-    @material = Material.new
+    @material = Material.new(group_id:current_user.group_id)
     @stores_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     if current_user.group_id == 9
       stores = Store.all

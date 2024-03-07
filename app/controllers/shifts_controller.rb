@@ -1,6 +1,7 @@
 class ShiftsController < ApplicationController
   require 'csv'
   before_action :set_shift, only: %i[ show edit update destroy ]
+
   def csv_once_update
     Shift.upload_data(params[:file])
     redirect_to shifts_path(date:params[:date],group_id:params[:group_id],store_type:params[:store_type]), :success => "一括更新しました"

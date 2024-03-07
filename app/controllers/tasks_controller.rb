@@ -12,19 +12,18 @@ class TasksController < ApplicationController
     else
       gon.task_id = ''
     end
-    group_id = params[:group_id]
-    stores = Store.where(group_id:@group_id)
+    stores = Store.where(group_id:current_user.group_id)
     if params[:staff_id].present?
       @staff = Staff.find(params[:staff_id])
-      @tasks = Task.includes([:task_comments,:task_images,:task_staffs,task_stores:[:store]]).where(:task_staffs => {staff_id:params[:staff_id],read_flag:false}).where(group_id:@group_id).rank(:row_order)
-      @staffs = Staff.where(group_id:@group_id,employment_status:1,status:0)
+      @tasks = Task.includes([:task_comments,:task_images,:task_staffs,task_stores:[:store]]).where(:task_staffs => {staff_id:params[:staff_id],read_flag:false}).where(group_id:current_user.group_id).rank(:row_order)
+      @staffs = Staff.where(group_id:current_user.group_id,employment_status:1,status:0)
     elsif params[:store_id].present?
       @tasks = Task.joins(:task_stores).where(:task_stores => {store_id:params[:store_id],subject_flag:true}).includes([:task_comments,:task_images,task_stores:[:store]]).rank(:row_order)
       @staffs = Staff.joins(:staff_stores).where(:staff_stores => {store_id:params[:store_id],affiliation_flag:true}).where(employment_status:1,status:0)
       # @staffs = Staff.where(store_id:params[:store_id]).where(employment_status:1,status:0)
     else
-      @staffs = Staff.where(group_id:@group_id,employment_status:1,status:0)
-      @tasks = Task.where(group_id:@group_id).includes([:task_comments,:task_images,task_stores:[:store]]).rank(:row_order)
+      @staffs = Staff.where(group_id:current_user.group_id,employment_status:1,status:0)
+      @tasks = Task.where(group_id:current_user.group_id).includes([:task_comments,:task_images,task_stores:[:store]]).rank(:row_order)
     end
     @tasks.each do |task|
       stores.each do |store|
@@ -32,7 +31,7 @@ class TasksController < ApplicationController
       end
     end
 
-    @task = Task.new(group_id:@group_id)
+    @task = Task.new(group_id:current_user.group_id)
     @todos = @tasks.where(status:0)
     @doings = @tasks.where(status:1)
     @hikitsugis = @tasks.where(status:6)
@@ -46,7 +45,7 @@ class TasksController < ApplicationController
       # @task.task_staffs.build(staff_id:staff.id,read_flag:false)
     end
     if params[:status].present?
-      @archives = Task.where(status:4,group_id:@group_id).rank(:row_order)
+      @archives = Task.where(status:4,group_id:current_user.group_id).rank(:row_order)
     end
     @stores_hash = {}
     stores.each do |store|
@@ -68,7 +67,7 @@ class TasksController < ApplicationController
   def create
     @task = Task.new(task_params)
     @stores_hash = {}
-    Store.where(group_id:@group_id).each do |store|
+    Store.where(group_id:current_user.group_id).each do |store|
       @stores_hash[store.id]=store.name
     end
     task_created_staff_ids = []
@@ -114,7 +113,7 @@ class TasksController < ApplicationController
 
   def update
     @stores_hash = {}
-    Store.where(group_id:@group_id).each do |store|
+    Store.where(group_id:current_user.group_id).each do |store|
       @stores_hash[store.id]=store.name
     end
     respond_to do |format|

@@ -91,6 +91,7 @@ html lang="ja"
                       |店舗業務
                       span.caret
                     ul.dropdown-menu role="menu" style='width:250px;'
+                      li = link_to '出勤スタッフ一覧',date_attendance_staffs_path(date:@today)
                       li = link_to '店舗へのインフォメーション',to_store_messages_path
                       li = link_to 'メニュー表',monthly_menus_daily_menus_path
                       li = link_to '販売レポート',select_store_sales_reports_path

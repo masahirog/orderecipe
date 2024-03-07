@@ -4,7 +4,7 @@ h3 時間帯別販売データ
     .clearfix
       label style='float:left;' 店舗選択
       ul style="list-style:none;float:left;"
-        - Store.where(group_id:current_user.group_id).each do |store|
+        - Store.where(group_id:current_user.group_id,store_type:'sales').each do |store|
           li style='float:left;margin-right:10px;'
             = check_box_tag "stores[#{store.id}]",true,params['stores'][store.id.to_s]
             = label_tag "stores[#{store.id}]",store.name

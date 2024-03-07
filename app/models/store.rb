@@ -26,5 +26,5 @@ class Store < ApplicationRecord
   has_many :working_hours
 
 
-  enum store_type: {sales:0,kitchen:1}
+  enum store_type: {sales:0,kitchen:1,head_office:2}
 end

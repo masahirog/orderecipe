@@ -24,10 +24,23 @@
               button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
 
   - if @buppan_schedule.fixed_flag == true
+    = link_to "SKLバーコード", barcode_csv_daily_items_path(date:params[:date],format:'csv'), method: :post,class:"btn btn-sm btn-primary pull-right"
+    button type="button" class="btn btn-sm btn-primary pull-right" data-toggle="modal" data-target="#deliveryModal" style="margin-right:10px;" 仕分け表
+    #deliveryModal.modal.fade tabindex="-1"
+      .modal-dialog
+        .modal-content
+          .modal-header
+            h4.modal-title 仕訳表種類
+          .modal-body
+            .form-group
+              = link_to "すべて",loading_sheet_daily_items_path(date:@date,sorting_base_id:'', :format => :pdf),target:"_blank"
+            .form-group
+              = link_to "└ SKL練馬担当一覧",loading_sheet_daily_items_path(date:@date,sorting_base_id:2, :format => :pdf),target:"_blank"
+            .form-group
+              = link_to "└ 店舗直送一覧",loading_sheet_daily_items_path(date:@date,sorting_base_id:1, :format => :pdf),target:"_blank"
+          .modal-footer
+            button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
 
-    = link_to "仕分け表",loading_sheet_daily_items_path(date:@date, :format => :pdf),class:"btn btn-primary btn-sm",style:'margin-left:20px;float:right;'
-
-    = link_to "SKLバーコード（全店）", barcode_csv_daily_items_path(date:params[:date],format:'csv'), method: :post,class:"btn btn-sm btn-primary pull-right"
 
 .clearfix
   - if @buppan_schedule.fixed_flag == true
@@ -92,6 +105,7 @@ table.table
       col class="col120"
       col class="col120"
       col class="col120"
+      col class="col120"
       - @stores.each do |store|
         col class="col90"
     thead
@@ -108,6 +122,7 @@ table.table
         th 管理メモ
         th 仕入値
         th 送料
+        th 調整
         th 仕入小計
         th 見込売上
         th 粗利
@@ -138,7 +153,7 @@ javascript:
 
   $('body').on('change', '.subordinate_amount_input' , function() {
     var id = $(this).parents('.modal').attr('id');
-    var delivery_amount = Number($("#"+id).find(".delivery_amount_input").val());
+    var delivery_amount = Number($("#"+id).find(".delivery_amount").val());
     var total = 0
     $("#"+id).find(".daily_item_store").each(function(){
       total = total + Number($(this).find(".subordinate_amount_input").val());
@@ -158,6 +173,11 @@ javascript:
     var id = $(this).parents('.modal').attr('id');
     var komi = Math.floor($(this).val()*1.1);
     $("#"+id).find(".tax_including_delivery_fee_input").val(komi);
+    // subordinate(id);
+    calculate(id);
+  });
+  $('body').on('change', '.adjustment_subtotal_input' , function() {
+    var id = $(this).parents('.modal').attr('id');
     calculate(id);
   });
 
@@ -165,10 +185,24 @@ javascript:
     var id = $(this).parents('.modal').attr('id');
     var komi = Math.floor($(this).val()*1.08);
     $("#"+id).find(".tax_including_purchase_price_input").val(komi);
+    // subordinate(id);
     calculate(id);
   });
 
-  $('body').on('change', '.delivery_amount_input' , function() {
+  $('body').on('change', '.order_unit' , function() {
+    var id = $(this).parents('.modal').attr('id');
+    var order_unit = $(this).children("option:selected").text();
+    $("#"+id).find(".span_order_unit").text("1"+ order_unit+"あたり");
+  });
+
+
+  $('body').on('change', '.order_unit_amount' , function() {
+    var id = $(this).parents('.modal').attr('id');
+    subordinate(id);
+    calculate(id);
+  });
+
+  $('body').on('change', '.item_order_unit_amount' , function() {
     var id = $(this).parents('.modal').attr('id');
     subordinate(id);
     calculate(id);
@@ -183,25 +217,6 @@ javascript:
     var id = $(this).parents('.modal').attr('id');
     subordinate(id);
     calculate(id);
-  });
-
-  $('body').on('change', '.item_sell_price' , function() {
-    calculate_tax_including_sell_price();
-  });
-
-  $('body').on('change', '.item_purchase_price' , function() {
-    var id = $(this).parents('.modal').attr('id');
-    calculate_purchase_price();
-  });
-
-  $('body').on('change', '.item_reduced_tax_flag' , function() {
-    calculate_tax_including_sell_price();
-    calculate_purchase_price();
-  });
-
-  $('body').on('change', '.variety_select2' , function() {
-    var selected = $(this).children("option:selected");
-    $(".item_name").val(selected.text());
   });
 
 
@@ -223,29 +238,17 @@ javascript:
     calculate(id);
   });
 
-  function item_select_change(id){
-    var item_id = $(".item_select").val();
-    if (item_id == "") {
-      $(".item_edit_url").hide();
-    }else{
-      $(".item_edit_url").show();
-      $("a.item_edit_url").attr("href","/items/"+item_id+"/edit");
-    }
-    $.get({
-      url: "#{get_item_items_path}",
-      data: { id: item_id ,target_id:id}
-    }).done(function(data){
-      calculate(id);
-    });
-  }
 
   function subordinate(id){
     $("#"+id).find(".subordinate_amount_input").css('background-color','white');
-    var delivery_amount = Number($("#"+id).find(".delivery_amount_input").val());
+    var order_unit_amount = Number($("#"+id).find(".order_unit_amount").val());
+    var item_order_unit_amount = Number($("#"+id).find(".item_order_unit_amount").val());
+    var delivery_amount = order_unit_amount * item_order_unit_amount;
     var checked_count = $("#"+id).find('input.dis_check_box:checked').length;
     var subordinate_amount = Math.round(delivery_amount / checked_count)
     var amari = delivery_amount % checked_count
     var subordinate_amount = Math.round((delivery_amount - amari) / checked_count)
+    $("#"+id).find(".delivery_amount").val(delivery_amount);
     $("#"+id).find(".daily_item_store").each(function(){
       if (amari > 0) {
         var add = 1
@@ -263,16 +266,16 @@ javascript:
   }
 
   function calculate(id){
-    var delivery_amount = Number($("#"+id).find(".delivery_amount_input").val());
     var unit_sell_price = Number($("#"+id).find(".sell_price").val());
     var tax_including_unit_sell_price = Number($("#"+id).find(".tax_including_sell_price").val());
+    var cost = Number($("#"+id).find(".subtotal_price_input").val());
+    var sales = 0
     var unit_cost_price = Number($("#"+id).find(".purchase_price_input").val());
     var tax_including_unit_cost_price = Number($("#"+id).find(".tax_including_purchase_price_input").val());
     var delivery_fee = Number($("#"+id).find(".delivery_fee_input").val());
+    var adjustment = Number($("#"+id).find(".adjustment_subtotal_input").val());
     var tax_including_delivery_fee = Number($("#"+id).find(".tax_including_delivery_fee_input").val());
-    var cost = unit_cost_price * delivery_amount + delivery_fee
-
-    var sales = 0
+    var delivery_amount = Number($("#"+id).find(".delivery_amount").val());
     var tax_including_sales = 0
     $("#"+id).find(".daily_item_store").each(function(){
       var sell_price = Number($(this).find(".sell_price").val());
@@ -281,22 +284,82 @@ javascript:
       sales = sales + (sell_price * subordinate_amount);
       tax_including_sales = tax_including_sales + (tax_including_sell_price * subordinate_amount);
     });
+    var cost = unit_cost_price * delivery_amount + delivery_fee
     var arari = sales - cost
     var arari_rate = Math.round((arari / sales)*100, 1)
 
     $("#"+id).find(".estimated_sales_input").val(sales);
     $("#"+id).find(".tax_including_estimated_sales_input").val(tax_including_sales);
-    $("#"+id).find(".subtotal_price_input").val(cost);
-    $("#"+id).find(".tax_including_subtotal_price_input").val(tax_including_unit_cost_price * delivery_amount + tax_including_delivery_fee);
     $("#"+id).find(".ararirate").val(arari_rate+"%");
     arari = String(arari).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
     $("#"+id).find(".arari").val(arari+"円");
+    $("#"+id).find(".subtotal_price_input").val(cost);
+    $("#"+id).find(".tax_including_subtotal_price_input").val(tax_including_unit_cost_price * delivery_amount + tax_including_delivery_fee + adjustment);
   }
   
+
+
+
+  $('body').on('change', '.item_sell_price' , function() {
+    calculate_tax_including_sell_price();
+  });
+
+  $('body').on('change', '.item_purchase_price' , function() {
+    var id = $(this).parents('.modal').attr('id');
+    calculate_purchase_price();
+  });
+
+  $('body').on('change', '.item_reduced_tax_flag' , function() {
+    calculate_tax_including_sell_price();
+    calculate_purchase_price();
+  });
+  $(".item_order_unit").on('change',function(){
+    var selected = $(this).children("option:selected");
+    $(".item_order_unit_span").text(selected.text());
+  });
+  $(".item_unit").on('change',function(){
+    var selected = $(this).children("option:selected");
+    $(".item_unit_span").text(selected.text());
+    $(".item_unit_label").text("1"+selected.text()+"：");
+  });
+
+  $(".item_order_unit_amount").on('change',function(){
+    var order_unit_amount = Number($(this).val());
+    var order_unit_price = Number($(".item_order_unit_price").val());
+    var unit_price = Math.floor(order_unit_price/order_unit_amount);
+    $(".item_purchase_price").val(unit_price);
+    calculate_purchase_price();
+  });
+  $(".item_order_unit_price").on('change',function(){
+    var order_unit_amount = Number($(".item_order_unit_amount").val());
+    var order_unit_price = Number($(this).val());
+    var unit_price = Math.floor(order_unit_price/order_unit_amount);
+    $(".item_purchase_price").val(unit_price);
+    calculate_purchase_price();
+  });
+  $('body').on('change', '.variety_select2' , function() {
+    var selected = $(this).children("option:selected");
+    $(".item_name").val(selected.text());
+  });
+
+  function item_select_change(id){
+    var item_id = $(".item_select").val();
+    if (item_id == "") {
+      $(".item_edit_url").hide();
+    }else{
+      $(".item_edit_url").show();
+      $("a.item_edit_url").attr("href","/items/"+item_id+"/edit");
+    }
+    $.get({
+      url: "#{get_item_items_path}",
+      data: { id: item_id ,target_id:id}
+    }).done(function(data){
+      calculate(id);
+    });
+  }
   function calculate_tax_including_sell_price(){
     var sell_price = $(".item_sell_price").val();
     var reduce_tax_flag = $(".item_reduced_tax_flag").prop("checked");
-
     if (reduce_tax_flag == true) {
       var tax_rate = 1.08
     }else{
@@ -339,7 +402,7 @@ css:
     width:330px;
   }
   .col120{
-    width:120px;
+    width:100px;
   }
 
   .col140{

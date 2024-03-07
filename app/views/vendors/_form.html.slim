@@ -10,8 +10,8 @@
             = message
 
   .form-group
-    = f.label :group_id, "グループ名：#{Group.find(@group_id).name}"
-    = f.hidden_field :group_id,value:@group_id
+    = f.label :group_id, "グループ名：#{Group.find(current_user.group_id).name}"
+    = f.hidden_field :group_id,value:current_user.group_id
 
   .form-group
     = f.label :name, "名称（社内）"

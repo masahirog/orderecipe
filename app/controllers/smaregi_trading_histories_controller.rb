@@ -14,7 +14,7 @@ class SmaregiTradingHistoriesController < AdminController
       params[:store_ids] = checked_store_ids
     else
       params[:stores] = {}
-      @stores = Store.where(group_id:current_user.group_id).where.not(id:39)
+      @stores = Store.where(group_id:current_user.group_id,store_type:'sales')
       checked_store_ids = @stores.ids
       params[:store_ids] = checked_store_ids
       @stores.each do |store|

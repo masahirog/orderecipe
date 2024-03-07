@@ -7,7 +7,7 @@ class MenusController < ApplicationController
     end
   end
   def get_material
-    @materials = Material.where(group_id:@group_id,unused_flag:false).where("name LIKE ?", "%#{params[:q]}%").first(20)
+    @materials = Material.where(group_id:current_user.group_id,unused_flag:false).where("name LIKE ?", "%#{params[:q]}%").first(20)
     @materials = @materials.map{|material|[material.id,"#{material.name}｜#{material.vendor.name}"]}
     respond_to do |format|
       format.json { render json: @materials }
@@ -16,7 +16,7 @@ class MenusController < ApplicationController
 
 
   def index
-    @search = Menu.includes(:product_menus).search(params,@group_id).page(params[:page]).per(20)
+    @search = Menu.includes(:product_menus).search(params,current_user.group_id).page(params[:page]).per(20)
   end
 
   def new

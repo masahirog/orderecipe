@@ -10,7 +10,7 @@ class ToStoreMessagesController < ApplicationController
 
   def new
     @to_store_message = ToStoreMessage.new
-    stores = Store.where(group_id:current_user.group_id)
+    stores = Store.where(group_id:current_user.group_id,store_type:'sales')
     @stores_hash = {}
     stores.each do |store|
       @stores_hash[store.id]=store.name
@@ -19,7 +19,7 @@ class ToStoreMessagesController < ApplicationController
   end
 
   def edit
-    stores = Store.where(group_id:current_user.group_id)
+    stores = Store.where(group_id:current_user.group_id,store_type:'sales')
     @stores_hash = {}
     stores.each do |store|
       @stores_hash[store.id]=store.name

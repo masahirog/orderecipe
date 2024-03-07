@@ -1,9 +1,9 @@
 class VendorsController < ApplicationController
   def index
     if params[:all_flag]
-      @vendors = Vendor.where(group_id:@group_id)
+      @vendors = Vendor.where(group_id:current_user.group_id)
     else
-      @vendors = Vendor.where(group_id:@group_id,status:1)
+      @vendors = Vendor.where(group_id:current_user.group_id,status:1)
     end
     if params[:monthly_price] == 'true'
       if params[:year] && params[:month]
@@ -42,7 +42,7 @@ class VendorsController < ApplicationController
   end
 
   def new
-    @vendor = Vendor.new(group_id:@group_id)
+    @vendor = Vendor.new(group_id:current_user.group_id)
   end
   def create
     @vendor = Vendor.create(vendor_params)

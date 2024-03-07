@@ -8,7 +8,7 @@
       = text_field_tag :name,params[:name],class:"form-control"
     .col-md-2
       label ブランド・店舗
-      = select_tag :brand_id, options_from_collection_for_select(Brand.where(group_id:@group_id),:id,:name,params[:brand_id]),include_blank:true, class: "form-control",style:"width:100%"
+      = select_tag :brand_id, options_from_collection_for_select(Brand.where(group_id:current_user.group_id),:id,:name,params[:brand_id]),include_blank:true, class: "form-control",style:"width:100%"
     - if current_user.group_id == 9
       - categories = Product.product_categories.find_all{|k,v| v < 13 }.to_h.keys
     - else

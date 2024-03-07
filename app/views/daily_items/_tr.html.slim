@@ -6,7 +6,7 @@
 
 - if daily_item.item.item_variety.item_type.category == "野菜"
   - class_names = "label label-success"
-- elsif daily_item.item.item_variety.item_type.category == "果物"
+- elsif daily_item.item.item_variety.item_type.category == "果実"
   - class_names = "label label-warning"
 - elsif daily_item.item.item_variety.item_type.category == "物産品"
   - class_names = "label label-primary"
@@ -23,7 +23,7 @@ tr class="tr_#{daily_item.id}" style="background-color:#{color}"
     span class="#{class_names}" = daily_item.item.item_variety.item_type.category
   td = link_to "#{daily_item.item.item_vendor.store_name}",edit_item_vendor_path(daily_item.item.item_vendor),target:'_blank'
   td = link_to "#{daily_item.item.name}",daily_item.item,target:'_blank'
-  td = "#{daily_item.delivery_amount} #{daily_item.unit}"
+  td = "#{daily_item.delivery_amount/daily_item.order_unit_amount} #{daily_item.order_unit}"
   td = daily_item.sorting_memo
   td = daily_item.memo
   td
@@ -38,6 +38,12 @@ tr class="tr_#{daily_item.id}" style="background-color:#{color}"
     span style='font-size:0.8em;' （
     span style='font-size:0.8em;' =  daily_item.tax_including_delivery_fee.to_s(:delimited)
     span style='font-size:0.8em;' ）
+  td
+    br
+    span style='font-size:0.8em;' （
+    span style='font-size:0.8em;' = daily_item.adjustment_subtotal
+    span style='font-size:0.8em;' ）
+    
   td
     span = daily_item.subtotal_price.to_s(:delimited)
     br

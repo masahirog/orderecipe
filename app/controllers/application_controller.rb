@@ -9,8 +9,7 @@ class ApplicationController < ActionController::Base
   def user_check
     @today = Date.today
     if user_signed_in? && current_user.group_id.present?
-      @group_id = current_user.group_id
-      @stores = Group.find(@group_id).stores.where(store_type:0)
+      @stores = current_user.group.stores.where(store_type:0)
     end
   end
 

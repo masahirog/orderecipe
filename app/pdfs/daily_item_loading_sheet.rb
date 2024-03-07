@@ -1,5 +1,5 @@
 class DailyItemLoadingSheet < Prawn::Document
-  def initialize(date,daily_items,stores,buppan_schedule)
+  def initialize(date,daily_items,stores,buppan_schedule,sorting_base)
     super(
       page_size: 'A4',
       margin:10
@@ -18,13 +18,13 @@ class DailyItemLoadingSheet < Prawn::Document
       end
     end
 
-    table_content(date,daily_items,hash,stores,buppan_schedule)
+    table_content(date,daily_items,hash,stores,buppan_schedule,sorting_base)
   end
 
-  def table_content(date,daily_items,hash,stores,buppan_schedule)
+  def table_content(date,daily_items,hash,stores,buppan_schedule,sorting_base)
     bounding_box([10, 800], :width => 560) do
       text "発行時間：#{Time.now.strftime("%Y年 %m月 %d日　%H:%M")}",size:8,:align => :right
-      text "#{date}仕訳表"
+      text "#{date} 仕訳表（#{sorting_base}）"
       move_down 10
       text "仕分け備考：",size:10
       move_down 5
@@ -92,7 +92,7 @@ class DailyItemLoadingSheet < Prawn::Document
       else
         memo_flag = ""
       end
-      data << [memo_flag,"#{di.item.item_vendor.id} #{di.item.item_vendor.store_name}","#{di.item.name}","#{di.delivery_amount} #{di.unit}",
+      data << [memo_flag,"#{di.item.item_vendor.id} #{di.item.item_vendor.store_name}","#{di.item.name}","#{di.delivery_amount} #{di.item.unit}",
                 hash[di.id][9],hash[di.id][19],hash[di.id][29],hash[di.id][154],hash[di.id][164],hash[di.id][39]]
     end
     data

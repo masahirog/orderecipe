@@ -1,0 +1,17 @@
+h2 = "#{@date} 出勤者"
+- @hash.sort.each do |data|
+	- store = Store.find(data[0])
+	table.table
+		thead
+			tr
+				th style='width:200px;' = store.short_name
+				th = link_to store.phone, "tel:" + store.phone
+		tbody
+			- data[1].each do |staff_fs|
+				- if staff_fs[1][:staff].employment_status == "employee"
+					- name = "#{staff_fs[1][:staff].name} ※"
+				- else
+					- name = staff_fs[1][:staff].name
+				tr
+					td = name
+					td = staff_fs[1][:fix_shift].pattern_name
