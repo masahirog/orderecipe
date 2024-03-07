@@ -23,7 +23,7 @@ tr class="tr_#{daily_item.id}" style="background-color:#{color}"
     span class="#{class_names}" = daily_item.item.item_variety.item_type.category
   td = link_to "#{daily_item.item.item_vendor.store_name}",edit_item_vendor_path(daily_item.item.item_vendor),target:'_blank'
   td = link_to "#{daily_item.item.name}",daily_item.item,target:'_blank'
-  td = "#{daily_item.delivery_amount/daily_item.order_unit_amount} #{daily_item.order_unit}"
+  td = "#{daily_item.delivery_amount/daily_item.order_unit_amount} #{daily_item.order_unit}" if daily_item.order_unit_amount > 0
   td = daily_item.sorting_memo
   td = daily_item.memo
   td
