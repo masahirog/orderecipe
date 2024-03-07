@@ -1,4 +1,7 @@
-h2 = "#{@date} 出勤者"
+h2 = "#{@date.strftime("%Y/%-m/%-d(#{%w(日 月 火 水 木 金 土)[@date.wday]})")} 出勤者"
+= link_to (@date -1),date_attendance_staffs_path(date:@date -1)
+span style='margin: 0 10px;' = @date
+= link_to (@date +1),date_attendance_staffs_path(date:@date +1)
 - @hash.sort.each do |data|
 	- store = Store.find(data[0])
 	table.table
