@@ -183,7 +183,8 @@ class DailyItemsController < ApplicationController
       @buppan_schedule = BuppanSchedule.new(date:@date)
     end
     @item = Item.new
-    @daily_items = DailyItem.includes(item:[:item_variety],daily_item_stores:[:store]).where(date:@date)
+    # @daily_items = DailyItem.includes(item:[:item_variety],daily_item_stores:[:store]).where(date:@date)
+    @daily_items = DailyItem.where(date:@date)
     @buppan_daily_items = @daily_items.where(purpose:"物販").order("id DESC")
     @sozai_daily_items = @daily_items.where(purpose:"惣菜").order("id DESC")
     @category_sum = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
