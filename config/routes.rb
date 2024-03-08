@@ -295,6 +295,7 @@ Rails.application.routes.draw do
   end
   resources :daily_menus do
     collection do
+      get :serving_list
       get :description
       get :monthly_menus
       get :day_menus
