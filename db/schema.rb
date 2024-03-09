@@ -1172,7 +1172,7 @@ ActiveRecord::Schema.define(version: 2024_02_25_140619) do
     t.integer "user_id"
   end
 
-  create_table "working_hours", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "working_hours", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "store_id"
     t.bigint "staff_id"
     t.date "date"
@@ -1181,6 +1181,7 @@ ActiveRecord::Schema.define(version: 2024_02_25_140619) do
     t.float "working_time"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "break_minutes", default: 0
     t.index ["staff_id"], name: "index_working_hours_on_staff_id"
     t.index ["store_id", "staff_id", "date"], name: "index_working_hours_on_store_id_and_staff_id_and_date", unique: true
     t.index ["store_id"], name: "index_working_hours_on_store_id"

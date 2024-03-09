@@ -15,7 +15,6 @@ class WorkingHoursController < AdminController
       @to = today
     end
     @working_hours = WorkingHour.where(date:@from..@to).where(group_id:@group.id)
-
   end
   def staff_input
     if params[:date]
@@ -23,32 +22,19 @@ class WorkingHoursController < AdminController
     else
       @date = Date.today
     end
-    if params[:staff_id].present?
-      if params[:alert_flag] == "true"
-        @working_hours = []
-        WorkingHour.where(staff_id:params[:staff_id]).where("date > ?",'2022/11/16').where("working_time > ?",0).each do |wh|
-          if (wh.working_time.to_f - wh.kari_working_time.to_f).abs > 1
-            @working_hours << wh
-          end
-        end
-      else
-        @working_hours = WorkingHour.where(staff_id:params[:staff_id]).where("date > ?",'2022/11/16').where("working_time > ?",0)
+    @working_hours = WorkingHour.includes(:staff).where(date:@date)
+    @shift_hash = {count:0,time:0}
+    Shift.includes(:fix_shift_pattern).where(date:@date,store_id:39).each do |shift|
+      @shift_hash[[shift.staff_id,shift.date]] = shift
+      if shift.fix_shift_pattern_id.present? && shift.fix_shift_pattern.working_hour > 0
+        @shift_hash[:count] += 1
+        @shift_hash[:time] += shift.fix_shift_pattern.working_hour
       end
-    else
-      @working_hours = WorkingHour.where(date:@date)
     end
     @times = []
     15.times do |hour|
       [["00",0.0],["15",0.25],["30",0.5],["45",0.75]].each do |min|
         @times  << ["#{hour}:#{min[0]}",(hour + min[1])]
-      end
-    end
-    @staff_working_hours = {}
-    WorkingHour.where("date > ?",'2022/11/16').where("working_time > ?",0).each do |wh|
-      if @staff_working_hours[wh.staff_id].present?
-        @staff_working_hours[wh.staff_id] << wh
-      else
-        @staff_working_hours[wh.staff_id] = [wh]
       end
     end
   end
@@ -117,7 +103,12 @@ class WorkingHoursController < AdminController
   end
 
   def update
-    working_time = ((params[:working_hour][:end_time].to_time - params[:working_hour][:start_time].to_time)/3600).round(2)
+    if params[:working_hour][:end_time].present? && params[:working_hour][:start_time].present?
+      restraint_time = ((params[:working_hour][:end_time].to_time - params[:working_hour][:start_time].to_time)/3600).round(1)
+    else
+      restraint_time = 0
+    end
+    working_time = restraint_time - (params[:working_hour][:break_minutes].to_f/60).round(1)
     respond_to do |format|
       if @working_hour.update(working_hour_params.merge(working_time: working_time))
         format.html
@@ -143,8 +134,7 @@ class WorkingHoursController < AdminController
     end
 
     def working_hour_params
-      params.require(:working_hour).permit(:id,:store_id,:staff_id,:date,:start_time,:end_time,:working_time)
-
+      params.require(:working_hour).permit(:id,:store_id,:staff_id,:date,:start_time,:end_time,:working_time,:break_minutes)
     end
 end
 

@@ -25,6 +25,8 @@ table.table
     tr
       th 日付
       th 姓名
+      th シフト
+      th シフト勤務時間
       th 実労働時間
       th style="width:200px;" グループ
       th style="width:200px;" 店舗
@@ -33,6 +35,8 @@ table.table
       tr class="wh_tr_#{wh.id}"
         td = link_to wh.date, edit_working_hour_path(wh)
         td = wh.name
+        td
+        td
         td = wh.working_time
         td.edit_group_td
           = render partial: "edit_group", locals: { working_hour:wh }

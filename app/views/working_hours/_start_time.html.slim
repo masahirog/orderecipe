@@ -3,4 +3,5 @@
   = f.time_field :start_time,class:'form-control input_time input_start_time',style:'float:left;width:100px;'
   span style='float:left;margin: 5px 10px;font-size:1.2em;' 〜
   = f.time_field :end_time,class:'form-control input_time input_end_time',style:'float:left;width:100px;'
+  = f.number_field :break_minutes,class:'form-control',style:'float:left;width:100px;margin-left:10px',:min => 0
   = f.submit "SAVE",class:'btn btn-primary btn-sm',style:'float:left;margin:2px 10px'
