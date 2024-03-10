@@ -29,6 +29,18 @@ class WorkingHoursController < AdminController
           @hash[:daily][working_hour.date][working_hour.staff.employment_status][:total_time] = working_hour.working_time
         end
       end
+      if @hash[:staff][working_hour.staff_id].present?
+        @hash[:staff][working_hour.staff_id][:working_time] += working_hour.working_time
+        @hash[:staff][working_hour.staff_id][:working_count] += 1 if working_hour.working_time > 0
+      else
+        @hash[:staff][working_hour.staff_id][:working_time] = working_hour.working_time
+        if working_hour.working_time > 0
+          @hash[:staff][working_hour.staff_id][:working_count] = 1
+        else
+          @hash[:staff][working_hour.staff_id][:working_count] = 0
+        end
+
+      end
     end
 
     @shift_hash[:total_time][:all] = 0
@@ -39,7 +51,7 @@ class WorkingHoursController < AdminController
       @shift_hash[:total_time][:employee] += shift.fix_shift_pattern.working_hour if shift.staff.employment_status == "employee"
       @shift_hash[:total_time][:part_time] += shift.fix_shift_pattern.working_hour if shift.staff.employment_status == "part_time"
       if @shift_hash[:daily][shift.date].present?
-        @shift_hash[:daily][shift.date][shift.staff_id][:working_time] = shift.fix_shift_pattern.working_hour if shift.fix_shift_pattern.working_hour > 0
+        @shift_hash[:staff][shift.staff_id][:daily][shift.date][:working_time] = shift.fix_shift_pattern.working_hour if shift.fix_shift_pattern.working_hour > 0
         @shift_hash[:daily][shift.date][:total_time] += shift.fix_shift_pattern.working_hour
         if @shift_hash[:daily][shift.date][shift.staff.employment_status].present?
           @shift_hash[:daily][shift.date][shift.staff.employment_status][:total_time] += shift.fix_shift_pattern.working_hour
@@ -47,7 +59,7 @@ class WorkingHoursController < AdminController
           @shift_hash[:daily][shift.date][shift.staff.employment_status][:total_time] = shift.fix_shift_pattern.working_hour
         end
       else
-        @shift_hash[:daily][shift.date][shift.staff_id][:working_time] = shift.fix_shift_pattern.working_hour if shift.fix_shift_pattern.working_hour > 0
+        @shift_hash[:staff][shift.staff_id][:daily][shift.date][:working_time] = shift.fix_shift_pattern.working_hour if shift.fix_shift_pattern.working_hour > 0
         if @shift_hash[:daily][shift.date][shift.staff.employment_status].present?
           @shift_hash[:daily][shift.date][shift.staff.employment_status][:total_time] += shift.fix_shift_pattern.working_hour
         else
