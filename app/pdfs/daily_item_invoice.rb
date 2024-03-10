@@ -46,19 +46,19 @@ class DailyItemInvoice < Prawn::Document
 	end
 
 	def table_content(item_vendor,daily_items)
-		bounding_box([0,600], :width => 520) do
+		bounding_box([0,600], :width => 570) do
 			table line_item_rows(item_vendor,daily_items), cell_style: { size: 9 ,:overflow => :shrink_to_fit } do
 		        row(0).size = 9
 		        cells.padding = 4
 		        column(-4..-1).align = :right
 		        cells.border_width = 0.2
 		        self.header = true
-		        self.column_widths = [60,180,60,70,70,80]
+		        self.column_widths = [60,160,50,60,60,50,80]
     		end
   		end
   	end
 	def line_item_rows(item_vendor,daily_items)
-    	data = [["日付","項目","納品量","単価（税込）","送料（税込）","小計（税込）"]]
+    	data = [["日付","項目","納品量","単価","送料","調整","小計"]]
     	daily_items.each do |daily_item|
     		if daily_item.item.reduced_tax_flag == true
     			reduce_tax_item = "※"
@@ -66,9 +66,10 @@ class DailyItemInvoice < Prawn::Document
     			reduce_tax_item = ""
     		end
       		data << [daily_item.date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[daily_item.date.wday]})"),"#{daily_item.item.name} #{reduce_tax_item}",
-      		"#{daily_item.delivery_amount} #{daily_item.unit}",daily_item.tax_including_purchase_price.to_s(:delimited),daily_item.tax_including_delivery_fee.to_s(:delimited),daily_item.tax_including_subtotal_price.to_s(:delimited)]
+      		"#{daily_item.order_unit_amount} #{daily_item.order_unit}",daily_item.tax_including_purchase_price.to_s(:delimited),
+      		daily_item.tax_including_delivery_fee.to_s(:delimited),daily_item.adjustment_subtotal.to_s(:delimited),daily_item.tax_including_subtotal_price.to_s(:delimited)]
     	end
-    	data << ["","","","","計","#{daily_items.map{|di|di.tax_including_subtotal_price}.sum.to_s(:delimited)} 円"]
+    	data << ["","","","","","計","#{daily_items.map{|di|di.tax_including_subtotal_price}.sum.to_s(:delimited)} 円"]
     	data
   	end
   	def footer(item_vendor,reduced_tax_subject,normal_tax_subject)
