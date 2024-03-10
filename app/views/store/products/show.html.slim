@@ -7,11 +7,6 @@ table.table
       th 販売価格
       td = @product.sell_price
     tr
-      th POPをダウンロード
-      td
-        - @product.product_pops.each_with_index do |pp,i|
-          = link_to "POP＿#{i}", download_store_products_path(:file_name => pp.image,:key => pp.image.path, :type => 'pdf'),target:'_blank'
-    tr
       th 商品紹介
       td = text_url_to_link(simple_format(h(@product.description))).html_safe
     tr

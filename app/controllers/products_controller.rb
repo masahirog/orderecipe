@@ -146,7 +146,6 @@ class ProductsController < ApplicationController
   def edit
     @brands = Brand.where(group_id:current_user.group_id,unused_flag:false)
     @product = Product.includes(:product_menus,{menus: [:menu_materials,:materials]}).find(params[:id])
-    @product.product_pops.build
     @menus = @product.menus
     @product.product_menus.build  if @product.menus.length == 0
     @allergies = Product.allergy_seiri(@product)
@@ -330,7 +329,7 @@ class ProductsController < ApplicationController
                       :food_label_name,:food_label_content,:status,:remove_image, :image_cache,:display_image,:image_for_one_person,:serving_infomation,:carryover_able_flag,
                       :main_serving_plate_id,:sub_serving_plate_id,:container_id,:ozara_serving_infomation,:freezing_able_flag,:sky_split_information,:bejihan_only_flag,
                       :smaregi_code,:warm_flag,:tax_including_sell_price,
-                      :cost_price, product_menus_attributes: [:id, :product_id, :menu_id,:row_order, :_destroy],product_pops_attributes: [:id, :product_id,:image,:remove_image,:image_cache],
+                      :cost_price, product_menus_attributes: [:id, :product_id, :menu_id,:row_order, :_destroy],
                     product_parts_attributes: [:id,:product_id,:name,:amount,:unit, :_destroy,:memo,:container,:sticker_print_flag],
                     product_ozara_serving_informations_attributes: [:id, :product_id,:row_order,:content,:image, :_destroy],
                     product_bbs_attributes: [:id,:product_id,:image,:memo,:staff_id, :remove_image,:_destroy])

@@ -92,7 +92,7 @@
     thead style='position: sticky;top:0;background-color:white;z-index:3;'
       tr
         th 製造側写真
-        th ポップ
+        th aaaa
         th 1人前写真
         th 1人前盛り
     tbody
@@ -100,20 +100,7 @@
         td
           = link_to @product.image.to_s, "data-lightbox" => @product.image.to_s do
             = image_tag @product.image.to_s ,class:"text-center img-responsive center-block",style:'max-height:150px;'
-        td style='text-align:center;'
-          - if @product.product_pops.present?
-            object data="#{@product.product_pops[0].image.to_s}" type="application/pdf" style='height:100px;margin-bottom:5px;'
-            br
-            button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#popModal" 印刷する
-            #popModal.modal.fade tabindex="-1"
-              .modal-dialog
-                .modal-content
-                  .modal-header
-                  .modal-body
-                    iframe src="#{@product.product_pops[0].image}" width="100%" height='500px' style="border: none;"
-                  .modal-footer
-                    button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
-
+        td
         td
           = link_to @product.image_for_one_person.to_s, "data-lightbox" => @product.image_for_one_person.to_s do
             = image_tag @product.image_for_one_person.to_s ,class:"text-center img-responsive center-block",style:'max-height:150px;'

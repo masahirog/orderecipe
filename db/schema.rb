@@ -132,7 +132,7 @@ ActiveRecord::Schema.define(version: 2024_02_25_140619) do
     t.integer "tax_including_sell_price", default: 0, null: false
   end
 
-  create_table "daily_items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "daily_items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.date "date", null: false
     t.integer "purpose", null: false
     t.integer "item_id", null: false
@@ -641,13 +641,6 @@ ActiveRecord::Schema.define(version: 2024_02_25_140619) do
     t.string "memo"
     t.integer "container", default: 0, null: false
     t.boolean "sticker_print_flag", default: true, null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "product_pops", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "product_id", null: false
-    t.string "image"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -1172,7 +1165,7 @@ ActiveRecord::Schema.define(version: 2024_02_25_140619) do
     t.integer "user_id"
   end
 
-  create_table "working_hours", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "working_hours", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "store_id"
     t.bigint "staff_id"
     t.date "date"

@@ -8,10 +8,6 @@ class Product < ApplicationRecord
   has_many :product_bbs, dependent: :destroy
   accepts_nested_attributes_for :product_bbs, allow_destroy: true
 
-
-  has_many :product_pops, dependent: :destroy
-  accepts_nested_attributes_for :product_pops, allow_destroy: true
-
   has_many :product_menus,->{order("product_menus.row_order asc") }, dependent: :destroy
   has_many :menus, through: :product_menus
   accepts_nested_attributes_for :product_menus, allow_destroy: true
