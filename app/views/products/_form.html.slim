@@ -157,7 +157,7 @@
     thead
       tr
         th.col-md-6
-          span 盛り付け手順
+          span 大皿盛り付け手順
           = link_to_add_association '追加', f, :product_ozara_serving_informations,class:'btn btn-primary add_product_ozara_serving_information_fields',style:'margin-left:20px;',
           data: {association_insertion_node: '#product_ozara_serving_informations-add-point',association_insertion_method: 'append' }
         th
@@ -165,6 +165,19 @@
     tbody#product_ozara_serving_informations-add-point
       = f.fields_for :product_ozara_serving_informations do |posi|
         = render 'product_ozara_serving_information_fields', f:posi
+
+  table.table
+    thead
+      tr
+        th.col-md-6
+          span パック盛り付け手順
+          = link_to_add_association '追加', f, :product_pack_serving_informations,class:'btn btn-primary add_product_pack_serving_information_fields',style:'margin-left:20px;',
+          data: {association_insertion_node: '#product_pack_serving_informations-add-point',association_insertion_method: 'append' }
+        th
+        th
+    tbody#product_pack_serving_informations-add-point
+      = f.fields_for :product_pack_serving_informations do |posi|
+        = render 'product_pack_serving_information_fields', f:posi
 
 
   table.table

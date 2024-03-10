@@ -28,7 +28,7 @@ class Crew::StoreDailyMenusController < ApplicationController
     @store_daily_menu = StoreDailyMenu.find(params[:id])
     @store = @store_daily_menu.store
     @date = @store_daily_menu.start_time
-    @store_daily_menu_details = @store_daily_menu.store_daily_menu_details.order("row_order ASC").includes(product:[:product_ozara_serving_informations])
+    @store_daily_menu_details = @store_daily_menu.store_daily_menu_details.order("row_order ASC").includes(product:[:product_ozara_serving_informations,:product_pack_serving_informations])
     respond_to do |format|
       format.html
       format.csv do

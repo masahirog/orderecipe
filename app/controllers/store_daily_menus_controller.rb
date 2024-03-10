@@ -290,7 +290,7 @@ class StoreDailyMenusController < AdminController
     @store_daily_menu = StoreDailyMenu.find(params[:id])
     @date = @store_daily_menu.start_time
     @to_store_messages = ToStoreMessage.joins(:to_store_message_stores).where(:to_store_message_stores => {store_id:@store_daily_menu.store_id}).where(date:@date)
-    @store_daily_menu_details = @store_daily_menu.store_daily_menu_details.includes([:serving_plate,:store_daily_menu_detail_histories]).order("row_order ASC").includes(product:[:container,:product_ozara_serving_informations])
+    @store_daily_menu_details = @store_daily_menu.store_daily_menu_details.includes(:serving_plate,:store_daily_menu_detail_histories).order("row_order ASC").includes(product:[:container,:product_ozara_serving_informations,:product_pack_serving_informations])
     @remaining_count = @store_daily_menu_details.where(prepared_number:0).count
     respond_to do |format|
       format.js
@@ -305,7 +305,7 @@ class StoreDailyMenusController < AdminController
     @to_store_messages = ToStoreMessage.joins(:to_store_message_stores).where(:to_store_message_stores => {store_id:@store_daily_menu.store_id,subject_flag:true}).where(date:@date)
     @tommoroww = StoreDailyMenu.find_by(store_id:store_id,start_time:@date+1)
     @yesterday = StoreDailyMenu.find_by(store_id:store_id,start_time:@date-1)
-    @store_daily_menu_details = @store_daily_menu.store_daily_menu_details.order("row_order ASC").includes(product:[:container,:product_ozara_serving_informations])
+    @store_daily_menu_details = @store_daily_menu.store_daily_menu_details.order("row_order ASC").includes(product:[:container,:product_ozara_serving_informations,:product_pack_serving_informations])
     @after_store_daily_menus = StoreDailyMenu.where('start_time >= ?',@date).where(store_id:store_id).order(:start_time)
     pack_number = StoreDailyMenuDetail.where(store_daily_menu_id:params[:id]).joins(:product).group('products.container_id').sum(:number)
     @pack_used_amount = "<table class='table' style='text-align:left;'><thead><tr><th>容器名</th><th>個数</th></tr></thead><tbody>"

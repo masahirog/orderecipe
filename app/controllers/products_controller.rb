@@ -332,6 +332,7 @@ class ProductsController < ApplicationController
                       :cost_price, product_menus_attributes: [:id, :product_id, :menu_id,:row_order, :_destroy],
                     product_parts_attributes: [:id,:product_id,:name,:amount,:unit, :_destroy,:memo,:container,:sticker_print_flag],
                     product_ozara_serving_informations_attributes: [:id, :product_id,:row_order,:content,:image, :_destroy],
+                    product_pack_serving_informations_attributes: [:id, :product_id,:row_order,:content,:image, :_destroy],
                     product_bbs_attributes: [:id,:product_id,:image,:memo,:staff_id, :remove_image,:_destroy])
     end
 end
