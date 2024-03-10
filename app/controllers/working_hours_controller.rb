@@ -1,27 +1,49 @@
 class WorkingHoursController < AdminController
   before_action :set_working_hour, only: %i[ show edit update destroy ]
-  def result
-    today = Date.today
-    @group = Group.find(19)
-    @staffs = WorkingHour.where(group_id:@group.id).pluck(:name).uniq
-    if params[:from]
-      @from = params[:from]
-    else
-      @from = today - 30
+  def monthly
+    date = "#{params[:month]}-01".to_date
+    dates =(date.beginning_of_month..date.end_of_month).to_a
+    @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    @shift_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    @hash[:total_time] = 0
+    WorkingHour.includes(:staff).where(date:dates,store_id:39).each do |working_hour|
+      @hash[:total_time] += working_hour.working_time
+      if @hash[:daily][working_hour.date].present?
+        @hash[:daily][working_hour.date][:total_time] += working_hour.working_time
+      else
+        @hash[:daily][working_hour.date][:total_time] = working_hour.working_time
+      end
+      if @hash[:staff][working_hour.staff_id].present?
+        @hash[:staff][working_hour.staff_id][:total_time] += working_hour.working_time
+      else
+        @hash[:staff][working_hour.staff_id][:staff] = working_hour.staff
+        @hash[:staff][working_hour.staff_id][:total_time] = working_hour.working_time
+      end
     end
-    if params[:to]
-      @to = params[:to]
-    else
-      @to = today
+    @shift_hash[:total_time] = 0
+    Shift.where(date:dates,store_id:39).each do |shift|
+      @shift_hash[:total_time] += shift.fix_shift_pattern.working_hour
+      if @shift_hash[:daily][shift.date].present?
+        @shift_hash[:daily][shift.date][:total_time] += shift.fix_shift_pattern.working_hour
+      else
+        @shift_hash[:daily][shift.date][:total_time] = shift.fix_shift_pattern.working_hour
+      end
+      if @shift_hash[:staff][shift.staff_id].present?
+        @shift_hash[:staff][shift.staff_id][:total_time] += shift.fix_shift_pattern.working_hour
+      else
+        @shift_hash[:staff][shift.staff_id][:staff] = shift.staff
+        @shift_hash[:staff][shift.staff_id][:total_time] = shift.fix_shift_pattern.working_hour
+      end      
     end
-    @working_hours = WorkingHour.where(date:@from..@to).where(group_id:@group.id)
   end
+
   def staff_input
     if params[:date]
       @date = Date.parse(params[:date])
     else
       @date = Date.today
     end
+    @month = "#{@date.year}-#{sprintf("%02d",@date.month)}"
     @working_hours = WorkingHour.includes(:staff).where(date:@date)
     @shift_hash = {count:0,time:0}
     Shift.includes(:fix_shift_pattern).where(date:@date,store_id:39).each do |shift|

@@ -14,97 +14,114 @@
     div style='width:200px;float:left;margin-left: 20px;margin-top: 25px;'
       = submit_tag "送信" ,class:"btn btn-primary"
 
+.clearfix
+  .salesable_products.table-responsive style="overflow: scroll;overscroll-behavior-x: contain;height:100vh;padding:0;width:250px;float:left;"
+    table.table.layout-fixed style='border-collapse:separate;'
+      thead style="position: sticky;top:0;background-color:white;z-index:3;"
+        tr
+          th style='width:200px;' 名称
+          th 回数
+      tbody
+        - @products.each do |product|
+          tr
+            td.product_name_td
+              span.product_name style='cursor: pointer;' = product.name
+            td
+              = link_to product,target:"_blank"
+                i class="fa-solid fa-up-right-from-square" style='margin-left: 10px;'
 
-.col-md-12.table-responsive.schedule_table style="overflow: scroll;overscroll-behavior-x: contain;height:calc(100vh - 460px);padding:0;"
-  table.table.layout-fixed style='border-collapse:separate;'
-    colgroup
-        col class="col1"
-        - (1..28).to_a.each do |i|
-          col class="col2"
 
-    thead style="position: sticky;top:0;background-color:white;z-index:3;"
-      tr
-        th スケジュール一覧
+  .daily_menu_table style='width:calc(100% - 250px);float:left;'
+    .col-md-12.table-responsive.schedule_table style="overflow: scroll;overscroll-behavior-x: contain;height:calc(100vh - 360px);padding:0;"
+      table.table.layout-fixed style='border-collapse:separate;'
+        colgroup
+            col class="col1"
+            - (1..28).to_a.each do |i|
+              col class="col2"
 
-        - (1..28).to_a.each do |i|
-          th style='text-align: center;' = i
-    tbody
-      - daily_menu_id = ""
-      - @daily_menus.each do |daily_menu|
-        - date = daily_menu.start_time
-        - display = "none;"
-        - bc_color = "ffffff;"
-        - class_name = "daily_menu_#{daily_menu_id}_not_wed"
-        - if date.wday == 3
-          - display = "show;"
-          - bc_color = "#ffffe0;"
-          - daily_menu_id = daily_menu.id
-          - class_name = "daily_menu_#{daily_menu_id}"
-        tr class="#{class_name}" style="display:#{display}background-color:#{bc_color}"
-          td style="background-color:#{bc_color}text-align:center;"
-            = link_to date.strftime("%-y/%-m/%-d(#{%w(日 月 火 水 木 金 土)[date.wday]})"),daily_menu,target:"_blank"
+        thead style="position: sticky;top:0;background-color:white;z-index:3;"
+          tr
+            th スケジュール一覧
+
+            - (1..28).to_a.each do |i|
+              th style='text-align: center;' = i
+        tbody
+          - daily_menu_id = ""
+          - @daily_menus.each do |daily_menu|
+            - date = daily_menu.start_time
+            - display = "none;"
+            - bc_color = "ffffff;"
+            - class_name = "daily_menu_#{daily_menu_id}_not_wed"
             - if date.wday == 3
-              i class="fa-solid fa-angles-down show_btn pull-right" style='cursor: pointer;margin-left: 10px;margin-top:5px;'
-              i class="fa-solid fa-angles-up hide_btn pull-right" style='display:none;cursor: pointer;margin-top:5px;'
-          - (1..28).to_a.each do |i|
-            - if @daily_menu_details_hash[daily_menu.id][i].present?
-              - if @daily_menu_details_hash[daily_menu.id][i]['change_flag'] == true
-                - color = 'green'
-              - else
-                - color = 'black'
-              - if @daily_menu_details_hash[daily_menu.id][i]['cost_rate'].to_f > 30
-                - cost_color = 'red'
-              - else
-                - cost_color = 'black'
-              td.product_name_td style="cursor: pointer;font-size:0.9em;" 
-                - if @id_names[@daily_menu_details_hash[daily_menu.id][i]['product_id']].present?
-                  span.product_name style="color:#{color};" = @id_names[@daily_menu_details_hash[daily_menu.id][i]['product_id']].name
-                  span style="color:#{cost_color};" = "｜#{@daily_menu_details_hash[daily_menu.id][i]['sell_price']}｜#{@daily_menu_details_hash[daily_menu.id][i]['cost_rate']}%"
-                  - if @daily_menu_details_hash[daily_menu.id][i]['product_id'].present?
-                    = link_to product_path(id:@daily_menu_details_hash[daily_menu.id][i]['product_id']),target:"_blank"
-                      i class="fa-solid fa-up-right-from-square" style='cursor: pointer;margin-left: 10px;'
-            - else
-              td.product_name
-
-- if @pattern.present?
-  .col-md-12
-    = form_tag bulk_update_daily_menus_path do
-      .table-responsive style='overflow: scroll;overscroll-behavior-x: contain;height:300px;'
-        table.table.layout-fixed style='border-collapse:separate;'
-          colgroup
-              col class="col1"
+              - display = "show;"
+              - bc_color = "#ffffe0;"
+              - daily_menu_id = daily_menu.id
+              - class_name = "daily_menu_#{daily_menu_id}"
+            tr class="#{class_name}" style="display:#{display}background-color:#{bc_color}"
+              td style="background-color:#{bc_color}text-align:center;"
+                = link_to date.strftime("%-y/%-m/%-d(#{%w(日 月 火 水 木 金 土)[date.wday]})"),daily_menu,target:"_blank"
+                - if date.wday == 3
+                  i class="fa-solid fa-angles-down show_btn pull-right" style='cursor: pointer;margin-left: 10px;margin-top:5px;'
+                  i class="fa-solid fa-angles-up hide_btn pull-right" style='display:none;cursor: pointer;margin-top:5px;'
               - (1..28).to_a.each do |i|
-                col class="col2"
+                - if @daily_menu_details_hash[daily_menu.id][i].present?
+                  - if @daily_menu_details_hash[daily_menu.id][i]['change_flag'] == true
+                    - color = 'green'
+                  - else
+                    - color = 'black'
+                  - if @daily_menu_details_hash[daily_menu.id][i]['cost_rate'].to_f > 30
+                    - cost_color = 'red'
+                  - else
+                    - cost_color = 'black'
+                  td.product_name_td style="cursor: pointer;font-size:0.9em;" 
+                    - if @id_names[@daily_menu_details_hash[daily_menu.id][i]['product_id']].present?
+                      span.product_name style="color:#{color};" = @id_names[@daily_menu_details_hash[daily_menu.id][i]['product_id']].name
+                      span style="color:#{cost_color};" = "｜#{@daily_menu_details_hash[daily_menu.id][i]['sell_price']}｜#{@daily_menu_details_hash[daily_menu.id][i]['cost_rate']}%"
+                      - if @daily_menu_details_hash[daily_menu.id][i]['product_id'].present?
+                        = link_to product_path(id:@daily_menu_details_hash[daily_menu.id][i]['product_id']),target:"_blank"
+                          i class="fa-solid fa-up-right-from-square" style='cursor: pointer;margin-left: 10px;'
+                - else
+                  td.product_name
 
-          thead style="position: sticky;top:0;background-color:white;z-index:3;"
-            tr
-              th 更新欄
-              - (1..28).to_a.each do |i|
-                th class="#{i}" style='text-align: center;'
-                  = i
-                  i class="fa-solid fa-clone syn_top_product" style="margin-left: 10px;"
-                  input.all_check type="checkbox" style="margin-left: 10px;"
-
-          tbody
-            - @create_daily_menus.each_with_index do |daily_menu,index|
-              - date = daily_menu.start_time
-              tr class="tr_#{index} create_schedule_tr"
-                td style="background-color:white;z-index:4;" = link_to date.strftime("%-Y/%-m/%-d(#{%w(日 月 火 水 木 金 土)[date.wday]})"),daily_menu,target:"_blank"
+    - if @pattern.present?
+      
+      = form_tag bulk_update_daily_menus_path do
+        .col-md-12.table-responsive style='overflow: scroll;overscroll-behavior-x: contain;height:300px;padding:0;'
+          table.table.layout-fixed style='border-collapse:separate;'
+            colgroup
+                col class="col1"
                 - (1..28).to_a.each do |i|
-                  td class="td_#{i}" style="background-color:white;"
-                    = select_tag "daily_menus[#{daily_menu.id}]paper_menu_numbers[#{i}][product_id]", options_from_collection_for_select(@products, :id, :name,@create_menu_details_hash[daily_menu.id][i]['product_id']),include_blank:true, class: "form-control input_select_product"
-                    br
-                    .clearfix style='margin-top: 3px;'
-                      = number_field_tag "daily_menus[#{daily_menu.id}]paper_menu_numbers[#{i}][sell_price]",@create_menu_details_hash[daily_menu.id][i]["sell_price"], class: "sell_price",style:'width:70px;float:left;'
-                      - if @create_menu_details_hash[daily_menu.id][i]["change_flag"].present?
-                        = check_box_tag "daily_menus[#{daily_menu.id}]paper_menu_numbers[#{i}][change_flag]",true,@create_menu_details_hash[daily_menu.id][i]["change_flag"], class: "change_flag_check",style:'width:70px;height:15px;float:left;margin:5px 0;'
-                      - else
-                        = check_box_tag "daily_menus[#{daily_menu.id}]paper_menu_numbers[#{i}][change_flag]",true,false, class: "change_flag_check",style:'width:70px;height:15px;float:left;margin:5px 0;'
-        = hidden_field_tag :from ,params[:from]
-        = hidden_field_tag :to,params[:to]
-        = hidden_field_tag :pattern,params[:pattern]
-        = hidden_field_tag :create_from,params[:create_from]
-      = submit_tag "更新する",class:"btn btn-success"
+                  col class="col2"
+
+            thead style="position: sticky;top:0;background-color:white;z-index:3;"
+              tr
+                th 更新欄
+                - (1..28).to_a.each do |i|
+                  th class="#{i}" style='text-align: center;'
+                    = i
+                    i class="fa-solid fa-clone syn_top_product" style="margin-left: 10px;"
+                    input.all_check type="checkbox" style="margin-left: 10px;"
+
+            tbody
+              - @create_daily_menus.each_with_index do |daily_menu,index|
+                - date = daily_menu.start_time
+                tr class="tr_#{index} create_schedule_tr"
+                  td style="background-color:white;z-index:4;" = link_to date.strftime("%-Y/%-m/%-d(#{%w(日 月 火 水 木 金 土)[date.wday]})"),daily_menu,target:"_blank"
+                  - (1..28).to_a.each do |i|
+                    td class="td_#{i}" style="background-color:white;"
+                      = select_tag "daily_menus[#{daily_menu.id}]paper_menu_numbers[#{i}][product_id]", options_from_collection_for_select(@products, :id, :name,@create_menu_details_hash[daily_menu.id][i]['product_id']),include_blank:true, class: "form-control input_select_product"
+                      br
+                      .clearfix style='margin-top: 3px;'
+                        = number_field_tag "daily_menus[#{daily_menu.id}]paper_menu_numbers[#{i}][sell_price]",@create_menu_details_hash[daily_menu.id][i]["sell_price"], class: "sell_price",style:'width:70px;float:left;'
+                        - if @create_menu_details_hash[daily_menu.id][i]["change_flag"].present?
+                          = check_box_tag "daily_menus[#{daily_menu.id}]paper_menu_numbers[#{i}][change_flag]",true,@create_menu_details_hash[daily_menu.id][i]["change_flag"], class: "change_flag_check",style:'width:70px;height:15px;float:left;margin:5px 0;'
+                        - else
+                          = check_box_tag "daily_menus[#{daily_menu.id}]paper_menu_numbers[#{i}][change_flag]",true,false, class: "change_flag_check",style:'width:70px;height:15px;float:left;margin:5px 0;'
+          = hidden_field_tag :from ,params[:from]
+          = hidden_field_tag :to,params[:to]
+          = hidden_field_tag :pattern,params[:pattern]
+          = hidden_field_tag :create_from,params[:create_from]
+        = submit_tag "更新する",class:"btn btn-success"
 
 javascript:
   var obj = document.getElementsByClassName("schedule_table")[0];
@@ -154,7 +171,6 @@ javascript:
       async: false
     })
     .done(function(data){
-      console.log(tr);
       $("."+tr).children("."+td).find(".sell_price").val(data.sell_price);
     });
   });

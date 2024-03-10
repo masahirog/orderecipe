@@ -84,6 +84,7 @@ Rails.application.routes.draw do
   resources :working_hours do
     collection do
       get :result
+      get :monthly
       post :create_work_times
       get :staff_input
       post :upload_data

@@ -5,8 +5,11 @@
       = link_to @date.strftime("%-Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@date.wday]})"),staff_input_working_hours_path(date:@date)
       = link_to (@date+1).strftime("　＞%-m/%-d (#{%w(日 月 火 水 木 金 土)[(@date+1).wday]})"),staff_input_working_hours_path(date:@date+1)
 
-  = link_to '結果',result_working_hours_path,class:'btn btn-sm btn-primary',style:'float:right;margin-left:20px;'
-  = link_to 'スタッフ更新', create_work_times_working_hours_path(date:@date), method: :post,class:'btn btn-sm btn-primary',style:'float:right;',data:{confirm:'スタッフの枠を作成しますか？'}
+  = link_to 'スタッフ更新', create_work_times_working_hours_path(date:@date), method: :post,class:'btn btn-default',style:'float:right;',data:{confirm:'スタッフの枠を作成しますか？'}
+  = form_tag monthly_working_hours_path, :method => 'get' do
+    = submit_tag "月次結果" ,class:"btn btn-primary",style:"float:right;margin-right:10px;"
+    = month_field_tag :month,@month,class:"form-control",style:'width:200px;float:right;margin-right:10px;'
+
 .table-responsive style='height: 80vh;overflow: scroll;'
   table.table.layout-fixed.table-striped style='border-collapse:separate;'
     thead style='position: sticky;top:0;background-color:white;z-index:3;'

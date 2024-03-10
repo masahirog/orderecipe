@@ -1,0 +1,12 @@
+table.table
+	thead
+		tr
+			td 日付
+			td シフト時間
+			td 勤務時間
+	tbody
+		- @hash[:daily].each do |data|
+			tr
+				td = link_to data[0],staff_input_working_hours_path(date:data[0])
+				td = @shift_hash[:daily][data[0]][:total_time]
+				td = data[1][:total_time]
