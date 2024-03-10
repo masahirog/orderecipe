@@ -1,12 +1,128 @@
-table.table
-	thead
-		tr
-			td 日付
-			td シフト時間
-			td 勤務時間
-	tbody
-		- @hash[:daily].each do |data|
+.table-responsive style='overflow: scroll;overscroll-behavior-x: contain;'
+  	table.table.layout-fixed style='border-collapse:separate;'
+  	    colgroup
+			col class="col100"
+			col class="col100"
+			col class="col100"
+			col class="col100"
+			col class="col100"
+			col class="col100"
+			col class="col100"
+			col class="col100"
+			col class="col100"
+		    col class="col100"
+			- @shift_hash[:staff]['employee'].each do |data|
+				col class="col100"
+			- @shift_hash[:staff]['part_time'].each do |data|
+				col class="col100"
+
+		thead style='position: sticky;top:0;background-color:white;z-index:3;'
 			tr
-				td = link_to data[0],staff_input_working_hours_path(date:data[0])
-				td = @shift_hash[:daily][data[0]][:total_time]
-				td = data[1][:total_time]
+				th 日付
+				th colspan=3 合計
+				th colspan=3 社員
+				th colspan=3 パート
+				th colspan="#{@shift_hash[:staff]['employee'].count}" 社員
+				th colspan="#{@shift_hash[:staff]['part_time'].count}" パートスタッフ
+			tr
+				th 
+				th シフト
+				th 現実績
+				th 着地
+				th シフト
+				th 現実績
+				th 着地
+				th シフト
+				th 現実績
+				th 着地
+				- @shift_hash[:staff]['employee'].each do |data|
+					th = data[1][:staff].name
+				- @shift_hash[:staff]['part_time'].each do |data|
+					th = data[1][:staff].name
+
+			tr
+				td
+				td = @shift_hash[:total_time][:all].round.to_s(:delimited)
+				td = @hash[:total_time][:all].round.to_s(:delimited)
+				td
+					span = (@hash[:total_time][:all]/@hash[:daily].length*@dates.length).round.to_s(:delimited)
+					span = "｜#{(((@hash[:total_time][:all]/@hash[:daily].length*@dates.length)/@shift_hash[:total_time][:all])*100).round}%"
+				td = @shift_hash[:total_time][:employee].round.to_s(:delimited)
+				td = @hash[:total_time][:employee].round.to_s(:delimited)
+				td
+					span = (@hash[:total_time][:employee]/@hash[:daily].length*@dates.length).round.to_s(:delimited)
+					span = "｜#{(((@hash[:total_time][:employee]/@hash[:daily].length*@dates.length)/@shift_hash[:total_time][:employee])*100).round}%"
+				td = @shift_hash[:total_time][:part_time].round.to_s(:delimited)
+				td = @hash[:total_time][:part_time].round.to_s(:delimited)
+				td
+					span = (@hash[:total_time][:part_time]/@hash[:daily].length*@dates.length).round.to_s(:delimited)
+					span = "｜#{(((@hash[:total_time][:part_time]/@hash[:daily].length*@dates.length)/@shift_hash[:total_time][:part_time])*100).round}%"
+
+				- @shift_hash[:staff]['employee'].each do |data|
+					td
+				- @shift_hash[:staff]['part_time'].each do |data|
+					td
+			tr
+				th 
+				th シフト
+				th 着地
+				th 差分
+				th シフト
+				th 実績
+				th 差分
+				th シフト
+				th 実績
+				th 差分
+				- @shift_hash[:staff]['employee'].each do |data|
+					th
+				- @shift_hash[:staff]['part_time'].each do |data|
+					th
+
+		tbody
+			- @dates.each do |date|
+				tr
+					td = link_to date,staff_input_working_hours_path(date:date)
+					td = @shift_hash[:daily][date][:total_time].round
+					td = @hash[:daily][date][:total_time].round(1) if @hash[:daily][date].present?
+					td = (@shift_hash[:daily][date][:total_time] - @hash[:daily][date][:total_time]).round(1) if @hash[:daily][date].present?
+					td = @shift_hash[:daily][date]['employee'][:total_time].round
+					td = @hash[:daily][date]["employee"][:total_time].round(1) if @hash[:daily][date].present?
+					td = (@shift_hash[:daily][date]['employee'][:total_time] - @hash[:daily][date]["employee"][:total_time]).round(1) if @hash[:daily][date].present?
+					td = @shift_hash[:daily][date]['part_time'][:total_time].round
+					td = @hash[:daily][date]["part_time"][:total_time].round(1) if @hash[:daily][date].present?
+					td = (@shift_hash[:daily][date]['part_time'][:total_time] - @hash[:daily][date]["part_time"][:total_time]).round(1) if @hash[:daily][date].present?
+					- @shift_hash[:staff]['employee'].each do |data|
+						td
+							- if @shift_hash[:daily][date][data[0]].present?
+								span = @shift_hash[:daily][date][data[0]][:working_time] 
+							- else
+								span 　 
+							span = "｜"
+							span = @hash[:daily][date][data[0]][:working_time].round(1) if @hash[:daily][date][data[0]].present?
+					- @shift_hash[:staff]['part_time'].each do |data|
+						td 
+							- if @shift_hash[:daily][date][data[0]].present?
+								span = @shift_hash[:daily][date][data[0]][:working_time] 
+							- else
+								span 　 
+							span = "｜"
+							span = @hash[:daily][date][data[0]][:working_time].round(1) if @hash[:daily][date][data[0]].present?
+
+css:
+  .table-responsive th {
+    white-space: nowrap;
+  }
+  table.layout-fixed {
+    table-layout: fixed;
+    border-collspace:separate;
+  }
+  .table th{
+    position: sticky;
+    top: 0;
+    z-index:2;
+    background-color:white;
+  }
+  .col100{
+  	width:100px;
+  }
+  
