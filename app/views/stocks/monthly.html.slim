@@ -13,6 +13,7 @@ table.table
       th.text-right 食材
       th.text-right 包材
       th.text-right その他
+      th.text-right 物販品
   tbody
     - @monthly_stocks.each do |ms|
       tr
@@ -23,10 +24,12 @@ table.table
         td.text-right
           / = ms.item_number
         td.text-right
-          = "#{ms.total_amount.to_s(:delimited)} 円"
+          = ms.total_amount.to_s(:delimited)
         td.text-right
-          = link_to "#{ms.foods_amount.to_s(:delimited)} 円",inventory_stocks_path(to:ms.date,order:"金額",categories:{meat:true,fish:true,vege:true,other_vege:true,other_food:true,other_food:true,rice:true},store_id:ms.store_id)
+          = link_to ms.foods_amount.to_s(:delimited),inventory_stocks_path(to:ms.date,order:"金額",categories:{meat:true,fish:true,vege:true,other_vege:true,other_food:true,other_food:true,rice:true},store_id:ms.store_id),target:"_blank"
         td.text-right
-          = link_to "#{ms.equipments_amount.to_s(:delimited)} 円",inventory_stocks_path(to:ms.date,order:"金額",categories:{packed:true},store_id:ms.store_id)
+          = link_to ms.equipments_amount.to_s(:delimited),inventory_stocks_path(to:ms.date,order:"金額",categories:{packed:true},store_id:ms.store_id),target:"_blank"
         td.text-right
-          = link_to "#{ms.expendables_amount.to_s(:delimited)} 円",inventory_stocks_path(to:ms.date,order:"金額",categories:{consumable_item:true,cooking_item:true},store_id:ms.store_id)
+          = link_to ms.expendables_amount.to_s(:delimited),inventory_stocks_path(to:ms.date,order:"金額",categories:{consumable_item:true,cooking_item:true},store_id:ms.store_id),target:"_blank"
+        td.text-right
+          = link_to @store_item_stocks[ms.store_id].to_i.to_s(:delimited),stocks_items_path(date:ms.date,store_id:ms.store_id),target:"_blank"

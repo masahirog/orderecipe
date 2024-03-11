@@ -32,4 +32,4 @@ table.table
         td
           = link_to "#{monthly_stock.expendables_amount.to_s(:delimited)} 円",inventory_stocks_path(to:monthly_stock.date,order:"金額",categories:{consumable_item:true,cooking_item:true},store_id:monthly_stock.store_id)
         td = link_to '開始', stocks_items_path(date:monthly_stock.date,store_id:@store.id),class:"btn btn-primary btn-sm"
-        td
+        td = @store_item_stocks[monthly_stock.date].to_i.to_s(:delimited)

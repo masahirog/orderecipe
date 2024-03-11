@@ -120,7 +120,7 @@ class StocksController < AdminController
     @equipments_amount = @monthly_stocks.group(:date,:store_id).sum(:equipments_amount)
     @expendables_amount = @monthly_stocks.group(:date,:store_id).sum(:expendables_amount)
     @item_number = @monthly_stocks.group(:date,:store_id).sum(:item_number)
-
+    @store_item_stocks = ItemStoreStock.where(store_id:params[:store_id]).group(:date).sum(:stock_price)
   end
   def index
     @stores = current_user.group.stores
@@ -133,7 +133,8 @@ class StocksController < AdminController
     # @monthly_stocks = MonthlyStock.order('date DESC')
   end
   def monthly
-    @monthly_stocks = MonthlyStock.where(date:params[:date],store_id:current_user.group.stores.ids)
+    @monthly_stocks = MonthlyStock.includes(:store).where(date:params[:date],store_id:current_user.group.stores.ids)
+    @store_item_stocks = ItemStoreStock.where(date:params[:date]).group(:store_id).sum(:stock_price)
   end
   # def new
   #   @stock = Stock.new
