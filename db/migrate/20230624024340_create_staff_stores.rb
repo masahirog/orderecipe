@@ -3,8 +3,8 @@ class CreateStaffStores < ActiveRecord::Migration[6.0]
     create_table :staff_stores do |t|
     	t.integer :staff_id
     	t.integer :store_id
-      t.boolean :affiliation_flag,null:false,default:false
     	t.integer :transportation_expenses
+      t.index [:staff_id,:store_id], unique: true
       t.timestamps
     end
   end

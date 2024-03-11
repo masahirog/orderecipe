@@ -1,0 +1,5 @@
+li.list-group-item.col-md-3.nested-fields
+  .col-md-9
+    = f.collection_select :store_id,@stores, :id, :name, {include_blank:true}, { class: "form-control"}
+  .col-md-3
+    = link_to_remove_association '削除', f, class: 'btn btn-danger btn-sm'

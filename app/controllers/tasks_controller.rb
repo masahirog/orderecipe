@@ -19,7 +19,7 @@ class TasksController < ApplicationController
       @staffs = Staff.where(group_id:current_user.group_id,employment_status:1,status:0)
     elsif params[:store_id].present?
       @tasks = Task.joins(:task_stores).where(:task_stores => {store_id:params[:store_id],subject_flag:true}).includes([:task_comments,:task_images,task_stores:[:store]]).rank(:row_order)
-      @staffs = Staff.joins(:staff_stores).where(:staff_stores => {store_id:params[:store_id],affiliation_flag:true}).where(employment_status:1,status:0)
+      @staffs = Staff.joins(:staff_stores).where(:staff_stores => {store_id:params[:store_id]}).where(employment_status:1,status:0)
       # @staffs = Staff.where(store_id:params[:store_id]).where(employment_status:1,status:0)
     else
       @staffs = Staff.where(group_id:current_user.group_id,employment_status:1,status:0)

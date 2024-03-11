@@ -633,7 +633,7 @@ ActiveRecord::Schema.define(version: 2024_03_10_102126) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "product_pack_serving_informations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "product_pack_serving_informations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.integer "product_id", null: false
     t.integer "row_order", default: 0, null: false
     t.string "image"
@@ -901,13 +901,13 @@ ActiveRecord::Schema.define(version: 2024_03_10_102126) do
     t.index ["kaiin_id"], name: "index_smaregi_trading_histories_on_kaiin_id"
   end
 
-  create_table "staff_stores", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+  create_table "staff_stores", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "staff_id"
     t.integer "store_id"
-    t.boolean "affiliation_flag", default: false, null: false
     t.integer "transportation_expenses"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["staff_id", "store_id"], name: "index_staff_stores_on_staff_id_and_store_id", unique: true
   end
 
   create_table "staffs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|

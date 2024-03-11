@@ -35,12 +35,11 @@
 
   .form-group
     label 所属店舗
-    ul.list-group.clearfix
+    ul.list-group.clearfix#ss-association-insertion-point
       = f.fields_for :staff_stores do |ss|
-        li.list-group-item style='float:left;'
-          = ss.hidden_field :store_id
-          = ss.check_box :affiliation_flag
-          = ss.object.store.name
+        = render 'staff_store_fields',{f: ss}
+
+    = link_to_add_association '追加', f, :staff_stores,class:'btn btn-sm btn-primary',data: {association_insertion_node: '#ss-association-insertion-point',association_insertion_method: 'append' }
 
 
-  .actions = f.submit "保存する",class:'btn btn-primary'
+  .actions.text-center = f.submit "保存する",class:'btn btn-success'

@@ -45,16 +45,10 @@ class StaffsController < ApplicationController
     else
       @staff = Staff.new(group_id:@group.id)
     end
-    @stores.each do |store|
-      @staff.staff_stores.build(store_id:store.id)
-    end
-
   end
 
   def edit
-    Store.where(group_id:current_user.group_id).where.not(id:@staff.staff_stores.map{|ss|ss.store_id}).each do |store|
-      @staff.staff_stores.build(store_id:store.id)
-    end
+    @stores = current_user.group.stores
   end
 
   def create
@@ -97,6 +91,6 @@ class StaffsController < ApplicationController
 
     def staff_params
       params.require(:staff).permit(:store_id,:name,:memo,:employment_status,:row,:status,:staff_code,:smaregi_hanbaiin_id,:phone_number,:group_id,
-        staff_stores_attributes:[:id,:store_id,:staff_id,:affiliation_flag,:transportation_expenses,:_destroy])
+        staff_stores_attributes:[:id,:store_id,:staff_id,:transportation_expenses,:_destroy])
     end
 end
