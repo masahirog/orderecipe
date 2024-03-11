@@ -158,8 +158,12 @@
                   span = ")"
     tbody
       - @staffs.each do |staff|
+        - if staff.status == "retirement"
+          - bg = "silver"
+        - else
+          - bg = "white"
         tr.fix_shift_tr class="fix_shift_tr_#{staff.id}"
-          td.staff_name style='line-height:0.9em;color:black;text-align:center;vertical-align:middle;z-index:3;white-space: normal;'
+          td.staff_name style="line-height:0.9em;color:black;text-align:center;vertical-align:middle;z-index:3;white-space: normal;background-color: #{bg};"
             - if current_user.id == 74
               = link_to staff.name,edit_staff_path(staff)
             - else
