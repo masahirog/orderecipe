@@ -51,7 +51,8 @@ class DefaultShiftsController < AdminController
         params[:stores][store.id.to_s] = true
       end
     end
-    @fix_shift_patterns = FixShiftPattern.where(group_id:@group.id)
+    fix_shift_pattern_ids =  FixShiftPatternStore.where(store_id:39).map{|fsps|fsps.fix_shift_pattern_id}
+    @fix_shift_patterns = FixShiftPattern.where(id:fix_shift_pattern_ids,unused_flag:false)
     
     staff_ids = @checked_stores.map{|store|store.staffs.ids}.flatten.uniq
     @staffs = Staff.where(status:0,id:staff_ids).order(row:'asc')
