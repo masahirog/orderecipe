@@ -148,14 +148,14 @@
               td colspan=2 class="#{date.day}_store_#{store.id}_sf_#{ssf.shift_frame.id} fix_shift_amount" style="border-right: 1px silver solid;font-size:1.1.6em;padding:4px;background-color:#{bg_color};"
                 - if @hash[store.id][date][ssf.shift_frame.id].present?
                   span.fix_shift_count = "#{@hash[store.id][date][ssf.shift_frame.id]['working_number']}"
-                  / span = " ("
-                  / span.working_hour = "#{ActiveSupport::NumberHelper.number_to_rounded(@hash[store.id][date][sf.id]['working_hour'], strip_insignificant_zeros: true, :delimiter => ',')}"
-                  / span = ")"
+                  span = " ("
+                  span.working_hour = "#{ActiveSupport::NumberHelper.number_to_rounded(@hash[store.id][date][ssf.shift_frame_id]['working_hour'], strip_insignificant_zeros: true, :delimiter => ',')}"
+                  span = ")"
                 - else
                   span.fix_shift_count = ""
-                  / span = " ("
-                  / span.working_hour = ""
-                  / span = ")"
+                  span = " ("
+                  span.working_hour = ""
+                  span = ")"
     tbody
       - @staffs.each do |staff|
         tr.fix_shift_tr class="fix_shift_tr_#{staff.id}"

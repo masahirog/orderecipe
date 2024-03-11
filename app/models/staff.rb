@@ -1,8 +1,8 @@
 class Staff < ApplicationRecord
 	belongs_to :group
   has_many :staff_stores,dependent: :destroy
-  accepts_nested_attributes_for :staff_stores,allow_destroy:true,:reject_if => :reject_store_blank
   has_many :stores, through: :staff_stores
+  accepts_nested_attributes_for :staff_stores,:reject_if => :reject_store_blank,allow_destroy:true
   has_many :shifts
   has_many :default_shifts
   has_many :task_staffs

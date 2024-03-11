@@ -110,7 +110,8 @@ table.table.table-list
       th PC
       th 名称
       th 売価
-      th 工程
+      th 大皿工程
+      th パック工程
       th 1人前
       th style='width:100px;' 見本皿
       th 温度
@@ -134,10 +135,10 @@ table.table.table-list
           = link_to sdmd.product.name,product_path(sdmd.product)
         td
           = "#{sdmd.product.sell_price}円"
-        td
+        td.text-center
           - if sdmd.product.product_ozara_serving_informations.present?
-            button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#ozara_serving_#{sdmd.product_id}" style='' 工程
-            .modal.fade tabindex="-1" ID="ozara_serving_#{sdmd.product_id}"
+            button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#ozara_serving_#{sdmd.product_id}" style='' 大皿
+            .modal.fade.text-left tabindex="-1" ID="ozara_serving_#{sdmd.product_id}"
               .modal-dialog style='width:1000px;'
                 .modal-content
                   .modal-header
@@ -149,15 +150,38 @@ table.table.table-list
                           th.col-md-6 工程
                           th 画像
                       tbody
-                        - sdmd.product.product_ozara_serving_informations.each do |posi|
+                        - sdmd.product.product_pack_serving_informations.each do |posi|
                           tr
                             td
                               = text_url_to_link(simple_format(h(posi.content))).html_safe
                             td
                               = image_tag posi.image.to_s,class:"img-responsive",style:'max-height:350px;'
-
                   .modal-footer
                     button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
+        td.text-center
+          - if sdmd.product.product_pack_serving_informations.present?
+            button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#pack_serving_#{sdmd.product_id}" style='' パック
+            .modal.fade.text-left tabindex="-1" ID="pack_serving_#{sdmd.product_id}"
+              .modal-dialog style='width:1000px;'
+                .modal-content
+                  .modal-header
+                    h4.modal-title 仕上げ工程
+                  .modal-body
+                    table.table
+                      thead
+                        tr
+                          th.col-md-6 工程
+                          th 画像
+                      tbody
+                        - sdmd.product.product_pack_serving_informations.each do |posi|
+                          tr
+                            td
+                              = text_url_to_link(simple_format(h(posi.content))).html_safe
+                            td
+                              = image_tag posi.image.to_s,class:"img-responsive",style:'max-height:350px;'
+                  .modal-footer
+                    button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
+
 
         td
           - if sdmd.product.serving_infomation.present?
