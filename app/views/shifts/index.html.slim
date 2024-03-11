@@ -174,8 +174,10 @@
             = staff.stores.map{|store|store.short_name}.join(",")
           td.fixed_third_thtd.mobile_view_hide style='font-size:0.8em;border-right: 1px silver solid;' = text_url_to_link(simple_format(h(staff.memo), {}, wrapper_tag: "span")).html_safe
           - @one_month.each do |date|
+            - color = "white"
             - if @shifts[[staff.id,date]].present?
-              td class="td_shinsei_#{@shifts[[staff.id,date]].id}"
+              - color = "#e6e6fa" if @shifts[[staff.id,date]].fixed_flag == false
+              td class="td_shinsei_#{@shifts[[staff.id,date]].id}" style="background-color:#{color};"
                 span.shinsei_shift
                   = @shifts[[staff.id,date]].shift_pattern.pattern_name if @shifts[[staff.id,date]].present? && @shifts[[staff.id,date]].shift_pattern_id.present?
                 - if @shifts[[staff.id,date]].present? && @shifts[[staff.id,date]].memo.present?
@@ -183,11 +185,11 @@
             - else
               td
             - if @shifts[[staff.id,date]].present?
-              td class="td_shift_form td_#{@shifts[[staff.id,date]].id} clearfix" style='padding:3px;border-right: 1px silver solid;'
+              td class="td_shift_form td_#{@shifts[[staff.id,date]].id} clearfix" style="padding:3px;border-right: 1px silver solid;background-color:#{color};"
                 input.staff_id value="#{staff.id}" style='display:none;'
                 - if @shifts[[staff.id,date]].fix_shift_pattern_id.present?
                   input.working_hour style='display:none;' value="#{@shifts[[staff.id,date]].fix_shift_pattern.working_hour}"
-                  .fix_shift style="font-size:12px;background-color:#{@shifts[[staff.id,date]].fix_shift_pattern.bg_color_code};color:#{@shifts[[staff.id,date]].fix_shift_pattern.color_code};"
+                  .fix_shift style="font-size:12px;color:#{@shifts[[staff.id,date]].fix_shift_pattern.color_code};"
                     span.fix_store_name
                       - if @shifts[[staff.id,date]].store_id.present?
                         = @shifts[[staff.id,date]].store.short_name
