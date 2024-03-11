@@ -263,18 +263,19 @@ class ShiftsController < ApplicationController
       end
     end
     staff_ids = @checked_stores.map{|store|store.staffs.ids}.flatten.uniq
+    working_staff_all = Staff.joins(:staff_stores).where(:staff_stores => {store_id:@stores.ids}).where(status:0).ids
     @one_month = [*@date.beginning_of_month..@date.end_of_month]
-    shifts = Shift.includes(:store,:shift_pattern,fix_shift_pattern:[:shift_frames]).where(staff_id:staff_ids,date:@one_month)
+    shifts = Shift.includes(:store,:shift_pattern,fix_shift_pattern:[:shift_frames]).where(store_id:@stores.ids,date:@one_month)
     @shifts = shifts.map{|shift|[[shift.staff_id,shift.date],shift]}.to_h
     @staff_shinsei_count = shifts.where.not(shift_pattern_id: nil).group(:staff_id).count
     @staff_syukkin_count = shifts.joins(:fix_shift_pattern).where.not(:fix_shift_patterns=>{working_hour:0}).where.not(fix_shift_pattern_id: nil).group(:staff_id).count
     @date_store_working_count = shifts.joins(:fix_shift_pattern).where.not(:fix_shift_patterns=>{working_hour:0}).where.not(fix_shift_pattern_id: nil).group(:date,:store_id).count
     @staff_working_hour = shifts.joins(:fix_shift_pattern).where.not(:fix_shift_patterns=>{working_hour:0}).where.not(fix_shift_pattern_id: nil).group(:staff_id).sum("fix_shift_patterns.working_hour")
     @date_store_working_hour = shifts.joins(:fix_shift_pattern).where.not(:fix_shift_patterns=>{working_hour:0}).where.not(fix_shift_pattern_id: nil).group(:date,:store_id).sum("fix_shift_patterns.working_hour")
+    
     shift_staff_ids = shifts.map{|shift|shift.staff_id}.uniq
-    add_ids = staff_ids - shift_staff_ids
-    staff_ids =shift_staff_ids + add_ids
-    @staffs = Staff.includes(:stores,staff_stores:[:store]).where(id:staff_ids,status:0).order(row:'asc')
+    staff_ids = (working_staff_all + shift_staff_ids).uniq
+    @staffs = Staff.includes(:stores,staff_stores:[:store]).where(id:staff_ids).order(row:'asc')
     @select_option_stores = Store.joins(:staff_stores).where(:staff_stores => {staff_id:@staffs.ids}).uniq
     shift_frame_ids = ShiftFrame.joins(:store_shift_frames).where(:store_shift_frames => {id:@stores.ids}).ids.uniq
     # fix_shift_patterns = FixShiftPattern.where(group_id:@group.id).order(:pattern_name)
