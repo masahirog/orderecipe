@@ -149,8 +149,8 @@ class ShiftsController < ApplicationController
       end
     end
 
-    staff_ids = @stores.map{|store|store.staffs.ids}.flatten.uniq
-
+    # staff_ids = @stores.map{|store|store.staffs.ids}.flatten.uniq
+    staff_ids = Staff.joins(:staff_stores).where(:staff_stores => {store_id:@stores.ids}).where(status:0).ids
     hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     Shift.where(date:@one_month,staff_id:staff_ids).each do |shift|
       if hash[shift.date].present?
@@ -251,6 +251,7 @@ class ShiftsController < ApplicationController
     else
       @date = Date.today
     end
+
     @year_months = [["#{@date.year}年#{@date.month}月16日〜",@date],["#{@date.next_month.year}年#{@date.next_month.month}月16日〜",@date.next_month],["#{@date.next_month.next_month.year}年#{@date.next_month.next_month.month}月16日〜",@date.next_month.next_month]]
     @shift_frames = @group.shift_frames
     if params[:stores]
@@ -262,10 +263,11 @@ class ShiftsController < ApplicationController
         params[:stores][store.id.to_s] = true
       end
     end
+
     staff_ids = @checked_stores.map{|store|store.staffs.ids}.flatten.uniq
     working_staff_all = Staff.joins(:staff_stores).where(:staff_stores => {store_id:@stores.ids}).where(status:0).ids
     @one_month = [*@date.beginning_of_month..@date.end_of_month]
-    shifts = Shift.includes(:store,:shift_pattern,fix_shift_pattern:[:shift_frames]).where(store_id:@stores.ids,date:@one_month)
+    shifts = Shift.includes(:store,:shift_pattern,fix_shift_pattern:[:shift_frames]).where(staff_id:staff_ids,date:@one_month)
     @shifts = shifts.map{|shift|[[shift.staff_id,shift.date],shift]}.to_h
     @staff_shinsei_count = shifts.where.not(shift_pattern_id: nil).group(:staff_id).count
     @staff_syukkin_count = shifts.joins(:fix_shift_pattern).where.not(:fix_shift_patterns=>{working_hour:0}).where.not(fix_shift_pattern_id: nil).group(:staff_id).count

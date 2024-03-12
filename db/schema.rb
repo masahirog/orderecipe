@@ -789,10 +789,10 @@ ActiveRecord::Schema.define(version: 2024_03_10_102126) do
     t.integer "group_id"
   end
 
-  create_table "shifts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "shifts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.date "date"
     t.integer "store_id"
-    t.bigint "staff_id"
+    t.bigint "staff_id", null: false
     t.integer "shift_pattern_id"
     t.integer "fix_shift_pattern_id"
     t.text "memo"
@@ -803,6 +803,7 @@ ActiveRecord::Schema.define(version: 2024_03_10_102126) do
     t.time "end_time"
     t.time "rest_start_time"
     t.time "rest_end_time"
+    t.index ["date", "staff_id"], name: "index_shifts_on_date_and_staff_id", unique: true
     t.index ["date"], name: "index_shifts_on_date"
     t.index ["staff_id"], name: "index_shifts_on_staff_id"
   end
@@ -901,7 +902,7 @@ ActiveRecord::Schema.define(version: 2024_03_10_102126) do
     t.index ["kaiin_id"], name: "index_smaregi_trading_histories_on_kaiin_id"
   end
 
-  create_table "staff_stores", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "staff_stores", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.integer "staff_id"
     t.integer "store_id"
     t.integer "transportation_expenses"
