@@ -77,14 +77,12 @@ class Crew::OrdersController < ApplicationController
     @hash = {}
     @prev_stocks = {}
     @materials = []
-    @search_code_materials = Material.where(unused_flag:false).where.not(order_code:"")
     @order = Order.includes(:products,:order_products,order_materials:[:material]).find(params[:id])
     @order.order_materials.each do |om|
       om.order_unit = om.material.order_unit
       om.recipe_unit = om.material.recipe_unit
       om.order_quantity_order_unit = ((om.order_quantity.to_f / om.material.recipe_unit_quantity) * om.material.order_unit_quantity).round(1)
     end
-    @code_materials = Material.where(unused_flag:false).where.not(order_code:"")
     @vendors = @order.order_materials.includes(material:[:vendor]).map{|om|[om.material.vendor.name,om.material.vendor.id]}.uniq
     product_ids = @order.products.ids
     # materials = Product.includes(:product_menus,[menus: [menu_materials: :material]]).where(id:product_ids).map{|product| product.menus.map{|pm| pm.menu_materials.map{|mm|[mm.material.id, product.name]}}}.flatten(2)
@@ -216,9 +214,7 @@ class Crew::OrdersController < ApplicationController
     @prev_stocks = {}
     @stock_hash = {}
     @materials = Material.where(unused_flag:false)
-    @search_code_materials = Material.where(unused_flag:false).where.not(order_code:"")
     @order = Order.includes(:products,:order_products,:order_materials,{materials: [:vendor]}).find(params[:id])
-    @code_materials = Material.where(unused_flag:false).where.not(order_code:"")
     @vendors = @order.order_materials.map{|om|[om.material.vendor.name,om.material.vendor.id]}.uniq
     if @order.update(order_create_update)
       redirect_to crew_order_path
@@ -450,7 +446,6 @@ class Crew::OrdersController < ApplicationController
   def create
     @stock_hash = {}
     @order = Order.new(order_create_update)
-    @code_materials = Material.where(unused_flag:false).where.not(order_code:"")
     @materials = Material.where(unused_flag:false)
     @vendors = @order.order_materials.map{|om|[om.material.vendor.name,om.material.vendor.id]}.uniq
     @prev_stocks = {}

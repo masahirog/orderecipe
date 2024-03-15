@@ -2,13 +2,18 @@ class WorkingHoursController < AdminController
   before_action :set_working_hour, only: %i[ show edit update destroy ]
   def monthly
     date = "#{params[:month]}-01".to_date
-    @dates =(date.beginning_of_month..date.end_of_month).to_a
+    @shift_dates =(date.beginning_of_month..date.end_of_month).to_a
+    @working_dates = (date..@today-1).to_a
+    kijun = {"28" => 160,"29" => 165.7,"30" => 171.4,"31" => 177.1}
+    @max_woriking_time = kijun[@shift_dates.length.to_s] + 20
+    @progress_rate = (@shift_dates.length.to_f / (@today.day - 1)).round(1)
+
     @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @shift_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @hash[:total_time][:all] = 0
     @hash[:total_time][:employee] = 0
     @hash[:total_time][:part_time] = 0
-    WorkingHour.includes(:staff).where(date:@dates,store_id:39).each do |working_hour|
+    WorkingHour.includes(:staff).where(date:@working_dates,store_id:39).each do |working_hour|
       @hash[:total_time][:all] += working_hour.working_time
       @hash[:total_time][:employee] += working_hour.working_time if working_hour.staff.employment_status == "employee"
       @hash[:total_time][:part_time] += working_hour.working_time if working_hour.staff.employment_status == "part_time"
@@ -46,7 +51,7 @@ class WorkingHoursController < AdminController
     @shift_hash[:total_time][:all] = 0
     @shift_hash[:total_time][:employee] = 0
     @shift_hash[:total_time][:part_time] = 0
-    Shift.includes(:fix_shift_pattern,:staff).where(date:@dates,store_id:39).each do |shift|
+    Shift.includes(:fix_shift_pattern,:staff).where(date:@shift_dates,store_id:39).each do |shift|
       @shift_hash[:total_time][:all] += shift.fix_shift_pattern.working_hour
       @shift_hash[:total_time][:employee] += shift.fix_shift_pattern.working_hour if shift.staff.employment_status == "employee"
       @shift_hash[:total_time][:part_time] += shift.fix_shift_pattern.working_hour if shift.staff.employment_status == "part_time"

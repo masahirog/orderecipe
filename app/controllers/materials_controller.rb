@@ -51,6 +51,7 @@ class MaterialsController < ApplicationController
     else
       @store_id = 39
     end
+    @stores = current_user.group.stores
     @search = Material.includes(:vendor).search(params,current_user.group_id).page(params[:page]).per(50)
     @ids = @search.ids
     @materials_order_quantity = OrderMaterial.joins(:order).where(un_order_flag:false,orders:{fixed_flag:1}).where(delivery_date:(Date.today - 31)..Date.today,material_id:@ids).group(:material_id).sum(:order_quantity)

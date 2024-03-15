@@ -31,7 +31,7 @@
         th = "#{@shift_hash[:count]}名"
         th = "#{@shift_hash[:time]}h"
         th = "#{@working_hours.sum(:working_time).round(1)}h"
-        th = "#{@working_hours.sum(:working_time).round(1) - @shift_hash[:time]}h"
+        th = "#{(@working_hours.sum(:working_time).round(1) - @shift_hash[:time]).round(1)}h"
         th
         th
 
@@ -84,3 +84,5 @@ css:
   th,td {
     font-weight:normal;
   }
+
+javascript:

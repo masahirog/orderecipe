@@ -111,33 +111,33 @@ class OrdersController < AdminController
     gon.holidays = HolidayJapan.list_year(@today.year).map{|data|data[0].to_s.delete('-')}
     today = @today
     vendor_name = {}
-    all_materials = Material.includes(:vendor).where(unused_flag:false)
-    # @vendor_name =all_materials.map{|material|[material.id,material.vendor.name]}.to_h
+    # all_materials = Material.includes(:vendor).where(unused_flag:false)
     @stock_hash ={}
     @hash = {}
     @prev_stocks = {}
     @materials = []
-    @search_code_materials = Material.where(unused_flag:false).where.not(order_code:"")
     @order = Order.includes(:products,:order_products,order_materials:[:material]).find(params[:id])
+    material_ids = []
     @order.order_materials.each do |om|
       om.order_unit = om.material.order_unit
       om.recipe_unit = om.material.recipe_unit
       om.order_quantity_order_unit = ((om.order_quantity.to_f / om.material.recipe_unit_quantity) * om.material.order_unit_quantity).round(1)
+      material_ids << om.material_id
     end
-    @code_materials = Material.where(unused_flag:false).where.not(order_code:"")
     @vendors = @order.order_materials.includes(material:[:vendor]).map{|om|[om.material.vendor.name,om.material.vendor.id]}.uniq
+    @vendors_hash = Vendor.where(id:@vendors.to_h.invert.keys).map{|vendor|[vendor.id,vendor]}.to_h
     product_ids = @order.products.ids
     # materials = Product.includes(:product_menus,[menus: [menu_materials: :material]]).where(id:product_ids).map{|product| product.menus.map{|pm| pm.menu_materials.map{|mm|[mm.material.id, product.name]}}}.flatten(2)
     materials = @order.order_materials.map{|om|om.material}
     if @order.order_products.present?
       make_date = @order.order_products[0].make_date
-      stocks_hash = Stock.where(store_id:@order.store_id).where("date < ?", make_date).order("date ASC").map{|stock|[stock.material_id,stock]}.to_h
+      stocks_hash = Stock.where(material_id:material_ids.uniq,store_id:@order.store_id).where(date:[make_date-60..make_date]).order("date ASC").map{|stock|[stock.material_id,stock]}.to_h
       @order.order_materials.each do |om|
         @prev_stocks[om.material_id] = stocks_hash[om.material_id]
       end
     end
     stock_hash = {}
-    @stocks = Stock.includes(:material).where(store_id:@order.store_id).where(date:(today - 10)..(today + 10)).order('date ASC').map do |stock|
+    @stocks = Stock.includes(:material).where(material_id:material_ids.uniq,store_id:@order.store_id).where(date:(today - 10)..(today + 10)).order('date ASC').map do |stock|
       if stock_hash[stock.material_id].present?
         stock_hash[stock.material_id] << stock
       else
@@ -261,9 +261,7 @@ class OrdersController < AdminController
     @prev_stocks = {}
     @stock_hash = {}
     @materials = Material.where(unused_flag:false)
-    @search_code_materials = Material.where(unused_flag:false).where.not(order_code:"")
     @order = Order.includes(:products,:order_products,:order_materials,{materials: [:vendor]}).find(params[:id])
-    @code_materials = Material.where(unused_flag:false).where.not(order_code:"")
     @vendors = @order.order_materials.map{|om|[om.material.vendor.name,om.material.vendor.id]}.uniq
     if @order.update(order_create_update)
       redirect_to order_path
@@ -434,7 +432,7 @@ class OrdersController < AdminController
         hash[:make_date] = @from
         order_products << hash
       end
-      make_date = @from
+      make_date = @to
       #vendor絞り込み
       if params[:filter] == "none" || params[:filter].nil?
         vendor_ids = Vendor.all.ids
@@ -580,10 +578,11 @@ class OrdersController < AdminController
         @b_hash[info['material_id']] = info
       end
     end
+    
     material_ids = material_ids.uniq
     @prev_stocks = {}
     @stock_hash = {}
-    stocks_hash = Stock.where(store_id:params[:store_id],material_id:material_ids).where("date < ?", make_date).order("date ASC").map{|stock|[stock.material_id,stock]}.to_h
+    stocks_hash = Stock.where(store_id:params[:store_id],material_id:material_ids).where(date:[make_date-30..make_date]).order("date ASC").map{|stock|[stock.material_id,stock]}.to_h
     date = make_date - 1
     stock_hash = {}
     @latest_material_used_amount = {}
@@ -622,36 +621,52 @@ class OrdersController < AdminController
 
       no_calculate_vendor_ids = [559,549,261]
       if stocks_hash[key].present?
-        if no_calculate_vendor_ids.include?(material.vendor_id)
-          order_amount = ((value['calculated_order_amount']/value['recipe_unit_quantity'])*value['order_unit_quantity']).ceil(i)
+        # if no_calculate_vendor_ids.include?(material.vendor_id)
+        #   order_amount = ((value['calculated_order_amount']/value['recipe_unit_quantity'])*value['order_unit_quantity']).ceil(i)
+        #   un_order_flag = false
+        #   order_quantity_order_unit = order_amount
+        # elsif jogai_vendor_ids.include?(material.vendor_id)
+        #   if stocks_hash[key].end_day_stock < 0
+        #     shortage_stock = (-1 * stocks_hash[key].end_day_stock).ceil(1)
+        #     order_quantity_order_unit = ((shortage_stock / value['recipe_unit_quantity'].to_f) * value['order_unit_quantity'].to_f).ceil(i)
+        #   else
+        #     un_order_flag = true
+        #     order_quantity_order_unit = 0
+        #   end
+        # else
+        #   if @latest_material_used_amount[material.id].present?
+        #     if stocks_hash[key].end_day_stock - @latest_material_used_amount[material.id] < 0
+        #       shortage_stock = (@latest_material_used_amount[material.id] - stocks_hash[key].end_day_stock).ceil(1)
+        #       order_quantity_order_unit = ((shortage_stock / value['recipe_unit_quantity'].to_f) * value['order_unit_quantity'].to_f).ceil(i)
+        #     else
+        #       un_order_flag = true
+        #       order_quantity_order_unit = 0
+        #     end
+        #   else
+        #     un_order_flag = true
+        #     order_quantity_order_unit = 0
+        #   end
+        # end
+
+
+        if stocks_hash[key].end_day_stock < 0
           un_order_flag = false
-          order_quantity_order_unit = order_amount
-        elsif jogai_vendor_ids.include?(material.vendor_id)
-          if stocks_hash[key].end_day_stock < 0
-            shortage_stock = (-1 * stocks_hash[key].end_day_stock).ceil(1)
-            order_quantity_order_unit = ((shortage_stock / value['recipe_unit_quantity'].to_f) * value['order_unit_quantity'].to_f).ceil(i)
-          else
-            un_order_flag = true
-            order_quantity_order_unit = 0
-          end
+          shortage_stock = (-1 * stocks_hash[key].end_day_stock).ceil(1)
+          order_quantity_order_unit = ((shortage_stock / value['recipe_unit_quantity'].to_f) * value['order_unit_quantity'].to_f).ceil(i)
         else
-          if @latest_material_used_amount[material.id].present?
-            if stocks_hash[key].end_day_stock - @latest_material_used_amount[material.id] < 0
-              shortage_stock = (@latest_material_used_amount[material.id] - stocks_hash[key].end_day_stock).ceil(1)
-              order_quantity_order_unit = ((shortage_stock / value['recipe_unit_quantity'].to_f) * value['order_unit_quantity'].to_f).ceil(i)
-            else
-              un_order_flag = true
-              order_quantity_order_unit = 0
-            end
-          else
-            un_order_flag = true
-            order_quantity_order_unit = 0
-          end
+          un_order_flag = true
+          order_quantity_order_unit = 0
         end
+        # shortage_stock = (-1 * stocks_hash[key].end_day_stock).ceil(1)
+        # order_quantity_order_unit = ((shortage_stock / value['recipe_unit_quantity'].to_f) * value['order_unit_quantity'].to_f).ceil(i)
       else
         order_quantity_order_unit = (calculated_quantity / value['recipe_unit_quantity'].to_f * value['order_unit_quantity'].to_f).ceil(i)
       end
-
+      # if order_quantity_order_unit > 0
+      #   un_order_flag = falseun_order_flag = false
+      # else
+      #   un_order_flag = true
+      # end
       @order.order_materials.build(material_id:key,recipe_unit:recipe_unit,order_unit:order_unit,order_quantity_order_unit:order_quantity_order_unit,calculated_quantity:calculated_quantity,menu_name:menu_name,order_material_memo:order_material_memo,delivery_date:date,un_order_flag:un_order_flag)
 
       if stock_hash[key].present?
@@ -735,8 +750,7 @@ class OrdersController < AdminController
   def create
     @stock_hash = {}
     @order = Order.new(order_create_update)
-    @code_materials = Material.where(unused_flag:false).where.not(order_code:"")
-    @materials = Material.where(unused_flag:false)
+    @materials = []
     @vendors = @order.order_materials.map{|om|[om.material.vendor.name,om.material.vendor.id]}.uniq
     @prev_stocks = {}
     if @order.save

@@ -9,7 +9,7 @@ class CreateWorkingHours < ActiveRecord::Migration[6.0]
       t.float :working_time
       t.timestamps
       t.index [:store_id,:staff_id,:date], unique: true
-      t.integer :break_minutes,default:0
+      t.integer :break_minutes
     end
   end
 end

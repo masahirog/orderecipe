@@ -191,22 +191,29 @@
             - if @shifts[[staff.id,date]].present?
               td class="td_shift_form td_#{@shifts[[staff.id,date]].id} clearfix" style="padding:3px;border-right: 1px silver solid;background-color:#{color};"
                 input.staff_id value="#{staff.id}" style='display:none;'
-                - if @shifts[[staff.id,date]].fix_shift_pattern_id.present?
-                  input.working_hour style='display:none;' value="#{@shifts[[staff.id,date]].fix_shift_pattern.working_hour}"
-                  .fix_shift style="font-size:12px;color:#{@shifts[[staff.id,date]].fix_shift_pattern.color_code};"
-                    span.fix_store_name
-                      - if @shifts[[staff.id,date]].store_id.present?
-                        = @shifts[[staff.id,date]].store.short_name
-                    br
-                      span.fix_shift_pattern = @shifts[[staff.id,date]].fix_shift_pattern.pattern_name
+
+
+
+                - if @shifts[[staff.id,date]].fixed_flag == true
+                  - if @shifts[[staff.id,date]].fix_shift_pattern_id.present?
+                    input.working_hour style='display:none;' value="#{@shifts[[staff.id,date]].fix_shift_pattern.working_hour}"
+                    .fix_shift style="font-size:12px;color:#{@shifts[[staff.id,date]].fix_shift_pattern.color_code};"fix_shift_pattern.color_code};"
+                      span.fix_store_name
+                        - if @shifts[[staff.id,date]].store_id.present?
+                          = @shifts[[staff.id,date]].store.short_name
+                      br
+                        span.fix_shift_pattern = @shifts[[staff.id,date]].fix_shift_pattern.pattern_name
+                  - else
+                    input.working_hour value=0 style='display:none;'
+                    .fix_shift style="font-size:12px;"
+                      span.fix_store_name
+                        - if @shifts[[staff.id,date]].store_id.present?
+                          = @shifts[[staff.id,date]].store.short_name
+                      br
+                        span.fix_shift_pattern
                 - else
-                  input.working_hour style='display:none;' value=0
-                  .fix_shift style="font-size:12px;"
-                    span.fix_store_name
-                      - if @shifts[[staff.id,date]].store_id.present?
-                        = @shifts[[staff.id,date]].store.short_name
-                    br
-                      span.fix_shift_pattern
+                  .fix_shift
+                    span style='color:gray;' 調整中
 
                 - if current_user.id == 74
                   .edit_fix_shift_form style='display:none;'

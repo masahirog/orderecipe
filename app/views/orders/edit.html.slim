@@ -83,10 +83,10 @@
             .vendor_company_name style="padding-top:3px;color:#A9A9A9;"
               - if m.object.material.present?
                 input value="#{m.object.material.vendor_id}" style="display:none;"
-                span = m.object.material.vendor.name
-                span ="｜納品：#{m.object.material.vendor.delivery_date}"
+                span = @vendors_hash[m.object.material.vendor_id].name
+                span ="｜納品：#{@vendors_hash[m.object.material.vendor_id].delivery_date}"
                 span style='color:red;font-weight:bold;' = "【受注品】" if m.object.material.vendor_stock_flag == false
-                input value="#{m.object.material.vendor.delivery_able_wday}" class="delivery_able_date" style='display:none;'
+                input value="#{@vendors_hash[m.object.material.vendor_id].delivery_able_wday}" class="delivery_able_date" style='display:none;'
               - else
                 input value='0,1,2,3,4,5,6' class="delivery_able_date" style='display:none;'
           td.delivery_date style="min-width:186px;"
@@ -125,7 +125,14 @@
                 span class="stock_yoso_#{m.object.material_id} text-right"
                   - if m.object.material_id.present?
                     = link_to history_stocks_path(material_id:m.object.material_id,store_id:@order.store_id),target:'_blank',class:'stock-tooltip' do
-                      span data-html="true" class="" aria-hidden="true"  data-toggle="tooltip" data-placement="top" title="<div style='padding:10px;'></div><table class='table tooltip-table table-striped'>#{@stock_hash[m.object.material_id].flatten.join('')}</table>"
+                      / span data-html="true" class="" aria-hidden="true"  data-toggle="tooltip" data-placement="top" title="<div style='padding:10px;'></div><table class='table tooltip-table table-striped'>#{@stock_hash[m.object.material_id].flatten.join('')}</table>"
+
+
+
+                      span data-html="true" style='color:blue;margin-left:10px;' class="" aria-hidden="true"  data-toggle="tooltip" data-placement="top" title="<table class='table tooltip-table table-striped'>#{@stock_hash[m.object.material_id].flatten.join('')}</table>"
+
+
+
                         - if @prev_stocks[m.object.material_id]
                           - if @prev_stocks[m.object.material_id].end_day_stock < 0
                             span style='color:red;' = "#{(@prev_stocks[m.object.material_id].end_day_stock/m.object.material.accounting_unit_quantity).floor(1)} #{m.object.material.accounting_unit}：不足"
@@ -176,36 +183,36 @@ javascript:
     //   }
     //  });
   });
-/ sass:
-/   input[type="time"]::-webkit-calendar-picker-indicator
-/     display: none
+sass:
+  input[type="time"]::-webkit-calendar-picker-indicator
+    display: none
 
-/   input[type="date"]::-webkit-calendar-picker-indicator
-/     display: none
+  input[type="date"]::-webkit-calendar-picker-indicator
+    display: none
 
-/   .class-sunday-holiday
-/     color: red !important
-/   .class-saturday
-/     color: #1e90ff !important
+  .class-sunday-holiday
+    color: red !important
+  .class-saturday
+    color: #1e90ff !important
 
-/   .stock-tooltip
-/     .tooltip
-/       width: 100%
-/       font-size: 14px
-/   .memo-tooltip
-/     .tooltip
-/       width: 300px
-/       font-size: 14px
+  .stock-tooltip
+    .tooltip
+      width: 100%
+      font-size: 14px
+  .memo-tooltip
+    .tooltip
+      width: 300px
+      font-size: 14px
 
-/   .tooltip-inner
-/     max-width: 100%
+  .tooltip-inner
+    max-width: 100%
 
-/   .tooltip .tooltip-inner
-/     background-color: white
-/     opacity: 1.0
-/     border: 2px solid black
-/     color: black
-/     filter: alpha(opacity=100)
-/   .tooltip.in
-/     opacity: 1 !important
-/     filter: alpha(opacity=100)
+  .tooltip .tooltip-inner
+    background-color: white
+    opacity: 1.0
+    border: 2px solid black
+    color: black
+    filter: alpha(opacity=100)
+  .tooltip.in
+    opacity: 1 !important
+    filter: alpha(opacity=100)

@@ -1,6 +1,7 @@
 require 'csv'
 class Stock < ApplicationRecord
   belongs_to :material
+
   def self.inventory_past_stock_update
     # 1日遡る計算の場合（キッチンで翌月1日に棚卸しをした場合）
     new_stocks = []
