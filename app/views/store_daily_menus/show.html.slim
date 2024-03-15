@@ -113,7 +113,7 @@ table.table.table-list
       th 大皿工程
       th パック工程
       th 1人前
-      th style='width:100px;' 見本皿
+      th style='width:100px;' 大皿
       th 温度
       th 容器
       th 合計数
@@ -200,7 +200,9 @@ table.table.table-list
                     button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
 
         td
-          = sdmd.serving_plate.name if sdmd.serving_plate
+          - if @serving_plates[sdmd.product.main_serving_plate_id]
+            = link_to @serving_plates[sdmd.product.main_serving_plate_id].image.url, "data-lightbox" => @serving_plates[sdmd.product.main_serving_plate_id].image.url do
+              = @serving_plates[sdmd.product.main_serving_plate_id].name
         td
           = "冷蔵" if sdmd.showcase_type == 1
 

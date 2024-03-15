@@ -287,6 +287,7 @@ class StoreDailyMenusController < AdminController
     end
   end
   def ikkatsu
+    @serving_plates = ServingPlate.all.map{|serving_plate|[serving_plate.id,serving_plate]}.to_h
     @store_daily_menu = StoreDailyMenu.find(params[:id])
     @date = @store_daily_menu.start_time
     @to_store_messages = ToStoreMessage.joins(:to_store_message_stores).where(:to_store_message_stores => {store_id:@store_daily_menu.store_id}).where(date:@date)
@@ -299,6 +300,7 @@ class StoreDailyMenusController < AdminController
   end
 
   def show
+    @serving_plates = ServingPlate.all.map{|serving_plate|[serving_plate.id,serving_plate]}.to_h
     @store_daily_menu = StoreDailyMenu.find(params[:id])
     store_id = @store_daily_menu.store_id
     @date = @store_daily_menu.start_time

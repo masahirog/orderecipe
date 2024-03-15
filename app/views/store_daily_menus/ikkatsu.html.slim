@@ -23,6 +23,13 @@ ul.col-md-12.list-group.clearfix style='margin-top:15px;'
           = link_to sdmd.product.name,product_path(sdmd.product)
           span.label.label-info style="margin-left:10px;padding:4px 6px;" = "冷" if sdmd.showcase_type == 1
         div style='margin-top:6px;'
+          label 大皿：
+          - if @serving_plates[sdmd.product.main_serving_plate_id]
+            = link_to @serving_plates[sdmd.product.main_serving_plate_id].image.url, "data-lightbox" => @serving_plates[sdmd.product.main_serving_plate_id].image.url do
+              = @serving_plates[sdmd.product.main_serving_plate_id].name
+
+
+        div style='margin-top:6px;'
           label 包材：
           = sdmd.product.container.name if sdmd.product.container_id.present?
         div style='margin-top:6px;'
