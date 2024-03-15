@@ -93,6 +93,10 @@
       = f.label :smaregi_code, "スマレジ商品コード"
       = f.text_field :smaregi_code, class:"form-control"
     .col-md-2
+      = link_to serving_plates_path,target:'_blank' do
+        label style='cursor: pointer;' 大皿
+      = f.collection_select :main_serving_plate_id, ServingPlate.all, :id, :name, {include_blank:true}, { class: "form-control"}
+    .col-md-2
       = f.label :container_id, "盛り付け容器・皿"
       = f.collection_select :container_id, Container.where(group_id:current_user.group_id), :id, :name, {include_blank:true}, { class: "form-control"}
 
@@ -129,11 +133,6 @@
           div
             = f.label :remove_display_image,"削除する"
             = f.check_box :remove_display_image
-  / .col-md-12.form-group
-    / .col-md-3
-      = f.label :main_serving_plate_id, "大皿"
-      = f.collection_select :main_serving_plate_id, ServingPlate.all, :id, :name, {include_blank:true}, { class: "form-control"}
-
     / .col-md-12.form-group
       .col-md-4
         = f.label :food_label_name, "食品表示名"
