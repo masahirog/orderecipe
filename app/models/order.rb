@@ -25,7 +25,7 @@ class Order < ApplicationRecord
 
     before_dates = self.order_materials.map{|om|om.delivery_date_was}.uniq
     after_dates = self.order_materials.map{|om|om.delivery_date}.uniq
-    @dates = (before_dates + after_dates).uniq
+    @dates = (before_dates + after_dates).uniq.compact
     stocks = Stock.where(store_id:self.store_id,date:@dates)
     stocks.each do |stock|
       stock.end_day_stock = stock.start_day_stock - stock.used_amount
@@ -44,7 +44,6 @@ class Order < ApplicationRecord
     #   stock_ids << stock.id
     # end
     Stock.import stocks_arr,on_duplicate_key_update:[:used_amount,:delivery_amount,:end_day_stock] if stocks_arr.present?
-
 
     change_stocks = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     Stock.where(material_id:material_ids,store_id:self.store_id).where("date > ?",@dates.min).order('date ASC').each do |stock|
