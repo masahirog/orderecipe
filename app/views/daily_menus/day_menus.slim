@@ -79,12 +79,11 @@ table.table
 			- @stores.each do |store|
 				th
 					= link_to store.short_name,edit_store_daily_menu_path(@price_card_hash[store.id]["store_daily_menu_id"]),target:"_blank"
+			th 公式
 			th 温め
 			th BB登録
 			th BB表示
-			th 工程
-			th 1人前
-			th スマレジコード
+			th スマレジ
 			th 定価
 			th お持ち帰り
 			th UberEats
@@ -103,7 +102,7 @@ table.table
 					td
 						- if @price_card_hash[store.id]["product_id"][dmd.product_id] == true
 							|◯
-
+				td = image_tag dmd.product.image_url(:thumb) if dmd.product.image.present?
 				td = "●" if dmd.product.warm_flag == true
 				td
 					= link_to edit_bb_products_path(product_id:dmd.product.id),target:"_blank",style:'color:black;font-size:1.1em;'
@@ -133,47 +132,6 @@ table.table
 																	= simple_format(bb.memo)
 									.modal-footer
 										button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
-				td
-				  - if dmd.product.product_ozara_serving_informations.present?
-				    button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#ozara_serving_#{dmd.product_id}" style='' 工程
-				    .modal.fade tabindex="-1" ID="ozara_serving_#{dmd.product_id}"
-				      .modal-dialog style='width:1000px;'
-				        .modal-content
-				          .modal-header
-				            h4.modal-title 仕上げ工程
-				          .modal-body
-				            table.table
-				              thead
-				                tr
-				                  th.col-md-6 工程
-				                  th 画像
-				              tbody
-				                - dmd.product.product_ozara_serving_informations.each do |posi|
-				                  tr
-				                    td
-				                      = text_url_to_link(simple_format(h(posi.content))).html_safe
-				                    td
-				                      = image_tag posi.image.to_s,class:"img-responsive",style:'max-height:350px;'
-
-				          .modal-footer
-				            button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
-
-				td
-				  - if dmd.product.serving_infomation.present?
-				    button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#serving_infomation_#{dmd.product_id}" style='' 1人前
-				    .modal.fade tabindex="-1" ID="serving_infomation_#{dmd.product_id}"
-				      .modal-dialog style='width:1000px;'
-				        .modal-content
-				          .modal-header
-				            h4.modal-title = dmd.product.name
-				          .modal-body.clearfix
-				            div style='width:50%;float:left;'
-				              = text_url_to_link(simple_format(h(dmd.product.serving_infomation))).html_safe
-				            div style='width:50%;float:left;'
-				              = image_tag dmd.product.image_for_one_person.to_s,class:"img-responsive",style:'max-width:250px;height: auto;'
-				          .modal-footer
-				            button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
-
 				td
 					- if dmd.product.smaregi_code.present?
 						- if dmd.product.smaregi_code.length == 5
