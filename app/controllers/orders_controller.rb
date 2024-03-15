@@ -464,14 +464,11 @@ class OrdersController < AdminController
       if params[:filter] == "none" || params[:filter].nil?
         vendor_ids = Vendor.all.ids
       elsif params[:filter] == "veg"
-        # vendor_ids = [151,489]
         category = ['vege']
       elsif params[:filter] == "meat"
-        # vendor_ids = [121,131,21,441,529,509]
         category = ['meat']
       elsif params[:filter] == "not_veg_meat"
         category = ["other_vege","other_food","packed","consumable_item","cooking_item",'fish','rice']
-        # vendor_ids = Vendor.where.not(id:[121,131,21,441,529,509,151,489]).ids
       end
     elsif params[:vendor_id].present?
       order_products = []
@@ -520,7 +517,6 @@ class OrdersController < AdminController
           @arr << hash
         end
       end
-
     else
       order_products = []
       make_date = @today
@@ -582,7 +578,7 @@ class OrdersController < AdminController
     material_ids = material_ids.uniq
     @prev_stocks = {}
     @stock_hash = {}
-    stocks_hash = Stock.where(store_id:params[:store_id],material_id:material_ids).where(date:[make_date-30..make_date]).order("date ASC").map{|stock|[stock.material_id,stock]}.to_h
+    stocks_hash = Stock.where(store_id:params[:store_id],material_id:material_ids).where(date:[make_date-30..make_date-1]).order("date ASC").map{|stock|[stock.material_id,stock]}.to_h
     date = make_date - 1
     stock_hash = {}
     @latest_material_used_amount = {}
