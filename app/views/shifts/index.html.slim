@@ -197,7 +197,7 @@
                 - if @shifts[[staff.id,date]].fixed_flag == true
                   - if @shifts[[staff.id,date]].fix_shift_pattern_id.present?
                     input.working_hour style='display:none;' value="#{@shifts[[staff.id,date]].fix_shift_pattern.working_hour}"
-                    .fix_shift style="font-size:12px;color:#{@shifts[[staff.id,date]].fix_shift_pattern.color_code};"fix_shift_pattern.color_code};"
+                    .fix_shift style="font-size:12px;color:#{@shifts[[staff.id,date]].fix_shift_pattern.color_code};"
                       span.fix_store_name
                         - if @shifts[[staff.id,date]].store_id.present?
                           = @shifts[[staff.id,date]].store.short_name
