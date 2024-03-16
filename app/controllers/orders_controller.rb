@@ -611,50 +611,23 @@ class OrdersController < AdminController
       else
         i = 0
       end
-      # 直近の在庫から発注量を計算
-      # クイーンズ、たなか、小田島、ちさんまるしぇ、東中野キッチン、日本パッケージ在庫品、小沢商店
-      jogai_vendor_ids = [121,131,151,569]
 
       no_calculate_vendor_ids = [559,549,261]
       if stocks_hash[key].present?
-        # if no_calculate_vendor_ids.include?(material.vendor_id)
-        #   order_amount = ((value['calculated_order_amount']/value['recipe_unit_quantity'])*value['order_unit_quantity']).ceil(i)
-        #   un_order_flag = false
-        #   order_quantity_order_unit = order_amount
-        # elsif jogai_vendor_ids.include?(material.vendor_id)
-        #   if stocks_hash[key].end_day_stock < 0
-        #     shortage_stock = (-1 * stocks_hash[key].end_day_stock).ceil(1)
-        #     order_quantity_order_unit = ((shortage_stock / value['recipe_unit_quantity'].to_f) * value['order_unit_quantity'].to_f).ceil(i)
-        #   else
-        #     un_order_flag = true
-        #     order_quantity_order_unit = 0
-        #   end
-        # else
-        #   if @latest_material_used_amount[material.id].present?
-        #     if stocks_hash[key].end_day_stock - @latest_material_used_amount[material.id] < 0
-        #       shortage_stock = (@latest_material_used_amount[material.id] - stocks_hash[key].end_day_stock).ceil(1)
-        #       order_quantity_order_unit = ((shortage_stock / value['recipe_unit_quantity'].to_f) * value['order_unit_quantity'].to_f).ceil(i)
-        #     else
-        #       un_order_flag = true
-        #       order_quantity_order_unit = 0
-        #     end
-        #   else
-        #     un_order_flag = true
-        #     order_quantity_order_unit = 0
-        #   end
-        # end
-
-
-        if stocks_hash[key].end_day_stock < 0
+        if no_calculate_vendor_ids.include?(material.vendor_id)
+          order_amount = ((value['calculated_order_amount']/value['recipe_unit_quantity'])*value['order_unit_quantity']).ceil(i)
           un_order_flag = false
-          shortage_stock = (-1 * stocks_hash[key].end_day_stock).ceil(1)
-          order_quantity_order_unit = ((shortage_stock / value['recipe_unit_quantity'].to_f) * value['order_unit_quantity'].to_f).ceil(i)
+          order_quantity_order_unit = order_amount
         else
-          un_order_flag = true
-          order_quantity_order_unit = 0
+          if stocks_hash[key].end_day_stock < 0
+            un_order_flag = false
+            shortage_stock = (-1 * stocks_hash[key].end_day_stock).ceil(1)
+            order_quantity_order_unit = ((shortage_stock / value['recipe_unit_quantity'].to_f) * value['order_unit_quantity'].to_f).ceil(i)
+          else
+            un_order_flag = true
+            order_quantity_order_unit = 0
+          end
         end
-        # shortage_stock = (-1 * stocks_hash[key].end_day_stock).ceil(1)
-        # order_quantity_order_unit = ((shortage_stock / value['recipe_unit_quantity'].to_f) * value['order_unit_quantity'].to_f).ceil(i)
       else
         order_quantity_order_unit = (calculated_quantity / value['recipe_unit_quantity'].to_f * value['order_unit_quantity'].to_f).ceil(i)
       end
