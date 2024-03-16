@@ -74,7 +74,7 @@
   .col-md-12
     .box26.clearfix
       span class="box-title" 発注最小ロット、単位と価格（税抜き）
-      = f.text_field :order_unit_quantity,class:"input_order_unit_quantity form-control text-right",placeholder:1,style:'width:140px;float:left;margin-right:5px;',required:true
+      = f.select :order_unit_quantity,[1.0,0.1],{},{class:"input_order_unit_quantity form-control",style:'width:140px;float:left;margin-right:5px;',required:true}
       = f.select :order_unit, ["g","kg","p/c", "c/s","箱","缶", "束", "枚","個","本","ポリ","人前"],{}, { class: "form-control input_order_unit",style:'width:70px;float:left;'}
       span style='padding:15px 15px 0 15px;float:left;' あたり
       = f.text_field :recipe_unit_price, class:'form-control',style:'width:140px;float:left;',required:true

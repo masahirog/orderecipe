@@ -28,10 +28,14 @@ class Order < ApplicationRecord
     @dates = (before_dates + after_dates).uniq.compact
     stocks = Stock.where(store_id:self.store_id,date:@dates)
     stocks.each do |stock|
-      stock.end_day_stock = stock.start_day_stock - stock.used_amount
-      stock.delivery_amount = 0
-      stocks_arr << stock
-      stock_ids << stock.id
+      if stock.inventory_flag == true
+      else
+        stock.end_day_stock = stock.start_day_stock - stock.used_amount
+      end
+        stock.delivery_amount = 0
+        stocks_arr << stock
+        stock_ids << stock.id
+
     end
     # キッチン商品の在庫を動かす
     # material_ids = stocks.map{|stock|stock.material_id}.uniq
@@ -44,7 +48,6 @@ class Order < ApplicationRecord
     #   stock_ids << stock.id
     # end
     Stock.import stocks_arr,on_duplicate_key_update:[:used_amount,:delivery_amount,:end_day_stock] if stocks_arr.present?
-
     change_stocks = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     Stock.where(material_id:material_ids,store_id:self.store_id).where("date > ?",@dates.min).order('date ASC').each do |stock|
       change_stocks[stock.material_id] = {} if stock.inventory_flag == true
