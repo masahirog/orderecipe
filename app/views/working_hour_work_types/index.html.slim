@@ -1,0 +1,19 @@
+h1 Listing working_hour_work_types
+
+table
+  thead
+    tr
+      th
+      th
+      th
+
+  tbody
+    - @working_hour_work_types.each do |working_hour_work_type|
+      tr
+        td = link_to 'Show', working_hour_work_type
+        td = link_to 'Edit', edit_working_hour_work_type_path(working_hour_work_type)
+        td = link_to 'Destroy', working_hour_work_type, data: { confirm: 'Are you sure?' }, method: :delete
+
+br
+
+= link_to 'New Working hour work type', new_working_hour_work_type_path

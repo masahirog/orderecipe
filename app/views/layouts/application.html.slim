@@ -76,6 +76,7 @@ html lang="ja"
                       li = link_to "商品一覧",products_path
                       li = link_to "メニュー",menus_path
                       li = link_to "食材・資材",materials_path
+                      li = link_to "仕入先",vendors_path
                       li = link_to "食材月間使用確認",monthly_used_amount_materials_path
                       li = link_to "野菜の使用量",materials_used_amount_materials_path
 
@@ -130,10 +131,6 @@ html lang="ja"
                       li = link_to "LTVデータ",ltv_data_analyses_path
                       li = link_to "商品リピート",product_repeat_analyses_path
                       li = link_to "スタッフ",staffs_analyses_path
-                      li = link_to "時間管理",labor_analyses_path()
-                      / li = link_to "き勤怠",working_hours_path(group_id:current_user.group_id)
-                      / li = link_to "は勤怠",working_hours_path(group_id:current_user.group_id)
-                      / li = link_to "フィードバック",feedback_analyses_path
 
                   li.dropdown
                     a.dropdown-toggle href="#" data-toggle="dropdown" role="button"
@@ -144,10 +141,11 @@ html lang="ja"
                       li = link_to "グループ",groups_path
                       li = link_to "シフト枠",shift_frames_path
                       li = link_to '確定シフトパターン',fix_shift_patterns_path
-                      li = link_to "仕入先",vendors_path
+                      li = link_to 'タイムカード項目',work_types_path
                       li = link_to "ブランド",brands_path
                       li = link_to "盛り付け皿設定",serving_plates_path
                       li = link_to "盛り付け包材設定",containers_path
+                      li = link_to 'タイム',detail_working_hours_path
                       li = link_to "ログアウト", destroy_user_session_path, :method => :delete
               - elsif current_user.id == 49
                 ul.nav.navbar-nav

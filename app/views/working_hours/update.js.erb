@@ -1,2 +1,3 @@
 $(".tr_<%= @working_hour.id %>").find(".save_flag").text("save!");
 $(".tr_<%= @working_hour.id %>").find(".working_time").text("<%= @working_hour.working_time %>時間");
+$(".working_hour_th_<%= @working_hour.id %>").find(".btn-save").removeClass("btn-primary").addClass('btn-success');

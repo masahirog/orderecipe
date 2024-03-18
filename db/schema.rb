@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_03_10_102126) do
+ActiveRecord::Schema.define(version: 2024_03_17_051203) do
 
   create_table "analyses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "store_id"
@@ -789,7 +789,7 @@ ActiveRecord::Schema.define(version: 2024_03_10_102126) do
     t.integer "group_id"
   end
 
-  create_table "shifts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "shifts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.date "date"
     t.integer "store_id"
     t.bigint "staff_id", null: false
@@ -1175,7 +1175,25 @@ ActiveRecord::Schema.define(version: 2024_03_10_102126) do
     t.integer "user_id"
   end
 
-  create_table "working_hours", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "work_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "name"
+    t.bigint "group_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["group_id"], name: "index_work_types_on_group_id"
+  end
+
+  create_table "working_hour_work_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "working_hour_id", null: false
+    t.bigint "work_type_id"
+    t.integer "time_frame"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["work_type_id"], name: "index_working_hour_work_types_on_work_type_id"
+    t.index ["working_hour_id"], name: "index_working_hour_work_types_on_working_hour_id"
+  end
+
+  create_table "working_hours", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "store_id"
     t.bigint "staff_id"
     t.date "date"
@@ -1184,7 +1202,7 @@ ActiveRecord::Schema.define(version: 2024_03_10_102126) do
     t.float "working_time"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.integer "break_minutes", default: 0
+    t.integer "break_minutes"
     t.index ["staff_id"], name: "index_working_hours_on_staff_id"
     t.index ["store_id", "staff_id", "date"], name: "index_working_hours_on_store_id_and_staff_id_and_date", unique: true
     t.index ["store_id"], name: "index_working_hours_on_store_id"

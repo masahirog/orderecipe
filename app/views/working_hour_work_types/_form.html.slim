@@ -1,0 +1,9 @@
+= form_for @working_hour_work_type do |f|
+  - if @working_hour_work_type.errors.any?
+    #error_explanation
+      h2 = "#{pluralize(@working_hour_work_type.errors.count, "error")} prohibited this working_hour_work_type from being saved:"
+      ul
+        - @working_hour_work_type.errors.full_messages.each do |message|
+          li = message
+
+  .actions = f.submit

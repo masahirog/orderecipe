@@ -1,0 +1,6 @@
+= form_for(working_hour, data: { remote: true }) do |f|
+  = f.hidden_field :id,class:'working_hour_id'
+  div = f.time_field :start_time,class:'form-control input_time input_start_time',style:'width:100%;'
+  div = f.time_field :end_time,class:'form-control input_time input_end_time',style:'width:100%;'
+  div = f.number_field :break_minutes,class:'form-control',style:'width:100%;',required:true
+  div = f.submit "SAVE",class:'btn btn-primary btn-sm btn-save',style:'width:100%;'

@@ -1,0 +1,14 @@
+h2 一覧
+= link_to '新規作成', new_work_type_path,class:'btn btn-primary btn-sm'
+table.table
+  thead
+    tr
+      th 枠名
+      th
+
+  tbody
+    - @work_types.each do |work_type|
+      tr
+        td = link_to work_type.name, edit_work_type_path(work_type)
+        td = link_to '削除', work_type, data: { confirm: 'Are you sure?' }, method: :delete
+

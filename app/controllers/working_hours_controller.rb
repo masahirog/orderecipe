@@ -83,6 +83,38 @@ class WorkingHoursController < AdminController
     end
   end
 
+  def detail
+    @time_frames = [['5:00',1],['5:30',2],['6:00',3],['6:30',4],['7:00',5],['7:30',6],['8:00',7],['8:30',8],['9:00',9],['9:30',10],
+    ['10:00',11],['10:30',12],['11:00',13],['11:30',14],['12:00',15],['12:30',16],['13:00',17],['13:30',18],['14:00',19],['14:30',20],
+    ['15:00',21],['15:30',22],['16:00',23],['16:30',24],['17:00',25],['17:30',26],['18:00',27],['18:30',28],['19:00',29],['19:30',30],
+    ['20:00',31],['20:30',32],['21:00',33],['21:30',34]] 
+
+    if params[:date]
+      @date = Date.parse(params[:date])
+    else
+      @date = Date.today
+    end
+    @month = "#{@date.year}-#{sprintf("%02d",@date.month)}"
+    @working_hours = WorkingHour.includes(:staff).where(date:@date)
+
+    @shift_hash = {count:0,time:0}
+    Shift.includes(:fix_shift_pattern).where(date:@date,store_id:39).each do |shift|
+      @shift_hash[[shift.staff_id,shift.date]] = shift
+      if shift.fix_shift_pattern_id.present? && shift.fix_shift_pattern.working_hour > 0
+        @shift_hash[:count] += 1
+        @shift_hash[:time] += shift.fix_shift_pattern.working_hour
+      end
+    end
+    @times = []
+    15.times do |hour|
+      [["00",0.0],["15",0.25],["30",0.5],["45",0.75]].each do |min|
+        @times  << ["#{hour}:#{min[0]}",(hour + min[1])]
+      end
+    end
+    @working_hour_work_type_hash = WorkingHourWorkType.where(working_hour_id:@working_hours.ids).map{|whwt|[[whwt.working_hour_id,whwt.time_frame],whwt]}.to_h
+  end
+
+
   def staff_input
     if params[:date]
       @date = Date.parse(params[:date])
@@ -91,6 +123,7 @@ class WorkingHoursController < AdminController
     end
     @month = "#{@date.year}-#{sprintf("%02d",@date.month)}"
     @working_hours = WorkingHour.includes(:staff).where(date:@date)
+
     @shift_hash = {count:0,time:0}
     Shift.includes(:fix_shift_pattern).where(date:@date,store_id:39).each do |shift|
       @shift_hash[[shift.staff_id,shift.date]] = shift
@@ -106,18 +139,35 @@ class WorkingHoursController < AdminController
       end
     end
   end
+
+
+
   def create_work_times
+    time_frames = [['5:00',1],['5:30',2],['6:00',3],['6:30',4],['7:00',5],['7:30',6],['8:00',7],['8:30',8],['9:00',9],['9:30',10],
+    ['10:00',11],['10:30',12],['11:00',13],['11:30',14],['12:00',15],['12:30',16],['13:00',17],['13:30',18],['14:00',19],['14:30',20],
+    ['15:00',21],['15:30',22],['16:00',23],['16:30',24],['17:00',25],['17:30',26],['18:00',27],['18:30',28],['19:00',29],['19:30',30],
+    ['20:00',31],['20:30',32],['21:00',33],['21:30',34]] 
     new_arr = []
+    whwt_arr = []
     @date = Date.parse(params[:date])
     working_hour_hash = WorkingHour.where(date:params[:date]).map{|wh|[[wh.date,wh.staff_id],wh]}.to_h
     staff_ids = StaffStore.where(store_id:39).map{|ss|ss.staff_id}.uniq
     Staff.where(id:staff_ids,status:0).each do |staff|
       if working_hour_hash[[@date,staff.id]].present?
       else
-        new_arr << WorkingHour.new(date:@date,staff_id:staff.id,store_id:39,working_time:0)
+        new_working_hour = WorkingHour.new(date:@date,staff_id:staff.id,store_id:39,working_time:0)
+        new_arr << new_working_hour
       end
     end
     WorkingHour.import new_arr
+    @working_hours = WorkingHour.where(date:@date,store_id:39)
+    @working_hour_work_type_hash = WorkingHourWorkType.where(working_hour_id:@working_hours.ids).map{|whwt|[[whwt.working_hour_id,whwt.time_frame],whwt]}.to_h
+    @working_hours.each do |wh|
+      time_frames.each do |tm|
+        whwt_arr << WorkingHourWorkType.new(working_hour_id:wh.id,time_frame:tm[1]) unless @working_hour_work_type_hash[[wh.id,tm[1]]].present?
+      end
+    end
+    WorkingHourWorkType.import whwt_arr
     redirect_to staff_input_working_hours_path(date:@date)
   end
 
@@ -162,10 +212,10 @@ class WorkingHoursController < AdminController
     respond_to do |format|
       if @working_hour.save
         format.html { redirect_to working_hour_url(@working_hour), notice: "Working hour was successfully created." }
-        format.json { render :show, status: :created, location: @working_hour }
+        format.js
       else
         format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @working_hour.errors, status: :unprocessable_entity }
+        format.js
       end
     end
   end

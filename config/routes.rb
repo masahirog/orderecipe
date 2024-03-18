@@ -83,6 +83,7 @@ Rails.application.routes.draw do
   end
   resources :working_hours do
     collection do
+      get :detail
       get :result
       get :monthly
       post :create_work_times
@@ -109,6 +110,8 @@ Rails.application.routes.draw do
       get :stocks
     end
   end
+  resources :working_hour_work_types
+  resources :work_types
   resources :item_vendors
   resources :item_types
   resources :item_varieties
