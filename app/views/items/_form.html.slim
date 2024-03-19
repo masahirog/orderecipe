@@ -44,7 +44,7 @@
       span あたり
       / input type='number' class="form-control" style='width:100px;float:left;'
     .float-left style='float:left;margin-top: 26px;'
-      = f.number_field :order_unit_amount, class:"form-control order_unit_amount", required:true,style:'width:100px;float:left;'
+      = f.number_field :order_unit_amount, class:"form-control order_unit_amount", required:true,style:'width:100px;float:left;',min:1
     .float-left style='float:left;margin-top:35px;margin-left:5px;font-size:1.2em'
       span.unit_span
         = f.object.unit if f.object.present?
@@ -68,6 +68,16 @@
   .form-group
     = f.label :sales_life, "販売日数目安"
     = f.text_field :sales_life, class:"form-control"
+
+
+  .form-group
+    = f.label :stock_store_id, "在庫場所（キッチン在庫のみ選択）"
+    = f.collection_select :stock_store_id, Store.where(id:39), :id, :name, {include_blank:true}, { class: "form-control"}
+
+  .form-group
+    = f.label :order_lot, "発注ロット",class:'required'
+    = f.number_field :order_lot, class:"form-control",min:0, required:true
+
 
   .form-group
     = f.label :memo, "メモ"

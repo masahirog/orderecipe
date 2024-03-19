@@ -21,6 +21,7 @@ class StaffsController < ApplicationController
     Staff.import staffs_arr, :on_duplicate_key_update => [:row]
     redirect_to staffs_path(status:params[:status],store_type:params[:store_type]),notice:'並び更新しました。'
   end
+
   def index
     group_id = current_user.group_id
     @group = Group.find(group_id)
@@ -31,7 +32,7 @@ class StaffsController < ApplicationController
     end
     stores = @group.stores.where(store_type:params[:store_type])
     staff_ids = stores.map{|store|store.staffs.ids}.flatten.uniq
-    @staffs = Staff.where(id:staff_ids,status:status).order(row:'asc')
+    @staffs = Staff.includes(:stores).where(id:staff_ids,status:status).order(row:'asc')
   end
 
   def show
@@ -40,11 +41,8 @@ class StaffsController < ApplicationController
   def new
     @group = Group.find(params[:group_id])
     @stores = @group.stores
-    if params[:place] == 'kitchen'
-      @staff = Staff.new(store_id:39,group_id:@group.id)
-    else
-      @staff = Staff.new(group_id:@group.id)
-    end
+    @staff = Staff.new(group_id:@group.id)
+    @staff.staff_stores.build
   end
 
   def edit
@@ -55,7 +53,8 @@ class StaffsController < ApplicationController
     @staff = Staff.new(staff_params)
     respond_to do |format|
       if @staff.save
-        format.html { redirect_to staffs_path(group_id:@staff.group_id), notice: "Staff was successfully created." }
+        store_type = @staff.stores[0].store_type_before_type_cast
+        format.html { redirect_to staffs_path(group_id:@staff.group_id,store_type:store_type,status:0), notice: "Staff was successfully created." }
         format.json { render :show, status: :created, location: @staff }
       else
         format.html { render :new, status: :unprocessable_entity }
@@ -67,7 +66,8 @@ class StaffsController < ApplicationController
   def update
     respond_to do |format|
       if @staff.update(staff_params)
-        format.html { redirect_to staffs_path(group_id:@staff.group_id), notice: "Staff was successfully updated." }
+        store_type = @staff.stores[0].store_type_before_type_cast
+        format.html { redirect_to staffs_path(group_id:@staff.group_id,store_type:store_type,status:0), notice: "Staff was successfully updated." }
         format.json { render :show, status: :ok, location: @staff }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -90,7 +90,7 @@ class StaffsController < ApplicationController
     end
 
     def staff_params
-      params.require(:staff).permit(:store_id,:name,:memo,:employment_status,:row,:status,:staff_code,:smaregi_hanbaiin_id,:phone_number,:group_id,
+      params.require(:staff).permit(:store_id,:name,:memo,:employment_status,:row,:status,:staff_code,:smaregi_hanbaiin_id,:phone_number,:group_id,:short_name,
         staff_stores_attributes:[:id,:store_id,:staff_id,:transportation_expenses,:_destroy])
     end
 end

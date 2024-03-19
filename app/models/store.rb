@@ -24,6 +24,7 @@ class Store < ApplicationRecord
   has_many :daily_item_stores
   has_many :item_store_stocks
   has_many :working_hours
+  has_many :item_orders
 
 
   enum store_type: {sales:0,kitchen:1,head_office:2}

@@ -4,6 +4,7 @@ class CreateWorkTypes < ActiveRecord::Migration[6.0]
       t.string :name
       t.references :group
       t.timestamps
+      t.integer :row_order
     end
   end
 end

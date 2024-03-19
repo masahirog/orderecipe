@@ -1,5 +1,6 @@
+span style='margin-right:40px;font-size:1.3em;' ="#{@store.short_name}　発注一覧"
+= link_to "物産品の発注一覧はこちら",item_orders_path(store_id:@store.id),style:"font-size:1.3em;" unless @store.id == 39
 .clearfix
-  h3 style='margin-right:40px;float:left;font-size:20px;' ="#{@store.name}　発注一覧"
   - if @store.id == 39
     = link_to "単品発注", new_order_path(store_id:params[:store_id]),class:"order btn btn-primary btn-sm",style:"float:left;margin-top:15px;"
     button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#product_order_modal" style='float:left;margin-top:15px;margin-left:10px;' 商品発注
@@ -61,7 +62,7 @@
                     = "：#{@date_daily_menu_count[date]} 食"
           .modal-footer
             button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
-  - unless @store.id == 39
+  - else
     button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#newOrder" style='float:left;margin-top:15px;' 発注開始
     #newOrder.modal.fade tabindex="-1"
       .modal-dialog
@@ -87,7 +88,7 @@
                   = date_field_tag :to, Date.today, class:"date",style:'float:left;'
                   = submit_tag "発注開始" ,class:"btn btn-primary",style:'float:left;margin-left:20px;'
               div ※この期間で食数を計算し、レシピに登録されている容器の量を計算します。計算させるにはレシピに登録されていて、店舗発注が可能チェックが付いている必要があります。
-            .col-md-12
+            .col-md-12.form-group
               label ③店舗で発注可能な商品のリストから発注する
               p = link_to "発注開始", new_order_path(store_id:params[:store_id],store_orderable_all_flag:true),class:"btn btn-primary"
 

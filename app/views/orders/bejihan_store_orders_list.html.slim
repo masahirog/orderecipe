@@ -24,9 +24,30 @@ h3 = "店舗配送品一覧"
             - order_amount = ActiveSupport::NumberHelper.number_to_rounded(((material_order_quantity[1][:order_quantity] / material.recipe_unit_quantity)*material.order_unit_quantity), strip_insignificant_zeros: true, :delimiter => ',')
             = "#{order_amount} #{material.order_unit}"
           td
-            - material_order_quantity[1][:orders].each do |data|
-              p
-                = link_to data[0],order_path(data[0]),target:'_blank'
-                = " ｜ #{data[1][:order].staff_name} ｜ メモ：#{data[1][:memo]}"
-              
+            - material_order_quantity[1][:orders].each_with_index do |data,i|
+              - if i > 0
+                br
+              = link_to data[0],order_path(data[0]),target:'_blank'
+              = " ｜ #{data[1][:order].staff_name} ｜ メモ：#{data[1][:memo]}"
+  - if @items_hash[store_mateiral_order[0]].present?
+    table.table
+      thead
+        tr
+          th style="width:400px;" 物産品一覧
+          th.text-right style="width:100px;" 納品量
+          th オーダー情報
 
+      tbody
+        - @items_hash[store_mateiral_order[0]].each do |data|
+          tr
+            td = link_to data[1][:attribute].name,data[1][:attribute],target:'_blank'
+            td.text-right
+              = "#{data[1][:order_quantity]} #{data[1][:attribute].unit}"
+            td
+              - data[1][:item_order_item].each_with_index do |ioi_data,i|
+                - if i > 0
+                  br
+                span = link_to ioi_data[1][:item_order].id,ioi_data[1][:item_order],target:"_blank"
+                span = "｜#{ioi_data[1][:item_order].staff_name}｜メモ：#{ioi_data[1][:attribute].memo}"
+
+                

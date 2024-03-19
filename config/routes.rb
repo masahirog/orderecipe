@@ -104,14 +104,20 @@ Rails.application.routes.draw do
   end
   resources :items do
     collection do
+      get :store_order
       get :get_vendor_items
       get :get_item
       get :store
       get :stocks
     end
   end
+  resources :item_orders
   resources :working_hour_work_types
-  resources :work_types
+  resources :work_types do
+    collection do
+      post :row_order_update
+    end
+  end
   resources :item_vendors
   resources :item_types
   resources :item_varieties

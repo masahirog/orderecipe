@@ -1,0 +1,12 @@
+tr.nested-fields.field
+  td
+    = f.object.item.name
+  td 
+    = f.object.item.item_vendor.store_name
+    = f.hidden_field :item_id
+  td
+  td.clearfix
+    = f.number_field :order_quantity,class:'form-control',style:'float:left;width:100px;'
+    span style='margin:10px 0 0 5px;float:left;' = f.object.item.unit
+  td = f.text_field :memo,class:'form-control'
+  td

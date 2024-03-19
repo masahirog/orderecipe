@@ -1,6 +1,7 @@
 class Item < ApplicationRecord
 	belongs_to :item_vendor
 	belongs_to :item_variety
+	has_many :item_order_items
 	has_many :daily_items
 	has_many :item_expiration_date
 	has_many :item_store_stocks
@@ -8,7 +9,7 @@ class Item < ApplicationRecord
 	enum unit: {袋:1,cs:2,本:3,kg:4,個:5,pc:6,口:7}, _prefix: true
 	enum order_unit: {袋:1,cs:2,本:3,kg:4,個:5,pc:6,口:7}, _prefix: true
 	def view_name_and_vendor
-		self.name + " " +self.item_vendor.store_name
+		self.name + "｜" +self.item_vendor.store_name
 	end
 
 	def self.search(params)

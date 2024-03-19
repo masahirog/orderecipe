@@ -95,7 +95,7 @@ class WorkingHoursController < AdminController
       @date = Date.today
     end
     @month = "#{@date.year}-#{sprintf("%02d",@date.month)}"
-    @working_hours = WorkingHour.includes(:staff).where(date:@date)
+    @working_hours = WorkingHour.includes(:staff).joins(:staff).order("staffs.row").where(date:@date)
 
     @shift_hash = {count:0,time:0}
     Shift.includes(:fix_shift_pattern).where(date:@date,store_id:39).each do |shift|
@@ -112,6 +112,7 @@ class WorkingHoursController < AdminController
       end
     end
     @working_hour_work_type_hash = WorkingHourWorkType.where(working_hour_id:@working_hours.ids).map{|whwt|[[whwt.working_hour_id,whwt.time_frame],whwt]}.to_h
+    @work_types = WorkType.order(:row_order)
   end
 
 

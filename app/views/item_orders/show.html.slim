@@ -1,0 +1,38 @@
+.col-md-12.form-group
+  = link_to "一覧に戻る",item_orders_path(store_id:@item_order.store_id),class:'pull-right'
+  = link_to "編集する",edit_item_order_path(@item_order),class:'btn btn-primary btn-sm'
+.col-md-12.form-group
+  label ストア名
+  p = @item_order.store.short_name
+
+.col-md-12.form-group
+  label スタッフ名
+  p = @item_order.staff_name
+.col-md-12.form-group
+  label 納品日（夜便）
+  p = @item_order.delivery_date
+
+.col-md-12.form-group
+  label メモ
+  p = @item_order.memo
+
+table.table
+  thead
+    tr
+      th style='width:300px;' 商品名
+      th style='width:200px;' 業者
+      th ロット
+      th style='width: 200px;' 発注量
+      th メモ
+      th
+  tbody
+    -  @item_order.item_order_items.includes(item:[:item_vendor]).each do |ioi|
+      tr
+        td
+          = ioi.item.name
+        td 
+          = ioi.item.item_vendor.store_name
+        td
+        td = "#{ioi.order_quantity} #{ioi.item.unit}"
+        td = ioi.memo
+        td

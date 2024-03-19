@@ -47,10 +47,25 @@ class OrdersController < AdminController
       @hash[om.order.store_id][om.material_id][:orders][om.order_id][:memo] = om.order_material_memo
       @hash[om.order.store_id][om.material_id][:orders][om.order_id][:order] = om.order
     end
+    @items_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    ItemOrder.includes(item_order_items:[:item]).where(delivery_date:@date).each do |io|
+      io.item_order_items.each do |ioi|
+        if @items_hash[io.store_id][ioi.item_id].present?
+          @items_hash[io.store_id][ioi.item_id][:order_quantity] += ioi.order_quantity.to_i
+          @items_hash[io.store_id][ioi.item_id][:item_order_item][ioi.id][:item_order] = io
+          @items_hash[io.store_id][ioi.item_id][:item_order_item][ioi.id][:attribute] = ioi
+        else
+          @items_hash[io.store_id][ioi.item_id][:attribute] = ioi.item
+          @items_hash[io.store_id][ioi.item_id][:order_quantity] = ioi.order_quantity.to_i
+          @items_hash[io.store_id][ioi.item_id][:item_order_item][ioi.id][:item_order] = io
+          @items_hash[io.store_id][ioi.item_id][:item_order_item][ioi.id][:attribute] = ioi
+        end
+      end
+    end
     respond_to do |format|
       format.html
       format.pdf do
-        pdf = BejihanStoreOrdersDeliveryList.new(@hash,@date)
+        pdf = BejihanStoreOrdersDeliveryList.new(@hash,@date,@items_hash)
         send_data pdf.render,
         filename:    "納品リスト.pdf",
         type:        "application/pdf",
@@ -602,8 +617,6 @@ class OrdersController < AdminController
       menu_name = a.join(',')
       order_material_memo = value['order_material_memo']
       dead_line = value['delivery_deadline']
-      # prev_stock = Stock.where("date < ?", make_date).where(material_id:key).order("date DESC").first
-      # @prev_stocks[key] = prev_stock
       @prev_stocks[key] = stocks_hash[key]
       calculated_quantity = value['calculated_order_amount'].round(1)
       if value['order_unit_quantity'].to_f < 1

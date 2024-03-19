@@ -1,0 +1,35 @@
+= link_to "一覧に戻る",item_orders_path(store_id:@item_order.store_id),class:'pull-right'
+= form_with model: @item_order do |f|
+  .col-md-12.form-group
+      = f.submit '保存する',class:'btn btn-success btn-sm'
+  .col-md-12.form-group
+    = f.label :store_id, "ストア名"
+    input.form-control value = "#{@store.name}" readonly=true
+    = f.hidden_field :store_id, required: true
+
+  .col-md-12.form-group
+    = f.label :staff_name, "スタッフ名",class:'required'
+    = f.text_field :staff_name, required: true, class:"form-control"
+  .col-md-12.form-group
+    = f.label :delivery_date, "納品日（夜便）",class:'required'
+    = f.date_field :delivery_date, required: true, class:"form-control"
+  .col-md-12.form-group
+    = f.label :memo, "メモ"
+    = f.text_area :memo, class:"form-control", style:"height:10em;"
+
+  table.table
+    thead
+      tr
+        th style='width:300px;' 商品名
+        th style='width:200px;' 業者
+        th ロット
+        th style='width: 200px;' 発注量
+        th メモ
+        th
+    tbody#item_order_items-add-point
+      = f.fields_for :item_order_items do |ioi|
+        = render 'item_order_item_fields', f:ioi
+  / .col-md-12
+    = link_to_add_association "商品追加",f, :item_order_items,data: {association_insertion_node: '#item_order_items-add-point',association_insertion_method: 'append' },class:'btn btn-primary'
+  .action.col-md-12
+      = f.submit '保存する',class:'btn btn-success'

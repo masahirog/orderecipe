@@ -16,6 +16,8 @@ class CreateItems < ActiveRecord::Migration[6.0]
       t.string :sales_life
       t.integer :order_unit,null:false
       t.integer :order_unit_amount,null:false
+      t.integer :stock_store_id
+      t.integer :order_lot,default:0,null:false
     end
   end
 end

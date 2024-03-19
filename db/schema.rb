@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_03_17_051203) do
+ActiveRecord::Schema.define(version: 2024_03_18_141142) do
 
   create_table "analyses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "store_id"
@@ -299,6 +299,30 @@ ActiveRecord::Schema.define(version: 2024_03_17_051203) do
     t.index ["item_id"], name: "index_item_expiration_dates_on_item_id"
   end
 
+  create_table "item_order_items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "item_order_id", null: false
+    t.bigint "item_id", null: false
+    t.string "order_quantity", default: "0", null: false
+    t.string "memo"
+    t.boolean "un_order_flag", default: false, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["item_id"], name: "index_item_order_items_on_item_id"
+    t.index ["item_order_id", "item_id"], name: "index_item_order_items_on_item_order_id_and_item_id", unique: true
+    t.index ["item_order_id"], name: "index_item_order_items_on_item_order_id"
+  end
+
+  create_table "item_orders", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "store_id", null: false
+    t.date "delivery_date", null: false
+    t.text "memo"
+    t.boolean "fixed_flag", default: false, null: false
+    t.string "staff_name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["store_id"], name: "index_item_orders_on_store_id"
+  end
+
   create_table "item_store_stocks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.date "date"
     t.bigint "item_id", null: false
@@ -360,7 +384,7 @@ ActiveRecord::Schema.define(version: 2024_03_17_051203) do
     t.integer "sorting_base_id", default: 0, null: false
   end
 
-  create_table "items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name", null: false
     t.bigint "item_variety_id"
     t.text "memo"
@@ -377,6 +401,8 @@ ActiveRecord::Schema.define(version: 2024_03_17_051203) do
     t.string "sales_life"
     t.integer "order_unit", null: false
     t.integer "order_unit_amount", null: false
+    t.integer "stock_store_id"
+    t.integer "order_lot", default: 0, null: false
     t.index ["item_variety_id"], name: "index_items_on_item_variety_id"
     t.index ["item_vendor_id"], name: "index_items_on_item_vendor_id"
   end
@@ -911,7 +937,7 @@ ActiveRecord::Schema.define(version: 2024_03_17_051203) do
     t.index ["staff_id", "store_id"], name: "index_staff_stores_on_staff_id_and_store_id", unique: true
   end
 
-  create_table "staffs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+  create_table "staffs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name", null: false
     t.text "memo"
     t.datetime "created_at", null: false
@@ -923,6 +949,7 @@ ActiveRecord::Schema.define(version: 2024_03_17_051203) do
     t.integer "smaregi_hanbaiin_id"
     t.string "phone_number"
     t.integer "group_id", null: false
+    t.string "short_name", null: false
   end
 
   create_table "stocks", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -1180,6 +1207,7 @@ ActiveRecord::Schema.define(version: 2024_03_17_051203) do
     t.bigint "group_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "row_order"
     t.index ["group_id"], name: "index_work_types_on_group_id"
   end
 
@@ -1193,7 +1221,7 @@ ActiveRecord::Schema.define(version: 2024_03_17_051203) do
     t.index ["working_hour_id"], name: "index_working_hour_work_types_on_working_hour_id"
   end
 
-  create_table "working_hours", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "working_hours", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "store_id"
     t.bigint "staff_id"
     t.date "date"

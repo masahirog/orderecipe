@@ -1,14 +1,31 @@
 h2 一覧
 = link_to '新規作成', new_work_type_path,class:'btn btn-primary btn-sm'
-table.table
-  thead
-    tr
-      th 枠名
-      th
-
-  tbody
-    - @work_types.each do |work_type|
+= form_tag(row_order_update_work_types_path,method: :post) do
+  table.table
+    thead
       tr
-        td = link_to work_type.name, edit_work_type_path(work_type)
-        td = link_to '削除', work_type, data: { confirm: 'Are you sure?' }, method: :delete
+        th 枠名
+        th 並び順
+        th = submit_tag "保存する" ,class:"btn btn-success btn-sm"
 
+    tbody.tbody-sortable
+      - @work_types.each do |work_type|
+        tr.work_type_tr
+          td = link_to work_type.name, edit_work_type_path(work_type)
+          td = number_field_tag "row[#{work_type.id}]",{},class:'input_row_order form-control',style:'width:60px;',readonly:true
+          td
+
+javascript:
+  $(function () {
+    $(".work_type_tr").each(function(i){
+      $(this).find('.input_row_order').val(i)
+    });
+    $(".tbody-sortable").sortable({
+      update: function(){
+        $(".work_type_tr").each(function(i){
+          $(this).find('.input_row_order').val(i)
+        });
+      }
+    });
+  });
+  

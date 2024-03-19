@@ -11,6 +11,7 @@ class CreateStaffs < ActiveRecord::Migration[5.2]
       t.integer :smaregi_hanbaiin_id
       t.string :phone_number
       t.integer :group_id,null:false
+      t.string :short_name,null:false
     end
   end
 end
