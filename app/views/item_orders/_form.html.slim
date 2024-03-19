@@ -13,7 +13,7 @@
   .col-md-12.form-group
     = f.label :delivery_date, "納品日（夜便）",class:'required'
     = f.date_field :delivery_date, required: true, class:"form-control"
-  .col-md-12.form-group
+  / .col-md-12.form-group
     = f.label :memo, "メモ"
     = f.text_area :memo, class:"form-control", style:"height:10em;"
 
