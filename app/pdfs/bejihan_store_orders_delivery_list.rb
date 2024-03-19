@@ -1,17 +1,19 @@
 class BejihanStoreOrdersDeliveryList < Prawn::Document
-  def initialize(hash,date,items_hash)
+  def initialize(hash,date,items_hash,stores)
     super(page_size: 'A4')
     font "vendor/assets/fonts/ipaexg.ttf"
-    hash.each_with_index do |store_material_order_list,i|
-      store_id = store_material_order_list[0]
+    stores.each_with_index do |store,i|
+      store_id = store.id
       items_data = items_hash[store_id]
-      text " 納 品 書",:align => :center,:size => 20
-      move_down 5
-      text "#{Store.find(store_material_order_list[0]).name} 宛",:size => 16
-      move_down 10
-      text "#{date.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[date.wday]})")} 発注商品一覧"
-      table_content(store_material_order_list,items_data)
-      start_new_page unless i == (hash.length - 1)
+      if hash[store.id].present? || items_data.present?
+        text " 納 品 書",:align => :center,:size => 20
+        move_down 5
+        text "#{store.name} 宛",:size => 16
+        move_down 10
+        text "#{date.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[date.wday]})")} 発注商品一覧"
+        table_content(hash[store.id],items_data)
+        start_new_page unless i == (hash[store.id].length - 1)        
+      end
     end
   end
   def table_content(store_material_order_list,items_data)
@@ -38,7 +40,7 @@ class BejihanStoreOrdersDeliveryList < Prawn::Document
   def line_item_rows(store_material_order_list)
     data= []
     data << ["check","品名","数量","単位","税別単価","金額","担当者","メモ"]
-    store_material_order_list[1].each do |material_order_quantity|
+    store_material_order_list.each do |material_order_quantity|
       rowspan = material_order_quantity[1][:orders].count
       material = material_order_quantity[1][:material]
       amount = (material_order_quantity[1][:order_quantity] / material.recipe_unit_quantity)*material.order_unit_quantity
@@ -74,5 +76,4 @@ class BejihanStoreOrdersDeliveryList < Prawn::Document
     end
     data
   end
-
 end

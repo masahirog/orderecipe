@@ -65,7 +65,7 @@ class OrdersController < AdminController
     respond_to do |format|
       format.html
       format.pdf do
-        pdf = BejihanStoreOrdersDeliveryList.new(@hash,@date,@items_hash)
+        pdf = BejihanStoreOrdersDeliveryList.new(@hash,@date,@items_hash,@stores)
         send_data pdf.render,
         filename:    "納品リスト.pdf",
         type:        "application/pdf",
