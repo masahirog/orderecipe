@@ -169,7 +169,7 @@ class WorkingHoursController < AdminController
       end
     end
     WorkingHourWorkType.import whwt_arr
-    redirect_to staff_input_working_hours_path(date:@date)
+    redirect_to detail_working_hours_path(date:@date),info:"枠を作成しました。"
   end
 
   def upload_data

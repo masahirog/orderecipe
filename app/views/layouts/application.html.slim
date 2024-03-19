@@ -63,7 +63,8 @@ html lang="ja"
                       li = link_to "月次棚卸し在庫",stocks_path(store_id:39)
                       h5 style='padding:0 10px;font-weight:bold;' その他
                       li = link_to 'シフト',shifts_path(date:@today,store_type:1)
-                      li = link_to 'タイムカード',staff_input_working_hours_path
+                      / li = link_to 'タイムカード',staff_input_working_hours_path
+                      li = link_to 'タイムカード',detail_working_hours_path                      
                       li = link_to 'TC項目',work_types_path
                       li = link_to 'シフトテンプレート',default_shifts_path(group_id:current_user.group_id,store_type:1)
                       li = link_to "キッチン設定",edit_store_path(id:39)
@@ -146,7 +147,6 @@ html lang="ja"
                       li = link_to "ブランド",brands_path
                       li = link_to "盛り付け皿設定",serving_plates_path
                       li = link_to "盛り付け包材設定",containers_path
-                      li = link_to 'タイム',detail_working_hours_path
                       li = link_to "ログアウト", destroy_user_session_path, :method => :delete
               - elsif current_user.id == 49
                 ul.nav.navbar-nav

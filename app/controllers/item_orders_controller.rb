@@ -12,7 +12,6 @@ class ItemOrdersController < ApplicationController
   def new
     @store = Store.find(params[:store_id])
     @item_order = ItemOrder.new(store_id:@store.id,delivery_date:@today+1)
-
     item_types = ItemType.where(category:"物産品")
     @items = Item.where(stock_store_id:39).order(:item_vendor_id)
     @items.each do |item|
