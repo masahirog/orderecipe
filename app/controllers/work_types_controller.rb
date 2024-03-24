@@ -21,7 +21,7 @@ class WorkTypesController < ApplicationController
   end
 
   def new
-    @work_type = WorkType.new(group_id:current_user.group_id)
+    @work_type = WorkType.new(group_id:current_user.group_id,bg_color_code:"#4169e1")
   end
 
   def edit
@@ -68,6 +68,6 @@ class WorkTypesController < ApplicationController
     end
 
     def work_type_params
-      params.require(:work_type).permit(:id,:name,:group_id,:row_order)
+      params.require(:work_type).permit(:id,:name,:group_id,:row_order,:bg_color_code)
     end
 end

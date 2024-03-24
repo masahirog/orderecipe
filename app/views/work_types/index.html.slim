@@ -5,6 +5,7 @@ h2 一覧
     thead
       tr
         th 枠名
+        th 背景色
         th 並び順
         th = submit_tag "保存する" ,class:"btn btn-success btn-sm"
 
@@ -12,6 +13,7 @@ h2 一覧
       - @work_types.each do |work_type|
         tr.work_type_tr
           td = link_to work_type.name, edit_work_type_path(work_type)
+          td style="color:#{work_type.bg_color_code};" = work_type.bg_color_code
           td = number_field_tag "row[#{work_type.id}]",{},class:'input_row_order form-control',style:'width:60px;',readonly:true
           td
 

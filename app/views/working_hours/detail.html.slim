@@ -1,17 +1,10 @@
-.clearfix.form-group
-  div style='float:left;'
-    label
-      = link_to (@date-1).strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[(@date-1).wday]})＜　"),detail_working_hours_path(date:@date-1)
-      = link_to @date.strftime("%-Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@date.wday]})"),detail_working_hours_path(date:@date)
-      = link_to (@date+1).strftime("　＞%-m/%-d (#{%w(日 月 火 水 木 金 土)[(@date+1).wday]})"),detail_working_hours_path(date:@date+1)
-
+.clearfix
   = link_to 'スタッフ更新', create_work_times_working_hours_path(date:@date), method: :post,class:'btn btn-default',style:'float:right;',data:{confirm:'スタッフの枠を作成しますか？'}
-  = form_tag monthly_working_hours_path, :method => 'get' do
-    = submit_tag "月次結果" ,class:"btn btn-primary",style:"float:right;margin-right:10px;"
-    = month_field_tag :month,@month,class:"form-control",style:'width:200px;float:right;margin-right:10px;'
+  =link_to @date-1,detail_working_hours_path(date:@date-1),data: {"turbolinks" => false}
+  span style='margin: 0 15px;' = @date
+  =link_to @date+1,detail_working_hours_path(date:@date+1),data: {"turbolinks" => false}
 
-
-.table-responsive style='height: 80vh;overflow: scroll;'
+.table-responsive style='overflow: scroll;'
   table.table.layout-fixed.table-striped style='border-collapse:separate;'
     thead style='position: sticky;top:0;background-color:white;z-index:3;'
       tr
@@ -20,49 +13,280 @@
           th style='width:100px;white-space: normal;' = link_to wh.staff.short_name,edit_staff_path(wh.staff)
     tbody
       tr
-        th
+        td
           div style='padding: 2px 0 2px 0;' シフト
           div style='padding: 3px 0 3px 0;' 実労働
-          div style='padding: 3px 0 2px 0;' 開始時間
-          div style='padding: 2px 0 3px 0;' 終了時間
-          div style='padding: 2px 0 2px 0;' 休憩(分)
         - @working_hours.each do |wh|
-          th class="working_hour_th_#{wh.id}" = render partial: "day_result", locals: { working_hour:wh }
-      - @time_frames.each do |time_frame|
-        tr class="time_frame_#{time_frame[1]}"
-          td = time_frame[0]
-          - @working_hours.each do |wh|
-            td class="time_frame_#{time_frame[1]}_working_hour_#{wh.id}"
-              - if @working_hour_work_type_hash[[wh.id,time_frame[1]]].present?
-                = form_with(model: @working_hour_work_type_hash[[wh.id,time_frame[1]]], data: {remote: true}) do |f|
-                  = f.collection_select :work_type_id, @work_types, :id, :name, {include_blank:true}, { class: "work_type_id",style:'width:100%;height:25px;border: 1px solid #ccc; -webkit-appearance: none;appearance: none;padding:0 5px;border-radius:0.3em;'}
-
-
+          td class="th_#{wh.id}"
+            div style='padding: 2px 0 2px 0;'
+                - if @shift_hash[wh.staff_id].present?
+                    = @shift_hash[wh.staff_id].fix_shift_pattern.working_hour 
+                - else
+                    span -
+            div.working_hour style='padding: 3px 0 3px 0;' = (@working_hour_whwt_hash[wh.id]/60).round(1) if @working_hour_whwt_hash[wh.id]
+#ec
+dialog id="dialog"
+  = form_with(model: @working_hour_work_type, data: {remote: true},method:"dialog",id:"form") do |f|
+    = f.hidden_field :working_hour_id,id:"working_hour_id"
+    h2#title
+    h3 id="room-name"
+    h3 id="date"
+    div class="row"
+        = f.label :start, "内容"
+        = f.collection_select :work_type_id, @work_types, :id, :name, {}, { class: "work_type_id form-control",id:'work_type_id'}
+    div class="row"
+        = f.label :start, "開始"
+        = f.time_field :start, required: true, class:"form-control",id:"start"
+    div class="row"
+        = f.label :end, "開始"
+        = f.time_field :end, required: true, class:"form-control",id:"end"
+    div class="row"
+        = f.label :memo, "メモ"
+        = f.text_area :memo, class:"form-control",id:"memo"
+    menu.text-center
+      button#confirm.btn.btn-sm.btn-primary type="submit" 保存する
+    menu
+      button#delete.btn.btn-sm.btn-danger.pull-right 削除
+      button#cancel.btn.btn-sm.btn-default.pull-right style='margin-right:20px;' type="reset" 閉じる
 
 css:
-  .item{
-    height:35px;
-  }
-  .table-responsive th {
-    white-space: nowrap;
-    background-color:white;
-  }
-  table.layout-fixed {
-    table-layout: fixed;
-    border-collspace:separate;
-  }
-  .table th:first-child,td:first-child{
-    position: sticky;
-    left: 0;
-    background-color:white;
-    text-align: right;
-  }
-  th,td {
-    font-weight:normal;
-    width:100px;
-  }
+    .ec-lines{
+        width: 50px;
+    }
+    .ec-time{
+        width: 50px;
+    }
+    #ec{
+        width: 100%;
+        height:80vh;
+        overflow: scroll;
+        display: flex;
+        overscroll-behavior-x: contain;
+    }        
+    .ec-resource{
+        width: 130px;
+    }
+
+   
+    .ec-prev:disabled, .ec-next:disabled {
+        background-color: #ced4da;
+    }
+    dialog {
+        width: 400px;
+        padding: 20px;
+        border: solid 1px;
+    }
+
+    .row {
+        display: flex;
+        margin: 10px;
+    }
+
+    .row label {
+        width: 90px;
+    }
+
+    textarea {
+        width: 250px;
+    }
+
+    .item{
+        height:35px;
+    }
+    .table-responsive th {
+        white-space: nowrap;
+        background-color:white;
+    }
+    table.layout-fixed {
+        table-layout: fixed;
+        border-collspace:separate;
+    }
+    .table th:first-child,td:first-child{
+        position: sticky;
+        left: 0;
+        background-color:white;
+        text-align: right;
+    }
+    th,td {
+        font-weight:normal;
+        width:100px;
+    }
 
 javascript:
-  $('.work_type_id').on( 'change',function(){
-    Rails.fire($(this).parents('form')[0], 'submit');
-  });
+    $(document).on('turbolinks:load', function() {
+        // document.getElementsByClassName('ec').remove();
+        console.log(document.getElementsByClassName('ec').length);
+        const resources = gon.working_hours
+        const events = gon.events
+
+        function createDate(hours, minutes) {
+          const now = new Date();
+          now.setHours(hours);
+          now.setMinutes(minutes);
+          now.setSeconds(0);
+          return now;
+        }
+
+        function getOverlappingEvents(event) {
+            const rId = event.resource ? event.resource.id : event.resourceIds[0];
+            return ec.getEvents().filter(e => e.resourceIds[0] == rId && e.start < event.end && event.start < e.end);
+        }
+
+        function hasOverlappingEvents(event) {
+          return getOverlappingEvents(event).length > 0;
+        }
+
+        function hasOtherOverlappingEvents(event) {
+            return getOverlappingEvents(event).filter(e => e.id != event.id).length > 0
+        }
+
+        const ec = new EventCalendar(document.getElementById('ec'), {
+          resources,
+          events,
+          view: 'resourceTimeGridDay',
+          allDaySlot: false,
+          date:gon.date,
+          slotMinTime: '04:00:00',
+          slotMaxTime: '22:00:00',
+          nowIndicator: true,
+          slotDuration: '00:15:00',
+          selectable: true,
+          pointer:"timeGrid",
+          select: function(event) {
+            if (hasOverlappingEvents(event)) {
+              ec.unselect();
+              return;
+            }
+            showModal(event,'create');
+          },
+          eventDrop: function ({ event, revert }) {
+            $.ajax({
+              url: "/working_hour_work_types/working_hour_change",
+              type:'GET',
+              data: { event:event },
+              dataType: "json",
+              async: false
+            })
+            .done(function(data){
+                $(".th_" + data['working_hour_id'] ).children(".working_hour").text(data['working_hour_id_worktime']);
+                $(".th_" + data['working_hour_id_was'] ).children(".working_hour").text(data['working_hour_id_was_worktime']);
+            });
+            if (hasOtherOverlappingEvents(event)) revert();
+          },
+          eventResize: function ({ event, revert }) {
+            $.ajax({
+              url: "/working_hour_work_types/time_change",
+              type:'GET',
+              data: { event:event },
+              dataType: "json",
+              async: false
+            })
+            .done(function(data){
+                $(".th_" + data['working_hour_id'] ).children(".working_hour").text(data['worktime']);
+            });
+            if (hasOtherOverlappingEvents(event)) revert();
+          },
+          datesSet: function ({ start }) {
+            toggleDateButtonsFor7Days(start);
+          },
+          eventClick: function ({ event }) {
+            showModal(event,'update');
+          }
+        });
+
+        function toggleDateButtonsFor7Days(start) {
+          const next = document.querySelector('.ec-next');
+          const prev = document.querySelector('.ec-prev');
+          const now = dayjs();
+          const targetDate = dayjs(start);
+          prev.disabled = targetDate.isBefore(now);
+          next.disabled = targetDate.isAfter(now.add(6, 'day'));  
+        }
+
+        function addEvent(event) {
+          if (event.id) {
+            ec.updateEvent(event);
+            return;
+          }
+          event.id = new Date().getTime();
+          event.resourceIds = [ event.resource.id ];
+          ec.addEvent(event);
+          ec.unselect();
+        }
+
+        const dialog = document.querySelector('dialog');
+
+        function showModal(event,action) {
+          function getResourceTitle(event) {
+            const resourceId = event.resource ? event.resource.id : event.resourceIds[0];
+            const resource = resources.find(r => r.id == resourceId);
+            return resource ? resource.title : '';
+          }
+          console.log(event)
+          document.getElementById('room-name').innerText = getResourceTitle(event);
+          const startDate = dayjs(event.start);
+          if (action == "create") {
+            document.getElementById("delete").style.visibility ="hidden";
+            document.getElementById('working_hour_id').value = event.resource.id;
+          }else{
+            document.getElementById("delete").style.visibility ="visible";
+            document.getElementById('working_hour_id').value = event['resourceIds'].join();
+            document.getElementById('work_type_id').value = gon.work_type_hash[event.id].work_type_id;
+            document.getElementById('memo').value = gon.work_type_hash[event.id].memo;
+            document.getElementById('form').action = "/working_hour_work_types/"+event.id
+            document.getElementById('form').method = "POST"
+            document.getElementsByName('_method')[0].value = 'patch'
+          }
+          document.getElementById('date').innerText = startDate.format('YYYY/MM/DD');
+          document.getElementById('start').value = dayjs(event.start).format('HH:mm');
+          document.getElementById('end').value = dayjs(event.end).format('HH:mm');
+          document.getElementById('title').innerText = event.title || '';
+          dialog.event = event;
+          dialog.showModal();
+        }
+
+        document.getElementById('form').onsubmit = function(e) {
+          e.preventDefault();
+          const event = dialog.event;
+          const startTime = document.getElementById('start').value.split(':');
+          event.start.setHours(Number(startTime[0]));
+          event.start.setMinutes(Number(startTime[1]));
+          const endTime = document.getElementById('end').value.split(':');
+          event.end.setHours(Number(endTime[0]));
+          event.end.setMinutes(Number(endTime[1]));
+          event.title = document.getElementById('work_type_id').options[document.getElementById('work_type_id').selectedIndex].innerHTML + "\n" + document.getElementById('memo').value;
+          addEvent(event);
+          gon.events.push(event);
+          gon.work_type_hash[event.id] = {id:event.id,work_type_id:Number(document.getElementById('work_type_id').value)};
+          dialog.close();
+        }
+
+        document.getElementById('cancel').onclick = function() {
+          dialog.close();
+        };
+
+        const elem = document.getElementById('delete')
+        if(elem) {
+          elem.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (confirm('削除しますか？')) {
+                const event = dialog.event;
+                $.ajax({
+                  url: "/working_hour_work_types/"+ event.id,
+                  type:'DELETE',
+                  data: { event:event },
+                  dataType: "json",
+                  async: false
+                })
+                .done(function(data){
+                    $(".th_" + data['working_hour_id'] ).children(".working_hour").text(data['worktime']);
+                });
+                ec.removeEventById(event.id);
+                dialog.close();
+                return;
+            } else {
+              return false
+            }
+        });
+        }
+    });

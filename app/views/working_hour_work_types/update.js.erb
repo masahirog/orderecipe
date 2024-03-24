@@ -1,1 +1,1 @@
-$(".time_frame_" + <%= @working_hour_work_type.time_frame %> + "_working_hour_"+ <%= @working_hour_work_type.working_hour_id %>).css("background-color",'#ffefd5');
+$(".th_" + <%= @working_hour.id %> ).children(".working_hour").text(<%= @working_hour.working_time %>);

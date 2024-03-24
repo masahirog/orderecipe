@@ -1,13 +1,13 @@
-= form_for(working_hour, data: { remote: true }) do |f|
-  = f.hidden_field :id,class:'working_hour_id'
-  div
-    - if @shift_hash[[working_hour.staff_id,working_hour.date]].present?
-      input.form-control style='width:100%;padding:3px 5px;height:25px;' readonly=true value="#{@shift_hash[[working_hour.staff_id,working_hour.date]].fix_shift_pattern.working_hour}"
-    - else
-      input.form-control style='width:100%;padding:3px 5px;height:25px;' readonly=true
-  div
-    input.working_time.form-control style='width:100%;padding:3px 5px;height:25px;' readonly=true value="#{working_hour.working_time}"
-  div = f.time_field :start_time,class:'form-control input_time input_start_time',style:'width:100%;padding:3px 5px;height:25px;'
-  div = f.time_field :end_time,class:'form-control input_time input_end_time',style:'width:100%;padding:3px 5px;height:25px;'
-  div = f.number_field :break_minutes,class:'form-control',style:'width:100%;padding:3px 5px;height:25px;',required:true
-  div = f.submit "保存",class:'btn btn-primary btn-sm btn-save',style:'width:100%;padding:3px 5px;height:25px;'
+/ = form_for(working_hour, data: { remote: true }) do |f|
+/   = f.hidden_field :id,class:'working_hour_id'
+/   div
+/     - if @shift_hash[[working_hour.staff_id,working_hour.date]].present?
+/       input.form-control style='width:100%;padding:3px 5px;height:25px;' readonly=true value="#{@shift_hash[[working_hour.staff_id,working_hour.date]].fix_shift_pattern.working_hour}"
+/     - else
+/       input.form-control style='width:100%;padding:3px 5px;height:25px;' readonly=true
+/   div
+/     input.working_time.form-control style='width:100%;padding:3px 5px;height:25px;' readonly=true value="#{working_hour.working_time}"
+/   div = f.time_field :start_time,class:'form-control input_time input_start_time',style:'width:100%;padding:3px 5px;height:25px;'
+/   div = f.time_field :end_time,class:'form-control input_time input_end_time',style:'width:100%;padding:3px 5px;height:25px;'
+/   div = f.number_field :break_minutes,class:'form-control',style:'width:100%;padding:3px 5px;height:25px;',required:true
+/   div = f.submit "保存",class:'btn btn-primary btn-sm btn-save',style:'width:100%;padding:3px 5px;height:25px;'

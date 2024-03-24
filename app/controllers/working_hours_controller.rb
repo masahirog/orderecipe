@@ -1,5 +1,47 @@
 class WorkingHoursController < AdminController
   before_action :set_working_hour, only: %i[ show edit update destroy ]
+  def detail
+    if params[:date].present?
+      @date = Date.parse(params[:date])
+    else
+      @date = Date.today
+    end
+    gon.date = @date
+    @working_hour_work_type = WorkingHourWorkType.new()
+    gon.working_hours = []
+    gon.events = []
+    hash = {}
+    @working_hours = WorkingHour.includes(:staff).where(date:@date,store_id:39)
+    @working_hours.each do |wh|
+      gon.working_hours << { id: wh.id, title: wh.staff.short_name}
+    end
+    @work_types = WorkType.order(:row_order)
+
+    WorkingHourWorkType.includes(:work_type).where("start >= ? AND start < ?", @date, @date + 1).each_with_index do |whwt,i|
+      hash[whwt.id] = whwt
+      gon.events << {
+        id: whwt.id,
+        resourceIds: [whwt.working_hour_id],
+        start: whwt.start,
+        end: whwt.end,
+        title: "#{whwt.work_type.name}\n#{whwt.memo}",
+        startEditable: false,
+        durationEditable: false,
+        backgroundColor: "#{whwt.work_type.bg_color_code}",
+        editable: true,
+      }
+    end
+    gon.work_type_hash = hash
+    @shift_hash = {count:0,time:0}
+    Shift.includes(:fix_shift_pattern).where(date:@date,store_id:39).each do |shift|
+      @shift_hash[shift.staff_id] = shift
+      if shift.fix_shift_pattern_id.present? && shift.fix_shift_pattern.working_hour > 0
+        @shift_hash[:count] += 1
+        @shift_hash[:time] += shift.fix_shift_pattern.working_hour
+      end
+    end
+    @working_hour_whwt_hash = WorkingHourWorkType.where("start >= ? AND start < ?", @date, @date + 1).group(:working_hour_id).sum(:worktime)
+  end
   def monthly
     date = "#{params[:month]}-01".to_date
     @shift_dates =(date.beginning_of_month..date.end_of_month).to_a
@@ -83,71 +125,8 @@ class WorkingHoursController < AdminController
     end
   end
 
-  def detail
-    @time_frames = [['5:00',1],['5:30',2],['6:00',3],['6:30',4],['7:00',5],['7:30',6],['8:00',7],['8:30',8],['9:00',9],['9:30',10],
-    ['10:00',11],['10:30',12],['11:00',13],['11:30',14],['12:00',15],['12:30',16],['13:00',17],['13:30',18],['14:00',19],['14:30',20],
-    ['15:00',21],['15:30',22],['16:00',23],['16:30',24],['17:00',25],['17:30',26],['18:00',27],['18:30',28],['19:00',29],['19:30',30],
-    ['20:00',31],['20:30',32],['21:00',33],['21:30',34]] 
-
-    if params[:date]
-      @date = Date.parse(params[:date])
-    else
-      @date = Date.today
-    end
-    @month = "#{@date.year}-#{sprintf("%02d",@date.month)}"
-    @working_hours = WorkingHour.includes(:staff).joins(:staff).order("staffs.row").where(date:@date)
-
-    @shift_hash = {count:0,time:0}
-    Shift.includes(:fix_shift_pattern).where(date:@date,store_id:39).each do |shift|
-      @shift_hash[[shift.staff_id,shift.date]] = shift
-      if shift.fix_shift_pattern_id.present? && shift.fix_shift_pattern.working_hour > 0
-        @shift_hash[:count] += 1
-        @shift_hash[:time] += shift.fix_shift_pattern.working_hour
-      end
-    end
-    @times = []
-    15.times do |hour|
-      [["00",0.0],["15",0.25],["30",0.5],["45",0.75]].each do |min|
-        @times  << ["#{hour}:#{min[0]}",(hour + min[1])]
-      end
-    end
-    @working_hour_work_type_hash = WorkingHourWorkType.where(working_hour_id:@working_hours.ids).map{|whwt|[[whwt.working_hour_id,whwt.time_frame],whwt]}.to_h
-    @work_types = WorkType.order(:row_order)
-  end
-
-
-  def staff_input
-    if params[:date]
-      @date = Date.parse(params[:date])
-    else
-      @date = Date.today
-    end
-    @month = "#{@date.year}-#{sprintf("%02d",@date.month)}"
-    @working_hours = WorkingHour.includes(:staff).where(date:@date)
-
-    @shift_hash = {count:0,time:0}
-    Shift.includes(:fix_shift_pattern).where(date:@date,store_id:39).each do |shift|
-      @shift_hash[[shift.staff_id,shift.date]] = shift
-      if shift.fix_shift_pattern_id.present? && shift.fix_shift_pattern.working_hour > 0
-        @shift_hash[:count] += 1
-        @shift_hash[:time] += shift.fix_shift_pattern.working_hour
-      end
-    end
-    @times = []
-    15.times do |hour|
-      [["00",0.0],["15",0.25],["30",0.5],["45",0.75]].each do |min|
-        @times  << ["#{hour}:#{min[0]}",(hour + min[1])]
-      end
-    end
-  end
-
-
 
   def create_work_times
-    time_frames = [['5:00',1],['5:30',2],['6:00',3],['6:30',4],['7:00',5],['7:30',6],['8:00',7],['8:30',8],['9:00',9],['9:30',10],
-    ['10:00',11],['10:30',12],['11:00',13],['11:30',14],['12:00',15],['12:30',16],['13:00',17],['13:30',18],['14:00',19],['14:30',20],
-    ['15:00',21],['15:30',22],['16:00',23],['16:30',24],['17:00',25],['17:30',26],['18:00',27],['18:30',28],['19:00',29],['19:30',30],
-    ['20:00',31],['20:30',32],['21:00',33],['21:30',34]] 
     new_arr = []
     whwt_arr = []
     @date = Date.parse(params[:date])
@@ -162,13 +141,6 @@ class WorkingHoursController < AdminController
     end
     WorkingHour.import new_arr
     @working_hours = WorkingHour.where(date:@date,store_id:39)
-    @working_hour_work_type_hash = WorkingHourWorkType.where(working_hour_id:@working_hours.ids).map{|whwt|[[whwt.working_hour_id,whwt.time_frame],whwt]}.to_h
-    @working_hours.each do |wh|
-      time_frames.each do |tm|
-        whwt_arr << WorkingHourWorkType.new(working_hour_id:wh.id,time_frame:tm[1]) unless @working_hour_work_type_hash[[wh.id,tm[1]]].present?
-      end
-    end
-    WorkingHourWorkType.import whwt_arr
     redirect_to detail_working_hours_path(date:@date),info:"枠を作成しました。"
   end
 
@@ -253,7 +225,7 @@ class WorkingHoursController < AdminController
     end
 
     def working_hour_params
-      params.require(:working_hour).permit(:id,:store_id,:staff_id,:date,:start_time,:end_time,:working_time,:break_minutes)
+      params.require(:working_hour).permit(:id,:store_id,:staff_id,:date,:working_time)
     end
 end
 

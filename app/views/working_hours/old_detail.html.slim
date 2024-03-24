@@ -1,0 +1,68 @@
+.clearfix.form-group
+  div style='float:left;'
+    label
+      = link_to (@date-1).strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[(@date-1).wday]})＜　"),detail_working_hours_path(date:@date-1)
+      = link_to @date.strftime("%-Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@date.wday]})"),detail_working_hours_path(date:@date)
+      = link_to (@date+1).strftime("　＞%-m/%-d (#{%w(日 月 火 水 木 金 土)[(@date+1).wday]})"),detail_working_hours_path(date:@date+1)
+
+  = link_to 'スタッフ更新', create_work_times_working_hours_path(date:@date), method: :post,class:'btn btn-default',style:'float:right;',data:{confirm:'スタッフの枠を作成しますか？'}
+  = form_tag monthly_working_hours_path, :method => 'get' do
+    = submit_tag "月次結果" ,class:"btn btn-primary",style:"float:right;margin-right:10px;"
+    = month_field_tag :month,@month,class:"form-control",style:'width:200px;float:right;margin-right:10px;'
+
+
+.table-responsive style='height: 80vh;overflow: scroll;'
+  table.table.layout-fixed.table-striped style='border-collapse:separate;'
+    thead style='position: sticky;top:0;background-color:white;z-index:3;'
+      tr
+        th 
+        - @working_hours.each do |wh|
+          th style='width:100px;white-space: normal;' = link_to wh.staff.short_name,edit_staff_path(wh.staff)
+    tbody
+      tr
+        th
+          div style='padding: 2px 0 2px 0;' シフト
+          div style='padding: 3px 0 3px 0;' 実労働
+          div style='padding: 3px 0 2px 0;' 開始時間
+          div style='padding: 2px 0 3px 0;' 終了時間
+          div style='padding: 2px 0 2px 0;' 休憩(分)
+        - @working_hours.each do |wh|
+          th class="working_hour_th_#{wh.id}" = render partial: "day_result", locals: { working_hour:wh }
+      - @time_frames.each do |time_frame|
+        tr class="time_frame_#{time_frame[1]}"
+          td = time_frame[0]
+          - @working_hours.each do |wh|
+            td class="time_frame_#{time_frame[1]}_working_hour_#{wh.id}"
+              - if @working_hour_work_type_hash[[wh.id,time_frame[1]]].present?
+                = form_with(model: @working_hour_work_type_hash[[wh.id,time_frame[1]]], data: {remote: true}) do |f|
+                  = f.collection_select :work_type_id, @work_types, :id, :name, {include_blank:true}, { class: "work_type_id",style:'width:100%;height:25px;border: 1px solid #ccc; -webkit-appearance: none;appearance: none;padding:0 5px;border-radius:0.3em;'}
+
+
+
+css:
+  .item{
+    height:35px;
+  }
+  .table-responsive th {
+    white-space: nowrap;
+    background-color:white;
+  }
+  table.layout-fixed {
+    table-layout: fixed;
+    border-collspace:separate;
+  }
+  .table th:first-child,td:first-child{
+    position: sticky;
+    left: 0;
+    background-color:white;
+    text-align: right;
+  }
+  th,td {
+    font-weight:normal;
+    width:100px;
+  }
+
+javascript:
+  $('.work_type_id').on( 'change',function(){
+    Rails.fire($(this).parents('form')[0], 'submit');
+  });

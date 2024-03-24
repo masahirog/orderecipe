@@ -3,6 +3,8 @@
     = f.label :name, "枠名"
     = f.text_field :name, class:"form-control"
     = f.hidden_field :group_id
-
+  .form-group
+    = f.label :bg_color_code, "背景色コード"
+    = f.text_field :bg_color_code, class:"form-control"
 
   .actions = f.submit "保存する",class:'btn btn-success'

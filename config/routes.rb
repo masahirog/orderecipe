@@ -81,9 +81,13 @@ Rails.application.routes.draw do
   resources :tasks do
     put :sort
   end
+  
+  get "working_hour_work_types/working_hour_change" => "working_hour_work_types#working_hour_change"
+  get "working_hour_work_types/time_change" => "working_hour_work_types#time_change"
   resources :working_hours do
     collection do
       get :detail
+      get :detail_chart
       get :result
       get :monthly
       post :create_work_times

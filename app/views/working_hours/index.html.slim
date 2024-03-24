@@ -1,59 +1,59 @@
-h1 ="#{@group.name} 勤怠データ"
-= form_tag working_hours_path, :method => 'get' do
-  = hidden_field_tag :group_id,@group.id
-  = date_field_tag :from, @from, class:"form-control float-left",style:'width:200px;float:left;margin-right:20px;'
-  div style="float:left;padding:8px;margin-right:20px;" 〜
-  = date_field_tag :to, @to, class:"form-control",style:'width:200px;float:left;margin-right:20px;'
-  = select_tag :name, options_for_select(@staffs,params[:name]),include_blank:true, class: "form-control",style:'width:200px;float:left;margin-right:20px;'
-  = submit_tag "絞り込む" ,class:"btn btn-primary",style:'float:left;'
+/ h1 ="#{@group.name} 勤怠データ"
+/ = form_tag working_hours_path, :method => 'get' do
+/   = hidden_field_tag :group_id,@group.id
+/   = date_field_tag :from, @from, class:"form-control float-left",style:'width:200px;float:left;margin-right:20px;'
+/   div style="float:left;padding:8px;margin-right:20px;" 〜
+/   = date_field_tag :to, @to, class:"form-control",style:'width:200px;float:left;margin-right:20px;'
+/   = select_tag :name, options_for_select(@staffs,params[:name]),include_blank:true, class: "form-control",style:'width:200px;float:left;margin-right:20px;'
+/   = submit_tag "絞り込む" ,class:"btn btn-primary",style:'float:left;'
 
-button type="button" class="btn btn-default" data-toggle="modal" data-target="#upload" style='float:right;' アップロード
-#upload.modal.fade tabindex="-1"
-  = form_tag upload_data_working_hours_path, multipart: true do
-    .modal-dialog style='width:1000px;'
-      .modal-content
-        .modal-header
-        .modal-body
-          = hidden_field_tag :group_id,@group.id
-          = file_field_tag :file,class:'form-control',style:'padding:10px;height:100%;'
-        .modal-footer
-          button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
-          = submit_tag "アップロード",class:'btn btn-primary'
+/ button type="button" class="btn btn-default" data-toggle="modal" data-target="#upload" style='float:right;' アップロード
+/ #upload.modal.fade tabindex="-1"
+/   = form_tag upload_data_working_hours_path, multipart: true do
+/     .modal-dialog style='width:1000px;'
+/       .modal-content
+/         .modal-header
+/         .modal-body
+/           = hidden_field_tag :group_id,@group.id
+/           = file_field_tag :file,class:'form-control',style:'padding:10px;height:100%;'
+/         .modal-footer
+/           button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
+/           = submit_tag "アップロード",class:'btn btn-primary'
 
-table.table
-  thead
-    tr
-      th 日付
-      th 姓名
-      th シフト
-      th シフト勤務時間
-      th 実労働時間
-      th style="width:200px;" グループ
-      th style="width:200px;" 店舗
-  tbody
-    - @working_hours.each do |wh|
-      tr class="wh_tr_#{wh.id}"
-        td = link_to wh.date, edit_working_hour_path(wh)
-        td = wh.name
-        td
-        td
-        td = wh.working_time
-        td.edit_group_td
-          = render partial: "edit_group", locals: { working_hour:wh }
-        td.edit_store_td
-          = render partial: "edit_store", locals: { working_hour:wh }
-br
-= paginate @working_hours
+/ table.table
+/   thead
+/     tr
+/       th 日付
+/       th 姓名
+/       th シフト
+/       th シフト勤務時間
+/       th 実労働時間
+/       th style="width:200px;" グループ
+/       th style="width:200px;" 店舗
+/   tbody
+/     - @working_hours.each do |wh|
+/       tr class="wh_tr_#{wh.id}"
+/         td = link_to wh.date, edit_working_hour_path(wh)
+/         td = wh.name
+/         td
+/         td
+/         td = wh.working_time
+/         td.edit_group_td
+/           = render partial: "edit_group", locals: { working_hour:wh }
+/         td.edit_store_td
+/           = render partial: "edit_store", locals: { working_hour:wh }
+/ br
+/ = paginate @working_hours
 
-javascript:
-  $(function() {
-    $(document).on("change", ".select_store", function(event) {
-      var wh_id = $(this).parent().find('.working_hour_id').val();
-      Rails.fire($('.working_hour_store_form_' + wh_id)[0], 'submit');
-    });
-    $(document).on("change", ".select_group", function(event) {
-      var wh_id = $(this).parent().find('.working_hour_id').val();
-      Rails.fire($('.working_hour_group_form_' + wh_id)[0], 'submit');
-    });
+/ javascript:
+/   $(function() {
+/     $(document).on("change", ".select_store", function(event) {
+/       var wh_id = $(this).parent().find('.working_hour_id').val();
+/       Rails.fire($('.working_hour_store_form_' + wh_id)[0], 'submit');
+/     });
+/     $(document).on("change", ".select_group", function(event) {
+/       var wh_id = $(this).parent().find('.working_hour_id').val();
+/       Rails.fire($('.working_hour_group_form_' + wh_id)[0], 'submit');
+/     });
 
-  });
+/   });

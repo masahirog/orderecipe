@@ -5,6 +5,7 @@ class CreateWorkTypes < ActiveRecord::Migration[6.0]
       t.references :group
       t.timestamps
       t.integer :row_order
+      t.string :bg_color_code,default:"#4169e1",null:false
     end
   end
 end
