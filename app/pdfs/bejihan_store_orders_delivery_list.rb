@@ -12,7 +12,7 @@ class BejihanStoreOrdersDeliveryList < Prawn::Document
         move_down 10
         text "#{date.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[date.wday]})")} 発注商品一覧"
         table_content(hash[store.id],items_data)
-        start_new_page unless i == (hash[store.id].length - 1)        
+        start_new_page unless i == stores.length - 1
       end
     end
   end

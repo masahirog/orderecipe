@@ -9,19 +9,22 @@ button type="button" class="btn btn-default" data-toggle="modal" data-target="#s
           table.table.table-striped
             thead
               tr
-                th 日付
+                th
+                  div 日付
+                  input.all_box type="checkbox"
                 - @all_stores.each do |store|
-                  th
-                    div
+                  th class="#{store.id}"
                     div = store.short_name
+                    input type='checkbox' class='store_check'
+                    
             tbody
               - @today_after_daily_menus.each do |dm|
                 tr
                   td.date
                     span = dm.start_time.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[dm.start_time.wday]})")
-                    input.all_box type="checkbox"
+                    input.tr_box type="checkbox"
                   - @all_stores.each do |store|
-                    td.clearfix
+                    td.clearfix class="store_#{store.id}_date_check"
                       div style='float:left;'
                         - sdmds_count = 0
                         - sdmds_count = dm.store_daily_menus.find_by(store_id:store.id).store_daily_menu_details.count if dm.store_daily_menus.find_by(store_id:store.id)
@@ -90,11 +93,28 @@ button type="button" data-toggle="modal" data-target="#create_1month_modal" clas
             = dmd.manufacturing_number
 
 javascript:
-  $(".all_box").on("change",function(){
+  $(".tr_box").on("change",function(){
     if ( $(this).is(':checked') ){
       $(this).parents("tr").find(".reflect_check").attr("checked", true).prop("checked", true).change();
     }else{
       $(this).parents("tr").find(".reflect_check").attr("checked", false).prop("checked", false).change();
+    }
+  });
+  $(".all_box").on("change",function(){
+    if ( $(this).is(':checked') ){
+      $(".reflect_check").attr("checked", true).prop("checked", true).change();
+    }else{
+      $(".reflect_check").attr("checked", false).prop("checked", false).change();
+    }
+  });
+
+  $(".store_check").on("change",function(){
+    var store_id = $(this).parents("th").attr("class")
+    console.log(store_id)
+    if ( $(this).is(':checked') ){
+      $(".store_"+store_id+"_date_check").find(".reflect_check").attr("checked", true).prop("checked", true).change();
+    }else{
+      $(".store_"+store_id+"_date_check").find(".reflect_check").attr("checked", false).prop("checked", false).change();
     }
   });
     
