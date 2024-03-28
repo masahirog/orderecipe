@@ -80,7 +80,7 @@ class Vendor::MaterialVendorStocksController < ApplicationController
         future_material_vendor_stocks.each_with_index do |fmvs,i|
           unless i == 0
             previous_end_day_stock = @end_day_stock[material_id]
-            end_day_stock = previous_end_day_stock + fmvs.new_stock_amount - fmvs.shipping_amount
+            end_day_stock = previous_end_day_stock.to_i + fmvs.new_stock_amount.to_i - fmvs.shipping_amount.to_i
             fmvs.update(end_day_stock:end_day_stock,previous_end_day_stock:previous_end_day_stock)
           end
           @hash[material_id][fmvs.date] = fmvs
@@ -123,7 +123,7 @@ class Vendor::MaterialVendorStocksController < ApplicationController
             eds = @end_day_stock[material_id]
           else
             previous_end_day_stock = eds
-            eds = previous_end_day_stock + fmvs.new_stock_amount - fmvs.shipping_amount
+            eds = previous_end_day_stock.to_i + fmvs.new_stock_amount.to_i - fmvs.shipping_amount.to_i
             fmvs.update(end_day_stock:eds,previous_end_day_stock:previous_end_day_stock)
           end
           @hash[material_id][fmvs.date] = fmvs
@@ -159,5 +159,9 @@ class Vendor::MaterialVendorStocksController < ApplicationController
 
     def vendor_material_vendor_stock_params
       params.require(:material_vendor_stock).permit(:id,:material_id,:date,:end_day_stock,:shipping_amount,:new_stock_amount,:previous_end_day_stock,:estimated_amount)
+      # params.require(:material_vendor_stock)[:shipping_amount] = 0 if params.require(:material_vendor_stock)[:shipping_amount].blank?
+      # params.require(:material_vendor_stock)[:new_stock_amount] = 0 if params.require(:material_vendor_stock)[:new_stock_amount].blank?
+      # params.require(:material_vendor_stock)[:estimated_amount] = 0 if params.require(:material_vendor_stock)[:estimated_amount].blank?
+
     end
 end

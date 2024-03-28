@@ -463,11 +463,11 @@ ActiveRecord::Schema.define(version: 2024_03_18_141142) do
     t.date "date", null: false
     t.integer "previous_end_day_stock", default: 0, null: false
     t.integer "end_day_stock", default: 0, null: false
-    t.integer "shipping_amount", default: 0, null: false
-    t.integer "new_stock_amount", default: 0, null: false
+    t.integer "shipping_amount"
+    t.integer "new_stock_amount"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.integer "estimated_amount", default: 0, null: false
+    t.integer "estimated_amount"
     t.index ["date", "material_id"], name: "index_material_vendor_stocks_on_date_and_material_id", unique: true
   end
 
