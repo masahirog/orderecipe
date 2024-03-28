@@ -2,7 +2,7 @@
   = form_with model: [:vendor, @hash[material.id][date]], data: {remote: true} do |f|
     div.td_div
       - if current_user.admin == true
-        = f.number_field :estimated_amount,class:'',style:'',onClick:"this.select();"
+        = f.number_field :estimated_amount,class:'',style:'width:90%;',onClick:"this.select();"
       - else
         - if @hash[material.id][date].estimated_amount > 0
           span = @hash[material.id][date].estimated_amount
