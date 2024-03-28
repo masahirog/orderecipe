@@ -68,6 +68,7 @@ class WorkingHourWorkTypesController < ApplicationController
     @working_hour_work_type.worktime = work_time_minute
     work_time_hour = @working_hour.working_time + work_time_hour
     @working_hour.update(working_time:work_time_hour)
+    gon.events = []
     respond_to do |format|
       if @working_hour_work_type.save
         format.html { redirect_to working_hour_work_type_url(@working_hour_work_type), notice: "Working hour work type was successfully created." }

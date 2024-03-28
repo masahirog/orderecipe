@@ -27,15 +27,7 @@ td
 			= f.hidden_field :material_id,value:@material.id
 			= f.hidden_field :previous_end_day_stock,value:@previous_end_day_stock
 			= f.hidden_field :end_day_stock,value:@end_day_stock
-td style="display:none;"
-	- if @dates_stocks[date].present?
-		= form_with model: [:vendor, @dates_stocks[date]], data: {remote: true} do |f|
-			= f.number_field :previous_end_day_stock,class:'input previous_end_day_stock form-control',style:'width:70px;float:left;'
-	- else
-		= form_with model: [:vendor, MaterialVendorStock.new], data: {remote: true} do |f|
-			= f.number_field :previous_end_day_stock,value:@previous_end_day_stock,class:'input previous_end_day_stock form-control',style:'width:70px;float:left;'
-			= f.hidden_field :date,value:date
-			= f.hidden_field :material_id,value:@material.id
+
 td
 	- if @dates_stocks[date].present?
 		- @end_day_stock = @dates_stocks[date].end_day_stock

@@ -114,8 +114,6 @@ css:
 
 javascript:
     $(document).on('turbolinks:load', function() {
-        // document.getElementsByClassName('ec').remove();
-        console.log(document.getElementsByClassName('ec').length);
         const resources = gon.working_hours
         const events = gon.events
 
@@ -247,6 +245,19 @@ javascript:
 
         document.getElementById('form').onsubmit = function(e) {
           e.preventDefault();
+          // $.ajax({
+          //   url: "/working_hour_work_types/"+ event.id,
+          //   type:'DELETE',
+          //   data: { event:event },
+          //   dataType: "json",
+          //   async: false
+          // })
+          // .done(function(data){
+          //     $(".th_" + data['working_hour_id'] ).children(".working_hour").text(data['worktime']);
+          // });
+
+
+
           const event = dialog.event;
           const startTime = document.getElementById('start').value.split(':');
           event.start.setHours(Number(startTime[0]));
@@ -256,8 +267,11 @@ javascript:
           event.end.setMinutes(Number(endTime[1]));
           event.title = document.getElementById('work_type_id').options[document.getElementById('work_type_id').selectedIndex].innerHTML + "\n" + document.getElementById('memo').value;
           addEvent(event);
+          // console.log(event)
+
           gon.events.push(event);
           gon.work_type_hash[event.id] = {id:event.id,work_type_id:Number(document.getElementById('work_type_id').value)};
+          // console.log(gon.work_type_hash)
           dialog.close();
         }
 

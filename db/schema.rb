@@ -458,7 +458,7 @@ ActiveRecord::Schema.define(version: 2024_03_18_141142) do
     t.index ["material_id", "store_id"], name: "index_material_store_orderables_on_material_id_and_store_id", unique: true
   end
 
-  create_table "material_vendor_stocks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+  create_table "material_vendor_stocks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "material_id", null: false
     t.date "date", null: false
     t.integer "previous_end_day_stock", default: 0, null: false
@@ -467,6 +467,7 @@ ActiveRecord::Schema.define(version: 2024_03_18_141142) do
     t.integer "new_stock_amount", default: 0, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "estimated_amount", default: 0, null: false
     t.index ["date", "material_id"], name: "index_material_vendor_stocks_on_date_and_material_id", unique: true
   end
 
@@ -1202,17 +1203,17 @@ ActiveRecord::Schema.define(version: 2024_03_18_141142) do
     t.integer "user_id"
   end
 
-  create_table "work_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "work_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.bigint "group_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.integer "row_order"
-    t.string "bg_color_code", default: "#4169e1"
+    t.string "bg_color_code", default: "#4169e1", null: false
     t.index ["group_id"], name: "index_work_types_on_group_id"
   end
 
-  create_table "working_hour_work_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "working_hour_work_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "working_hour_id", null: false
     t.bigint "work_type_id", null: false
     t.datetime "start", null: false
@@ -1225,7 +1226,7 @@ ActiveRecord::Schema.define(version: 2024_03_18_141142) do
     t.index ["working_hour_id"], name: "index_working_hour_work_types_on_working_hour_id"
   end
 
-  create_table "working_hours", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "working_hours", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "store_id"
     t.bigint "staff_id"
     t.date "date"

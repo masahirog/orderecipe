@@ -9,6 +9,7 @@ class CreateMaterialVendorStocks < ActiveRecord::Migration[6.0]
       t.integer :new_stock_amount,null:false,default:0
       t.index [:date, :material_id], unique: true
       t.timestamps
+      t.integer :estimated_amount,null:false,default:0
     end
   end
 end

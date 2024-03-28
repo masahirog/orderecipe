@@ -1,0 +1,48 @@
+- if @hash[material.id][date].present?
+  = form_with model: [:vendor, @hash[material.id][date]], data: {remote: true} do |f|
+    div.td_div
+      - if current_user.admin == true
+        = f.number_field :estimated_amount,class:'',style:'',onClick:"this.select();"
+      - else
+        - if @hash[material.id][date].estimated_amount > 0
+          span = @hash[material.id][date].estimated_amount
+        - else
+          span 　
+    div.td_div
+      - if @material_date_order_amount[[material.id,date]].present?
+        span = @material_date_order_amount[[material.id,date]]
+      - else
+        span 　
+    div.td_div class='new_stock_amount_#{date}_#{material.id}'    
+      = f.number_field :new_stock_amount,class:'input new_stock_amount ',style:'width:90%;',onClick:"this.select();"
+    div.td_div class='shipping_amount_#{date}_#{material.id}'
+      = f.number_field :shipping_amount,class:'input shipping_amount ',style:'width:90%;',onClick:"this.select();"
+    div.td_div class='end_day_stock_#{date}_#{material.id}'
+      = f.number_field :end_day_stock,class:'input end_day_stock ',style:'width:90%;background-color:#dcdcdc;',readonly:true
+    div.td_div style='text-align: left;'
+      = f.submit '保存',class:''
+  - @end_day_stock[material.id] = @hash[material.id][date].end_day_stock
+  - @previous_end_day_stock[material.id] = @hash[material.id][date].end_day_stock
+- else
+  = form_with model: [:vendor, MaterialVendorStock.new], data: {remote: true} do |f|
+    div.td_div
+      - if current_user.admin == true
+        = f.number_field :estimated_amount,class:'',style:'width:90%;',onClick:"this.select();"
+      - else
+        span 　
+    div.td_div
+      - if @material_date_order_amount[[material.id,date]].present?
+        span = @material_date_order_amount[[material.id,date]]
+      - else
+        span 　
+    = f.hidden_field :date,value:date
+    = f.hidden_field :material_id,value:material.id
+    = f.hidden_field :previous_end_day_stock,value:@previous_end_day_stock[material.id]
+    div.td_div class='new_stock_amount_#{date}_#{material.id}'    
+      = f.number_field :new_stock_amount,class:'input new_stock_amount ',style:'width:90%;',onClick:"this.select();"
+    div.td_div class='shipping_amount_#{date}_#{material.id}'
+      = f.number_field :shipping_amount,class:'input shipping_amount ',style:'width:90%;',onClick:"this.select();"
+    div.td_div class='end_day_stock_#{date}_#{material.id}'
+      = f.number_field :end_day_stock,value:@end_day_stock[material.id],class:'input end_day_stock ',style:'width:90%;background-color:#dcdcdc;',readonly:true
+    div.td_div style='text-align: left;'
+      = f.submit '保存',class:''
