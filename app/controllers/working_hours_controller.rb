@@ -18,9 +18,9 @@ class WorkingHoursController < AdminController
     @work_types = WorkType.order(:row_order)
 
     WorkingHourWorkType.includes(:work_type).where("start >= ? AND start < ?", @date, @date + 1).each_with_index do |whwt,i|
-      hash[whwt.id] = whwt
+      hash[whwt.js_event_id] = whwt
       gon.events << {
-        id: whwt.id,
+        id: whwt.js_event_id,
         resourceIds: [whwt.working_hour_id],
         start: whwt.start,
         end: whwt.end,

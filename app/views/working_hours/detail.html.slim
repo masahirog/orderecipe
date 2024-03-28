@@ -28,6 +28,7 @@
 dialog id="dialog"
   = form_with(model: @working_hour_work_type, data: {remote: true},method:"dialog",id:"form") do |f|
     = f.hidden_field :working_hour_id,id:"working_hour_id"
+    = f.hidden_field :js_event_id,id:"js_event_id"
     h2#title
     h3 id="room-name"
     h3 id="date"
@@ -220,19 +221,22 @@ javascript:
             const resource = resources.find(r => r.id == resourceId);
             return resource ? resource.title : '';
           }
-          console.log(event)
           document.getElementById('room-name').innerText = getResourceTitle(event);
           const startDate = dayjs(event.start);
           if (action == "create") {
             document.getElementById("delete").style.visibility ="hidden";
             document.getElementById('working_hour_id').value = event.resource.id;
+            document.getElementById('memo').value = '';
+
+            document.getElementById('form').action = "/working_hour_work_types/"
+            document.getElementsByName('_method')[0].value = 'dialog'
           }else{
             document.getElementById("delete").style.visibility ="visible";
             document.getElementById('working_hour_id').value = event['resourceIds'].join();
             document.getElementById('work_type_id').value = gon.work_type_hash[event.id].work_type_id;
             document.getElementById('memo').value = gon.work_type_hash[event.id].memo;
+
             document.getElementById('form').action = "/working_hour_work_types/"+event.id
-            document.getElementById('form').method = "POST"
             document.getElementsByName('_method')[0].value = 'patch'
           }
           document.getElementById('date').innerText = startDate.format('YYYY/MM/DD');
@@ -245,19 +249,6 @@ javascript:
 
         document.getElementById('form').onsubmit = function(e) {
           e.preventDefault();
-          // $.ajax({
-          //   url: "/working_hour_work_types/"+ event.id,
-          //   type:'DELETE',
-          //   data: { event:event },
-          //   dataType: "json",
-          //   async: false
-          // })
-          // .done(function(data){
-          //     $(".th_" + data['working_hour_id'] ).children(".working_hour").text(data['worktime']);
-          // });
-
-
-
           const event = dialog.event;
           const startTime = document.getElementById('start').value.split(':');
           event.start.setHours(Number(startTime[0]));
@@ -267,11 +258,9 @@ javascript:
           event.end.setMinutes(Number(endTime[1]));
           event.title = document.getElementById('work_type_id').options[document.getElementById('work_type_id').selectedIndex].innerHTML + "\n" + document.getElementById('memo').value;
           addEvent(event);
-          // console.log(event)
-
+          document.getElementById('js_event_id').value = event.id;
           gon.events.push(event);
-          gon.work_type_hash[event.id] = {id:event.id,work_type_id:Number(document.getElementById('work_type_id').value)};
-          // console.log(gon.work_type_hash)
+          gon.work_type_hash[event.id] = {id:event.id,work_type_id:Number(document.getElementById('work_type_id').value),memo:document.getElementById('memo').value};
           dialog.close();
         }
 
@@ -285,6 +274,7 @@ javascript:
             e.preventDefault();
             if (confirm('削除しますか？')) {
                 const event = dialog.event;
+                // console.log(dialog)
                 $.ajax({
                   url: "/working_hour_work_types/"+ event.id,
                   type:'DELETE',

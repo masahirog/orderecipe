@@ -1,9 +1,10 @@
 class WorkingHourWorkTypesController < ApplicationController
-  before_action :set_working_hour_work_type, only: %i[ show edit update destroy ]
+  before_action :set_working_hour_work_type, only: %i[ show edit ]
+  before_action :set_event_id_working_hour_work_type, only: %i[ update ]
   protect_from_forgery :except => [:destroy]
 
   def time_change
-    @working_hour_work_type = WorkingHourWorkType.find(params[:event][:id])
+    @working_hour_work_type = WorkingHourWorkType.find_by(js_event_id:params[:event][:id])
     working_hour_id = params[:event][:resourceIds].join
     working_hour = WorkingHour.find(working_hour_id)
     start_time = DateTime.parse(params[:event][:start])
@@ -19,7 +20,7 @@ class WorkingHourWorkTypesController < ApplicationController
   end
 
   def working_hour_change
-    @working_hour_work_type = WorkingHourWorkType.find(params[:event][:id])
+    @working_hour_work_type = WorkingHourWorkType.find_by(js_event_id:params[:event][:id])
     working_hour_id_was = @working_hour_work_type.working_hour_id_was
     working_hour_was = WorkingHour.find(working_hour_id_was)
     working_hour_id = params[:event][:resourceIds].join
@@ -68,7 +69,6 @@ class WorkingHourWorkTypesController < ApplicationController
     @working_hour_work_type.worktime = work_time_minute
     work_time_hour = @working_hour.working_time + work_time_hour
     @working_hour.update(working_time:work_time_hour)
-    gon.events = []
     respond_to do |format|
       if @working_hour_work_type.save
         format.html { redirect_to working_hour_work_type_url(@working_hour_work_type), notice: "Working hour work type was successfully created." }
@@ -104,6 +104,7 @@ class WorkingHourWorkTypesController < ApplicationController
   end
 
   def destroy
+    @working_hour_work_type = WorkingHourWorkType.find_by(js_event_id:params[:id])
     working_hour_id = @working_hour_work_type.working_hour_id
     working_hour = WorkingHour.find(working_hour_id)
     @working_hour_work_type.destroy
@@ -117,8 +118,10 @@ class WorkingHourWorkTypesController < ApplicationController
     def set_working_hour_work_type
       @working_hour_work_type = WorkingHourWorkType.find(params[:id])
     end
-
+    def set_event_id_working_hour_work_type
+      @working_hour_work_type = WorkingHourWorkType.find_by(js_event_id:params[:working_hour_work_type][:js_event_id])
+    end
     def working_hour_work_type_params
-      params.require(:working_hour_work_type).permit(:id,:working_hour_id,:work_type_id,:start,:end,:worktime,:memo)
+      params.require(:working_hour_work_type).permit(:id,:working_hour_id,:work_type_id,:start,:end,:worktime,:memo,:js_event_id)
     end
 end

@@ -8,6 +8,7 @@ class CreateWorkingHourWorkTypes < ActiveRecord::Migration[6.0]
       t.float :worktime,null:false,default:0
       t.text :memo
       t.timestamps
+      t.bigint :js_event_id
     end
   end
 end
