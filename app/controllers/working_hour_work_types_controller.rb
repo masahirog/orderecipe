@@ -9,7 +9,12 @@ class WorkingHourWorkTypesController < ApplicationController
     working_hour = WorkingHour.find(working_hour_id)
     start_time = DateTime.parse(params[:event][:start])
     end_time = DateTime.parse(params[:event][:end])
-    work_time_minute = (end_time.to_time - start_time.to_time)/60
+    work_type = @working_hour_work_type.work_type
+    if work_type.rest_flag == true
+      work_time_minute = 0
+    else
+      work_time_minute = (end_time.to_time - start_time.to_time)/60
+    end
     work_time_hour = (work_time_minute/60).round(1)
     @working_hour_work_type.update(start:start_time,end:end_time,working_hour_id:working_hour_id,worktime:work_time_minute)
     worktime = (working_hour.working_hour_work_types.sum(:worktime)/60).round(1)
@@ -27,7 +32,13 @@ class WorkingHourWorkTypesController < ApplicationController
     working_hour = WorkingHour.find(working_hour_id)
     start_time = DateTime.parse(params[:event][:start])
     end_time = DateTime.parse(params[:event][:end])
-    work_time_minute = (end_time.to_time - start_time.to_time)/60
+
+    work_type = @working_hour_work_type.work_type
+    if work_type.rest_flag == true
+      work_time_minute = 0
+    else
+      work_time_minute = (end_time.to_time - start_time.to_time)/60
+    end
     work_time_hour = (work_time_minute/60).round(1)
     @working_hour_work_type.update(start:start_time,end:end_time,working_hour_id:working_hour_id,worktime:work_time_minute)
     working_hour_id_worktime = (working_hour.working_hour_work_types.sum(:worktime)/60).round(1)
@@ -64,10 +75,16 @@ class WorkingHourWorkTypesController < ApplicationController
     @working_hour_work_type = WorkingHourWorkType.new(working_hour_work_type_params)
     @working_hour_work_type.start = DateTime.parse("#{date} #{params[:working_hour_work_type][:start]} JST +09:00")
     @working_hour_work_type.end = DateTime.parse("#{date} #{params[:working_hour_work_type][:end]} JST +09:00")
-    work_time_minute = (@working_hour_work_type.end - @working_hour_work_type.start)/60
-    work_time_hour = (work_time_minute/60).round(1)
+    work_type = @working_hour_work_type.work_type
+    if work_type.rest_flag == true
+      work_time_minute = 0
+      work_time_hour = 0
+    else
+      work_time_minute = (@working_hour_work_type.end - @working_hour_work_type.start)/60
+      work_time_hour = (work_time_minute/60).round(1)
+    end
     @working_hour_work_type.worktime = work_time_minute
-    work_time_hour = @working_hour.working_time + work_time_hour
+    work_time_hour = (@working_hour.working_time + work_time_hour).round(1)
     @working_hour.update(working_time:work_time_hour)
     respond_to do |format|
       if @working_hour_work_type.save
@@ -87,7 +104,12 @@ class WorkingHourWorkTypesController < ApplicationController
     replace_working_hour_work_type_params[:start] = workstart
     workend = DateTime.parse("#{@working_hour.date} #{params[:working_hour_work_type][:end]} JST +09:00")
     replace_working_hour_work_type_params[:end] = workend
-    work_time_minute = (workend.to_time - workstart.to_time)/60
+    work_type = WorkType.find_by(id:params[:working_hour_work_type][:work_type_id])
+    if work_type.rest_flag == true
+      work_time_minute = 0
+    else
+      work_time_minute = (workend.to_time - workstart.to_time)/60
+    end
     replace_working_hour_work_type_params[:worktime] = work_time_minute
 
     respond_to do |format|

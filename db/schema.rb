@@ -1203,13 +1203,14 @@ ActiveRecord::Schema.define(version: 2024_03_18_141142) do
     t.integer "user_id"
   end
 
-  create_table "work_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "work_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
     t.bigint "group_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.integer "row_order"
     t.string "bg_color_code", default: "#4169e1", null: false
+    t.boolean "rest_flag", default: false, null: false
     t.index ["group_id"], name: "index_work_types_on_group_id"
   end
 

@@ -6,5 +6,8 @@
   .form-group
     = f.label :bg_color_code, "背景色コード"
     = f.text_field :bg_color_code, class:"form-control"
+  .form-group
+    = f.label :rest_flag, "休憩扱い"
+    = f.check_box :rest_flag, class: "form-control"
 
   .actions = f.submit "保存する",class:'btn btn-success'
