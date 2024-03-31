@@ -66,13 +66,13 @@
 					td.right_line
 						span = data[1][:total_time]
 						span = "｜"
-						span style='color:blue;' = (@hash[:staff][data[0]][:working_time]).round(1)
+						span style='color:blue;' = (@hash[:staff][data[0]][:working_time]).round(1) if @hash[:staff][data[0]].present?
 
 				- @shift_hash[:staff]['part_time'].each do |data|
 					td.right_line
 						span = data[1][:total_time]
 						span = "｜"
-						span style='color:blue;' = (@hash[:staff][data[0]][:working_time]).round(1)
+						span style='color:blue;' = (@hash[:staff][data[0]][:working_time]).round(1) if @hash[:staff][data[0]].present?
 
 			tr
 				th.right_line 
@@ -88,11 +88,11 @@
 				- @shift_hash[:staff]['employee'].each do |data|
 					th.right_line
 						span 着地：
-						span = (@hash[:staff][data[0]][:working_time] / @hash[:staff][data[0]][:working_count] * @shift_hash[:staff][data[0]][:daily].length).round if @hash[:staff][data[0]][:working_count] > 0
+						span = (@hash[:staff][data[0]][:working_time] / @hash[:staff][data[0]][:working_count] * @shift_hash[:staff][data[0]][:daily].length).round if @hash[:staff][data[0]].present?
 				- @shift_hash[:staff]['part_time'].each do |data|
 					th.right_line
 						span 着地：
-						span = ((@hash[:staff][data[0]][:working_time] / @hash[:staff][data[0]][:working_count]) * @shift_hash[:staff][data[0]][:daily].length).round if @hash[:staff][data[0]][:working_count] > 0
+						span = ((@hash[:staff][data[0]][:working_time] / @hash[:staff][data[0]][:working_count]) * @shift_hash[:staff][data[0]][:daily].length).round if @hash[:staff][data[0]][:working_count] > 0 if @hash[:staff][data[0]].present?
 
 		tbody
 			- @shift_dates.each do |date|

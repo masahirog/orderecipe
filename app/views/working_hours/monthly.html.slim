@@ -21,4 +21,4 @@ table.table
 				- @categories.each do |category|
 					td
 						div = "#{(@hash[month][category[1]]/60).round(1).to_s(:delimited)} h/月" if @hash[month][category[1]].present?
-						div = "#{(@hash[month][category[1]]/60/@hash[month][:count]).round(1)} h/日" if @hash[month][:count] > 0
+						div = "#{(@hash[month][category[1]].to_f/60/@hash[month][:count]).round(1)} h/日" if @hash[month][:count] > 0

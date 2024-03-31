@@ -68,7 +68,11 @@ class WorkingHoursController < AdminController
     @working_dates = (date..@today-1).to_a
     kijun = {"28" => 160,"29" => 165.7,"30" => 171.4,"31" => 177.1}
     @max_woriking_time = kijun[@shift_dates.length.to_s] + 20
-    @progress_rate = (@shift_dates.length.to_f / (@today.day - 1)).round(1)
+    if @today.day == 1
+      @progress_rate = @shift_dates.length.to_f
+    else
+      @progress_rate = (@shift_dates.length.to_f / (@today.day - 1)).round(1)
+    end
 
     @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @shift_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
@@ -113,7 +117,7 @@ class WorkingHoursController < AdminController
     @shift_hash[:total_time][:all] = 0
     @shift_hash[:total_time][:employee] = 0
     @shift_hash[:total_time][:part_time] = 0
-    Shift.includes(:fix_shift_pattern,:staff).where(date:@shift_dates,store_id:39).each do |shift|
+    Shift.includes(:fix_shift_pattern,:staff).where(date:@shift_dates,store_id:39).where.not(fix_shift_pattern_id:nil).each do |shift|
       @shift_hash[:total_time][:all] += shift.fix_shift_pattern.working_hour
       @shift_hash[:total_time][:employee] += shift.fix_shift_pattern.working_hour if shift.staff.employment_status == "employee"
       @shift_hash[:total_time][:part_time] += shift.fix_shift_pattern.working_hour if shift.staff.employment_status == "part_time"
