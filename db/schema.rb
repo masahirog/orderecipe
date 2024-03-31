@@ -1211,10 +1211,11 @@ ActiveRecord::Schema.define(version: 2024_03_18_141142) do
     t.integer "row_order"
     t.string "bg_color_code", default: "#4169e1", null: false
     t.boolean "rest_flag", default: false, null: false
+    t.integer "category"
     t.index ["group_id"], name: "index_work_types_on_group_id"
   end
 
-  create_table "working_hour_work_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "working_hour_work_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "working_hour_id", null: false
     t.bigint "work_type_id", null: false
     t.datetime "start", null: false

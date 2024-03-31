@@ -1,8 +1,13 @@
 .clearfix
-  = link_to 'スタッフ更新', create_work_times_working_hours_path(date:@date), method: :post,class:'btn btn-default',style:'float:right;',data:{confirm:'スタッフの枠を作成しますか？'}
-  =link_to @date-1,detail_working_hours_path(date:@date-1),data: {"turbolinks" => false}
-  span style='margin: 0 15px;' = @date
-  =link_to @date+1,detail_working_hours_path(date:@date+1),data: {"turbolinks" => false}
+  = form_tag detail_working_hours_path, :method => 'get' do
+    = date_field_tag :date,@date,class:'form-control',style:'width:150px;float:left;'
+    = submit_tag "変更" ,class:"btn btn-primary",style:'float:left;margin-left:10px;'
+  / =link_to @date-1,detail_working_hours_path(date:@date-1),data: {"turbolinks" => false}
+  / span style='margin: 0 15px;' = @date
+  / =link_to @date+1,detail_working_hours_path(date:@date+1),data: {"turbolinks" => false}
+  = link_to '月次', monthly_working_hours_path,class:'btn btn-default',style:'float:right;margin-right:10px;'
+  = link_to '日次', daily_working_hours_path,class:'btn btn-default',style:'float:right;margin-right:10px;'
+  = link_to 'スタッフ更新', create_work_times_working_hours_path(date:@date), method: :post,class:'btn btn-primary',style:'float:right;margin-right:10px;',data:{confirm:'スタッフの枠を作成しますか？'}
 
 .table-responsive style='overflow: scroll;'
   table.table.layout-fixed.table-striped style='border-collapse:separate;'
@@ -39,7 +44,7 @@ dialog id="dialog"
     h3 id="date"
     div class="row"
         = f.label :start, "内容"
-        = f.collection_select :work_type_id, @work_types, :id, :name, {}, { class: "work_type_id form-control",id:'work_type_id'}
+        = f.collection_select :work_type_id, @work_types, :id, :view_name_category, {}, { class: "work_type_id form-control",id:'work_type_id'}
     div class="row"
         = f.label :start, "開始"
         = f.time_field :start, required: true, class:"form-control",id:"start"

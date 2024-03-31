@@ -65,8 +65,7 @@ html lang="ja"
                       li = link_to "月次棚卸し在庫",stocks_path(store_id:39)
                       h5 style='padding:0 10px;font-weight:bold;' その他
                       li = link_to 'シフト',shifts_path(date:@today,store_type:1)
-                      / li = link_to 'タイムカード',staff_input_working_hours_path
-                      li = link_to 'タイムカード',detail_working_hours_path                      
+                      li = link_to 'タイムカード',detail_working_hours_path,data: {"turbolinks" => false}
                       li = link_to 'TC項目',work_types_path
                       li = link_to 'シフトテンプレート',default_shifts_path(group_id:current_user.group_id,store_type:1)
                       li = link_to "キッチン設定",edit_store_path(id:39)

@@ -1,5 +1,25 @@
 class WorkingHoursController < AdminController
   before_action :set_working_hour, only: %i[ show edit update destroy ]
+  def monthly
+    if params[:year].present?
+      @year = params[:year]
+      @date = Date.new(@year,1,1)
+    else
+      @date = @today
+      @year = "#{@date.year}"
+    end
+    @years = (2024..2030).to_a
+    @months = (1..12).to_a
+    @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    @months.each do |month|
+      from = Date.new(@year.to_i,month,1)
+      to = from.end_of_month
+      working_hours = WorkingHour.where(date:from..to)
+      @hash[month] = WorkingHourWorkType.joins(:work_type).where(working_hour_id:working_hours.ids).group("work_types.category").sum(:worktime)
+      @hash[month][:count] = working_hours.map{|wh|wh.date}.uniq.length
+    end
+    @categories = WorkType.categories
+  end
   def detail
     if params[:date].present?
       @date = Date.parse(params[:date])
@@ -16,7 +36,6 @@ class WorkingHoursController < AdminController
       gon.working_hours << { id: wh.id, title: wh.staff.short_name}
     end
     @work_types = WorkType.order(:row_order)
-
     WorkingHourWorkType.includes(:work_type).where("start >= ? AND start < ?", @date, @date + 1).each_with_index do |whwt,i|
       hash[whwt.js_event_id] = whwt
       gon.events << {
@@ -42,8 +61,9 @@ class WorkingHoursController < AdminController
     end
     @working_hour_whwt_hash = WorkingHourWorkType.where("start >= ? AND start < ?", @date, @date + 1).group(:working_hour_id).sum(:worktime)
   end
-  def monthly
+  def daily
     date = "#{params[:month]}-01".to_date
+    @month = "#{date.year}-#{sprintf("%02d",date.month)}"
     @shift_dates =(date.beginning_of_month..date.end_of_month).to_a
     @working_dates = (date..@today-1).to_a
     kijun = {"28" => 160,"29" => 165.7,"30" => 171.4,"31" => 177.1}

@@ -87,11 +87,10 @@ Rails.application.routes.draw do
   resources :working_hours do
     collection do
       get :detail
-      get :detail_chart
       get :result
+      get :daily
       get :monthly
       post :create_work_times
-      get :staff_input
       post :upload_data
     end
   end

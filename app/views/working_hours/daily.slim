@@ -1,0 +1,157 @@
+= form_tag daily_working_hours_path, :method => 'get' do
+	= month_field_tag :month,@month,class:"form-control",style:'width:200px;float:left;margin-right:10px;'
+	= submit_tag "変更" ,class:"btn btn-primary",style:"float:left;"
+
+.table-responsive style='overflow: scroll;overscroll-behavior-x: contain;'
+  	table.table.layout-fixed style='border-collapse:separate;'
+  	    colgroup
+			col class="col110"
+			col class="col110"
+			col class="col110"
+			col class="col110"
+			col class="col110"
+			col class="col110"
+			col class="col110"
+			col class="col110"
+			col class="col110"
+		    col class="col110"
+			- @shift_hash[:staff]['employee'].each do |data|
+				col class="col110"
+			- @shift_hash[:staff]['part_time'].each do |data|
+				col class="col110"
+
+		thead style='position: sticky;top:0;background-color:white;z-index:3;'
+			tr
+				th.right_line 日付
+				th.right_line colspan=3 合計
+				th.right_line colspan=3 社員
+				th.right_line colspan=3 パート
+				th.right_line colspan="#{@shift_hash[:staff]['employee'].count}" = "社員  #{@max_woriking_time}時間（見込20時間含）"
+				th colspan="#{@shift_hash[:staff]['part_time'].count}" パートスタッフ
+			tr
+				th.right_line 
+				th シフト
+				th 現実績
+				th.right_line 着地
+				th シフト
+				th 現実績
+				th.right_line 着地
+				th シフト
+				th 現実績
+				th.right_line 着地
+				- @shift_hash[:staff]['employee'].each do |data|
+					th.right_line.text-left style='white-space: normal;' = link_to data[1][:staff].short_name,edit_staff_path(data[1][:staff])
+				- @shift_hash[:staff]['part_time'].each do |data|
+					th.right_line.text-left style='white-space: normal;' = link_to data[1][:staff].short_name,edit_staff_path(data[1][:staff])
+
+			tr
+				td.right_line
+				td = @shift_hash[:total_time][:all].round.to_s(:delimited)
+				td = @hash[:total_time][:all].round.to_s(:delimited)
+				td.right_line
+					span = (@hash[:total_time][:all]*@progress_rate).round.to_s(:delimited)
+					span = "｜#{(((@hash[:total_time][:all]*@progress_rate)/@shift_hash[:total_time][:all])*100).round}%"
+				td = @shift_hash[:total_time][:employee].round.to_s(:delimited)
+				td = @hash[:total_time][:employee].round.to_s(:delimited)
+				td.right_line
+					span = (@hash[:total_time][:employee]*@progress_rate).round.to_s(:delimited)
+					span = "｜#{(((@hash[:total_time][:employee]*@progress_rate)/@shift_hash[:total_time][:employee])*100).round}%"
+				td = @shift_hash[:total_time][:part_time].round.to_s(:delimited)
+				td = @hash[:total_time][:part_time].round.to_s(:delimited)
+				td.right_line
+					span = (@hash[:total_time][:part_time]*@progress_rate).round.to_s(:delimited)
+					span = "｜#{(((@hash[:total_time][:part_time]*@progress_rate)/@shift_hash[:total_time][:part_time])*100).round}%"
+
+				- @shift_hash[:staff]['employee'].each do |data|
+					td.right_line
+						span = data[1][:total_time]
+						span = "｜"
+						span style='color:blue;' = (@hash[:staff][data[0]][:working_time]).round(1)
+
+				- @shift_hash[:staff]['part_time'].each do |data|
+					td.right_line
+						span = data[1][:total_time]
+						span = "｜"
+						span style='color:blue;' = (@hash[:staff][data[0]][:working_time]).round(1)
+
+			tr
+				th.right_line 
+				th シフト
+				th 実績
+				th.right_line 差分
+				th シフト
+				th 実績
+				th.right_line 差分
+				th シフト
+				th 実績
+				th.right_line 差分
+				- @shift_hash[:staff]['employee'].each do |data|
+					th.right_line
+						span 着地：
+						span = (@hash[:staff][data[0]][:working_time] / @hash[:staff][data[0]][:working_count] * @shift_hash[:staff][data[0]][:daily].length).round if @hash[:staff][data[0]][:working_count] > 0
+				- @shift_hash[:staff]['part_time'].each do |data|
+					th.right_line
+						span 着地：
+						span = ((@hash[:staff][data[0]][:working_time] / @hash[:staff][data[0]][:working_count]) * @shift_hash[:staff][data[0]][:daily].length).round if @hash[:staff][data[0]][:working_count] > 0
+
+		tbody
+			- @shift_dates.each do |date|
+				tr
+					td.right_line = link_to date,detail_working_hours_path(date:date),data: {"turbolinks" => false}
+					td = @shift_hash[:daily][date][:total_time].round
+					td = @hash[:daily][date][:total_time].round(1) if @hash[:daily][date].present?
+					td.right_line = (@shift_hash[:daily][date][:total_time] - @hash[:daily][date][:total_time]).round(1) if @hash[:daily][date].present?
+					td = @shift_hash[:daily][date]['employee'][:total_time].round
+					td = @hash[:daily][date]["employee"][:total_time].round(1) if @hash[:daily][date].present?
+					td.right_line = (@shift_hash[:daily][date]['employee'][:total_time] - @hash[:daily][date]["employee"][:total_time]).round(1) if @hash[:daily][date].present?
+					td = @shift_hash[:daily][date]['part_time'][:total_time].round
+					td = @hash[:daily][date]["part_time"][:total_time].round(1) if @hash[:daily][date].present?
+					td.right_line = (@shift_hash[:daily][date]['part_time'][:total_time] - @hash[:daily][date]["part_time"][:total_time]).round(1) if @hash[:daily][date].present?
+					- @shift_hash[:staff]['employee'].each do |data|
+						td style='border-right:1px solid silver'
+							- if @shift_hash[:staff][data[0]][:daily][date].present?
+								span = @shift_hash[:staff][data[0]][:daily][date][:working_time] 
+							- else
+								span 　 
+							span = "｜"
+							span style='color:blue;' = @hash[:daily][date][data[0]][:working_time].round(1) if @hash[:daily][date][data[0]].present?
+					- @shift_hash[:staff]['part_time'].each do |data|
+						td style='border-right:1px solid silver'
+							- if @shift_hash[:staff][data[0]][:daily][date].present?
+								span = @shift_hash[:staff][data[0]][:daily][date][:working_time] 
+							- else
+								span 　 
+							span = "｜"
+							span style='color:blue;' = @hash[:daily][date][data[0]][:working_time].round(1) if @hash[:daily][date][data[0]].present?
+
+css:
+	.table-responsive{
+    	height:90vh;
+    	width:100%;
+  	}
+	.table-responsive th {
+		white-space: nowrap;
+	}
+	table.layout-fixed {
+		table-layout: fixed;
+		border-collspace:separate;
+	}
+	.table th:first-child,td:first-child{
+		position: sticky;
+		top: 0;
+		left: 0;
+		z-index:2;
+	}
+	.col110{
+		width:110px;
+	}
+	th,td{
+		text-align: center;
+		background-color:white;
+	}
+	.fffaf0{
+		background-color: #fffaf0;
+	}
+	.right_line{
+		border-right: 2px solid silver;
+	}
