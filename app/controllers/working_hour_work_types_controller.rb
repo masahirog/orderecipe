@@ -19,8 +19,9 @@ class WorkingHourWorkTypesController < ApplicationController
     @working_hour_work_type.update(start:start_time,end:end_time,working_hour_id:working_hour_id,worktime:work_time_minute)
     worktime = (working_hour.working_hour_work_types.sum(:worktime)/60).round(1)
     working_hour.update(working_time:worktime)
+    @total_working_time = WorkingHour.where(date:working_hour.date).sum(:working_time).round(1)
     respond_to do |format|
-      format.json { render json: { working_hour_id:working_hour_id,worktime:worktime } }
+      format.json { render json: { working_hour_id:working_hour_id,worktime:worktime,total_working_time:@total_working_time } }
     end
   end
 
@@ -46,10 +47,10 @@ class WorkingHourWorkTypesController < ApplicationController
     working_hour_id_was_worktime = 0
     working_hour_id_was_worktime = (working_hour_was.working_hour_work_types.sum(:worktime)/60).round(1)
     working_hour_was.update(working_time:working_hour_id_was_worktime)
-
+    @total_working_time = WorkingHour.where(date:@working_hour.date).sum(:working_time).round(1)
     respond_to do |format|
       format.json { render json: { working_hour_id:working_hour_id,working_hour_id_worktime:working_hour_id_worktime,
-        working_hour_id_was:working_hour_id_was,working_hour_id_was_worktime:working_hour_id_was_worktime } }
+        working_hour_id_was:working_hour_id_was,working_hour_id_was_worktime:working_hour_id_was_worktime,total_working_time:@total_working_time } }
     end
   end
 
@@ -86,6 +87,7 @@ class WorkingHourWorkTypesController < ApplicationController
     @working_hour_work_type.worktime = work_time_minute
     work_time_hour = (@working_hour.working_time + work_time_hour).round(1)
     @working_hour.update(working_time:work_time_hour)
+    @total_working_time = WorkingHour.where(date:@working_hour.date).sum(:working_time).round(1)
     respond_to do |format|
       if @working_hour_work_type.save
         format.html { redirect_to working_hour_work_type_url(@working_hour_work_type), notice: "Working hour work type was successfully created." }
@@ -116,6 +118,7 @@ class WorkingHourWorkTypesController < ApplicationController
       if @working_hour_work_type.update(replace_working_hour_work_type_params)
         working_hour_id_worktime = (@working_hour.working_hour_work_types.sum(:worktime)/60).round(1)
         @working_hour.update(working_time:working_hour_id_worktime)
+        @total_working_time = WorkingHour.where(date:@working_hour.date).sum(:working_time).round(1)
         format.html { redirect_to working_hour_work_type_url(@working_hour_work_type), notice: "Working hour work type was successfully updated." }
         format.js
       else
@@ -131,8 +134,10 @@ class WorkingHourWorkTypesController < ApplicationController
     working_hour = WorkingHour.find(working_hour_id)
     @working_hour_work_type.destroy
     worktime = (working_hour.working_hour_work_types.sum(:worktime)/60).round(1)
+    working_hour.update(working_time:worktime)
+    @total_working_time = WorkingHour.where(date:working_hour.date).sum(:working_time).round(1)
     respond_to do |format|
-      format.json { render json: { working_hour_id:working_hour_id,worktime:worktime } }
+      format.json { render json: { working_hour_id:working_hour_id,worktime:worktime,total_working_time:@total_working_time } }
     end
   end
 

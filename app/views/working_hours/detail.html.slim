@@ -9,6 +9,7 @@
     thead style='position: sticky;top:0;background-color:white;z-index:3;'
       tr
         th 
+        th
         - @working_hours.each do |wh|
           th style='width:100px;white-space: normal;' = link_to wh.staff.short_name,edit_staff_path(wh.staff)
     tbody
@@ -16,6 +17,10 @@
         td
           div style='padding: 2px 0 2px 0;' シフト
           div style='padding: 3px 0 3px 0;' 実労働
+        td
+          div.total_shift_time style='padding: 2px 0 2px 0;' = @shift_hash[:time]
+          div.total_working_time style='padding: 3px 0 3px 0;' = @working_hours.sum(:working_time).round(1) 
+
         - @working_hours.each do |wh|
           td class="th_#{wh.id}"
             div style='padding: 2px 0 2px 0;'
@@ -169,6 +174,7 @@ javascript:
             .done(function(data){
                 $(".th_" + data['working_hour_id'] ).children(".working_hour").text(data['working_hour_id_worktime']);
                 $(".th_" + data['working_hour_id_was'] ).children(".working_hour").text(data['working_hour_id_was_worktime']);
+                $(".total_working_time").text(data['total_working_time']);
             });
             if (hasOtherOverlappingEvents(event)) revert();
           },
@@ -182,6 +188,7 @@ javascript:
             })
             .done(function(data){
                 $(".th_" + data['working_hour_id'] ).children(".working_hour").text(data['worktime']);
+                $(".total_working_time").text(data['total_working_time']);
             });
             if (hasOtherOverlappingEvents(event)) revert();
           },
@@ -284,6 +291,7 @@ javascript:
                 })
                 .done(function(data){
                     $(".th_" + data['working_hour_id'] ).children(".working_hour").text(data['worktime']);
+                    $(".total_working_time").text(data['total_working_time']);
                 });
                 ec.removeEventById(event.id);
                 dialog.close();
