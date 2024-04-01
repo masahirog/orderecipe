@@ -120,17 +120,16 @@ class AnalysesController < AdminController
     if params[:from]
       params[:from] = params[:from].to_date
     else
-      params[:from] = Date.new(2021,10,1)
+      params[:from] = params[:to] - 365
     end
     @months = (params[:from]..params[:to]).map{|date|"#{date.year}-#{date.strftime('%m')}"}.uniq
-    uchikeshi_torihiki_ids = SmaregiTradingHistory.where(date:params[:from]..params[:to]).search_by_week(@weekdays_index).where(uchikeshi_kubun:2,tenpo_id:smaregi_store_ids).map{|sth|sth.uchikeshi_torihiki_id}.uniq
-    smaregi_trading_histories = SmaregiTradingHistory.where(date:params[:from]..params[:to]).search_by_week(@weekdays_index).where(torihiki_meisaikubun:1,tenpo_id:smaregi_store_ids).where.not(torihiki_id:uchikeshi_torihiki_ids)
+    smaregi_trading_histories = SmaregiTradingHistory.where(date:params[:from]..params[:to]).search_by_week(@weekdays_index)
+    uchikeshi_torihiki_ids = smaregi_trading_histories.where(uchikeshi_kubun:2,tenpo_id:smaregi_store_ids).map{|sth|sth.uchikeshi_torihiki_id}.uniq
+    smaregi_trading_histories = smaregi_trading_histories.where(torihiki_meisaikubun:1,tenpo_id:smaregi_store_ids).where.not(torihiki_id:uchikeshi_torihiki_ids)
     @date_count = smaregi_trading_histories.group("date_format(date, '%Y-%m')").count('DISTINCT analysis_id')
     @time_zone_sales = smaregi_trading_histories.group("date_format(date, '%Y-%m')").group("date_format(time, '%H')").sum(:zeinuki_uriage)
     @time_zone_counts = smaregi_trading_histories.group("date_format(date, '%Y-%m')").group("date_format(time, '%H')").distinct.count(:torihiki_id)
     @time_zone_sales_product = smaregi_trading_histories.group("date_format(date, '%Y-%m')").group("date_format(time, '%H')").group(:bumon_id).sum(:suryo)
-    # @time_zone_sales_product = smaregi_trading_histories.group("date_format(time, '%H')").group(:tenpo_id,:bumon_id).sum(:suryo)
-    # monthly_count = Article.group("DATE_FORMAT(created_at, '%Y%m')").select("DATE_FORMAT(created_at, '%Y%m') as month, count(id) as cnt")
   end
   def reload_product_repeat
     SmaregiMemberProduct.calculate_number
