@@ -88,7 +88,7 @@
 				- @shift_hash[:staff]['employee'].each do |data|
 					th.right_line
 						span 着地：
-						span = (@hash[:staff][data[0]][:working_time] / @hash[:staff][data[0]][:working_count] * @shift_hash[:staff][data[0]][:daily].length).round if @hash[:staff][data[0]].present?
+						span = (@hash[:staff][data[0]][:working_time] / @hash[:staff][data[0]][:working_count] * @shift_hash[:staff][data[0]][:daily].length).round if @hash[:staff][data[0]].present? && @hash[:staff][data[0]][:working_count] > 0
 				- @shift_hash[:staff]['part_time'].each do |data|
 					th.right_line
 						span 着地：
