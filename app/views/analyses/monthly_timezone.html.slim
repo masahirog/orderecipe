@@ -98,3 +98,35 @@ h3 弁当
               - if @time_zone_sales_product[[month,hour.to_s,5]].present?
                 = (@time_zone_sales_product[[month,hour.to_s,5]].to_f/@date_count[month]).round(1)
 
+h3 セール販売金額
+.table-responsive style='overflow: scroll;'
+  table.table.layout-fixed style='border-collapse:separate;'
+    thead style='position: sticky;top:0;background-color:white;z-index:3;'
+      tr
+        th 店舗
+        - (10..21).each do |hour|
+          th = hour
+    tbody
+      - @months.each do |month|
+        tr
+          td = month
+          - (10..21).each do |hour|
+            - if @time_zone_sales_product[[month,hour.to_s]].present?
+              = (@time_zone_nebikigaku_gokei[[month,hour.to_s]].to_f/@date_count[month]).round(1)
+
+
+h3 セール販売数量
+.table-responsive style='overflow: scroll;'
+  table.table.layout-fixed style='border-collapse:separate;'
+    thead style='position: sticky;top:0;background-color:white;z-index:3;'
+      tr
+        th 店舗
+        - (10..21).each do |hour|
+          th = hour
+    tbody
+      - @months.each do |month|
+        tr
+          td = month
+          - (10..21).each do |hour|
+            - if @time_zone_sales_product[[month,hour.to_s]].present?
+              = (@time_zone_nebikisu_gokei[[month,hour.to_s]].to_f/@date_count[month]).round(1)

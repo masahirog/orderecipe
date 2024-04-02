@@ -7,7 +7,7 @@ class AnalysesController < AdminController
     @to = params[:to].to_date if params[:to]
     @dates =(@from..@to).to_a
     @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    @bumon = {"1"=>"惣菜","2"=>"ご飯・丼","3"=>"ドリ・デザ","4"=>"備品","5"=>"お弁当","6"=>"オードブル","7"=>"スープ","8"=>"惣菜（仕入れ）","9"=>"レジ修正","11"=>"オプション","14"=>"野菜","15"=>"物産","16"=>"予約ギフト"}
+    @bumon = {"1"=>"惣菜","2"=>"ご飯・丼","3"=>"ドリ・デザ","4"=>"備品","5"=>"お弁当","6"=>"オードブル","7"=>"スープ","8"=>"惣菜（仕入れ）","9"=>"レジ修正","11"=>"オプション","14"=>"野菜","15"=>"物産","16"=>"予約ギフト","17"=>"野菜","18"=>"果実"}
     if params[:store_id]
       @store = Store.find(params[:store_id])
       @pattern = params[:pattern]
@@ -130,6 +130,9 @@ class AnalysesController < AdminController
     @time_zone_sales = smaregi_trading_histories.group("date_format(date, '%Y-%m')").group("date_format(time, '%H')").sum(:zeinuki_uriage)
     @time_zone_counts = smaregi_trading_histories.group("date_format(date, '%Y-%m')").group("date_format(time, '%H')").distinct.count(:torihiki_id)
     @time_zone_sales_product = smaregi_trading_histories.group("date_format(date, '%Y-%m')").group("date_format(time, '%H')").group(:bumon_id).sum(:suryo)
+    @time_zone_nebikigaku_gokei = smaregi_trading_histories.group("date_format(date, '%Y-%m')").group("date_format(time, '%H')").sum(:tanka_nebikikei)
+    @time_zone_nebikisu_gokei = smaregi_trading_histories.where("tanka_nebikikei >0").group("date_format(date, '%Y-%m')").group("date_format(time, '%H')").sum(:suryo)
+
   end
   def reload_product_repeat
     SmaregiMemberProduct.calculate_number
