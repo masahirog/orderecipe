@@ -18,6 +18,12 @@ class ItemsController < ApplicationController
     end
     ItemStoreStock.import new_item_store_stocks
     @item_store_stocks = ItemStoreStock.includes(item:[:item_vendor]).where(store_id:store_id,date:date)
+    respond_to do |format|
+      format.html
+      format.csv do
+        send_data render_to_string, filename: "#{@store.id}_stocks.csv", type: :csv
+      end
+    end
   end
 
   def store
