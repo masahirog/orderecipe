@@ -488,7 +488,7 @@ class OrdersController < AdminController
     elsif params[:vendor_id].present?
       order_products = []
       make_date = @today
-      @materials = Material.where(vendor_id:params[:vendor_id])
+      @materials = Material.where(vendor_id:params[:vendor_id],unused_flag:false)
       @materials.each do |material|
         hash = {}
         hash['material'] = material
