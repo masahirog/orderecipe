@@ -1,0 +1,118 @@
+h3 = "#{@today} KPI進捗"
+
+table.table
+	thead
+		tr
+			th style='width:200px;' 項目
+			th style='width:250px;' 合計
+			- @stores.each do |store|
+				th style='width:200px;' = store.short_name
+			th
+	tbody
+		tr
+			td style='font-weight:bold;' rowspan=3 店舗売上全体
+			td = "予算：#{(@foods_budgets.values.sum + @vegetables_budgets.values.sum + @goods_budgets.values.sum).to_s(:delimited)}"
+			- @stores.each do |store|
+				- yosan = (@foods_budgets[store.id] + @vegetables_budgets[store.id] + @goods_budgets[store.id]).to_s(:delimited)
+				td = link_to yosan,budget_store_daily_menus_path(date:@date,store_id:store.id),target:'_blank'
+		tr
+			td = "着地：#{(@store_bumon_sales[:sozai][:chakuchi] + @store_bumon_sales[:bento][:chakuchi] + @store_bumon_sales[:other][:chakuchi]).to_s(:delimited)}"
+			- @stores.each do |store|
+				td = "#{(@store_bumon_sales[:sozai][:stores][store.id][:amount] + @store_bumon_sales[:bento][:stores][store.id][:amount] + @store_bumon_sales[:other][:stores][store.id][:amount]).to_s(:delimited)}"
+		tr
+			td = "実績：#{(@store_bumon_sales[:sozai][:total] + @store_bumon_sales[:bento][:total] + @store_bumon_sales[:other][:total]).to_s(:delimited)}"
+			- @stores.each do |store|
+				td = "#{(@store_bumon_sales[:sozai][:stores][store.id][:amount] + @store_bumon_sales[:bento][:stores][store.id][:amount] + @store_bumon_sales[:other][:stores][store.id][:amount]).to_s(:delimited)}"
+		tr
+			td style='font-weight:bold;' rowspan=6
+				span 　└ 自社商品
+				br
+				span 　　（惣菜）
+			td = "予算：#{@foods_budgets.values.sum.to_s(:delimited)}"
+			- @stores.each do |store|
+				td = "#{(@foods_budgets[store.id]).to_s(:delimited)}"
+		tr
+			td = "着地：#{(@store_bumon_sales[:sozai][:chakuchi] + @store_bumon_sales[:bento][:chakuchi] + @store_bumon_sales[:other][:chakuchi]).to_s(:delimited)}"
+			- @stores.each do |store|
+				td = "#{(@store_bumon_sales[:sozai][:stores][store.id][:chakuchi] + @store_bumon_sales[:bento][:stores][store.id][:chakuchi] + @store_bumon_sales[:other][:stores][store.id][:chakuchi]).to_s(:delimited)}"
+		tr
+			td = "実績：#{(@store_bumon_sales[:sozai][:total] + @store_bumon_sales[:bento][:total] + @store_bumon_sales[:other][:total]).to_s(:delimited)}"
+			- @stores.each do |store|
+				td = "#{(@store_bumon_sales[:sozai][:stores][store.id][:amount] + @store_bumon_sales[:bento][:stores][store.id][:amount] + @store_bumon_sales[:other][:stores][store.id][:amount]).to_s(:delimited)}"
+
+
+
+		tr
+			td = "　└ 惣菜：#{(@store_bumon_sales[:sozai][:total]).to_s(:delimited)}"
+			- @stores.each do |store|
+				td = (@store_bumon_sales[:sozai][:stores][store.id][:amount]).to_s(:delimited)
+		tr
+			td = "　└ 弁当,飯物：#{(@store_bumon_sales[:bento][:total]).to_s(:delimited)}"
+			- @stores.each do |store|
+				td = (@store_bumon_sales[:bento][:stores][store.id][:amount]).to_s(:delimited)
+				/ td = @store_bumon_sales[[store.id,5]].to_s(:delimited)
+		tr
+			td = "　└ その他：#{(@store_bumon_sales[:other][:total]).to_s(:delimited)}"
+			- @stores.each do |store|
+				td = (@store_bumon_sales[:other][:stores][store.id][:amount]).to_s(:delimited)
+		tr
+			td style='font-weight:bold;' rowspan=5
+				span 　└ 仕入商品
+				br
+				span 　　（物販）
+			td = "予算：#{(@vegetables_budgets.values.sum + @goods_budgets.values.sum).to_s(:delimited)}"
+			- @stores.each do |store|
+				td = "#{(@goods_budgets[store.id]+@vegetables_budgets[store.id]).to_s(:delimited)}"
+		tr
+			td = "着地：#{(@store_bumon_sales[:sozai][:total] + @store_bumon_sales[:bento][:total] + @store_bumon_sales[:other][:total]).to_s(:delimited)}"
+			- @stores.each do |store|
+				td = "#{(@store_bumon_sales[:vege][:stores][store.id][:chakuchi] + @store_bumon_sales[:good][:stores][store.id][:chakuchi]).to_s(:delimited)}"
+
+		tr
+			td = "実績：#{(@store_bumon_sales[:sozai][:total] + @store_bumon_sales[:bento][:total] + @store_bumon_sales[:other][:total]).to_s(:delimited)}"
+			- @stores.each do |store|
+				td = "#{(@store_bumon_sales[:vege][:stores][store.id][:amount] + @store_bumon_sales[:good][:stores][store.id][:amount]).to_s(:delimited)}"
+
+		tr
+			td ="　└ 青果：#{(@store_bumon_sales[:vege][:total]).to_s(:delimited)}"
+			- @stores.each do |store|
+				td = (@store_bumon_sales[:vege][:stores][store.id][:amount]).to_s(:delimited)
+		tr
+			td ="　└ 物産品：#{(@store_bumon_sales[:good][:total]).to_s(:delimited)}"
+			- @stores.each do |store|
+				td = (@store_bumon_sales[:good][:stores][store.id][:amount]).to_s(:delimited)
+
+
+table.table
+	thead
+		tr
+			th 客数
+			th
+			- @stores.each do |store|
+				th = store.short_name
+	tbody
+		tr
+			td style='font-weight:bold;' 全体客数
+			td 予算｜実績（ %）
+			- @stores.each do |store|
+				td 予算｜実績（ %）
+		tr
+			td └ 10:00〜14:00
+			td 予算｜実績（ %）
+			- @stores.each do |store|
+				td 予算｜実績（ %）
+		tr
+			td └ 14:00〜17:00
+			td 予算｜実績（ %）
+			- @stores.each do |store|
+				td 予算｜実績（ %）
+		tr
+			td └ 17:00〜20:00
+			td 予算｜実績（ %）
+			- @stores.each do |store|
+				td 予算｜実績（ %）
+		tr
+			td └ 20:00〜22:00
+			td 予算｜実績（ %）
+			- @stores.each do |store|
+				td 予算｜実績（ %）

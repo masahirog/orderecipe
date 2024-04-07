@@ -37,7 +37,7 @@ ActiveRecord::Schema.define(version: 2024_03_18_141142) do
     t.index ["date", "store_id"], name: "index_analyses_on_date_and_store_id", unique: true
   end
 
-  create_table "analysis_categories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "analysis_categories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "analysis_id"
     t.integer "smaregi_bumon_id"
     t.integer "sales_number"
@@ -47,6 +47,7 @@ ActiveRecord::Schema.define(version: 2024_03_18_141142) do
     t.integer "ex_tax_sales_amount"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "loss_amount"
     t.index ["analysis_id", "smaregi_bumon_id"], name: "index_analysis_categories_on_analysis_id_and_smaregi_bumon_id", unique: true
     t.index ["analysis_id"], name: "index_analysis_categories_on_analysis_id"
   end
@@ -1203,7 +1204,7 @@ ActiveRecord::Schema.define(version: 2024_03_18_141142) do
     t.integer "user_id"
   end
 
-  create_table "work_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "work_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.bigint "group_id"
     t.datetime "created_at", precision: 6, null: false

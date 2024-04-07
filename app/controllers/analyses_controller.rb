@@ -1,5 +1,64 @@
 class AnalysesController < AdminController
   before_action :set_analysis, only: %i[ show edit update destroy ]
+  def kpi
+    if params[:date].present?
+      @date = Date.parse(params[:date])
+    else
+      @date = @today
+    end
+    dates = (@date.beginning_of_month..@date.end_of_month)
+    @days = dates.count
+    @store_daily_menus = StoreDailyMenu.where(start_time:dates)
+    @foods_budgets = @store_daily_menus.group(:store_id).sum(:foods_budget)
+    @vegetables_budgets = @store_daily_menus.group(:store_id).sum(:vegetables_budget)
+    @goods_budgets = @store_daily_menus.group(:store_id).sum(:goods_budget)
+    analyses = Analysis.where(date:dates)
+    @stores_count = analyses.group(:store_id).count
+    @store_bumon_sales = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    @store_bumon_sales[:sozai][:total] = 0
+    @store_bumon_sales[:bento][:total] = 0
+    @store_bumon_sales[:other][:total] = 0
+    @store_bumon_sales[:vege][:total] = 0
+    @store_bumon_sales[:good][:total] = 0
+    store_sales = AnalysisCategory.where(analysis_id:analyses.ids).joins(:analysis).group('analyses.store_id').group(:smaregi_bumon_id).sum(:sales_amount)
+    store_sales.keys.map{|store_bumon|store_bumon[0]}.uniq.each do |store_id|
+      @store_bumon_sales[:sozai][:stores][store_id][:amount] = 0
+      @store_bumon_sales[:bento][:stores][store_id][:amount] = 0
+      @store_bumon_sales[:other][:stores][store_id][:amount] = 0
+      @store_bumon_sales[:vege][:stores][store_id][:amount] = 0
+      @store_bumon_sales[:good][:stores][store_id][:amount] = 0
+    end
+    store_sales.each do |data|
+      bumon = data[0][1]
+      if  [1,8].include?(bumon)
+        @store_bumon_sales[:sozai][:total] += data[1]
+        @store_bumon_sales[:sozai][:stores][data[0][0]][:amount] += data[1]
+      elsif [2,5].include?(bumon)
+        @store_bumon_sales[:bento][:total] += data[1]
+        @store_bumon_sales[:bento][:stores][data[0][0]][:amount] += data[1]
+      elsif [3,4,6,7,9,11,13].include?(bumon)
+        @store_bumon_sales[:other][:total] += data[1]
+        @store_bumon_sales[:other][:stores][data[0][0]][:amount] += data[1]
+      elsif [14,16,17,18].include?(bumon)
+        @store_bumon_sales[:vege][:total] += data[1]
+        @store_bumon_sales[:vege][:stores][data[0][0]][:amount] += data[1]
+      elsif bumon == 15
+        @store_bumon_sales[:good][:total] += data[1]
+        @store_bumon_sales[:good][:stores][data[0][0]][:amount] += data[1]
+      end
+    end
+    @store_bumon_sales.each do |data|
+      data[1][:stores].each do |stores_data|
+        if data[1][:chakuchi].present?
+          data[1][:chakuchi] += (stores_data[1][:amount]/@stores_count[stores_data[0]])*@days
+        else
+          data[1][:chakuchi] = (stores_data[1][:amount]/@stores_count[stores_data[0]])*@days
+        end
+        stores_data[1][:chakuchi] = (stores_data[1][:amount]/@stores_count[stores_data[0]])*@days
+      end
+    end
+    @stores = current_user.group.stores.where(store_type:0)
+  end
   def bumon_sales
     @to = Date.today
     @from = @to - 30

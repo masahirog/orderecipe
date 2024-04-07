@@ -47,6 +47,7 @@ class SmaregiTradingHistory < ApplicationRecord
     update_smaregi_members_arr = []
 
     SmaregiTradingHistory.where(analysis_id:analysis_id).each do |smaregi_trading_history|
+      uchikeshi_torihiki_id = smaregi_trading_history.uchikeshi_torihiki_id
       torihiki_id = smaregi_trading_history.torihiki_id
       shohinmei = smaregi_trading_history.shohinmei
       tanka_nebikimae_shokei = smaregi_trading_history.tanka_nebikimae_shokei.to_i
@@ -78,7 +79,7 @@ class SmaregiTradingHistory < ApplicationRecord
       tanpin_waribiki = smaregi_trading_history.tanpin_waribiki
       product_zeinuki_uriage = nebikigokei - uchizeianbun
       nebiki_anubn = shokei_nebiki_anbun + point_nebiki_anbun + shain_nebiki_anbun + sale_nebiki_anbun
-      analysis_category_hash[bumon_id] = {zeinuki_uriage:0,net_sales_amount:0,sales_number:0,sales_amount:0,discount_amount:0} unless analysis_category_hash[bumon_id].present?
+      analysis_category_hash[bumon_id] = {zeinuki_uriage:0,net_sales_amount:0,sales_number:0,sales_amount:0,discount_amount:0,loss_amount:0} unless analysis_category_hash[bumon_id].present?
       if hinban == 10459 ||hinban == 12899 ||hinban == 13179 ||hinban == 14099
         loss_ignore = true
       else
@@ -100,7 +101,7 @@ class SmaregiTradingHistory < ApplicationRecord
         hash[hinban]={sales_number:0,total_sales_amount:0,discount_amount:0,net_sales_amount:0,ex_tax_sales_amount:0,sixteen_total_sales_number:0,loss_amount:0,smaregi_shohin_id:[shohin_id],smaregi_shohin_name:shohinmei,smaregi_price:shohintanka,discount_number:0}
       end
       # ▼analysis_productの更新部分
-      if torihiki_meisaikubun == 1 ||torihiki_meisaikubun == 3
+      if uchikeshi_torihiki_id == 0
         transaction_count += 1 unless torihiki_ids.include?(torihiki_id)
         total_sozai_sales_number += suryo if bumon_id == 1
         hash[hinban][:sales_number] += suryo
@@ -123,55 +124,54 @@ class SmaregiTradingHistory < ApplicationRecord
         analysis_category_hash[bumon_id][:sales_amount] += nebikimaekei
         analysis_category_hash[bumon_id][:discount_amount] += tanka_nebikikei + nebiki_anubn
 
-      elsif torihiki_meisaikubun == 2
-        transaction_count -= 1 unless torihiki_ids.include?(torihiki_id)
-        total_sozai_sales_number -= suryo if bumon_id == 1
-        hash[hinban][:sales_number] -= suryo
-        hash[hinban][:total_sales_amount] -= nebikimaekei
-        hash[hinban][:discount_amount] -= tanka_nebikikei
-        hash[hinban][:net_sales_amount] -= nebikigokei
-        hash[hinban][:ex_tax_sales_amount] -= product_zeinuki_uriage
-        if tanpin_waribiki.present?
-          hash[hinban][:discount_number] -= suryo
-        end
-        if Time.parse(time) < Time.parse('16:00')
-          hash[hinban][:sixteen_total_sales_number] -= suryo
-          sixteen_sozai_sales_number -= suryo if bumon_id == 1
-          sixteen_transaction_count -= 1 unless torihiki_ids.include?(torihiki_id)
-        end
-        # analysis_categoryの部分の更新
-        analysis_category_hash[bumon_id][:zeinuki_uriage] -= product_zeinuki_uriage + nebiki_anubn
-        analysis_category_hash[bumon_id][:net_sales_amount] -= nebikigokei + nebiki_anubn
-        analysis_category_hash[bumon_id][:sales_number] -= suryo
-        analysis_category_hash[bumon_id][:sales_amount] -= nebikimaekei
-        analysis_category_hash[bumon_id][:discount_amount] -= tanka_nebikikei - nebiki_anubn
+      # elsif torihiki_meisaikubun == 2
+      #   transaction_count -= 1 unless torihiki_ids.include?(torihiki_id)
+      #   total_sozai_sales_number -= suryo if bumon_id == 1
+      #   hash[hinban][:sales_number] -= suryo
+      #   hash[hinban][:total_sales_amount] -= nebikimaekei
+      #   hash[hinban][:discount_amount] -= tanka_nebikikei
+      #   hash[hinban][:net_sales_amount] -= nebikigokei
+      #   hash[hinban][:ex_tax_sales_amount] -= product_zeinuki_uriage
+      #   if tanpin_waribiki.present?
+      #     hash[hinban][:discount_number] -= suryo
+      #   end
+      #   if Time.parse(time) < Time.parse('16:00')
+      #     hash[hinban][:sixteen_total_sales_number] -= suryo
+      #     sixteen_sozai_sales_number -= suryo if bumon_id == 1
+      #     sixteen_transaction_count -= 1 unless torihiki_ids.include?(torihiki_id)
+      #   end
+      #   # analysis_categoryの部分の更新
+      #   analysis_category_hash[bumon_id][:zeinuki_uriage] -= product_zeinuki_uriage + nebiki_anubn
+      #   analysis_category_hash[bumon_id][:net_sales_amount] -= nebikigokei + nebiki_anubn
+      #   analysis_category_hash[bumon_id][:sales_number] -= suryo
+      #   analysis_category_hash[bumon_id][:sales_amount] -= nebikimaekei
+      #   analysis_category_hash[bumon_id][:discount_amount] -= tanka_nebikikei - nebiki_anubn
 
-      end
-      # ▼analysisの更新部分
-      unless torihiki_ids.include?(torihiki_id)
-        tanka_nebikimae_shokei = tanka_nebikimae_shokei #総売上
-        nebiki = tanka_nebiki_shokei + shokei_nebiki
-        used_point_amount = point_nebiki.to_i
-        gokei = gokei #純売上
-        ex_tax_sales_amount = gokei - uchishohizei #税抜売上
-        if shiharaihouhou == 3
-          delivery_sales_amount = ex_tax_sales_amount
-          store_sales_amount = 0
-        else
-          delivery_sales_amount = 0
-          store_sales_amount = ex_tax_sales_amount
+        # ▼analysisの更新部分
+        unless torihiki_ids.include?(torihiki_id)
+          tanka_nebikimae_shokei = tanka_nebikimae_shokei #総売上
+          nebiki = tanka_nebiki_shokei + shokei_nebiki
+          used_point_amount = point_nebiki.to_i
+          gokei = gokei #純売上
+          ex_tax_sales_amount = gokei - uchishohizei #税抜売上
+          if shiharaihouhou == 3
+            delivery_sales_amount = ex_tax_sales_amount
+            store_sales_amount = 0
+          else
+            delivery_sales_amount = 0
+            store_sales_amount = ex_tax_sales_amount
+          end
+          torihiki_ids << torihiki_id
+          analysis_total_sales_amount += tanka_nebikimae_shokei
+          analysis_discount_amount += nebiki
+          analysis_net_sales_amount += gokei
+          analysis_ex_tax_sales_amount += ex_tax_sales_amount
+          analysis_tax_amount += uchishohizei
+          analysis_store_sales_amount += store_sales_amount
+          analysis_delivery_sales_amount += delivery_sales_amount
+          analysis_used_point_amount += used_point_amount
         end
-        torihiki_ids << torihiki_id
-        # analysisの更新はtorihikimeisaikubunは関係ない（商品データのみ影響する ）
-        # https://docs.google.com/spreadsheets/d/1GLrC1AoE86bIlr3gpJlcthnA8zsB-KpbtoM4dSoKrng/edit#gid=245604921
-        analysis_total_sales_amount += tanka_nebikimae_shokei
-        analysis_discount_amount += nebiki
-        analysis_net_sales_amount += gokei
-        analysis_ex_tax_sales_amount += ex_tax_sales_amount
-        analysis_tax_amount += uchishohizei
-        analysis_store_sales_amount += store_sales_amount
-        analysis_delivery_sales_amount += delivery_sales_amount
-        analysis_used_point_amount += used_point_amount
+
       end
     end
 
@@ -211,12 +211,13 @@ class SmaregiTradingHistory < ApplicationRecord
         if analysis_product.loss_number <= 0 ||analysis_product.loss_ignore==true
           analysis_product.loss_amount = 0
         else
-          analysis_product.loss_amount = analysis_product.loss_number * analysis_product.orderecipe_sell_price
+          loss_amount = analysis_product.loss_number * analysis_product.orderecipe_sell_price
+          analysis_product.loss_amount = loss_amount
+          analysis_category_hash[analysis_product.bumon_id][:loss_amount] += loss_amount
         end
         hash[product_id][:loss_amount] = analysis_product.loss_amount
       end
     end
-
 
     # analysis_categoryの登録
     new_arr = []
@@ -228,12 +229,13 @@ class SmaregiTradingHistory < ApplicationRecord
       sales_number = analysis_bumon_data[1][:sales_number]
       sales_amount = analysis_bumon_data[1][:sales_amount]
       discount_amount = analysis_bumon_data[1][:discount_amount]
+      loss_amount = analysis_bumon_data[1][:loss_amount]
       new_arr << AnalysisCategory.new(analysis_id:analysis_id,smaregi_bumon_id:smaregi_bumon_id,sales_number:sales_number,sales_amount:sales_amount,discount_amount:discount_amount,
-            net_sales_amount:net_sales_amount,ex_tax_sales_amount:ex_tax_sales_amount)
+            net_sales_amount:net_sales_amount,ex_tax_sales_amount:ex_tax_sales_amount,loss_amount:loss_amount)
     end
-    loss_amount = hash.values.sum { |data| data[:loss_amount]}
+    analysis_loss_amount = hash.values.sum { |data| data[:loss_amount]}
     analysis.update(total_sales_amount:analysis_total_sales_amount,transaction_count:transaction_count,sixteen_transaction_count:sixteen_transaction_count,
-      total_sozai_sales_number:total_sozai_sales_number,sixteen_sozai_sales_number:sixteen_sozai_sales_number,discount_amount:analysis_discount_amount,loss_amount:loss_amount,
+      total_sozai_sales_number:total_sozai_sales_number,sixteen_sozai_sales_number:sixteen_sozai_sales_number,discount_amount:analysis_discount_amount,loss_amount:analysis_loss_amount,
       net_sales_amount:analysis_net_sales_amount,tax_amount:analysis_tax_amount,ex_tax_sales_amount:analysis_ex_tax_sales_amount,store_sales_amount:analysis_store_sales_amount,
       delivery_sales_amount:analysis_delivery_sales_amount,used_point_amount:analysis_used_point_amount)
     AnalysisProduct.import analysis_products_arr
