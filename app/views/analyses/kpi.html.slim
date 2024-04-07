@@ -22,7 +22,7 @@ table.table
 		tr
 			td = "実績：#{(@store_bumon_sales[:sozai][:total] + @store_bumon_sales[:bento][:total] + @store_bumon_sales[:other][:total]).to_s(:delimited)}"
 			- @stores.each do |store|
-				td = "#{(@store_bumon_sales[:sozai][:stores][store.id][:amount] + @store_bumon_sales[:bento][:stores][store.id][:amount] + @store_bumon_sales[:other][:stores][store.id][:amount]).to_s(:delimited)}"
+				td = "#{(@store_bumon_sales[:sozai][:stores][store.id][:amount] + @store_bumon_sales[:bento][:stores][store.id][:amount] + @store_bumon_sales[:other][:stores][store.id][:amount] + @store_bumon_sales[:vege][:stores][store.id][:amount] + @store_bumon_sales[:good][:stores][store.id][:amount]).to_s(:delimited)}"
 		tr
 			td style='font-weight:bold;' rowspan=6
 				span 　└ 自社商品

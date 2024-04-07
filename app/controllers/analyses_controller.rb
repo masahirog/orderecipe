@@ -12,7 +12,7 @@ class AnalysesController < AdminController
     @foods_budgets = @store_daily_menus.group(:store_id).sum(:foods_budget)
     @vegetables_budgets = @store_daily_menus.group(:store_id).sum(:vegetables_budget)
     @goods_budgets = @store_daily_menus.group(:store_id).sum(:goods_budget)
-    analyses = Analysis.where(date:dates)
+    analyses = Analysis.where(date:dates).where('transaction_count > ?',0)
     @stores_count = analyses.group(:store_id).count
     @store_bumon_sales = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @store_bumon_sales[:sozai][:total] = 0
@@ -20,7 +20,7 @@ class AnalysesController < AdminController
     @store_bumon_sales[:other][:total] = 0
     @store_bumon_sales[:vege][:total] = 0
     @store_bumon_sales[:good][:total] = 0
-    store_sales = AnalysisCategory.where(analysis_id:analyses.ids).joins(:analysis).group('analyses.store_id').group(:smaregi_bumon_id).sum(:sales_amount)
+    store_sales = AnalysisCategory.where(analysis_id:analyses.ids).joins(:analysis).group('analyses.store_id').group(:smaregi_bumon_id).sum(:ex_tax_sales_amount)
     store_sales.keys.map{|store_bumon|store_bumon[0]}.uniq.each do |store_id|
       @store_bumon_sales[:sozai][:stores][store_id][:amount] = 0
       @store_bumon_sales[:bento][:stores][store_id][:amount] = 0
@@ -30,19 +30,19 @@ class AnalysesController < AdminController
     end
     store_sales.each do |data|
       bumon = data[0][1]
-      if  [1,8].include?(bumon)
+      if  [1,8].include?(bumon.to_i)
         @store_bumon_sales[:sozai][:total] += data[1]
         @store_bumon_sales[:sozai][:stores][data[0][0]][:amount] += data[1]
-      elsif [2,5].include?(bumon)
+      elsif [2,5].include?(bumon.to_i)
         @store_bumon_sales[:bento][:total] += data[1]
         @store_bumon_sales[:bento][:stores][data[0][0]][:amount] += data[1]
-      elsif [3,4,6,7,9,11,13].include?(bumon)
+      elsif [3,4,6,7,9,11,13,0].include?(bumon.to_i)
         @store_bumon_sales[:other][:total] += data[1]
         @store_bumon_sales[:other][:stores][data[0][0]][:amount] += data[1]
-      elsif [14,16,17,18].include?(bumon)
+      elsif [14,16,17,18].include?(bumon.to_i)
         @store_bumon_sales[:vege][:total] += data[1]
         @store_bumon_sales[:vege][:stores][data[0][0]][:amount] += data[1]
-      elsif bumon == 15
+      elsif bumon.to_i == 15
         @store_bumon_sales[:good][:total] += data[1]
         @store_bumon_sales[:good][:stores][data[0][0]][:amount] += data[1]
       end
