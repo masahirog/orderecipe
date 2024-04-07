@@ -18,7 +18,7 @@ table.table
 		tr
 			td = "着地：#{(@store_bumon_sales[:sozai][:chakuchi] + @store_bumon_sales[:bento][:chakuchi] + @store_bumon_sales[:other][:chakuchi]).to_s(:delimited)}"
 			- @stores.each do |store|
-				td = "#{(@store_bumon_sales[:sozai][:stores][store.id][:amount] + @store_bumon_sales[:bento][:stores][store.id][:amount] + @store_bumon_sales[:other][:stores][store.id][:amount]).to_s(:delimited)}"
+				td = "#{(@store_bumon_sales[:sozai][:stores][store.id][:chakuchi] + @store_bumon_sales[:bento][:stores][store.id][:chakuchi] + @store_bumon_sales[:other][:stores][store.id][:chakuchi]).to_s(:delimited)}"
 		tr
 			td = "実績：#{(@store_bumon_sales[:sozai][:total] + @store_bumon_sales[:bento][:total] + @store_bumon_sales[:other][:total]).to_s(:delimited)}"
 			- @stores.each do |store|
@@ -64,12 +64,12 @@ table.table
 			- @stores.each do |store|
 				td = "#{(@goods_budgets[store.id]+@vegetables_budgets[store.id]).to_s(:delimited)}"
 		tr
-			td = "着地：#{(@store_bumon_sales[:sozai][:total] + @store_bumon_sales[:bento][:total] + @store_bumon_sales[:other][:total]).to_s(:delimited)}"
+			td = "着地：#{(@store_bumon_sales[:vege][:chakuchi] + @store_bumon_sales[:good][:chakuchi]).to_s(:delimited)}"
 			- @stores.each do |store|
 				td = "#{(@store_bumon_sales[:vege][:stores][store.id][:chakuchi] + @store_bumon_sales[:good][:stores][store.id][:chakuchi]).to_s(:delimited)}"
 
 		tr
-			td = "実績：#{(@store_bumon_sales[:sozai][:total] + @store_bumon_sales[:bento][:total] + @store_bumon_sales[:other][:total]).to_s(:delimited)}"
+			td = "実績：#{(@store_bumon_sales[:vege][:total] + @store_bumon_sales[:good][:total]).to_s(:delimited)}"
 			- @stores.each do |store|
 				td = "#{(@store_bumon_sales[:vege][:stores][store.id][:amount] + @store_bumon_sales[:good][:stores][store.id][:amount]).to_s(:delimited)}"
 
