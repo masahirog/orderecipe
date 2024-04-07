@@ -57,6 +57,16 @@ class AnalysesController < AdminController
         stores_data[1][:chakuchi] = (stores_data[1][:amount]/@stores_count[stores_data[0]])*@days
       end
     end
+    @store_chakuchi = {}
+    @store_bumon_sales.values.map{|data|data[:stores]}.each do |data_more|
+      data_more.each do |data_more_more|
+        if @store_chakuchi[data_more_more[0]].present?
+          @store_chakuchi[data_more_more[0]] += data_more_more[1][:chakuchi]
+        else
+          @store_chakuchi[data_more_more[0]] = data_more_more[1][:chakuchi]
+        end
+      end
+    end
     @stores = current_user.group.stores.where(store_type:0)
   end
   def bumon_sales
