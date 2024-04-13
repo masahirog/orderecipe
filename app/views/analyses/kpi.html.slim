@@ -1,4 +1,4 @@
-h3 = "#{@today} 予算進捗"
+h3 = "#{@today.month}月 予算進捗"
 
 table.table
 	thead
@@ -83,15 +83,19 @@ table.table
 				td = (@store_bumon_sales[:good][:stores][store.id][:amount]).to_s(:delimited)
 
 
-
-
-= form_tag kpi_analyses_path, :method => 'get' do
-	.clearfix.pull-right
-		span style='margin-top:7px;float:left;' 比較期間：
-		= date_field_tag :last_from, @last_from, class:"form-control float-left",style:'width:120px;float:left;'
-		div style="float:left;padding:8px;" 〜
-		= date_field_tag :last_to, @last_to, class:"form-control",style:'width:120px;float:left;'
-		= submit_tag "期間変更" ,class:"btn btn-primary",style:"margin-left:10px;"
+.clearfix
+	= form_tag kpi_analyses_path, :method => 'get' do
+		.pull-right
+			label style='margin-top:7px;float:left;' 過去の比較期間：
+			= date_field_tag :last_from, @last_from, class:"form-control float-left",style:'width:120px;float:left;'
+			div style="float:left;padding:8px;" 〜
+			= date_field_tag :last_to, @last_to, class:"form-control",style:'width:120px;float:left;'
+			= submit_tag "期間変更" ,class:"btn btn-primary",style:"margin-left:10px;"
+		.pull-right style='margin-right:20px;'
+			label style='margin-top:7px;float:left;' データ期間：
+			= date_field_tag :from, @from, class:"form-control float-left",style:'width:120px;float:left;'
+			div style="float:left;padding:8px;" 〜
+			= date_field_tag :to, @to, class:"form-control",style:'width:120px;float:left;'
 
 h4 惣菜販売数（過去同曜日比較）
 canvas#chart1

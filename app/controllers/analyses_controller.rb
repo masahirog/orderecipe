@@ -1,32 +1,27 @@
 class AnalysesController < AdminController
   before_action :set_analysis, only: %i[ show edit update destroy ]
   def kpi
-    if params[:to]
-      params[:to] = params[:to].to_date
+    if params[:month].present?
+      @date = "#{params[:month]}-01".to_date
+      @month = params[:month]
     else
-      params[:to] = Date.today
+      @date = @today
+      @month = "#{@date.year}-#{sprintf("%02d",@date.month)}"
     end
-    if params[:from]
-      params[:from] = params[:from].to_date
-    else
-      params[:from] = params[:to] - 30
-    end
-    @dates =(params[:from]..params[:to]).to_a
-    @date = params[:from]
-    
-    @days = @dates.count
-    @store_daily_menus = StoreDailyMenu.where(start_time:@dates)
+
+    dates =(@date.beginning_of_month..@date.end_of_month).to_a
+    @store_daily_menus = StoreDailyMenu.where(start_time:dates)
     @foods_budgets = @store_daily_menus.group(:store_id).sum(:foods_budget)
     @goods_budgets = @store_daily_menus.group(:store_id).sum(:goods_budget)
-    @analyses = Analysis.where(date:@dates).where('transaction_count > ?',0)
-    @stores_count = @analyses.group(:store_id).count
+    analyses = Analysis.where(date:dates).where('transaction_count > ?',0)
+    @stores_count = analyses.group(:store_id).count
     @store_bumon_sales = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @store_bumon_sales[:sozai][:total] = 0
     @store_bumon_sales[:bento][:total] = 0
     @store_bumon_sales[:other][:total] = 0
     @store_bumon_sales[:vege][:total] = 0
     @store_bumon_sales[:good][:total] = 0
-    store_sales = AnalysisCategory.where(analysis_id:@analyses.ids).joins(:analysis).group('analyses.store_id').group(:smaregi_bumon_id).sum(:ex_tax_sales_amount)
+    store_sales = AnalysisCategory.where(analysis_id:analyses.ids).joins(:analysis).group('analyses.store_id').group(:smaregi_bumon_id).sum(:ex_tax_sales_amount)
     store_sales.keys.map{|store_bumon|store_bumon[0]}.uniq.each do |store_id|
       @store_bumon_sales[:sozai][:stores][store_id][:amount] = 0
       @store_bumon_sales[:bento][:stores][store_id][:amount] = 0
@@ -56,11 +51,11 @@ class AnalysesController < AdminController
     @store_bumon_sales.each do |data|
       data[1][:stores].each do |stores_data|
         if data[1][:chakuchi].present?
-          data[1][:chakuchi] += (stores_data[1][:amount]/@stores_count[stores_data[0]])*@days
+          data[1][:chakuchi] += (stores_data[1][:amount]/@stores_count[stores_data[0]])*dates.count
         else
-          data[1][:chakuchi] = (stores_data[1][:amount]/@stores_count[stores_data[0]])*@days
+          data[1][:chakuchi] = (stores_data[1][:amount]/@stores_count[stores_data[0]])*dates.count
         end
-        stores_data[1][:chakuchi] = (stores_data[1][:amount]/@stores_count[stores_data[0]])*@days
+        stores_data[1][:chakuchi] = (stores_data[1][:amount]/@stores_count[stores_data[0]])*dates.count
       end
     end
     @store_chakuchi = {}
@@ -73,6 +68,20 @@ class AnalysesController < AdminController
         end
       end
     end
+
+    if params[:to]
+      @to = params[:to].to_date
+    else
+      @to = Date.today
+    end
+    if params[:from]
+      @from = params[:from].to_date
+    else
+      @from = @to - 30
+    end
+    @dates =(@from..@to).to_a
+    @analyses = Analysis.where(date:@dates).where('transaction_count > ?',0)
+    @days = @dates.count
     @stores = current_user.group.stores.where(store_type:0)
     @store_analyses = @analyses.map{|analysis|[[analysis.store_daily_menu.start_time,analysis.store_daily_menu.store_id],analysis]}.to_h
     @date_analyses = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
@@ -92,7 +101,7 @@ class AnalysesController < AdminController
     if params[:last_to]
       @last_to =  params[:last_to]
     else
-      @last_to =  params[:from] - 1
+      @last_to =  @from - 1
     end
     if params[:last_from]
       @last_from =  params[:last_from]
