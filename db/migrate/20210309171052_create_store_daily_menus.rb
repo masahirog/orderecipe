@@ -17,8 +17,10 @@ class CreateStoreDailyMenus < ActiveRecord::Migration[5.2]
       t.string :event
       t.boolean :editable_flag,default:true,null:false
       t.integer :foods_budget,null:false,default:0
-      t.integer :vegetables_budget,null:false,default:0
+      # t.integer :vegetables_budget,null:false,default:0
       t.integer :goods_budget,null:false,default:0
+      t.integer :revised_foods_budget,null:false,default:0
+      t.integer :revised_goods_budget,null:false,default:0
     end
     add_index :store_daily_menus, [:daily_menu_id,:store_id,:start_time], unique: true, name: 'index_uniq'
   end

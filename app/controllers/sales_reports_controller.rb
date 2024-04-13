@@ -18,20 +18,18 @@ class SalesReportsController < AdminController
     @analysis = Analysis.find_by(date:date,store_id:store_id)
     if @analysis.present?
       @store_daily_menu = @analysis.store_daily_menu
-      @budget = @store_daily_menu.foods_budget.to_i + @store_daily_menu.vegetables_budget.to_i + @store_daily_menu.goods_budget.to_i
+      @budget = @store_daily_menu.foods_budget.to_i + @store_daily_menu.goods_budget.to_i
       moritsuke_gosa = ""
       date = @store_daily_menu.start_time
       dates = (date.beginning_of_month..date.end_of_month).to_a
       @store_daily_menus = StoreDailyMenu.includes(store_daily_menu_details:[:product]).where(start_time:dates,store_id:store_id)
       @foods_total_budget = 0
-      @vegetables_total_budget = 0
       @goods_total_budget = 0
       @store_daily_menus.each do |sdm|
         @foods_total_budget += sdm.foods_budget.to_i
-        @vegetables_total_budget += sdm.vegetables_budget.to_i
         @goods_total_budget += sdm.goods_budget.to_i
       end
-      @total_budget = @foods_total_budget+@vegetables_total_budget+@goods_total_budget
+      @total_budget = @foods_total_budget+@goods_total_budget
       @analysis.store_daily_menu.store_daily_menu_details.each do |sdmd|
         unless sdmd.excess_or_deficiency_number == 0
           moritsuke_gosa += "#{sdmd.product.name}：#{sdmd.excess_or_deficiency_number}食\n"
@@ -54,21 +52,19 @@ class SalesReportsController < AdminController
     @analysis = @sales_report.analysis
     store_id = @analysis.store_id
     @store_daily_menu = @analysis.store_daily_menu
-    @budget = @store_daily_menu.foods_budget.to_i + @store_daily_menu.vegetables_budget.to_i + @store_daily_menu.goods_budget.to_i
+    @budget = @store_daily_menu.foods_budget.to_i + @store_daily_menu.goods_budget.to_i
     moritsuke_gosa = ""
     date = @store_daily_menu.start_time
     dates = (date.beginning_of_month..date.end_of_month).to_a
     @business_day_num = date.end_of_month.day
     @store_daily_menus = StoreDailyMenu.includes(store_daily_menu_details:[:product]).where(start_time:dates,store_id:store_id)
     @foods_total_budget = 0
-    @vegetables_total_budget = 0
     @goods_total_budget = 0
     @store_daily_menus.each do |sdm|
       @foods_total_budget += sdm.foods_budget.to_i
-      @vegetables_total_budget += sdm.vegetables_budget.to_i
       @goods_total_budget += sdm.goods_budget.to_i
     end
-    @total_budget = @foods_total_budget+@vegetables_total_budget+@goods_total_budget
+    @total_budget = @foods_total_budget+@goods_total_budget
     @analysis.store_daily_menu.store_daily_menu_details.each do |sdmd|
       unless sdmd.excess_or_deficiency_number == 0
         moritsuke_gosa += "#{sdmd.product.name}：#{sdmd.excess_or_deficiency_number}食\n"
@@ -90,7 +86,7 @@ class SalesReportsController < AdminController
     kome_amari = params[:sales_report][:kome_amari]
     respond_to do |format|
       if @sales_report.save
-        yosan = (@sales_report.analysis.store_daily_menu.foods_budget+@sales_report.analysis.store_daily_menu.vegetables_budget+@sales_report.analysis.store_daily_menu.goods_budget
+        yosan = (@sales_report.analysis.store_daily_menu.foods_budget+@sales_report.analysis.store_daily_menu.goods_budget
         ).to_i
         analysis = @sales_report.analysis
         analysis.update(vegetable_waste_amount:vegetable_waste_amount)

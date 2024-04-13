@@ -1,4 +1,4 @@
-h3 = "#{@today} KPI進捗"
+h3 = "#{@today} 予算進捗"
 
 table.table
 	thead
@@ -11,9 +11,9 @@ table.table
 	tbody
 		tr
 			td style='font-weight:bold;' rowspan=3 店舗売上全体
-			td = "予算：#{(@foods_budgets.values.sum + @vegetables_budgets.values.sum + @goods_budgets.values.sum).to_s(:delimited)}"
+			td = "予算：#{(@foods_budgets.values.sum + @goods_budgets.values.sum).to_s(:delimited)}"
 			- @stores.each do |store|
-				- yosan = (@foods_budgets[store.id] + @vegetables_budgets[store.id] + @goods_budgets[store.id]).to_s(:delimited)
+				- yosan = (@foods_budgets[store.id] + @goods_budgets[store.id]).to_s(:delimited)
 				td = link_to yosan,budget_store_daily_menus_path(date:@date,store_id:store.id),target:'_blank'
 		tr
 			td = "着地：#{(@store_bumon_sales.values.map{|data|data[:chakuchi]}.sum).to_s(:delimited)}"
@@ -60,9 +60,9 @@ table.table
 				span 　└ 仕入商品
 				br
 				span 　　（物販）
-			td = "予算：#{(@vegetables_budgets.values.sum + @goods_budgets.values.sum).to_s(:delimited)}"
+			td = "予算：#{@goods_budgets.values.sum.to_s(:delimited)}"
 			- @stores.each do |store|
-				td = "#{(@goods_budgets[store.id]+@vegetables_budgets[store.id]).to_s(:delimited)}"
+				td = "#{@goods_budgets[store.id].to_s(:delimited)}"
 		tr
 			td = "着地：#{(@store_bumon_sales[:vege][:chakuchi] + @store_bumon_sales[:good][:chakuchi]).to_s(:delimited)}"
 			- @stores.each do |store|
@@ -83,36 +83,174 @@ table.table
 				td = (@store_bumon_sales[:good][:stores][store.id][:amount]).to_s(:delimited)
 
 
-table.table
-	thead
-		tr
-			th 客数
-			th
-			- @stores.each do |store|
-				th = store.short_name
-	tbody
-		tr
-			td style='font-weight:bold;' 全体客数
-			td 予算｜実績（ %）
-			- @stores.each do |store|
-				td 予算｜実績（ %）
-		tr
-			td └ 10:00〜14:00
-			td 予算｜実績（ %）
-			- @stores.each do |store|
-				td 予算｜実績（ %）
-		tr
-			td └ 14:00〜17:00
-			td 予算｜実績（ %）
-			- @stores.each do |store|
-				td 予算｜実績（ %）
-		tr
-			td └ 17:00〜20:00
-			td 予算｜実績（ %）
-			- @stores.each do |store|
-				td 予算｜実績（ %）
-		tr
-			td └ 20:00〜22:00
-			td 予算｜実績（ %）
-			- @stores.each do |store|
-				td 予算｜実績（ %）
+
+
+= form_tag kpi_analyses_path, :method => 'get' do
+	.clearfix.pull-right
+		span style='margin-top:7px;float:left;' 比較期間：
+		= date_field_tag :last_from, @last_from, class:"form-control float-left",style:'width:120px;float:left;'
+		div style="float:left;padding:8px;" 〜
+		= date_field_tag :last_to, @last_to, class:"form-control",style:'width:120px;float:left;'
+		= submit_tag "期間変更" ,class:"btn btn-primary",style:"margin-left:10px;"
+
+h4 惣菜販売数（過去同曜日比較）
+canvas#chart1
+
+h4 惣菜売上（過去同曜日比較）
+canvas#chart2
+
+br
+.table-responsive style='height:600px;overflow: scroll;'
+  table.table.layout-fixed style='border-collapse:separate;'
+    thead style='position: sticky;top:0;background-color:white;z-index:3;'
+      tr
+        th.text-center style="width:560px;" colspan=6
+        - @stores.each do |store|
+          th.text-center style="border-left: 1px solid #ddd;width:400px;" colspan=5 = store.name
+      tr
+        th style='background-color:white;' 日付
+        th style='' 来客組数
+        th style='' 売上
+        th style='' 値引額
+        th style='' 廃棄金額
+        th style='' ロス率
+        - @stores.each do |store|
+          th style="border-left: 1px solid #ddd;" 来客組数
+          th style='' 売上
+          th style='' 値引額
+          th style='' 廃棄金額
+          th style='' ロス率
+
+    tbody
+      	- @dates.reverse_each do |date|
+	        tr
+	          td style='background-color:white;' = link_to date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})"),date_analyses_path(date:date)
+	          td = @date_store_analyses[date].map{|hash|hash[1][:transaction_count]}.sum
+	          td = @date_store_analyses[date].map{|hash|hash[1][:sales_amount]}.sum.to_s(:delimited) if @date_store_analyses[date]
+	          td = @date_store_analyses[date].map{|hash|hash[1][:discount_amount].to_i}.sum.to_s(:delimited) if @date_store_analyses[date]
+	          td = @date_store_analyses[date].map{|hash|hash[1][:loss_amount].to_i}.sum.to_s(:delimited) if @date_store_analyses[date]
+	          td
+	            - if @date_store_analyses[date].map{|hash|hash[1][:loss_amount].to_i}.sum > 0 && @date_store_analyses[date].map{|hash|hash[1][:discount_amount].to_i}.sum > 0
+	              - loss = (((@date_store_analyses[date].map{|hash|hash[1][:loss_amount].to_i}.sum.to_f + @date_store_analyses[date].map{|hash|hash[1][:discount_amount].to_i}.sum.to_f)/@date_store_analyses[date].map{|hash|hash[1][:sales_amount]}.sum)*100).round(1)
+	              - if loss > 9
+	                span style='color:red;' = "#{loss}%"
+	              - elsif loss < 4
+	                span style='color:#0000cd;' = "#{loss}%"
+	              - else
+	                span style='color:black;' = "#{loss}%"
+	          - @stores.each do |store|
+	            td style="border-left: 1px solid #ddd;"  = @date_store_analyses[date][store.id][:transaction_count] if @date_store_analyses[date][store.id][:transaction_count].present?
+	            td = @date_store_analyses[date][store.id][:sales_amount].to_s(:delimited) if @date_store_analyses[date][store.id][:sales_amount].present?
+	            td = @date_store_analyses[date][store.id][:discount_amount].to_s(:delimited) if @date_store_analyses[date][store.id][:discount_amount].present?
+	            td = @date_store_analyses[date][store.id][:loss_amount].to_s(:delimited) if @date_store_analyses[date][store.id][:loss_amount].present?
+	            td
+	              - if @date_store_analyses[date][store.id][:sales_amount].present? && @date_store_analyses[date][store.id][:loss_amount].present? && @date_store_analyses[date][store.id][:discount_amount].present?
+	                - loss = (((@date_store_analyses[date][store.id][:loss_amount].to_f + @date_store_analyses[date][store.id][:discount_amount].to_f)/@date_store_analyses[date][store.id][:sales_amount])*100).round(1)
+	                - if loss > 9
+	                  span style='color:red;' = "#{loss}%"
+	                - elsif loss < 4
+	                  span style='color:#0000cd;' = "#{loss}%"
+	                - else
+	                  span style='color:black;' = "#{loss}%"
+
+
+javascript:
+  // 1個目のグラフ
+  var ctx = document.getElementById("chart1").getContext('2d');
+  ctx.canvas.height = 80;
+  var chart1 = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: gon.sales_dates,
+      datasets: gon.souzai_datas
+    },
+    options: {
+      scales: {
+        xAxes: [{
+          stacked: true,
+          scaleLabel: {
+            display: true,
+            fontSize: 16
+          }
+        }],
+        yAxes: [{
+          stacked: false,
+          id: "y-axis-2",
+          type: "linear",
+          position: "left",
+          ticks: {
+            min: 0
+          }
+        }]
+      },
+      legend: {
+        labels:{
+          filter: function(items) {
+            return items.text != null;
+          }
+        }
+      }
+    }
+  });
+
+
+  // 1個目のグラフ
+  var ctx2 = document.getElementById("chart2").getContext('2d');
+  ctx2.canvas.height = 80;
+  var chart2 = new Chart(ctx2, {
+    type: 'bar',
+    data: {
+      labels: gon.sales_dates,
+      datasets: gon.souzai_uriage_datas
+    },
+    options: {
+      scales: {
+        xAxes: [{
+          stacked: true,
+          scaleLabel: {
+            display: true,
+            fontSize: 16
+          }
+        }],
+        yAxes: [{
+          stacked: false,
+          id: "y-axis-2",
+          type: "linear",
+          position: "left",
+          ticks: {
+            min: 0
+          }
+        }]
+      },
+      legend: {
+        labels:{
+          filter: function(items) {
+            return items.text != null;
+          }
+        }
+      }
+    }
+  });
+
+
+css:
+  .table-responsive th {
+    white-space: nowrap;
+  }
+  table.layout-fixed {
+    table-layout: fixed;
+    border-collspace:separate;
+  }
+  .table th:first-child,td:first-child{
+    position: sticky;
+    left: 0;
+    z-index:2;
+  }
+  th,td {
+    font-size:0.9em;
+    font-weight:normal;
+    text-align:center;
+  }
+  .aaa{
+    width:50px;
+  }

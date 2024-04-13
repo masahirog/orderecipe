@@ -3,6 +3,16 @@ class SmaregiTradingHistory < ApplicationRecord
   scope :search_by_week, ->(week) { where("dayofweek(date) in (?)", Array(week)) }
   belongs_to :analysis
 
+  def self.once_recalculate(date)
+    date = Date.parse(date)
+    from = date.beginning_of_month
+    to = date.end_of_month
+    dates = (from..to)
+    Analysis.where(date:dates).each do |analysis|
+      recalculate(analysis.id)
+    end
+  end
+
 
   def self.oncerecalculate(from,to,store_id)
     analyses = Analysis.where(date:from..to).where(store_id:store_id)
@@ -30,7 +40,6 @@ class SmaregiTradingHistory < ApplicationRecord
     sixteen_transaction_count = 0
     transaction_count = 0
     total_sales = 0
-    # total_sixteen_total_sales_number = 0
     total_sozai_sales_number = 0
     sixteen_sozai_sales_number = 0
     smaregi_trading_histories_arr = []
@@ -44,7 +53,6 @@ class SmaregiTradingHistory < ApplicationRecord
     analysis = Analysis.find(analysis_id)
     product_ids = []
     kaiin_raitensu_hash = {}
-    update_smaregi_members_arr = []
 
     SmaregiTradingHistory.where(analysis_id:analysis_id).each do |smaregi_trading_history|
       uchikeshi_torihiki_id = smaregi_trading_history.uchikeshi_torihiki_id
@@ -103,7 +111,7 @@ class SmaregiTradingHistory < ApplicationRecord
       # ▼analysis_productの更新部分
       if uchikeshi_torihiki_id == 0
         transaction_count += 1 unless torihiki_ids.include?(torihiki_id)
-        total_sozai_sales_number += suryo if bumon_id == 1
+        total_sozai_sales_number += suryo if bumon_id == 1 || bumon_id == 8
         hash[hinban][:sales_number] += suryo
         hash[hinban][:total_sales_amount] += nebikimaekei
         hash[hinban][:discount_amount] += tanka_nebikikei
@@ -123,30 +131,6 @@ class SmaregiTradingHistory < ApplicationRecord
         analysis_category_hash[bumon_id][:sales_number] += suryo
         analysis_category_hash[bumon_id][:sales_amount] += nebikimaekei
         analysis_category_hash[bumon_id][:discount_amount] += tanka_nebikikei + nebiki_anubn
-
-      # elsif torihiki_meisaikubun == 2
-      #   transaction_count -= 1 unless torihiki_ids.include?(torihiki_id)
-      #   total_sozai_sales_number -= suryo if bumon_id == 1
-      #   hash[hinban][:sales_number] -= suryo
-      #   hash[hinban][:total_sales_amount] -= nebikimaekei
-      #   hash[hinban][:discount_amount] -= tanka_nebikikei
-      #   hash[hinban][:net_sales_amount] -= nebikigokei
-      #   hash[hinban][:ex_tax_sales_amount] -= product_zeinuki_uriage
-      #   if tanpin_waribiki.present?
-      #     hash[hinban][:discount_number] -= suryo
-      #   end
-      #   if Time.parse(time) < Time.parse('16:00')
-      #     hash[hinban][:sixteen_total_sales_number] -= suryo
-      #     sixteen_sozai_sales_number -= suryo if bumon_id == 1
-      #     sixteen_transaction_count -= 1 unless torihiki_ids.include?(torihiki_id)
-      #   end
-      #   # analysis_categoryの部分の更新
-      #   analysis_category_hash[bumon_id][:zeinuki_uriage] -= product_zeinuki_uriage + nebiki_anubn
-      #   analysis_category_hash[bumon_id][:net_sales_amount] -= nebikigokei + nebiki_anubn
-      #   analysis_category_hash[bumon_id][:sales_number] -= suryo
-      #   analysis_category_hash[bumon_id][:sales_amount] -= nebikimaekei
-      #   analysis_category_hash[bumon_id][:discount_amount] -= tanka_nebikikei - nebiki_anubn
-
         # ▼analysisの更新部分
         unless torihiki_ids.include?(torihiki_id)
           tanka_nebikimae_shokei = tanka_nebikimae_shokei #総売上
@@ -240,12 +224,8 @@ class SmaregiTradingHistory < ApplicationRecord
       delivery_sales_amount:analysis_delivery_sales_amount,used_point_amount:analysis_used_point_amount)
     AnalysisProduct.import analysis_products_arr
     AnalysisCategory.import new_arr
-    # SmaregiMember.import update_smaregi_members_arr, on_duplicate_key_update:[:raiten_kaisu,:last_visit_store]
     return (smaregi_trading_histories_arr.count)
   end
-
-
-
 
 
 

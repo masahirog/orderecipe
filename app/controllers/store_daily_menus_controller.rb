@@ -49,25 +49,21 @@ class StoreDailyMenusController < AdminController
     @store_daily_menu = StoreDailyMenu.find(params[:store_daily_menu_id])
     if params[:foods_budget].present?
       @store_daily_menu.update_column(:foods_budget,params[:foods_budget])
-    elsif params[:vegetables_budget].present?
-      @store_daily_menu.update_column(:vegetables_budget,params[:vegetables_budget])
     else
       @store_daily_menu.update_column(:goods_budget,params[:goods_budget])
     end
-    @budget = @store_daily_menu.foods_budget.to_i + @store_daily_menu.vegetables_budget.to_i + @store_daily_menu.goods_budget.to_i
+    @budget = @store_daily_menu.foods_budget.to_i + @store_daily_menu.goods_budget.to_i
     date = @store_daily_menu.start_time
     store_id = @store_daily_menu.store_id
     dates = (date.beginning_of_month..date.end_of_month).to_a
     @store_daily_menus = StoreDailyMenu.where(start_time:dates,store_id:store_id)
     @foods_total_budget = 0
-    @vegetables_total_budget = 0
     @goods_total_budget = 0
     @store_daily_menus.each do |sdm|
       @foods_total_budget += sdm.foods_budget.to_i
-      @vegetables_total_budget += sdm.vegetables_budget.to_i
       @goods_total_budget += sdm.goods_budget.to_i
     end
-    @total_budget = @foods_total_budget+@vegetables_total_budget+@goods_total_budget
+    @total_budget = @foods_total_budget + @goods_total_budget
     respond_to do |format|
       format.js
       format.html
@@ -84,14 +80,12 @@ class StoreDailyMenusController < AdminController
     @dates = (@date.beginning_of_month..@date.end_of_month).to_a
     @store_daily_menus = StoreDailyMenu.where(start_time:@dates,store_id:params[:store_id])
     @foods_total_budget = 0
-    @vegetables_total_budget = 0
     @goods_total_budget = 0
     @store_daily_menus.each do |sdm|
       @foods_total_budget += sdm.foods_budget.to_i
-      @vegetables_total_budget += sdm.vegetables_budget.to_i
       @goods_total_budget += sdm.goods_budget.to_i
     end
-    @total_budget = @foods_total_budget+@vegetables_total_budget+@goods_total_budget
+    @total_budget = @foods_total_budget+@goods_total_budget
   end
 
   def input_manufacturing_number

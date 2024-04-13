@@ -26,7 +26,7 @@
         td
           = "#{((((@analyses.sum(:ex_tax_sales_amount)/@analyses.count)*@business_day_num).to_f/@total_budget)*100).round}%" if @total_budget > 0 && @analyses.present?
       tr
-        td 　フード
+        td 　自社商品（惣菜）
         td = "#{@foods_total_budget.to_s(:delimited)}円"
         td
           = "#{@sales_hash[:foods].to_s(:delimited)}円"
@@ -35,16 +35,7 @@
         td
           = "#{((((@sales_hash[:foods]/@analyses.count)*@business_day_num).to_f/@foods_total_budget)*100).round}%" if @analyses.present? && @foods_total_budget > 0
       tr
-        td 　野菜
-        td = "#{@vegetables_total_budget.to_s(:delimited)}円"
-        td
-          = "#{@sales_hash[:veges].to_s(:delimited)}円"
-        td
-          = "#{((@sales_hash[:veges]/@analyses.count)*@business_day_num).to_s(:delimited)}円" if @analyses.present?
-        td
-          = "#{((((@sales_hash[:veges]/@analyses.count)*@business_day_num).to_f/@vegetables_total_budget)*100).round}%" if @analyses.present? && @vegetables_total_budget > 0
-      tr
-        td 　物販
+        td 　仕入商品（物販）
         td = "#{@goods_total_budget.to_s(:delimited)}円"
         td
           = "#{@sales_hash[:goods].to_s(:delimited)}円"
@@ -78,15 +69,6 @@
         td
           = "#{(((@discount_hash[:foods]/@analyses.count)*@business_day_num).to_f/(@foods_total_budget*0.02)*100).round(1)}%" if @foods_total_budget>0 && @analyses.present?
       tr
-        td 　　野菜
-        td = "2%（#{(@vegetables_total_budget*0.02).round.to_s(:delimited)}円）"
-        td
-          = "#{((@discount_hash[:veges]/@sales_hash[:veges].to_f)*100).round(1)}%（#{@discount_hash[:veges].to_s(:delimited)}円）"
-        td
-          = "#{((((@discount_hash[:veges]/@analyses.count)*@business_day_num)/((@sales_hash[:veges]/@analyses.count)*@business_day_num).to_f)*100).round(1)}%（#{((@discount_hash[:veges]/@analyses.count)*@business_day_num).to_s(:delimited)}円）" if @analyses.present?
-        td
-          = "#{(((@discount_hash[:veges]/@analyses.count)*@business_day_num).to_f/(@vegetables_total_budget*0.02)*100).round(1)}%" if @vegetables_total_budget > 0 && @analyses.present?
-      tr
         td 　　物販
         td = "2%（#{(@goods_total_budget*0.02).round.to_s(:delimited)}円）"
         td
@@ -113,12 +95,6 @@
           = "#{((@analyses.sum(:loss_amount)/@sales_hash[:foods].to_f)*100).round(1)}%（#{(((@analyses.sum(:loss_amount))/@analyses.count)*@business_day_num).to_s(:delimited)}円）" if @sales_hash[:foods].to_f > 0
         td
           = "#{((((@analyses.sum(:loss_amount))/@analyses.count)*@business_day_num).to_f/(@foods_total_budget*0.07)*100).round(1)}%" if @foods_total_budget > 0 && @analyses.present?
-      tr
-        td 　　野菜
-        td = "1%（#{(@vegetables_total_budget*0.01).round.to_s(:delimited)}円）"
-        td
-        td
-        td
       tr
         td 　　物販
         td

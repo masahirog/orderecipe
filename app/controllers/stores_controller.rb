@@ -16,35 +16,30 @@ class StoresController < AdminController
   end
 
   def show
-    @sales_hash = {veges:0,goods:0,foods:0}
-    @discount_hash = {veges:0,goods:0,foods:0}
+    @sales_hash = {goods:0,foods:0}
+    @discount_hash = {goods:0,foods:0}
     today = Date.today
     @store_daily_menu = StoreDailyMenu.find_by(start_time:today,store_id:@store.id)
     @business_day_num = today.end_of_month.day
     store_id = @store.id
     if @store_daily_menu
-      @budget = @store_daily_menu.foods_budget.to_i + @store_daily_menu.vegetables_budget.to_i + @store_daily_menu.goods_budget.to_i
+      @budget = @store_daily_menu.foods_budget.to_i + @store_daily_menu.goods_budget.to_i
     end
     dates = (today.beginning_of_month..today.end_of_month).to_a
     @store_daily_menus = StoreDailyMenu.where(start_time:dates,store_id:store_id)
     @foods_total_budget = 0
-    @vegetables_total_budget = 0
     @goods_total_budget = 0
     @store_daily_menus.each do |sdm|
       @foods_total_budget += sdm.foods_budget.to_i
-      @vegetables_total_budget += sdm.vegetables_budget.to_i
       @goods_total_budget += sdm.goods_budget.to_i
     end
-    @total_budget = @foods_total_budget+@vegetables_total_budget+@goods_total_budget
+    @total_budget = @foods_total_budget+@goods_total_budget
     @analyses = Analysis.where(date:dates,store_id:store_id)
     analysis_categories = AnalysisCategory.where(analysis_id:@analyses.ids)
     @bumon_ex_tax_sales_amount = analysis_categories.group(:smaregi_bumon_id).sum(:ex_tax_sales_amount)
     @bumon_discount_amount = analysis_categories.group(:smaregi_bumon_id).sum(:discount_amount)
     analysis_categories.each do |ac|
-      if [14,16,17,18].include?(ac.smaregi_bumon_id)
-        @sales_hash[:veges] += ac.ex_tax_sales_amount
-        @discount_hash[:veges] += ac.discount_amount
-      elsif ac.smaregi_bumon_id == 15
+      if [14,15,16,17,18].include?(ac.smaregi_bumon_id)
         @sales_hash[:goods] += ac.ex_tax_sales_amount
         @discount_hash[:goods] += ac.discount_amount
       else

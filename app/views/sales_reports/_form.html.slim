@@ -47,11 +47,11 @@
             = "#{((foods_sales/@store_daily_menu.foods_budget.to_f)*100).round}%" if @store_daily_menu.foods_budget.to_f > 0
 
         tr
-          td 　野菜
-          td = "#{@store_daily_menu.vegetables_budget.to_i.to_s(:delimited)}円"
+          td 　物販
+          td = "#{@store_daily_menu.goods_budget.to_i.to_s(:delimited)}円"
           td = "#{vegetables_sales.to_s(:delimited)}円"
           td
-            = "#{((vegetables_sales/@store_daily_menu.vegetables_budget.to_f)*100).round}%" if @store_daily_menu.vegetables_budget.to_f > 0
+            = "#{((vegetables_sales/@store_daily_menu.goods_budget.to_f)*100).round}%" if @store_daily_menu.goods_budget.to_f > 0
 
         tr style='background-color:#ffffe0;font-weight:bold;'
           td ロス率
@@ -124,15 +124,6 @@
           td
             = "#{(((((@analyses.sum(:ex_tax_sales_amount) - @bumon_ex_tax_sales_amount[14])/@analyses.count)*@business_day_num).to_f/@foods_total_budget)*100).round}%" if @bumon_ex_tax_sales_amount[14].present? && @foods_total_budget > 0
         tr
-          td 　野菜
-          td = "#{@vegetables_total_budget.to_s(:delimited)}円"
-          td
-            = "#{@bumon_ex_tax_sales_amount[14].to_s(:delimited)}円" if @bumon_ex_tax_sales_amount[14].present?
-          td
-            = "#{((@bumon_ex_tax_sales_amount[14]/@analyses.count)*@business_day_num).to_s(:delimited)}円" if @bumon_ex_tax_sales_amount[14].present?
-          td
-            = "#{((((@bumon_ex_tax_sales_amount[14]/@analyses.count)*@business_day_num).to_f/@vegetables_total_budget)*100).round}%" if @bumon_ex_tax_sales_amount[14].present? && @vegetables_total_budget > 0
-        tr
           td 　物販
           td = "#{@goods_total_budget.to_s(:delimited)}円"
           td = "0円"
@@ -163,15 +154,6 @@
           td
             = "#{((((@analyses.sum(:discount_amount) - @bumon_discount_amount[14])/@analyses.count)*@business_day_num).to_f/(@foods_total_budget*0.04)*100).round}%" if @bumon_discount_amount[14].present? && @foods_total_budget>0
         tr
-          td 　　野菜
-          td = "4%（#{(@vegetables_total_budget*0.04).round.to_s(:delimited)}円）"
-          td
-            = "#{((@bumon_discount_amount[14]/@bumon_ex_tax_sales_amount[14].to_f)*100).round}%（#{@bumon_discount_amount[14].to_s(:delimited)}円）" if @bumon_discount_amount[14].present?
-          td
-            = "#{((((@bumon_discount_amount[14]/@analyses.count)*@business_day_num)/((@bumon_ex_tax_sales_amount[14]/@analyses.count)*@business_day_num).to_f)*100).round}%（#{((@bumon_discount_amount[14]/@analyses.count)*@business_day_num).to_s(:delimited)}円）" if @bumon_discount_amount[14].present?
-          td
-            = "#{(((@bumon_discount_amount[14]/@analyses.count)*@business_day_num).to_f/(@vegetables_total_budget*0.04)*100).round}%" if @bumon_discount_amount[14].present? && @vegetables_total_budget > 0 
-        tr
           td 　　物販
           td = "#{@goods_total_budget.to_s(:delimited)}円"
           td = "0円"
@@ -195,15 +177,6 @@
             = "#{(((((@analyses.sum(:loss_amount) - @bumon_loss_amount[14])/@analyses.count)*@business_day_num)/(((@analyses.sum(:ex_tax_sales_amount) - @bumon_ex_tax_sales_amount[14])/@analyses.count)*@business_day_num).to_f)*100).round}%（#{(((@analyses.sum(:loss_amount) - @bumon_loss_amount[14])/@analyses.count)*@business_day_num).to_s(:delimited)}円）" if @bumon_ex_tax_sales_amount[14].present? &&  @bumon_loss_amount[14].present?
           td
             = "#{((((@analyses.sum(:loss_amount) - @bumon_loss_amount[14])/@analyses.count)*@business_day_num).to_f/(@foods_total_budget*0.04)*100).round}%" if  @bumon_ex_tax_sales_amount[14].present? && @bumon_loss_amount[14].present? && @foods_total_budget > 0
-        tr
-          td 　　野菜
-          td = "4%（#{(@vegetables_total_budget*0.04).round.to_s(:delimited)}円）"
-          td
-            = "#{((@bumon_loss_amount[14]/@bumon_ex_tax_sales_amount[14].to_f)*100).round}%（#{@bumon_loss_amount[14].to_s(:delimited)}円）" if @bumon_ex_tax_sales_amount[14].present? &&  @bumon_loss_amount[14].present?
-          td
-            = "#{((((@bumon_loss_amount[14]/@analyses.count)*@business_day_num)/((@bumon_ex_tax_sales_amount[14]/@analyses.count)*@business_day_num).to_f)*100).round}%（#{((@bumon_loss_amount[14]/@analyses.count)*@business_day_num).to_s(:delimited)}円）" if @bumon_ex_tax_sales_amount[14].present? &&  @bumon_loss_amount[14].present?
-          td
-            = "#{(((@bumon_loss_amount[14]/@analyses.count)*@business_day_num).to_f/(@vegetables_total_budget*0.04)*100).round}%" if @bumon_ex_tax_sales_amount[14].present? &&  @bumon_loss_amount[14].present? && @vegetables_total_budget > 0
 
         tr
           td 　　物販

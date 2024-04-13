@@ -1,26 +1,32 @@
 class AnalysesController < AdminController
   before_action :set_analysis, only: %i[ show edit update destroy ]
   def kpi
-    if params[:date].present?
-      @date = Date.parse(params[:date])
+    if params[:to]
+      params[:to] = params[:to].to_date
     else
-      @date = @today
+      params[:to] = Date.today
     end
-    dates = (@date.beginning_of_month..@date.end_of_month)
-    @days = dates.count
-    @store_daily_menus = StoreDailyMenu.where(start_time:dates)
+    if params[:from]
+      params[:from] = params[:from].to_date
+    else
+      params[:from] = params[:to] - 30
+    end
+    @dates =(params[:from]..params[:to]).to_a
+    @date = params[:from]
+    
+    @days = @dates.count
+    @store_daily_menus = StoreDailyMenu.where(start_time:@dates)
     @foods_budgets = @store_daily_menus.group(:store_id).sum(:foods_budget)
-    @vegetables_budgets = @store_daily_menus.group(:store_id).sum(:vegetables_budget)
     @goods_budgets = @store_daily_menus.group(:store_id).sum(:goods_budget)
-    analyses = Analysis.where(date:dates).where('transaction_count > ?',0)
-    @stores_count = analyses.group(:store_id).count
+    @analyses = Analysis.where(date:@dates).where('transaction_count > ?',0)
+    @stores_count = @analyses.group(:store_id).count
     @store_bumon_sales = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @store_bumon_sales[:sozai][:total] = 0
     @store_bumon_sales[:bento][:total] = 0
     @store_bumon_sales[:other][:total] = 0
     @store_bumon_sales[:vege][:total] = 0
     @store_bumon_sales[:good][:total] = 0
-    store_sales = AnalysisCategory.where(analysis_id:analyses.ids).joins(:analysis).group('analyses.store_id').group(:smaregi_bumon_id).sum(:ex_tax_sales_amount)
+    store_sales = AnalysisCategory.where(analysis_id:@analyses.ids).joins(:analysis).group('analyses.store_id').group(:smaregi_bumon_id).sum(:ex_tax_sales_amount)
     store_sales.keys.map{|store_bumon|store_bumon[0]}.uniq.each do |store_id|
       @store_bumon_sales[:sozai][:stores][store_id][:amount] = 0
       @store_bumon_sales[:bento][:stores][store_id][:amount] = 0
@@ -68,6 +74,116 @@ class AnalysesController < AdminController
       end
     end
     @stores = current_user.group.stores.where(store_type:0)
+    @store_analyses = @analyses.map{|analysis|[[analysis.store_daily_menu.start_time,analysis.store_daily_menu.store_id],analysis]}.to_h
+    @date_analyses = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    @date_store_analyses = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    @analyses.each do |analysis|
+      @date_store_analyses[analysis.date][analysis.store_id][:sales_amount] = analysis.ex_tax_sales_amount
+      @date_store_analyses[analysis.date][analysis.store_id][:discount_amount] = analysis.discount_amount
+      @date_store_analyses[analysis.date][analysis.store_id][:loss_amount] = analysis.loss_amount
+      @date_store_analyses[analysis.date][analysis.store_id][:transaction_count] = analysis.transaction_count
+      @date_store_analyses[analysis.date][analysis.store_id][:sales_number] = analysis.total_sozai_sales_number
+      @date_store_analyses[analysis.date][analysis.store_id][:souzai_sales_amount] = analysis.analysis_categories.where(smaregi_bumon_id:[1,8]).sum(:ex_tax_sales_amount)
+    end
+    gon.sales_dates = @dates
+    souzai_datas = []
+    souzai_uriage_datas = []
+    colors = ['#46B061','#FBC527','#4F8DF5','#E64C3F','#FD7610']
+    if params[:last_to]
+      @last_to =  params[:last_to]
+    else
+      @last_to =  params[:from] - 1
+    end
+    if params[:last_from]
+      @last_from =  params[:last_from]
+    else
+      @last_from = @last_to - @days
+    end
+    last_period = (@last_from..@last_to)
+    last_analyses = Analysis.where(date:last_period).where('transaction_count > ?',0)
+    last_average_sales_datas = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    last_analyses.each do |analysis|
+      if last_average_sales_datas[analysis.store_id][analysis.date.wday].present?
+        last_average_sales_datas[analysis.store_id][analysis.date.wday][:souzai_sales_number] += analysis.total_sozai_sales_number
+        last_average_sales_datas[analysis.store_id][analysis.date.wday][:souzai_sales_amount] += analysis.analysis_categories.where(smaregi_bumon_id:[1,8]).sum(:ex_tax_sales_amount)
+        last_average_sales_datas[analysis.store_id][analysis.date.wday][:count] += 1
+      else
+        last_average_sales_datas[analysis.store_id][analysis.date.wday][:souzai_sales_number] = analysis.total_sozai_sales_number
+        last_average_sales_datas[analysis.store_id][analysis.date.wday][:souzai_sales_amount] = analysis.analysis_categories.where(smaregi_bumon_id:[1,8]).sum(:ex_tax_sales_amount)
+        last_average_sales_datas[analysis.store_id][analysis.date.wday][:count] = 1
+      end
+    end
+    last_average_sales_datas.each do |data|
+      data[1].each do |data_more|
+        last_average_sales_datas[data[0]][data_more[0]][:average] = (data_more[1][:souzai_sales_number].to_f/data_more[1][:count]).round(1)
+        last_average_sales_datas[data[0]][data_more[0]][:average_sales] = (data_more[1][:souzai_sales_amount].to_f/data_more[1][:count]).round(1)
+      end
+    end
+    @stores.each_with_index do |store,i|
+      souzai_data = []
+      souzai_uriage_data = []
+      @dates.sort.each do |date|
+        if @date_store_analyses[date][store.id].present?
+          if last_average_sales_datas[store.id][date.wday].present?
+            souzai_data << (@date_store_analyses[date][store.id][:sales_number]/last_average_sales_datas[store.id][date.wday][:average]).round(1)
+            souzai_uriage_data << (@date_store_analyses[date][store.id][:souzai_sales_amount]/last_average_sales_datas[store.id][date.wday][:average_sales]).round(1)
+          end
+        else
+          @date_store_analyses[date].delete(store.id)
+        end
+      end
+      souzai_datas << {
+        type: 'line',
+        label: store.short_name,
+        data: souzai_data,
+        backgroundColor: colors[i],
+        borderColor: colors[i],
+        fill: false,
+        stacked: false,
+        yAxisID: "y-axis-2",
+        # lineTension: 0.2,
+        pointRadius: 3
+      }
+      souzai_uriage_datas << {
+        type: 'line',
+        label: store.short_name,
+        data: souzai_uriage_data,
+        backgroundColor: colors[i],
+        borderColor: colors[i],
+        fill: false,
+        stacked: false,
+        yAxisID: "y-axis-2",
+        # lineTension: 0.2,
+        pointRadius: 3
+      }
+    end
+    souzai_datas << {
+        type: 'line',
+        label: '100%',
+        data: Array.new(@days,1),
+        backgroundColor: '#008b8b',
+        borderColor: '#008b8b',
+        fill: false,
+        stacked: false,
+        yAxisID: "y-axis-2",
+        pointRadius: 0
+      }
+    souzai_uriage_datas << {
+      type: 'line',
+      label: '100%',
+      data: Array.new(@days,1),
+      backgroundColor: '#008b8b',
+      borderColor: '#008b8b',
+      fill: false,
+      stacked: false,
+      yAxisID: "y-axis-2",
+      pointRadius: 0
+    }
+    
+
+    gon.souzai_datas = souzai_datas
+    gon.souzai_uriage_datas = souzai_uriage_datas
+
   end
   def bumon_sales
     @to = Date.today
@@ -575,8 +691,8 @@ class AnalysesController < AdminController
     redirect_to smaregi_members_analyses_path,notice:'更新しました。'
   end
   def sales
-    @sales_hash = {veges:0,goods:0,foods:0}
-    @discount_hash = {veges:0,goods:0,foods:0}
+    @sales_hash = {goods:0,foods:0}
+    @discount_hash = {goods:0,foods:0}
     @store = Store.find(params[:store_id])
     if params[:date].present?
       @date = params[:date].to_date
@@ -598,13 +714,7 @@ class AnalysesController < AdminController
       @date_analysis_categories[analysis.date][:goods][:discount_amount] = 0
       @date_analysis_categories[analysis.date][:goods][:sales_number] = 0
       analysis.analysis_categories.each do |ac|
-        if [14,16,17,18].include?(ac.smaregi_bumon_id)
-          @date_analysis_categories[analysis.date][:veges][:ex_tax_sales_amount] += ac.ex_tax_sales_amount
-          @date_analysis_categories[analysis.date][:veges][:discount_amount] += ac.discount_amount
-          @date_analysis_categories[analysis.date][:veges][:sales_number] += ac.sales_number
-          @sales_hash[:veges] += ac.ex_tax_sales_amount
-          @discount_hash[:veges] += ac.discount_amount
-        elsif ac.smaregi_bumon_id == 15
+        if [14,15,16,17,18].include?(ac.smaregi_bumon_id)
           @date_analysis_categories[analysis.date][:goods][:ex_tax_sales_amount] += ac.ex_tax_sales_amount
           @date_analysis_categories[analysis.date][:goods][:discount_amount] += ac.discount_amount
           @date_analysis_categories[analysis.date][:goods][:sales_number] += ac.sales_number
@@ -627,22 +737,16 @@ class AnalysesController < AdminController
     @store_daily_menus = StoreDailyMenu.where(start_time:@dates,store_id:@store.id)
     @date_store_daily_menus = @store_daily_menus.map{|sdm|[sdm.start_time,sdm]}.to_h
     @foods_total_budget = 0
-    @vegetables_total_budget = 0
     @goods_total_budget = 0
     @budget_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @store_daily_menus.each do |sdm|
       @budget_hash[sdm.start_time][:foods] = sdm.foods_budget.to_i
-      @budget_hash[sdm.start_time][:veges] = sdm.vegetables_budget.to_i
       @budget_hash[sdm.start_time][:goods] = sdm.goods_budget.to_i
-      @budget_hash[sdm.start_time][:date] = sdm.foods_budget.to_i + sdm.vegetables_budget.to_i + sdm.goods_budget.to_i
+      @budget_hash[sdm.start_time][:date] = sdm.foods_budget.to_i + sdm.goods_budget.to_i
       @foods_total_budget += sdm.foods_budget.to_i
-      @vegetables_total_budget += sdm.vegetables_budget.to_i
       @goods_total_budget += sdm.goods_budget.to_i
     end
-    @total_budget = @foods_total_budget+@vegetables_total_budget+@goods_total_budget
-    # analysis_categories = AnalysisCategory.where(analysis_id:@analyses.ids)
-    # @bumon_ex_tax_sales_amount = analysis_categories.group(:smaregi_bumon_id).sum(:ex_tax_sales_amount)
-    # @bumon_discount_amount = analysis_categories.group(:smaregi_bumon_id).sum(:discount_amount)
+    @total_budget = @foods_total_budget+@goods_total_budget
     respond_to do |format|
       format.html
       format.csv do

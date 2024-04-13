@@ -39,15 +39,6 @@ h3 = "#{@store.name} 売上管理"
         td
           = "#{((((@sales_hash[:foods]/@analyses.count)*@business_day_num).to_f/@foods_total_budget)*100).round(1)}%" if @foods_total_budget > 0 && @analyses.present?
       tr
-        td 　野菜
-        td = "#{@vegetables_total_budget.to_s(:delimited)}円"
-        td
-          = "#{@sales_hash[:veges].to_s(:delimited)}円"
-        td
-          = "#{((@sales_hash[:veges]/@analyses.count)*@business_day_num).to_s(:delimited)}円" if @analyses.present?
-        td
-          = "#{((((@sales_hash[:veges]/@analyses.count)*@business_day_num).to_f/@vegetables_total_budget)*100).round(1)}%" if @vegetables_total_budget > 0 && @analyses.present?
-      tr
         td 　物販
         td = "#{@goods_total_budget.to_s(:delimited)}円"
         td
@@ -80,15 +71,7 @@ h3 = "#{@store.name} 売上管理"
           = "#{((((@discount_hash[:foods]/@analyses.count)*@business_day_num)/((@sales_hash[:foods]/@analyses.count)*@business_day_num).to_f)*100).round(1)}%（#{((@discount_hash[:foods]/@analyses.count)*@business_day_num).to_s(:delimited)}円）" if @analyses.present?
         td
           = "#{(((@discount_hash[:foods]/@analyses.count)*@business_day_num).to_f/(@foods_total_budget*0.02)*100).round(1)}%" if @foods_total_budget>0 && @analyses.present?
-      tr
-        td 　　野菜
-        td = "2%（#{(@vegetables_total_budget*0.02).round.to_s(:delimited)}円）"
-        td
-          = "#{((@discount_hash[:veges]/@sales_hash[:veges].to_f)*100).round(1)}%（#{@discount_hash[:veges].to_s(:delimited)}円）"
-        td
-          = "#{((((@discount_hash[:veges]/@analyses.count)*@business_day_num)/((@sales_hash[:veges]/@analyses.count)*@business_day_num).to_f)*100).round(1)}%（#{((@discount_hash[:veges]/@analyses.count)*@business_day_num).to_s(:delimited)}円）" if @analyses.present?
-        td
-          = "#{(((@discount_hash[:veges]/@analyses.count)*@business_day_num).to_f/(@vegetables_total_budget*0.02)*100).round(1)}%" if @vegetables_total_budget > 0  && @analyses.present?
+
       tr
         td 　　物販
         td = "2%（#{(@goods_total_budget*0.02).round.to_s(:delimited)}円）"
@@ -116,12 +99,6 @@ h3 = "#{@store.name} 売上管理"
           = "#{((@analyses.sum(:loss_amount)/@sales_hash[:foods].to_f)*100).round(1)}%（#{(((@analyses.sum(:loss_amount))/@analyses.count)*@business_day_num).to_s(:delimited)}円）" if @sales_hash[:foods].to_f > 0
         td
           = "#{((((@analyses.sum(:loss_amount))/@analyses.count)*@business_day_num).to_f/(@foods_total_budget*0.07)*100).round(1)}%" if @foods_total_budget > 0 && @analyses.present?
-      tr
-        td 　　野菜
-        td = "1%（#{(@vegetables_total_budget*0.01).round.to_s(:delimited)}円）"
-        td
-        td
-        td
       tr
         td 　　物販
         td
@@ -153,47 +130,32 @@ h3 = "#{@store.name} 売上管理"
       col class="col2"
       col class="col2"
       col class="col2"
-      col class="col2"
-      col class="col2"
-      col class="col2"
-      col class="col2"
-      col class="col2"
-      col class="col2"
 
     thead style='position: sticky;top:0;z-index:5;'
 
       tr
         th colspan=2 = link_to "予算編集",budget_store_daily_menus_path(date:@date,store_id:@store.id),class:'btn btn-sm btn-default'
-        th style="text-align:center;background-color:#ffffe0;" colspan=8 売上
+        th style="text-align:center;background-color:#ffffe0;" colspan=6 売上
         th style="text-align:center;background-color:#ffe4e1;" colspan=2 ロス
-        th style="text-align:center;background-color:#e0ffff;" colspan=8 値引き
-        th style="text-align:center;background-color:#dcdcdc;" colspan=8 廃棄
+        th style="text-align:center;background-color:#e0ffff;" colspan=6 値引き
+        th style="text-align:center;background-color:#dcdcdc;" colspan=6 廃棄
 
       tr
         th
         th
         th colspan=2 合計
         th colspan=2 フード
-        th colspan=2 野菜
         th style="border-right:1px solid silver;" colspan=2 物販
         th style="border-right:1px solid silver;" colspan=2 合計
         th colspan=2 合計
         th colspan=2 フード
-        th colspan=2 野菜
         th style="border-right:1px solid silver;" colspan=2 物販
         th colspan=2 合計
         th colspan=2 フード
-        th colspan=2 野菜
         th colspan=2 物販
       tr
         th 日付
         th 来客数
-        th 予算
-        th style="border-right:1px solid silver;" 結果
-        th 予算
-        th style="border-right:1px solid silver;" 結果
-        th 予算
-        th style="border-right:1px solid silver;" 結果
         th 予算
         th style="border-right:1px solid silver;" 結果
         th 予算
@@ -230,9 +192,6 @@ h3 = "#{@store.name} 売上管理"
             td = "#{store_daily_menu.foods_budget.to_i.to_s(:delimited)}円"
             td style="border-right:1px solid silver;"
               = "#{@date_analysis_categories[date][:foods][:ex_tax_sales_amount].to_s(:delimited)}円 （#{((@date_analysis_categories[date][:foods][:ex_tax_sales_amount]/store_daily_menu.foods_budget.to_f)*100).round}%）" if store_daily_menu.foods_budget.to_f > 0
-            td = "#{store_daily_menu.vegetables_budget.to_i.to_s(:delimited)}円"
-            td style="border-right:1px solid silver;"
-              = "#{@date_analysis_categories[date][:veges][:ex_tax_sales_amount].to_s(:delimited)}円 （#{((@date_analysis_categories[date][:veges][:ex_tax_sales_amount]/store_daily_menu.vegetables_budget.to_f)*100).round}%）" if store_daily_menu.vegetables_budget.to_f > 0
             td = "#{store_daily_menu.goods_budget.to_i.to_s(:delimited)}円"
             td style="border-right:1px solid silver;"
               = "#{@date_analysis_categories[date][:goods][:ex_tax_sales_amount].to_s(:delimited)}円 （#{((@date_analysis_categories[date][:goods][:ex_tax_sales_amount]/store_daily_menu.goods_budget.to_f)*100).round}%）" if store_daily_menu.goods_budget.to_f > 0
@@ -257,11 +216,7 @@ h3 = "#{@store.name} 売上管理"
             td style="border-right:1px solid silver;" = "#{analysis.loss_amount.to_s(:delimited)}円（#{((analysis.loss_amount.to_f/analysis.ex_tax_sales_amount)*100).round(1)}%）" if analysis.ex_tax_sales_amount.present?
             td 7%
             td style="border-right:1px solid silver;" = "#{analysis.loss_amount.to_s(:delimited)}円（#{((analysis.loss_amount.to_f/analysis.ex_tax_sales_amount)*100).round(1)}%）" if analysis.ex_tax_sales_amount.present?
-            td
-            td style="border-right:1px solid silver;"
 
-            td
-            td
 
 
 
@@ -289,6 +244,9 @@ h3 = "#{@store.name} 売上管理"
             td
             td
             td
+            td
+            td
+            td style="border-right:1px solid silver;"
 
 
 
