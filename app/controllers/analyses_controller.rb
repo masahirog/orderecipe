@@ -134,8 +134,8 @@ class AnalysesController < AdminController
       @dates.sort.each do |date|
         if @date_store_analyses[date][store.id].present?
           if last_average_sales_datas[store.id][date.wday].present?
-            souzai_data << (@date_store_analyses[date][store.id][:sales_number]/last_average_sales_datas[store.id][date.wday][:average]).round(2)
-            souzai_uriage_data << (@date_store_analyses[date][store.id][:souzai_sales_amount]/last_average_sales_datas[store.id][date.wday][:average_sales]).round(2)
+            souzai_data << (@date_store_analyses[date][store.id][:sales_number]/last_average_sales_datas[store.id][date.wday][:average]*100).round
+            souzai_uriage_data << (@date_store_analyses[date][store.id][:souzai_sales_amount]/last_average_sales_datas[store.id][date.wday][:average_sales]*100).round
           end
         else
           @date_store_analyses[date].delete(store.id)
@@ -168,8 +168,7 @@ class AnalysesController < AdminController
     end
     souzai_datas << {
         type: 'line',
-        label: '100%',
-        data: Array.new(@days,1),
+        data: Array.new(@days,100),
         backgroundColor: '#008b8b',
         borderColor: '#008b8b',
         fill: false,
@@ -179,8 +178,7 @@ class AnalysesController < AdminController
       }
     souzai_uriage_datas << {
       type: 'line',
-      label: '100%',
-      data: Array.new(@days,1),
+      data: Array.new(@days,100),
       backgroundColor: '#008b8b',
       borderColor: '#008b8b',
       fill: false,

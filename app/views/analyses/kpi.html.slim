@@ -189,7 +189,10 @@ javascript:
           type: "linear",
           position: "left",
           ticks: {
-            min: 0
+            min: 0,
+            callback: function(label, index, labels) {
+              return label.toString() + "%";
+            }
           }
         }]
       },
@@ -234,7 +237,10 @@ javascript:
           type: "linear",
           position: "left",
           ticks: {
-            min: 0
+            min: 0,
+            callback: function(label, index, labels) {
+              return label.toString() + "%";
+            }
           }
         }]
       },
