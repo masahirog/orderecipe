@@ -169,8 +169,8 @@ class AnalysesController < AdminController
     souzai_datas << {
         type: 'line',
         data: Array.new(@days,100),
-        backgroundColor: '#008b8b',
-        borderColor: '#008b8b',
+        backgroundColor: 'black',
+        borderColor: 'black',
         fill: false,
         stacked: false,
         yAxisID: "y-axis-2",
@@ -179,8 +179,8 @@ class AnalysesController < AdminController
     souzai_uriage_datas << {
       type: 'line',
       data: Array.new(@days,100),
-      backgroundColor: '#008b8b',
-      borderColor: '#008b8b',
+      backgroundColor: 'black',
+      borderColor: 'black',
       fill: false,
       stacked: false,
       yAxisID: "y-axis-2",
