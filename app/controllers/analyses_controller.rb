@@ -124,8 +124,8 @@ class AnalysesController < AdminController
     end
     last_average_sales_datas.each do |data|
       data[1].each do |data_more|
-        last_average_sales_datas[data[0]][data_more[0]][:average] = (data_more[1][:souzai_sales_number].to_f/data_more[1][:count]).round(1)
-        last_average_sales_datas[data[0]][data_more[0]][:average_sales] = (data_more[1][:souzai_sales_amount].to_f/data_more[1][:count]).round(1)
+        last_average_sales_datas[data[0]][data_more[0]][:average] = (data_more[1][:souzai_sales_number].to_f/data_more[1][:count]).round(2)
+        last_average_sales_datas[data[0]][data_more[0]][:average_sales] = (data_more[1][:souzai_sales_amount].to_f/data_more[1][:count]).round(2)
       end
     end
     @stores.each_with_index do |store,i|
@@ -134,8 +134,8 @@ class AnalysesController < AdminController
       @dates.sort.each do |date|
         if @date_store_analyses[date][store.id].present?
           if last_average_sales_datas[store.id][date.wday].present?
-            souzai_data << (@date_store_analyses[date][store.id][:sales_number]/last_average_sales_datas[store.id][date.wday][:average]).round(1)
-            souzai_uriage_data << (@date_store_analyses[date][store.id][:souzai_sales_amount]/last_average_sales_datas[store.id][date.wday][:average_sales]).round(1)
+            souzai_data << (@date_store_analyses[date][store.id][:sales_number]/last_average_sales_datas[store.id][date.wday][:average]).round(2)
+            souzai_uriage_data << (@date_store_analyses[date][store.id][:souzai_sales_amount]/last_average_sales_datas[store.id][date.wday][:average_sales]).round(2)
           end
         else
           @date_store_analyses[date].delete(store.id)
@@ -188,11 +188,8 @@ class AnalysesController < AdminController
       yAxisID: "y-axis-2",
       pointRadius: 0
     }
-    
-
     gon.souzai_datas = souzai_datas
     gon.souzai_uriage_datas = souzai_uriage_datas
-
   end
   def bumon_sales
     @to = Date.today
