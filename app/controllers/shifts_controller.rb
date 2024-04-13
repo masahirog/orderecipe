@@ -150,7 +150,7 @@ class ShiftsController < ApplicationController
     end
 
     # staff_ids = @stores.map{|store|store.staffs.ids}.flatten.uniq
-    staff_ids = Staff.joins(:staff_stores).where(:staff_stores => {store_id:@stores.ids}).where(status:0).ids
+    staff_ids = Staff.joins(:staff_stores).where(:staff_stores => {store_id:@stores.ids}).where(status:0).ids.uniq
     hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     Shift.where(date:@one_month,staff_id:staff_ids).each do |shift|
       if hash[shift.date].present?
