@@ -1,0 +1,16 @@
+table.table
+	thead
+		tr
+			th 
+			th
+			- WorkType.categories.each do |category|
+				th = category[0]
+	tbody
+		- @hash.each do |data|
+			tr
+				td = link_to data[0],detail_working_hours_path(date:data[0]),data: {"turbolinks" => false}
+				td = (data[1].values.sum/60).round(1)
+				- WorkType.categories.each do |category|
+					td
+						- if data[1][category[1]].present?
+							= (data[1][category[1]]/60).round(1)
