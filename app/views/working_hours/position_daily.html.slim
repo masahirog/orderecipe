@@ -1,15 +1,32 @@
+= form_tag position_daily_working_hours_path, :method => 'get' do
+	= date_field_tag :from, @from, class:"form-control float-left",style:'width:200px;float:left;'
+	div style="float:left;padding:8px;" 〜
+	= date_field_tag :to, @to, class:"form-control",style:'width:200px;float:left;margin-right:10px;'
+	= submit_tag "表示" ,class:"btn btn-primary"
+
 table.table
 	thead
 		tr
 			th 
-			th
+			th 製造（合計）
 			- WorkType.categories.each do |category|
 				th = category[0]
 	tbody
 		- @hash.each do |data|
+			- if data[1][10].present?
+				- other = data[1][10]
+			- else
+				- data[1][10] = 0
+				- other = 0
+
+			- if data[1][11].present?
+				- shohin_kaihatsu = data[1][11]
+			- else
+				- data[1][11] = 0
+				- shohin_kaihatsu = 0
 			tr
-				td = link_to data[0],detail_working_hours_path(date:data[0]),data: {"turbolinks" => false}
-				td = (data[1].values.sum/60).round(1)
+				td = link_to data[0].strftime("%-Y/%-m/%-d(#{%w(日 月 火 水 木 金 土)[data[0].wday]})"),detail_working_hours_path(date:data[0]),data: {"turbolinks" => false}
+				td = "#{((data[1].values.sum -  shohin_kaihatsu - other)/60).round(1)}（#{(data[1].values.sum/60).round(1)}）"
 				- WorkType.categories.each do |category|
 					td
 						- if data[1][category[1]].present?

@@ -47,6 +47,7 @@ class WorkingHoursController < AdminController
     end
     @categories = WorkType.categories
   end
+
   def detail
     if params[:date].present?
       @date = Date.parse(params[:date])
