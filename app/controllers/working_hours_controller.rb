@@ -1,5 +1,32 @@
 class WorkingHoursController < AdminController
   before_action :set_working_hour, only: %i[ show edit update destroy ]
+
+  def position_daily
+    date = "#{params[:month]}-01".to_date
+    @month = "#{date.year}-#{sprintf("%02d",date.month)}"
+    if params[:to].present?
+      @to = Date.parse(params[:to])
+    else
+      @to = @today
+    end
+    if params[:from].present?
+      @from = Date.parse(params[:from].present?)
+    else
+      @from = @to - 30
+    end
+    @dates = (@from..@to).to_a
+    @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    WorkingHour.includes(working_hour_work_types:[:work_type]).where(date:@dates,store_id:39).each do |working_hour|
+      working_hour.working_hour_work_types.each do |whwt|
+        if @hash[working_hour.date][whwt.work_type.category_before_type_cast].present?
+          @hash[working_hour.date][whwt.work_type.category_before_type_cast] += whwt.worktime
+        else
+          @hash[working_hour.date][whwt.work_type.category_before_type_cast] = whwt.worktime
+        end
+      end
+    end
+  end
+
   def monthly
     if params[:year].present?
       @year = params[:year]
@@ -36,8 +63,14 @@ class WorkingHoursController < AdminController
       gon.working_hours << { id: wh.id, title: wh.staff.short_name}
     end
     @work_types = WorkType.order(:row_order)
+    @work_type_categories = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     WorkingHourWorkType.includes(:work_type).where("start >= ? AND start < ?", @date, @date + 1).each_with_index do |whwt,i|
       hash[whwt.js_event_id] = whwt
+      if @work_type_categories[whwt.work_type.category_before_type_cast].present?
+        @work_type_categories[whwt.work_type.category_before_type_cast] += whwt.worktime
+      else
+        @work_type_categories[whwt.work_type.category_before_type_cast] = whwt.worktime
+      end
       gon.events << {
         id: whwt.js_event_id,
         resourceIds: [whwt.working_hour_id],

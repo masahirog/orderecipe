@@ -1,12 +1,14 @@
 .clearfix
   = form_tag detail_working_hours_path, :method => 'get' do
     = date_field_tag :date,@date,class:'form-control',style:'width:150px;float:left;'
-    = submit_tag "変更" ,class:"btn btn-primary",style:'float:left;margin-left:10px;'
-  / =link_to @date-1,detail_working_hours_path(date:@date-1),data: {"turbolinks" => false}
-  / span style='margin: 0 15px;' = @date
-  / =link_to @date+1,detail_working_hours_path(date:@date+1),data: {"turbolinks" => false}
+    = submit_tag "変更" ,class:"btn btn-primary",style:'float:left;margin-left:10px;margin-right:20px;'
+
+  =link_to @date-1,detail_working_hours_path(date:@date-1),data: {"turbolinks" => false}
+  span style='margin: 0 15px;' = @date
+  =link_to @date+1,detail_working_hours_path(date:@date+1),data: {"turbolinks" => false}
   = link_to '月次', monthly_working_hours_path,class:'btn btn-default',style:'float:right;margin-right:10px;'
   = link_to '日次', daily_working_hours_path,class:'btn btn-default',style:'float:right;margin-right:10px;'
+  = link_to 'ポジション別日次', position_daily_working_hours_path,class:'btn btn-default',style:'float:right;margin-right:10px;'
   = link_to 'スタッフ更新', create_work_times_working_hours_path(date:@date), method: :post,class:'btn btn-primary',style:'float:right;margin-right:10px;',data:{confirm:'スタッフの枠を作成しますか？'}
 
 .table-responsive style='overflow: scroll;'
@@ -34,6 +36,21 @@
                 - else
                     span -
             div.working_hour style='padding: 3px 0 3px 0;' = (@working_hour_whwt_hash[wh.id]/60).round(1) if @working_hour_whwt_hash[wh.id]
+
+table.table
+  thead
+    tr
+      th 項目
+      - WorkType.categories.each do |category|
+        th = category[0]
+  tbody
+    tr
+      td = "#{@working_hours.sum(:working_time).round(1)}h"
+      - WorkType.categories.each do |category|
+        td
+          - if @work_type_categories[category[1]].present?
+            = "#{(@work_type_categories[category[1]]/60).round(1)}h"
+
 #ec
 dialog id="dialog"
   = form_with(model: @working_hour_work_type, data: {remote: true},method:"dialog",id:"form") do |f|

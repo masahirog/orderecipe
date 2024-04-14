@@ -89,6 +89,7 @@ Rails.application.routes.draw do
       get :detail
       get :result
       get :daily
+      get :position_daily
       get :monthly
       post :create_work_times
       post :upload_data
