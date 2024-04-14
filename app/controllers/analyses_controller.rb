@@ -8,66 +8,70 @@ class AnalysesController < AdminController
       @date = @today
       @month = "#{@date.year}-#{sprintf("%02d",@date.month)}"
     end
-
+    prev_month_date = @date.prev_month
+    prev_year_date = @date.prev_year
     dates =(@date.beginning_of_month..@date.end_of_month).to_a
+    prev_month_dates = (prev_month_date.beginning_of_month..prev_month_date.end_of_month).to_a
+    prev_year_dates =(prev_year_date.beginning_of_month..prev_year_date.end_of_month).to_a
+
     @store_daily_menus = StoreDailyMenu.where(start_time:dates)
+    prev_month_store_daily_menus = StoreDailyMenu.where(start_time:prev_month_dates)
+    prev_year_store_daily_menus = StoreDailyMenu.where(start_time:prev_year_dates)
+    
     @foods_budgets = @store_daily_menus.group(:store_id).sum(:foods_budget)
     @goods_budgets = @store_daily_menus.group(:store_id).sum(:goods_budget)
+    @prev_month_foods_budgets = prev_month_store_daily_menus.group(:store_id).sum(:foods_budget)
+    @prev_month_goods_budgets = prev_month_store_daily_menus.group(:store_id).sum(:goods_budget)
+    @prev_year_foods_budgets = prev_year_store_daily_menus.group(:store_id).sum(:foods_budget)
+    @prev_year_goods_budgets = prev_year_store_daily_menus.group(:store_id).sum(:goods_budget)
+
+
     analyses = Analysis.where(date:dates).where('transaction_count > ?',0)
+    prev_month_analyses = Analysis.where(date:prev_month_dates).where('transaction_count > ?',0)
+    prev_year_analyses = Analysis.where(date:prev_year_dates).where('transaction_count > ?',0)
+
     @stores_count = analyses.group(:store_id).count
+    prev_month_stores_count = prev_month_analyses.group(:store_id).count
+    prev_year_stores_count = prev_year_analyses.group(:store_id).count
+
     @store_bumon_sales = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    @store_bumon_sales[:sozai][:total] = 0
-    @store_bumon_sales[:bento][:total] = 0
-    @store_bumon_sales[:other][:total] = 0
-    @store_bumon_sales[:vege][:total] = 0
-    @store_bumon_sales[:good][:total] = 0
+    @prev_month_store_bumon_sales = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    @prev_year_store_bumon_sales = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    
+    [:sozai,:bento,:other,:vege,:good].each do |category|
+      @store_bumon_sales[category][:total] = 0
+      @prev_month_store_bumon_sales[category][:total] = 0
+      @prev_year_store_bumon_sales[category][:total] = 0
+    end
+
     store_sales = AnalysisCategory.where(analysis_id:analyses.ids).joins(:analysis).group('analyses.store_id').group(:smaregi_bumon_id).sum(:ex_tax_sales_amount)
+    prev_month_store_sales = AnalysisCategory.where(analysis_id:prev_month_analyses.ids).joins(:analysis).group('analyses.store_id').group(:smaregi_bumon_id).sum(:ex_tax_sales_amount)
+    prev_year_store_sales = AnalysisCategory.where(analysis_id:prev_year_analyses.ids).joins(:analysis).group('analyses.store_id').group(:smaregi_bumon_id).sum(:ex_tax_sales_amount)
+
     store_sales.keys.map{|store_bumon|store_bumon[0]}.uniq.each do |store_id|
-      @store_bumon_sales[:sozai][:stores][store_id][:amount] = 0
-      @store_bumon_sales[:bento][:stores][store_id][:amount] = 0
-      @store_bumon_sales[:other][:stores][store_id][:amount] = 0
-      @store_bumon_sales[:vege][:stores][store_id][:amount] = 0
-      @store_bumon_sales[:good][:stores][store_id][:amount] = 0
-    end
-    store_sales.each do |data|
-      bumon = data[0][1]
-      if  [1,8].include?(bumon.to_i)
-        @store_bumon_sales[:sozai][:total] += data[1]
-        @store_bumon_sales[:sozai][:stores][data[0][0]][:amount] += data[1]
-      elsif [2,5].include?(bumon.to_i)
-        @store_bumon_sales[:bento][:total] += data[1]
-        @store_bumon_sales[:bento][:stores][data[0][0]][:amount] += data[1]
-      elsif [3,4,6,7,9,11,13,0].include?(bumon.to_i)
-        @store_bumon_sales[:other][:total] += data[1]
-        @store_bumon_sales[:other][:stores][data[0][0]][:amount] += data[1]
-      elsif [14,16,17,18].include?(bumon.to_i)
-        @store_bumon_sales[:vege][:total] += data[1]
-        @store_bumon_sales[:vege][:stores][data[0][0]][:amount] += data[1]
-      elsif bumon.to_i == 15
-        @store_bumon_sales[:good][:total] += data[1]
-        @store_bumon_sales[:good][:stores][data[0][0]][:amount] += data[1]
+      [:sozai,:bento,:other,:vege,:good].each do |category|
+        @store_bumon_sales[category][:stores][store_id][:amount] = 0
       end
     end
-    @store_bumon_sales.each do |data|
-      data[1][:stores].each do |stores_data|
-        if data[1][:chakuchi].present?
-          data[1][:chakuchi] += (stores_data[1][:amount]/@stores_count[stores_data[0]])*dates.count
-        else
-          data[1][:chakuchi] = (stores_data[1][:amount]/@stores_count[stores_data[0]])*dates.count
-        end
-        stores_data[1][:chakuchi] = (stores_data[1][:amount]/@stores_count[stores_data[0]])*dates.count
+
+    prev_month_store_sales.keys.map{|store_bumon|store_bumon[0]}.uniq.each do |store_id|
+      [:sozai,:bento,:other,:vege,:good].each do |category|
+        @prev_month_store_bumon_sales[category][:stores][store_id][:amount] = 0
       end
     end
+
+    prev_year_store_sales.keys.map{|store_bumon|store_bumon[0]}.uniq.each do |store_id|
+      [:sozai,:bento,:other,:vege,:good].each do |category|
+        @prev_year_store_bumon_sales[category][:stores][store_id][:amount] = 0
+      end
+    end
+
     @store_chakuchi = {}
-    @store_bumon_sales.values.map{|data|data[:stores]}.each do |data_more|
-      data_more.each do |data_more_more|
-        if @store_chakuchi[data_more_more[0]].present?
-          @store_chakuchi[data_more_more[0]] += data_more_more[1][:chakuchi]
-        else
-          @store_chakuchi[data_more_more[0]] = data_more_more[1][:chakuchi]
-        end
-      end
-    end
+    @prev_month_store_chakuchi = {}
+    @prev_year_store_chakuchi = {}
+    test(store_sales,@store_bumon_sales,@store_chakuchi,@stores_count,dates)
+    test(prev_month_store_sales,@prev_month_store_bumon_sales,@prev_month_store_chakuchi,prev_month_stores_count,prev_month_dates)
+    test(prev_year_store_sales,@prev_year_store_bumon_sales,@prev_year_store_chakuchi,prev_year_stores_count,prev_year_dates)
 
     if params[:to]
       @to = params[:to].to_date
@@ -1531,6 +1535,47 @@ class AnalysesController < AdminController
     respond_to do |format|
       format.html { redirect_to analyses_url, notice: "Analysis was successfully destroyed." }
       format.json { head :no_content }
+    end
+  end
+
+  def test(store_sales,store_bumon_sales,store_chakuchi,stores_count,dates)
+    store_sales.each do |data|
+      bumon = data[0][1]
+      if  [1,8].include?(bumon.to_i)
+        store_bumon_sales[:sozai][:total] += data[1]
+        store_bumon_sales[:sozai][:stores][data[0][0]][:amount] += data[1]
+      elsif [2,5].include?(bumon.to_i)
+        store_bumon_sales[:bento][:total] += data[1]
+        store_bumon_sales[:bento][:stores][data[0][0]][:amount] += data[1]
+      elsif [3,4,6,7,9,11,13,0].include?(bumon.to_i)
+        store_bumon_sales[:other][:total] += data[1]
+        store_bumon_sales[:other][:stores][data[0][0]][:amount] += data[1]
+      elsif [14,16,17,18].include?(bumon.to_i)
+        store_bumon_sales[:vege][:total] += data[1]
+        store_bumon_sales[:vege][:stores][data[0][0]][:amount] += data[1]
+      elsif bumon.to_i == 15
+        store_bumon_sales[:good][:total] += data[1]
+        store_bumon_sales[:good][:stores][data[0][0]][:amount] += data[1]
+      end
+    end
+    store_bumon_sales.each do |data|
+      data[1][:stores].each do |stores_data|
+        if data[1][:chakuchi].present?
+          data[1][:chakuchi] += (stores_data[1][:amount]/stores_count[stores_data[0]])*dates.count
+        else
+          data[1][:chakuchi] = (stores_data[1][:amount]/stores_count[stores_data[0]])*dates.count
+        end
+        stores_data[1][:chakuchi] = (stores_data[1][:amount]/stores_count[stores_data[0]])*dates.count
+      end
+    end
+    store_bumon_sales.values.map{|data|data[:stores]}.each do |data_more|
+      data_more.each do |data_more_more|
+        if store_chakuchi[data_more_more[0]].present?
+          store_chakuchi[data_more_more[0]] += data_more_more[1][:chakuchi]
+        else
+          store_chakuchi[data_more_more[0]] = data_more_more[1][:chakuchi]
+        end
+      end
     end
   end
 
