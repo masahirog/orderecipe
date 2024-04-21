@@ -102,9 +102,9 @@ class StoreDailyMenusController < AdminController
       @store_daily_menu_details_hash[[sdmd.store_daily_menu_id,sdmd.product_id]]= sdmd.sozai_number
       @store_daily_menu_details_bento_fukusai_hash[[sdmd.store_daily_menu_id,sdmd.product_id]]= sdmd.bento_fukusai_number
     end
-    product_ids = store_daily_menu_details.order(:row_order).map{|sdmd|sdmd.product_id}.uniq
-    @products = Product.where(id: product_ids).order(['field(id, ?)', product_ids])
-    # @products = Product.where(id: product_ids).order(:product_category)
+    product_ids = store_daily_menu_details.map{|sdmd|sdmd.product_id}.uniq
+    # @products = Product.where(id: product_ids).order(['field(id, ?)', product_ids])
+    @products = Product.where(id: product_ids).order(:product_category)
     product_sales_potentials = ProductSalesPotential.where(store_id:@store_id,product_id:product_ids)
     @product_sales_potentials = product_sales_potentials.map{|psp|[psp.product_id,psp.sales_potential]}.to_h
     sozai_ids = Product.where(id:product_ids).where(bejihan_sozai_flag:true).ids
