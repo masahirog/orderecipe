@@ -1,5 +1,25 @@
 class DailyMenusController < AdminController
   before_action :set_daily_menu, only: [:show, :update, :destroy]
+  def kpi
+    if params[:date].present?
+      @date = Date.parse(params[:date])
+    else
+      @date = @today
+    end
+    if params[:to].present?
+      @to = Date.parse(params[:to])
+    else
+      @to = @today
+    end
+    if params[:from].present?
+      @from = Date.parse(params[:from])
+    else
+      @from = @to - 30
+    end
+
+
+  end
+
   def serving_list
     @daily_menu = DailyMenu.find(params[:daily_menu_id])
     respond_to do |format|
@@ -173,7 +193,7 @@ class DailyMenusController < AdminController
     if params[:menu_type]=="0"
       next_week_day = from + 7
       weekly_daily_menus = DailyMenu.where(start_time:from..to)
-      DailyMenuDetail.includes([:product,:daily_menu]).where(daily_menu_id:weekly_daily_menus.ids).where(paper_menu_number:[24,25]).each do |dmd|
+      DailyMenuDetail.includes([:product,:daily_menu]).where(daily_menu_id:weekly_daily_menus.ids).where(paper_menu_number:[24,25,27,28]).each do |dmd|
         @bento_menus[dmd.daily_menu.start_time][dmd.paper_menu_number] = dmd.product
       end
       next_week_product_ids = DailyMenu.find_by(start_time:next_week_day).daily_menu_details.where(paper_menu_number:(1..17).to_a).map{|dmd|dmd.product_id}
@@ -408,10 +428,10 @@ class DailyMenusController < AdminController
     end
     redirect_to daily_menus_path
   end
-  def upload_menu
-    update_result = DailyMenu.upload_menu(params[:file])
-    redirect_to daily_menus_path(), :notice => "メニューを登録しました"
-  end
+  # def upload_menu
+  #   update_result = DailyMenu.upload_menu(params[:file])
+  #   redirect_to daily_menus_path(), :notice => "メニューを登録しました"
+  # end
   def index
     today = Date.today
     if params[:start_date].present?
@@ -668,9 +688,9 @@ class DailyMenusController < AdminController
           end
           dmds.each do |dmd|
             sell_price = dmd.sell_price
-            if dmd.paper_menu_number == 2 ||dmd.paper_menu_number == 3
+            if dmd.paper_menu_number == 2 ||dmd.paper_menu_number == 3||dmd.paper_menu_number == 1
               if store.group_id == 9
-                store_daily_menu_details_arr << StoreDailyMenuDetail.new(store_daily_menu_id:store_daily_menu.id,product_id:dmd.product_id,row_order:dmd.paper_menu_number.to_i,bento_fukusai_number:8,number:8,price:sell_price)
+                store_daily_menu_details_arr << StoreDailyMenuDetail.new(store_daily_menu_id:store_daily_menu.id,product_id:dmd.product_id,row_order:dmd.paper_menu_number.to_i,bento_fukusai_number:10,number:10,price:sell_price)
               else
                 store_daily_menu_details_arr << StoreDailyMenuDetail.new(store_daily_menu_id:store_daily_menu.id,product_id:dmd.product_id,row_order:dmd.paper_menu_number.to_i,price:sell_price)
               end
