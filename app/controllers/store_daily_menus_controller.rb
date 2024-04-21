@@ -152,6 +152,16 @@ class StoreDailyMenusController < AdminController
       end
     end
 
+    AnalysisProduct.joins(:product).where(:products => {product_category:3}).where(analysis_id:@analyses.ids).each do |ap|
+       analysis_products_hash[ap.analysis_id][:sweets][:sales_number] = ap.sales_number.to_i
+       analysis_products_hash[ap.analysis_id][:sweets][:manufacturing_number] = ap.manufacturing_number.to_i
+    end
+    AnalysisProduct.joins(:product).where(:products => {product_category:7}).where(analysis_id:@analyses.ids).each do |ap|
+       analysis_products_hash[ap.analysis_id][:soup][:sales_number] = ap.sales_number.to_i
+       analysis_products_hash[ap.analysis_id][:soup][:manufacturing_number] = ap.manufacturing_number.to_i
+    end
+
+
     @analyses.map do |analysis|
       discount_sozai_number = analysis_products_hash[analysis.id][:sozai][:discount_number]
       loss_sozai_number = analysis_products_hash[analysis.id][:sozai][:loss_number]
@@ -162,6 +172,8 @@ class StoreDailyMenusController < AdminController
       discount_bento_number = analysis_products_hash[analysis.id][:bento][:discount_number]
       loss_bento_number = analysis_products_hash[analysis.id][:bento][:loss_number]
       bento_zaiko = analysis_products_hash[analysis.id][:bento][:manufacturing_number]
+      soup = "#{analysis_products_hash[analysis.id][:soup][:sales_number]}（#{analysis_products_hash[analysis.id][:soup][:manufacturing_number]}）"
+      sweets = "#{analysis_products_hash[analysis.id][:sweets][:sales_number]}（#{analysis_products_hash[analysis.id][:sweets][:manufacturing_number]}）"
 
       if @weekday_sales_sozai_number[analysis.store_daily_menu.start_time.wday].present?
         @weekday_sales_sozai_number[analysis.store_daily_menu.start_time.wday]['total_num'] += analysis.total_sozai_sales_number
@@ -187,7 +199,7 @@ class StoreDailyMenusController < AdminController
         weather = ''
       end
       @weekday_sales_sozai_number[analysis.store_daily_menu.start_time.wday]['rireki'][analysis.store_daily_menu.start_time] = [fixed_price_sales_sozai_number,weather,transaction_count,discount_sozai_number,
-        loss_sozai_number,discount_bento_number,fixed_price_sales_bento_number,loss_bento_number,sozai_zaiko,sozai_kurikoshi,bento_zaiko]
+        loss_sozai_number,discount_bento_number,fixed_price_sales_bento_number,loss_bento_number,sozai_zaiko,sozai_kurikoshi,bento_zaiko,soup,sweets]
     end
     @tbody_contents = {}
     @weekday_sales_sozai_number.each do |wday|
@@ -202,15 +214,17 @@ class StoreDailyMenusController < AdminController
           <td>#{date_num_weather[0].strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[date_num_weather[0].wday]})")}</td>
           <td>#{weather}</td>
           <td>#{date_num_weather[1][2]}</td>
-          <td>#{date_num_weather[1][8]}</td>
+          <td style='border-left: 1px solid #d3d3d3;'>#{date_num_weather[1][8]}</td>
           <td>#{date_num_weather[1][9]}</td>
           <td style='color:red;'>#{date_num_weather[1][0]}</td>
           <td>#{date_num_weather[1][3]}</td>
           <td>#{date_num_weather[1][4]}</td>
-          <td>#{date_num_weather[1][10]}</td>
+          <td style='border-left: 1px solid #d3d3d3;'>#{date_num_weather[1][10]}</td>
           <td style='color:red;'>#{date_num_weather[1][6]}</td>
           <td>#{date_num_weather[1][5]}</td>
           <td>#{date_num_weather[1][7]}</td>
+          <td style='border-left: 1px solid #d3d3d3;'>#{date_num_weather[1][11]}</td>
+          <td style='border-left: 1px solid #d3d3d3;'>#{date_num_weather[1][12]}</td>
           </tr>"
       end
       @tbody_contents[wday[0]] = @tbody_contents[wday[0]].join
