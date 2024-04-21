@@ -34,8 +34,8 @@ button type="button" class="btn btn-default" data-toggle="modal" data-target="#s
         .modal-footer
           button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
           = submit_tag "登録",class:'btn btn-primary'
-button type="button" class="btn btn-default" data-toggle="modal" data-target="#upload" style='margin-right:10px;float:right;' CSV登録
-#upload.modal.fade tabindex="-1"
+/ button type="button" class="btn btn-default" data-toggle="modal" data-target="#upload" style='margin-right:10px;float:right;' CSV登録
+/ #upload.modal.fade tabindex="-1"
   = form_tag upload_menu_daily_menus_path, multipart: true do
     .modal-dialog style='width:1000px;'
       .modal-content
