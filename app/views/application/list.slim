@@ -1,0 +1,61 @@
+doctype html
+html
+  head
+    title
+      | Orderecipe
+    = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload'
+    = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
+    = csrf_meta_tags
+    meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no"
+    link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet"
+    link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-rc.2/css/select2.min.css" rel="stylesheet"
+    script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.0/jquery-ui.min.js"
+    script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"
+    script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-rc.2/js/select2.min.js"
+    link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/css/lightbox.css" rel="stylesheet"
+  body data-controller="#{controller_name}" data-action="#{action_name}"
+    header
+      nav.navbar.navbar-default
+        .container-fluid
+          .navbar-header
+            button.navbar-toggle.collapsed[type="button" data-toggle="collapse" data-target="#navbarEexample"]
+              span.sr-only
+                | Toggle navigation
+              span.icon-bar
+              span.icon-bar
+              span.icon-bar
+            a.navbar-brand style="padding:12px 10px 8px 20px;" href="/"
+              = image_tag 'orderecipe.png',height:'85%',style:"image-orientation: none;"
+          #navbarEexample.collapse.navbar-collapse
+            - if user_signed_in?
+              #navbarEexample.collapse.navbar-collapse.navbar-right
+                ul.nav.navbar-nav
+                  li.user_nav.grid-6
+                    = link_to "ログアウト", destroy_user_session_path, :method => :delete
+    .all_body
+      p.notice = notice
+      .clearfix
+        = form_tag list_path, :method => 'get' do
+          = month_field_tag :month,@month,class:"form-control",style:'width:200px;float:left;margin-right:10px;'
+          = submit_tag "表示" ,class:"btn btn-primary",style:"float:left;"
+      - @daily_menus.each do |daily_menu|
+        h4 = "#{daily_menu.start_time.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[daily_menu.start_time.wday]})")}からの1週間メニュー"
+        table.table
+          thead
+            tr
+              th style='width:500px' 商品名
+              th style='width:100px' カテゴリ
+              th style='width:100px' 税別価格
+              th style='width:100px' 画像
+          tbody
+            - daily_menu.daily_menu_details.joins(:product).order("products.product_category").each do |dmd|
+              - if dmd.sell_price > 0
+                tr
+                  td = dmd.product.food_label_name
+                  td = dmd.product.product_category
+                  td = dmd.sell_price
+                  td
+                    = link_to dmd.product.image.to_s, "data-lightbox" => dmd.product.image.to_s do
+                      = image_tag dmd.product.image_url(:thumb) if dmd.product.image.present?
+
+    script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/js/lightbox.min.js" type="text/javascript"
