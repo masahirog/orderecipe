@@ -364,7 +364,30 @@ class StoreDailyMenusController < AdminController
 
   def update
     respond_to do |format|
+      photo_a_was = @store_daily_menu.showcase_photo_a.url
+      photo_b_was = @store_daily_menu.showcase_photo_b.url
       if @store_daily_menu.update(store_daily_menu_params)
+        photo_a = @store_daily_menu.showcase_photo_a.url
+        photo_b = @store_daily_menu.showcase_photo_b.url
+        if photo_a_was == photo_a && photo_b_was == photo_b
+        else
+          shift = Shift.find_by(store_id:@store_daily_menu.store_id,date:@store_daily_menu.start_time,fix_shift_pattern_id:254)
+          if shift.present?
+            staff_name = shift.staff.name
+          else
+            staff_name = ""
+          end
+
+          message = "ショーケースの写真を更新しました！\n"+
+          "店舗名：#{@store_daily_menu.store.short_name}\n"+
+          "日付：#{@store_daily_menu.start_time.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[@store_daily_menu.start_time.wday]})")}\n"+
+          "販売社員：#{staff_name}"
+          attachment_images =[]
+          attachment_images << {image_url: photo_a} if photo_a.present?
+          attachment_images << {image_url: photo_b} if photo_b.present?
+          Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'Bot', icon_emoji: ':male-farmer:', attachments: attachment_images).ping(message)
+          # Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'Bot', icon_emoji: ':male-farmer:', attachments: attachment_images).ping(message)
+        end
         format.js
         format.html { redirect_to @store_daily_menu, notice: 'Store daily menu was successfully updated.' }
         format.json { render :show, status: :ok, location: @store_daily_menu }
