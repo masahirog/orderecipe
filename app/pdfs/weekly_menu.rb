@@ -14,10 +14,10 @@ class WeeklyMenu < Prawn::Document
     from = daily_menu.start_time
     to = from + 6
 
-    left_header(daily_menu,from,to)
-    right_header(daily_menu)
-    left_table(daily_menu,daily_menu_details)
-    start_new_page
+    # left_header(daily_menu,from,to)
+    # right_header(daily_menu)
+    # left_table(daily_menu,daily_menu_details)
+    # start_new_page
     left_header(daily_menu,from,to)
     right_header(daily_menu)
     left_table_new(daily_menu,daily_menu_details)
@@ -1051,7 +1051,7 @@ class WeeklyMenu < Prawn::Document
         barcode_io.rewind
       end
       image barcode_io, at: [23,bento_height+2], width: 50,height:25 if product_a.smaregi_code.present?
-      product_b = bm[1][27]
+      product_b = bm[1][26]
       if product_b.smaregi_code.present?
         barcode = Barby::Code128.new product_b.smaregi_code
         barcode_blob = Barby::PngOutputter.new(barcode).to_png
@@ -1080,7 +1080,7 @@ class WeeklyMenu < Prawn::Document
         barcode_io.rewind
       end
       image barcode_io, at: [23,bento_height+2], width: 50,height:25 if product_a.smaregi_code.present?
-      product_b = bm[1][28]
+      product_b = bm[1][27]
       if product_b.smaregi_code.present?
         barcode = Barby::Code128.new product_b.smaregi_code
         barcode_blob = Barby::PngOutputter.new(barcode).to_png
