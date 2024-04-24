@@ -9,7 +9,7 @@ class Reminder < ApplicationRecord
 
   def self.reminder_bulk_create
     new_reminders_arr = []
-    today = Date.today - 1
+    today = Date.today
     wday = today.in_time_zone('Tokyo').wday
     wday_hash = {'mon'=>1,'tue'=>2,'wed'=>3,'thu'=>4,'fri'=>5,'sat'=>6,'sun'=>0}
     ReminderTemplate.where(status:0).each do |reminder_template|
