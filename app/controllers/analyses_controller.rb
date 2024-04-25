@@ -117,46 +117,32 @@ class AnalysesController < AdminController
     last_average_sales_datas = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     last_analyses.each do |analysis|
       if last_average_sales_datas[analysis.store_id][analysis.date.wday].present?
-        last_average_sales_datas[analysis.store_id][analysis.date.wday][:souzai_sales_number] += analysis.total_sozai_sales_number
+        # last_average_sales_datas[analysis.store_id][analysis.date.wday][:souzai_sales_number] += analysis.total_sozai_sales_number
         last_average_sales_datas[analysis.store_id][analysis.date.wday][:souzai_sales_amount] += analysis.analysis_categories.where(smaregi_bumon_id:[1,8]).sum(:ex_tax_sales_amount)
         last_average_sales_datas[analysis.store_id][analysis.date.wday][:count] += 1
       else
-        last_average_sales_datas[analysis.store_id][analysis.date.wday][:souzai_sales_number] = analysis.total_sozai_sales_number
+        # last_average_sales_datas[analysis.store_id][analysis.date.wday][:souzai_sales_number] = analysis.total_sozai_sales_number
         last_average_sales_datas[analysis.store_id][analysis.date.wday][:souzai_sales_amount] = analysis.analysis_categories.where(smaregi_bumon_id:[1,8]).sum(:ex_tax_sales_amount)
         last_average_sales_datas[analysis.store_id][analysis.date.wday][:count] = 1
       end
     end
     last_average_sales_datas.each do |data|
       data[1].each do |data_more|
-        last_average_sales_datas[data[0]][data_more[0]][:average] = (data_more[1][:souzai_sales_number].to_f/data_more[1][:count]).round(2)
+        # last_average_sales_datas[data[0]][data_more[0]][:average] = (data_more[1][:souzai_sales_number].to_f/data_more[1][:count]).round(2)
         last_average_sales_datas[data[0]][data_more[0]][:average_sales] = (data_more[1][:souzai_sales_amount].to_f/data_more[1][:count]).round(2)
       end
     end
     @stores.each_with_index do |store,i|
-      souzai_data = []
       souzai_uriage_data = []
       @dates.sort.each do |date|
         if @date_store_analyses[date][store.id].present?
           if last_average_sales_datas[store.id][date.wday].present?
-            souzai_data << (@date_store_analyses[date][store.id][:sales_number]/last_average_sales_datas[store.id][date.wday][:average]*100).round
             souzai_uriage_data << (@date_store_analyses[date][store.id][:souzai_sales_amount]/last_average_sales_datas[store.id][date.wday][:average_sales]*100).round
           end
         else
           @date_store_analyses[date].delete(store.id)
         end
       end
-      souzai_datas << {
-        type: 'line',
-        label: store.short_name,
-        data: souzai_data,
-        backgroundColor: colors[i],
-        borderColor: colors[i],
-        fill: false,
-        stacked: false,
-        yAxisID: "y-axis-2",
-        # lineTension: 0.2,
-        pointRadius: 3
-      }
       souzai_uriage_datas << {
         type: 'line',
         label: store.short_name,
@@ -170,16 +156,6 @@ class AnalysesController < AdminController
         pointRadius: 3
       }
     end
-    souzai_datas << {
-        type: 'line',
-        data: Array.new(@days,100),
-        backgroundColor: 'black',
-        borderColor: 'black',
-        fill: false,
-        stacked: false,
-        yAxisID: "y-axis-2",
-        pointRadius: 0
-      }
     souzai_uriage_datas << {
       type: 'line',
       data: Array.new(@days,100),
@@ -192,6 +168,58 @@ class AnalysesController < AdminController
     }
     gon.souzai_datas = souzai_datas
     gon.souzai_uriage_datas = souzai_uriage_datas
+
+
+    @weekly_clean_reminder_templates = ReminderTemplate.where(category:1,repeat_type:11)
+    @monthly_clean_reminder_templates = ReminderTemplate.where(category:1,repeat_type:12)
+    @weekly_clean_reminders = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    @monthly_clean_reminders = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    @reminders_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    @weekly_clean_dates = []
+    Reminder.where(reminder_template_id:@weekly_clean_reminder_templates.ids,action_date:dates,category:1).each do |reminder|
+      if @weekly_clean_reminders[reminder.store_id][reminder.action_date][reminder.status].present?
+        @weekly_clean_reminders[reminder.store_id][reminder.action_date][reminder.status] += 1
+      else
+        @weekly_clean_reminders[reminder.store_id][reminder.action_date][reminder.status] = 1
+      end
+      if @weekly_clean_reminders[reminder.store_id][reminder.action_date][:all].present?
+        @weekly_clean_reminders[reminder.store_id][reminder.action_date][:all] += 1
+      else
+        @weekly_clean_reminders[reminder.store_id][reminder.action_date][:all] = 1
+      end
+      @weekly_clean_dates << reminder.action_date
+    end
+    @weekly_clean_dates = @weekly_clean_dates.uniq.sort
+    Reminder.where(reminder_template_id:@monthly_clean_reminder_templates.ids,action_date:dates,category:1).each do |reminder|
+      if @monthly_clean_reminders[reminder.store_id][reminder.status].present?
+        @monthly_clean_reminders[reminder.store_id][reminder.status] += 1
+      else
+        @monthly_clean_reminders[reminder.store_id][reminder.status] = 1
+      end
+      if @monthly_clean_reminders[reminder.store_id][:all].present?
+        @monthly_clean_reminders[reminder.store_id][:all] += 1
+      else
+        @monthly_clean_reminders[reminder.store_id][:all] = 1
+      end
+    end
+
+    Reminder.where(action_date:dates,category:0).each do |reminder|
+      if @reminders_hash[reminder.store_id][:monthly][reminder.status].present?
+        @reminders_hash[reminder.store_id][:monthly][reminder.status] += 1
+      else
+        @reminders_hash[reminder.store_id][:monthly][reminder.status] = 1
+      end
+      if @reminders_hash[reminder.store_id][reminder.action_date][reminder.status].present?
+        @reminders_hash[reminder.store_id][reminder.action_date][reminder.status] += 1
+      else
+        @reminders_hash[reminder.store_id][reminder.action_date][reminder.status] = 1
+      end
+      if @reminders_hash[reminder.store_id][:monthly][:all].present?
+        @reminders_hash[reminder.store_id][:monthly][:all] += 1
+      else
+        @reminders_hash[reminder.store_id][:monthly][:all] = 1
+      end
+    end
   end
   def bumon_sales
     @to = Date.today

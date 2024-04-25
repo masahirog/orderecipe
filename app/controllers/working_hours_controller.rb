@@ -16,7 +16,7 @@ class WorkingHoursController < AdminController
     end
     @dates = (@from..@to).to_a
     @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    WorkingHour.includes(working_hour_work_types:[:work_type]).where(date:@dates,store_id:39).each do |working_hour|
+    WorkingHour.includes(working_hour_work_types:[:work_type]).where(date:@dates,store_id:39).order(:date).each do |working_hour|
       working_hour.working_hour_work_types.each do |whwt|
         if @hash[working_hour.date][whwt.work_type.category_before_type_cast].present?
           @hash[working_hour.date][whwt.work_type.category_before_type_cast] += whwt.worktime
