@@ -72,7 +72,6 @@ class AnalysesController < AdminController
     test(store_sales,@store_bumon_sales,@store_chakuchi,@stores_count,dates)
     test(prev_month_store_sales,@prev_month_store_bumon_sales,@prev_month_store_chakuchi,prev_month_stores_count,prev_month_dates)
     test(prev_year_store_sales,@prev_year_store_bumon_sales,@prev_year_store_chakuchi,prev_year_stores_count,prev_year_dates)
-
     if params[:to]
       @to = params[:to].to_date
     else
@@ -87,7 +86,7 @@ class AnalysesController < AdminController
     @analyses = Analysis.where(date:@dates).where('transaction_count > ?',0)
     @days = @dates.count
     @stores = current_user.group.stores.where(store_type:0)
-    @store_analyses = @analyses.map{|analysis|[[analysis.store_daily_menu.start_time,analysis.store_daily_menu.store_id],analysis]}.to_h
+    @store_analyses = @analyses.includes(:store_daily_menu).map{|analysis|[[analysis.store_daily_menu.start_time,analysis.store_daily_menu.store_id],analysis]}.to_h
     @date_analyses = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @date_store_analyses = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @analyses.each do |analysis|
@@ -97,6 +96,22 @@ class AnalysesController < AdminController
       @date_store_analyses[analysis.date][analysis.store_id][:transaction_count] = analysis.transaction_count
       @date_store_analyses[analysis.date][analysis.store_id][:sales_number] = analysis.total_sozai_sales_number
       @date_store_analyses[analysis.date][analysis.store_id][:souzai_sales_amount] = analysis.analysis_categories.where(smaregi_bumon_id:[1,8]).sum(:ex_tax_sales_amount)
+    end
+    @date_sales = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    AnalysisCategory.includes(:analysis).where(analysis_id:@analyses.ids).each do |ac|
+      if [14,15,16,17,18].include?(ac.smaregi_bumon_id)
+        if @date_sales[ac.analysis.store_id][ac.analysis.date][:good].present?
+          @date_sales[ac.analysis.store_id][ac.analysis.date][:good] += ac.ex_tax_sales_amount
+        else
+          @date_sales[ac.analysis.store_id][ac.analysis.date][:good] = ac.ex_tax_sales_amount
+        end
+      else
+        if @date_sales[ac.analysis.store_id][ac.analysis.date][:souzai].present?
+          @date_sales[ac.analysis.store_id][ac.analysis.date][:souzai] += ac.ex_tax_sales_amount
+        else
+          @date_sales[ac.analysis.store_id][ac.analysis.date][:souzai] = ac.ex_tax_sales_amount
+        end
+      end
     end
     gon.sales_dates = @dates
     souzai_datas = []
@@ -175,6 +190,7 @@ class AnalysesController < AdminController
     @weekly_clean_reminders = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @monthly_clean_reminders = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @reminders_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    @period_reminders_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @weekly_clean_dates = []
     Reminder.where(reminder_template_id:@weekly_clean_reminder_templates.ids,action_date:dates,category:1).each do |reminder|
       if @weekly_clean_reminders[reminder.store_id][reminder.action_date][reminder.status].present?
@@ -219,7 +235,74 @@ class AnalysesController < AdminController
       else
         @reminders_hash[reminder.store_id][:monthly][:all] = 1
       end
+      if @reminders_hash[reminder.store_id][reminder.action_date][:all].present?
+        @reminders_hash[reminder.store_id][reminder.action_date][:all] += 1
+      else
+        @reminders_hash[reminder.store_id][reminder.action_date][:all] = 1
+      end
     end
+    Reminder.where(action_date:@dates,category:0).each do |reminder|
+      if @period_reminders_hash[reminder.store_id][:monthly][reminder.status].present?
+        @period_reminders_hash[reminder.store_id][:monthly][reminder.status] += 1
+      else
+        @period_reminders_hash[reminder.store_id][:monthly][reminder.status] = 1
+      end
+      if @period_reminders_hash[reminder.store_id][reminder.action_date][reminder.status].present?
+        @period_reminders_hash[reminder.store_id][reminder.action_date][reminder.status] += 1
+      else
+        @period_reminders_hash[reminder.store_id][reminder.action_date][reminder.status] = 1
+      end
+      if @period_reminders_hash[reminder.store_id][:monthly][:all].present?
+        @period_reminders_hash[reminder.store_id][:monthly][:all] += 1
+      else
+        @period_reminders_hash[reminder.store_id][:monthly][:all] = 1
+      end
+      if @period_reminders_hash[reminder.store_id][reminder.action_date][:all].present?
+        @period_reminders_hash[reminder.store_id][reminder.action_date][:all] += 1
+      else
+        @period_reminders_hash[reminder.store_id][reminder.action_date][:all] = 1
+      end
+    end
+
+    @shifts = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    Shift.includes(:staff).where(date:@dates,fix_shift_pattern_id:254).each do |shift|
+      if shift.present?
+        @shifts[shift.store_id][shift.date] = shift.staff.short_name
+      else
+        @shifts[shift.store_id][shift.date] = ""
+      end
+    end
+
+    @kaiin_datas = SmaregiMember.where(nyukaibi:@dates).group(:main_use_store,:nyukaibi).count
+    @stores_henkan = {"9"=>"higashi_nakano","19"=>"shin_nakano","29"=>'shinkoenji',"154"=>"numabukuro","164"=>"ogikubo"}
+
+
+    @daily_items = DailyItem.where(date:dates,purpose:"物販")
+    @category_sum = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    @buppan_sum = {"estimated_sales_sum"=>0,"subtotal_price_sum"=>0,"arari_sum"=>0,"purchase_price_sum"=>0,"delivery_fee_sum"=>0}
+    ["野菜","果実","物産品","送料"].each do |category|
+      item_varieties = ItemVariety.joins(:item_type).where(:item_types => {category:category})
+      items = Item.where(item_variety_id:item_varieties.ids)
+      daily_items = @daily_items.where(item_id:items.ids)
+      subtotal_price_sum = daily_items.sum(:subtotal_price)
+      delivery_fee_sum = daily_items.sum(:delivery_fee)
+      purchase_price_sum = daily_items.map{|di|di.purchase_price * di.delivery_amount}.sum
+      estimated_sales = daily_items.sum(:estimated_sales)
+      arari = estimated_sales - subtotal_price_sum
+      @buppan_sum["estimated_sales_sum"] += estimated_sales
+      @buppan_sum["subtotal_price_sum"] += subtotal_price_sum
+      @buppan_sum["purchase_price_sum"] += purchase_price_sum
+      @buppan_sum["delivery_fee_sum"] += delivery_fee_sum
+      @buppan_sum["arari_sum"] += arari
+      @category_sum[category]["estimated_sales_sum"] = estimated_sales
+      @category_sum[category]["purchase_price_sum"] = purchase_price_sum
+      @category_sum[category]["delivery_fee_sum"] = delivery_fee_sum
+      @category_sum[category]["subtotal_price_sum"] = subtotal_price_sum
+      @category_sum[category]["arari_sum"] = arari
+      @category_sum[category]["arari_rate"] = (arari/estimated_sales.to_f*100).round(1) if estimated_sales > 0
+    end
+
+
   end
   def bumon_sales
     @to = Date.today

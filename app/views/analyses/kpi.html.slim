@@ -228,12 +228,44 @@ table.table
 				td
 					- if @store_bumon_sales[:good][:stores][store.id].present?
 						= (@store_bumon_sales[:good][:stores][store.id][:amount]).to_s(:delimited)
-
-
+h3 = "#{@date.month}月 物販粗利状況"
+table.table
+  thead
+    tr
+      th 月次合計
+      th 想定売上
+      th 売上比率
+      th 仕入価格
+      th 送料
+      th 原価
+      th 粗利
+  tbody
+    - @category_sum.each do |data|
+      tr
+        td = data[0]
+        td = "#{data[1]['estimated_sales_sum'].to_s(:delimited)}円"
+        td = "#{((data[1]['estimated_sales_sum']/@buppan_sum["estimated_sales_sum"].to_f)*100).round(1)}%"
+        td = "#{data[1]['purchase_price_sum'].to_s(:delimited)}円"
+        td = "#{data[1]['delivery_fee_sum'].to_s(:delimited)}円"
+        td = "#{data[1]['subtotal_price_sum'].to_s(:delimited)}円"
+        td
+          = "#{data[1]['arari_sum'].to_s(:delimited)}円"
+          = "｜#{data[1]["arari_rate"]}%" if data[1]["arari_rate"].present?
+    tr
+      th 合計
+      th = "#{@buppan_sum["estimated_sales_sum"].to_s(:delimited)}円"
+      th 
+      th = "#{@buppan_sum["purchase_price_sum"].to_s(:delimited)}円"
+      th = "#{@buppan_sum["delivery_fee_sum"].to_s(:delimited)}円"
+      th = "#{@buppan_sum["subtotal_price_sum"].to_s(:delimited)}円"
+      th
+        = "#{@buppan_sum["arari_sum"].to_s(:delimited)}円"
+        = "｜#{(@buppan_sum["arari_sum"]/@buppan_sum["estimated_sales_sum"].to_f*100).round(1)}%"
+h3 = "#{@date.month}月 QSC管理"
 table.table
 	thead
 		tr
-			th QSCチェック
+			th 項目
 			- @stores.each do |store|
 				th = store.short_name
 	tbody
@@ -262,8 +294,10 @@ table.table
 							= "#{@weekly_clean_reminders[store.id][date]["done"]} / #{@weekly_clean_reminders[store.id][date][:all]}"
 						- else
 							= "0 / #{@weekly_clean_reminders[store.id][date][:all]}"
-
-
+br
+hr
+br
+h3 惣菜売上（過去同曜日較）
 .clearfix
 	= form_tag kpi_analyses_path, :method => 'get' do
 		label style='margin-top:7px;float:left;' データ期間：
@@ -276,19 +310,16 @@ table.table
 		div style="float:left;padding:8px;" 〜
 		= date_field_tag :last_to, @last_to, class:"form-control",style:'width:120px;float:left;'
 		= submit_tag "期間変更" ,class:"btn btn-primary",style:"margin-left:10px;"
-
-
-h4 惣菜売上（過去同曜日較）
 canvas#chart2
 
-br
+h3 デイリー結果
 .table-responsive style='height:600px;overflow: scroll;'
   table.table.layout-fixed style='border-collapse:separate;'
     thead style='position: sticky;top:0;background-color:white;z-index:3;'
       tr
         th.text-center style="width:560px;" colspan=6
         - @stores.each do |store|
-          th.text-center style="border-left: 1px solid #ddd;width:400px;" colspan=5 = store.name
+          th.text-center style="border-left: 1px solid #ddd;width:650px;" colspan=10 = store.name
       tr
         th style='background-color:white;' 日付
         th style='' 来客組数
@@ -297,16 +328,20 @@ br
         th style='' 廃棄金額
         th style='' ロス率
         - @stores.each do |store|
-          th style="border-left: 1px solid #ddd;" 来客組数
-          th style='' 売上
-          th style='' 値引額
-          th style='' 廃棄金額
-          th style='' ロス率
-
+					th style="border-left: 1px solid #ddd;" 社員
+					th 来客組数
+					th style='' 売上
+					th style='' 惣売
+					th style='' 物売
+					th style='' 値引額
+					th style='' 廃棄金額
+					th style='' ロス率
+					th リマイ
+					th LINE
     tbody
       	- @dates.reverse_each do |date|
 	        tr
-	          td style='background-color:white;' = link_to date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})"),date_analyses_path(date:date)
+	          td style='background-color:white;' = link_to date.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[date.wday]})"),date_analyses_path(date:date)
 	          td = @date_store_analyses[date].map{|hash|hash[1][:transaction_count]}.sum
 	          td = @date_store_analyses[date].map{|hash|hash[1][:sales_amount]}.sum.to_s(:delimited) if @date_store_analyses[date]
 	          td = @date_store_analyses[date].map{|hash|hash[1][:discount_amount].to_i}.sum.to_s(:delimited) if @date_store_analyses[date]
@@ -321,8 +356,11 @@ br
 	              - else
 	                span style='color:black;' = "#{loss}%"
 	          - @stores.each do |store|
-	            td style="border-left: 1px solid #ddd;"  = @date_store_analyses[date][store.id][:transaction_count] if @date_store_analyses[date][store.id][:transaction_count].present?
+	          	td style="border-left: 1px solid #ddd;" = @shifts[store.id][date]
+	            td = @date_store_analyses[date][store.id][:transaction_count] if @date_store_analyses[date][store.id][:transaction_count].present?
 	            td = @date_store_analyses[date][store.id][:sales_amount].to_s(:delimited) if @date_store_analyses[date][store.id][:sales_amount].present?
+	            td = @date_sales[store.id][date][:souzai].to_s(:delimited) if @date_sales[store.id][date][:souzai].present?
+	            td = @date_sales[store.id][date][:good].to_s(:delimited) if @date_sales[store.id][date][:good].present?
 	            td = @date_store_analyses[date][store.id][:discount_amount].to_s(:delimited) if @date_store_analyses[date][store.id][:discount_amount].present?
 	            td = @date_store_analyses[date][store.id][:loss_amount].to_s(:delimited) if @date_store_analyses[date][store.id][:loss_amount].present?
 	            td
@@ -334,8 +372,12 @@ br
 	                  span style='color:#0000cd;' = "#{loss}%"
 	                - else
 	                  span style='color:black;' = "#{loss}%"
-
-
+	            td
+	            	- if @period_reminders_hash[store.id][date]["yet"].present?
+	            		span style='color:red;' = "#{@period_reminders_hash[store.id][date][:all] - @period_reminders_hash[store.id][date]["yet"]}/#{@period_reminders_hash[store.id][date][:all]}"
+	            	- else
+	            		= "#{@period_reminders_hash[store.id][date][:all]}/#{@period_reminders_hash[store.id][date][:all]}"
+	            td = @kaiin_datas[[@stores_henkan[store.id.to_s],date]]
 javascript:
 
 
