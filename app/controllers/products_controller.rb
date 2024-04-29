@@ -99,9 +99,10 @@ class ProductsController < ApplicationController
     @brands = Brand.where(group_id:current_user.group_id,unused_flag:false)
     if params[:copy_flag]=='true'
       original_product = Product.includes(product_menus:[menu:[menu_materials:[:material]]]).find(params[:product_id])
-      original_product.name = "#{original_product.name}のコピー"
-      @product = original_product.deep_clone(include: [:product_menus,:product_parts,:product_ozara_serving_informations])
       flash.now[:notice] = "#{original_product.name}を複製しました。名前を変更してください。"
+      original_product.name = "#{original_product.name}のコピー"
+      original_product.smaregi_code = ""
+      @product = original_product.deep_clone(include: [:product_menus,:product_parts,:product_ozara_serving_informations])
       @menus = original_product.menus
     else
       @product = Product.new(sell_price:0)
