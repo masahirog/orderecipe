@@ -1,5 +1,7 @@
 class NotificationMailer < ActionMailer::Base
-  default from: "masahiro11g@gmail.com"
+
+  # default from: "masahiro11g@gmail.com"
+  default from: "m.yamashita@shibata-ya.jp"
 
   def send_fax_order(order,vendor)
     @vendor = vendor
@@ -28,6 +30,17 @@ class NotificationMailer < ActionMailer::Base
       attachments[filename] = OrderPdf.new(@materials_this_vendor,@vendor,order).render
     end
     mail(subject: "発注のご連絡",to:@vendor.company_mail) do |format|
+      format.text
+    end
+  end
+
+  def coupon(store,to,coupon,souzai_url,bento_url,gyusuji_url)
+    @store = store
+    @coupon = coupon
+    @souzai_url = souzai_url
+    @bento_url = bento_url
+    @gyusuji_url = gyusuji_url
+    mail(subject: "【再送】アンケートのお礼｜べじはん",to:to,cc:'m.yamashita@shibata-ya.jp') do |format|
       format.text
     end
   end

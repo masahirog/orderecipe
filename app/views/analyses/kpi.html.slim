@@ -312,7 +312,7 @@ h3 惣菜売上（過去同曜日較）
 		= submit_tag "期間変更" ,class:"btn btn-primary",style:"margin-left:10px;"
 canvas#chart2
 
-h3 デイリー結果
+h3 日次数値確認
 .table-responsive style='height:600px;overflow: scroll;'
   table.table.layout-fixed style='border-collapse:separate;'
     thead style='position: sticky;top:0;background-color:white;z-index:3;'
@@ -336,8 +336,14 @@ h3 デイリー結果
 					th style='' 値引額
 					th style='' 廃棄金額
 					th style='' ロス率
-					th リマイ
-					th LINE
+					th
+						|QSC
+						br
+						|チェック
+					th
+						|新規
+						br
+						|会員
     tbody
       	- @dates.reverse_each do |date|
 	        tr

@@ -382,6 +382,7 @@ Rails.application.routes.draw do
       post :upload_number
       post :once_update_number
       post :label
+      post :bento_label
     end
   end
 

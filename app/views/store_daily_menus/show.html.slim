@@ -36,6 +36,15 @@ button type="button" class="btn btn-default" data-toggle="modal" data-target="#l
       .modal-body
         = link_to "ラベル正面", label_store_daily_menus_path(store_daily_menu_id:@store_daily_menu.id,patterm:"normal",format:'csv'), method: :post, class: "btn btn-default"
         = link_to "ラベル反転", label_store_daily_menus_path(store_daily_menu_id:@store_daily_menu.id,pattern:"inversion" ,format:'csv'), method: :post, class: "btn btn-default",style:'margin-left:20px;'
+        br
+        br
+        .clearfix
+          = form_tag bento_label_store_daily_menus_path(format: :csv), :method => 'post' do
+            = hidden_field_tag :id,@store_daily_menu.id
+            = text_field_tag :daily_fukusai,'',class:'form-control',style:'width:200px;float:left;'
+            = submit_tag "弁当ラベル" ,class:"btn btn-default",style:"float:left;margin-left:20px;",placeholder:'副菜3枠目'
+        / = link_to "弁当ラベル", bento_label_store_daily_menus_path(store_daily_menu_id:@store_daily_menu.id,format:'csv'), method: :post, class: "btn btn-default"
+
       .modal-footer
         button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
 

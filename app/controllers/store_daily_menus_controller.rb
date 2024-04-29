@@ -13,6 +13,29 @@ class StoreDailyMenusController < AdminController
     end
   end
 
+  def bento_label
+    @store_daily_menu = StoreDailyMenu.find(params[:id])
+    date = @store_daily_menu.start_time
+    store_name = @store_daily_menu.store.name
+    @labels = []
+    bento_ids = []
+    number_product = @store_daily_menu.daily_menu.daily_menu_details.map{|dmd|[dmd.paper_menu_number,dmd.product_id]}.to_h
+    number_product.each do |data|
+      @soup = Product.find(data[1]) if data[0] == 1
+      bento_ids << data[1] if [24,25,26,27].include?(data[0])
+      @fukusai1 = Product.find(data[1]) if data[0] == 2
+      @fukusai2 = Product.find(data[1]) if data[0] == 3
+      @fukusai3 = params[:daily_fukusai]
+    end
+    @sdmds = @store_daily_menu.store_daily_menu_details.where(product_id:bento_ids)
+    respond_to do |format|
+      format.html
+      format.csv do
+        send_data render_to_string, filename: "#{store_name}_#{date}_bento_.csv", type: :csv
+      end
+    end
+  end
+
   def label
     @store_daily_menu = StoreDailyMenu.find(params[:store_daily_menu_id])
     date = @store_daily_menu.start_time

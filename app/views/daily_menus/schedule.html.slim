@@ -36,14 +36,14 @@
       table.table.layout-fixed style='border-collapse:separate;'
         colgroup
             col class="col1"
-            - (1..28).to_a.each do |i|
+            - (1..29).to_a.each do |i|
               col class="col2"
 
         thead style="position: sticky;top:0;background-color:white;z-index:3;"
           tr
             th スケジュール一覧
 
-            - (1..28).to_a.each do |i|
+            - (1..29).to_a.each do |i|
               th style='text-align: center;' = i
         tbody
           - daily_menu_id = ""
@@ -63,7 +63,7 @@
                 - if date.wday == 3
                   i class="fa-solid fa-angles-down show_btn pull-right" style='cursor: pointer;margin-left: 10px;margin-top:5px;'
                   i class="fa-solid fa-angles-up hide_btn pull-right" style='display:none;cursor: pointer;margin-top:5px;'
-              - (1..28).to_a.each do |i|
+              - (1..29).to_a.each do |i|
                 - if @daily_menu_details_hash[daily_menu.id][i].present?
                   - if @daily_menu_details_hash[daily_menu.id][i]['change_flag'] == true
                     - color = 'green'
@@ -90,13 +90,13 @@
           table.table.layout-fixed style='border-collapse:separate;'
             colgroup
                 col class="col1"
-                - (1..28).to_a.each do |i|
+                - (1..29).to_a.each do |i|
                   col class="col2"
 
             thead style="position: sticky;top:0;background-color:white;z-index:3;"
               tr
                 th 更新欄
-                - (1..28).to_a.each do |i|
+                - (1..29).to_a.each do |i|
                   th class="#{i}" style='text-align: center;'
                     = i
                     i class="fa-solid fa-clone syn_top_product" style="margin-left: 10px;"
@@ -107,7 +107,7 @@
                 - date = daily_menu.start_time
                 tr class="tr_#{index} create_schedule_tr"
                   td style="background-color:white;z-index:4;" = link_to date.strftime("%-Y/%-m/%-d(#{%w(日 月 火 水 木 金 土)[date.wday]})"),daily_menu,target:"_blank"
-                  - (1..28).to_a.each do |i|
+                  - (1..29).to_a.each do |i|
                     td class="td_#{i}" style="background-color:white;"
                       = select_tag "daily_menus[#{daily_menu.id}]paper_menu_numbers[#{i}][product_id]", options_from_collection_for_select(@products, :id, :name,@create_menu_details_hash[daily_menu.id][i]['product_id']),include_blank:true, class: "form-control input_select_product"
                       br

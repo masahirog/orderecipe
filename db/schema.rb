@@ -12,7 +12,7 @@
 
 ActiveRecord::Schema.define(version: 2024_03_18_141142) do
 
-  create_table "analyses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "analyses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "store_id"
     t.date "date"
     t.integer "total_sales_amount"
@@ -1011,7 +1011,7 @@ ActiveRecord::Schema.define(version: 2024_03_18_141142) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "store_daily_menus", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+  create_table "store_daily_menus", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.integer "daily_menu_id", null: false
     t.integer "store_id", null: false
     t.date "start_time", null: false
@@ -1029,8 +1029,9 @@ ActiveRecord::Schema.define(version: 2024_03_18_141142) do
     t.string "event"
     t.boolean "editable_flag", default: true, null: false
     t.integer "foods_budget", default: 0, null: false
-    t.integer "vegetables_budget", default: 0, null: false
     t.integer "goods_budget", default: 0, null: false
+    t.integer "revised_foods_budget", default: 0, null: false
+    t.integer "revised_goods_budget", default: 0, null: false
     t.index ["daily_menu_id", "store_id", "start_time"], name: "index_uniq", unique: true
   end
 
