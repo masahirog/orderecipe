@@ -23,28 +23,35 @@ class PriceCard < Prawn::Document
           fill_color '000000'
 
           if product.food_label_name.length < 15
-            text_box(product.food_label_name,at: [210,h-15], width: 290, height: 50,size:20,valign: :bottom, leading: 3,align: :center)
+            text_box(product.food_label_name,at: [210,h-5], width: 290, height: 50,size:20,valign: :bottom, leading: 3,align: :center)
           elsif product.food_label_name.length < 17
-            text_box(product.food_label_name,at: [210,h-15], width: 290, height: 50,size:18,valign: :bottom, leading: 3,align: :center)
+            text_box(product.food_label_name,at: [210,h-5], width: 290, height: 50,size:18,valign: :bottom, leading: 3,align: :center)
           else
-            text_box(product.food_label_name,at: [210,h-15], width: 290, height: 50,size:17,valign: :bottom, leading: 4,align: :center)
+            text_box(product.food_label_name,at: [210,h-5], width: 290, height: 50,size:17,valign: :bottom, leading: 4,align: :center)
           end
 
 
           line_width 2
-          line [210, h-75], [500, h-75]
+          line [210, h-65], [500, h-65]
           stroke_color '000000'
           stroke
-
           fill_color '000000'
-          text_box("<font size='25'>#{product.sell_price}</font> 円",at: [325, h - 127], width: 100, height: 40,size:15,inline_format: true)
+          if product.half_able_flag == true
+            text_box("<font size='25'>#{product.sell_price}</font> 円",at: [260, h - 122], width: 100, height: 40,size:15,inline_format: true)
+            font "vendor/assets/fonts/NotoSansJP-Medium.ttf"
+            text_box("1人前",at: [215, h - 132], width: 100, height: 40,size:13)
+            text_box("（税込 #{product.tax_including_sell_price} 円）",at: [330, h - 135], width: 100, height: 40,size:11)
+            text_box("0.5人前",at: [240, h - 154], width: 200, height: 40,size:9)
+            text_box("円（税込 #{(product.tax_including_sell_price*0.6).floor} 円）",at: [305, h - 154], width: 200, height: 40,size:9)
+            text_box("#{(product.sell_price*0.6).floor}",at: [280, h - 152], width: 100, height: 40,size:12)
+          else
+            text_box("<font size='25'>#{product.sell_price}</font> 円",at: [260, h - 132], width: 100, height: 40,size:15,inline_format: true)
+            font "vendor/assets/fonts/NotoSansJP-Medium.ttf"
+            text_box("1人前",at: [215, h - 142], width: 100, height: 40,size:13)
+            text_box("（税込 #{product.tax_including_sell_price} 円）",at: [330, h - 145], width: 100, height: 40,size:11)
+          end
+          text_box(product.contents,at: [215,h-75], width: 280, height: 30,size:11,valign: :top,align: :center, leading: 3)
 
-          # text_box('〇〇〇〇〇',at: [194,h-130], width: 326, height: 50,size:15,valign: :center, leading: 3,align: :center)
-
-          font "vendor/assets/fonts/NotoSansJP-Medium.ttf"
-          text_box(product.contents,at: [215,h-85], width: 280, height: 30,size:11,valign: :top,align: :center, leading: 3)
-          text_box("一人前",at: [280, h - 137], width: 100, height: 40,size:13)
-          text_box("（税込 #{product.tax_including_sell_price} 円）",at: [305, h - 155], width: 100, height: 40,size:11)
           font "vendor/assets/fonts/NotoSansJP-Black.ttf"
           if product.product_category == "スイーツ・ドリンク"
             fill_color 'F2684A'
@@ -88,13 +95,28 @@ class PriceCard < Prawn::Document
           stroke
 
           fill_color '000000'
-          text_box("<font size='30'>#{product.sell_price}</font> 円",at: [255, h - 123], width: 100, height: 40,size:15,inline_format: true)
 
-          font "vendor/assets/fonts/NotoSansJP-Medium.ttf"
+
+          if product.half_able_flag == true
+            text_box("<font size='30'>#{product.sell_price}</font> 円",at: [155, h - 123], width: 100, height: 40,size:15,inline_format: true)
+            font "vendor/assets/fonts/NotoSansJP-Medium.ttf"
+            text_box("一人前",at: [110, h - 138], width: 100, height: 40,size:12)
+            text_box("（税込 #{product.tax_including_sell_price} 円）",at: [230, h - 138], width: 100, height: 40,size:13)
+
+            text_box("0.5人前",at: [155, h - 162], width: 200, height: 40,size:9)
+            text_box("円（税込 #{(product.tax_including_sell_price*0.6).floor} 円）",at: [220, h - 162], width: 200, height: 40,size:9)
+            text_box("#{(product.sell_price*0.6).floor}",at: [195, h - 160], width: 100, height: 40,size:12)
+
+          else
+            text_box("<font size='30'>#{product.sell_price}</font> 円",at: [155, h - 123], width: 100, height: 40,size:15,inline_format: true)
+            font "vendor/assets/fonts/NotoSansJP-Medium.ttf"
+            text_box("一人前",at: [110, h - 138], width: 100, height: 40,size:12)
+            text_box("（税込 #{product.tax_including_sell_price} 円）",at: [230, h - 138], width: 100, height: 40,size:13)
+          end
+
           text_box(product.contents,at: [35,h-90], width: 465, height: 30,size:11,valign: :top,align: :center, leading: 3)
-          text_box("一人前",at: [210, h - 138], width: 100, height: 40,size:12)
-          text_box("（税込 #{product.tax_including_sell_price} 円）",at: [224, h - 155], width: 100, height: 40,size:13)
-          font "vendor/assets/fonts/NotoSansJP-Black.ttf"
+
+
           if product.product_category == "スイーツ・ドリンク"
             fill_color 'F2684A'
             fill_rounded_rectangle [360,h-130], 36, 36, 18

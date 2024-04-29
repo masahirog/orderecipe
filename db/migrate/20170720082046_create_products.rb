@@ -32,7 +32,8 @@ class CreateProducts < ActiveRecord::Migration[4.2]
       t.string :smaregi_code
       t.boolean :warm_flag, null: false, default: false
       t.integer :tax_including_sell_price,null:false
-      t.boolean :reduced_tax_flag,null:false,default:true      
+      t.boolean :reduced_tax_flag,null:false,default:true
+      t.boolean :half_able_flag,null:false,default:false
     end
   end
 end

@@ -325,7 +325,7 @@ class ProductsController < ApplicationController
   private
     def product_create_update
       params.require(:product).permit(:name,:memo, :sell_price, :description, :contents, :image,:brand_id,:product_category,:bejihan_sozai_flag,
-                      :sky_wholesale_price,:sky_image,:sky_serving_infomation,:group_id,:sub_category,:reduced_tax_flag,
+                      :sky_wholesale_price,:sky_image,:sky_serving_infomation,:group_id,:sub_category,:reduced_tax_flag,:half_able_flag,
                       :food_label_name,:food_label_content,:status,:remove_image, :image_cache,:display_image,:image_for_one_person,:serving_infomation,:carryover_able_flag,
                       :main_serving_plate_id,:sub_serving_plate_id,:container_id,:ozara_serving_infomation,:freezing_able_flag,:sky_split_information,:bejihan_only_flag,
                       :smaregi_code,:warm_flag,:tax_including_sell_price,

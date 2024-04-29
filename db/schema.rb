@@ -180,17 +180,14 @@ ActiveRecord::Schema.define(version: 2024_03_18_141142) do
     t.index ["product_id"], name: "index_daily_menu_details_on_product_id"
   end
 
-  create_table "daily_menus", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+  create_table "daily_menus", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.date "start_time", null: false
     t.integer "total_manufacturing_number", default: 0, null: false
-    t.integer "weather"
-    t.integer "max_temperature"
-    t.integer "min_temperature"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "sozai_manufacturing_number", default: 0, null: false
-    t.string "event"
     t.boolean "stock_update_flag", default: false, null: false
+    t.float "worktime"
   end
 
   create_table "default_shifts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -725,6 +722,7 @@ ActiveRecord::Schema.define(version: 2024_03_18_141142) do
     t.boolean "warm_flag", default: false, null: false
     t.integer "tax_including_sell_price", null: false
     t.boolean "reduced_tax_flag", default: true, null: false
+    t.boolean "half_able_flag", default: false, null: false
   end
 
   create_table "refund_supports", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
