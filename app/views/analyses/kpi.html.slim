@@ -37,12 +37,12 @@ table.table
 		tr
 			td 着地
 			td
-				= (@store_bumon_sales.values.map{|data|data[:chakuchi]}.sum).to_s(:delimited)
+				= (@store_bumon_sales.values.map{|data|data[:chakuchi]}.sum).to_s(:delimited) if @store_bumon_sales[:sozai][:stores].present?
 				/ = "予算 #{(@store_bumon_sales.values.map{|data|data[:chakuchi]}.sum.to_f/(@foods_budgets.values.sum + @goods_budgets.values.sum)*100).round(1)}%"
 				br
-				span = "前月 #{(@store_bumon_sales.values.map{|data|data[:chakuchi]}.sum.to_f/@prev_month_store_bumon_sales.values.map{|data|data[:total]}.sum*100).round(1)}%"
+				span = "前月 #{(@store_bumon_sales.values.map{|data|data[:chakuchi]}.sum.to_f/@prev_month_store_bumon_sales.values.map{|data|data[:total]}.sum*100).round(1)}%" if @store_bumon_sales[:sozai][:stores].present?
 				- if @prev_year_store_bumon_sales.values.map{|data|data[:total]}.sum > 0
-					span = "｜前年 #{(@store_bumon_sales.values.map{|data|data[:chakuchi]}.sum.to_f/@prev_year_store_bumon_sales.values.map{|data|data[:total]}.sum*100).round(1)}%"
+					span = "｜前年 #{(@store_bumon_sales.values.map{|data|data[:chakuchi]}.sum.to_f/@prev_year_store_bumon_sales.values.map{|data|data[:total]}.sum*100).round(1)}%" if @store_bumon_sales[:sozai][:stores].present?
 				- else
 					span ｜前年 -
 
@@ -97,11 +97,11 @@ table.table
 		tr
 			td 着地
 			td
-				= (@store_bumon_sales[:sozai][:chakuchi] + @store_bumon_sales[:bento][:chakuchi] + @store_bumon_sales[:other][:chakuchi]).to_s(:delimited)
+				= (@store_bumon_sales[:sozai][:chakuchi] + @store_bumon_sales[:bento][:chakuchi] + @store_bumon_sales[:other][:chakuchi]).to_s(:delimited) if @store_bumon_sales[:sozai][:chakuchi].present?
 				/ = "予算 #{((@store_bumon_sales[:sozai][:chakuchi] + @store_bumon_sales[:bento][:chakuchi] + @store_bumon_sales[:other][:chakuchi]).to_f/@foods_budgets.values.sum*100).round(1)}%"
 				br
-				span = "前月 #{((@store_bumon_sales[:sozai][:chakuchi] + @store_bumon_sales[:bento][:chakuchi] + @store_bumon_sales[:other][:chakuchi]).to_f/(@prev_month_store_bumon_sales[:sozai][:total] + @prev_month_store_bumon_sales[:bento][:total] + @prev_month_store_bumon_sales[:other][:total])*100).round(1)}%"
-				- if @prev_year_store_bumon_sales.values.map{|data|data[:total]}.sum > 0
+				span = "前月 #{((@store_bumon_sales[:sozai][:chakuchi] + @store_bumon_sales[:bento][:chakuchi] + @store_bumon_sales[:other][:chakuchi]).to_f/(@prev_month_store_bumon_sales[:sozai][:total] + @prev_month_store_bumon_sales[:bento][:total] + @prev_month_store_bumon_sales[:other][:total])*100).round(1)}%" if @store_bumon_sales[:sozai][:chakuchi].present?
+				- if @prev_year_store_bumon_sales.values.map{|data|data[:total]}.sum > 0 && @store_bumon_sales[:sozai][:chakuchi].present?
 					span = "｜前年 #{((@store_bumon_sales[:sozai][:chakuchi] + @store_bumon_sales[:bento][:chakuchi] + @store_bumon_sales[:other][:chakuchi]).to_f/(@prev_year_store_bumon_sales[:sozai][:total] + @prev_year_store_bumon_sales[:bento][:total] + @prev_year_store_bumon_sales[:other][:total])*100).round(1)}%"
 				- else
 					span ｜前年 -
@@ -112,8 +112,8 @@ table.table
 					/ = "（#{((@store_bumon_sales[:sozai][:stores][store.id][:chakuchi] + @store_bumon_sales[:bento][:stores][store.id][:chakuchi] + @store_bumon_sales[:other][:stores][store.id][:chakuchi]).to_f/(@foods_budgets[store.id])*100).round(1)}%）"
 					br
 					- if @prev_month_store_bumon_sales[:sozai][:stores][store.id].present?
-						span = "#{((@store_bumon_sales[:sozai][:stores][store.id][:chakuchi] + @store_bumon_sales[:bento][:stores][store.id][:chakuchi] + @store_bumon_sales[:other][:stores][store.id][:chakuchi]).to_f/(@prev_month_store_bumon_sales[:sozai][:stores][store.id][:amount] + @prev_month_store_bumon_sales[:bento][:stores][store.id][:amount] + @prev_month_store_bumon_sales[:other][:stores][store.id][:amount])*100).round(1)}%"
-						- if @prev_year_store_bumon_sales[:sozai][:stores][store.id].present?
+						span = "#{((@store_bumon_sales[:sozai][:stores][store.id][:chakuchi] + @store_bumon_sales[:bento][:stores][store.id][:chakuchi] + @store_bumon_sales[:other][:stores][store.id][:chakuchi]).to_f/(@prev_month_store_bumon_sales[:sozai][:stores][store.id][:amount] + @prev_month_store_bumon_sales[:bento][:stores][store.id][:amount] + @prev_month_store_bumon_sales[:other][:stores][store.id][:amount])*100).round(1)}%" if @store_bumon_sales[:sozai][:chakuchi].present?
+						- if @prev_year_store_bumon_sales[:sozai][:stores][store.id].present? && @store_bumon_sales[:sozai][:chakuchi].present?
 							span = "｜#{((@store_bumon_sales[:sozai][:stores][store.id][:chakuchi] + @store_bumon_sales[:bento][:stores][store.id][:chakuchi] + @store_bumon_sales[:other][:stores][store.id][:chakuchi]).to_f/(@prev_year_store_bumon_sales[:sozai][:stores][store.id][:amount] + @prev_year_store_bumon_sales[:bento][:stores][store.id][:amount] + @prev_year_store_bumon_sales[:other][:stores][store.id][:amount])*100).round(1)}%"
 						- else
 							span ｜ -
@@ -183,11 +183,11 @@ table.table
 		tr
 			td 着地
 			td
-				= (@store_bumon_sales[:vege][:chakuchi] + @store_bumon_sales[:good][:chakuchi]).to_s(:delimited)
+				= (@store_bumon_sales[:vege][:chakuchi] + @store_bumon_sales[:good][:chakuchi]).to_s(:delimited) if @store_bumon_sales[:vegi][:chakuchi].present?
 				/ = "予算 #{((@store_bumon_sales[:vege][:chakuchi] + @store_bumon_sales[:good][:chakuchi]).to_f/@goods_budgets.values.sum*100).round(1)}%"
 				br
-				span = "前月 #{((@store_bumon_sales[:vege][:chakuchi] + @store_bumon_sales[:good][:chakuchi]).to_f/(@prev_month_store_bumon_sales[:vege][:total] + @prev_month_store_bumon_sales[:good][:total])*100).round(1)}%"
-				- if @prev_year_store_bumon_sales.values.map{|data|data[:total]}.sum > 0
+				span = "前月 #{((@store_bumon_sales[:vege][:chakuchi] + @store_bumon_sales[:good][:chakuchi]).to_f/(@prev_month_store_bumon_sales[:vege][:total] + @prev_month_store_bumon_sales[:good][:total])*100).round(1)}%" if @store_bumon_sales[:vegi][:chakuchi].present?
+				- if @prev_year_store_bumon_sales.values.map{|data|data[:total]}.sum > 0 && @store_bumon_sales[:vegi][:chakuchi].present?
 					span = "｜前年 #{((@store_bumon_sales[:vege][:chakuchi] + @store_bumon_sales[:good][:chakuchi]).to_f/(@prev_year_store_bumon_sales[:vege][:total] + @prev_year_store_bumon_sales[:good][:total])*100).round(1)}%"
 				- else
 					span ｜前年 -
@@ -196,9 +196,9 @@ table.table
 					- if @store_bumon_sales[:vege][:stores][store.id].present?
 						= "#{(@store_bumon_sales[:vege][:stores][store.id][:chakuchi] + @store_bumon_sales[:good][:stores][store.id][:chakuchi]).to_s(:delimited)}"
 					br
-					- if @prev_year_store_bumon_sales[:sozai][:stores][store.id].present?
+					- if @prev_year_store_bumon_sales[:sozai][:stores][store.id].present? && @store_bumon_sales[:vegi][:chakuchi].present?
 						span = "#{((@store_bumon_sales[:vege][:stores][store.id][:chakuchi] + @store_bumon_sales[:good][:stores][store.id][:chakuchi]).to_f/(@prev_month_store_bumon_sales[:vege][:stores][store.id][:amount] + @prev_month_store_bumon_sales[:good][:stores][store.id][:amount])*100).round(1)}%"
-						- if @prev_year_store_bumon_sales[:vege][:stores][store.id].present?
+						- if @prev_year_store_bumon_sales[:vege][:stores][store.id].present? && @store_bumon_sales[:vegi][:chakuchi].present?
 							span = "｜#{((@store_bumon_sales[:vege][:stores][store.id][:chakuchi] + @store_bumon_sales[:good][:stores][store.id][:chakuchi]).to_f/(@prev_year_store_bumon_sales[:vege][:stores][store.id][:amount] + @prev_year_store_bumon_sales[:good][:stores][store.id][:amount])*100).round(1)}%"
 						- else
 							span ｜ -
@@ -273,10 +273,11 @@ table.table
 			td リマインダーチェック率
 			- @stores.each do |store|
 				td
-					- if @reminders_hash[store.id][:monthly]["yet"].present?
-						= "#{(((@reminders_hash[store.id][:monthly][:all] - @reminders_hash[store.id][:monthly]['yet']) / @reminders_hash[store.id][:monthly][:all].to_f)*100).round(1)}%"
-					- else
-						= "#{((@reminders_hash[store.id][:monthly][:all] / @reminders_hash[store.id][:monthly][:all].to_f)*100).round(1)}%"
+					- if @reminders_hash[store.id].present? 
+						- if @reminders_hash[store.id][:monthly]["yet"].present?
+							= "#{(((@reminders_hash[store.id][:monthly][:all] - @reminders_hash[store.id][:monthly]['yet']) / @reminders_hash[store.id][:monthly][:all].to_f)*100).round(1)}%"
+						- else
+							= "#{((@reminders_hash[store.id][:monthly][:all] / @reminders_hash[store.id][:monthly][:all].to_f)*100).round(1)}%"
 		tr
 			td クレンリネス 月次
 			- @stores.each do |store|

@@ -84,7 +84,6 @@ class ProductsController < ApplicationController
       @product_hash[i]= {name:product.name,product_id:product.id,brand:product.brand.name,image:product.image,
         sell_price:product.sell_price,cost_price:product.cost_price,cost_rate:cost_rate}
     end
-
     respond_to do |format|
       format.html
       format.json { render 'index', json: @product_hash }
