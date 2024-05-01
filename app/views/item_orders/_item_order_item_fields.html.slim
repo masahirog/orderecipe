@@ -1,6 +1,6 @@
 tr.nested-fields.field
   td
-    = f.object.item.name
+    = link_to f.object.item.name,edit_item_path(f.object.item),target:"_blank"
   td 
     = f.object.item.item_vendor.store_name
     = f.hidden_field :item_id
