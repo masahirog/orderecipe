@@ -5,7 +5,7 @@
 		= select_tag :payment,options_for_select(options_for_select_from_enum(ItemVendor, :payment),params[:payment]),include_blank:true , class: "form-control",style:"width:200px;float:left;margin-right:10px;"
 
 		= submit_tag "検索" ,class:"btn btn-primary",style:"float:left;"
-	= link_to "請求書PDF",monthly_daily_items_path(month:@month,item_vendor_id:params[:item_vendor_id],payment:params[:payment],format: :pdf),class:"btn btn-default pull-right",style:"margin-right:10px;",target:"_blank"
+	= link_to "請求書PDF",monthly_daily_items_path(month:@month,item_vendor_id:params[:item_vendor_id],payment:params[:payment],format: :pdf),class:"btn btn-default pull-right",style:"margin-right:10px;",target:"_blank",data: { confirm: "支払い方法が【 請求書(代行) 】の生産者さんのみ一括発行されます。" }
 	= link_to "CSV",monthly_daily_items_path(month:@month,item_vendor_id:params[:item_vendor_id],payment:params[:payment],format: :csv),class:"btn btn-default pull-right",style:"margin-right:10px;",target:"_blank"
 table.table
 	thead
@@ -14,6 +14,7 @@ table.table
 			th 用途
 	        th カテゴリ
 	        th style="width:200px;" 生産者
+	        th 支払
 	        th style="width:300px;" 商品
 	        th 納品量
 	        th style="width:300px;" 仕分メモ
@@ -46,6 +47,7 @@ table.table
 				td
 					span class="#{class_names}" = daily_item.item.item_variety.item_type.category
 				td = link_to "#{daily_item.item.item_vendor.store_name}",edit_item_vendor_path(daily_item.item.item_vendor),target:'_blank'
+				td = daily_item.item.item_vendor.payment
 				td = link_to "#{daily_item.item.name}",edit_item_path(daily_item.item),target:'_blank'
 				td = "#{daily_item.order_unit_amount} #{daily_item.order_unit}"
 				td = daily_item.sorting_memo
