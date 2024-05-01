@@ -5,6 +5,7 @@ tr.nested-fields.field
     = f.object.item.item_vendor.store_name
     = f.hidden_field :item_id
   td
+    ="#{f.object.item.order_lot} #{f.object.item.unit}"
   td.clearfix
     = f.number_field :order_quantity,class:'form-control',style:'float:left;width:100px;'
     span style='margin:10px 0 0 5px;float:left;' = f.object.item.unit
