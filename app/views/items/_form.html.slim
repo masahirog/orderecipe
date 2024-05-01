@@ -1,6 +1,10 @@
 = form_for @item do |f|
 
   .form-group
+    = f.label :status, "発注単位",class:'required',style:'width:100%;'
+    = f.select :status, options_for_select_from_enum(Item, :status),{}, { class: "form-control",required:true}
+
+  .form-group
     = f.label :item_variety_id, "品種・品目",class:'required'
     = f.collection_select :item_variety_id, @item_varieties, :id, :view_variety_and_type, {include_blank:true},class:'form-control variety_select2', required:true
   .form-group

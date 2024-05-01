@@ -29,7 +29,11 @@ table.table.table-striped
 
   tbody
     - @search.each do |item|
-      tr
+      - if item.status == '販売中'
+        - bg = "#ffffff"
+      - else
+        - bg = "#dcdcdc"
+      tr style="background-color:#{bg}"
         td = link_to item.name,edit_item_path(item)
         td = link_to item.item_variety.item_type.name,item.item_variety.item_type
         td = link_to item.item_variety.name,item.item_variety

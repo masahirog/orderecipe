@@ -382,7 +382,7 @@ ActiveRecord::Schema.define(version: 2024_03_18_141142) do
     t.integer "sorting_base_id", default: 0, null: false
   end
 
-  create_table "items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name", null: false
     t.bigint "item_variety_id"
     t.text "memo"
@@ -401,6 +401,7 @@ ActiveRecord::Schema.define(version: 2024_03_18_141142) do
     t.integer "order_unit_amount", null: false
     t.integer "stock_store_id"
     t.integer "order_lot", default: 0, null: false
+    t.integer "status", default: 0, null: false
     t.index ["item_variety_id"], name: "index_items_on_item_variety_id"
     t.index ["item_vendor_id"], name: "index_items_on_item_vendor_id"
   end
@@ -688,7 +689,7 @@ ActiveRecord::Schema.define(version: 2024_03_18_141142) do
     t.index ["product_id", "store_id"], name: "index_product_sales_potentials_on_product_id_and_store_id", unique: true
   end
 
-  create_table "products", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "products", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.integer "sell_price", null: false
     t.text "description"

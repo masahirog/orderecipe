@@ -13,7 +13,7 @@ class ItemOrdersController < ApplicationController
     @store = Store.find(params[:store_id])
     @item_order = ItemOrder.new(store_id:@store.id,delivery_date:@today+1)
     item_types = ItemType.where(category:"物産品")
-    @items = Item.where(stock_store_id:39).order(:item_vendor_id)
+    @items = Item.where(stock_store_id:39,status:0).order(:item_vendor_id)
     @items.each do |item|
       @item_order.item_order_items.build(item_id:item.id)
     end

@@ -18,6 +18,7 @@ class CreateItems < ActiveRecord::Migration[6.0]
       t.integer :order_unit_amount,null:false
       t.integer :stock_store_id
       t.integer :order_lot,default:0,null:false
+      t.integer :status,null:false,default:0
     end
   end
 end
