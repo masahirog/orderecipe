@@ -4,16 +4,14 @@ class DailyItemInvoice < Prawn::Document
     	font "vendor/assets/fonts/ipaexg.ttf"
     	i = 0
     	item_vendors.each do |item_vendor|
-    		if item_vendor.payment_before_type_cast==1
-	    		daily_items = hash[item_vendor.id][:daily_items].values
-	    		reduced_tax_subject = hash[item_vendor.id][:reduced_tax_subject]
-	    		normal_tax_subject = hash[item_vendor.id][:normal_tax_subject]
-	      		start_new_page unless i == 0
-	      		header(date,item_vendor,daily_items)
-	      		table_content(item_vendor,daily_items)
-	      		footer(item_vendor,reduced_tax_subject,normal_tax_subject)
-	      		i += 1
-    		end
+    		daily_items = hash[item_vendor.id][:daily_items].values
+    		reduced_tax_subject = hash[item_vendor.id][:reduced_tax_subject]
+    		normal_tax_subject = hash[item_vendor.id][:normal_tax_subject]
+      		start_new_page unless i == 0
+      		header(date,item_vendor,daily_items)
+      		table_content(item_vendor,daily_items)
+      		footer(item_vendor,reduced_tax_subject,normal_tax_subject)
+      		i += 1
 		end
   	end
 
