@@ -147,7 +147,7 @@ class Stock < ApplicationRecord
   def self.stock_status_check(store_id)
     msos_arr = []
     today = Date.today
-    stocks = Stock.where(store_id:store_id).order("date DESC").where("updated_at BETWEEN ? AND ?", (today-62),today)
+    stocks = Stock.where(store_id:store_id).order("date DESC").where("date BETWEEN ? AND ?", (today-62),today)
     all_material_ids = stocks.pluck("material_id").uniq
     store_material_hash = MaterialStoreOrderable.where(store_id:store_id,material_id:all_material_ids).map{|mso|[mso.material_id,mso]}.to_h
     materials = Material.where(id:all_material_ids)
