@@ -192,7 +192,7 @@ class AnalysesController < AdminController
     @reminders_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @period_reminders_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @weekly_clean_dates = []
-    Reminder.where(reminder_template_id:@weekly_clean_reminder_templates.ids,action_date:dates,category:1).each do |reminder|
+    Reminder.where(reminder_template_id:@weekly_clean_reminder_templates.ids,action_date:@dates,category:1).each do |reminder|
       if @weekly_clean_reminders[reminder.store_id][reminder.action_date][reminder.status].present?
         @weekly_clean_reminders[reminder.store_id][reminder.action_date][reminder.status] += 1
       else
