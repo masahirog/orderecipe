@@ -24,10 +24,23 @@ class Analysis < ApplicationRecord
   end
 
   def self.send_report
+
     options = Selenium::WebDriver::Chrome::Options.new
-    options.binary = ENV.fetch("GOOGLE_CHROME_SHIM")
     options.add_argument('--headless')
+    options.add_argument('--disable-gpu')
+    options.add_argument('--no-sandbox')
+    options.add_argument('--disable-dev-shm-usage')
+    options.add_argument("--user-agent=#{user_agent}")
     options.add_argument('--window-size=4000,1800')
+
+
+    chrome_bin_path = ENV.fetch('GOOGLE_CHROME_BIN', nil)
+    chromedriver_path = ENV.fetch('CHROMEDRIVER_PATH', nil)
+    options.binary = chrome_bin_path if chrome_bin_path
+    Selenium::WebDriver::Chrome::Service.driver_path = chromedriver_path if chromedriver_path
+    driver = Selenium::WebDriver.for :chrome, options: options
+
+
     driver = Selenium::WebDriver.for :chrome,options: options
     driver.get("https://bento-orderecipe.herokuapp.com/")
     email = "info@bento.jp"
@@ -46,10 +59,11 @@ class Analysis < ApplicationRecord
     driver.quit
 
 
-    options = Selenium::WebDriver::Chrome::Options.new
-    options.add_argument('--headless')
+
     options.add_argument('--window-size=1200,800')
-    driver = Selenium::WebDriver.for :chrome,options: options
+    Selenium::WebDriver::Chrome::Service.driver_path = chromedriver_path if chromedriver_path
+    driver = Selenium::WebDriver.for :chrome, options: options
+
     driver.get("https://bento-orderecipe.herokuapp.com/")
     email = "info@bento.jp"
     password = "password"
