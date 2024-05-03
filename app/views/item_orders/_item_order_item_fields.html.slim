@@ -1,13 +1,26 @@
-tr.nested-fields.field
-  td
-    = link_to f.object.item.name,edit_item_path(f.object.item),target:"_blank"
-  td 
-    = f.object.item.item_vendor.store_name
-    = f.hidden_field :item_id
-  td
-    ="#{f.object.item.order_lot} #{f.object.item.unit}"
-  td.clearfix
-    = f.number_field :order_quantity,class:'form-control',style:'float:left;width:100px;'
-    span style='margin:10px 0 0 5px;float:left;' = f.object.item.unit
-  td = f.text_field :memo,class:'form-control'
-  td
+- if f.object.item.status_before_type_cast == 0
+  tr.nested-fields.field
+    td
+      = link_to f.object.item.name,edit_item_path(f.object.item),target:"_blank"
+    td 
+      = f.object.item.item_vendor.store_name
+      = f.hidden_field :item_id
+    td
+      ="#{f.object.item.order_lot} #{f.object.item.unit}"
+    td.clearfix
+      = f.number_field :order_quantity,class:'form-control',style:'float:left;width:100px;'
+      span style='margin:10px 0 0 5px;float:left;' = f.object.item.unit
+    td = f.text_field :memo,class:'form-control'
+- else
+  tr.nested-fields.field style='background-color:#d3d3d3;'
+    td
+      = link_to f.object.item.name,edit_item_path(f.object.item),target:"_blank"
+    td 
+      = f.object.item.item_vendor.store_name
+      = f.hidden_field :item_id
+    td
+      ="#{f.object.item.order_lot} #{f.object.item.unit}"
+    td.clearfix
+      = f.number_field :order_quantity,class:'form-control',style:'float:left;width:100px;',readonly:true
+      span style='margin:10px 0 0 5px;float:left;' = f.object.item.unit
+    td = f.object.item.status
