@@ -25,6 +25,7 @@ class Analysis < ApplicationRecord
 
   def self.send_report
     options = Selenium::WebDriver::Chrome::Options.new
+    options.binary = ENV.fetch("GOOGLE_CHROME_SHIM")
     options.add_argument('--headless')
     options.add_argument('--window-size=4000,1800')
     driver = Selenium::WebDriver.for :chrome,options: options
