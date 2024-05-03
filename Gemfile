@@ -59,7 +59,7 @@ gem 'rqrcode'
 # gem 'capybara', '>= 2.15', '< 4.0'
 # gem 'poltergeist'
 gem 'selenium-webdriver'
-
+gem 'webdrivers'
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
