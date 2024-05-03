@@ -32,7 +32,7 @@ h3
           .clearfix
             label 他店舗も同時に作成する
             ul style="list-style:none;float:left;"
-              - Store.where.not(id:params[:store_id]).each do |store|
+              - @stores.where.not(id:params[:store_id]).each do |store|
                 li style='float:left;margin-right:10px;'
                   = check_box_tag "stores[#{store.id}]",true,params[store.id.to_s]
                   = label_tag "stores[#{store.id}]",store.name
@@ -40,7 +40,7 @@ h3
             label チャットワークに通知する　
             = check_box_tag "chatwork_notice",true,true
           .clearfix
-            = f.label :important_flag, "重要チェック　"
+            = f.label :important_flag, "時間厳守"
             = f.check_box :important_flag,{},1,0
 
         .modal-footer
@@ -63,8 +63,11 @@ h3
 table.table
   thead
     tr
-      th 完了！
-      th.col-md-1 日時　
+      th 完了
+      th.col-md-1 日時
+      th 時間厳守
+      th DONE
+      th 時間クリア
       th 内容
       th メモ
       th.col-md-1 作者
@@ -89,11 +92,20 @@ table.table
             = f.check_box :check_box_flag,class: "reminder_status_check form-control"
         td
           - if reminder.action_time.present?
-            - time = reminder.action_time.strftime("%H:%M")
+            = reminder.action_time.strftime("%H:%M")
           - else
-            - time = ''
-          = link_to "#{time}",edit_reminder_path(reminder)
-        td = reminder.content
+        td = "○" if reminder.important_flag == true
+        td.status_change_datetime
+          = reminder.status_change_datetime.strftime('%H:%M') if reminder.status_change_datetime.present?
+        td.important_status
+          - if reminder.important_status_before_type_cast == 1
+            |GOOD
+          - elsif reminder.important_status_before_type_cast == 2
+            |BAD
+          - elsif reminder.important_status_before_type_cast == 0
+            |READY
+        td
+          = link_to reminder.content,edit_reminder_path(reminder)
         td = text_url_to_link(simple_format(h(reminder.memo))).html_safe
         td = reminder.drafter
         td

@@ -117,6 +117,6 @@ class RemindersController < AdminController
 
     def reminder_params
       params.require(:reminder).permit(:id,:store_id,:reminder_template_id,:action_date,:action_time,:content,:memo,:status,:status_change_datetime,:drafter,
-        :important_flag,:category,:do_staff,:check_staff)
+        :important_flag,:category,:do_staff,:check_staff,:important_status)
     end
 end

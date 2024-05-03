@@ -744,7 +744,7 @@ ActiveRecord::Schema.define(version: 2024_03_18_141142) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "reminder_templates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+  create_table "reminder_templates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "repeat_type", null: false
     t.time "action_time"
     t.string "content", null: false
@@ -754,9 +754,10 @@ ActiveRecord::Schema.define(version: 2024_03_18_141142) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "category", default: 0, null: false
+    t.boolean "important_flag", default: false, null: false
   end
 
-  create_table "reminders", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+  create_table "reminders", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "store_id", null: false
     t.integer "reminder_template_id"
     t.date "action_date", null: false
@@ -772,6 +773,7 @@ ActiveRecord::Schema.define(version: 2024_03_18_141142) do
     t.integer "category", default: 0, null: false
     t.integer "do_staff"
     t.integer "check_staff"
+    t.integer "important_status"
   end
 
   create_table "sales_reports", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|

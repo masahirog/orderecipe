@@ -219,28 +219,28 @@ class AnalysesController < AdminController
       end
     end
 
-    Reminder.where(action_date:dates,category:0).each do |reminder|
-      if @reminders_hash[reminder.store_id][:monthly][reminder.status].present?
-        @reminders_hash[reminder.store_id][:monthly][reminder.status] += 1
-      else
-        @reminders_hash[reminder.store_id][:monthly][reminder.status] = 1
-      end
-      if @reminders_hash[reminder.store_id][reminder.action_date][reminder.status].present?
-        @reminders_hash[reminder.store_id][reminder.action_date][reminder.status] += 1
-      else
-        @reminders_hash[reminder.store_id][reminder.action_date][reminder.status] = 1
-      end
-      if @reminders_hash[reminder.store_id][:monthly][:all].present?
-        @reminders_hash[reminder.store_id][:monthly][:all] += 1
-      else
-        @reminders_hash[reminder.store_id][:monthly][:all] = 1
-      end
-      if @reminders_hash[reminder.store_id][reminder.action_date][:all].present?
-        @reminders_hash[reminder.store_id][reminder.action_date][:all] += 1
-      else
-        @reminders_hash[reminder.store_id][reminder.action_date][:all] = 1
-      end
-    end
+    # Reminder.where(action_date:dates,category:0).each do |reminder|
+    #   if @reminders_hash[reminder.store_id][:monthly][reminder.status].present?
+    #     @reminders_hash[reminder.store_id][:monthly][reminder.status] += 1
+    #   else
+    #     @reminders_hash[reminder.store_id][:monthly][reminder.status] = 1
+    #   end
+    #   if @reminders_hash[reminder.store_id][reminder.action_date][reminder.status].present?
+    #     @reminders_hash[reminder.store_id][reminder.action_date][reminder.status] += 1
+    #   else
+    #     @reminders_hash[reminder.store_id][reminder.action_date][reminder.status] = 1
+    #   end
+    #   if @reminders_hash[reminder.store_id][:monthly][:all].present?
+    #     @reminders_hash[reminder.store_id][:monthly][:all] += 1
+    #   else
+    #     @reminders_hash[reminder.store_id][:monthly][:all] = 1
+    #   end
+    #   if @reminders_hash[reminder.store_id][reminder.action_date][:all].present?
+    #     @reminders_hash[reminder.store_id][reminder.action_date][:all] += 1
+    #   else
+    #     @reminders_hash[reminder.store_id][reminder.action_date][:all] = 1
+    #   end
+    # end
     Reminder.where(action_date:@dates,category:0).each do |reminder|
       if @period_reminders_hash[reminder.store_id][:monthly][reminder.status].present?
         @period_reminders_hash[reminder.store_id][:monthly][reminder.status] += 1
@@ -252,6 +252,15 @@ class AnalysesController < AdminController
       else
         @period_reminders_hash[reminder.store_id][reminder.action_date][reminder.status] = 1
       end
+
+      if reminder.important_status.present?
+        if @period_reminders_hash[reminder.store_id][reminder.action_date][:important_status][reminder.important_status].present?
+          @period_reminders_hash[reminder.store_id][reminder.action_date][:important_status][reminder.important_status] += 1
+        else
+          @period_reminders_hash[reminder.store_id][reminder.action_date][:important_status][reminder.important_status] = 1
+        end
+      end
+
       if @period_reminders_hash[reminder.store_id][:monthly][:all].present?
         @period_reminders_hash[reminder.store_id][:monthly][:all] += 1
       else

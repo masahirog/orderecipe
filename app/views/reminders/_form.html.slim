@@ -13,6 +13,9 @@
     br
     = f.time_field :action_time,step:900,class:'form-control'
   .form-group
+    = f.label :important_flag, "時間厳守"
+    = f.check_box :important_flag,class:'form-control'
+  .form-group
     = f.label :content, "内容"
     = f.text_field :content, class:"form-control", required:true
   .form-group

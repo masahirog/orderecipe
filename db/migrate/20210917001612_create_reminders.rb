@@ -15,6 +15,7 @@ class CreateReminders < ActiveRecord::Migration[5.2]
       t.integer :category,null:false,default:0
       t.integer :do_staff
       t.integer :check_staff
+      t.integer :important_status
     end
   end
 end

@@ -10,7 +10,7 @@
 .form-group.clearfix
   = form_tag reminder_templates_path, :method => 'get' do
     .col-md-2
-      = select_tag :store_id,options_for_select(Store.all.map{|store|[store.short_name,store.id]},params[:store_id]),include_blank:true , class: "reminder_status form-control"
+      = select_tag :store_id,options_for_select(@stores.map{|store|[store.short_name,store.id]},params[:store_id]),include_blank:true , class: "reminder_status form-control"
     / .col-md-1
       / = select_tag :repeat_type,options_for_select(options_for_select_from_enum(ReminderTemplate,:repeat_type),params[:repeat_type]),include_blank:true , class: "reminder_repeat_type form-control"
 
@@ -26,21 +26,26 @@ table.table.table-striped
       th
       th style='width:80px;' 頻度
       th 時間
+      th style='width:100px;' 時間厳守
       th 内容
       th メモ
-      th ステータス
       th 店舗
       th
 
   tbody
     - @reminder_templates.each do |reminder_template|
-      tr
+      - if reminder_template.important_flag == false
+        - bg_color = '#ffffff'
+      - else
+        - bg_color = '#ffb6c1'
+
+      tr style="background-color:#{bg_color}"
         td
           = link_to '編集',edit_reminder_template_path(reminder_template),class:'btn btn-primary btn-sm'
         td = t("enums.reminder_template.repeat_type.#{reminder_template.repeat_type}")
         td = reminder_template.action_time.strftime("%H:%M") if reminder_template.action_time
+        td = "○" if reminder_template.important_flag == true
         td = reminder_template.content
         td = reminder_template.memo
-        td = reminder_template.status
         td = reminder_template.stores.pluck(:short_name).join(',')
         td = link_to "削除", reminder_template, method: :delete,class:'btn btn-danger btn-sm',data: { confirm: "ホンマに削除するで？" }

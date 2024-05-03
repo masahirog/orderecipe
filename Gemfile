@@ -56,6 +56,10 @@ gem 'ancestry'
 gem 'redcarpet', '~> 2.3.0'  # マークダウン形式での表示
 gem 'coderay'
 gem 'rqrcode'
+# gem 'capybara', '>= 2.15', '< 4.0'
+# gem 'poltergeist'
+gem 'selenium-webdriver'
+
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
@@ -74,9 +78,6 @@ group :development do
   gem 'derailed'
 end
 
-group :test do
-  gem 'capybara', '>= 2.15', '< 4.0'
-end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
