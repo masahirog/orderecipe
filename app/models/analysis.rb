@@ -32,19 +32,15 @@ class Analysis < ApplicationRecord
     options.add_argument('--disable-dev-shm-usage')
     options.add_argument("--user-agent=#{user_agent}")
     options.add_argument('--window-size=4000,1800')
-
-
     chrome_bin_path = ENV.fetch('GOOGLE_CHROME_BIN', nil)
     chromedriver_path = ENV.fetch('CHROMEDRIVER_PATH', nil)
     options.binary = chrome_bin_path if chrome_bin_path
     Selenium::WebDriver::Chrome::Service.driver_path = chromedriver_path if chromedriver_path
-    driver = Selenium::WebDriver.for :chrome, options: options
-
 
     driver = Selenium::WebDriver.for :chrome,options: options
     driver.get("https://bento-orderecipe.herokuapp.com/")
-    email = "info@bento.jp"
-    password = "password"
+    email = ENV['LOGIN_MAIL']
+    password = ENV['LOGIN_PASS']
     sleep 2
     driver.find_element(:xpath, '//*[@id="user_email"]').send_keys email
     driver.find_element(:xpath, '//*[@id="user_password"]').send_keys password
@@ -58,15 +54,10 @@ class Analysis < ApplicationRecord
     driver.save_screenshot('app/assets/images/screenshot.png')
     driver.quit
 
-
-
     options.add_argument('--window-size=1200,800')
     Selenium::WebDriver::Chrome::Service.driver_path = chromedriver_path if chromedriver_path
     driver = Selenium::WebDriver.for :chrome, options: options
-
     driver.get("https://bento-orderecipe.herokuapp.com/")
-    email = "info@bento.jp"
-    password = "password"
     sleep 2
     driver.find_element(:xpath, '//*[@id="user_email"]').send_keys email
     driver.find_element(:xpath, '//*[@id="user_password"]').send_keys password
@@ -80,7 +71,7 @@ class Analysis < ApplicationRecord
     driver.save_screenshot('app/assets/images/screenshot2.png')
     driver.quit
 
-    Dotenv.overload
+    # Dotenv.overload
     region='ap-northeast-1'
     bucket='bejihan-orderecipe'
     credentials=Aws::Credentials.new(
