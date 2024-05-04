@@ -393,7 +393,7 @@ h3 日次数値確認
 	            td
 	            	- if @period_reminders_hash[store.id][date][:important_status].present?
 		            	- if @period_reminders_hash[store.id][date][:important_status].keys.include?('good')
-		            		= "#{@period_reminders_hash[store.id][date][:important_status]['good']}/#{@period_reminders_hash[store.id][date][:important_status].values.sum}"
+		            		= "#{(@period_reminders_hash[store.id][date][:important_status]['good']/@period_reminders_hash[store.id][date][:important_status].values.sum.to_f*100).round}%"
 		            	- else
 		            		= "0/#{@period_reminders_hash[store.id][date][:important_status].values.sum}"
 		            - else
