@@ -85,12 +85,10 @@ class Analysis < ApplicationRecord
     client.put_object(bucket: bucket, key:"screenshot.png", body: upload_file)
 
 
-    message = "#{Date.today}時点 重要指標\n"+
+    message = "【#{Date.today}】 売上とその他重要指標の報告\n"+
     "https://bento-orderecipe.herokuapp.com/analyses/kpi/\n"
     attachment_images = [{image_url:"https://bejihan-orderecipe.s3.ap-northeast-1.amazonaws.com/screenshot2.png"},{image_url: "https://bejihan-orderecipe.s3.ap-northeast-1.amazonaws.com/screenshot.png"}]
-
-
-    Slack::Notifier.new('https://hooks.slack.com/services/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', username: 'Bot', icon_emoji: ':male-farmer:', attachments: attachment_images).ping(message)
+    Slack::Notifier.new('https://hooks.slack.com/services/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', attachments: attachment_images).ping(message)
   end
 
 end
