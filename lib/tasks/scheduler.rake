@@ -48,3 +48,8 @@ end
 task :item_expiration_date_notice => :environment do
   ItemExpirationDate.expiration_date_notice
 end
+
+
+task :kpi_notice => :environment do
+  Analysis.send_report
+end
