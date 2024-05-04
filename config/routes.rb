@@ -194,6 +194,7 @@ Rails.application.routes.draw do
   resources :analysis_products
   resources :analyses do
     collection do
+      get :kitchen_kpi
       get :kpi
       get :bumon_sales
       get :loss
