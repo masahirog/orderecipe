@@ -31,7 +31,7 @@ class Analysis < ApplicationRecord
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
     options.add_argument("--user-agent=#{user_agent}")
-    options.add_argument('--window-size=4000,1800')
+    options.add_argument('--window-size=4200,1800')
     chrome_bin_path = ENV.fetch('GOOGLE_CHROME_BIN', nil)
     chromedriver_path = ENV.fetch('CHROMEDRIVER_PATH', nil)
     options.binary = chrome_bin_path if chrome_bin_path
@@ -80,14 +80,14 @@ class Analysis < ApplicationRecord
     )
     client=Aws::S3::Client.new(region:region, credentials:credentials)
     upload_file = File.open('app/assets/images/screenshot2.png', :encoding => "UTF-8")
-    client.put_object(bucket: bucket, key:"screenshot2.png", body: upload_file)
+    client.put_object(bucket: bucket, key:"daily_report/#{Date.today}_2.png", body: upload_file)
     upload_file = File.open('app/assets/images/screenshot.png', :encoding => "UTF-8")
-    client.put_object(bucket: bucket, key:"screenshot.png", body: upload_file)
+    client.put_object(bucket: bucket, key:"daily_report/#{Date.today}.png", body: upload_file)
 
 
     message = "【#{Date.today}】 売上とその他重要指標の報告\n"+
     "https://bento-orderecipe.herokuapp.com/analyses/kpi/\n"
-    attachment_images = [{image_url:"https://bejihan-orderecipe.s3.ap-northeast-1.amazonaws.com/screenshot2.png"},{image_url: "https://bejihan-orderecipe.s3.ap-northeast-1.amazonaws.com/screenshot.png"}]
+    attachment_images = [{image_url:"https://bejihan-orderecipe.s3.ap-northeast-1.amazonaws.com/daily_report/#{Date.today}_2.png"},{image_url: "https://bejihan-orderecipe.s3.ap-northeast-1.amazonaws.com/daily_report/#{Date.today}.png"}]
     Slack::Notifier.new('https://hooks.slack.com/services/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', attachments: attachment_images).ping(message)
   end
 
