@@ -114,6 +114,6 @@ class ReminderTemplatesController < AdminController
 
     def reminder_template_params
       params.require(:reminder_template).permit(:repeat_type,:action_time,:content,:memo,:status,:drafter,:category,:important_flag,
-      :image,reminder_template_stores_attributes: [:id, :store_id,:reminder_template_id,:_destroy])
+      :image,:remove_image,reminder_template_stores_attributes: [:id, :store_id,:reminder_template_id,:_destroy])
     end
 end
