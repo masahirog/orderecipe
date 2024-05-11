@@ -1,5 +1,6 @@
 class Reminder < ApplicationRecord
   belongs_to :store
+  belongs_to :reminder_template
   enum status: {yet:0,done:1,cancel:2,carry_forward:3,check:4}
   enum category: {task:0,clean:1}
   enum important_status: {set:0,good:1,bad:2}

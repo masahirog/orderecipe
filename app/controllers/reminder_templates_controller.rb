@@ -24,8 +24,13 @@ class ReminderTemplatesController < AdminController
     else
       category = 0
     end
-    @reminder_templates = ReminderTemplate.where(category:category).order(:action_time)
-    @reminder_templates = @reminder_templates.joins(:reminder_template_stores).where(:reminder_template_stores => {store_id:params[:store_id]}) if params[:store_id].present?
+    if params[:store_type] == "0"
+      store_ids = Store.where(group_id:current_user.group_id,store_type:0)
+    else
+      store_ids = Store.where(group_id:current_user.group_id,store_type:1)
+    end
+    reminder_template_ids = ReminderTemplateStore.where(store_id:store_ids).map{|rts|rts.reminder_template_id}.uniq
+    @reminder_templates = ReminderTemplate.where(id:reminder_template_ids,category:category).order(:action_time)
     @reminder_templates = @reminder_templates.where(repeat_type:params[:repeat_type]) if params[:repeat_type].present?
   end
 
@@ -39,7 +44,7 @@ class ReminderTemplatesController < AdminController
       category = 0
     end
     @reminder_template = ReminderTemplate.new(category:category)
-    @stores = Store.where(group_id:current_user.group_id,store_type:'sales')
+    @stores = Store.where(group_id:current_user.group_id)
     new_store_ids = @stores.ids
     @stores_hash = {}
     @stores.each do |store|
@@ -68,8 +73,13 @@ class ReminderTemplatesController < AdminController
     @reminder_template = ReminderTemplate.new(reminder_template_params)
     respond_to do |format|
       if @reminder_template.save
-        format.html { redirect_to reminder_templates_path, notice: "Reminder Template was successfully created." }
-        format.json { render :show, status: :created, location: @reminder_template }
+        if @reminder_template.category == "clean"
+          format.html { redirect_to reminder_templates_path(category:"clean"), notice: "Reminder Template was successfully created." }
+          format.json { render :show, status: :created, location: @reminder_template }
+        else          
+          format.html { redirect_to reminder_templates_path, notice: "Reminder Template was successfully created." }
+          format.json { render :show, status: :created, location: @reminder_template }
+        end
       else
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @reminder_template.errors, status: :unprocessable_entity }
@@ -104,6 +114,6 @@ class ReminderTemplatesController < AdminController
 
     def reminder_template_params
       params.require(:reminder_template).permit(:repeat_type,:action_time,:content,:memo,:status,:drafter,:category,:important_flag,
-      reminder_template_stores_attributes: [:id, :store_id,:reminder_template_id,:_destroy])
+      :image,reminder_template_stores_attributes: [:id, :store_id,:reminder_template_id,:_destroy])
     end
 end

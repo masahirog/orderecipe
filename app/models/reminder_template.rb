@@ -4,6 +4,8 @@ class ReminderTemplate < ApplicationRecord
   has_many :reminder_template_stores, dependent: :destroy
   accepts_nested_attributes_for :reminder_template_stores, reject_if: :store_id_present, allow_destroy: true
   has_many :stores, through: :reminder_template_stores
+  has_many :reminders
+  mount_uploader :image, ImageUploader
 
   def store_id_present(attributes)
     exists = attributes[:id].present?

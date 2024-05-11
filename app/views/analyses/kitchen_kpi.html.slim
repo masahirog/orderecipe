@@ -1,0 +1,134 @@
+.clearfix style='padding:5px 0;'
+	h3 style='float:left;margin-top: 5px;margin-right: 20px;' = "#{@date.month}月 キッチン重要数値"
+	= form_tag kitchen_kpi_analyses_path, :method => 'get' do
+		= month_field_tag :month,@month,class:"form-control",style:'width:200px;float:left;margin-right:10px;'
+		= submit_tag "表示" ,class:"btn btn-primary",style:"float:left;"
+
+table.table
+	thead
+		tr
+			th
+			th 全体
+			th 惣菜
+			th 弁当
+			th 他自社
+			th sky
+
+	tbody
+		tr
+			td 売上
+			td 売上
+			td 売上
+			td 売上
+			td 売上
+			td 売上
+		tr
+			td 材料原価
+			td 
+			td 
+			td 
+			td 
+			td 
+		tr
+			td 製造人件費
+			td 
+			td 
+			td 
+			td 
+			td 
+		tr
+			td 固定費
+			td 
+			td 
+			td 
+			td 
+			td 
+h3 クレンリネス
+.table-responsive style='height:500px;overflow: scroll;'
+	table.table.layout-fixed style='border-collapse:separate;'
+		thead style='position: sticky;top:0;background-color:white;z-index:3;'
+			tr
+				th
+				th 日付
+				th 合計
+				th 未完了
+				th 完了
+
+
+		tbody
+			tr
+				td 月次
+				td = @month
+				td
+				td
+				td 
+			- @weeks.each_with_index do |week_date,i|
+				tr
+					- if i == 0
+						td rowspan="#{@weeks.length}" = "週次"
+					td = week_date
+					td
+					td 
+					td 
+
+			- @dates.each_with_index do |date,i|
+				tr
+					- if i == 0
+						td rowspan="#{@dates.length}" = "日次"
+					td = date
+					td
+					td 
+					td 
+
+
+
+h3 日次指標
+.table-responsive style='height:500px;overflow: scroll;'
+	table.table.layout-fixed style='border-collapse:separate;'
+		thead style='position: sticky;top:0;background-color:white;z-index:3;'
+			tr
+				th 日付
+				th 原価
+				th リマインダー
+				th チェック表
+		tbody
+			- @dates.each do |date|
+				tr
+					td = date
+					td
+					td
+					td
+
+h3 商品スコア
+.table-responsive style='height:500px;overflow: scroll;'
+	table.table.layout-fixed style='border-collapse:separate;'
+		thead style='position: sticky;top:0;background-color:white;z-index:3;'
+			tr
+				th 日付
+				th 原価
+				th リマインダー
+				th チェック表
+		tbody
+			- @dates.each do |date|
+				tr
+					td = date
+					td
+					td
+					td
+
+css:
+	.table-responsive th {
+		white-space: nowrap;
+	}
+	table.layout-fixed {
+		table-layout: fixed;
+		border-collspace:separate;
+	}
+	.table th:first-child,td:first-child{
+		position: sticky;
+		left: 0;
+		z-index:2;
+	}
+	.aaa{
+		width:50px;
+	}

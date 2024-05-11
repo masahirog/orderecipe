@@ -2,7 +2,29 @@ class AnalysesController < AdminController
   before_action :set_analysis, only: %i[ show edit update destroy ]
 
   def kitchen_kpi
-    
+    if params[:month].present?
+      @date = "#{params[:month]}-01".to_date
+      @month = params[:month]
+    else
+      @date = @today
+      @month = "#{@date.year}-#{sprintf("%02d",@date.month)}"
+    end
+
+    if params[:to]
+      @to = params[:to].to_date
+    else
+      @to = Date.today
+    end
+    if params[:from]
+      @from = params[:from].to_date
+    else
+      @from = @to - 30
+    end
+    @dates =(@from..@to).to_a.reverse
+    @weeks = []
+    @dates.each do |date|
+      @weeks << date if date.wday == 1
+    end
   end
   def kpi
     if params[:month].present?

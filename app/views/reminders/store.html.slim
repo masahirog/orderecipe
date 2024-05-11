@@ -1,8 +1,6 @@
 h3
   = "#{@store.name} リマインダー "
   i class="text-primary fas fa-plus-circle" style="cursor: pointer;" data-toggle="modal" data-target="#sampleModal"
-.form-group.clearfix
-  = link_to '定期リマインド作成', reminder_templates_path(),class:'pull-right btn btn-primary btn-sm'
 
 #sampleModal.modal.fade tabindex="-1"
   = form_for @reminder do |f|
@@ -60,58 +58,75 @@ h3
       label 　
       = submit_tag "検索" ,class:"btn btn-primary"
 
-table.table
-  thead
-    tr
-      th 完了
-      th.col-md-1 日時
-      th 時間厳守
-      th DONE
-      th 時間クリア
-      th 内容
-      th メモ
-      th.col-md-1 作者
-      th.col-md-1 ステータス
 
-  tbody
-    - @reminders.each do |reminder|
 
-      - if reminder.important_flag == false
-        - bg_color = '#ffffff'
-      - else
-        - bg_color = '#ffb6c1'
-      - if reminder.status == "done"
-        - bg_color = '#d3d3d3'
-      - elsif reminder.status == "cancel"
-        - bg_color = '#d3d3d3'
-      tr class="reminder_tr_#{reminder.id}" style="background-color:#{bg_color}"
-        td
-          = form_with(model: reminder, data: {remote: true},id:"update_reminder_1_#{reminder.id}") do |f|
-            = f.hidden_field :status,value:'done'
-            = f.hidden_field :id,class:'reminder_id'
-            = f.check_box :check_box_flag,class: "reminder_status_check form-control"
-        td
-          - if reminder.action_time.present?
-            = reminder.action_time.strftime("%H:%M")
-          - else
-        td = "○" if reminder.important_flag == true
-        td.status_change_datetime
-          = reminder.status_change_datetime.strftime('%H:%M') if reminder.status_change_datetime.present?
-        td.important_status
-          - if reminder.important_status_before_type_cast == 1
-            |GOOD
-          - elsif reminder.important_status_before_type_cast == 2
-            |BAD
-          - elsif reminder.important_status_before_type_cast == 0
-            |READY
-        td
-          = link_to reminder.content,edit_reminder_path(reminder)
-        td = text_url_to_link(simple_format(h(reminder.memo))).html_safe
-        td = reminder.drafter
-        td
-          = form_with(model: reminder, data: {remote: true},id:"update_reminder_2_#{reminder.id}") do |f|
-            = f.hidden_field :id,class:'reminder_id'
-            = f.select :status, options_for_select_from_enum(Reminder, :status),{}, { class: "reminder_status form-control"}
+.table-responsive style='overflow: scroll;height:800px;'
+  table.table.layout-fixed style='border-collapse:separate;'
+    colgroup
+      col class="col1"
+      col class="col1"
+      col class="col1"
+      col class="col1"
+      col class="col1"
+      col class="col2"
+      col class="col1"
+      col class="col3"
+      col class="col1"
+    thead
+      tr
+        th 完了
+        th.col-md-1 日時
+        th 厳守
+        th DONE
+        th クリア
+        th 内容
+        th 画像
+        th メモ
+        th.col-md-1 ステータス
+
+
+    tbody
+      - @reminders.each do |reminder|
+
+        - if reminder.important_flag == false
+          - bg_color = '#ffffff'
+        - else
+          - bg_color = '#ffb6c1'
+        - if reminder.status == "done"
+          - bg_color = '#d3d3d3'
+        - elsif reminder.status == "cancel"
+          - bg_color = '#d3d3d3'
+        tr class="reminder_tr_#{reminder.id}" style="background-color:#{bg_color}"
+          td
+            = form_with(model: reminder, data: {remote: true},id:"update_reminder_1_#{reminder.id}") do |f|
+              = f.hidden_field :status,value:'done'
+              = f.hidden_field :id,class:'reminder_id'
+              = f.check_box :check_box_flag,class: "reminder_status_check form-control"
+          td
+            - if reminder.action_time.present?
+              = reminder.action_time.strftime("%H:%M")
+            - else
+          td = "○" if reminder.important_flag == true
+          td.status_change_datetime
+            = reminder.status_change_datetime.strftime('%H:%M') if reminder.status_change_datetime.present?
+          td.important_status
+            - if reminder.important_status_before_type_cast == 1
+              |GOOD
+            - elsif reminder.important_status_before_type_cast == 2
+              |BAD
+            - elsif reminder.important_status_before_type_cast == 0
+              |READY
+          td
+            = link_to reminder.content,edit_reminder_path(reminder)
+          td
+            - if reminder.reminder_template.image.present?
+              = link_to reminder.reminder_template.image.to_s, "data-lightbox" => reminder.reminder_template.image.to_s do
+                = image_tag reminder.reminder_template.image.to_s ,class:"text-center img-responsive center-block",style:'max-height:100px;'
+          td = text_url_to_link(simple_format(h(reminder.memo))).html_safe
+          td
+            = form_with(model: reminder, data: {remote: true},id:"update_reminder_2_#{reminder.id}") do |f|
+              = f.hidden_field :id,class:'reminder_id'
+              = f.select :status, options_for_select_from_enum(Reminder, :status),{}, { class: "reminder_status form-control"}
 
 javascript:
   $(function() {
@@ -124,3 +139,16 @@ javascript:
       Rails.fire($('#update_reminder_2_' + reminder_id)[0], 'submit');
     });
   });
+
+css:
+    .col1{
+    width:60px;
+  }
+
+  .col2{
+    width:200px;
+  }
+
+  .col3{
+    width:300px;
+  }

@@ -382,7 +382,7 @@ ActiveRecord::Schema.define(version: 2024_03_18_141142) do
     t.integer "sorting_base_id", default: 0, null: false
   end
 
-  create_table "items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "items", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.bigint "item_variety_id"
     t.text "memo"
@@ -755,9 +755,10 @@ ActiveRecord::Schema.define(version: 2024_03_18_141142) do
     t.datetime "updated_at", null: false
     t.integer "category", default: 0, null: false
     t.boolean "important_flag", default: false, null: false
+    t.string "image"
   end
 
-  create_table "reminders", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "reminders", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.integer "store_id", null: false
     t.integer "reminder_template_id"
     t.date "action_date", null: false

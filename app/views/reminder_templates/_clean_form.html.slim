@@ -12,7 +12,7 @@
             = message
   .form-group
     = f.label :repeat_type, "頻度"
-    = f.select :repeat_type, options_for_select(ReminderTemplate.repeat_types.slice(:everyweek,:everymonth).keys.to_a,@reminder_template.repeat_type),{}, { class: "form-control"}
+    = f.select :repeat_type, options_for_select(ReminderTemplate.repeat_types.slice(:everyday,:everyweek,:everymonth).keys.to_a,@reminder_template.repeat_type),{}, { class: "form-control"}
 
   .form-group
     = f.label :content, "内容"
@@ -20,6 +20,18 @@
   .form-group
     = f.label :memo, "メモ"
     = f.text_area :memo, class:"form-control",style:"height:5em;"
+
+  .form-group
+    = f.label :image, "写真"
+    = f.file_field :image
+    = f.hidden_field :image_cache
+    .form-group
+      - if @reminder_template.image?
+        = image_tag @reminder_template.image.to_s,class:"img-responsive",style:'max-height:300px;'
+        div
+          = f.label :remove_image,"削除する"
+          = f.check_box :remove_image
+
 
   .form-group
     label 店舗選択

@@ -68,6 +68,8 @@ html lang="ja"
                       li = link_to 'シフト',shifts_path(date:@today,store_type:1)
                       li = link_to 'タイムカード',detail_working_hours_path,data: {"turbolinks" => false}
                       li = link_to 'TC項目',work_types_path
+                      li = link_to 'リマインダーテンプレート',reminder_templates_path(store_type:1)
+                      li = link_to '掃除テンプレート',reminder_templates_path(category:'clean',store_type:1)
                       li = link_to 'シフトテンプレート',default_shifts_path(group_id:current_user.group_id,store_type:1)
                       li = link_to "キッチン設定",edit_store_path(id:39)
                       li = link_to "全店舗一覧",stores_path()
@@ -104,7 +106,8 @@ html lang="ja"
                       li = link_to "試食コメント",weekly_tastings_path(date:@today)
                       li = link_to 'シフト',shifts_path(date:@today,store_type:0)
                       li = link_to 'BejihanBook',manual_directories_path
-
+                      li = link_to 'リマインダーテンプレート',reminder_templates_path(store_type:0)
+                      li = link_to '掃除テンプレート',reminder_templates_path(category:'clean',store_type:0)
                   li.dropdown
                     a.dropdown-toggle href="#" data-toggle="dropdown" role="button"
                       |物販

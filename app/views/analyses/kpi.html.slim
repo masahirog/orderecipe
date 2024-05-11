@@ -1,6 +1,6 @@
 #sales_kpi
 	.clearfix style='padding:5px 0;'
-		h3 style='float:left;margin-top: 5px;margin-right: 20px;' = "#{@date.month}月 予算進捗"
+		h3 style='float:left;margin-top: 5px;margin-right: 20px;' = "#{@date.month}月 ストア重要数値"
 		= form_tag kpi_analyses_path, :method => 'get' do
 			= month_field_tag :month,@month,class:"form-control",style:'width:200px;float:left;margin-right:10px;'
 			= submit_tag "表示" ,class:"btn btn-primary",style:"float:left;"

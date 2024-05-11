@@ -12,12 +12,14 @@ h4 = "#{@bow.strftime("%-m月%-d日（#{%w(日 月 火 水 木 金 土)[@bow.wda
     colgroup
       col class="col1"
       col class="col1"
+      col class="col3"
       col class="col2"
 
     thead style='position: sticky;top:0;background-color:white;z-index:3;'
       tr
         th 掃除箇所
-        th
+        th 担当者
+        th 画像（確認）
         th 内容
 
 
@@ -27,6 +29,11 @@ h4 = "#{@bow.strftime("%-m月%-d日（#{%w(日 月 火 水 木 金 土)[@bow.wda
           td style="white-space:normal" = reminder.content
           td class="clearfix clear_reminder_#{reminder.id}"
             = render partial: "td", locals: { reminder:reminder }
+          td
+            - if reminder.reminder_template.image.present?
+              = link_to reminder.reminder_template.image.to_s, "data-lightbox" => reminder.reminder_template.image.to_s do
+                = image_tag reminder.reminder_template.image.to_s ,class:"text-center img-responsive center-block",style:'max-height:100px;'
+
           td style="white-space:normal"
             = text_url_to_link(simple_format(h(reminder.memo))).html_safe
 
@@ -37,12 +44,14 @@ h4 = "#{@bom.month}月｜月次リスト"
     colgroup
       col class="col1"
       col class="col1"
+      col class="col3"
       col class="col2"
 
     thead style='position: sticky;top:0;background-color:white;z-index:3;'
       tr
         th 掃除箇所
-        th
+        th 担当者
+        th 画像（確認）
         th 内容
     tbody
       - @monthly_clean_reminders.each do |reminder|
@@ -50,9 +59,13 @@ h4 = "#{@bom.month}月｜月次リスト"
           td style="white-space:normal" = reminder.content
           td class="clearfix clear_reminder_#{reminder.id}"
             = render partial: "td", locals: { reminder:reminder }
+          td
+            - if reminder.reminder_template.image.present?
+              = link_to reminder.reminder_template.image.to_s, "data-lightbox" => reminder.reminder_template.image.to_s do
+                = image_tag reminder.reminder_template.image.to_s ,class:"text-center img-responsive center-block",style:'max-height:100px;'
           td style="white-space:normal"
             = text_url_to_link(simple_format(h(reminder.memo))).html_safe
-= link_to 'リスト',reminder_templates_path(category:'clean'),class:'btn btn-primary btn-sm'
+
 javascript:
   $(function() {
     $(document).on("change", ".reminder_status", function(event) {
@@ -81,4 +94,8 @@ css:
 
   .col2{
     width:300px;
+  }
+
+  .col3{
+    width:100px;
   }

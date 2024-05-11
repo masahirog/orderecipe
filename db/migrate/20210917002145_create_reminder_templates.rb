@@ -10,6 +10,7 @@ class CreateReminderTemplates < ActiveRecord::Migration[5.2]
       t.timestamps
       t.integer :category,null:false,default:0
       t.boolean :important_flag,null:false,default:0
+      t.string :image
     end
   end
 end
