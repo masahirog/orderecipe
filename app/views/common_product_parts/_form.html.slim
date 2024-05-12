@@ -1,0 +1,15 @@
+= form_for @common_product_part do |f|
+  .form-group
+    = f.label :name, "名前"
+    = f.text_field :name,class:'form-control'
+  .form-group
+    = f.label :unit, "単位"
+    = f.select :unit,['','g','kg','個','枚'],{},class:'form-control'
+  .form-group
+    = f.label :container, "積載容器"
+    = f.select :container,ProductPart.containers.keys.to_a,{},class:'form-control'
+  .form-group
+    = f.label :memo, "メモ"
+    = f.text_field :memo,class:'form-control',placeholder:'メモ'
+  .actions
+    = f.submit '保存',class:"btn btn-primary"

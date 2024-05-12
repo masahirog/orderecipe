@@ -184,16 +184,17 @@
   table.table
     thead
       tr
-        th.col-md-3
+        th.col-md-2 = link_to "共通パーツ",common_product_parts_path,target:'_blank'
+        th.col-md-2
           span 積載パーツ　
           = link_to_add_association '追加', f, :product_parts,class:'btn btn-primary add_product_parts_fields',style:'margin-left:20px;',
           data: {association_insertion_node: '#product_parts-add-point',association_insertion_method: 'append' }
         th.col-md-1 1人前
         th.col-md-1 単位
         th.col-md-2 パッキング
-        th.col-md-1 シール
-        th メモ
-        th.col-md-1
+        th シール
+        th.col-md-3 メモ
+        th
     tbody#product_parts-add-point
       = f.fields_for :product_parts do |mp|
         = render 'product_part_fields', f:mp
@@ -229,6 +230,41 @@ javascript:
     calculate_purchase_price();
   });
   
+  $(".common_product_part_select").on("change",function(){
+    var common_product_part_id = $(this).val();
+    console.log(common_product_part_id=="")
+    var index = $('.product_part_tr').index($(this).parents('.product_part_tr'));
+    if (common_product_part_id=="") {
+      $(".product_part_tr").eq(index).find(".span_name").text("").hide();
+      $(".product_part_tr").eq(index).find(".span_container").text("").hide();
+      $(".product_part_tr").eq(index).find(".span_memo").text("").hide();
+      $(".product_part_tr").eq(index).find(".span_unit").text("").hide();
+
+      $(".product_part_tr").eq(index).find(".name").val('').show();
+      $(".product_part_tr").eq(index).find(".container").val('').show();
+      $(".product_part_tr").eq(index).find(".memo").val('').show();
+      $(".product_part_tr").eq(index).find(".unit").val('').show();
+    }else{
+      $.ajax({
+        url: "/common_product_parts/get_common_product_part",
+        data: { common_product_part_id : common_product_part_id,index:index },
+        dataType: "json",
+        async: false
+      })
+      .done(function(data){
+        $(".product_part_tr").eq(data['index']).find(".name").val(data['common_product_part'].name).hide();
+        $(".product_part_tr").eq(data['index']).find(".container").val(data['common_product_part'].container).hide();
+        $(".product_part_tr").eq(data['index']).find(".memo").val(data['common_product_part'].memo).hide();
+        $(".product_part_tr").eq(data['index']).find(".unit").val(data['common_product_part'].unit).hide();
+        $(".product_part_tr").eq(data['index']).find(".span_name").text(data['common_product_part'].name).show();
+        $(".product_part_tr").eq(data['index']).find(".span_container").text(data['common_product_part'].container).show();
+        $(".product_part_tr").eq(data['index']).find(".span_memo").text(data['common_product_part'].memo).show();
+        $(".product_part_tr").eq(data['index']).find(".span_unit").text(data['common_product_part'].unit).show();
+      });
+    }
+  });
+
+
   function calculate_tax_including_sell_price(){
     var sell_price = $(".sell_price").val();
     var reduce_tax_flag = $(".reduced_tax_flag").prop("checked");

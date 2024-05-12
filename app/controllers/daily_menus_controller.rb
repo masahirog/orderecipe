@@ -182,15 +182,13 @@ class DailyMenusController < AdminController
   end
 
   def barcode
-    @store = Store.find(params[:store_id])
     @daily_menu = DailyMenu.find(params[:daily_menu_id])
     @daily_menu_details = @daily_menu.daily_menu_details.map{|dmd|[dmd.paper_menu_number,dmd]}.to_h
-
-    @bento_menus = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    
     from = @daily_menu.start_time
     to = from+6
+    @bento_menus = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     if params[:menu_type]=="0"
+      @store = Store.find(params[:store_id])  
       next_week_day = from + 7
       weekly_daily_menus = DailyMenu.where(start_time:from..to)
       DailyMenuDetail.includes([:product,:daily_menu]).where(daily_menu_id:weekly_daily_menus.ids).where(paper_menu_number:[24,25,26,27,28,29]).each do |dmd|
@@ -199,6 +197,7 @@ class DailyMenusController < AdminController
       next_week_product_ids = DailyMenu.find_by(start_time:next_week_day).daily_menu_details.where(paper_menu_number:(1..17).to_a).map{|dmd|dmd.product_id}
       @next_menus = Product.where(id:next_week_product_ids)
     elsif params[:menu_type]=="1"
+    elsif params[:menu_type]=="2"      
       from = from - 1
       daily_menus = DailyMenu.where(start_time:from..to)
       DailyMenuDetail.includes([:product,:daily_menu]).where(daily_menu_id:daily_menus.ids).where(paper_menu_number:[24,25]).each do |dmd|
@@ -209,11 +208,13 @@ class DailyMenusController < AdminController
       format.html
       format.pdf do
         if params[:menu_type]=="0"
-          pdf = WeeklyMenu.new(@daily_menu,@daily_menu_details,@bento_menus,@next_menus,@store)  
+          pdf = WeeklyMenuA4.new(@daily_menu,@daily_menu_details,@bento_menus,@next_menus,@store)  
         elsif params[:menu_type]=="1"
+          store_ids = current_user.group.stores.where(store_type:'sales').ids
+          pdf = WeeklyMenuA3.new(@daily_menu,@daily_menu_details,store_ids)
+        elsif params[:menu_type]=="2"
           pdf = BentoWeekMenu.new(@bento_menus,from,to)
         end
-        
         send_data pdf.render,
         filename:    "#{@daily_menu.start_time}.pdf",
         type:        "application/pdf",

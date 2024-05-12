@@ -64,6 +64,11 @@ Rails.application.routes.draw do
       post :create_frame
     end
   end
+  resources :common_product_parts do
+    collection do
+      get :get_common_product_part
+    end
+  end
   resources :item_expiration_dates
   resources :item_store_stocks do
     collection do

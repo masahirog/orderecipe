@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_03_18_141142) do
+ActiveRecord::Schema.define(version: 2024_05_12_043254) do
 
   create_table "analyses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "store_id"
@@ -99,6 +99,15 @@ ActiveRecord::Schema.define(version: 2024_03_18_141142) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.text "memo"
+  end
+
+  create_table "common_product_parts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "name", default: "", null: false
+    t.string "unit", null: false
+    t.string "memo"
+    t.integer "container", default: 0, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "containers", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -678,6 +687,8 @@ ActiveRecord::Schema.define(version: 2024_03_18_141142) do
     t.boolean "sticker_print_flag", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "common_product_part_id"
+    t.index ["common_product_part_id"], name: "index_product_parts_on_common_product_part_id"
   end
 
   create_table "product_sales_potentials", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -744,7 +755,7 @@ ActiveRecord::Schema.define(version: 2024_03_18_141142) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "reminder_templates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "reminder_templates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.integer "repeat_type", null: false
     t.time "action_time"
     t.string "content", null: false

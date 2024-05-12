@@ -1,15 +1,38 @@
-tr.nested-fields.field
+tr.nested-fields.field.product_part_tr
   td
-    = f.text_field :name,class:'form-control',placeholder:'パーツ名'
+    = f.collection_select :common_product_part_id, CommonProductPart.all, :id, :name, {include_blank: true}, { class: "form-control common_product_part_select"}
+  td
+    - if f.object.common_product_part_id.present?
+      span.span_name = f.object.name
+      = f.text_field :name,class:'form-control name',placeholder:'パーツ名',style:'display:none;'
+    - else
+      = f.text_field :name,class:'form-control name',placeholder:'パーツ名'
+      span.span_name style='display:none' = f.object.name
   td
     = f.number_field :amount,class:'form-control',step:"0.01"
   td
-    = f.select :unit,['','g','kg','個','枚'],{},class:'form-control'
+
+    - if f.object.common_product_part_id.present?
+      span.span_unit = f.object.unit
+      = f.select :unit,['','g','kg','個','枚'],{},class:'form-control unit',style:'display:none;'
+    - else
+      span.span_unit style='display:none' = f.object.unit
+      = f.select :unit,['','g','kg','個','枚'],{},class:'form-control unit'
   td
-    = f.select :container,ProductPart.containers.keys.to_a,{},class:'form-control'
+    - if f.object.common_product_part_id.present?
+      span.span_container = f.object.container
+      = f.select :container, options_for_select_from_enum(ProductPart, :container),{}, { class: "form-control container", required:true,style:'display:none;'}
+    - else
+      span.span_container style='display:none' = f.object.container
+      = f.select :container, options_for_select_from_enum(ProductPart, :container),{}, { class: "form-control container", required:true}
   td
     = f.check_box :sticker_print_flag, class: "form-control"
   td
-    = f.text_field :memo,class:'form-control',placeholder:'メモ'
+    - if f.object.common_product_part_id.present?
+      span.span_memo = f.object.memo
+      = f.text_field :memo,class:'form-control memo',placeholder:'メモ',style:'display:none;'
+    - else
+      span.span_memo style='display:none' = f.object.memo
+      = f.text_field :memo,class:'form-control memo',placeholder:'メモ'
   td
     = link_to_remove_association '削除', f,class:'remove_menu_btn btn btn-danger'

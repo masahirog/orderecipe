@@ -1,0 +1,16 @@
+h2 一覧
+= link_to '新規作成', new_common_product_part_path,class:'btn btn-primary'
+table.table
+  thead
+    tr
+      th 名前
+      th 件数
+      th
+
+  tbody
+    - @common_product_parts.each do |common_product_part|
+      tr
+        td = link_to common_product_part.name, edit_common_product_part_path(common_product_part)
+        td
+        td
+

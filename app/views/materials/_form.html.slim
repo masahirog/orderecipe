@@ -12,34 +12,34 @@
   .col-md-12
     .col-md-6
       .col-md-12.form-group
-        = f.label :name, "食材・資材名（余分な情報はメモへお願いします）"
+        = f.label :name, "食材・資材名（余分な情報はメモへお願いします）",class:'required'
         = f.text_field :name, class:'form-control name_ja',required:true
       .col-md-12.form-group
-        = f.label :short_name, "省略名 ひらがな"
+        = f.label :short_name, "省略名 ひらがな",class:'required'
         = f.text_field :short_name, class:'form-control',required:true
       .col-md-12.form-group
-        = f.label :roma_name, "ローマ字"
+        = f.label :roma_name, "ローマ字",class:'required'
         = f.text_field :roma_name, class:'form-control',required:true
 
       .col-md-12.form-group
-        = f.label :order_name, "発注書記載名"
+        = f.label :order_name, "発注書記載名",class:'required'
         = f.text_field :order_name, class:'form-control',required:true
       .col-md-12.form-group
-        = f.label :unused_flag, "販売ステータス"
-        = f.select :unused_flag,[['使用中',false],['使用停止',true]],{selected:@material.unused_flag}, class:"form-control"
+        = f.label :unused_flag, "販売ステータス",class:'required'
+        = f.select :unused_flag,[['使用中',false],['使用停止',true]],{selected:@material.unused_flag}, class:"form-control",required:true
       .col-md-12.form-group
-        = f.label :category, "カテゴリ"
-        = f.select :category, options_for_select_from_enum(Material, :category),{}, { class: "form-control"}
+        = f.label :category, "カテゴリ",class:'required'
+        = f.select :category, options_for_select_from_enum(Material, :category),{}, { class: "form-control",required:true}
       .col-md-12.form-group
-        = f.label :storage_place, "棚卸し分類"
-        = f.select :storage_place, options_for_select_from_enum(Material, :storage_place),{}, { class: "form-control"}
+        = f.label :storage_place, "棚卸し分類",class:'required'
+        = f.select :storage_place, options_for_select_from_enum(Material, :storage_place),{}, { class: "form-control",required:true}
 
       .col-md-12.form-group
         = f.label :measurement_flag, "仕込みの食材別シートに表示する"
         = f.check_box :measurement_flag, class: "form-control"
       .col-md-12.form-group
-        = f.label :vendor_id, "仕入先企業名"
-        = f.collection_select :vendor_id, Vendor.where(group_id:current_user.group_id), :id, :name, {include_blank: true}, { class: "form-control"}
+        = f.label :vendor_id, "仕入先企業名",class:'required'
+        = f.collection_select :vendor_id, Vendor.where(group_id:current_user.group_id), :id, :name, {include_blank: true}, { class: "form-control",required:true}
       .col-md-12.form-group
         = f.label :vendor_stock_flag, "メーカー在庫品・受注品"
         = f.select :vendor_stock_flag, [["在庫品", true], ["受注品", false]],{}, class: "form-control"

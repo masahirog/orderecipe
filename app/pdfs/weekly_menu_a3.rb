@@ -1,181 +1,18 @@
-require 'barby/barcode/code_128'
-require 'barby/outputter/png_outputter'
-require 'barby/barcode/qr_code'
-
-class WeeklyMenu < Prawn::Document
-  def initialize(daily_menu,daily_menu_details,bento_menus,next_menus,store)
+class WeeklyMenuA3 < Prawn::Document
+  def initialize(daily_menu,daily_menu_details,store_ids)
     super(page_size: 'A4',page_layout: :landscape,:top_margin    => 0 )
     #日本語のフォント
     font "vendor/assets/fonts/NotoSansJP-Medium.ttf"
     from = daily_menu.start_time
     to = from + 6
-
-    # left_table(daily_menu,daily_menu_details)
-    # start_new_page
-    left_header(daily_menu,from,to)
-    right_header(daily_menu)
-    left_table_new(daily_menu,daily_menu_details)
-    start_new_page
-    ura_new(bento_menus,from,to)
-    ura_right(next_menus,store,from,to)
-    start_new_page
-    a3_ue(daily_menu,from,to,daily_menu_details)
-    start_new_page
-    a3_shita(daily_menu,from,to,daily_menu_details,store)
+    Store.where(id:store_ids).each_with_index do |store,i|
+      start_new_page unless i == 0
+      a3_ue(daily_menu,from,to,daily_menu_details)
+      start_new_page
+      a3_shita(daily_menu,from,to,daily_menu_details,store)
+    end
   end
   # image 'app/assets/images/taberu_stamp.png', at: [440, 630], width: 60
-  def left_header(daily_menu,from,to)
-
-    stroke do
-      fill_color '000000'
-      fill_rounded_rectangle [-5,530], 370, 75, 4
-      fill_color 'ffffff'
-      text_box("<font size='18'>#{from.month}</font>月<font size='18'>#{from.day}</font>日（水）〜 <font size='18'>#{to.month}</font>月<font size='18'>#{to.day}</font>日（火）",
-       inline_format: true,color:'ffffff',at: [-5,520],align: :center, width: 370, height: 40)
-      text_box("今週のべじはんメニュー",at: [-5,498], width: 370, height: 40,align: :center,size:20, styles:[:bold] )
-      text_box("毎週水曜日にメニューがすべて入れ替わります",at: [-5,473], width: 370, height: 40,align: :center,size:9)
-      fill_color 'cc0000'
-      fill_rounded_rectangle [-15,540], 50, 50, 25
-      fill_color 'ffffff'
-      text_box("毎週\n替わる",at: [-7, cursor - 30], width: 40, height: 40,rotate: 20, rotate_around: :center,align: :center)
-
-    end
-  end
-  def right_header(daily_menu)
-    gyusuji_height = 445
-    fill_color '000000'
-    text_box("<font size='16'>名物！</font>ほろほろに煮込んだ  <font size='16'>牛すじ煮込み</font>",
-     inline_format: true,color:'ffffff',at: [-5,gyusuji_height], width: 370, height: 40)
-
-    self.line_width = 2
-    line [-5, gyusuji_height-20], [370, gyusuji_height-20]
-    stroke_color 'd8d8d8'
-    stroke
-    gyusuji_height = 415
-    barcode = Barby::Code128.new 155
-    barcode_blob = Barby::PngOutputter.new(barcode).to_png
-    barcode_io = StringIO.new(barcode_blob)
-    barcode_io.rewind
-    image barcode_io, at: [-15, gyusuji_height], width: 50,height:25
-    self.line_width = 1
-    stroke_color 'd8d8d8'
-    bounding_box([41, gyusuji_height-4], width: 26, height: 16) do
-      stroke_bounds
-    end
-    text_box("単品",at: [75,gyusuji_height-2], width: 350, height: 40,size:16)
-    text_box("<font size='13'>440</font>円",at: [110,gyusuji_height-5], width: 350, height: 40,size:9,inline_format: true)
-    text_box("税込",at: [145,gyusuji_height-2], width: 350, height: 40,size:6)
-    text_box("<font size='8'>475</font>円",at: [145,gyusuji_height-10], width: 350, height: 40,size:6,inline_format: true)
-
-    barcode = Barby::Code128.new 154
-    barcode_blob = Barby::PngOutputter.new(barcode).to_png
-    barcode_io = StringIO.new(barcode_blob)
-    barcode_io.rewind
-    image barcode_io, at: [195, gyusuji_height], width: 50,height:25
-    bounding_box([250, gyusuji_height-4], width: 26, height: 16) do
-      stroke_bounds
-    end
-    text_box("丼",at: [280,gyusuji_height-2], width: 350, height: 40,size:16)
-    text_box("<font size='13'>640</font>円",at: [300,gyusuji_height-5], width: 350, height: 40,size:9,inline_format: true)
-    text_box("税込",at: [335,gyusuji_height-2], width: 350, height: 40,size:6)
-    text_box("<font size='8'>691</font>円",at: [335,gyusuji_height-10], width: 350, height: 40,size:6,inline_format: true)
-
-    gyusuji_height -=32 
-
-    bounding_box([-5, gyusuji_height], width: 26, height: 16) do
-      stroke_bounds
-    end
-    text_box("肉増",at: [25,gyusuji_height-2], width: 350, height: 40,size:12)
-    text_box("<font size='9'>150</font>円",at: [52,gyusuji_height], width: 350, height: 40,size:7,inline_format: true)
-    text_box("税込 162円",at: [52,gyusuji_height-10], width: 350, height: 40,size:6)
-
-
-    bounding_box([90, gyusuji_height], width: 26, height: 16) do
-      stroke_bounds
-    end
-    text_box("大根",at: [120,gyusuji_height-2], width: 350, height: 40,size:12)
-    text_box("<font size='9'>80</font>円",at: [148,gyusuji_height], width: 350, height: 40,size:7,inline_format: true)
-    text_box("税込 86円",at: [148,gyusuji_height-10], width: 350, height: 40,size:6)
-
-    bounding_box([185, gyusuji_height], width: 26, height: 16) do
-      stroke_bounds
-    end
-    text_box("温泉卵",at: [215,gyusuji_height-2], width: 350, height: 40,size:12)
-    text_box("<font size='9'>80</font>円",at: [255,gyusuji_height], width: 350, height: 40,size:7,inline_format: true)
-    text_box("税込 86円",at: [255,gyusuji_height-10], width: 350, height: 40,size:6)
-
-    bounding_box([290, gyusuji_height], width: 26, height: 16) do
-      stroke_bounds
-    end
-    text_box("煮卵",at: [320,gyusuji_height-2], width: 350, height: 40,size:12)
-    text_box("<font size='9'>80</font>円",at: [348,gyusuji_height], width: 350, height: 40,size:7,inline_format: true)
-    text_box("税込 86円",at: [348,gyusuji_height-10], width: 350, height: 40,size:6)
-
-  end
-
-  def ura_right(next_menus,store,from,to)
-    stroke do
-      fill_color 'd8d8d8'
-      fill_rounded_rectangle [460,530], 310, 60, 4
-      fill_color '000000'
-      text_box("#{(from+7).strftime("%-m月%-d日(#{%w(日 月 火 水 木 金 土)[(from+7).wday]})")}〜 #{(to+7).strftime("%-m月%-d日(#{%w(日 月 火 水 木 金 土)[(to+7).wday]})")}",inline_format: true,color:'ffffff',at: [460,520],align: :center, width: 310, height: 40)
-      text_box("翌週の週替りお惣菜",at: [460,502], width: 310, height: 40,align: :center,size:20)
-    end
-    fill_color '000000'
-    height = 460
-    next_menus.each do |product|
-      if product.warm_flag == true
-        fill_color 'ea9999'
-        text_box("●",at: [460,height-4], width: 350, height: 40,size:12)
-      end
-      fill_color "000000"
-      text_box(product.food_label_name,at: [480,height], width: 230, height: 20,size:9, valign: :center)
-      text_box("<font size='10'>#{product.sell_price}</font> 円",at: [718,height-5], width: 100, height: 40,size:8,inline_format: true)
-      text_box("税込",at: [750,height], width: 100, height: 40,size:5)
-      text_box("<font size='7'>#{product.tax_including_sell_price}</font> 円",at: [750,height-7], width: 200, height: 40,size:5,inline_format: true)
-      height -= 20
-    end
-    text_box("※メニューは仕入れ状況等によって変動する場合がございます。",at: [545,height-5], width: 300, height: 40,size:8)
-    # dash(8, space: 2, phase: 1)
-    # stroke_horizontal_line 400, 770, at: 100
-
-    self.line_width = 2
-    line [460, 100], [770, 100]
-    stroke_color 'd8d8d8'
-    stroke
-
-
-
-    # fill_color 'eeeeee'
-    # fill_rounded_rectangle [400,90], 180, 60, 2
-    # fill_color '000000'
-    # text_box("ポイントサービス",at: [410,83], width: 110, height: 40,size:11)
-    # text_box("お買上げ100円で1ポイントたまるポイントカードをご用意しています！QRコードよりご登録いただけます",at: [410,70], width: 110, height: 40,size:8)
-    # if store.line_url.present?
-    #   qr_code = Barby::QrCode.new(store.line_url)
-    #   barcode_blob = Barby::PngOutputter.new(qr_code).to_png(margin: 2)
-    #   barcode_io = StringIO.new(barcode_blob)
-    #   barcode_io.rewind
-    #   image barcode_io, at: [534,80], width: 40      
-    # end
-
-    fill_color 'eeeeee'
-    fill_rounded_rectangle [470,90], 300, 60, 2
-    fill_color '000000'
-    text_box("予約お取り置き",at: [480,83], width: 140, height: 40,size:11)
-    text_box("お惣菜のお取り置き予約が可能です。時間に合わせてご用意しますので、お渡しもスムーズです。",at: [480,70], width: 160, height: 40,size:8)
-    if store.yoyaku_url.present?
-      qr_code = Barby::QrCode.new(store.yoyaku_url)
-      barcode_blob = Barby::PngOutputter.new(qr_code).to_png(margin: 2)
-      barcode_io = StringIO.new(barcode_blob)
-      barcode_io.rewind
-      image barcode_io, at: [710,80], width: 40
-    end
-
-    # image 'app/assets/images/logo.png', at: [410, 10], width: 100
-    text_box("#{store.name}　#{store.address}",at: [520,12], width: 280, height: 40,size:8)
-    text_box("TEL：#{store.phone}　営業時間： 11:00-21:00（無休）",at: [520,-2], width: 280, height: 40,size:8)
-  end
 
 
   def a3_ue(daily_menu,from,to,daily_menu_details)

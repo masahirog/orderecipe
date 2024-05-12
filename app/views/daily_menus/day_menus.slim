@@ -8,6 +8,30 @@
 
 button type="button" class="btn btn-default" data-toggle="modal" data-target="#barcode" style='margin-left:10px;' メニュー表
 #barcode.modal.fade tabindex="-1"
+  .modal-dialog
+    .modal-content
+      .modal-header
+        h4.modal-title 選択
+      .modal-body.clearfix
+				.col-md-12.form-group
+					label A4メニュー
+					br
+					- current_user.group.stores.where(store_type:'sales').each do |store|
+						= link_to store.short_name,barcode_daily_menus_path(menu_type:0,daily_menu_id:@daily_menu.id,store_id:store.id,format: :pdf),class:'btn btn-default btn-sm',target:'_blank',style:'margin-left:10px;'
+				.col-md-12.form-group
+					label A3メニュー
+					br
+					= link_to 'ダウンロード',barcode_daily_menus_path(menu_type:1,daily_menu_id:@daily_menu.id,format: :pdf),class:'btn btn-default btn-sm',target:'_blank'
+
+				.col-md-12.form-group
+					label 弁当メニュー
+					br
+					= link_to 'ダウンロード',barcode_daily_menus_path(menu_type:2,daily_menu_id:@daily_menu.id,format: :pdf),class:'btn btn-default btn-sm',target:'_blank'
+      .modal-footer
+        button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
+
+
+/ #barcode.modal.fade tabindex="-1"
   = form_tag barcode_daily_menus_path(format: :pdf),:target => '_blank', :method => 'get' do
     = hidden_field_tag :daily_menu_id,@daily_menu.id
     .modal-dialog
@@ -18,7 +42,7 @@ button type="button" class="btn btn-default" data-toggle="modal" data-target="#b
           .col-md-12
             label メニュータイプ
             br
-            = select_tag :menu_type, options_for_select([["週間メニュー",0],["弁当",1]]), class: "form-control",style:'width:200px;float:left;'
+            = select_tag :menu_type, options_for_select([["週間メニューA4",0],["弁当",1]]), class: "form-control",style:'width:200px;float:left;'
           br
           .col-md-12
             label 店舗
