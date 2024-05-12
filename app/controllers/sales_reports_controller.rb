@@ -96,6 +96,10 @@ class SalesReportsController < AdminController
         ).to_i
         analysis = @sales_report.analysis
         analysis.update(vegetable_waste_amount:vegetable_waste_amount)
+        sales_report_staffs = ""
+        @sales_report.sales_report_staffs.each do |srs|
+          sales_report_staffs += "\n#{srs.staff.name}｜笑顔：#{srs.smile}｜目線：#{srs.eyecontact}｜声量：#{srs.voice_volume}"
+        end
         sales_form=" *#{analysis.store_daily_menu.start_time.strftime("%-m/%-d (#{%w(日 月 火 水 木 金 土)[analysis.store_daily_menu.start_time.wday]})")}*　*#{analysis.store.name}*　*#{Staff.find(@sales_report.staff_id).name}* \n"+
         " *予算* ： #{yosan.to_s(:delimited)}円\n"+
         " *売上(税抜)* ： #{analysis.ex_tax_sales_amount.to_s(:delimited)}円（#{analysis.transaction_count}組）\n"+
@@ -105,11 +109,15 @@ class SalesReportsController < AdminController
         " *野菜の廃棄* ： #{@sales_report.vegetable_waste_amount}円\n"+
         " *現金誤差* ： #{@sales_report.cash_error}円\n"+
         " *退勤時間* ： #{@sales_report.leaving_work.strftime("%-H:%M")}\n"+
-        " *在庫感* ： 惣菜は#{sozai_ureyuki}、弁当は#{bento_ureyuki}、白米残#{kome_amari} kg\n\n"+
-        " *課題に感じた点* ：\n#{@sales_report.issue}\n\n"+
-        " *その他* ：\n#{@sales_report.other_memo}\n" +
+        " *ワンペアワントーク実施率* ： #{(@sales_report.one_pair_one_talk*100).round}%\n"+
+        " *試食実施数* ： #{@sales_report.tasting_number}\n"+
+        " *試食内訳* ：\n#{@sales_report.other_memo}\n" +
+        " *スタッフ別安心評価* ：#{sales_report_staffs}\n" +
+        " *課題・改善・その他* ：\n#{@sales_report.issue}\n\n"+
         "ーーーーー\n"
         if params[:sales_report]["slack_notify"]=="1"
+          
+          # Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'おつかれ様', icon_emoji: ':male-farmer:').ping(sales_form)
           Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'おつかれ様', icon_emoji: ':male-farmer:').ping(sales_form)
         end
         if @sales_report.excess_or_deficiency_number_memo
