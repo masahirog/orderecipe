@@ -215,7 +215,7 @@
     = f.number_field :cash_error,class:'form-control', required: true
 
   .form-group
-    = f.label :one_pair_one_talk, "1日を通してのワンペアワントーク実施",class:'required'
+    = f.label :one_pair_one_talk, "1日を通してのワンペアワントーク実施率",class:'required'
     = f.select :one_pair_one_talk,options_for_select([['100%',1],["90%",0.9],["80%",0.8],["70%",0.7],["60%",0.6],["50%",0.5],["40%",0.4],["30%",0.3],["20%",0.2],["10%",0.1],["0%",0]],f.object.one_pair_one_talk),{include_blank:true}, class: "form-control"
 
   .form-group
@@ -231,10 +231,10 @@
     table.table
       thead
         tr
-          th スタッフ別FB（5段階）
-          th 笑顔ができているか
-          th 声の大きさが適切か
-          th 会話の際目が合っているか
+          th style='width:100px;' 安心のFB
+          th 笑顔が出来ている
+          th 声の大きさ
+          th 目が合っている
       tbody#srs-add-point
         = f.fields_for :sales_report_staffs do |srs|
           tr
@@ -247,6 +247,18 @@
               = srs.select :eyecontact,options_for_select([5,4,3,2,1],srs.object.eyecontact),{include_blank:true}, class: "form-control"
             td
               = srs.select :voice_volume,options_for_select([5,4,3,2,1],srs.object.voice_volume),{include_blank:true}, class: "form-control"
+    |評価基準
+    br
+    |5：漏れなく出来ている
+    br
+    |4：基本的には出来ているが、少し改善余地
+    br
+    |3：出来ている所もあるが、改善ポイントもある
+    br
+    |2：出来ていない部分が多い
+    br
+    |1：取り組もうとしていないように感じる
+
   .form-group
     = f.label :good, "親切にできた点（自分・周りのスタッフ）"
     = f.text_area :good, class: "form-control", size: "10x7"
