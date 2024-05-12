@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_05_12_043254) do
+ActiveRecord::Schema.define(version: 2024_05_12_134556) do
 
   create_table "analyses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "store_id"
@@ -101,7 +101,7 @@ ActiveRecord::Schema.define(version: 2024_05_12_043254) do
     t.text "memo"
   end
 
-  create_table "common_product_parts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "common_product_parts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", default: "", null: false
     t.string "unit", null: false
     t.string "memo"
@@ -677,7 +677,7 @@ ActiveRecord::Schema.define(version: 2024_05_12_043254) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "product_parts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "product_parts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.integer "product_id", null: false
     t.string "name", default: "", null: false
     t.float "amount", default: 0.0, null: false
@@ -788,13 +788,27 @@ ActiveRecord::Schema.define(version: 2024_05_12_043254) do
     t.integer "important_status"
   end
 
-  create_table "sales_reports", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+  create_table "sales_report_staffs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "sales_report_id", null: false
+    t.bigint "staff_id", null: false
+    t.integer "smile"
+    t.integer "eyecontact"
+    t.integer "voice_volume"
+    t.integer "talk_speed"
+    t.integer "speed"
+    t.integer "total"
+    t.text "memo"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["sales_report_id"], name: "index_sales_report_staffs_on_sales_report_id"
+    t.index ["staff_id"], name: "index_sales_report_staffs_on_staff_id"
+  end
+
+  create_table "sales_reports", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "analysis_id", null: false
     t.integer "store_id", null: false
     t.date "date", null: false
     t.integer "staff_id", null: false
-    t.integer "sales_amount"
-    t.integer "sales_count"
     t.text "good"
     t.text "issue"
     t.text "other_memo"
@@ -804,6 +818,8 @@ ActiveRecord::Schema.define(version: 2024_05_12_043254) do
     t.text "excess_or_deficiency_number_memo"
     t.time "leaving_work"
     t.integer "vegetable_waste_amount", default: 0, null: false
+    t.float "one_pair_one_talk"
+    t.integer "tasting_number"
   end
 
   create_table "serving_plates", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

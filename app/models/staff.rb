@@ -9,6 +9,7 @@ class Staff < ApplicationRecord
   has_many :tastings
   has_many :sales_reports
   has_many :working_hours
+  has_many :sales_report_staffs
   enum employment_status: {part_time:0,employee:1}
   enum status: {working:0,retirement:1}
 

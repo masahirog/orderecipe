@@ -5,8 +5,6 @@ class CreateSalesReports < ActiveRecord::Migration[5.2]
       t.integer :store_id,null:false
       t.date :date,null:false
       t.integer :staff_id,null:false
-      t.integer :sales_amount
-      t.integer :sales_count
       t.text :good
       t.text :issue
       t.text :other_memo
@@ -15,6 +13,8 @@ class CreateSalesReports < ActiveRecord::Migration[5.2]
       t.text :excess_or_deficiency_number_memo
       t.time :leaving_work
       t.integer :vegetable_waste_amount,null:false,default:0
+      t.float :one_pair_one_talk
+      t.integer :tasting_number
     end
   end
 end

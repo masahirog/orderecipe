@@ -187,48 +187,80 @@
 
 
   .form-group
-    = f.label :staff_id, "スタッフ名"
+    = f.label :staff_id, "スタッフ名",class:'required'
     = f.collection_select :staff_id, @staffs, :id, :name, {include_blank:true},class:'form-control', required:true
   .form-group
-    = f.label :leaving_work, "退勤時間"
+    = f.label :leaving_work, "退勤時間",class:'required'
     = f.time_field :leaving_work, class: "form-control", required: true
 
-  .form-group
+  / .form-group
     = f.label :sozai_ureyuki, "お惣菜の在庫具合"
     = f.select :sozai_ureyuki,['在庫量が少なかった','良い感じだった','在庫量が多かった'],{include_blank:true},class:'form-control', required: true
-  .form-group
+  / .form-group
     = f.label :bento_ureyuki, "弁当の在庫具合"
     = f.select :bento_ureyuki,['在庫量が少なかった','良い感じだった','在庫量が多かった'],{include_blank:true},class:'form-control', required: true
   .form-group
     = f.label :kome_amari, "白米の廃棄量"
     .clearfix
-      = f.number_field :kome_amari,class:'form-control', required: true,style:'width:250px;float:left;',step: "0.1"
+      = f.number_field :kome_amari,class:'form-control',style:'width:250px;float:left;',step: "0.1"
       span style='float:left;margin-top:10px;margin-left:20px;' kg
   .form-group
-    = f.label :vegetable_waste_amount, "野菜の廃棄金額"
+    = f.label :vegetable_waste_amount, "野菜の廃棄金額",class:'required'
     .clearfix
       = f.number_field :vegetable_waste_amount,class:'form-control', required: true,style:'width:250px;float:left;'
       span style='float:left;margin-top:10px;margin-left:20px;' 円
 
   .form-group
-    = f.label :cash_error, "現金誤差"
+    = f.label :cash_error, "現金誤差",class:'required'
     = f.number_field :cash_error,class:'form-control', required: true
+
+  .form-group
+    = f.label :one_pair_one_talk, "1日を通してのワンペアワントーク実施",class:'required'
+    = f.select :one_pair_one_talk,options_for_select([['100%',1],["90%",0.9],["80%",0.8],["70%",0.7],["60%",0.6],["50%",0.5],["40%",0.4],["30%",0.3],["20%",0.2],["10%",0.1],["0%",0]],f.object.one_pair_one_talk),{include_blank:true}, class: "form-control"
+
+  .form-group
+    = f.label :tasting_number, "試食実施数",class:'required'
+    = f.select :tasting_number,options_for_select(0..100,f.object.tasting_number),{include_blank:true}, class: "form-control"
+
+  .form-group
+    = f.label :other_memo, "試食内訳"
+    = f.text_area :other_memo,class:'form-control', required: true
+
+
+  .form-group
+    table.table
+      thead
+        tr
+          th スタッフ別FB（5段階）
+          th 笑顔ができているか
+          th 声の大きさが適切か
+          th 会話の際目が合っているか
+      tbody#srs-add-point
+        = f.fields_for :sales_report_staffs do |srs|
+          tr
+            td
+              = srs.hidden_field :staff_id
+              = srs.object.staff.name
+            td
+              = srs.select :smile,options_for_select([5,4,3,2,1],srs.object.smile),{include_blank:true}, class: "form-control"
+            td
+              = srs.select :eyecontact,options_for_select([5,4,3,2,1],srs.object.eyecontact),{include_blank:true}, class: "form-control"
+            td
+              = srs.select :voice_volume,options_for_select([5,4,3,2,1],srs.object.voice_volume),{include_blank:true}, class: "form-control"
   .form-group
     = f.label :good, "親切にできた点（自分・周りのスタッフ）"
     = f.text_area :good, class: "form-control", size: "10x7"
   .form-group
-    = f.label :issue, "課題点・改善点"
+    = f.label :issue, "課題点・改善点・その他"
     = f.text_area :issue, class: "form-control", size: "10x7"
   .form-group
     = f.label :excess_or_deficiency_number_memo, "惣菜の盛り付け過不足の有無"
     = f.text_area :excess_or_deficiency_number_memo, class: "form-control", size: "10x7"
-  .form-group
-    = f.label :other_memo, "その他"
-    = f.text_area :other_memo, class: "form-control", size: "10x7"
+
 
   .form-group
     = f.label :slack_notify, "Slack通知"
-    = f.select :slack_notify,[["通知する",1],["通知しない",0]],{}, required: true,class:'form-control'
+    = f.select :slack_notify,[["通知する",1],["通知しない",0]],{},class:'form-control'
 
   .actions
   = f.submit "保存する", data: { confirm: "確定する場合はSlackで通知してくださいね"} , class:"btn btn-primary"

@@ -563,7 +563,11 @@ class DailyMenusController < AdminController
     respond_to do |format|
       format.html
       format.pdf do
-        pdf = ProductPdfAll.new(daily_menu.id,'daily_menus')
+        if params[:kana] == "true"
+          pdf = ProductPdfAllKana.new(daily_menu.id,'daily_menus')
+        else
+          pdf = ProductPdfAll.new(daily_menu.id,'daily_menus')
+        end
         send_data pdf.render,
         filename:    "#{daily_menu.id}.pdf",
         type:        "application/pdf",

@@ -59,7 +59,7 @@ class MaterialPreparation < Prawn::Document
             if lang == "1"
               test_hash[base_menu_material_id][6] += "、#{menu.name}（#{num}）"
             else
-              test_hash[base_menu_material_id][6] += "、#{menu.roma_name}（#{num}）"
+              test_hash[base_menu_material_id][6] += "、#{menu.short_name}（#{num}）"
             end
           else
             tmm = mm.temporary_menu_materials.find_by(date:date)
@@ -69,8 +69,8 @@ class MaterialPreparation < Prawn::Document
                 material_name=tmm.material.name
                 menu_name=menu.name
               else
-                material_name=tmm.material.roma_name
-                menu_name=menu.roma_name
+                material_name=tmm.material.short_name
+                menu_name=menu.short_name
               end
             else
               change_flag = ''
@@ -78,8 +78,8 @@ class MaterialPreparation < Prawn::Document
                 material_name=mm.material.name
                 menu_name=menu.name
               else
-                material_name=mm.material.roma_name
-                menu_name=menu.roma_name
+                material_name=mm.material.short_name
+                menu_name=menu.short_name
               end              
             end
             test_hash[base_menu_material_id] = ["#{mm.material.category_before_type_cast}-#{material_name}",material_name,amount,mm.material.recipe_unit,mm.post,mm.preparation,"#{menu_name} (#{num})",first,machine,group,change_flag]

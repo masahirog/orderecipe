@@ -13,8 +13,9 @@ class SalesReportsController < AdminController
   def new
     @staffs = Staff.where(group_id:current_user.group_id,employment_status:1,status:0)
     date = params[:date]
-    @business_day_num = Date.parse(date).end_of_month.day
     store_id = params[:store_id]
+    staff_ids = Shift.includes(:staff,:fix_shift_pattern).order("staffs.staff_code").where(date:date,store_id:store_id).where.not(fix_shift_pattern_id: nil).where.not(:fix_shift_patterns => {working_hour:0}).map{|shift|shift.staff_id}
+    @business_day_num = Date.parse(date).end_of_month.day
     @analysis = Analysis.find_by(date:date,store_id:store_id)
     if @analysis.present?
       @store_daily_menu = @analysis.store_daily_menu
@@ -42,6 +43,11 @@ class SalesReportsController < AdminController
       analysis_categories = AnalysisCategory.where(analysis_id:@analyses.ids)
       @bumon_ex_tax_sales_amount = analysis_categories.group(:smaregi_bumon_id).sum(:ex_tax_sales_amount)
       @bumon_discount_amount = analysis_categories.group(:smaregi_bumon_id).sum(:discount_amount)
+
+      staff_ids.each do |staff_id|
+        @sales_report.sales_report_staffs.build(staff_id:staff_id)
+      end
+
     else
       redirect_to select_store_sales_reports_path,danger: "日付を確認するか、先にスマレジの情報をアップロードしてください。"
     end
@@ -193,6 +199,7 @@ class SalesReportsController < AdminController
 
     def sales_report_params
       params.require(:sales_report).permit(:store_id,:date,:staff_id,:sales_amount,:sales_count,:good,:issue,:other_memo,
-        :analysis_id,:cash_error,:excess_or_deficiency_number_memo,:leaving_work,:vegetable_waste_amount)
+        :analysis_id,:cash_error,:excess_or_deficiency_number_memo,:leaving_work,:vegetable_waste_amount,:one_pair_one_talk,:tasting_number,
+        sales_report_staffs_attributes:[:sales_report,:staff_id,:smile,:eyecontact,:voice_volume,:talk_speed,:speed,:total,:memo])
     end
 end
