@@ -27,6 +27,7 @@ class RemindersController < AdminController
     @store = Store.find(params[:store_id])
     @reminders = @store.reminders.where(category:0,action_date:@date).order(:action_time)
     @reminders = @reminders.where(status:params[:status]) if params[:status].present?
+    @reminders = @reminders.where(important_flag:true) if params[:important].present?
     @reminder = Reminder.new(store_id:params[:store_id],action_date:params[:date])
   end
 

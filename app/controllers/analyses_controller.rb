@@ -336,8 +336,11 @@ class AnalysesController < AdminController
       @category_sum[category]["arari_sum"] = arari
       @category_sum[category]["arari_rate"] = (arari/estimated_sales.to_f*100).round(1) if estimated_sales > 0
     end
-
-
+    @sales_reports = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    SalesReport.where(date:@dates).each do |sr|
+      @sales_reports[sr.date][sr.store_id][:opot] = sr.one_pair_one_talk
+      @sales_reports[sr.date][sr.store_id][:tasting] = sr.tasting_number
+    end
   end
   def bumon_sales
     @to = Date.today

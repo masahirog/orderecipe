@@ -321,7 +321,7 @@ h3 日次数値確認
       tr
         th.text-center style="width:560px;" colspan=6
         - @stores.each do |store|
-          th.text-center style="border-left: 1px solid #ddd;width:700px;" colspan=11 = store.name
+          th.text-center style="border-left: 1px solid #ddd;width:800px;" colspan=13 = store.name
       tr
         th style='background-color:white;' 日付
         th style='' 来客組数
@@ -331,26 +331,18 @@ h3 日次数値確認
         th style='' ロス率
         - @stores.each do |store|
 					th style="border-left: 1px solid #ddd;" 社員
-					th 来客組数
+					th 来客
 					th style='' 売上
 					th style='' 惣売
 					th style='' 物売
 					th style='' 値引額
-					th style='' 廃棄金額
+					th style='' 廃棄額
 					th style='' ロス率
-					th
-						|QSC
-						br
-						|チェック
-					th
-						|QSC
-						br
-						|時間
-
-					th
-						|新規
-						br
-						|会員
+					th BASE
+					th TIME
+					th 新規U
+					th OPOT
+					th TAST
     tbody
       	- @dates.reverse_each do |date|
 	        tr
@@ -369,35 +361,41 @@ h3 日次数値確認
 	              - else
 	                span style='color:black;' = "#{loss}%"
 	          - @stores.each do |store|
-	          	td style="border-left: 1px solid #ddd;" = @shifts[store.id][date]
-	            td = @date_store_analyses[date][store.id][:transaction_count] if @date_store_analyses[date][store.id][:transaction_count].present?
-	            td = @date_store_analyses[date][store.id][:sales_amount].to_s(:delimited) if @date_store_analyses[date][store.id][:sales_amount].present?
-	            td = @date_sales[store.id][date][:souzai].to_s(:delimited) if @date_sales[store.id][date][:souzai].present?
-	            td = @date_sales[store.id][date][:good].to_s(:delimited) if @date_sales[store.id][date][:good].present?
-	            td = @date_store_analyses[date][store.id][:discount_amount].to_s(:delimited) if @date_store_analyses[date][store.id][:discount_amount].present?
-	            td = @date_store_analyses[date][store.id][:loss_amount].to_s(:delimited) if @date_store_analyses[date][store.id][:loss_amount].present?
-	            td
-	              - if @date_store_analyses[date][store.id][:sales_amount].present? && @date_store_analyses[date][store.id][:loss_amount].present? && @date_store_analyses[date][store.id][:discount_amount].present?
-	                - loss = (((@date_store_analyses[date][store.id][:loss_amount].to_f + @date_store_analyses[date][store.id][:discount_amount].to_f)/@date_store_analyses[date][store.id][:sales_amount])*100).round(1)
-	                - if loss > 9
-	                  span style='color:red;' = "#{loss}%"
-	                - elsif loss < 4
-	                  span style='color:#0000cd;' = "#{loss}%"
-	                - else
-	                  span style='color:black;' = "#{loss}%"
-	            td
-	            	- if @period_reminders_hash[store.id][date]["yet"].present?
-	            		span style='color:red;' = "#{@period_reminders_hash[store.id][date][:all] - @period_reminders_hash[store.id][date]["yet"]}/#{@period_reminders_hash[store.id][date][:all]}"
-	            	- else
-	            		= "#{@period_reminders_hash[store.id][date][:all]}/#{@period_reminders_hash[store.id][date][:all]}"
-	            td
-	            	- if @period_reminders_hash[store.id][date][:important_status].present?
-		            	- if @period_reminders_hash[store.id][date][:important_status].keys.include?('good')
-		            		= "#{(@period_reminders_hash[store.id][date][:important_status]['good']/@period_reminders_hash[store.id][date][:important_status].values.sum.to_f*100).round}%"
-		            	- else
-		            		= "0/#{@period_reminders_hash[store.id][date][:important_status].values.sum}"
-		            - else
-	            td = @kaiin_datas[[@stores_henkan[store.id.to_s],date]]
+							td style="border-left: 1px solid #ddd;" = @shifts[store.id][date]
+							td = @date_store_analyses[date][store.id][:transaction_count] if @date_store_analyses[date][store.id][:transaction_count].present?
+							td = @date_store_analyses[date][store.id][:sales_amount].to_s(:delimited) if @date_store_analyses[date][store.id][:sales_amount].present?
+							td = @date_sales[store.id][date][:souzai].to_s(:delimited) if @date_sales[store.id][date][:souzai].present?
+							td = @date_sales[store.id][date][:good].to_s(:delimited) if @date_sales[store.id][date][:good].present?
+							td = @date_store_analyses[date][store.id][:discount_amount].to_s(:delimited) if @date_store_analyses[date][store.id][:discount_amount].present?
+							td = @date_store_analyses[date][store.id][:loss_amount].to_s(:delimited) if @date_store_analyses[date][store.id][:loss_amount].present?
+							td
+								- if @date_store_analyses[date][store.id][:sales_amount].present? && @date_store_analyses[date][store.id][:loss_amount].present? && @date_store_analyses[date][store.id][:discount_amount].present?
+									- loss = (((@date_store_analyses[date][store.id][:loss_amount].to_f + @date_store_analyses[date][store.id][:discount_amount].to_f)/@date_store_analyses[date][store.id][:sales_amount])*100).round(1)
+									- if loss > 9
+										span style='color:red;' = "#{loss}%"
+									- elsif loss < 4
+										span style='color:#0000cd;' = "#{loss}%"
+									- else
+										span style='color:black;' = "#{loss}%"
+							td
+								- if @period_reminders_hash[store.id][date]["yet"].present?
+									= link_to "#{@period_reminders_hash[store.id][date][:all] - @period_reminders_hash[store.id][date]["yet"]}/#{@period_reminders_hash[store.id][date][:all]}",  store_reminders_path(store_id:store.id,status:'yet',date:date),style:'color:red;'
+								- else
+									= "#{@period_reminders_hash[store.id][date][:all]}/#{@period_reminders_hash[store.id][date][:all]}"
+							td
+								- if @period_reminders_hash[store.id][date][:important_status].present?
+									- if @period_reminders_hash[store.id][date][:important_status].keys.include?('good')
+										= link_to "#{(@period_reminders_hash[store.id][date][:important_status]['good']/@period_reminders_hash[store.id][date][:important_status].values.sum.to_f*100).round}%",  store_reminders_path(store_id:store.id,important:true,date:date)
+									- else
+										= "0%"
+								- else
+									|
+							td = @kaiin_datas[[@stores_henkan[store.id.to_s],date]]
+							- if @sales_reports[date][store.id].present?
+								td = "#{(@sales_reports[date][store.id][:opot]*100).round}%" if @sales_reports[date][store.id][:opot]
+								td = @sales_reports[date][store.id][:tasting]
+							- else
+								td.text-center colspan=2 no report
 javascript:
 
 
