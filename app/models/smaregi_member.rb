@@ -40,7 +40,7 @@ class SmaregiMember < ApplicationRecord
     new_members = []
     update_members = []
     saved_smaregi_members = SmaregiMember.all.map{|sm|[sm.kaiin_id,sm]}.to_h
-    member_raiten_kaisu = SmaregiTradingHistory.where.not(kaiin_id:nil).where(torihikimeisai_id:1,uchikeshi_kubun:0).group(:kaiin_id).count
+    # member_raiten_kaisu = SmaregiTradingHistory.where.not(kaiin_id:nil).where(torihikimeisai_id:1,uchikeshi_kubun:0).group(:kaiin_id).count
     CSV.foreach file.path, {encoding: 'BOM|UTF-8', headers: true} do |row|
       row = row.to_hash
       kaiin_id = row["会員ID"].to_i
@@ -59,30 +59,30 @@ class SmaregiMember < ApplicationRecord
       kaiin_zyotai = row["会員状態区分 (0:利用可, 1:利用停止, 2:紛失, 3:退会, 4:名寄せ)"]
       main_use_store = row["所属店舗"].to_i
       raiten_kaisu = 0
-      raiten_kaisu = member_raiten_kaisu[kaiin_id] if member_raiten_kaisu[kaiin_id]
+      # raiten_kaisu = member_raiten_kaisu[kaiin_id] if member_raiten_kaisu[kaiin_id]
       if saved_smaregi_members[kaiin_id].present?
-        smaregi_member = saved_smaregi_members[kaiin_id]
-        smaregi_member.sei_kana = sei_kana
-        smaregi_member.mei_kana = mei_kana
-        smaregi_member.mobile = mobile
-        smaregi_member.sex = sex
-        smaregi_member.birthday = birthday
-        smaregi_member.point = point
-        smaregi_member.point_limit = point_limit
-        smaregi_member.last_visit_store = last_visit_store
-        smaregi_member.taikaibi = taikaibi
-        smaregi_member.memo = memo
-        smaregi_member.kaiin_zyotai = kaiin_zyotai
-        smaregi_member.main_use_store = main_use_store
-        smaregi_member.raiten_kaisu = raiten_kaisu
-        update_members << smaregi_member
+        # smaregi_member = saved_smaregi_members[kaiin_id]
+        # smaregi_member.sei_kana = sei_kana
+        # smaregi_member.mei_kana = mei_kana
+        # smaregi_member.mobile = mobile
+        # smaregi_member.sex = sex
+        # smaregi_member.birthday = birthday
+        # smaregi_member.point = point
+        # smaregi_member.point_limit = point_limit
+        # smaregi_member.last_visit_store = last_visit_store
+        # smaregi_member.taikaibi = taikaibi
+        # smaregi_member.memo = memo
+        # smaregi_member.kaiin_zyotai = kaiin_zyotai
+        # smaregi_member.main_use_store = main_use_store
+        # smaregi_member.raiten_kaisu = raiten_kaisu
+        # update_members << smaregi_member
       else
         new_smaregi_member = SmaregiMember.new(kaiin_id:kaiin_id,kaiin_code:kaiin_code,sei_kana:sei_kana,mei_kana:mei_kana,mobile:mobile,sex:sex,birthday:birthday,point:point,
           point_limit:point_limit,last_visit_store:last_visit_store,nyukaibi:nyukaibi,taikaibi:taikaibi,memo:memo,kaiin_zyotai:kaiin_zyotai,main_use_store:main_use_store,raiten_kaisu:raiten_kaisu)
         new_members << new_smaregi_member
       end
     end
-    SmaregiMember.import update_members, on_duplicate_key_update:[:sei_kana,:mei_kana,:mobile,:sex,:birthday,:point,:point_limit,:last_visit_store,:taikaibi,:memo,:kaiin_zyotai,:main_use_store,:raiten_kaisu]
+    # SmaregiMember.import update_members, on_duplicate_key_update:[:sei_kana,:mei_kana,:mobile,:sex,:birthday,:point,:point_limit,:last_visit_store,:taikaibi,:memo,:kaiin_zyotai,:main_use_store,:raiten_kaisu]
     SmaregiMember.import new_members
     return
   end
