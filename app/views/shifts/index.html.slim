@@ -3,7 +3,7 @@
     = link_to "#{@date.last_month.month}月＜",shifts_path(date:@date.last_month,group_id:@group.id,stores:params[:stores].to_unsafe_h,store_type:params[:store_type]),style:"font-size:1.5em;"
     span style='font-size:1.5em;' = "　#{@date.year}年#{@date.month}月　"
     = link_to "＞#{@date.next_month.month}月",shifts_path(date:@date.next_month,group_id:@group.id,stores:params[:stores].to_unsafe_h,store_type:params[:store_type]),style:"font-size:1.5em;"
-  - if current_user.id == 74
+  - if current_user.id == 74 || current_user.id == 85
     .pull-left.mobile_view_hide style='margin-left:20px;'
       = form_tag shifts_path, :method => 'get' do
         = hidden_field_tag :group_id,@group.id
@@ -132,7 +132,7 @@
           tr.mobile_view_hide.shift_amount_tr class="store_#{store.id}_tr"
             td.fixed_second_thtd.mobile_view_hide style="padding:4px;"
             td.fixed_third_thtd.mobile_view_hide style='font-size:0.8em;border-right: 1px silver solid;'
-              - if current_user.id == 74
+              - if current_user.id == 74 || current_user.id == 85
                 = link_to "#{ssf.shift_frame.name}：#{ssf.default_number}",ssf.shift_frame
               - else
                 = "#{ssf.shift_frame.name}：#{ssf.default_number}"
@@ -164,7 +164,7 @@
           - bg = "white"
         tr.fix_shift_tr class="fix_shift_tr_#{staff.id}"
           td.staff_name style="line-height:0.9em;color:black;text-align:center;vertical-align:middle;z-index:3;white-space: normal;background-color: #{bg};"
-            - if current_user.id == 74
+            - if current_user.id == 74 || current_user.id == 85
               = link_to staff.name,edit_staff_path(staff)
             - else
               = staff.name
@@ -215,7 +215,7 @@
                   .fix_shift
                     span style='color:gray;' 調整中
 
-                - if current_user.id == 74
+                - if current_user.id == 74 || current_user.id == 85
                   .edit_fix_shift_form style='display:none;'
                     = form_with(model: @shifts[[staff.id,date]], data: {remote: true},class:"form_#{@shifts[[staff.id,date]].id}") do |f|
                       .clearfix style=''

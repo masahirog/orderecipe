@@ -396,42 +396,43 @@ h3 日次数値確認
 								td = @sales_reports[date][store.id][:tasting]
 							- else
 								td.text-center colspan=2 no report
-.table-responsive style='height:500px;overflow: scroll;'
-  table.table.layout-fixed style='border-collapse:separate;'
-    colgroup
-      col class="col1"
-      col class="col2"
-      col class="col2"
-      col class="col2"
-      - @dates.each do |date|
-        col class="col2"
+- if current_user.id == 74
+	.table-responsive style='height:500px;overflow: scroll;'
+	  table.table.layout-fixed style='border-collapse:separate;'
+	    colgroup
+	      col class="col1"
+	      col class="col2"
+	      col class="col2"
+	      col class="col2"
+	      - @dates.each do |date|
+	        col class="col2"
 
-    thead style='position: sticky;top:0;background-color:white;z-index:3;'
-      tr
-        th スタッフ名
-        th 出勤回数
-        th 掃除実施
-        th 新規会員
-        - @dates.reverse.each do |date|
-          th
-            = date.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[date.wday]})")
-            br
-            span style='font-weight: normal;' S｜E｜V
-    tbody
-      - @staffs.each do |staff|
-        tr
-          td = link_to staff.name,edit_staff_path(staff)
-          td = @jobcounts[staff.id]
-          td = @clean_done[staff.id]
-          td
-            - if staff.smaregi_hanbaiin_id.present?
-              = @staff_sinki_kaiin[staff.smaregi_hanbaiin_id]
-            - else
-              |ID未登録
-          - @dates.reverse.each do |date|
-            td
-              - if @sales_report_staffs[staff.id][date].present?
-                = link_to "#{@sales_report_staffs[staff.id][date][:smile]}｜#{@sales_report_staffs[staff.id][date][:eyecontact]}｜#{@sales_report_staffs[staff.id][date][:voice_volume]}",@sales_report_staffs[staff.id][date][:sales_report]
+	    thead style='position: sticky;top:0;background-color:white;z-index:3;'
+	      tr
+	        th スタッフ名
+	        th 出勤回数
+	        th 掃除実施
+	        th 新規会員
+	        - @dates.reverse.each do |date|
+	          th
+	            = date.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[date.wday]})")
+	            br
+	            span style='font-weight: normal;' S｜E｜V
+	    tbody
+	      - @staffs.each do |staff|
+	        tr
+	          td = link_to staff.name,edit_staff_path(staff)
+	          td = @jobcounts[staff.id]
+	          td = @clean_done[staff.id]
+	          td
+	            - if staff.smaregi_hanbaiin_id.present?
+	              = @staff_sinki_kaiin[staff.smaregi_hanbaiin_id]
+	            - else
+	              |ID未登録
+	          - @dates.reverse.each do |date|
+	            td
+	              - if @sales_report_staffs[staff.id][date].present?
+	                = link_to "#{@sales_report_staffs[staff.id][date][:smile]}｜#{@sales_report_staffs[staff.id][date][:eyecontact]}｜#{@sales_report_staffs[staff.id][date][:voice_volume]}",@sales_report_staffs[staff.id][date][:sales_report]
 
 
 javascript:
