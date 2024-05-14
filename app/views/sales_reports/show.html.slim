@@ -1,18 +1,23 @@
 .form-group
+  - sales_report_staffs = ""
+  - @sales_report.sales_report_staffs.each do |srs|
+    - sales_report_staffs += "\n#{srs.staff.name}　笑顔：#{srs.smile}｜目線：#{srs.eyecontact}｜声量：#{srs.voice_volume}"
   = link_to "一覧へ戻る",sales_reports_path,class:'btn btn-default btn-sm'
   h3 = "#{@sales_report.date.strftime("%Y/%-m/%-d (#{%w(日 月 火 水 木 金 土)[@sales_report.date.wday]})")}"
-  p = "スタッフ名：#{@sales_report.staff.name}"
-  p = "店舗：#{Store.find(@sales_report.store_id).name}"
+  h4 = "スタッフ名：#{@sales_report.staff.name}"
   p = "来店数：#{@analysis.transaction_count}"
   p = "売上：#{@analysis.ex_tax_sales_amount.to_s(:delimited)}円"
   p = "値引き金額：#{@analysis.discount_amount.to_s(:delimited)}円"
   p = "廃棄金額：#{@analysis.loss_amount.to_s(:delimited)}円"
   p = "ロス率：#{(((@analysis.discount_amount.to_f + @analysis.loss_amount.to_f)/@analysis.ex_tax_sales_amount)*100).round(1)}%"
   p = "現金誤差：#{@sales_report.cash_error} 円"
-  label 良かった点：
-  p = @sales_report.good
-  label 課題：
-  p = @sales_report.issue
-  label 備考：
-  p = @sales_report.other_memo
-/ = link_to "編集",edit_sales_report_path(@sales_report),class:'btn btn-primary'
+  p = "店舗：#{Store.find(@sales_report.store_id).name}"
+  p = "退勤時間：#{@sales_report.leaving_work.strftime("%-H:%M")}"
+  p = "ワンペアワントーク実施率： #{(@sales_report.one_pair_one_talk*100).round}%"
+  p = "試食実施数： #{@sales_report.tasting_number}"
+  label 試食内訳：
+  = text_url_to_link(simple_format(h(@sales_report.other_memo))).html_safe
+  label スタッフ別安心評価
+  = text_url_to_link(simple_format(h(sales_report_staffs))).html_safe
+  label 課題・改善・その他：
+  = text_url_to_link(simple_format(h(@sales_report.issue))).html_safe

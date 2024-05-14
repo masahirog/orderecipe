@@ -1,21 +1,65 @@
-= form_tag staffs_analyses_path, :method => 'get' do
-  = date_field_tag :from, @from, class:"form-control float-left",style:'width:200px;float:left;margin-right:20px;'
-  div style="float:left;padding:8px;margin-right:20px;" 〜
-  = date_field_tag :to, @to, class:"form-control",style:'width:200px;float:left;margin-right:20px;'
-  = submit_tag "絞り込む" ,class:"btn btn-primary",style:'float:left;'
+.clearfix
+  = form_tag staffs_analyses_path, :method => 'get' do
+    = date_field_tag :from, @from, class:"form-control float-left",style:'width:200px;float:left;margin-right:20px;'
+    div style="float:left;padding:8px;margin-right:20px;" 〜
+    = date_field_tag :to, @to, class:"form-control",style:'width:200px;float:left;margin-right:20px;'
+    = submit_tag "絞り込む" ,class:"btn btn-primary",style:'float:left;'
+.table-responsive style='height:90vh;overflow: scroll;'
+  table.table.layout-fixed style='border-collapse:separate;'
+    colgroup
+      col class="col1"
+      col class="col2"
+      col class="col2"
+      col class="col2"
+      - @dates.each do |date|
+        col class="col2"
 
-table.table
-  thead
-    tr
-      th スタッフ名
-      th 出勤回数
-      th 掃除実施
-      th 新規会員
-  tbody
-    - @staffs.each do |staff|
-      - if staff.smaregi_hanbaiin_id.present? && staff.smaregi_hanbaiin_id > 0
+    thead style='position: sticky;top:0;background-color:white;z-index:3;'
+      tr
+        th スタッフ名
+        th 出勤回数
+        th 掃除実施
+        th 新規会員
+        - @dates.each do |date|
+          th
+            = date.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[date.wday]})")
+            br
+            span 笑｜目｜声
+    tbody
+      - @staffs.each do |staff|
         tr
-          td = staff.name
+          td = link_to staff.name,edit_staff_path(staff)
           td = @jobcounts[staff.id]
           td = @clean_done[staff.id]
-          td = @staff_sinki_kaiin[staff.smaregi_hanbaiin_id]
+          td
+            - if staff.smaregi_hanbaiin_id.present?
+              = @staff_sinki_kaiin[staff.smaregi_hanbaiin_id]
+            - else
+              |ID未登録
+          - @dates.each do |date|
+            td
+              - if @sales_report_staffs[staff.id][date].present?
+                = link_to "#{@sales_report_staffs[staff.id][date][:smile]}｜#{@sales_report_staffs[staff.id][date][:eyecontact]}｜#{@sales_report_staffs[staff.id][date][:voice_volume]}",@sales_report_staffs[staff.id][date][:sales_report]
+
+css:
+  .table-responsive th {
+    white-space: nowrap;
+  }
+  table.layout-fixed {
+    table-layout: fixed;
+    border-collspace:separate;
+  }
+  .table th:first-child,td:first-child{
+    position: sticky;
+    left: 0;
+    z-index:2;
+  }
+  .aaa{
+    width:50px;
+  }
+  .col1{
+    width:120px;
+  }
+  .col2{
+    width:100px;
+  }

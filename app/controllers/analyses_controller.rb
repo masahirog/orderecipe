@@ -761,10 +761,11 @@ class AnalysesController < AdminController
       @from = @to - 30
       params[:from] = @from
     end
+    @dates = (@from..@to).to_a.reverse
     @group = Group.find(9)
-    store_ids = @group.stores.ids
-    @stores = Store.where(id:store_ids)
+    store_ids = @group.stores.where(store_type:'sales').ids
     @fix_shift_patterns = FixShiftPattern.where(group_id:@group.id)
+    StaffStore.where(store_id:store_ids)
     @staffs = Staff.joins(:staff_stores).where(status:0,:staff_stores => {store_id:store_ids}).order(:row).uniq
     @jobcounts = Shift.where(date:@from..@to).joins(:fix_shift_pattern).where.not(:fix_shift_patterns => {working_hour:0}).group(:staff_id).count
     @clean_done = Reminder.where(category:1).where(action_date:@from..@to).group(:do_staff).count
@@ -781,6 +782,15 @@ class AnalysesController < AdminController
       else
         @staff_sinki_kaiin[sth.hanbaiin_id] = 1
       end
+    end
+
+    sales_report_ids = SalesReport.where(date:@dates)
+    @sales_report_staffs = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    SalesReportStaff.where(sales_report_id:sales_report_ids).each do |srs|
+      @sales_report_staffs[srs.staff_id][srs.sales_report.date][:sales_report] = srs.sales_report
+      @sales_report_staffs[srs.staff_id][srs.sales_report.date][:smile] = srs.smile
+      @sales_report_staffs[srs.staff_id][srs.sales_report.date][:eyecontact] = srs.eyecontact
+      @sales_report_staffs[srs.staff_id][srs.sales_report.date][:voice_volume] = srs.voice_volume
     end
   end
   def stores
