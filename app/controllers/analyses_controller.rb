@@ -336,10 +336,42 @@ class AnalysesController < AdminController
       @category_sum[category]["arari_sum"] = arari
       @category_sum[category]["arari_rate"] = (arari/estimated_sales.to_f*100).round(1) if estimated_sales > 0
     end
+    sales_reports = SalesReport.where(date:@dates)
     @sales_reports = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    SalesReport.where(date:@dates).each do |sr|
+    sales_reports.each do |sr|
       @sales_reports[sr.date][sr.store_id][:opot] = sr.one_pair_one_talk
       @sales_reports[sr.date][sr.store_id][:tasting] = sr.tasting_number
+    end
+
+    @group = Group.find(9)
+    store_ids = @group.stores.where(store_type:'sales').ids
+    @fix_shift_patterns = FixShiftPattern.where(group_id:@group.id)
+    StaffStore.where(store_id:store_ids)
+    @staffs = Staff.joins(:staff_stores).where(status:0,:staff_stores => {store_id:store_ids}).order(:row).uniq
+    @jobcounts = Shift.where(date:@from..@to).joins(:fix_shift_pattern).where.not(:fix_shift_patterns => {working_hour:0}).group(:staff_id).count
+    @clean_done = Reminder.where(category:1).where(action_date:@from..@to).group(:do_staff).count
+    smaregi_members = SmaregiMember.where(nyukaibi:@from..@to)
+    kaiin_ids = smaregi_members.map{|sm|sm.kaiin_id}
+    @hash = {}
+    SmaregiTradingHistory.order("date desc").where(kaiin_id:kaiin_ids).where(date:@from..@to).where(torihikimeisai_id:1).each do |sth|
+      @hash[sth.kaiin_id] = sth
+    end
+    @staff_sinki_kaiin = {}
+    @hash.values.each do |sth|
+      if @staff_sinki_kaiin[sth.hanbaiin_id].present?
+        @staff_sinki_kaiin[sth.hanbaiin_id] += 1
+      else
+        @staff_sinki_kaiin[sth.hanbaiin_id] = 1
+      end
+    end
+
+    
+    @sales_report_staffs = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    SalesReportStaff.where(sales_report_id:sales_reports.ids).each do |srs|
+      @sales_report_staffs[srs.staff_id][srs.sales_report.date][:sales_report] = srs.sales_report
+      @sales_report_staffs[srs.staff_id][srs.sales_report.date][:smile] = srs.smile
+      @sales_report_staffs[srs.staff_id][srs.sales_report.date][:eyecontact] = srs.eyecontact
+      @sales_report_staffs[srs.staff_id][srs.sales_report.date][:voice_volume] = srs.voice_volume
     end
   end
   def bumon_sales
