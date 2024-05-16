@@ -50,7 +50,7 @@ Rails.application.routes.draw do
     end
   end
   devise_for :users
-  root 'analyses#summary'
+  root 'analyses#kpi'
   get '/list' => 'application#list'
   post 'orders/new' => 'orders#new'
   post'orders/order_print/:id' => 'orders#order_print'
