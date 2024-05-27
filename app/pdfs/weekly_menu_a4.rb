@@ -126,7 +126,7 @@ class WeeklyMenuA4 < Prawn::Document
       text_box("<font size='10'>#{product.sell_price}</font> 円",at: [718,height-5], width: 100, height: 40,size:8,inline_format: true)
       text_box("税込",at: [750,height], width: 100, height: 40,size:5)
       text_box("<font size='7'>#{product.tax_including_sell_price}</font> 円",at: [750,height-7], width: 200, height: 40,size:5,inline_format: true)
-      height -= 20
+      height -= 21
     end
     text_box("※メニューは仕入れ状況等によって変動する場合がございます。",at: [545,height-5], width: 300, height: 40,size:8)
     # dash(8, space: 2, phase: 1)
@@ -155,8 +155,8 @@ class WeeklyMenuA4 < Prawn::Document
     fill_color 'eeeeee'
     fill_rounded_rectangle [470,90], 300, 60, 2
     fill_color '000000'
-    text_box("予約お取り置き",at: [480,83], width: 140, height: 40,size:11)
-    text_box("お惣菜のお取り置き予約が可能です。時間に合わせてご用意しますので、お渡しもスムーズです。",at: [480,70], width: 160, height: 40,size:8)
+    text_box("予約お取り置き",at: [480,80], width: 180, height: 40,size:11)
+    text_box("お惣菜のお取り置き予約が可能です。時間に合わせてご用意しますので、お渡しもスムーズです。",at: [480,65], width: 200, height: 40,size:9)
     if store.yoyaku_url.present?
       qr_code = Barby::QrCode.new(store.yoyaku_url)
       barcode_blob = Barby::PngOutputter.new(qr_code).to_png(margin: 2)
