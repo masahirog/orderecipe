@@ -202,9 +202,9 @@ class WeeklyMenuA3 < Prawn::Document
     fill_color '000000'
     text_box("㉓",at: [430,right_height-4], width: 30, height: 40,size:14)
     text_box(daily_menu_details[23].product.food_label_name,at: [450,right_height+5], width: 250, height: 30,size:14, valign: :center)
-    text_box("780<font size='10'>円</font>",inline_format: true,at: [705,right_height-5], width: 350, height: 40,size:14)
+    text_box("#{daily_menu_details[23].product.sell_price}<font size='10'>円</font>",inline_format: true,at: [705,right_height-5], width: 350, height: 40,size:14)
     text_box("税込",at: [745,right_height-5], width: 350, height: 40,size:6)
-    text_box("840円",at: [745,right_height-12], width: 350, height: 40,size:8)
+    text_box("#{daily_menu_details[23].product.tax_including_sell_price}円",at: [745,right_height-12], width: 350, height: 40,size:8)
     text_box(daily_menu_details[23].product.contents,at: [455,right_height-25], width: 280, height: 30,size:9, valign: :center)
 
 
