@@ -2,13 +2,12 @@ class SourcesPdf < Prawn::Document
   def initialize(from,to,controler)
 
     # 初期設定。ここでは用紙のサイズを指定している。
-    super(
-      page_size: 'A4',
-      page_layout: :landscape)
+    super(page_size: 'A4',page_layout: :landscape)
     #日本語のフォント
     font "vendor/assets/fonts/ipaexg.ttf"
     daily_menus = DailyMenu.where(start_time:from..to)
-    daily_menu_details = DailyMenuDetail.includes([:daily_menu]).where(daily_menu_id:daily_menus.ids)
+    daily_menu_details = DailyMenuDetail.includes([:daily_menu,product:[menus:[menu_materials:[:material]]]]).where(daily_menu_id:daily_menus.ids)
+    material_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     daily_menu_details.each do |dmd|
       dmd.product.menus.each do |menu|
@@ -17,8 +16,21 @@ class SourcesPdf < Prawn::Document
         else
           hash[menu.id][dmd.daily_menu.start_time] = dmd.manufacturing_number
         end
+        menu.menu_materials.each do |mm|
+          if mm.post == "タレ"
+            if material_hash[mm.material_id].present?
+              material_hash[mm.material_id][:amount] += (dmd.manufacturing_number * mm.amount_used)
+            else
+              material_hash[mm.material_id][:amount] = (dmd.manufacturing_number * mm.amount_used)
+              material_hash[mm.material_id][:material] = mm.material
+            end            
+          end
+        end
       end
     end
+    material_table_content(material_hash)
+    start_new_page
+
     index = 0
     bounding_box([-5,540], :width => 880) {
       hash.each do |data|
@@ -43,6 +55,21 @@ class SourcesPdf < Prawn::Document
     end
 
   end
+
+   def material_table_content(material_hash)
+    table material_rows(material_hash) do
+      self.header = true
+      self.column_widths = [300,100,50]
+    end
+  end
+  def material_rows(material_hash)
+    data = [['食材','量','単位']]
+    material_hash.each do |material_data|
+      data << [material_data[1][:material].name,(material_data[1][:amount]/material_data[1][:material].accounting_unit_quantity).round(1),material_data[1][:material].accounting_unit]
+    end
+    data
+  end
+ 
 
   def table_content(menu,dates_num)
     table line_item_rows(menu,dates_num) do
