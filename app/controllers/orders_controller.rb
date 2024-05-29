@@ -50,15 +50,17 @@ class OrdersController < AdminController
     @items_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     ItemOrder.includes(item_order_items:[:item]).where(delivery_date:@date).each do |io|
       io.item_order_items.each do |ioi|
-        if @items_hash[io.store_id][ioi.item_id].present?
-          @items_hash[io.store_id][ioi.item_id][:order_quantity] += ioi.order_quantity.to_i
-          @items_hash[io.store_id][ioi.item_id][:item_order_item][ioi.id][:item_order] = io
-          @items_hash[io.store_id][ioi.item_id][:item_order_item][ioi.id][:attribute] = ioi
-        else
-          @items_hash[io.store_id][ioi.item_id][:attribute] = ioi.item
-          @items_hash[io.store_id][ioi.item_id][:order_quantity] = ioi.order_quantity.to_i
-          @items_hash[io.store_id][ioi.item_id][:item_order_item][ioi.id][:item_order] = io
-          @items_hash[io.store_id][ioi.item_id][:item_order_item][ioi.id][:attribute] = ioi
+        if ioi.item.present?
+          if @items_hash[io.store_id][ioi.item_id].present?
+            @items_hash[io.store_id][ioi.item_id][:order_quantity] += ioi.order_quantity.to_i
+            @items_hash[io.store_id][ioi.item_id][:item_order_item][ioi.id][:item_order] = io
+            @items_hash[io.store_id][ioi.item_id][:item_order_item][ioi.id][:attribute] = ioi
+          else
+            @items_hash[io.store_id][ioi.item_id][:attribute] = ioi.item
+            @items_hash[io.store_id][ioi.item_id][:order_quantity] = ioi.order_quantity.to_i
+            @items_hash[io.store_id][ioi.item_id][:item_order_item][ioi.id][:item_order] = io
+            @items_hash[io.store_id][ioi.item_id][:item_order_item][ioi.id][:attribute] = ioi
+          end
         end
       end
     end
