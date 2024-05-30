@@ -1,0 +1,69 @@
+doctype html
+html
+  head
+    title
+      | 柴田屋グループ社販サイト
+    = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload'
+    = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
+    = csrf_meta_tags
+    meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no"
+    link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet"
+    link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-rc.2/css/select2.min.css" rel="stylesheet"
+    script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.0/jquery-ui.min.js"
+    script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"
+    script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-rc.2/js/select2.min.js"
+    script src="https://kit.fontawesome.com/2582000750.js" crossorigin="anonymous"
+
+    link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/css/lightbox.css" rel="stylesheet"
+  body data-controller="#{controller_name}" data-action="#{action_name}"
+    header
+      nav.navbar.navbar-default
+        .container-fluid
+          .navbar-header
+            button.navbar-toggle.collapsed[type="button" data-toggle="collapse" data-target="#navbarEexample"]
+              span.sr-only
+                | Toggle navigation
+              span.icon-bar
+              span.icon-bar
+              span.icon-bar
+            a.navbar-brand style="padding:12px 10px 8px 20px;" href="/shibataya"
+              |柴田屋グループ社販サイト
+          #navbarEexample.collapse.navbar-collapse
+            ul.nav.navbar-nav
+              li.menu_li = link_to '注文','/shibataya'
+              li.menu_li = link_to 'ご注文状況','/shibataya_orders'
+              li.menu_li = link_to '使い方','/shibataya_howto'
+
+    .all_body
+      h4
+        b べじはんが健康的な食生活をサポート！
+      span 柴田屋グループ社員の方は、べじはんでのお食事のお買い物に、新たに福利厚生として、食事補助（30%）が適用されることになりました！これまでの社割も同様にご使用いただけますので、なんと定価の50%で食事を購入することができることになりました！ぜひ皆さまのご利用をお待ちしております！
+      br
+      br
+      p 【例】定価1,000円のお弁当
+      p 　　社割： -200円
+      p 　　食事補助： -300円
+      b 　　社員の負担金額 500円
+      br
+      br
+      b 社割：
+      p べじはんのお惣菜が20%割引となります。（※一部商品を除く）
+      b 福利厚生 食事補助：
+      p お会計の30%を福利厚生として会社として補助。月間の上限は3,500円。
+      br
+      h4
+        b 福利厚生（30%引き）の使い方
+      p 1.本予約サイトからご注文をお願いいたします。
+      p 2.予約は当日の12時まで可能です（3日後まで可能となっております）
+      p 3.商品は店頭でご用意しておきますので、時間頃にお店にお伺い下さい。
+      p 4.こちらのサイトからのご注文は、給与天引きとなりますので、店頭でのお支払いは不要です。
+      br
+      b 給与天引きについて
+      p 福利厚生の金額等を集計するため、こちらのサイト上での予約が必須となります。
+      p また店頭での計算を間違えてしまうことを防ぐために、このサイトで注文した分は社員負担分もあわせて給与天引きとさせて頂きます。
+      p 月次で集計して、総務と連携し、毎月の明細に加えていただきます。明細は何かしら見れるように準備致します。
+      br
+      b その他
+      p 福利厚生は月3,500円が上限になりますので、ご注意下さい。
+      p ここにない商品は、福利厚生の対象外となりますので、店頭にて別途ご注文の上、お会計ください。
+      p 欠品等の場合はご連絡させていただく場合がございます。

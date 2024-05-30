@@ -1,0 +1,101 @@
+doctype html
+html
+  head
+    title
+      | 柴田屋グループ社販サイト
+    = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload'
+    = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
+    = csrf_meta_tags
+    meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no"
+    link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet"
+    link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-rc.2/css/select2.min.css" rel="stylesheet"
+    script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.0/jquery-ui.min.js"
+    script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"
+    script src="https://kit.fontawesome.com/2582000750.js" crossorigin="anonymous"
+    script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-rc.2/js/select2.min.js"
+    link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/css/lightbox.css" rel="stylesheet"
+  body data-controller="#{controller_name}" data-action="#{action_name}"
+    header
+      nav.navbar.navbar-default
+        .container-fluid
+          .navbar-header
+            button.navbar-toggle.collapsed[type="button" data-toggle="collapse" data-target="#navbarEexample"]
+              span.sr-only
+                | Toggle navigation
+              span.icon-bar
+              span.icon-bar
+              span.icon-bar
+            a.navbar-brand style="padding:12px 10px 8px 20px;" href="/shibataya"
+              |柴田屋グループ社販サイト
+          #navbarEexample.collapse.navbar-collapse
+            ul.nav.navbar-nav
+              li.menu_li = link_to '注文','/shibataya'
+              li.menu_li = link_to 'ご注文状況','/shibataya_orders'
+              li.menu_li = link_to '使い方','/shibataya_howto'
+
+    .all_body
+      p.notice = notice
+      label ご予約日：
+      br
+      span = link_to '＜＜　',shibataya_orders_path(date:(@date-1))
+      span = @date.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[@date.wday]})")
+      span = link_to '　＞＞',shibataya_orders_path(date:(@date+1))
+      br
+      br
+      ul.list-group.form-group
+        - @pre_orders.each do |pre_order|
+          li.list-group-item.col-md-12 style='padding:5px 15px;'
+            div = "社員ID：#{pre_order.employee_id}"
+            div
+              = "#{pre_order.store.name} #{pre_order.recipient_time.strftime('%H:%M')}　"
+              = link_to "tel:" + pre_order.store.phone do
+                i class="fa-solid fa-square-phone"
+
+            div = "ーーー"
+            - pre_order.pre_order_products.each do |pop|
+              = "#{pop.product.food_label_name}：#{pop.order_num}"
+
+css:
+  .table-responsive th {
+    white-space: nowrap;
+    background-color:white;
+  }
+  table.layout-fixed {
+    table-layout: fixed;
+    border-collspace:separate;
+  }
+  .table th:first-child,td:first-child{
+    position: sticky;
+    left: 0;
+    background-color:white;
+  }
+  th,td {
+  }
+  .col1{
+    width:100px;
+  }
+  .col2{
+    width:110px;
+  }
+  .col3{
+    width:200px;
+  }
+  .col4{
+    width:100px;
+  }
+  .col5{
+    width:100px;
+  }
+  .col6{
+    width:150px;
+  }
+  .col7{
+    width:150px;
+  }
+  .col8{
+    width:150px;
+  }
+  .col9{
+    width:150px;
+  }
+      

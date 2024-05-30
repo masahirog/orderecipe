@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_05_12_134556) do
+ActiveRecord::Schema.define(version: 2024_05_30_003841) do
 
   create_table "analyses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "store_id"
@@ -642,6 +642,29 @@ ActiveRecord::Schema.define(version: 2024_05_12_134556) do
     t.text "memo"
   end
 
+  create_table "pre_order_products", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "pre_order_id", null: false
+    t.bigint "product_id", null: false
+    t.integer "order_num", default: 0, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["pre_order_id"], name: "index_pre_order_products_on_pre_order_id"
+    t.index ["product_id"], name: "index_pre_order_products_on_product_id"
+  end
+
+  create_table "pre_orders", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "store_id", null: false
+    t.date "date", null: false
+    t.time "recipient_time", null: false
+    t.integer "employee_id"
+    t.string "recipient_name"
+    t.integer "status"
+    t.text "memo"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["store_id"], name: "index_pre_orders_on_store_id"
+  end
+
   create_table "product_bbs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "product_id", null: false
     t.string "image"
@@ -788,7 +811,7 @@ ActiveRecord::Schema.define(version: 2024_05_12_134556) do
     t.integer "important_status"
   end
 
-  create_table "sales_report_staffs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "sales_report_staffs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "sales_report_id", null: false
     t.bigint "staff_id", null: false
     t.integer "smile"
@@ -804,7 +827,7 @@ ActiveRecord::Schema.define(version: 2024_05_12_134556) do
     t.index ["staff_id"], name: "index_sales_report_staffs_on_staff_id"
   end
 
-  create_table "sales_reports", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "sales_reports", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.integer "analysis_id", null: false
     t.integer "store_id", null: false
     t.date "date", null: false

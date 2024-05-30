@@ -2,7 +2,7 @@ class ApplicationController < ActionController::Base
   # http_basic_authenticate_with :name => ENV['BASIC_AUTH_USERNAME'], :password => ENV['BASIC_AUTH_PASSWORD'] if Rails.env == "production"
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
-  before_action :authenticate_user!, except: [:list]
+  before_action :authenticate_user!, if: :use_auth?
   protect_from_forgery with: :exception
   add_flash_types :success, :info, :warning, :danger
   before_action :user_check
@@ -50,7 +50,55 @@ class ApplicationController < ActionController::Base
     render :layout => false
   end
 
+  def shibataya
+    if params[:date]
+      @date = Date.parse(params[:date])
+      if @date < @today || @today + 3 < @date
+        @date = @today
+      end
+    else
+      @date = @today
+    end
+    @daily_menu = DailyMenu.find_by(start_time:@date)
+    product_ids = []
+    @daily_menu.daily_menu_details.includes([:product]).each do |dmd|
+      product_ids << dmd.product_id if dmd.product.product_category == "お弁当" || dmd.product.product_category == "ご飯・丼" || dmd.product.product_category == "惣菜" ||dmd.product.product_category == "スイーツ・ドリンク"
+    end
+    @pre_order = PreOrder.new
+    product_ids.each do |product_id|
+      @pre_order.pre_order_products.build(product_id:product_id,order_num:0)
+    end
+    @stores = Store.where(id:[9,19,29,154,164])
+    @times = []
+    (11..20).each do |h|
+      ["00","15","30","45"].each do |m|
+        @times << "#{h}:#{m}"
+      end
+    end
+    
+    render :layout => false
+  end
+  def shibataya_howto
+    render :layout => false
+  end
+  def shibataya_orders
+    if params[:date]
+      @date = Date.parse(params[:date])
+    else
+      @date = @today
+    end
+    @pre_orders = PreOrder.includes(:store,:pre_order_products).where(date:@date)
+    render :layout => false
+  end
 
+
+  private
+
+  def use_auth?
+    unless controller_name == 'pre_orders' || action_name == 'shibataya'|| action_name == 'shibataya_orders'|| action_name == 'shibataya_howto'
+      true
+    end
+  end      
   protected
     # def revert_link
     #   view_context.link_to('取消', revert_version_path(@material.versions.last), :method => :post)

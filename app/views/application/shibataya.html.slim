@@ -1,0 +1,125 @@
+doctype html
+html
+  head
+    title
+      | 柴田屋グループ社販サイト
+    = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload'
+    = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
+    = csrf_meta_tags
+    meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no"
+    link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet"
+    link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-rc.2/css/select2.min.css" rel="stylesheet"
+    script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.0/jquery-ui.min.js"
+    script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"
+    script src="https://kit.fontawesome.com/2582000750.js" crossorigin="anonymous"
+    script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0-rc.2/js/select2.min.js"
+    link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/css/lightbox.css" rel="stylesheet"
+  body data-controller="#{controller_name}" data-action="#{action_name}"
+    header
+      nav.navbar.navbar-default
+        .container-fluid
+          .navbar-header
+            button.navbar-toggle.collapsed[type="button" data-toggle="collapse" data-target="#navbarEexample"]
+              span.sr-only
+                | Toggle navigation
+              span.icon-bar
+              span.icon-bar
+              span.icon-bar
+            a.navbar-brand style="padding:12px 10px 8px 20px;" href="/shibataya"
+              |柴田屋グループ社販サイト
+          #navbarEexample.collapse.navbar-collapse
+            ul.nav.navbar-nav
+              li.menu_li = link_to '注文','/shibataya'
+              li.menu_li = link_to 'ご注文状況','/shibataya_orders'
+              li.menu_li = link_to '使い方','/shibataya_howto'
+
+    .all_body
+      p.notice = notice
+      .clearfix
+        = form_with model:@pre_order do |f|
+          .form-group
+            label ご予約日　
+            span = link_to '＜＜　',shibataya_path(date:(@date-1))
+            span style='font-size:1.5em;' = @date.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[@date.wday]})")
+            span = link_to '　＞＞',shibataya_path(date:(@date+1))
+            = f.hidden_field :date,value:@date
+
+          .form-group
+            = f.label :store_id, "受取店舗名",class:'required'
+            = f.collection_select :store_id, @stores, :id, :name, {include_blank:true},class:'form-control', required:true
+
+          .form-group
+            = f.label :recipient_time, "受取時間",class:'required'
+            / = f.time_field :recipient_time,class:'form-control', required:true,step:900
+            = f.select :recipient_time, options_for_select(@times),{},class:'form-control'
+
+          .form-group
+            = f.label :employee_id, "社員番号"
+            = f.text_field :employee_id,class:'form-control', required: true
+          .form-group
+            = f.label :recipient_name, "名前"
+            = f.text_field :recipient_name,class:'form-control', required: true
+          .form-group
+            = f.label :tel, "電話番号"
+            = f.text_field :tel,class:'form-control', required: true
+
+          .form-group
+            = f.label :memo, "メモ"
+            = f.text_area :memo,class:'form-control'
+          table.table
+            thead
+              tr
+                th style='min-width:200px' 商品
+                th style='min-width:60px' 
+                th style='min-width:60px' 
+            tbody
+              tr style='background-color:#f5f5f5'
+                td お弁当・丼
+                td 税込
+                td 数
+
+              = f.fields_for :pre_order_products do |pop|
+                - if pop.object.product.product_category == 'お弁当' || pop.object.product.product_category == 'ご飯・丼'
+                  = pop.hidden_field :product_id,value:pop.object.product_id
+                  tr
+                    td = pop.object.product.food_label_name
+                    td
+                      s = pop.object.product.tax_including_sell_price
+                      br
+                      span style='color:red;' = number_to_currency((pop.object.product.tax_including_sell_price * 0.5).floor, :unit => "￥", format: "%u%n")
+
+                    td = pop.select :order_num,options_for_select(0..10),{}, class: "form-control",style:'padding:5px;'
+              tr style='background-color:#f5f5f5'
+                td お惣菜
+                td 税込
+                td 数
+              = f.fields_for :pre_order_products do |pop|
+                - if pop.object.product.product_category == '惣菜'
+                  = pop.hidden_field :product_id,value:pop.object.product_id
+                  tr
+                    td = pop.object.product.food_label_name
+                    td
+                      s = pop.object.product.tax_including_sell_price
+                      br
+                      span style='color:red;' = number_to_currency((pop.object.product.tax_including_sell_price * 0.5).floor, :unit => "￥", format: "%u%n")
+                    td = pop.select :order_num,options_for_select(0..10),{}, class: "form-control",style:'padding:5px;'
+              tr style='background-color:#f5f5f5'
+                td デザート
+                td 税込
+                td 数
+
+              = f.fields_for :pre_order_products do |pop|
+                - if pop.object.product.product_category == 'スイーツ・ドリンク'
+                  = pop.hidden_field :product_id,value:pop.object.product_id
+                  tr
+                    td = pop.object.product.food_label_name
+                    td
+                      s = pop.object.product.tax_including_sell_price
+                      br
+                      span style='color:red;' = number_to_currency((pop.object.product.tax_including_sell_price * 0.5).floor, :unit => "￥", format: "%u%n")
+                    td = pop.select :order_num,options_for_select(0..10),{}, class: "form-control",style:'padding:5px;'
+
+
+          .actions style='margin-bottom:50px;text-align: center;'
+            = f.submit "確定する", data: { confirm: "日時、商品、店舗にお間違いありませんか？"} , class:"btn btn-primary"
+

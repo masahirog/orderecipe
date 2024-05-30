@@ -1,0 +1,19 @@
+h1 Listing pre_orders
+
+table
+  thead
+    tr
+      th
+      th
+      th
+
+  tbody
+    - @pre_orders.each do |pre_order|
+      tr
+        td = link_to 'Show', pre_order
+        td = link_to 'Edit', edit_pre_order_path(pre_order)
+        td = link_to 'Destroy', pre_order, data: { confirm: 'Are you sure?' }, method: :delete
+
+br
+
+= link_to 'New Pre order', new_pre_order_path

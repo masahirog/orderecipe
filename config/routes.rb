@@ -52,6 +52,9 @@ Rails.application.routes.draw do
   devise_for :users
   root 'analyses#kpi'
   get '/list' => 'application#list'
+  get '/shibataya' => 'application#shibataya'
+  get '/shibataya_orders' => 'application#shibataya_orders'
+  get '/shibataya_howto' => 'application#shibataya_howto'
   post 'orders/new' => 'orders#new'
   post'orders/order_print/:id' => 'orders#order_print'
   post "products/henkan" => "products#henkan"
@@ -89,6 +92,7 @@ Rails.application.routes.draw do
   
   get "working_hour_work_types/working_hour_change" => "working_hour_work_types#working_hour_change"
   get "working_hour_work_types/time_change" => "working_hour_work_types#time_change"
+  resources :pre_orders
   resources :working_hours do
     collection do
       get :detail
