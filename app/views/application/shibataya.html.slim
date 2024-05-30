@@ -83,7 +83,18 @@ html
                 - if pop.object.product.product_category == 'お弁当' || pop.object.product.product_category == 'ご飯・丼'
                   = pop.hidden_field :product_id,value:pop.object.product_id
                   tr
-                    td = pop.object.product.food_label_name
+                    td
+                      = pop.object.product.food_label_name
+                      - if pop.object.product.sell_price == 890 && pop.object.product.product_category == 'お弁当'
+                        br
+                        span style='font-size:0.8em;color:#a9a9a9;' 副菜3種&週替りポタージュ付
+                      - elsif pop.object.product.sell_price == 790 && pop.object.product.product_category == 'お弁当'
+                        br
+                        span style='font-size:0.8em;color:#a9a9a9;' 副菜の数が3種
+                      - elsif pop.object.product.sell_price == 690 && pop.object.product.product_category == 'お弁当'
+                        br
+                        span style='font-size:0.8em;color:#a9a9a9;' 副菜の数が2種
+
                     td
                       s = pop.object.product.tax_including_sell_price
                       br
