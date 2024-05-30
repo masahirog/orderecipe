@@ -20,6 +20,13 @@ class ItemsController < ApplicationController
     @item_store_stocks = ItemStoreStock.includes(item:[:item_vendor]).where(store_id:store_id,date:date)
     respond_to do |format|
       format.html
+      format.pdf do
+        pdf = ItemInventory.new(@item_store_stocks)
+        send_data pdf.render,
+        filename:    "#{@store.short_name}_物販棚卸し.pdf",
+        type:        "application/pdf",
+        disposition: "inline"
+      end
       format.csv do
         send_data render_to_string, filename: "#{@store.id}_stocks.csv", type: :csv
       end
