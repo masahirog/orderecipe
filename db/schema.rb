@@ -658,6 +658,7 @@ ActiveRecord::Schema.define(version: 2024_05_30_003841) do
     t.time "recipient_time", null: false
     t.integer "employee_id"
     t.string "recipient_name"
+    t.string "tel"
     t.integer "status"
     t.text "memo"
     t.datetime "created_at", precision: 6, null: false

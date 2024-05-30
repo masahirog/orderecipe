@@ -6,6 +6,7 @@ class CreatePreOrders < ActiveRecord::Migration[6.0]
       t.time :recipient_time,null:false
       t.integer :employee_id
       t.string :recipient_name
+      t.string :tel
       t.integer :status
       t.text :memo
       t.timestamps

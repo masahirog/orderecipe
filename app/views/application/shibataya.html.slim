@@ -52,17 +52,16 @@ html
 
           .form-group
             = f.label :recipient_time, "受取時間",class:'required'
-            / = f.time_field :recipient_time,class:'form-control', required:true,step:900
-            = f.select :recipient_time, options_for_select(@times),{},class:'form-control'
+            = f.select :recipient_time, options_for_select(@times),{},class:'form-control', required:true
 
           .form-group
-            = f.label :employee_id, "社員番号"
+            = f.label :employee_id, "社員番号",class:'required'
             = f.text_field :employee_id,class:'form-control', required: true
           .form-group
-            = f.label :recipient_name, "名前"
+            = f.label :recipient_name, "名前",class:'required'
             = f.text_field :recipient_name,class:'form-control', required: true
           .form-group
-            = f.label :tel, "電話番号"
+            = f.label :tel, "電話番号",class:'required'
             = f.text_field :tel,class:'form-control', required: true
 
           .form-group
