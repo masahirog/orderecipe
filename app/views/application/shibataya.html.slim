@@ -39,9 +39,11 @@ html
         = form_with model:@pre_order do |f|
           .form-group
             label ご予約日　
-            span = link_to '＜＜　',shibataya_path(date:(@date-1))
+            - unless @date == @today
+              span = link_to '＜＜　',shibataya_path(date:(@date-1))
             span style='font-size:1.5em;' = @date.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[@date.wday]})")
-            span = link_to '　＞＞',shibataya_path(date:(@date+1))
+            - if @date < (@today + 3)
+              span = link_to '　＞＞',shibataya_path(date:(@date+1))
             = f.hidden_field :date,value:@date
 
           .form-group

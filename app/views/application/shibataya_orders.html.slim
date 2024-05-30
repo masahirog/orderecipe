@@ -35,10 +35,10 @@ html
 
     .all_body
       p.notice = notice
-      label ご予約日：
+      label ご予約日
       br
       span = link_to '＜＜　',shibataya_orders_path(date:(@date-1))
-      span = @date.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[@date.wday]})")
+      span style='font-size:1.5em;' = @date.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[@date.wday]})")
       span = link_to '　＞＞',shibataya_orders_path(date:(@date+1))
       br
       br

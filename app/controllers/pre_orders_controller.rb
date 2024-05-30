@@ -20,7 +20,7 @@ class PreOrdersController < ApplicationController
 
     respond_to do |format|
       if @pre_order.save
-        format.html { redirect_to '/shibataya', notice: "予約が完了しました。" }
+        format.html { redirect_to shibataya_orders_path(date:@pre_order.date), notice: "ご予約が完了しました。修正等の場合はお店までご連絡をお願いします。" }
         format.json { render :show, status: :created, location: @pre_order }
       else
         format.html { render :new, status: :unprocessable_entity }
