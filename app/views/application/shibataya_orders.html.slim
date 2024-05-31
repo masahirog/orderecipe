@@ -53,7 +53,7 @@ html
 
             div = "ーーー"
             - pre_order.pre_order_products.each do |pop|
-              span = "#{pop.product.food_label_name}：#{pop.order_num}"
+              span = "#{pop.product.food_label_name}(#{number_to_currency((pop.product.tax_including_sell_price * 0.5).floor, :unit => "￥", format: "%u%n")})：#{pop.order_num}"
               br
 
 css:
