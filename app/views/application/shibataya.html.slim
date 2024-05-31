@@ -35,103 +35,108 @@ html
 
     .all_body
       p.notice = notice
-      .clearfix
-        = form_with model:@pre_order do |f|
-          .form-group
-            label ご予約日　
-            - unless @date == @today
-              span = link_to '＜＜　',shibataya_path(date:(@date-1))
-            span style='font-size:1.5em;' = @date.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[@date.wday]})")
-            - if @date < (@today + 3)
-              span = link_to '　＞＞',shibataya_path(date:(@date+1))
-            = f.hidden_field :date,value:@date
+      - if @date == @today && Time.now.hour > 12
+        span style='font-size:1.5em;' = @date.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[@date.wday]})")
+        span = link_to '　＞＞',shibataya_path(date:(@date+1))
+        h4 本日のご予約は締め切らせていただきました。
+      - else
+        .clearfix
+          = form_with model:@pre_order do |f|
+            .form-group
+              label ご予約日　
+              - unless @date == @today
+                span = link_to '＜＜　',shibataya_path(date:(@date-1))
+              span style='font-size:1.5em;' = @date.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[@date.wday]})")
+              - if @date < (@today + 3)
+                span = link_to '　＞＞',shibataya_path(date:(@date+1))
+              = f.hidden_field :date,value:@date
 
-          .form-group
-            = f.label :store_id, "受取店舗名",class:'required'
-            = f.collection_select :store_id, @stores, :id, :name, {include_blank:true},class:'form-control', required:true
+            .form-group
+              = f.label :store_id, "受取店舗名",class:'required'
+              = f.collection_select :store_id, @stores, :id, :name, {include_blank:true},class:'form-control', required:true
 
-          .form-group
-            = f.label :recipient_time, "受取時間",class:'required'
-            = f.select :recipient_time, options_for_select(@times),{},class:'form-control', required:true
+            .form-group
+              = f.label :recipient_time, "受取時間",class:'required'
+              = f.select :recipient_time, options_for_select(@times),{},class:'form-control', required:true
 
-          .form-group
-            = f.label :employee_id, "社員番号",class:'required'
-            = f.text_field :employee_id,class:'form-control', required: true
-          .form-group
-            = f.label :recipient_name, "名前",class:'required'
-            = f.text_field :recipient_name,class:'form-control', required: true
-          .form-group
-            = f.label :tel, "電話番号",class:'required'
-            = f.text_field :tel,class:'form-control', required: true
+            .form-group
+              = f.label :employee_id, "社員番号",class:'required'
+              = f.text_field :employee_id,class:'form-control', required: true
+            .form-group
+              = f.label :recipient_name, "名前",class:'required'
+              = f.text_field :recipient_name,class:'form-control', required: true
+            .form-group
+              = f.label :tel, "電話番号",class:'required'
+              = f.text_field :tel,class:'form-control', required: true
 
-          .form-group
-            = f.label :memo, "メモ"
-            = f.text_area :memo,class:'form-control'
-          table.table
-            thead
-              tr
-                th style='min-width:200px' 商品
-                th style='min-width:60px' 
-                th style='min-width:60px' 
-            tbody
-              tr style='background-color:#f5f5f5'
-                td お弁当・丼
-                td 税込
-                td 数
+            .form-group
+              = f.label :memo, "メモ"
+              = f.text_area :memo,class:'form-control'
+            table.table
+              thead
+                tr
+                  th style='min-width:200px' 商品
+                  th style='min-width:60px' 
+                  th style='min-width:60px' 
+              tbody
+                tr style='background-color:#f5f5f5'
+                  td お弁当・丼
+                  td 税込
+                  td 数
 
-              = f.fields_for :pre_order_products do |pop|
-                - if pop.object.product.product_category == 'お弁当' || pop.object.product.product_category == 'ご飯・丼'
-                  = pop.hidden_field :product_id,value:pop.object.product_id
-                  tr
-                    td
-                      = pop.object.product.food_label_name
-                      - if pop.object.product.sell_price == 890 && pop.object.product.product_category == 'お弁当'
+                = f.fields_for :pre_order_products do |pop|
+                  - if pop.object.product.product_category == 'お弁当' || pop.object.product.product_category == 'ご飯・丼'
+                    = pop.hidden_field :product_id,value:pop.object.product_id
+                    tr
+                      td
+                        = pop.object.product.food_label_name
+                        - if pop.object.product.sell_price == 890 && pop.object.product.product_category == 'お弁当'
+                          br
+                          span style='font-size:0.8em;color:#a9a9a9;' 副菜3種&週替りポタージュ付
+                        - elsif pop.object.product.sell_price == 790 && pop.object.product.product_category == 'お弁当'
+                          br
+                          span style='font-size:0.8em;color:#a9a9a9;' 副菜の数が3種
+                        - elsif pop.object.product.sell_price == 690 && pop.object.product.product_category == 'お弁当'
+                          br
+                          span style='font-size:0.8em;color:#a9a9a9;' 副菜の数が2種
+
+                      td
+                        s = pop.object.product.tax_including_sell_price
                         br
-                        span style='font-size:0.8em;color:#a9a9a9;' 副菜3種&週替りポタージュ付
-                      - elsif pop.object.product.sell_price == 790 && pop.object.product.product_category == 'お弁当'
+                        span style='color:red;' = number_to_currency((pop.object.product.tax_including_sell_price * 0.5).floor, :unit => "￥", format: "%u%n")
+
+                      td = pop.select :order_num,options_for_select(0..10),{}, class: "form-control",style:'padding:5px;'
+                tr style='background-color:#f5f5f5'
+                  td お惣菜
+                  td 税込
+                  td 数
+                = f.fields_for :pre_order_products do |pop|
+                  - if pop.object.product.product_category == '惣菜'
+                    = pop.hidden_field :product_id,value:pop.object.product_id
+                    tr
+                      td = pop.object.product.food_label_name
+                      td
+                        s = pop.object.product.tax_including_sell_price
                         br
-                        span style='font-size:0.8em;color:#a9a9a9;' 副菜の数が3種
-                      - elsif pop.object.product.sell_price == 690 && pop.object.product.product_category == 'お弁当'
+                        span style='color:red;' = number_to_currency((pop.object.product.tax_including_sell_price * 0.5).floor, :unit => "￥", format: "%u%n")
+                      td = pop.select :order_num,options_for_select(0..10),{}, class: "form-control",style:'padding:5px;'
+                tr style='background-color:#f5f5f5'
+                  td デザート
+                  td 税込
+                  td 数
+
+                = f.fields_for :pre_order_products do |pop|
+                  - if pop.object.product.product_category == 'スイーツ・ドリンク'
+                    = pop.hidden_field :product_id,value:pop.object.product_id
+                    tr
+                      td = pop.object.product.food_label_name
+                      td
+                        s = pop.object.product.tax_including_sell_price
                         br
-                        span style='font-size:0.8em;color:#a9a9a9;' 副菜の数が2種
-
-                    td
-                      s = pop.object.product.tax_including_sell_price
-                      br
-                      span style='color:red;' = number_to_currency((pop.object.product.tax_including_sell_price * 0.5).floor, :unit => "￥", format: "%u%n")
-
-                    td = pop.select :order_num,options_for_select(0..10),{}, class: "form-control",style:'padding:5px;'
-              tr style='background-color:#f5f5f5'
-                td お惣菜
-                td 税込
-                td 数
-              = f.fields_for :pre_order_products do |pop|
-                - if pop.object.product.product_category == '惣菜'
-                  = pop.hidden_field :product_id,value:pop.object.product_id
-                  tr
-                    td = pop.object.product.food_label_name
-                    td
-                      s = pop.object.product.tax_including_sell_price
-                      br
-                      span style='color:red;' = number_to_currency((pop.object.product.tax_including_sell_price * 0.5).floor, :unit => "￥", format: "%u%n")
-                    td = pop.select :order_num,options_for_select(0..10),{}, class: "form-control",style:'padding:5px;'
-              tr style='background-color:#f5f5f5'
-                td デザート
-                td 税込
-                td 数
-
-              = f.fields_for :pre_order_products do |pop|
-                - if pop.object.product.product_category == 'スイーツ・ドリンク'
-                  = pop.hidden_field :product_id,value:pop.object.product_id
-                  tr
-                    td = pop.object.product.food_label_name
-                    td
-                      s = pop.object.product.tax_including_sell_price
-                      br
-                      span style='color:red;' = number_to_currency((pop.object.product.tax_including_sell_price * 0.5).floor, :unit => "￥", format: "%u%n")
-                    td = pop.select :order_num,options_for_select(0..10),{}, class: "form-control",style:'padding:5px;'
+                        span style='color:red;' = number_to_currency((pop.object.product.tax_including_sell_price * 0.5).floor, :unit => "￥", format: "%u%n")
+                      td = pop.select :order_num,options_for_select(0..10),{}, class: "form-control",style:'padding:5px;'
 
 
-          .actions style='margin-bottom:50px;text-align: center;'
-            = f.submit "確定する", data: { confirm: "日時、商品、店舗にお間違いありませんか？"} , class:"btn btn-primary"
+            .actions style='margin-bottom:50px;text-align: center;'
+              = f.submit "確定する", data: { confirm: "日時、商品、店舗にお間違いありませんか？"} , class:"btn btn-primary"
 
