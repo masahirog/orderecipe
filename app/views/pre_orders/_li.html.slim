@@ -1,0 +1,30 @@
+- if pre_order.status_before_type_cast == 0
+  - bg = '#ffccd5'
+- elsif pre_order.status_before_type_cast == 3
+  - bg = '#d3d3d3'
+- else
+  - bg = '#ffffff'
+li.list-group-item.col-md-12.col-sm-12 class="li_#{pre_order.id}" style="padding:5px 15px;background-color:#{bg};"
+  .col-md-2.col-sm-2 style='padding:0'
+    = form_with(model: pre_order, data: {remote: true}) do |f|
+        = f.select :status, options_for_select_from_enum(PreOrder, :status),{}, { class: "status_change form-control",style:""}
+
+  .col-md-10.col-sm-10
+    div
+      label 店舗：
+      span = pre_order.store.name
+    div
+      label 時間：
+      span = pre_order.recipient_time.strftime('%H:%M')
+    div
+      label 名前：
+      span = "#{pre_order.recipient_name}（#{pre_order.employee_id}）"
+      span = link_to pre_order.tel,pre_order.tel
+    - if pre_order.memo.present?
+      div
+        label メモ：
+        = text_url_to_link(simple_format(h(pre_order.memo), {}, wrapper_tag: "span")).html_safe
+    div = "ーーー"
+    - pre_order.pre_order_products.each do |pop|
+      span = "#{pop.product.food_label_name}（#{number_to_currency(pop.product.sell_price, :unit => "￥", format: "%u%n")}）：#{pop.order_num}"
+      br

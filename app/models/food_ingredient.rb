@@ -12,7 +12,9 @@
 # salt g/100g
 
 class FoodIngredient < ApplicationRecord
+  has_many :menus, through: :menu_materials
   has_many :menu_materials
+
   scope :food_ingredient_search, lambda { |query| where('name LIKE ?', "%#{query}%").limit(100) }
 
   def self.calculate_nutrition(gram_amount,id)

@@ -100,6 +100,7 @@ html lang="ja"
                       span.caret
                     ul.dropdown-menu role="menu" style='width:250px;'
                       li = link_to '出勤スタッフ一覧',date_attendance_staffs_path(date:@today)
+                      li = link_to '柴田屋オーダー',pre_orders_path
                       li = link_to '店舗へのインフォメーション',to_store_messages_path
                       li = link_to 'メニュー表',monthly_menus_daily_menus_path
                       li = link_to '販売レポート',select_store_sales_reports_path
@@ -214,6 +215,6 @@ html lang="ja"
           = content_tag :div, raw(msg), :id => name
 
       = yield
-    .col-md-12.footer style="height:20px;"
+    .col-md-12.col-sm-12.footer style="height:20px;"
     script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/js/lightbox.min.js" type="text/javascript"
 

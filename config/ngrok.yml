@@ -1,0 +1,8 @@
+authtoken: 2hIlpVmzxxyJh6Uq7czwjuM6G94_ZzgZNtuFn46iszpfQYYb
+region: us
+tunnels:
+  process1:
+    proto: http
+    addr: 8080
+    host_header: localhost 3000
+    subdomain: testtest

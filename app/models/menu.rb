@@ -13,6 +13,7 @@ class Menu < ApplicationRecord
   has_many :menu_processes, dependent: :destroy
   accepts_nested_attributes_for :menu_processes, allow_destroy: true
   belongs_to :group
+  has_many :food_ingredients, through: :menu_materials
 
   # after_update :update_product_cost_price
 

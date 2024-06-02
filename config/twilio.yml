@@ -1,0 +1,13 @@
+default: &default
+  account_sid: AC4ebacdfba3a81d62d645a7f74df29be0
+  auth_token: d171bf49c10835e60e90ebc97e1cd6a6
+  from_tel: '07082943574'
+
+development:
+  <<: *default
+
+production:
+  <<: *default
+
+test:
+  <<: *default

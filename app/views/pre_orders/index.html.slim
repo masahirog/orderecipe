@@ -1,19 +1,21 @@
-h1 Listing pre_orders
+h3 柴田屋オーダ一覧
 
-table
-  thead
-    tr
-      th
-      th
-      th
-
-  tbody
-    - @pre_orders.each do |pre_order|
-      tr
-        td = link_to 'Show', pre_order
-        td = link_to 'Edit', edit_pre_order_path(pre_order)
-        td = link_to 'Destroy', pre_order, data: { confirm: 'Are you sure?' }, method: :delete
-
+= form_tag pre_orders_path, :method => 'get' do
+  .clearfix
+    div style='float:left;margin-right:10px;'
+      label 店舗選択
+      = select_tag :store_id, options_from_collection_for_select(@stores, :id, :name,params[:store_id]),include_blank: true, class: "form-control",style:'width:200px;'
+    div style='float:left;margin-right:10px;'
+      label 日付
+      = date_field_tag :date, @date, class:"form-control float-left",style:'width:200px;'
+    = submit_tag "表示" ,class:"btn btn-primary",style:'margin-top:25px;'
 br
-
-= link_to 'New Pre order', new_pre_order_path
+ul.list-group.col-md-12.col-sm-12
+  - @pre_orders.each do |pre_order|
+    = render partial: "li", locals: { pre_order:pre_order }
+javascript:
+  $(function() {
+    $('.status_change').on( 'change',function(){
+      Rails.fire($(this).parents('form')[0], 'submit');
+    });
+  });

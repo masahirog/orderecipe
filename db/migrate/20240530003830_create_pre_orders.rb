@@ -7,7 +7,7 @@ class CreatePreOrders < ActiveRecord::Migration[6.0]
       t.integer :employee_id
       t.string :recipient_name
       t.string :tel
-      t.integer :status
+      t.integer :status,null:false,default:0
       t.text :memo
       t.timestamps
     end
