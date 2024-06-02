@@ -50,10 +50,10 @@ html
               = "#{pre_order.store.name} #{pre_order.recipient_time.strftime('%H:%M')}　"
               = link_to "tel:" + pre_order.store.phone do
                 i class="fa-solid fa-square-phone"
-
+            div = "合計：#{pre_order.total.to_s(:delimited)}円"
             div = "ーーー"
             - pre_order.pre_order_products.each do |pop|
-              span = "#{pop.product.food_label_name}(#{number_to_currency((pop.product.tax_including_sell_price * 0.5).floor, :unit => "￥", format: "%u%n")})：#{pop.order_num}"
+              span = "#{pop.product.food_label_name}(#{number_to_currency((pop.tax_including_sell_price * 0.5).ceil, :unit => "￥", format: "%u%n")})：#{pop.order_num}"
               br
 
 css:

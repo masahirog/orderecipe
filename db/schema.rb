@@ -646,6 +646,10 @@ ActiveRecord::Schema.define(version: 2024_05_30_003841) do
     t.bigint "pre_order_id", null: false
     t.bigint "product_id", null: false
     t.integer "order_num", default: 0, null: false
+    t.integer "tax_including_sell_price", default: 0, null: false
+    t.integer "subtotal", default: 0, null: false
+    t.integer "welfare_price", default: 0, null: false
+    t.integer "employee_discount", default: 0, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["pre_order_id"], name: "index_pre_order_products_on_pre_order_id"
@@ -661,6 +665,7 @@ ActiveRecord::Schema.define(version: 2024_05_30_003841) do
     t.string "tel"
     t.integer "status", default: 0, null: false
     t.text "memo"
+    t.integer "total", default: 0, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["store_id"], name: "index_pre_orders_on_store_id"

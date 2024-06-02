@@ -61,12 +61,12 @@ class ApplicationController < ActionController::Base
     end
     @daily_menu = DailyMenu.find_by(start_time:@date)
     product_ids = []
-    @daily_menu.daily_menu_details.includes([:product]).each do |dmd|
-      product_ids << dmd.product_id if dmd.product.product_category == "お弁当" || dmd.product.product_category == "ご飯・丼" || dmd.product.product_category == "惣菜" ||dmd.product.product_category == "スイーツ・ドリンク"
-    end
     @pre_order = PreOrder.new
-    product_ids.each do |product_id|
-      @pre_order.pre_order_products.build(product_id:product_id,order_num:0)
+    @daily_menu.daily_menu_details.includes([:product]).each do |dmd|
+      if dmd.product.product_category == "お弁当" || dmd.product.product_category == "ご飯・丼" || dmd.product.product_category == "惣菜" ||dmd.product.product_category == "スイーツ・ドリンク"
+        tax_including_sell_price = (dmd.sell_price * 1.08).floor
+        @pre_order.pre_order_products.build(product_id:dmd.product_id,order_num:0,welfare_price:0,employee_discount:0,tax_including_sell_price:tax_including_sell_price)
+      end
     end
     @stores = Store.where(id:[9,19,29,154,164])
     @times = []
@@ -87,7 +87,7 @@ class ApplicationController < ActionController::Base
     else
       @date = @today
     end
-    @pre_orders = PreOrder.includes(:store,:pre_order_products).where(date:@date)
+    @pre_orders = PreOrder.includes(:store,pre_order_products:[:product]).where(date:@date)
     render :layout => false
   end
 

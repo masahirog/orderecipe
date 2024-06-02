@@ -72,71 +72,85 @@ html
             .form-group
               = f.label :memo, "メモ"
               = f.text_area :memo,class:'form-control'
+            .form-group
+              label 社割金額（20%）
+              input.form-control.employee_discount_total readonly="true" value=0
+            .form-group
+              label 福利厚生金額（30%）
+              input.form-control.welfare_total readonly="true" value=0
+            .form-group
+              = f.label :total, "個人負担金額"
+              = f.number_field :total,class:'form-control total',readonly:true
             table.table
               thead
                 tr
+                  / th
                   th style='min-width:200px' 商品
                   th style='min-width:60px' 
                   th style='min-width:60px' 
               tbody
                 tr style='background-color:#f5f5f5'
+                  / td
                   td お弁当・丼
                   td 税込
                   td 数
 
                 = f.fields_for :pre_order_products do |pop|
                   - if pop.object.product.product_category == 'お弁当' || pop.object.product.product_category == 'ご飯・丼'
-                    = pop.hidden_field :product_id,value:pop.object.product_id
-                    tr
-                      td
-                        = pop.object.product.food_label_name
-                        - if pop.object.product.sell_price == 890 && pop.object.product.product_category == 'お弁当'
-                          br
-                          span style='font-size:0.8em;color:#a9a9a9;' 副菜3種&週替りポタージュ付
-                        - elsif pop.object.product.sell_price == 790 && pop.object.product.product_category == 'お弁当'
-                          br
-                          span style='font-size:0.8em;color:#a9a9a9;' 副菜の数が3種
-                        - elsif pop.object.product.sell_price == 690 && pop.object.product.product_category == 'お弁当'
-                          br
-                          span style='font-size:0.8em;color:#a9a9a9;' 副菜の数が2種
-
-                      td
-                        s = pop.object.product.tax_including_sell_price
-                        br
-                        span style='color:red;' = number_to_currency((pop.object.product.tax_including_sell_price * 0.5).floor, :unit => "￥", format: "%u%n")
-
-                      td = pop.select :order_num,options_for_select(0..10),{}, class: "form-control",style:'padding:5px;'
+                    = render 'tr', pop: pop
                 tr style='background-color:#f5f5f5'
+                  / td
                   td お惣菜
                   td 税込
                   td 数
                 = f.fields_for :pre_order_products do |pop|
                   - if pop.object.product.product_category == '惣菜'
-                    = pop.hidden_field :product_id,value:pop.object.product_id
-                    tr
-                      td = pop.object.product.food_label_name
-                      td
-                        s = pop.object.product.tax_including_sell_price
-                        br
-                        span style='color:red;' = number_to_currency((pop.object.product.tax_including_sell_price * 0.5).floor, :unit => "￥", format: "%u%n")
-                      td = pop.select :order_num,options_for_select(0..10),{}, class: "form-control",style:'padding:5px;'
+                    = render 'tr', pop: pop
                 tr style='background-color:#f5f5f5'
+                  / td
                   td デザート
                   td 税込
                   td 数
 
                 = f.fields_for :pre_order_products do |pop|
                   - if pop.object.product.product_category == 'スイーツ・ドリンク'
-                    = pop.hidden_field :product_id,value:pop.object.product_id
-                    tr
-                      td = pop.object.product.food_label_name
-                      td
-                        s = pop.object.product.tax_including_sell_price
-                        br
-                        span style='color:red;' = number_to_currency((pop.object.product.tax_including_sell_price * 0.5).floor, :unit => "￥", format: "%u%n")
-                      td = pop.select :order_num,options_for_select(0..10),{}, class: "form-control",style:'padding:5px;'
-
+                    = render 'tr', pop: pop
 
             .actions style='margin-bottom:50px;text-align: center;'
               = f.submit "確定する", data: { confirm: "日時、商品、店舗にお間違いありませんか？"} , class:"btn btn-primary"
 
+div style="position:fixed;left:20px;bottom:20px;width: 80px;height: 80px;border-radius: 50%;background:orangered;text-align: center;margin: 0 auto;display: flex;align-items: center;justify-content: center;"
+  div style='margin-top:-10px;color:white;'
+    span.total_num style='font-size:12px;' 計：0点
+    br
+    span.total_price style='font-size:1.2em;font-weight:bold;' ="0円"
+
+
+css:
+
+javascript:
+  $(".order_num").on("change",function(){
+    var num = $(this).val();
+    var tax_including_sell_price = $(this).parents('tr').find(".tax_including_sell_price").val();
+    var welfare_price = num *　Math.floor(tax_including_sell_price * 0.3)
+    var employee_discount = num *　Math.floor(tax_including_sell_price * 0.2)
+    var subtotal = (num * tax_including_sell_price) - welfare_price - employee_discount
+    $(this).parents('tr').find(".welfare_price").val(welfare_price);
+    $(this).parents('tr').find(".employee_discount").val(employee_discount);
+    $(this).parents('tr').find(".subtotal").val(subtotal);
+    var total = 0
+    var total_num = 0
+    var welfare_total = 0
+    var employee_discount_total = 0
+    $(".tr_pre_order_products").each(function(){
+      total += Number($(this).find('.subtotal').val());
+      welfare_total += Number($(this).find('.welfare_price').val());
+      employee_discount_total += Number($(this).find('.employee_discount').val());
+      total_num += Number($(this).find('.order_num').val());
+    });
+    $(".total").val(total);
+    $(".welfare_total").val(welfare_total);
+    $(".employee_discount_total").val(employee_discount_total);
+    $(".total_price").text(total.toLocaleString()+"円")
+    $(".total_num").text("計："+total_num+"点")
+  });

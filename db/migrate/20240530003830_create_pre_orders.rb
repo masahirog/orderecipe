@@ -9,6 +9,7 @@ class CreatePreOrders < ActiveRecord::Migration[6.0]
       t.string :tel
       t.integer :status,null:false,default:0
       t.text :memo
+      t.integer :total,null:false,default:0
       t.timestamps
     end
   end
