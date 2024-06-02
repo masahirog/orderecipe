@@ -1,6 +1,6 @@
 class PreOrdersController < ApplicationController
   before_action :set_pre_order, only: %i[ show edit update destroy ]
-  def daily
+  def monthly
     if params[:month].present?
       @date = "#{params[:month]}-01".to_date
       @month = params[:month]
@@ -11,8 +11,29 @@ class PreOrdersController < ApplicationController
     dates = (@date.beginning_of_month..@date.end_of_month).to_a
     @pre_orders = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     PreOrder.where(date:dates).each do |pre_order|
+      if @pre_orders[pre_order.employee_id].present?
+        @pre_orders[pre_order.employee_id][:total] += pre_order.total
+        @pre_orders[pre_order.employee_id][:count] += 1
+        @pre_orders[pre_order.employee_id][:welfare_total] += pre_order.pre_order_products.sum(:welfare_price)
+      else
+        @pre_orders[pre_order.employee_id][:total] = pre_order.total
+        @pre_orders[pre_order.employee_id][:count] = 1
+        @pre_orders[pre_order.employee_id][:welfare_total] = pre_order.pre_order_products.sum(:welfare_price)
+      end
       @pre_orders[pre_order.employee_id][pre_order.date][pre_order.id] = pre_order
     end
+    render :layout => 'shibataya'
+  end
+  def daily
+    if params[:month].present?
+      @date = "#{params[:month]}-01".to_date
+      @month = params[:month]
+    else
+      @date = @today
+      @month = "#{@date.year}-#{sprintf("%02d",@date.month)}"
+    end
+    dates = (@date.beginning_of_month..@date.end_of_month).to_a
+    @pre_orders = PreOrder.where(date:dates,employee_id:params[:employee_id])
     render :layout => 'shibataya'
   end
   def index

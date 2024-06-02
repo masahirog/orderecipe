@@ -95,6 +95,7 @@ Rails.application.routes.draw do
   resources :pre_orders do
     collection do
       get :daily
+      get :monthly
     end
   end
   resources :working_hours do
