@@ -15,6 +15,6 @@ table.table
     - @pre_orders.each do |user_preorders|
       tr
         td = user_preorders[0]
-        td = link_to user_preorders[1][:count],daily_pre_orders_path(employee_id:user_preorders[0])
+        td = link_to user_preorders[1][:count],daily_pre_orders_path(employee_id:user_preorders[0],month:@month)
         td = user_preorders[1][:total]
         td = user_preorders[1][:welfare_total]

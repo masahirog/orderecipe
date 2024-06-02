@@ -33,7 +33,7 @@ class PreOrdersController < ApplicationController
       @month = "#{@date.year}-#{sprintf("%02d",@date.month)}"
     end
     dates = (@date.beginning_of_month..@date.end_of_month).to_a
-    @pre_orders = PreOrder.where(date:dates,employee_id:params[:employee_id])
+    @pre_orders = PreOrder.includes(pre_order_products:[:product]).where(date:dates,employee_id:params[:employee_id])
     render :layout => 'shibataya'
   end
   def index
@@ -78,7 +78,7 @@ class PreOrdersController < ApplicationController
         #↓開発
         # Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'Bot', icon_emoji: ':male-farmer:').ping("柴田屋社員の方から注文が入りました！\nーーー\n"+detail+"\nーーー")
         #↓本番
-        # Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'Bot', icon_emoji: ':male-farmer:').ping("柴田屋社員の方から注文が入りました！\nーーー\n"+detail+"\nーーー")
+        Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'Bot', icon_emoji: ':male-farmer:').ping("柴田屋社員の方から注文が入りました！\nーーー\n"+detail+"\nーーー")
 
         format.html { redirect_to shibataya_orders_path(date:@pre_order.date), notice: "ご予約が完了しました。修正等の場合はお店までご連絡をお願いします。" }
         format.json { render :show, status: :created, location: @pre_order }
