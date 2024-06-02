@@ -7,7 +7,7 @@ class PreOrder < ApplicationRecord
 		attributes.merge!({_destroy: 1}) if attributes['order_num'] == "0"
 	}
 	belongs_to :store
-	# after_create :store_notify
+	after_create :store_notify
 	
 	def self.twilio_client
 		account_sid = Orderecipe::Application.config.twilio_config[:account_sid]
