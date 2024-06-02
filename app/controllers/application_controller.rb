@@ -1,3 +1,5 @@
+require "google_drive"
+
 class ApplicationController < ActionController::Base
   # http_basic_authenticate_with :name => ENV['BASIC_AUTH_USERNAME'], :password => ENV['BASIC_AUTH_PASSWORD'] if Rails.env == "production"
   # Prevent CSRF attacks by raising an exception.
@@ -51,6 +53,14 @@ class ApplicationController < ActionController::Base
   end
 
   def shibataya
+    session = GoogleDrive::Session.from_config("config.json")
+    sp = session.spreadsheet_by_url("https://docs.google.com/spreadsheets/d/1nEtGciXSJ2rBJDNCHVqWQC7mDQ9InGAqdPWwAy0c7hQ/edit#gid=0")
+    ws = sp.worksheet_by_title("シート1")
+    @employees = []
+    (2..ws.num_rows).each do |i|
+      @employees << [ws[i,2],ws[i,1]]
+    end
+
     if params[:date]
       @date = Date.parse(params[:date])
       if @date < @today || @today + 3 < @date
@@ -76,10 +86,10 @@ class ApplicationController < ActionController::Base
       end
     end
     
-    render :layout => false
+    render :layout => 'shibataya'
   end
   def shibataya_howto
-    render :layout => false
+    render :layout => 'shibataya'
   end
   def shibataya_orders
     if params[:date]
@@ -88,7 +98,7 @@ class ApplicationController < ActionController::Base
       @date = @today
     end
     @pre_orders = PreOrder.includes(:store,pre_order_products:[:product]).where(date:@date)
-    render :layout => false
+    render :layout => 'shibataya'
   end
 
 

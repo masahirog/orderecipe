@@ -1,0 +1,19 @@
+h3 柴田屋オーダ一覧
+
+= form_tag daily_pre_orders_path, :method => 'get' do
+  = month_field_tag :month,@month,class:"form-control",style:'width:200px;float:left;margin-right:10px;'
+  = submit_tag "表示" ,class:"btn btn-primary",style:"float:left;"
+
+table.table
+  thead
+    tr
+      th 社員番号
+      th 個人負担額
+      th 福利厚生額
+  tbody
+    - @pre_orders.each do |user_preorders|
+      tr
+        td = user_preorders[0]
+        td
+        td
+        

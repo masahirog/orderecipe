@@ -92,7 +92,11 @@ Rails.application.routes.draw do
   
   get "working_hour_work_types/working_hour_change" => "working_hour_work_types#working_hour_change"
   get "working_hour_work_types/time_change" => "working_hour_work_types#time_change"
-  resources :pre_orders
+  resources :pre_orders do
+    collection do
+      get :daily
+    end
+  end
   resources :working_hours do
     collection do
       get :detail

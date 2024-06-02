@@ -1,6 +1,20 @@
 class PreOrdersController < ApplicationController
   before_action :set_pre_order, only: %i[ show edit update destroy ]
-
+  def daily
+    if params[:month].present?
+      @date = "#{params[:month]}-01".to_date
+      @month = params[:month]
+    else
+      @date = @today
+      @month = "#{@date.year}-#{sprintf("%02d",@date.month)}"
+    end
+    dates = (@date.beginning_of_month..@date.end_of_month).to_a
+    @pre_orders = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    PreOrder.where(date:dates).each do |pre_order|
+      @pre_orders[pre_order.employee_id][pre_order.date][pre_order.id] = pre_order
+    end
+    render :layout => 'shibataya'
+  end
   def index
     if params[:date]
       @date = Date.parse(params[:date])
