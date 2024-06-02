@@ -40,8 +40,8 @@ class PreOrdersController < ApplicationController
         "電話番号：#{@pre_order.tel}\n"+
         "メモ：#{@pre_order.memo}\n"+
         "ー 商品 ー\n"+shohin
-        Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'Bot', icon_emoji: ':male-farmer:').ping("柴田屋社員の方から注文が入りました！\nーーー\n"+detail+"\nーーー")
-        # Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'Bot', icon_emoji: ':male-farmer:').ping("柴田屋社員の方から注文が入りました！\nーーー\n"+detail+"\nーーー")
+        # Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'Bot', icon_emoji: ':male-farmer:').ping("柴田屋社員の方から注文が入りました！\nーーー\n"+detail+"\nーーー")
+        Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'Bot', icon_emoji: ':male-farmer:').ping("柴田屋社員の方から注文が入りました！\nーーー\n"+detail+"\nーーー")
 
         format.html { redirect_to shibataya_orders_path(date:@pre_order.date), notice: "ご予約が完了しました。修正等の場合はお店までご連絡をお願いします。" }
         format.json { render :show, status: :created, location: @pre_order }
@@ -57,7 +57,7 @@ class PreOrdersController < ApplicationController
       if @pre_order.update(pre_order_params)
         if @pre_order.status_before_type_cast == 0
           @bg = '#ffccd5'
-        elsif @pre_order.status_before_type_cast == 3
+        elsif @pre_order.status_before_type_cast == 3 || @pre_order.status_before_type_cast == 4
           @bg = '#d3d3d3'
         else
           @bg = '#ffffff'
