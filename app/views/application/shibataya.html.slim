@@ -24,10 +24,9 @@
         = f.select :recipient_time, options_for_select(@times),{},class:'form-control', required:true
 
       .form-group
-        = f.label :recipient_name, "名前",class:'required'
+        = f.label :recipient_name, "名前（検索可）",class:'required'
         = f.hidden_field :recipient_name,class:'form-control recipient_name', required: true
-        = select_tag :recipient, options_for_select(@employees,),class:'form-control recipient'
-        / = select_tag :recipient, options_for_select([["金額",0],["アイテム数",1]],params[:pattern]), class: "form-control",style:'width:200px;float:left;'
+        = select_tag :recipient, options_for_select(@employees,),include_blank:true,class:'form-control recipient'
 
       .form-group
         = f.label :employee_id, "社員番号",class:'required'
