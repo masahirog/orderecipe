@@ -30,13 +30,14 @@ html
           #navbarEexample.collapse.navbar-collapse
             ul.nav.navbar-nav
               li.menu_li = link_to '注文','/shibataya'
-              li.menu_li = link_to 'ご注文状況','/shibataya_orders'
-              li.menu_li = link_to '使い方','/shibataya_howto'
+              li.menu_li = link_to '日別ご注文状況','/shibataya_orders'
               li.menu_li = link_to '月間ご利用状況','/pre_orders/monthly'
+              li.menu_li = link_to '使い方','/shibataya_howto'
 
     .all_body
       p.notice = notice
       = yield
+script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/js/lightbox.min.js" type="text/javascript"
 css:
 
 javascript:
@@ -54,18 +55,18 @@ javascript:
   });
   $(".order_num").on("change",function(){
     var num = $(this).val();
-    var tax_including_sell_price = $(this).parents('tr').find(".tax_including_sell_price").val();
+    var tax_including_sell_price = $(this).parents('li').find(".tax_including_sell_price").val();
     var welfare_price = num *　Math.floor(tax_including_sell_price * 0.3)
     var employee_discount = num *　Math.floor(tax_including_sell_price * 0.2)
     var subtotal = (num * tax_including_sell_price) - welfare_price - employee_discount
-    $(this).parents('tr').find(".welfare_price").val(welfare_price);
-    $(this).parents('tr').find(".employee_discount").val(employee_discount);
-    $(this).parents('tr').find(".subtotal").val(subtotal);
+    $(this).parents('li').find(".welfare_price").val(welfare_price);
+    $(this).parents('li').find(".employee_discount").val(employee_discount);
+    $(this).parents('li').find(".subtotal").val(subtotal);
     var total = 0
     var total_num = 0
     var welfare_total = 0
     var employee_discount_total = 0
-    $(".tr_pre_order_products").each(function(){
+    $(".li_pre_order_products").each(function(){
       total += Number($(this).find('.subtotal').val());
       welfare_total += Number($(this).find('.welfare_price').val());
       employee_discount_total += Number($(this).find('.employee_discount').val());
