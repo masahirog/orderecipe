@@ -36,6 +36,8 @@ class PreOrdersController < ApplicationController
     @pre_orders = PreOrder.includes(:store,pre_order_products:[:product]).where(date:dates,employee_id:params[:employee_id])
     render :layout => 'shibataya'
   end
+
+
   def index
     if params[:date]
       @date = Date.parse(params[:date])
@@ -47,7 +49,21 @@ class PreOrdersController < ApplicationController
     else
       @pre_orders = PreOrder.includes(:store,pre_order_products:[:product]).where(date:@date).order(:recipient_time)
     end
+    if params[:month]
+      date = "#{params[:month]}-01".to_date
+      month = params[:month]
+      dates = (date.beginning_of_month..date.end_of_month).to_a
+      @monthly_pre_orders = PreOrder.includes(:store,pre_order_products:[:product]).where(date:dates).order(:recipient_time)
+    end
+
+    respond_to do |format|
+      format.html
+      format.csv do
+        send_data render_to_string, filename: "#{month}_福利厚生.csv", type: :csv
+      end
+    end
   end
+
 
   def show
   end
