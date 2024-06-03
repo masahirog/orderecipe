@@ -26,7 +26,7 @@
       .form-group
         = f.label :recipient_name, "名前（検索可）",class:'required'
         = f.hidden_field :recipient_name,class:'form-control recipient_name', required: true
-        = select_tag :recipient, options_for_select(@employees,),include_blank:true,class:'form-control recipient'
+        = select_tag :recipient, options_for_select(@employees,),include_blank:true,class:'form-control recipient', required: true
 
       .form-group
         = f.label :employee_id, "社員番号",class:'required'
