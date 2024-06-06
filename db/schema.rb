@@ -509,6 +509,7 @@ ActiveRecord::Schema.define(version: 2024_05_30_003841) do
     t.integer "group_id", null: false
     t.integer "target_material_id"
     t.date "price_update_date"
+    t.string "jancode"
   end
 
   create_table "menu_cook_checks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -642,7 +643,7 @@ ActiveRecord::Schema.define(version: 2024_05_30_003841) do
     t.text "memo"
   end
 
-  create_table "pre_order_products", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "pre_order_products", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "pre_order_id", null: false
     t.bigint "product_id", null: false
     t.integer "order_num", default: 0, null: false
@@ -656,7 +657,7 @@ ActiveRecord::Schema.define(version: 2024_05_30_003841) do
     t.index ["product_id"], name: "index_pre_order_products_on_product_id"
   end
 
-  create_table "pre_orders", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "pre_orders", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "store_id", null: false
     t.date "date", null: false
     t.time "recipient_time", null: false
@@ -706,7 +707,7 @@ ActiveRecord::Schema.define(version: 2024_05_30_003841) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "product_parts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "product_parts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "product_id", null: false
     t.string "name", default: "", null: false
     t.float "amount", default: 0.0, null: false
@@ -717,6 +718,7 @@ ActiveRecord::Schema.define(version: 2024_05_30_003841) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "common_product_part_id"
+    t.integer "loading_container", default: 0, null: false
     t.index ["common_product_part_id"], name: "index_product_parts_on_common_product_part_id"
   end
 

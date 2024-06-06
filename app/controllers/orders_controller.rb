@@ -1,5 +1,33 @@
 class OrdersController < AdminController
-
+  def sky_monthly
+    if params[:month].present?
+      @date = "#{params[:month]}-01".to_date
+      @month = params[:month]
+    else
+      @date = @today
+      @month = "#{@date.year}-#{sprintf("%02d",@date.month)}"
+    end
+    @dates =(@date.beginning_of_month..@date.end_of_month).to_a
+    @stores = Store.where(group_id:29)
+    @order_materials = OrderMaterial.includes(:order,:material).joins(:order).where(:orders => {store_id:@stores.ids,fixed_flag:true}).where(delivery_date:@dates).where(un_order_flag:false)
+    @material_quantity = @order_materials.group(:material_id).sum(:order_quantity)
+    @store_date_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    @store_material_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    @order_materials.each do |om|
+      if @store_date_hash[[om.order.store_id,om.delivery_date]].present?
+        @store_date_hash[[om.order.store_id,om.delivery_date]] << om
+      else
+        @store_date_hash[[om.order.store_id,om.delivery_date]] = [om]
+      end
+      if @store_material_hash[[om.order.store_id,om.material_id]].present?
+        @store_material_hash[[om.order.store_id,om.material_id]] += om.order_quantity
+      else
+        @store_material_hash[[om.order.store_id,om.material_id]] = om.order_quantity
+      end
+    end
+    @material_store_orderables_ids = MaterialStoreOrderable.where(store_id:@stores.ids,orderable_flag:true).map{|mso|mso.material_id}.uniq
+    @materials = Material.where(id:@material_store_orderables_ids,vendor_id:559)
+  end
   def monthly_data
     if params[:start_date].present?
       date = params[:start_date].to_date
@@ -8,10 +36,14 @@ class OrdersController < AdminController
     else
       date = @today
     end
-    store_id = params[:store_id]
-    @store = Store.find(store_id)
-    
-    @order_materials = OrderMaterial.joins(:order).where(:orders => {store_id:store_id,fixed_flag:true}).where(delivery_date:date.beginning_of_month..date.end_of_month).where(un_order_flag:false)
+    if params[:store_id] == "all"
+      @stores = Store.where(group_id:29)
+      @order_materials = OrderMaterial.joins(:order).where(:orders => {store_id:@stores.ids,fixed_flag:true}).where(delivery_date:date.beginning_of_month..date.end_of_month).where(un_order_flag:false)            
+    else
+      store_id = params[:store_id]
+      @store = Store.find(store_id)
+      @order_materials = OrderMaterial.joins(:order).where(:orders => {store_id:store_id,fixed_flag:true}).where(delivery_date:date.beginning_of_month..date.end_of_month).where(un_order_flag:false)      
+    end
     respond_to do |format|
       format.html
       format.csv do

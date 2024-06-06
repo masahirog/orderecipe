@@ -1,0 +1,10 @@
+
+- if stock.present?
+  = form_with(model: stock, data: {remote: true}) do |f|
+    = f.hidden_field :scan,value:true
+    = f.hidden_field :material_id
+    = f.hidden_field :date
+    = f.hidden_field :store_id
+    = f.hidden_field :inventory_flag,value:true
+    = f.number_field :end_day_stock_accounting_unit,value:(stock.end_day_stock/material.accounting_unit_quantity).floor(1),class:'input_inventory_stock form-control', :step => 0.01
+- else

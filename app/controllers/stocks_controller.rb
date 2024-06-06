@@ -1,4 +1,6 @@
 class StocksController < AdminController
+  def scan
+  end
   # def inventory_sheet
   #   date = params[:date]
   #   store_id = params[:store_id]
@@ -205,7 +207,9 @@ class StocksController < AdminController
 
   def update
     @mobile = false
+    @scan = false
     @mobile = true if params[:stock][:mobile_flag].present?
+    @scan = true if params[:stock][:scan].present?
     update_stocks = []
     @stock_hash = {}
     @stock = Stock.find(params[:id])

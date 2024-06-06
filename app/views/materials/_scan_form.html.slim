@@ -1,0 +1,9 @@
+- if material.present?
+  = form_with(model: material, data: {remote: true}) do |f|
+    .input-group
+      span class="input-group-addon" JAN
+      = f.text_field :jancode,value:material.jancode,class:'form-control input_jancode'
+      span class="input-group-btn"
+        = f.submit "保存",class:'btn btn-primary'
+- else
+  input.form-control

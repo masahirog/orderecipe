@@ -8,6 +8,8 @@
       <% end %>
     <% end %>
     $('.glyphicon-eye-open').tooltip({html: true})
+  <% elsif @scan == true %>
+    $(".inventory_flag").html('<span class="label label-info">棚卸し</span>')
   <% else %>
     $("<%= @class_name %>").after("<%= escape_javascript(render partial: 'tr', locals: {material:@material,bc:'',store_id:@stock.store_id}) %>");
     $("<%= @class_name %>").eq(0).remove();

@@ -10,6 +10,8 @@ class CreateProductParts < ActiveRecord::Migration[5.2]
       t.boolean :sticker_print_flag, null: false, default: true
       t.timestamps
       t.references :common_product_part
+      t.integer :loading_container,null:false,default:0
+      t.integer :loading_position,null:false,default:0
     end
   end
 end

@@ -25,6 +25,7 @@ Rails.application.routes.draw do
     resources :products
     resources :orders do
       collection do
+        get :sky_monthly
         get :monthly_data
         get :send_order_fax
         get :preparation_all
@@ -297,6 +298,7 @@ Rails.application.routes.draw do
   resources :customer_opinions
   resources :materials do
     collection do
+      get :scan
       get :used_products
       get :materials_used_amount
       post :material_cut_patterns_once_update
@@ -305,10 +307,12 @@ Rails.application.routes.draw do
       get :monthly_used_amount
       get :include_material
       get :used_check
+      get :get_material
     end
   end
   resources :orders do
     collection do
+      get :sky_monthly
       get :monthly_data
       get :suriho
       get :bejihan_store_orders_list
@@ -360,6 +364,7 @@ Rails.application.routes.draw do
   resources :food_additives
   resources :stocks do
     collection do
+      get :scan
       get :store_inventory
       post :make_this_month
       get :monthly

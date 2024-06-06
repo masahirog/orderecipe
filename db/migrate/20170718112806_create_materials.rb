@@ -29,6 +29,7 @@ class CreateMaterials < ActiveRecord::Migration[4.2]
       t.integer :group_id, :null => false
       t.integer :target_material_id
       t.date :price_update_date
+      t.string :jancode,unique: true
     end
   end
 end

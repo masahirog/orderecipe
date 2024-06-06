@@ -1,0 +1,7 @@
+<%# $(".update_flag").html('<span class="label label-info">更新！</span>') %>
+<% if @material.saved_changes? %>
+	alert("更新しました！");
+<% else %>
+	alert("更新失敗！おそらく、このJANCODEが別の食材に登録されています。");
+	$(".input_jancode").val("");
+<% end %>

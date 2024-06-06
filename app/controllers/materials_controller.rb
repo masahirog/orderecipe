@@ -1,5 +1,31 @@
 class MaterialsController < ApplicationController
   protect_from_forgery :except => [:change_additives]
+  def scan
+    @materials = []
+    @material = nil
+  end
+
+  def get_material
+    if params[:material_id]
+      # janコード登録の呼び出し
+      @material = Material.find(params[:material_id]) 
+      @save_jancode_flag = true
+    else
+      # janでのストック登録の呼び出し
+      @material = Material.find_by(jancode:params[:jancode])
+      end_day_stock = 0
+      if @material.present?
+        @stock = Stock.where(date:(@today - 50)..@today,material_id:@material.id,store_id:39).order('date DESC').first
+        if @stock.present?
+        else
+          @stock = Stock.new(store_id:39,date:@today,material_id:@material.id)
+        end
+      end
+    end
+    respond_to do |format|
+      format.js
+    end
+  end
   def materials_used_amount
     date = @today - 365
     materials = Material.where(vendor_id:151)
@@ -143,7 +169,7 @@ class MaterialsController < ApplicationController
     Store.where(group_id:current_user.group_id).each do |store|
       @stores_hash[store.group_id][store.id]=store.name
     end
-
+    @materials = []
     respond_to do |format|
       if @material.update(material_params)
         format.html {
@@ -156,6 +182,7 @@ class MaterialsController < ApplicationController
         format.js
       else
         format.html { render :edit }
+        format.js
       end
     end
   end
@@ -279,7 +306,7 @@ class MaterialsController < ApplicationController
   private
   def material_params
     params.require(:material).permit(:name, :order_name,:roma_name, :recipe_unit_quantity, :recipe_unit,:vendor_stock_flag,:image,:image_cache,:remove_image,:short_name,:storage_place,:group_id,:target_material_id,
-     :recipe_unit_price, :cost_price, :category, :order_code, :order_unit, :memo, :unused_flag, :vendor_id,:order_unit_quantity,:delivery_deadline,:accounting_unit,
+     :recipe_unit_price, :cost_price, :category, :order_code, :order_unit, :memo, :unused_flag, :vendor_id,:order_unit_quantity,:delivery_deadline,:accounting_unit,:jancode,
      :accounting_unit_quantity,:measurement_flag,:price_update_date,
      {allergy:[]},material_store_orderables_attributes:[:id,:store_id,:material_id,:orderable_flag],material_food_additives_attributes:[:id,:material_id,:food_additive_id,:_destroy],
    material_cut_patterns_attributes:[:id,:material_id,:name,:machine,:_destroy,:roma_name])

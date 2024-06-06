@@ -1,21 +1,14 @@
 require 'csv'
 CSV.generate do |csv|
-  csv_column_names = %w(店舗名 日付 商品ID 当日調理 商品名 店頭価格 卸単価 発注数 卸価格計 在庫追加分 実在庫 繰越分 完売 惣菜数 副菜)
+  csv_column_names = %w(店舗名 日付 商品ID 商品名 店頭価格 卸単価 発注数 卸価格計)
   csv << csv_column_names
     @store_daily_menus.each do |store_daily_menu|
       store_daily_menu.store_daily_menu_details.each do |sdmd|
         if sdmd.number > 0 || sdmd.actual_inventory > 0
-          if sdmd.sold_out_flag == true
-            kanbai = 1
-          else
-            kanbai = ''
-          end
           csv_column_values = [
             sdmd.store_daily_menu.store.name,sdmd.store_daily_menu.start_time,sdmd.product_id,
-            @last_process[sdmd.product_id],
             sdmd.product.name,sdmd.product.sell_price,(sdmd.product.sell_price*0.58),sdmd.number,
-            (sdmd.product.sell_price*0.58*sdmd.number),sdmd.stock_deficiency_excess,sdmd.actual_inventory,sdmd.carry_over,kanbai,sdmd.sozai_number,sdmd.bento_fukusai_number
-          ]
+            (sdmd.product.sell_price*0.58*sdmd.number)]
           csv << csv_column_values
         end
       end

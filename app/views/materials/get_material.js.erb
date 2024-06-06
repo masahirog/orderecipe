@@ -1,0 +1,23 @@
+<% if @save_jancode_flag.present? %>
+	$(".material_form").html("<%= escape_javascript(render partial: 'materials/scan_form', locals: {material:@material})%>");
+	$(".scan").find(".name").text("<%= @material.name %>");
+	$(".scan").find(".vendor").text("（<%= @material.vendor.company_name %>）");
+
+<% else %>
+	<% if @material.present? %>
+		$(".stock").html("<%= escape_javascript(render partial: 'stocks/scan_form', locals: {material:@material,stock:@stock})%>");
+		$(".scan").find(".name").text("<%= @material.name %>");
+		$(".scan").find(".unit").text("<%= @material.accounting_unit %>");
+		$(".scan").find(".date").text("<%= @today.strftime('%Y/%m/%d') %>");
+		$(".scan").find(".vendor").text("（<%= @material.vendor.company_name %>）");
+		<% if @stock.inventory_flag == true%>
+			$(".inventory_flag").html('<span class="label label-success">棚卸し</span>')
+		<% else %>
+			$(".inventory_flag").html('')
+		<% end %>
+	<% else %>
+		$(".scan").find(".name").text('登録商品がありません');
+		$(".scan").find(".unit").text('');
+		$(".scan").find(".stock").val('');
+	<% end %>
+<% end %>

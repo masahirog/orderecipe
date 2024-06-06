@@ -2,7 +2,7 @@ hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
 require 'csv'
 bom = "\uFEFF"
 CSV.generate(bom) do |csv|
-  csv_column_names = %w(日付 店舗名 商品名 パーツ名 人前 分量)
+  csv_column_names = %w(店舗名 日付 商品名 発注数 パーツ数 パーツ名 分量 梱包 積載)
   csv << csv_column_names
   @daily_menu.store_daily_menus.each_with_index do |sdm,i|
     sdm.store_daily_menu_details.each do |sdmd|

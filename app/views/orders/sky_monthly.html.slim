@@ -1,0 +1,84 @@
+.clearfix style='padding:5px 0;'
+	h3 style='float:left;margin-top: 5px;margin-right: 20px;' = "#{@date.month}月SKY"
+	= form_tag sky_monthly_orders_path, :method => 'get' do
+		= month_field_tag :month,@month,class:"form-control",style:'width:200px;float:left;margin-right:10px;'
+		= submit_tag "表示" ,class:"btn btn-primary",style:"float:left;"
+= link_to "B_CSV",store_daily_menus_path(start_date:@date,store_id:'sky_all', :format => :csv),class:"btn btn-primary",style:'float:right;'
+= link_to "A_CSV",monthly_data_orders_path(start_date:@date,store_id:'all', :format => :csv),class:"btn btn-primary",style:'float:right;margin-right:10px;'
+
+
+
+h4 商品別
+table.table
+	thead
+		tr
+			th 食材名
+			th 量
+	tbody
+		- @material_quantity.each do |data|
+			- material = Material.find(data[0])
+			tr
+				td = material.order_name
+				td = "#{(data[1].to_i/material.accounting_unit_quantity)} #{material.accounting_unit}"
+
+h4 店舗別
+.table-responsive style='overflow: scroll;overscroll-behavior-x: contain;'
+  	table.table.layout-fixed style='border-collapse:separate;'
+    	colgroup
+      		col class="col1"
+	    	- @materials.each do |material|
+	        	col class="col2"
+		thead
+			tr
+				th 店舗名
+				- @materials.each do |material|
+					th = material.order_name
+		tbody
+			- @stores.each do |store|
+				tr
+					td = store.short_name
+					- @materials.each do |material|
+						td
+							= "#{@store_material_hash[[store.id,material.id]].to_i/material.accounting_unit_quantity} #{material.accounting_unit}" if @store_material_hash[[store.id,material.id]].present?
+
+h4 日別
+.table-responsive style='height:90vh;overflow: scroll;overscroll-behavior-x: contain;'
+  	table.table.layout-fixed style='border-collapse:separate;'
+    	colgroup
+      		col class="col1"
+		    	- @dates.each do |date|
+		        	col class="col2"
+		thead
+			tr
+				th 店舗名
+				- @dates.each do |date|
+					th = date.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[date.wday]})")
+		tbody
+			- @stores.each do |store|
+				tr
+					td = store.short_name
+					- @dates.each do |date|
+						td
+							- @store_date_hash[[store.id,date]].each do |data|
+								span style='font-size:0.8em;' = "#{data.material.order_name.slice(0..9)}：#{data.order_quantity.to_i/data.material.accounting_unit_quantity} #{data.material.accounting_unit}"
+								br
+css:
+  .table-responsive th {
+    white-space: nowrap;
+  }
+  table.layout-fixed {
+    table-layout: fixed;
+    border-collspace:separate;
+  }
+  .table th:first-child,td:first-child{
+    position: sticky;
+    left: 0;
+    z-index:2;
+    background-color:white;
+  }
+  .col1{
+    width:120px;
+  }
+  .col2{
+    width:160px;
+  }

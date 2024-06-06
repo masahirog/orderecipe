@@ -54,6 +54,11 @@
       .col-md-12.form-group
         = f.label :order_code, "業者管理コード"
         = f.text_field :order_code, class:'form-control'
+      .col-md-12.form-group
+        = f.label :jancode, "JANコード"
+        = f.text_field :jancode, class:'form-control'
+
+
       - if current_user.admin?
         .col-md-12.form-group
           = f.label :target_material_id, "キッチン在庫管理同期食材"
