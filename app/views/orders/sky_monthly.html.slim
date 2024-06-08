@@ -13,13 +13,36 @@ table.table
 	thead
 		tr
 			th 食材名
+			th 単価
 			th 量
+			th 発注金額
 	tbody
+		- total = 0
 		- @material_quantity.each do |data|
 			- material = Material.find(data[0])
+			- sub_total = ((material.recipe_unit_price / material.order_unit_quantity)*(data[1].to_i/material.accounting_unit_quantity))
+			- total += sub_total
 			tr
 				td = material.order_name
+				td = (material.recipe_unit_price / material.order_unit_quantity).to_i.to_s(:delimited)
 				td = "#{(data[1].to_i/material.accounting_unit_quantity)} #{material.accounting_unit}"
+				td = sub_total.to_i.to_s(:delimited)
+		- if @date.month == @today.month
+			- chakuchi = (total/@today.day)*(@dates.count)
+		- else
+			- chakuchi = total
+		tr
+			td
+				b 合計
+			td
+			td
+			td
+				b = total.to_i.to_s(:delimited)
+				br
+				span = "着地：#{chakuchi.to_i.to_s(:delimited)}"
+				br
+				span = "先月比：#{((chakuchi/@last_ordered_total)*100).round(1)}% （先月 #{@last_ordered_total.to_i.to_s(:delimited)}）"
+
 
 h4 店舗別
 .table-responsive style='overflow: scroll;overscroll-behavior-x: contain;'
