@@ -166,9 +166,9 @@ class WeeklyMenuA3 < Prawn::Document
     fill_color '000000'
     text_box("⑳",at: [430,right_height-4], width: 30, height: 40,size:14)
     text_box("本日のお肉のお弁当",at: [450,right_height+5], width: 250, height: 30,size:14, valign: :center)
-    text_box("780/840<font size='10'>円</font>",inline_format: true,at: [645,right_height-5], width: 350, height: 40,size:14)
-    text_box("税込",at: [745,right_height-5], width: 350, height: 40,size:6)
-    text_box("842/907円",at: [725,right_height-12], width: 350, height: 40,size:8)
+    text_box("890/790/690<font size='10'>円</font>",inline_format: true,at: [625,right_height-5], width: 350, height: 40,size:14)
+    text_box("税込",at: [725,right_height-5], width: 350, height: 40,size:6)
+    text_box("961/853/745円",at: [725,right_height-12], width: 350, height: 40,size:8)
     text_box("毎日主菜が入れ替わるお弁当です。主菜はお肉を使ったお料理です。",at: [455,right_height-25], width: 320, height: 30,size:9, valign: :center)
 
     right_height -= 75
@@ -178,22 +178,11 @@ class WeeklyMenuA3 < Prawn::Document
     fill_color '000000'
     text_box("㉑",at: [430,right_height-4], width: 30, height: 40,size:14)
     text_box("本日のお魚のお弁当",at: [450,right_height+5], width: 250, height: 30,size:14, valign: :center)
-    text_box("780/840<font size='10'>円</font>",inline_format: true,at: [645,right_height-5], width: 350, height: 40,size:14)
-    text_box("税込",at: [745,right_height-5], width: 350, height: 40,size:6)
-    text_box("842/907円",at: [725,right_height-12], width: 350, height: 40,size:8)
+    text_box("890/790/690<font size='10'>円</font>",inline_format: true,at: [625,right_height-5], width: 350, height: 40,size:14)
+    text_box("税込",at: [725,right_height-5], width: 350, height: 40,size:6)
+    text_box("961/853/745円",at: [725,right_height-12], width: 350, height: 40,size:8)
     text_box("毎日主菜が入れ替わるお弁当です。主菜はお魚を使ったお料理です。",at: [455,right_height-25], width: 280, height: 30,size:9, valign: :center)
 
-    right_height -= 75
-
-    fill_color 'ea9999'
-    text_box("●",at: [410,right_height-4], width: 350, height: 40,size:14)
-    fill_color '000000'
-    text_box("㉒",at: [430,right_height-4], width: 30, height: 40,size:14)
-    text_box("メインのおかずが選べる「セレクト弁当」",at: [450,right_height+5], width: 250, height: 30,size:13, valign: :center)
-    text_box("500<font size='10'>円</font>",inline_format: true,at: [705,right_height-5], width: 350, height: 40,size:14)
-    text_box("税込",at: [745,right_height-5], width: 350, height: 40,size:6)
-    text_box("540円",at: [745,right_height-12], width: 350, height: 40,size:8)
-    text_box("ショーケースから好きなお惣菜1品お選び頂けます。お惣菜の価格+500円で好きなお惣菜を1品入れたお弁当が出来上がります。",at: [455,right_height-25], width: 280, height: 30,size:9, valign: :center)
 
     right_height -= 75
 
