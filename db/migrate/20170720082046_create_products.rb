@@ -34,6 +34,7 @@ class CreateProducts < ActiveRecord::Migration[4.2]
       t.integer :tax_including_sell_price,null:false
       t.boolean :reduced_tax_flag,null:false,default:true
       t.boolean :half_able_flag,null:false,default:false
+      t.string :sales_unit,null:false,default:'1人前'
     end
   end
 end

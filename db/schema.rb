@@ -479,7 +479,7 @@ ActiveRecord::Schema.define(version: 2024_05_30_003841) do
     t.index ["date", "material_id"], name: "index_material_vendor_stocks_on_date_and_material_id", unique: true
   end
 
-  create_table "materials", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "materials", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.string "order_name"
     t.string "roma_name"
@@ -707,7 +707,7 @@ ActiveRecord::Schema.define(version: 2024_05_30_003841) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "product_parts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "product_parts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.integer "product_id", null: false
     t.string "name", default: "", null: false
     t.float "amount", default: 0.0, null: false
@@ -718,7 +718,6 @@ ActiveRecord::Schema.define(version: 2024_05_30_003841) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "common_product_part_id"
-    t.integer "loading_container", default: 0, null: false
     t.index ["common_product_part_id"], name: "index_product_parts_on_common_product_part_id"
   end
 
@@ -731,7 +730,7 @@ ActiveRecord::Schema.define(version: 2024_05_30_003841) do
     t.index ["product_id", "store_id"], name: "index_product_sales_potentials_on_product_id_and_store_id", unique: true
   end
 
-  create_table "products", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "products", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
     t.integer "sell_price", null: false
     t.text "description"
@@ -766,6 +765,7 @@ ActiveRecord::Schema.define(version: 2024_05_30_003841) do
     t.integer "tax_including_sell_price", null: false
     t.boolean "reduced_tax_flag", default: true, null: false
     t.boolean "half_able_flag", default: false, null: false
+    t.string "sales_unit", default: "1人前", null: false
   end
 
   create_table "refund_supports", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

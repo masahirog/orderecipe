@@ -73,7 +73,7 @@ class ApplicationController < ActionController::Base
     product_ids = []
     @pre_order = PreOrder.new
     @daily_menu.daily_menu_details.includes([:product]).each do |dmd|
-      if dmd.product.product_category == "お弁当" || dmd.product.product_category == "ご飯・丼" || dmd.product.product_category == "惣菜" ||dmd.product.product_category == "スイーツ・ドリンク"
+      if dmd.product.product_category == "お弁当" || dmd.product.product_category == "ご飯・丼" || dmd.product.product_category == "惣菜" ||dmd.product.product_category == "スイーツ・ドリンク" ||dmd.product.product_category == "スープ"
         tax_including_sell_price = (dmd.sell_price * 1.08).floor
         @pre_order.pre_order_products.build(product_id:dmd.product_id,order_num:0,welfare_price:0,employee_discount:0,tax_including_sell_price:tax_including_sell_price)
       end

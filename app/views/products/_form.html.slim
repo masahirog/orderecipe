@@ -57,6 +57,10 @@
       .col-md-1
         = f.label :bejihan_sozai_flag, "べじはん惣菜"
         = f.check_box :bejihan_sozai_flag, class: "form-control"
+      .col-md-3
+        = f.label :sales_unit, "販売単位"
+        = f.text_field :sales_unit, class:"form-control", required:true
+
   .col-md-12.form-group
     .col-md-1
       = f.label :reduced_tax_flag, "軽減税率"

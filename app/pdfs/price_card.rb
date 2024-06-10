@@ -39,7 +39,7 @@ class PriceCard < Prawn::Document
           if product.half_able_flag == true
             text_box("<font size='25'>#{product.sell_price}</font> 円",at: [260, h - 122], width: 100, height: 40,size:15,inline_format: true)
             font "vendor/assets/fonts/NotoSansJP-Medium.ttf"
-            text_box("1人前",at: [215, h - 132], width: 100, height: 40,size:13)
+            text_box(product.sales_unit,at: [215, h - 132], width: 100, height: 40,size:13)
             text_box("（税込 #{product.tax_including_sell_price} 円）",at: [330, h - 135], width: 100, height: 40,size:11)
             text_box("0.5人前",at: [240, h - 154], width: 200, height: 40,size:9)
             text_box("円（税込 #{(product.tax_including_sell_price*0.6).floor} 円）",at: [305, h - 154], width: 200, height: 40,size:9)
@@ -47,7 +47,7 @@ class PriceCard < Prawn::Document
           else
             text_box("<font size='25'>#{product.sell_price}</font> 円",at: [260, h - 132], width: 100, height: 40,size:15,inline_format: true)
             font "vendor/assets/fonts/NotoSansJP-Medium.ttf"
-            text_box("1人前",at: [215, h - 142], width: 100, height: 40,size:13)
+            text_box(product.sales_unit,at: [215, h - 142], width: 100, height: 40,size:13)
             text_box("（税込 #{product.tax_including_sell_price} 円）",at: [330, h - 145], width: 100, height: 40,size:11)
           end
           text_box(product.contents,at: [215,h-75], width: 280, height: 30,size:11,valign: :top,align: :center, leading: 3)
@@ -100,7 +100,7 @@ class PriceCard < Prawn::Document
           if product.half_able_flag == true
             text_box("<font size='30'>#{product.sell_price}</font> 円",at: [155, h - 123], width: 100, height: 40,size:15,inline_format: true)
             font "vendor/assets/fonts/NotoSansJP-Medium.ttf"
-            text_box("一人前",at: [110, h - 138], width: 100, height: 40,size:12)
+            text_box(product.sales_unit,at: [110, h - 138], width: 100, height: 40,size:12)
             text_box("（税込 #{product.tax_including_sell_price} 円）",at: [230, h - 138], width: 100, height: 40,size:13)
 
             text_box("0.5人前",at: [155, h - 162], width: 200, height: 40,size:9)
@@ -110,7 +110,7 @@ class PriceCard < Prawn::Document
           else
             text_box("<font size='30'>#{product.sell_price}</font> 円",at: [155, h - 123], width: 100, height: 40,size:15,inline_format: true)
             font "vendor/assets/fonts/NotoSansJP-Medium.ttf"
-            text_box("一人前",at: [110, h - 138], width: 100, height: 40,size:12)
+            text_box(product.sales_unit,at: [110, h - 138], width: 100, height: 40,size:12)
             text_box("（税込 #{product.tax_including_sell_price} 円）",at: [230, h - 138], width: 100, height: 40,size:13)
           end
 
