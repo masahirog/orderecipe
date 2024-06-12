@@ -2,7 +2,7 @@ hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
 require 'csv'
 bom = "\uFEFF"
 CSV.generate(bom) do |csv|
-  csv_column_names = %w(日付 店舗名 商品名 発注数 パーツ数 パーツ名 分量 コンテナ ポジション 合算)
+  csv_column_names = %w(日付 店舗名 商品名 発注数 パーツ数 パーツ名 分量 積載容器 積載コンテナ 合算)
   csv << csv_column_names
   @daily_menu.store_daily_menus.each_with_index do |sdm,i|
     sdm.store_daily_menu_details.each do |sdmd|
@@ -29,8 +29,8 @@ CSV.generate(bom) do |csv|
               else
                 part_name = pp.name
               end
-              parts_num = "合計パーツ：#{sdmd.product.product_parts.count}種"
-              csv << [@daily_menu.start_time.strftime("%-m/%-d"),sdm.store.short_name,sdmd.product.name,"発注数：#{sdmd.number}",parts_num,part_name,"#{amount} #{pp.unit}",pp.loading_container,pp.loading_position,""]
+              parts_num = "パーツ：#{sdmd.product.product_parts.count}種"
+              csv << [@daily_menu.start_time.strftime("%-m/%-d"),sdm.store.short_name,sdmd.product.name,"発注数：#{sdmd.number}人前",parts_num,part_name,"#{amount} #{pp.unit}",pp.container,pp.loading_container,""]
             end
           end
         end
@@ -41,7 +41,7 @@ CSV.generate(bom) do |csv|
     store = Store.find(data[0])
     data[1].each do |cpp_data|
       amount = number_with_precision(cpp_data[1][:amount],precision:1, strip_insignificant_zeros: true, delimiter: ',')
-      csv << [@daily_menu.start_time.strftime("%-m/%-d"),store.short_name,cpp_data[1][:cpp].product_name,"発注数：#{cpp_data[1][:number]}","",cpp_data[1][:cpp].name,"#{amount} #{cpp_data[1][:cpp].unit}",cpp_data[1][:cpp].loading_container,cpp_data[1][:cpp].loading_position,"計#{cpp_data[1][:count]}種 合算"]
+      csv << [@daily_menu.start_time.strftime("%-m/%-d"),store.short_name,cpp_data[1][:cpp].product_name,"発注数：#{cpp_data[1][:number]}","",cpp_data[1][:cpp].name,"#{amount} #{cpp_data[1][:cpp].unit}",cpp_data[1][:cpp].container,cpp_data[1][:cpp].loading_container,"計#{cpp_data[1][:count]}種 合算"]
     end
   end
 end
