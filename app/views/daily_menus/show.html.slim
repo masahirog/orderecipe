@@ -56,7 +56,34 @@ div
 
   / = link_to "タレシール",sources_daily_menus_path(daily_menu_id:@daily_menu.id, :format => :csv),class:"btn btn-default",:target=>"_blank",style:'float:left;margin-left:20px;margin-top:10px;'
   = link_to "積載表",loading_daily_menus_path(id:@daily_menu.id, :format => :pdf),class:"btn btn-default",:target=>"_blank",style:'margin-left:20px;margin-top:10px;'
-  = link_to "積載シール",loading_daily_menus_path(id:@daily_menu.id, :format => :csv),class:"btn btn-default",:target=>"_blank",style:'margin-left:20px;margin-top:10px;'
+  / = link_to "積載シール",loading_daily_menus_path(id:@daily_menu.id, :format => :csv),class:"btn btn-default",:target=>"_blank",style:'margin-left:20px;margin-top:10px;'
+
+  button type="button" class="btn btn-default" data-toggle="modal" data-target="#loading_sheet" style='margin-left:20px;margin-top:10px;' 積載シール
+  #loading_sheet.modal.fade tabindex="-1"
+    = form_tag loading_daily_menus_path(format: :csv), :method => 'get' do
+      = hidden_field_tag :id,params[:id]
+      .modal-dialog
+        .modal-content
+          .modal-header
+            h4.modal-title ポジション
+          .modal-body.clearfix
+            div
+              = radio_button_tag("loading_position", "0",{:checked => true})
+              = label_tag("loading_position_0", "積載",style:'margin-left:10px;')
+
+            div
+              = radio_button_tag("loading_position", "1")
+              = label_tag("loading_position_1", "切出し",style:'margin-left:10px;')
+            div
+              = radio_button_tag("loading_position", "2")
+              = label_tag("loading_position_2", "調理場",style:'margin-left:10px;')
+                    
+          .modal-footer
+            = submit_tag "更新" ,class:"btn btn-primary"
+            button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
+
+
+
   = link_to "積載伝票",daily_menu_path(id:@daily_menu.id, :format => :pdf),class:"btn btn-default",:target=>"_blank",style:'margin-left:20px;margin-top:10px;'
   = link_to "当日調理",cook_on_the_day_daily_menus_path(id:@daily_menu.id, :format => :pdf),class:"btn btn-default",:target=>"_blank",style:'margin-left:20px;margin-top:10px;'
   / = link_to "タブレット",kiridasi_daily_menus_path(id:@daily_menu.id),class:"btn btn-default",:target=>"_blank",style:'margin-left:20px;margin-top:10px;'

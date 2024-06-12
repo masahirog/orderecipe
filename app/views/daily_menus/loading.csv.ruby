@@ -9,27 +9,29 @@ CSV.generate(bom) do |csv|
       if sdmd.number == 0
       else
         sdmd.product.product_parts.each do |pp|
-          if pp.common_product_part_id.present?
-            amount = pp.amount*sdmd.number
-            if hash[sdm.store_id][pp.common_product_part_id].present?
-              hash[sdm.store_id][pp.common_product_part_id][:amount] += amount
-              hash[sdm.store_id][pp.common_product_part_id][:count] += 1
-              hash[sdm.store_id][pp.common_product_part_id][:number] += sdmd.number
+          if @loading_position.to_i == pp.loading_position_before_type_cast
+            if pp.common_product_part_id.present?
+              amount = pp.amount*sdmd.number
+              if hash[sdm.store_id][pp.common_product_part_id].present?
+                hash[sdm.store_id][pp.common_product_part_id][:amount] += amount
+                hash[sdm.store_id][pp.common_product_part_id][:count] += 1
+                hash[sdm.store_id][pp.common_product_part_id][:number] += sdmd.number
+              else
+                hash[sdm.store_id][pp.common_product_part_id][:amount] = amount
+                hash[sdm.store_id][pp.common_product_part_id][:count] = 1
+                hash[sdm.store_id][pp.common_product_part_id][:cpp] = pp.common_product_part
+                hash[sdm.store_id][pp.common_product_part_id][:number] = sdmd.number
+              end
             else
-              hash[sdm.store_id][pp.common_product_part_id][:amount] = amount
-              hash[sdm.store_id][pp.common_product_part_id][:count] = 1
-              hash[sdm.store_id][pp.common_product_part_id][:cpp] = pp.common_product_part
-              hash[sdm.store_id][pp.common_product_part_id][:number] = sdmd.number
+              amount = number_with_precision(pp.amount*sdmd.number,precision:1, strip_insignificant_zeros: true, delimiter: ',')
+              if pp.memo.present?
+                part_name = "#{pp.name} ※"
+              else
+                part_name = pp.name
+              end
+              parts_num = sdmd.product.product_parts.count
+              csv << [@daily_menu.start_time,sdm.store.short_name,sdmd.product.name,sdmd.number,parts_num,part_name,"#{amount} #{pp.unit}",pp.loading_container,pp.loading_position,""]
             end
-          else
-            amount = number_with_precision(pp.amount*sdmd.number,precision:1, strip_insignificant_zeros: true, delimiter: ',')
-            if pp.memo.present?
-              part_name = "#{pp.name} ※"
-            else
-              part_name = pp.name
-            end
-            parts_num = sdmd.product.product_parts.count
-            csv << [@daily_menu.start_time,sdm.store.short_name,sdmd.product.name,sdmd.number,parts_num,part_name,"#{amount} #{pp.unit}",pp.loading_container,pp.loading_position,""]
           end
         end
       end

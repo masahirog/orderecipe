@@ -406,6 +406,7 @@ class DailyMenusController < AdminController
     end
   end
   def loading
+    @loading_position = params[:loading_position]
     @daily_menu = DailyMenu.find(params[:id])
     respond_to do |format|
       format.html
