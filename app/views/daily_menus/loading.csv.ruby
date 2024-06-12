@@ -29,8 +29,8 @@ CSV.generate(bom) do |csv|
               else
                 part_name = pp.name
               end
-              parts_num = sdmd.product.product_parts.count
-              csv << [@daily_menu.start_time,sdm.store.short_name,sdmd.product.name,sdmd.number,parts_num,part_name,"#{amount} #{pp.unit}",pp.loading_container,pp.loading_position,""]
+              parts_num = "合計パーツ：#{sdmd.product.product_parts.count}種"
+              csv << [@daily_menu.start_time.strftime("%-m/%-d"),sdm.store.short_name,sdmd.product.name,"発注数：#{sdmd.number}",parts_num,part_name,"#{amount} #{pp.unit}",pp.loading_container,pp.loading_position,""]
             end
           end
         end
@@ -41,7 +41,7 @@ CSV.generate(bom) do |csv|
     store = Store.find(data[0])
     data[1].each do |cpp_data|
       amount = number_with_precision(cpp_data[1][:amount],precision:1, strip_insignificant_zeros: true, delimiter: ',')
-      csv << [@daily_menu.start_time,store.short_name,cpp_data[1][:cpp].product_name,cpp_data[1][:number],"",cpp_data[1][:cpp].name,"#{amount} #{cpp_data[1][:cpp].unit}",cpp_data[1][:cpp].loading_container,cpp_data[1][:cpp].loading_position,"計#{cpp_data[1][:count]}種 合算"]
+      csv << [@daily_menu.start_time.strftime("%-m/%-d"),store.short_name,cpp_data[1][:cpp].product_name,"発注数：#{cpp_data[1][:number]}","",cpp_data[1][:cpp].name,"#{amount} #{cpp_data[1][:cpp].unit}",cpp_data[1][:cpp].loading_container,cpp_data[1][:cpp].loading_position,"計#{cpp_data[1][:count]}種 合算"]
     end
   end
 end
