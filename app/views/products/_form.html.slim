@@ -185,7 +185,7 @@
         = render 'product_pack_serving_information_fields', f:posi
 
 
-  table.table
+  table.table.loading_product_parts_table
     thead
       tr
         th.col-md-2 = link_to "共通パーツ",common_product_parts_path,target:'_blank'
@@ -195,9 +195,10 @@
           data: {association_insertion_node: '#product_parts-add-point',association_insertion_method: 'append' }
         th.col-md-1 1人前
         th.col-md-1 単位
-        th.col-md-2 パッキング
-        th シール
-        th.col-md-3 メモ
+        th.col-md-1 パッキング
+        th.col-md-1 コンテナ
+        th.col-md-1 ポジション
+        th.col-md-2 メモ
         th
     tbody#product_parts-add-point
       = f.fields_for :product_parts do |mp|
@@ -234,7 +235,7 @@ javascript:
     calculate_purchase_price();
   });
   
-  $(".common_product_part_select").on("change",function(){
+  $(".loading_product_parts_table").on("change",".common_product_part_select",function(){
     var common_product_part_id = $(this).val();
     console.log(common_product_part_id=="")
     var index = $('.product_part_tr').index($(this).parents('.product_part_tr'));
@@ -243,11 +244,18 @@ javascript:
       $(".product_part_tr").eq(index).find(".span_container").text("").hide();
       $(".product_part_tr").eq(index).find(".span_memo").text("").hide();
       $(".product_part_tr").eq(index).find(".span_unit").text("").hide();
+      $(".product_part_tr").eq(index).find(".span_loading_container").text("").hide();
+      $(".product_part_tr").eq(index).find(".span_loading_position").text("").hide();
+
+
 
       $(".product_part_tr").eq(index).find(".name").val('').show();
       $(".product_part_tr").eq(index).find(".container").val('').show();
       $(".product_part_tr").eq(index).find(".memo").val('').show();
       $(".product_part_tr").eq(index).find(".unit").val('').show();
+      $(".product_part_tr").eq(index).find(".loading_container").val('').show();
+      $(".product_part_tr").eq(index).find(".loading_position").val('').show();
+
     }else{
       $.ajax({
         url: "/common_product_parts/get_common_product_part",
@@ -260,8 +268,13 @@ javascript:
         $(".product_part_tr").eq(data['index']).find(".container").val(data['common_product_part'].container).hide();
         $(".product_part_tr").eq(data['index']).find(".memo").val(data['common_product_part'].memo).hide();
         $(".product_part_tr").eq(data['index']).find(".unit").val(data['common_product_part'].unit).hide();
+        $(".product_part_tr").eq(data['index']).find(".loading_container").val(data['common_product_part'].loading_container).hide();
+        $(".product_part_tr").eq(data['index']).find(".loading_position").val(data['common_product_part'].loading_position).hide();
+
         $(".product_part_tr").eq(data['index']).find(".span_name").text(data['common_product_part'].name).show();
         $(".product_part_tr").eq(data['index']).find(".span_container").text(data['common_product_part'].container).show();
+        $(".product_part_tr").eq(data['index']).find(".span_loading_container").text(data['common_product_part'].loading_container).show();
+        $(".product_part_tr").eq(data['index']).find(".span_loading_position").text(data['common_product_part'].loading_position).show();
         $(".product_part_tr").eq(data['index']).find(".span_memo").text(data['common_product_part'].memo).show();
         $(".product_part_tr").eq(data['index']).find(".span_unit").text(data['common_product_part'].unit).show();
       });

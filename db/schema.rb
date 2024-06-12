@@ -101,13 +101,16 @@ ActiveRecord::Schema.define(version: 2024_05_30_003841) do
     t.text "memo"
   end
 
-  create_table "common_product_parts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "common_product_parts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name", default: "", null: false
     t.string "unit", null: false
     t.string "memo"
     t.integer "container", default: 0, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "loading_container", default: 0, null: false
+    t.integer "loading_position", default: 0, null: false
+    t.string "product_name"
   end
 
   create_table "containers", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -707,7 +710,7 @@ ActiveRecord::Schema.define(version: 2024_05_30_003841) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "product_parts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "product_parts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "product_id", null: false
     t.string "name", default: "", null: false
     t.float "amount", default: 0.0, null: false
@@ -718,6 +721,8 @@ ActiveRecord::Schema.define(version: 2024_05_30_003841) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "common_product_part_id"
+    t.integer "loading_container", default: 0, null: false
+    t.integer "loading_position", default: 0, null: false
     t.index ["common_product_part_id"], name: "index_product_parts_on_common_product_part_id"
   end
 
@@ -730,7 +735,7 @@ ActiveRecord::Schema.define(version: 2024_05_30_003841) do
     t.index ["product_id", "store_id"], name: "index_product_sales_potentials_on_product_id_and_store_id", unique: true
   end
 
-  create_table "products", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "products", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.integer "sell_price", null: false
     t.text "description"

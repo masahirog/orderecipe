@@ -3,11 +3,23 @@
     = f.label :name, "名前"
     = f.text_field :name,class:'form-control'
   .form-group
+    = f.label :product_name, "商品名（必要であれば）"
+    = f.text_field :product_name,class:'form-control'
+
+  .form-group
     = f.label :unit, "単位"
     = f.select :unit,['','g','kg','個','枚'],{},class:'form-control'
   .form-group
     = f.label :container, "積載容器"
     = f.select :container,ProductPart.containers.keys.to_a,{},class:'form-control'
+  .form-group
+    = f.label :loading_container, "積載コンテナ"
+    = f.select :loading_container,ProductPart.loading_containers.keys.to_a,{},class:'form-control'
+  .form-group
+    = f.label :loading_position, "ポジション"
+    = f.select :loading_position,ProductPart.loading_positions.keys.to_a,{},class:'form-control'
+
+
   .form-group
     = f.label :memo, "メモ"
     = f.text_field :memo,class:'form-control',placeholder:'メモ'

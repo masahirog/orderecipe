@@ -68,6 +68,6 @@ class CommonProductPartsController < ApplicationController
     end
 
     def common_product_part_params
-      params.require(:common_product_part).permit(:name,:unit,:memo,:container)
+      params.require(:common_product_part).permit(:name,:unit,:memo,:container,:loading_position,:loading_container,:product_name)
     end
 end
