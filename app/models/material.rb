@@ -36,7 +36,7 @@ class Material < ApplicationRecord
   validates :vendor_id, presence: true
   validates :accounting_unit, presence: true
   validates :accounting_unit_quantity, presence: true
-  validates :jancode, uniqueness: true
+  validates :jancode, uniqueness: true, allow_blank: true
 
   enum category: {meat:1,fish:8,vege:2,other_vege:7,other_food:3,packed:4,consumable_item:5,cooking_item:6,rice:9}
   enum storage_place: {normal:1,refrigerate:2,freezing:3,pack:4,equipment:5}
