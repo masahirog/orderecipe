@@ -1,4 +1,5 @@
 h3 柴田屋オーダ一覧
+= "#{@date.month}月 売上：#{@sales.to_s(:delimited)}円"
 .clearfix
   .pull-right
      = form_tag pre_orders_path(format: :csv), :method => 'get' do

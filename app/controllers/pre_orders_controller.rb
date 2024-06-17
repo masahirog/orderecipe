@@ -10,7 +10,7 @@ class PreOrdersController < ApplicationController
     end
     dates = (@date.beginning_of_month..@date.end_of_month).to_a
     @pre_orders = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    PreOrder.where(date:dates).each do |pre_order|
+    PreOrder.where(date:dates).order(:employee_id).each do |pre_order|
       if @pre_orders[pre_order.employee_id].present?
         @pre_orders[pre_order.employee_id][:total] += pre_order.total
         @pre_orders[pre_order.employee_id][:count] += 1
@@ -48,6 +48,11 @@ class PreOrdersController < ApplicationController
       @pre_orders = PreOrder.includes(:store,pre_order_products:[:product]).where(date:@date,store_id:params[:store_id]).order(:recipient_time)
     else
       @pre_orders = PreOrder.includes(:store,pre_order_products:[:product]).where(date:@date).order(:recipient_time)
+    end
+    pre_order_ids = PreOrder.where(date:@date.beginning_of_month..@date.end_of_month).ids
+    @sales = 0
+    PreOrderProduct.where(pre_order_id:pre_order_ids).each do |pop|
+      @sales += pop.subtotal+pop.welfare_price
     end
     if params[:month]
       date = "#{params[:month]}-01".to_date
