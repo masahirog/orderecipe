@@ -10,7 +10,7 @@ class WorkingHoursController < AdminController
       @to = @today
     end
     if params[:from].present?
-      @from = Date.parse(params[:from].present?)
+      @from = Date.parse(params[:from])
     else
       @from = @to - 30
     end
