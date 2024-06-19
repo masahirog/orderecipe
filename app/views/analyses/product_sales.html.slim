@@ -13,7 +13,7 @@ div style='margin-bottom:20px;'
       div style="float:left;padding:8px;" 〜
       = date_field_tag :to, params[:to], class:"form-control",style:'width:200px;float:left;'
     = submit_tag "絞り込み" ,class:"btn btn-primary",style:"margin-left:20px;"
-
+  = link_to 'csv',product_sales_analyses_path(from:params[:from],to:params[:to],format: :csv),class:'btn btn-primary btn-sm pull-right'
 .table-responsive style='height:900px;overflow: scroll;'
   table.table.layout-fixed style='border-collapse:separate;'
     thead style='position: sticky;top:0;background-color:white;z-index:3;'

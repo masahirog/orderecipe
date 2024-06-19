@@ -219,10 +219,14 @@
     = f.select :one_pair_one_talk,options_for_select([['100%',1],["90%",0.9],["80%",0.8],["70%",0.7],["60%",0.6],["50%",0.5],["40%",0.4],["30%",0.3],["20%",0.2],["10%",0.1],["0%",0]],f.object.one_pair_one_talk),{include_blank:true}, class: "form-control"
 
   .form-group
-    = f.label :tasting_number, "試食実施数",class:'required'
-    = f.select :tasting_number,options_for_select(0..100,f.object.tasting_number),{include_blank:true}, class: "form-control"
+    = f.label :tasting_atack, "試食こえがけ数（AG：30）",class:'required'
+    = f.select :tasting_atack,options_for_select(0..100,f.object.tasting_atack),{include_blank:true}, class: "form-control"
 
   .form-group
+    = f.label :tasting_number, "試食実施数（RG：20）",class:'required'
+    = f.select :tasting_number,options_for_select(0..100,f.object.tasting_number),{include_blank:true}, class: "form-control"
+
+  / .form-group
     = f.label :other_memo, "試食内訳"
     = f.text_area :other_memo,class:'form-control', required: true
 
@@ -235,6 +239,7 @@
           th 笑顔が出来ている
           th 声の大きさ
           th 目が合っている
+          th 試食こえがけ数
       tbody#srs-add-point
         = f.fields_for :sales_report_staffs do |srs|
           tr
@@ -247,6 +252,9 @@
               = srs.select :eyecontact,options_for_select([5,4,3,2,1],srs.object.eyecontact),{include_blank:true}, class: "form-control"
             td
               = srs.select :voice_volume,options_for_select([5,4,3,2,1],srs.object.voice_volume),{include_blank:true}, class: "form-control"
+            td
+              = srs.select :tasting,options_for_select((1..30).to_a,srs.object.tasting),{include_blank:true}, class: "form-control"
+
     |評価基準
     br
     |5：漏れなく出来ている
@@ -259,13 +267,13 @@
     br
     |1：取り組もうとしていないように感じる
 
-  .form-group
+  / .form-group
     = f.label :good, "親切にできた点（自分・周りのスタッフ）"
     = f.text_area :good, class: "form-control", size: "10x7"
-  .form-group
-    = f.label :issue, "課題点・改善点・その他"
+  / .form-group
+    = f.label :issue, "備考"
     = f.text_area :issue, class: "form-control", size: "10x7"
-  .form-group
+  / .form-group
     = f.label :excess_or_deficiency_number_memo, "惣菜の盛り付け過不足の有無"
     = f.text_area :excess_or_deficiency_number_memo, class: "form-control", size: "10x7"
 

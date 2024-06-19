@@ -1284,40 +1284,47 @@ class AnalysesController < AdminController
       analyses = Analysis.where(date:@from..@to).where(store_id:checked_store_ids)
       @analysis_products = AnalysisProduct.includes(analysis:[:store_daily_menu]).where(analysis_id:analyses.ids)
       @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+      @product_store_sales = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
       product_ids = []
       @analysis_products.each do |ap|
-        if @hash[ap.product_id][ap.analysis.store_daily_menu.start_time].present?
-          @hash[ap.product_id][ap.analysis.store_daily_menu.start_time][:count] += 1
-          @hash[ap.product_id][ap.analysis.store_daily_menu.start_time][:actual_inventory] += ap.actual_inventory.to_i
-          @hash[ap.product_id][ap.analysis.store_daily_menu.start_time][:list_price_sales_number] += (ap.sales_number - ap.discount_number)
-          @hash[ap.product_id][ap.analysis.store_daily_menu.start_time][:discount_number] += ap.discount_number
-          @hash[ap.product_id][ap.analysis.store_daily_menu.start_time][:total_sales_amount] += ap.total_sales_amount
-          @hash[ap.product_id][ap.analysis.store_daily_menu.start_time][:discount_amount] += ap.discount_amount
-          @hash[ap.product_id][ap.analysis.store_daily_menu.start_time][:loss_amount] += ap.loss_amount
-          @hash[ap.product_id][ap.analysis.store_daily_menu.start_time][:loss_number] += ap.loss_number.to_i
+        product_id = ap.product_id
+        date = ap.analysis.date
+        @product_store_sales[product_id][date][ap.analysis.store_id] = {list_price_sales_number:(ap.sales_number - ap.discount_number),total_sales_amount:ap.total_sales_amount,
+            discount_amount:ap.discount_amount,loss_amount:ap.loss_amount,actual_inventory:ap.actual_inventory.to_i,discount_number:ap.discount_number,loss_number:ap.loss_number.to_i,
+            sixteen_total_sales_number:ap.sixteen_total_sales_number,nomination_rate:ap.nomination_rate,count:1,sell_price:ap.orderecipe_sell_price,shohinmei:ap.smaregi_shohin_name,
+            bumon_id:ap.bumon_id,nomination_rate:ap.nomination_rate,potential:ap.potential,sales:ap.ex_tax_sales_amount}
+        if @hash[product_id][date].present?
+          @hash[product_id][date][:count] += 1
+          @hash[product_id][date][:actual_inventory] += ap.actual_inventory.to_i
+          @hash[product_id][date][:list_price_sales_number] += (ap.sales_number - ap.discount_number)
+          @hash[product_id][date][:discount_number] += ap.discount_number
+          @hash[product_id][date][:total_sales_amount] += ap.total_sales_amount
+          @hash[product_id][date][:discount_amount] += ap.discount_amount
+          @hash[product_id][date][:loss_amount] += ap.loss_amount
+          @hash[product_id][date][:loss_number] += ap.loss_number.to_i
           # 16時までに売れた個数
-          @hash[ap.product_id][ap.analysis.store_daily_menu.start_time][:sixteen_total_sales_number] += ap.sixteen_total_sales_number
-          @hash[ap.product_id][ap.analysis.store_daily_menu.start_time][:nomination_rate] += ap.nomination_rate
+          @hash[product_id][date][:sixteen_total_sales_number] += ap.sixteen_total_sales_number
+          @hash[product_id][date][:nomination_rate] += ap.nomination_rate
         else
-          @hash[ap.product_id][ap.analysis.store_daily_menu.start_time] = {list_price_sales_number:(ap.sales_number - ap.discount_number),total_sales_amount:ap.total_sales_amount,
+          @hash[product_id][date] = {list_price_sales_number:(ap.sales_number - ap.discount_number),total_sales_amount:ap.total_sales_amount,
             discount_amount:ap.discount_amount,loss_amount:ap.loss_amount,actual_inventory:ap.actual_inventory.to_i,discount_number:ap.discount_number,loss_number:ap.loss_number.to_i,
             sixteen_total_sales_number:ap.sixteen_total_sales_number,nomination_rate:ap.nomination_rate,count:1}
-          product_ids << ap.product_id unless product_ids.include?(ap.product_id)
-          @dates << ap.analysis.store_daily_menu.start_time unless @dates.include?(ap.analysis.store_daily_menu.start_time)
+          product_ids << product_id unless product_ids.include?(product_id)
+          @dates << date unless @dates.include?(date)
         end
-        if  @hash[ap.product_id][:period].present?
-          @hash[ap.product_id][:period][:actual_inventory] += ap.actual_inventory.to_i
-          @hash[ap.product_id][:period][:list_price_sales_number] += (ap.sales_number - ap.discount_number)
-          @hash[ap.product_id][:period][:total_sales_amount] += ap.total_sales_amount
-          @hash[ap.product_id][:period][:discount_amount] += ap.discount_amount
-          @hash[ap.product_id][:period][:discount_number] += ap.discount_number
-          @hash[ap.product_id][:period][:loss_amount] += ap.loss_amount
-          @hash[ap.product_id][:period][:loss_number] += ap.loss_number.to_i
-          @hash[ap.product_id][:period][:sixteen_total_sales_number] += ap.sixteen_total_sales_number
-          @hash[ap.product_id][:period][:nomination_rate] += ap.nomination_rate
-          @hash[ap.product_id][:period][:count] += 1
+        if @hash[product_id][:period].present?
+          @hash[product_id][:period][:actual_inventory] += ap.actual_inventory.to_i
+          @hash[product_id][:period][:list_price_sales_number] += (ap.sales_number - ap.discount_number)
+          @hash[product_id][:period][:total_sales_amount] += ap.total_sales_amount
+          @hash[product_id][:period][:discount_amount] += ap.discount_amount
+          @hash[product_id][:period][:discount_number] += ap.discount_number
+          @hash[product_id][:period][:loss_amount] += ap.loss_amount
+          @hash[product_id][:period][:loss_number] += ap.loss_number.to_i
+          @hash[product_id][:period][:sixteen_total_sales_number] += ap.sixteen_total_sales_number
+          @hash[product_id][:period][:nomination_rate] += ap.nomination_rate
+          @hash[product_id][:period][:count] += 1
         else
-          @hash[ap.product_id][:period] = {list_price_sales_number:(ap.sales_number - ap.discount_number),total_sales_amount:ap.total_sales_amount,discount_amount:ap.discount_amount,
+          @hash[product_id][:period] = {list_price_sales_number:(ap.sales_number - ap.discount_number),total_sales_amount:ap.total_sales_amount,discount_amount:ap.discount_amount,
             loss_amount:ap.loss_amount,actual_inventory:ap.actual_inventory.to_i,discount_number:ap.discount_number,loss_number:ap.loss_number.to_i,
             sixteen_total_sales_number:ap.sixteen_total_sales_number,nomination_rate:ap.nomination_rate,count:1}
         end
@@ -1326,6 +1333,12 @@ class AnalysesController < AdminController
       @products = Product.where(id:product_ids)
     else
       redirect_to product_sales_analyses_path, danger: "期間は一ヶ月間以内にしてください。"
+    end
+    respond_to do |format|
+      format.html
+      format.csv do
+        send_data render_to_string, filename: "商品販売データ.csv", type: :csv
+      end
     end
   end
 
@@ -1434,7 +1447,7 @@ class AnalysesController < AdminController
           @product_datas[ap.product_id][ap.analysis_id]['sales_number'] = ap.sales_number
         end
         @product_datas[ap.product_id][ap.analysis_id]['actual_inventory'] = ap.actual_inventory
-        # @product_datas[ap.product_id][ap.analysis_id]['date'] = ap.analysis.store_daily_menu.start_time
+        # @product_datas[ap.product_id][ap.analysis_id]['date'] = ap.analysis.date
       end
     end
 

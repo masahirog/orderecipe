@@ -15,6 +15,7 @@ class CreateSalesReports < ActiveRecord::Migration[5.2]
       t.integer :vegetable_waste_amount,null:false,default:0
       t.float :one_pair_one_talk
       t.integer :tasting_number
+      t.integer :tasting_atack
     end
   end
 end

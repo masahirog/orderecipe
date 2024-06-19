@@ -207,7 +207,7 @@ class SalesReportsController < AdminController
 
     def sales_report_params
       params.require(:sales_report).permit(:store_id,:date,:staff_id,:sales_amount,:sales_count,:good,:issue,:other_memo,
-        :analysis_id,:cash_error,:excess_or_deficiency_number_memo,:leaving_work,:vegetable_waste_amount,:one_pair_one_talk,:tasting_number,
-        sales_report_staffs_attributes:[:sales_report,:staff_id,:smile,:eyecontact,:voice_volume,:talk_speed,:speed,:total,:memo])
+        :analysis_id,:cash_error,:excess_or_deficiency_number_memo,:leaving_work,:vegetable_waste_amount,:one_pair_one_talk,:tasting_number,:tasting_atack,
+        sales_report_staffs_attributes:[:sales_report,:staff_id,:smile,:eyecontact,:voice_volume,:talk_speed,:speed,:total,:memo,:tasting])
     end
 end

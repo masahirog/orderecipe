@@ -11,6 +11,7 @@ class CreateSalesReportStaffs < ActiveRecord::Migration[6.0]
       t.integer :total
       t.text :memo
       t.timestamps
+      t.integer :tasting
     end
   end
 end
