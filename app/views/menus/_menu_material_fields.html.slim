@@ -7,7 +7,9 @@ li.add_li_material.col-md-12.col-xs-12.list-group-item.item.nested-fields.field.
       = f.hidden_field :material_id
     - else
       / = f.collection_select :material_id, @materials, :id, :name, {include_blank: true}, { class: "input_select_material col-md-12"}
-      = f.collection_select :material_id, @materials, :id, :select_name, {include_blank: true}, { class: "input_select_material col-md-12",required: true}
+      = f.collection_select :material_id, @materials, :id, :select_name, {include_blank: true}, { class: "input_select_material col-md-12",required: true,style:'width:calc(100% - 30px);'}
+    = link_to f.object.material,target:'_blank',class:'material_link' do
+      i class="fa-solid fa-arrow-up-right-from-square" style='margin-left:10px;'
   .cost_price.col-md-1.form-inline.text-center
     = f.object.material.cost_price if f.object.material.present?
 
@@ -30,7 +32,7 @@ li.add_li_material.col-md-12.col-xs-12.list-group-item.item.nested-fields.field.
   .col-md-12.menu_materials_li style="padding:5px 0 0 0;"
     .col-md-4.food_ingredient style="font-size:0.8em;"
       - if f.object.material.present? && f.object.material.food_ingredient_id.present?
-        span.name = f.object.material.food_ingredient.name
+        = link_to f.object.material.food_ingredient.name,edit_food_ingredient_path(f.object.material.food_ingredient),class:"name",target:"_blank"
         br
         span.hyoji = "cal：#{f.object.material.food_ingredient.calorie.round(3)}　pro：#{f.object.material.food_ingredient.protein.round(3)}　lip：#{f.object.material.food_ingredient.lipid.round(3)}　car：#{f.object.material.food_ingredient.carbohydrate.round(3)}　fib：#{f.object.material.food_ingredient.dietary_fiber.round(3)}　salt：#{f.object.material.food_ingredient.salt}"
         input.calorie value= f.object.material.food_ingredient.calorie style='display:none;'

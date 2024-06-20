@@ -229,6 +229,7 @@ $(document).on('turbolinks:load', function() {
     var unit = data.material.recipe_unit;
     var eos = data.material.unused_flag;
     var material_cut_patterns = data.material.material_cut_patterns
+    $(".add_li_material").eq(u).find(".material_link").attr('href',"/materials/"+id+"/edit")
     $(".add_li_material").eq(u).children(".sales_check").text(eos);
     $(".add_li_material").eq(u).children(".cost_price").text(cost);
     $(".add_li_material").eq(u).find(".recipe_unit").text(unit);
@@ -283,6 +284,7 @@ $(document).on('turbolinks:load', function() {
   function change_food_ingredient(data,u){
     var food_ingredient = data["material"]["food_ingredient"]
     if (food_ingredient) {
+      $(".add_li_material").eq(u).find(".food_ingredient").find(".name").attr('href',"/food_ingredients/"+food_ingredient.id+"/edit")
       $(".add_li_material").eq(u).find(".food_ingredient").find(".name").text(food_ingredient.name);
       var hyoji = "cal："+food_ingredient.calorie +"　pro："+food_ingredient.protein +"　lip："+food_ingredient.lipid +"　car："+food_ingredient.carbohydrate +"　fib："+food_ingredient.dietary_fiber +"　salt："+food_ingredient.salt
       $(".add_li_material").eq(u).find(".food_ingredient").find(".hyoji").text(hyoji);
