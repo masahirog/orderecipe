@@ -95,33 +95,33 @@
         = f.fields_for :menu_processes do |mp|
           = render 'menu_process_fields', f:mp
 
-  / .used_additives.col-md-12 style="margin:20px 0;"
+  .used_additives.col-md-12 style="margin:20px 0;"
     = f.label :used_additives ,"使用食品添加物"
     - if f.object.used_additives.present?
       = f.select :used_additives, grouped_options_for_select(@ar,f.object.used_additives),{ include_hidden: false},{class:"select_used_additives col-md-12",multiple:true}
     - else
       = f.select :used_additives, grouped_options_for_select(@ar),{include_hidden: false},{class:"select_used_additives col-md-12",multiple:true}
-  / table.col-md-12.table
+  table.col-md-12.table
     thead
       th カロリー(kcal)
       th タンパク質(g)
       th 脂質(g)
       th 炭水化物(g)
       th 食物繊維(g)
-      th カリウム(mg)
-      th カルシウム(mg)
-      th ビタミンC(mg)
       th 食塩(g)
     tbody
-      td.menu_calorie
-      td.menu_protein
-      td.menu_lipid
-      td.menu_carbohydrate
-      td.menu_dietary_fiber
-      td.menu_potassium
-      td.menu_calcium
-      td.menu_vitamin_c
-      td.menu_salt
+      td
+        = f.number_field :calorie,class:'form-control menu_calorie',readonly:true
+      td
+        = f.number_field :protein,class:'form-control menu_protein',readonly:true
+      td
+        = f.number_field :lipid,class:'form-control menu_lipid',readonly:true
+      td
+        = f.number_field :carbohydrate,class:'form-control menu_carbohydrate',readonly:true
+      td
+        = f.number_field :dietary_fiber,class:'form-control menu_dietary_fiber',readonly:true
+      td
+        = f.number_field :salt,class:'form-control menu_salt',readonly:true
   .material_area
     .col-md-12 style="margin:5px;"
       label.col-md-3 食材・資材名

@@ -12,14 +12,14 @@ class CreateMenus < ActiveRecord::Migration[4.2]
       t.string :image
       t.integer :base_menu_id
       t.timestamps null: false
-      t.integer :daybefore_20_cut,null:false,default:0
-      t.integer :daybefore_60_cut,null:false,default:0
-      t.integer :daybefore_20_cook,null:false,default:0
-      t.integer :daybefore_60_cook,null:false,default:0
-      t.integer :onday_20_cook,null:false,default:0
-      t.integer :onday_60_cook,null:false,default:0
       t.string :short_name
       t.integer :group_id, :null => false
+      t.float :calorie,null:false,default:0
+      t.float :protein,null:false,default:0
+      t.float :lipid,null:false,default:0
+      t.float :carbohydrate,null:false,default:0
+      t.float :dietary_fiber,null:false,default:0
+      t.float :salt,null:false,default:0
     end
   end
 end

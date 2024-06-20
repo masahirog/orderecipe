@@ -30,6 +30,7 @@ class CreateMaterials < ActiveRecord::Migration[4.2]
       t.integer :target_material_id
       t.date :price_update_date
       t.string :jancode,unique: true
+      t.references :food_ingredient
     end
   end
 end

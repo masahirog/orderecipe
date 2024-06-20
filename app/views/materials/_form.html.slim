@@ -20,10 +20,14 @@
       .col-md-12.form-group
         = f.label :roma_name, "ローマ字",class:'required'
         = f.text_field :roma_name, class:'form-control',required:true
-
       .col-md-12.form-group
         = f.label :order_name, "発注書記載名",class:'required'
         = f.text_field :order_name, class:'form-control',required:true
+      .col-md-12.form-group
+        = f.label :food_ingredient_id, "成分表示用食材"
+        = f.collection_select :food_ingredient_id, FoodIngredient.all, :id, :name, {include_blank: true}, { class: "form-control select2"}
+
+
       .col-md-12.form-group
         = f.label :unused_flag, "販売ステータス",class:'required'
         = f.select :unused_flag,[['使用中',false],['使用停止',true]],{selected:@material.unused_flag}, class:"form-control",required:true
@@ -261,3 +265,7 @@ sass:
     background: #FFF
     color: #6091d3
     font-weight: bold
+
+javascript:
+  $('.select2').select2({
+  });

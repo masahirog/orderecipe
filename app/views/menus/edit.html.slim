@@ -2,9 +2,6 @@
   div class="alert alert-warning" role="alert"
     |コピーして作られたメニューです。オリジナルのメニュー：
     = link_to @base_menu.name,@base_menu,target:'_blank'
-- else
-  div class="alert alert-info" role="alert"
-    |オリジナルのメニューです！コピーして分量違いのメニューを作成可能です。
 
 .col-md-12 style="margin-bottom:20px;"
   = link_to 'メニュー詳細',menu_path(@menu),class:"btn btn-default", style:"margin:0 10px 0 10px;"

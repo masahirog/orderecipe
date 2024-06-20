@@ -268,24 +268,24 @@ ActiveRecord::Schema.define(version: 2024_05_30_003841) do
     t.integer "index_number"
     t.string "name"
     t.string "complement"
-    t.float "calorie"
-    t.float "protein"
-    t.float "lipid"
-    t.float "carbohydrate"
-    t.float "dietary_fiber"
-    t.float "potassium"
-    t.float "calcium"
-    t.float "vitamin_b1"
-    t.float "vitamin_b2"
-    t.float "vitamin_c"
-    t.float "salt"
+    t.float "calorie", default: 0.0, null: false
+    t.float "protein", default: 0.0, null: false
+    t.float "lipid", default: 0.0, null: false
+    t.float "carbohydrate", default: 0.0, null: false
+    t.float "dietary_fiber", default: 0.0, null: false
+    t.float "potassium", default: 0.0, null: false
+    t.float "calcium", default: 0.0, null: false
+    t.float "vitamin_b1", default: 0.0, null: false
+    t.float "vitamin_b2", default: 0.0, null: false
+    t.float "vitamin_c", default: 0.0, null: false
+    t.float "salt", default: 0.0, null: false
     t.text "memo"
-    t.float "magnesium"
-    t.float "iron"
-    t.float "zinc"
-    t.float "copper"
-    t.float "folic_acid"
-    t.float "vitamin_d"
+    t.float "magnesium", default: 0.0, null: false
+    t.float "iron", default: 0.0, null: false
+    t.float "zinc", default: 0.0, null: false
+    t.float "copper", default: 0.0, null: false
+    t.float "folic_acid", default: 0.0, null: false
+    t.float "vitamin_d", default: 0.0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -482,7 +482,7 @@ ActiveRecord::Schema.define(version: 2024_05_30_003841) do
     t.index ["date", "material_id"], name: "index_material_vendor_stocks_on_date_and_material_id", unique: true
   end
 
-  create_table "materials", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "materials", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
     t.string "order_name"
     t.string "roma_name"
@@ -513,6 +513,7 @@ ActiveRecord::Schema.define(version: 2024_05_30_003841) do
     t.integer "target_material_id"
     t.date "price_update_date"
     t.string "jancode"
+    t.integer "food_ingredient_id"
   end
 
   create_table "menu_cook_checks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -539,24 +540,12 @@ ActiveRecord::Schema.define(version: 2024_05_30_003841) do
     t.integer "post"
     t.integer "row_order", default: 0, null: false
     t.float "gram_quantity"
-    t.integer "food_ingredient_id"
-    t.float "calorie"
-    t.float "protein"
-    t.float "lipid"
-    t.float "carbohydrate"
-    t.float "dietary_fiber"
-    t.float "potassium"
-    t.float "calcium"
-    t.float "vitamin_b1"
-    t.float "vitamin_b2"
-    t.float "vitamin_c"
-    t.float "salt"
-    t.float "magnesium"
-    t.float "iron"
-    t.float "zinc"
-    t.float "copper"
-    t.float "folic_acid"
-    t.float "vitamin_d"
+    t.float "calorie", default: 0.0, null: false
+    t.float "protein", default: 0.0, null: false
+    t.float "lipid", default: 0.0, null: false
+    t.float "carbohydrate", default: 0.0, null: false
+    t.float "dietary_fiber", default: 0.0, null: false
+    t.float "salt", default: 0.0, null: false
     t.integer "base_menu_material_id"
     t.boolean "source_flag", default: false, null: false
     t.integer "source_group"
@@ -588,14 +577,14 @@ ActiveRecord::Schema.define(version: 2024_05_30_003841) do
     t.integer "base_menu_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "daybefore_20_cut", default: 0, null: false
-    t.integer "daybefore_60_cut", default: 0, null: false
-    t.integer "daybefore_20_cook", default: 0, null: false
-    t.integer "daybefore_60_cook", default: 0, null: false
-    t.integer "onday_20_cook", default: 0, null: false
-    t.integer "onday_60_cook", default: 0, null: false
     t.string "short_name"
     t.integer "group_id", null: false
+    t.float "calorie", default: 0.0, null: false
+    t.float "protein", default: 0.0, null: false
+    t.float "lipid", default: 0.0, null: false
+    t.float "carbohydrate", default: 0.0, null: false
+    t.float "dietary_fiber", default: 0.0, null: false
+    t.float "salt", default: 0.0, null: false
   end
 
   create_table "monthly_stocks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -735,7 +724,7 @@ ActiveRecord::Schema.define(version: 2024_05_30_003841) do
     t.index ["product_id", "store_id"], name: "index_product_sales_potentials_on_product_id_and_store_id", unique: true
   end
 
-  create_table "products", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "products", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
     t.integer "sell_price", null: false
     t.text "description"
@@ -771,6 +760,12 @@ ActiveRecord::Schema.define(version: 2024_05_30_003841) do
     t.boolean "reduced_tax_flag", default: true, null: false
     t.boolean "half_able_flag", default: false, null: false
     t.string "sales_unit", default: "1人前", null: false
+    t.float "calorie", default: 0.0, null: false
+    t.float "protein", default: 0.0, null: false
+    t.float "lipid", default: 0.0, null: false
+    t.float "carbohydrate", default: 0.0, null: false
+    t.float "dietary_fiber", default: 0.0, null: false
+    t.float "salt", default: 0.0, null: false
   end
 
   create_table "refund_supports", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|

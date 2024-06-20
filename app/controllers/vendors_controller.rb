@@ -1,9 +1,9 @@
 class VendorsController < ApplicationController
   def index
     if params[:all_flag]
-      @vendors = Vendor.where(group_id:current_user.group_id)
+      @vendors = Vendor.includes(:materials).where(group_id:current_user.group_id)
     else
-      @vendors = Vendor.where(group_id:current_user.group_id,status:1)
+      @vendors = Vendor.includes(:materials).where(group_id:current_user.group_id,status:1)
     end
     if params[:monthly_price] == 'true'
       if params[:year] && params[:month]
@@ -103,6 +103,18 @@ class VendorsController < ApplicationController
     end
   end
 
+  def destroy
+    @vendor = Vendor.find(params[:id])
+    if @vendor.materials.present?
+      redirect_to vendors_path, danger: '削除できません'
+    else
+      @vendor.destroy
+    end
+    respond_to do |format|
+      format.html { redirect_to vendors_path, danger: '削除しました' }
+      format.json { head :no_content }
+    end
+  end
   private
   def vendor_params
     params.require(:vendor).permit(:company_name, :company_phone, :company_fax, :company_mail,:status,:delivery_date,

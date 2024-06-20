@@ -21,65 +21,103 @@
   - if @delete_flag == true
     = link_to "削除", @product, method: :delete,class:'btn btn-danger pull-right',data: { confirm: "ほんまに削除してええの？" },style:''
 
-.table-responsive style='overflow: scroll;'
-  table.table.layout-fixed style='border-collapse:separate;'
-    colgroup
-      col class="col1"
-      col class="col1"
-      col class="col2"
-      col class="col1"
-      col class="col1"
-      col class="col1"
-      col class="col1"
-      col class="col1"
-      col class="col1"
-
-    thead style='position: sticky;top:0;background-color:white;z-index:3;'
-      th ステータス
-      th ブランド
-      th 商品名
-      th カテゴリ
-      th サブカテゴリ
-      th 容器・皿
-      th 販売価格
-      th 原価価格
-      th 原価率
-
-    tbody
-      tr
-        td = @product.status
-        td = @product.brand.name
-        td style="white-space: normal;" = @product.name
-        td = @product.product_category
-        td = @product.sub_category
-        td = @product.container.name if @product.container.present?
-        td = "#{@product.sell_price} 円"
-        td = "#{@product.cost_price} 円"
-        td = "#{((@product.cost_price/@product.sell_price)*100).round(1)}%"
-.clearfix style="padding:0;"
-  div style="width:50%;float:left;"
-    label 商品特徴
-    hr style='margin:0 0 8px 0;'
-    = text_url_to_link(simple_format(h(@product.description))).html_safe
-  div style="width:50%;float:left;"
-    label 1人前盛り付け
-    hr style='margin:0 0 8px 0;'
-    = text_url_to_link(simple_format(h(@product.serving_infomation))).html_safe
-
-/ table.table
+table.table
   thead
     tr
-      th 大皿盛りつけ手順
-      th
+      th ブランド
+      th 商品名
+      th 正式名称
+      th ステータス
+      th カテゴリー
   tbody
-    - @product.product_ozara_serving_informations.each_with_index do |posi,i|
-      tr
-        td
-          span style='font-weight:bold;' = "#{i+1}. "
-          = text_url_to_link(simple_format(h(posi.content))).html_safe
-        td
-          = link_to posi.image.to_s, "data-lightbox" => posi.image.to_s do
-            = image_tag posi.image.to_s ,class:"text-center img-responsive center-block",style:'max-height:150px;'
+    tr
+      td = @product.brand.name
+      td = @product.name
+      td = @product.food_label_name
+      td = @product.status
+      td = @product.product_category
+
+
+table.table
+  thead
+    tr
+      th 温め商品
+      th 0.5人前可
+      th べじはんのみ
+      th べじはん惣菜
+      th 販売単位
+  tbody
+    tr
+      td = @product.warm_flag
+      td = @product.half_able_flag
+      td = @product.bejihan_only_flag
+      td = @product.bejihan_sozai_flag
+      td = @product.sales_unit
+
+table.table
+  thead
+    tr
+      th 軽減税率
+      th 税抜価格
+      th 税込価格
+      th 商品原価
+      th 原価率
+  tbody
+    tr
+      td = @product.reduced_tax_flag
+      td = "#{@product.sell_price}円"
+      td = "#{@product.tax_including_sell_price}円" 
+      td = "#{@product.cost_price}円"
+      td = "#{((@product.cost_price/@product.sell_price)*100).round(1)}%"
+
+table.table
+  thead
+    tr
+      th スマレジ商品コード
+      th 大皿
+      th 盛り付け容器・皿
+      th SKY卸時の分割目安
+
+  tbody
+    tr
+      td = @product.smaregi_code
+      td = @product.main_serving_plate_id
+      td = @product.container
+      td = @product.sky_split_information
+
+table.table
+  thead
+    tr
+      th お客様用商品紹介文 30-40字程度（メニュー、プライスカード）
+      th スタッフ用商品特徴メモ
+      th 1人前分量
+  tbody
+    tr
+      td = @product.contents
+      td = @product.description
+      td = @product.serving_infomation
+table.table
+  thead
+    th カロリー(kcal)
+    th タンパク質(g)
+    th 脂質(g)
+    th 炭水化物(g)
+    th 食物繊維(g)
+    th 食塩(g)
+  tbody
+    td
+      = @product.calorie
+    td
+      = @product.protein
+    td
+      = @product.lipid
+    td
+      = @product.carbohydrate
+    td
+      = @product.dietary_fiber
+    td
+      = @product.salt
+
 
 .table-responsive style='height:200px;overflow: scroll;'
   table.table.layout-fixed style='border-collapse:separate;'
@@ -88,7 +126,6 @@
       col class="col2"
       col class="col2"
       col class="col2"
-
     thead style='position: sticky;top:0;background-color:white;z-index:3;'
       tr
         th 公式写真

@@ -24,22 +24,6 @@
     tr
       th.active.col-md-4 メニュー名
       td = @menu.name
-    tr
-      th.active.col-md-4 前日 切り出し重さ
-      td
-        = "20人前：#{@menu.daybefore_20_cut}分" if @menu.daybefore_20_cut > 0
-        = "、60人前：#{@menu.daybefore_60_cut}分" if @menu.daybefore_60_cut > 0
-    tr
-      th.active.col-md-4 前日 調理重さ
-      td
-        = "20人前：#{@menu.daybefore_20_cook}分" if @menu.daybefore_20_cook > 0
-        = "、60人前：#{@menu.daybefore_60_cook}分" if @menu.daybefore_60_cook > 0
-    tr
-      th.active.col-md-4 当日 調理重さ
-      td
-        = "20人前：#{@menu.onday_20_cook}分" if @menu.onday_20_cook > 0
-        = "、60人前：#{@menu.onday_60_cook}分" if @menu.onday_60_cook > 0
-
 
     tr
       th.active.col-md-4 メニュー原価
@@ -65,6 +49,28 @@
       td = text_url_to_link(simple_format(h(@menu.serving_memo))).html_safe
   .col-md-6
     = image_tag @menu.image.to_s ,class:"text-center img-responsive center-block",style:'max-height:450px;'
+
+table.col-md-12.table
+  thead
+    th カロリー(kcal)
+    th タンパク質(g)
+    th 脂質(g)
+    th 炭水化物(g)
+    th 食物繊維(g)
+    th 食塩(g)
+  tbody
+    td
+      = @menu.calorie
+    td
+      = @menu.protein
+    td
+      = @menu.lipid
+    td
+      = @menu.carbohydrate
+    td
+      = @menu.dietary_fiber
+    td
+      = @menu.salt
 table.table
   thead
     tr

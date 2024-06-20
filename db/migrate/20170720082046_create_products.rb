@@ -35,6 +35,12 @@ class CreateProducts < ActiveRecord::Migration[4.2]
       t.boolean :reduced_tax_flag,null:false,default:true
       t.boolean :half_able_flag,null:false,default:false
       t.string :sales_unit,null:false,default:'1人前'
+      t.float :calorie,null:false,default:0
+      t.float :protein,null:false,default:0
+      t.float :lipid,null:false,default:0
+      t.float :carbohydrate,null:false,default:0
+      t.float :dietary_fiber,null:false,default:0
+      t.float :salt,null:false,default:0
     end
   end
 end

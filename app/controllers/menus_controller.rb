@@ -1,6 +1,7 @@
 class MenusController < ApplicationController
   def get_cost_price
     @material = Material.includes(:vendor).find(params[:id])
+    @food_ingredient = @material.food_ingredient
     respond_to do |format|
       format.html
       format.json
@@ -67,10 +68,10 @@ class MenusController < ApplicationController
     elsif request.referer.include?("products")
       @back_to = request.referer
     end
-    @menu = Menu.includes(:menu_materials,{materials:[:material_cut_patterns,:vendor,material_food_additives:[:food_additive]]}).find(params[:id])
+    @menu = Menu.includes({materials:[:material_cut_patterns,:food_ingredient,:vendor,material_food_additives:[:food_additive]]}).find(params[:id])
     @base_menu = Menu.find(@menu.base_menu_id) unless @menu.base_menu_id == @menu.id
     @materials = @menu.materials
-    @food_ingredients = []
+    @food_ingredients = @menu.food_ingredients
     @menu.menu_materials.build  if @menu.materials.length == 0
     @ar = Menu.used_additives(@menu.materials)
   end
@@ -141,15 +142,15 @@ class MenusController < ApplicationController
     redirect_to include_menu_menus_path(id:menu_id), success: "メニューを変更しました。"
   end
 
-  def get_food_ingredient
-    gram_amount = params[:gram_amount].to_f
-    id = params[:id]
-    @index = params[:index]
-    @calculated_nutrition = FoodIngredient.calculate_nutrition(gram_amount,id)
-    respond_to do |format|
-      format.json{render :json =>[@index,@calculated_nutrition[0],@calculated_nutrition[1]] }
-    end
-  end
+  # def get_food_ingredient
+  #   gram_amount = params[:gram_amount].to_f
+  #   id = params[:id]
+  #   @index = params[:index]
+  #   @calculated_nutrition = FoodIngredient.calculate_nutrition(gram_amount,id)
+  #   respond_to do |format|
+  #     format.json{render :json =>[@index,@calculated_nutrition[0],@calculated_nutrition[1]] }
+  #   end
+  # end
   def food_ingredient_search
     respond_to do |format|
       format.json { render json: @materials = FoodIngredient.food_ingredient_search(params[:q]) }
@@ -168,11 +169,11 @@ class MenusController < ApplicationController
   private
 
     def menu_create_update
-      params.require(:menu).permit({used_additives:[]},:name,:roma_name, :cook_the_day_before, :category, :serving_memo, :cost_price,:cook_on_the_day, :image,:base_menu_id,:short_name,
-        :daybefore_20_cut,:daybefore_60_cut,:daybefore_20_cook,:daybefore_60_cook,:onday_20_cook,:onday_60_cook,:remove_image, :image_cache,:group_id,
+      params.require(:menu).permit({used_additives:[]},:name,:roma_name, :cook_the_day_before, :category, :serving_memo, :cost_price,:cook_on_the_day,
+        :image,:base_menu_id,:short_name,:remove_image, :image_cache,:group_id,:calorie,:protein,:lipid,:carbohydrate,:dietary_fiber,:salt,
         menu_materials_attributes: [:id, :amount_used, :material_id, :_destroy,:preparation,:post,:base_menu_material_id,:source_flag,
-        :row_order,:gram_quantity,:food_ingredient_id,:calorie,:protein,:lipid,:carbohydrate,:dietary_fiber,
-        :potassium,:calcium,:vitamin_b1,:vitamin_b2,:vitamin_c,:salt,:magnesium,:iron,:zinc,:copper,:folic_acid,:vitamin_d,:source_group,:first_flag,:machine_flag,:material_cut_pattern_id],
+        :row_order,:gram_quantity,:calorie,:protein,:lipid,:carbohydrate,:dietary_fiber,
+        :salt,:source_group,:first_flag,:machine_flag,:material_cut_pattern_id],
         menu_last_processes_attributes:[:id,:menu_id,:content,:memo,:_destroy],menu_cook_checks_attributes:[:id,:menu_id,:content,:_destroy,:check_position],
         menu_processes_attributes:[:id,:menu_id,:image,:memo,:image_cache,:remove_image,:_destroy])
     end

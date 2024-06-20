@@ -1,4 +1,5 @@
 class Material < ApplicationRecord
+  belongs_to :food_ingredient
   # 単価は税抜ですべて保存する、表示時に税追加
   has_many :material_cut_patterns, dependent: :destroy
   accepts_nested_attributes_for :material_cut_patterns, allow_destroy: true
@@ -40,6 +41,10 @@ class Material < ApplicationRecord
 
   enum category: {meat:1,fish:8,vege:2,other_vege:7,other_food:3,packed:4,consumable_item:5,cooking_item:6,rice:9}
   enum storage_place: {normal:1,refrigerate:2,freezing:3,pack:4,equipment:5}
+
+  def select_name
+    self.name + "｜" + self.vendor.company_name
+  end
 
   def self.search(params,group_id)
    if params

@@ -185,14 +185,15 @@
         = render 'product_pack_serving_information_fields', f:posi
 
 
+  label 積載パーツ　
+  = link_to_add_association '追加', f, :product_parts,class:'btn btn-primary add_product_parts_fields',style:'margin-left:20px;',
+  data: {association_insertion_node: '#product_parts-add-point',association_insertion_method: 'append' }
+
   table.table.loading_product_parts_table
     thead
       tr
         th.col-md-2 = link_to "共通パーツ",common_product_parts_path,target:'_blank'
-        th.col-md-2
-          span 積載パーツ　
-          = link_to_add_association '追加', f, :product_parts,class:'btn btn-primary add_product_parts_fields',style:'margin-left:20px;',
-          data: {association_insertion_node: '#product_parts-add-point',association_insertion_method: 'append' }
+        th.col-md-2 パーツ名
         th.col-md-1 1人前
         th.col-md-1 単位
         th.col-md-1 パッキング
@@ -203,6 +204,29 @@
     tbody#product_parts-add-point
       = f.fields_for :product_parts do |mp|
         = render 'product_part_fields', f:mp
+
+
+  table.col-md-12.table
+    thead
+      th カロリー(kcal)
+      th タンパク質(g)
+      th 脂質(g)
+      th 炭水化物(g)
+      th 食物繊維(g)
+      th 食塩(g)
+    tbody
+      td
+        = f.number_field :calorie,class:'form-control calorie',readonly:true
+      td
+        = f.number_field :protein,class:'form-control protein',readonly:true
+      td
+        = f.number_field :lipid,class:'form-control lipid',readonly:true
+      td
+        = f.number_field :carbohydrate,class:'form-control carbohydrate',readonly:true
+      td
+        = f.number_field :dietary_fiber,class:'form-control dietary_fiber',readonly:true
+      td
+        = f.number_field :salt,class:'form-control salt',readonly:true
 
 
   .menu-area

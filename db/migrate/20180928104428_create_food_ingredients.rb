@@ -6,24 +6,24 @@ class CreateFoodIngredients < ActiveRecord::Migration[4.2][5.0]
       t.integer :index_number
       t.string :name
       t.string :complement
-      t.float :calorie
-      t.float :protein
-      t.float :lipid
-      t.float :carbohydrate
-      t.float :dietary_fiber
-      t.float :potassium
-      t.float :calcium
-      t.float :vitamin_b1
-      t.float :vitamin_b2
-      t.float :vitamin_c
-      t.float :salt
+      t.float :calorie,null:false,default:0
+      t.float :protein,null:false,default:0
+      t.float :lipid,null:false,default:0
+      t.float :carbohydrate,null:false,default:0
+      t.float :dietary_fiber,null:false,default:0
+      t.float :potassium,null:false,default:0
+      t.float :calcium,null:false,default:0
+      t.float :vitamin_b1,null:false,default:0
+      t.float :vitamin_b2,null:false,default:0
+      t.float :vitamin_c,null:false,default:0
+      t.float :salt,null:false,default:0
       t.text :memo
-      t.float :magnesium
-      t.float :iron
-      t.float :zinc
-      t.float :copper
-      t.float :folic_acid
-      t.float :vitamin_d
+      t.float :magnesium,null:false,default:0
+      t.float :iron,null:false,default:0
+      t.float :zinc,null:false,default:0
+      t.float :copper,null:false,default:0
+      t.float :folic_acid,null:false,default:0
+      t.float :vitamin_d,null:false,default:0
       t.timestamps
     end
   end

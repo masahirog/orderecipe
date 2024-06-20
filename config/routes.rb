@@ -257,7 +257,7 @@ Rails.application.routes.draw do
       post :bulk_delete
     end
   end
-
+  resources :food_ingredients
   resources :menus do
     put :sort
     collection do

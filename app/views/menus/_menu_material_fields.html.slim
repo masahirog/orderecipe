@@ -1,22 +1,4 @@
 li.add_li_material.col-md-12.col-xs-12.list-group-item.item.nested-fields.field.table-striped
-  = f.hidden_field :calorie, class:'input_calorie'
-  = f.hidden_field :protein, class:'input_protein'
-  = f.hidden_field :lipid, class:'input_lipid'
-  = f.hidden_field :carbohydrate, class:'input_carbohydrate'
-  = f.hidden_field :dietary_fiber, class:'input_dietary_fiber'
-  = f.hidden_field :potassium, class:'input_potassium'
-  = f.hidden_field :calcium, class:'input_calcium'
-  = f.hidden_field :vitamin_b1, class:'input_vitamin_b1'
-  = f.hidden_field :vitamin_b2, class:'input_vitamin_b2'
-  = f.hidden_field :vitamin_c, class:'input_vitamin_c'
-  = f.hidden_field :salt, class:'input_salt'
-  = f.hidden_field :magnesium, class:'input_magnesium'
-  = f.hidden_field :iron, class:'input_iron'
-  = f.hidden_field :zinc, class:'input_zinc'
-  = f.hidden_field :copper, class:'input_copper'
-  = f.hidden_field :folic_acid, class:'input_folic_acid'
-  = f.hidden_field :vitamin_d, class:'input_vitamin_d'
-
   = f.hidden_field :row_order, class:"input_row_order"
   = f.hidden_field :base_menu_material_id
   .select_material.col-md-3.col-xs-6[style="padding:3px;"]
@@ -25,7 +7,7 @@ li.add_li_material.col-md-12.col-xs-12.list-group-item.item.nested-fields.field.
       = f.hidden_field :material_id
     - else
       / = f.collection_select :material_id, @materials, :id, :name, {include_blank: true}, { class: "input_select_material col-md-12"}
-      = f.collection_select :material_id, @materials, :id, :name, {include_blank: true}, { class: "input_select_material col-md-12",required: true}
+      = f.collection_select :material_id, @materials, :id, :select_name, {include_blank: true}, { class: "input_select_material col-md-12",required: true}
   .cost_price.col-md-1.form-inline.text-center
     = f.object.material.cost_price if f.object.material.present?
 
@@ -45,36 +27,29 @@ li.add_li_material.col-md-12.col-xs-12.list-group-item.item.nested-fields.field.
         = link_to_remove_association f do
           i class="fas fa-trash-alt" style='color:red;font-size:20px;margin:8px 0 0 8px;'
 
-  .col-md-12.menu_materials_li[style="padding:0;"]
-    / .col-md-3[style="padding:3px;"]
-      - if @base_menu.present?
-        = f.object.food_ingredient.name if f.object.food_ingredient_id.present?
-        = f.hidden_field :food_ingredient_id
+  .col-md-12.menu_materials_li style="padding:5px 0 0 0;"
+    .col-md-4.food_ingredient style="font-size:0.8em;"
+      - if f.object.material.present? && f.object.material.food_ingredient_id.present?
+        span.name = f.object.material.food_ingredient.name
+        br
+        span.hyoji = "cal：#{f.object.material.food_ingredient.calorie.round(3)}　pro：#{f.object.material.food_ingredient.protein.round(3)}　lip：#{f.object.material.food_ingredient.lipid.round(3)}　car：#{f.object.material.food_ingredient.carbohydrate.round(3)}　fib：#{f.object.material.food_ingredient.dietary_fiber.round(3)}　salt：#{f.object.material.food_ingredient.salt}"
+        input.calorie value= f.object.material.food_ingredient.calorie style='display:none;'
+        input.protein value= f.object.material.food_ingredient.protein style='display:none;'
+        input.lipid value= f.object.material.food_ingredient.lipid style='display:none;'
+        input.carbohydrate value= f.object.material.food_ingredient.carbohydrate style='display:none;'
+        input.dietary_fiber value= f.object.material.food_ingredient.dietary_fiber style='display:none;'
+        input.salt value= f.object.material.food_ingredient.salt style='display:none;'
       - else
-        = f.collection_select :food_ingredient_id, @food_ingredients, :id, :name, {include_blank: true},{ class: "form-control input_food_ingredient"}
-    / .name.col-md-2[style="display:inline-flex"]
-      div[style="padding-right:10px;"]
-        - if f.object.material.nil?
-          = f.number_field :gram_quantity,class:'form-control input_gram_quantity'
-        - else
-          - if f.object.material.recipe_unit=='g'||f.object.material.recipe_unit=='ml'
-            = f.number_field :gram_quantity,class:'form-control input_gram_quantity',value:f.object.amount_used,readonly:true
-          - else
-            = f.number_field :gram_quantity,class:'form-control input_gram_quantity',style:'background-color: #ffa2a2;'
-      span[style="padding-top:10px;"]
-        | g/ml
-    / .col-md-3.input_nutritions style="padding:0;"
-      span.view_food_ingredient
-        = "カロリー:#{f.object.calorie}kcal" if f.object.calorie
-    .vendor.col-md-3
-      = f.object.material.vendor.name if f.object.material.present?
+        span.name
+        br
+        span.hyoji
+        input.calorie value=0 style='display:none;'
+        input.protein value=0 style='display:none;'
+        input.lipid value=0 style='display:none;'
+        input.carbohydrate value=0 style='display:none;'
+        input.dietary_fiber value=0 style='display:none;'
+        input.salt value=0 style='display:none;'
 
-    / .select_source_group.col-md-1
-      span style="margin:8px 8px 0 0;float:left;" 急：
-      = f.check_box :first_flag,class:'form-control',style:'width:20px;'
-    / .select_source_group.col-md-1
-      span style="margin:8px 0px 0 0;float:left;" 機：
-      = f.check_box :machine_flag,class:'form-control',style:'width:20px;'
     .select_source_group.col-md-2.text-right
       span style="margin:8px 8px 0 0;float:left;width:70px;" グループ：
       = f.select :source_group, MenuMaterial.source_groups.keys.to_a, {include_blank:true}, class: 'form-control',style:'width:calc(100% - 80px);float:left;'
@@ -82,7 +57,7 @@ li.add_li_material.col-md-12.col-xs-12.list-group-item.item.nested-fields.field.
     .select_post.col-md-2.text-right
       span style="margin:8px 8px 0 0;float:left;width:70px;" 担当：
       = f.select :post,MenuMaterial.posts.keys.to_a,{}, class: "form-control post",style:'width:calc(100% - 80px);float:left;'
-    .div_material_cut_pattern.col-md-5.clearfix
+    .div_material_cut_pattern.col-md-4.clearfix
       - if f.object.material.present?
         - material_id = f.object.material.id
         - cut_patterns = []
@@ -98,3 +73,20 @@ li.add_li_material.col-md-12.col-xs-12.list-group-item.item.nested-fields.field.
       = f.collection_select :material_cut_pattern_id,cut_patterns, :id, :name, {include_blank:true}, { class: "form-control material_cut_pattern",style:"float:left;width:calc(100% - 30px);display:#{display};"}
       a href="/materials/#{material_id}/edit" target="_blank" style="display:#{display}"
         span style='font-size:20px;margin:8px 0 0 8px;' class="glyphicon glyphicon-cog" aria-hidden="true"
+  .col-md-12.clearfix style="padding:5px 0 0 0;"
+    span style='float:left;margin:8px 8px 0 0;' 成分計算：
+    .gram_quantity style='float:left;'
+      = f.number_field :gram_quantity,class:'form-control input_gram_quantity'
+    span style='float:left;margin:8px 0 0 8px;' g
+    span style='float:left;margin:8px 0 0 24px;' カロリー：
+    = f.number_field :calorie, class:'input_calorie',style:'width:50px;float:left;border-radius:4px;border:1px solid #ccc;margin-top:4px;background-color:#e6e6e6',readonly:true
+    span style='float:left;margin:8px 0 0 8px;' たんぱく質：
+    = f.number_field :protein, class:'input_protein',style:'width:50px;float:left;border-radius:4px;border:1px solid #ccc;margin-top:4px;background-color:#e6e6e6',readonly:true
+    span style='float:left;margin:8px 0 0 8px;' 脂質：
+    = f.number_field :lipid, class:'input_lipid',style:'width:50px;float:left;border-radius:4px;border:1px solid #ccc;margin-top:4px;background-color:#e6e6e6',readonly:true
+    span style='float:left;margin:8px 0 0 8px;' 炭水化物：
+    = f.number_field :carbohydrate, class:'input_carbohydrate',style:'width:50px;float:left;border-radius:4px;border:1px solid #ccc;margin-top:4px;background-color:#e6e6e6',readonly:true
+    span style='float:left;margin:8px 0 0 8px;' 食物繊維：
+    = f.number_field :dietary_fiber, class:'input_dietary_fiber',style:'width:50px;float:left;border-radius:4px;border:1px solid #ccc;margin-top:4px;background-color:#e6e6e6',readonly:true
+    span style='float:left;margin:8px 0 0 8px;' 塩分：
+    = f.number_field :salt, class:'input_salt',style:'width:50px;float:left;border-radius:4px;border:1px solid #ccc;margin-top:4px;background-color:#e6e6e6',readonly:true

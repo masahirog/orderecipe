@@ -1,0 +1,38 @@
+h2 一覧
+.col-md-12
+  = link_to '新規作成', new_food_ingredient_path,class:'btn btn-primary pull-right'
+  = form_tag food_ingredients_path, :method => 'get' do
+    = text_field_tag :name, params[:name], class:"form-control",placeholder:'名称',style:"width:300px;float:left;margin-right:10px;"
+    = submit_tag "検索" ,class:"btn btn-primary",style:"float:left;"
+table.table
+  thead
+    tr
+      th 名称（数値は1gあたり）
+      th 対応食材名
+      th カロリー
+      th タンパク質
+      th 脂質
+      th 炭水化物
+      th 食物繊維
+      th 塩
+
+  tbody
+    - @food_ingredients.each do |food_ingredient|
+      tr
+        td = link_to food_ingredient.name, edit_food_ingredient_path(food_ingredient)
+        td
+          - food_ingredient.materials.each_with_index do |material,i|
+            - if i == 0
+              = link_to material.name,material,target:'_blank' if material.present?
+            - else
+              span ｜
+              = link_to material.name,material,target:'_blank' if material.present?
+
+        td = food_ingredient.calorie
+        td = food_ingredient.protein
+        td = food_ingredient.lipid
+        td = food_ingredient.carbohydrate
+        td = food_ingredient.dietary_fiber
+        td = food_ingredient.salt
+
+= paginate @food_ingredients

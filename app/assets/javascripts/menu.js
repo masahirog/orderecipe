@@ -1,50 +1,31 @@
 $(document).on('turbolinks:load', function() {
   calculate_menu_price();
   reset_row_order();
-  calculate_menu_nutrition();
-  // menu_category_check();
 
   u = 0
   $(".add_li_material").each(function(){
     var eos = $(this).children(".sales_check").text()
+    var unit = $(this).find(".recipe_unit").text()
+    console.log(unit);
     eos_check(eos,u);
+    unit_check(unit,u);
     u += 1
   });
+
 
   $(".select_used_additives").select2();
   $(".all_select_menu").select2();
   material_select2();
-  food_ingredient_select2();
 
   $('.add_material_fields').on('click',function(){
     setTimeout(function(){
       // menu_category_check();
       reset_row_order();
       material_select2();
-      food_ingredient_select2();
     },5);
   });
 
-
-  function food_ingredient_select2(){
-    $(".input_food_ingredient").select2({
-      ajax: {
-        url: "/menus/food_ingredient_search/",
-        dataType: 'json',
-        delay: 50,
-        data: function(params) {
-          return {　q: params.term　};
-        },
-        processResults: function (data, params) {
-          return { results: $.map(data, function(obj) {
-              return { id: obj.id, text: obj.name };
-            })
-          };
-        }
-      }
-    });
-  };
-
+  calculate_menu_nutrition();
   function material_select2(){
     $(".input_select_material").select2({
       ajax: {
@@ -79,35 +60,6 @@ $(document).on('turbolinks:load', function() {
   });
 
 
-  // $("#menu_category").on('change',function(){
-  //   menu_category_check();
-  // });
-
-// input内のチェックと各カラムへの代入、materialデータベースに無ければ空欄にする
-  $(".material_ul").on('change','.input_select_material', function(){
-    additives_select_change()
-    $('.eos-alert').hide();
-    $('body').css('padding-top',0);
-    var u = $(".add_li_material").index($(this).parents('.add_li_material'));
-    $(".add_li_material").eq(u).find(".amount_used_input").val("");
-    $(".menu_materials_li").eq(u).find('.input_gram_quantity').val("");
-    $(".add_li_material").eq(u).find(".input_nutritions input").val(0);
-    $(".menu_materials_li").eq(u).find('.view_food_ingredient').text("");
-    var id = $(this).val();
-    if (isNaN(id) == true) {} else{
-      $.ajax({
-        url: "/menus/get_cost_price/",
-        data: { id : id },
-        dataType: "json",
-        async: false
-      })
-      .done(function(data){
-        get_material_info(data,u);
-        calculate_menu_price();
-        calculate_menu_nutrition();
-      });
-    }
-  });
   $(".material_ul").on('change','.post', function(){
     var u = $(".add_li_material").index($(this).parents('.add_li_material'));
     if ($(this).val().match(/切出/)) {
@@ -118,30 +70,6 @@ $(document).on('turbolinks:load', function() {
     }
   });
 
-
-  //amount_used変更でprice_used取得
-  $(".material_ul").on('change','.amount_used', function(){
-    var u = $(".add_li_material").index($(this).parent(".add_li_material"));
-    var cost_price = $(this).parent(".add_li_material").children(".cost_price").html();
-    var amount_used = $(this).parent(".add_li_material").find(".amount_used_input").val();
-    if (isNaN(amount_used) == true){
-      var calculate_price = 0;
-    }else {
-      var calculate_price = Math.round( (cost_price * amount_used) * 100 ) / 100 ;
-      // var calculate_price = (cost_price * amount_used).toFixed(2)};
-      $(this).parent(".add_li_material").children(".price_used").text(calculate_price);
-      calculate_menu_price();
-      var unit = $(".add_li_material").eq(u).find(".recipe_unit").text().trim();
-      var id = $(".add_li_material").eq(u).find(".input_food_ingredient").val();
-      if (unit=='g'||unit=='ml') {
-        $(this).parent(".add_li_material").find(".input_gram_quantity").val(amount_used);
-        if (id) {
-          input_menu_materials_nutrition(id,amount_used,u)
-        }
-      }else{
-        $(this).parent(".add_li_material").find(".input_gram_quantity").val("");
-      }
-  }});
 
   $(".all_box").on("change",function(){
     var prop = $('.all_box').prop('checked');
@@ -179,141 +107,12 @@ $(document).on('turbolinks:load', function() {
   });
 
 
-
-  $('.material_ul').on('change','.input_food_ingredient',function(){
-    var id = $(this).val();
-    var gram_amount = $(this).parents('li').find('.input_gram_quantity').val();
-    var index = $('.menu_materials_li').index($(this).parents('.menu_materials_li'));
-    if (gram_amount=='') {}else{
-      input_menu_materials_nutrition(id,gram_amount,index)
-    }
-  });
-
-  $('.input_gram_quantity').on('blur',function(){
-    var id = $(this).parents('li').find('.input_food_ingredient').val();
-    var gram_amount = $(this).val();
-    var index = $('.menu_materials_li').index($(this).parents('.menu_materials_li'));
-    if (id=='') {}else{
-      input_menu_materials_nutrition(id,gram_amount,index)
-    }
-  });
-
-
-
-
-  function input_menu_materials_nutrition(id,gram_amount,index){
-    $.ajax({
-      url: "/menus/get_food_ingredient",
-      data: { id : id ,gram_amount : gram_amount,index : index},
-      dataType: "json",
-      async: false
-    })
-    .done(function(data){
-      $(".menu_materials_li").eq(data[0]).find(".input_calorie").val(data[1]['calorie'])
-      $(".menu_materials_li").eq(data[0]).find(".input_protein").val(data[1]['protein'])
-      $(".menu_materials_li").eq(data[0]).find(".input_lipid").val(data[1]['lipid'])
-      $(".menu_materials_li").eq(data[0]).find(".input_carbohydrate").val(data[1]['carbohydrate'])
-      $(".menu_materials_li").eq(data[0]).find(".input_dietary_fiber").val(data[1]['dietary_fiber'])
-      $(".menu_materials_li").eq(data[0]).find(".input_potassium").val(data[1]['potassium'])
-      $(".menu_materials_li").eq(data[0]).find(".input_calcium").val(data[1]['calcium'])
-      $(".menu_materials_li").eq(data[0]).find(".input_vitamin_b1").val(data[1]['vitamin_b1'])
-      $(".menu_materials_li").eq(data[0]).find(".input_vitamin_b2").val(data[1]['vitamin_b2'])
-      $(".menu_materials_li").eq(data[0]).find(".input_vitamin_c").val(data[1]['vitamin_c'])
-      $(".menu_materials_li").eq(data[0]).find(".input_salt").val(data[1]['salt'])
-      $(".menu_materials_li").eq(data[0]).find(".input_magnesium").val(data[1]['magnesium'])
-      $(".menu_materials_li").eq(data[0]).find(".input_iron").val(data[1]['iron'])
-      $(".menu_materials_li").eq(data[0]).find(".input_zinc").val(data[1]['zinc'])
-      $(".menu_materials_li").eq(data[0]).find(".input_copper").val(data[1]['copper'])
-      $(".menu_materials_li").eq(data[0]).find(".input_folic_acid").val(data[1]['folic_acid'])
-      $(".menu_materials_li").eq(data[0]).find(".input_vitamin_d").val(data[1]['vitamin_d'])
-      $(".menu_materials_li").eq(data[0]).find('.view_food_ingredient').text(data[2])
-      calculate_menu_nutrition()
-    });
-  };
-
-  function calculate_menu_nutrition(){
-    var arr_menu_nutrition =[]
-    var obj = {calorie:0,protein:0,lipid:0,carbohydrate:0,dietary_fiber:0,potassium:0,
-      calcium:0,vitamin_b1:0,vitamin_b2:0,vitamin_c:0,salt:0,magnesium:0,iron:0,zinc:0,
-      copper:0,folic_acid:0,vitamin_d:0};
-    $(".menu_materials_li").each(function(i) {
-      calorie = Number(obj['calorie']) + Number($(this).find(".input_calorie").val());
-      protein = Number(obj['protein']) + Number($(this).find(".input_protein").val());
-      lipid = Number(obj['lipid']) + Number($(this).find(".input_lipid").val());
-      carbohydrate = Number(obj['carbohydrate']) + Number($(this).find(".input_carbohydrate").val());
-      dietary_fiber = Number(obj['dietary_fiber']) + Number($(this).find(".input_dietary_fiber").val());
-      potassium = Number(obj['potassium']) + Number($(this).find(".input_potassium").val());
-      calcium = Number(obj['calcium']) + Number($(this).find(".input_calcium").val());
-      vitamin_c = Number(obj['vitamin_c']) + Number($(this).find(".input_vitamin_c").val());
-      salt = Number(obj['salt']) + Number($(this).find(".input_salt").val());
-
-      obj = {calorie:calorie,protein:protein,lipid:lipid,carbohydrate:carbohydrate,dietary_fiber:dietary_fiber,
-        potassium:potassium,calcium:calcium,vitamin_c:vitamin_c,salt:salt};
-    });
-    $(".menu_calorie").text(Math.round(obj['calorie']*100)/100);
-    $(".menu_protein").text(Math.round(obj['protein']*100)/100);
-    $(".menu_lipid").text(Math.round(obj['lipid']*100)/100);
-    $(".menu_carbohydrate").text(Math.round(obj['carbohydrate']*100)/100);
-    $(".menu_dietary_fiber").text(Math.round(obj['dietary_fiber']*100)/100);
-    $(".menu_potassium").text(Math.round(obj['potassium']*100)/100);
-    $(".menu_calcium").text(Math.round(obj['calcium']*100)/100);
-    $(".menu_vitamin_c").text(Math.round(obj['vitamin_c']*100)/100);
-    $(".menu_salt").text(Math.round(obj['salt']*100)/100);
-  };
-
-
-//メニュー価格の変更
-  function calculate_menu_price(){
-    var row_len =  $(".add_li_material").length
-    var menu_price = 0;
-    $(".add_li_material").each(function(){
-      if ($(this).find(".remove_material").children("input").val()==1){
-      }else{
-        var price_used = Number($(this).children(".price_used").html())
-        if (isNaN(price_used) == true ){}else{
-        menu_price += price_used}
-      }});
-      var sum_material_cost = Math.round( menu_price * 100 ) / 100 ;
-      $(".menu_cost_price").val(sum_material_cost)
-  };
-
-  function get_material_info(data,u){
-    var amount_used = $(".add_li_material").eq(u).find(".amount_used_input").val();
-    var id = data.material.id;
-    var cost = data.material.cost_price;
-    var unit = data.material.recipe_unit;
-    var vendor = data.material.vendor_company_name;
-    var eos = data.material.unused_flag;
-    var material_cut_patterns = data.material.material_cut_patterns
-    // console.log(material_cut_patterns);
-    $(".add_li_material").eq(u).children(".sales_check").text(eos);
-    $(".add_li_material").eq(u).find(".vendor").text(vendor);
-    $(".add_li_material").eq(u).children(".cost_price").text(cost);
-    $(".add_li_material").eq(u).find(".recipe_unit").text(unit);
-    $(".add_li_material").eq(u).find(".div_material_cut_pattern").children('a').attr("href", "/materials/"+id+"/edit");
-    $(".add_li_material").eq(u).find(".material_cut_pattern option").remove();
-    $(".add_li_material").eq(u).find('.material_cut_pattern').append($('<option>').val('').text(''));
-    material_cut_patterns.forEach(function(mcp, idx) {
-      var $option_tag = $('<option>').val(mcp.id).text(mcp.name);
-      $(".add_li_material").eq(u).find('.material_cut_pattern').append($option_tag);
-    });
-
-
-
-    //終売のアラートon
-    eos_check(eos,u)
-    if (isNaN(amount_used) == true){
-      var calculate_price = 0;
-    }else {
-      var calculate_price = Math.round( (cost * amount_used) * 100 ) / 100 ;
-    $(".add_li_material").eq(u).children(".price_used").text(calculate_price);
-    }
-    unit_check(unit,u)
-  };
-
   function unit_check(unit,u){
     if (unit=='g' || unit=='ml') {
       $(".add_li_material").eq(u).find('.input_gram_quantity').attr('readonly',true).attr('style','background-color:#EBEBEB');
+      var amount = $(".add_li_material").eq(u).find('.amount_used_input').val();
+      $(".add_li_material").eq(u).find('.input_gram_quantity').val(amount);
+      calculate_food_ingredient(amount,u);
     }else{
       $(".add_li_material").eq(u).find('.input_gram_quantity').attr('readonly',false).attr('style','background-color: #ffa2a2;')
     }
@@ -345,6 +144,61 @@ $(document).on('turbolinks:load', function() {
     });
   };
 
+
+
+
+  //amount_used変更でprice_used取得
+  $(".material_ul").on('change','.amount_used', function(){
+    var u = $(".add_li_material").index($(this).parent(".add_li_material"));
+    var cost_price = $(this).parent(".add_li_material").children(".cost_price").html();
+    var amount_used = $(this).parent(".add_li_material").find(".amount_used_input").val();
+    if (isNaN(amount_used) == true){
+      var calculate_price = 0;
+      var amount = 0;
+    }else {
+      var calculate_price = Math.round( (cost_price * amount_used) * 100 ) / 100 ;
+      $(this).parent(".add_li_material").children(".price_used").text(calculate_price);
+      calculate_menu_price();
+      var unit = $(".add_li_material").eq(u).find(".recipe_unit").text().trim();
+      if (unit=='g'||unit=='ml') {
+        $(this).parent(".add_li_material").find(".input_gram_quantity").val(amount_used);
+        var amount = amount_used;
+      }else{
+        $(this).parent(".add_li_material").find(".input_gram_quantity").val("");
+        var amount = 0;
+      }
+    }
+    calculate_food_ingredient(amount,u);
+    calculate_menu_nutrition();
+  });
+
+
+
+// input内のチェックと各カラムへの代入、materialデータベースに無ければ空欄にする
+  $(".material_ul").on('change','.input_select_material', function(){
+    additives_select_change()
+    $('.eos-alert').hide();
+    var u = $(".add_li_material").index($(this).parents('.add_li_material'));
+    $(".add_li_material").eq(u).find(".amount_used_input").val("");
+    var id = $(this).val();
+    if (isNaN(id) == true) {} else{
+      $.ajax({
+        url: "/menus/get_cost_price/",
+        data: { id : id },
+        dataType: "json",
+        async: false
+      })
+      .done(function(data){
+        get_material_info(data,u);
+        change_food_ingredient(data,u);
+        calculate_menu_price();
+        calculate_menu_nutrition();
+      });
+    }
+  });
+
+
+
   function additives_select_change() {
     var array = [];
     $(".add_li_material").each(function(){
@@ -367,5 +221,125 @@ $(document).on('turbolinks:load', function() {
       });
     });
   }
+
+
+  function get_material_info(data,u){
+    var id = data.material.id;
+    var cost = data.material.cost_price;
+    var unit = data.material.recipe_unit;
+    var eos = data.material.unused_flag;
+    var material_cut_patterns = data.material.material_cut_patterns
+    $(".add_li_material").eq(u).children(".sales_check").text(eos);
+    $(".add_li_material").eq(u).children(".cost_price").text(cost);
+    $(".add_li_material").eq(u).find(".recipe_unit").text(unit);
+    $(".add_li_material").eq(u).children(".price_used").text(0);
+    $(".add_li_material").eq(u).find(".div_material_cut_pattern").children('a').attr("href", "/materials/"+id+"/edit");
+    $(".add_li_material").eq(u).find(".material_cut_pattern option").remove();
+    $(".add_li_material").eq(u).find('.material_cut_pattern').append($('<option>').val('').text(''));
+    material_cut_patterns.forEach(function(mcp, idx) {
+      var $option_tag = $('<option>').val(mcp.id).text(mcp.name);
+      $(".add_li_material").eq(u).find('.material_cut_pattern').append($option_tag);
+    });
+    eos_check(eos,u)
+    unit_check(unit,u)
+  };
+
+  //メニュー価格の変更
+  function calculate_menu_price(){
+    var row_len =  $(".add_li_material").length
+    var menu_price = 0;
+    $(".add_li_material").each(function(){
+      if ($(this).find(".remove_material").children("input").val()==1){
+      }else{
+        var price_used = Number($(this).children(".price_used").html())
+        if (isNaN(price_used) == true ){}else{
+        menu_price += price_used}
+      }});
+      var sum_material_cost = Math.round( menu_price * 100 ) / 100 ;
+      $(".menu_cost_price").val(sum_material_cost)
+  };
+
+  function calculate_menu_nutrition(){
+    var arr_menu_nutrition =[]
+    var obj = {calorie:0,protein:0,lipid:0,carbohydrate:0,dietary_fiber:0,salt:0};
+    $(".add_li_material").each(function(i) {
+      calorie = Number(obj['calorie']) + Number($(this).find(".input_calorie").val());
+      protein = Number(obj['protein']) + Number($(this).find(".input_protein").val());
+      lipid = Number(obj['lipid']) + Number($(this).find(".input_lipid").val());
+      carbohydrate = Number(obj['carbohydrate']) + Number($(this).find(".input_carbohydrate").val());
+      dietary_fiber = Number(obj['dietary_fiber']) + Number($(this).find(".input_dietary_fiber").val());
+      salt = Number(obj['salt']) + Number($(this).find(".input_salt").val());
+      obj = {calorie:calorie,protein:protein,lipid:lipid,carbohydrate:carbohydrate,dietary_fiber:dietary_fiber,salt:salt};
+    });
+    $(".menu_calorie").val(Math.round(obj['calorie']*100)/100);
+    $(".menu_protein").val(Math.round(obj['protein']*100)/100);
+    $(".menu_lipid").val(Math.round(obj['lipid']*100)/100);
+    $(".menu_carbohydrate").val(Math.round(obj['carbohydrate']*100)/100);
+    $(".menu_dietary_fiber").val(Math.round(obj['dietary_fiber']*100)/100);
+    $(".menu_salt").val(Math.round(obj['salt']*100)/100);
+  };
+
+
+  function change_food_ingredient(data,u){
+    var food_ingredient = data["material"]["food_ingredient"]
+    if (food_ingredient) {
+      $(".add_li_material").eq(u).find(".food_ingredient").find(".name").text(food_ingredient.name);
+      var hyoji = "cal："+food_ingredient.calorie +"　pro："+food_ingredient.protein +"　lip："+food_ingredient.lipid +"　car："+food_ingredient.carbohydrate +"　fib："+food_ingredient.dietary_fiber +"　salt："+food_ingredient.salt
+      $(".add_li_material").eq(u).find(".food_ingredient").find(".hyoji").text(hyoji);
+      $(".add_li_material").eq(u).find(".calorie").val(food_ingredient.calorie);
+      $(".add_li_material").eq(u).find(".protein").val(food_ingredient.protein);
+      $(".add_li_material").eq(u).find(".lipid").val(food_ingredient.lipid);
+      $(".add_li_material").eq(u).find(".carbohydrate").val(food_ingredient.carbohydrate);
+      $(".add_li_material").eq(u).find(".dietary_fiber").val(food_ingredient.dietary_fiber);
+      $(".add_li_material").eq(u).find(".salt").val(food_ingredient.salt);
+    }else{
+      $(".add_li_material").eq(u).find(".food_ingredient").find(".name").text("未登録");
+      var hyoji = "-"
+      $(".add_li_material").eq(u).find(".food_ingredient").find(".hyoji").text(hyoji);
+      $(".add_li_material").eq(u).find(".calorie").val(0);
+      $(".add_li_material").eq(u).find(".protein").val(0);
+      $(".add_li_material").eq(u).find(".lipid").val(0);
+      $(".add_li_material").eq(u).find(".carbohydrate").val(0);
+      $(".add_li_material").eq(u).find(".dietary_fiber").val(0);
+      $(".add_li_material").eq(u).find(".salt").val(0);
+
+    };
+    calculate_menu_nutrition();
+  };
+  
+  // input内のチェックと各カラムへの代入、materialデータベースに無ければ空欄にする
+  $(".material_ul").on('change','.input_gram_quantity', function(){
+    var amount = $(this).val();
+    var u = $(".add_li_material").index($(this).parents('.add_li_material'));
+    calculate_food_ingredient(amount,u);
+    calculate_menu_nutrition();
+  });
+
+  function calculate_food_ingredient(amount,u){
+    var food_ingredient = $(".add_li_material").eq(u).find(".food_ingredient").text();
+    var unit_calorie = $(".add_li_material").eq(u).find(".calorie").val();
+    var unit_protein = $(".add_li_material").eq(u).find(".protein").val();
+    var unit_lipid = $(".add_li_material").eq(u).find(".lipid").val();
+    var unit_carbohydrate = $(".add_li_material").eq(u).find(".carbohydrate").val();
+    var unit_dietary_fiber = $(".add_li_material").eq(u).find(".dietary_fiber").val();
+    var unit_salt = $(".add_li_material").eq(u).find(".salt").val();
+    if (food_ingredient) {
+      $(".add_li_material").eq(u).find(".input_calorie").val(Math.round(amount*unit_calorie*100)/100);
+      $(".add_li_material").eq(u).find(".input_protein").val(Math.round(amount*unit_protein*100)/100);
+      $(".add_li_material").eq(u).find(".input_lipid").val(Math.round(amount*unit_lipid*100)/100);
+      $(".add_li_material").eq(u).find(".input_carbohydrate").val(Math.round(amount*unit_carbohydrate*100)/100);
+      $(".add_li_material").eq(u).find(".input_dietary_fiber").val(Math.round(amount*unit_dietary_fiber*100)/100);
+      $(".add_li_material").eq(u).find(".input_salt").val(Math.round(amount*unit_salt*100)/100);
+    }else{
+      $(".add_li_material").eq(u).find(".input_calorie").val(0);
+      $(".add_li_material").eq(u).find(".input_protein").val(0);
+      $(".add_li_material").eq(u).find(".input_lipid").val(0);
+      $(".add_li_material").eq(u).find(".input_carbohydrate").val(0);
+      $(".add_li_material").eq(u).find(".input_dietary_fiber").val(0);
+      $(".add_li_material").eq(u).find(".input_salt").val(0);
+    }
+
+  };
+
 
 });
