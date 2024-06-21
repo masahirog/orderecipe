@@ -111,7 +111,7 @@ class ProductsController < ApplicationController
   end
 
   def show
-    @product = Product.includes(:product_menus,{menus: [:menu_materials, :materials,:menu_processes]}).find(params[:id])
+    @product = Product.includes(:product_menus,{menus: [:menu_processes,materials:[:food_ingredient],menu_materials:[:menu]]}).find(params[:id])
     @allergies = Product.allergy_seiri(@product)
     @additives = Product.additive_seiri(@product)
     order_products = @product.order_products

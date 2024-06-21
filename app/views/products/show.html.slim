@@ -82,7 +82,7 @@ table.table
     tr
       td = @product.smaregi_code
       td = @product.main_serving_plate_id
-      td = @product.container
+      td = @product.container.name if @product.container.present?
       td = @product.sky_split_information
 
 table.table
@@ -148,7 +148,7 @@ table.table
         td = text_url_to_link(simple_format(h(@product.serving_infomation))).html_safe
 
 .table-responsive
-  table.table
+  table.table.table-noborder
     thead
       tr
         th メニュー名
@@ -163,7 +163,7 @@ table.table
         th 仕込み
     tbody
       - @product.product_menus.each do |pm|
-        - u = pm.menu.materials.length
+        - u = pm.menu.materials.length * 2
         - pm.menu.menu_materials.each_with_index do |mm,i|
           tr
             - if i == 0
@@ -207,9 +207,22 @@ table.table
             td = "◯" if mm.post == "タレ"
             td = mm.source_group
             td = link_to mm.material.name, edit_material_path(mm.material)
-            td = "#{mm.amount_used} #{mm.material.recipe_unit}"
+            td
+              = "#{mm.amount_used} #{mm.material.recipe_unit}"
+
             td = (mm.amount_used * mm.material.cost_price).round(1)
             td = mm.preparation
+          tr
+            td colspan=6 style='border-top: 0px;padding:0 10px;color:gray;'
+              - unless mm.menu.category == '容器'
+                - if mm.material.food_ingredient_id.present? && mm.gram_quantity > 0
+                  = "#{mm.material.food_ingredient.name} #{mm.gram_quantity}g：#{mm.calorie}kcal、#{mm.protein}g、#{mm.lipid}g、#{mm.carbohydrate}g、#{mm.dietary_fiber}g、#{mm.salt}g"
+                - elsif mm.material.food_ingredient_id.nil? && mm.gram_quantity > 0
+                  span style='color:red;' = "使用量#{mm.gram_quantity}g、成分計算用の食材が未登録"
+                - elsif mm.material.food_ingredient_id.present? && mm.gram_quantity == 0
+                  span style='color:red;' = "#{mm.material.food_ingredient.name}、使用量が未登録"
+                - else
+                  span style='color:red;' = "成分表示の食材と、使用量をそれぞれ登録必要"
 
 
 css:

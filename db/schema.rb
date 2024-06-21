@@ -514,6 +514,7 @@ ActiveRecord::Schema.define(version: 2024_05_30_003841) do
     t.date "price_update_date"
     t.string "jancode"
     t.integer "food_ingredient_id"
+    t.float "recipe_unit_gram_quantity", default: 0.0, null: false
   end
 
   create_table "menu_cook_checks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|

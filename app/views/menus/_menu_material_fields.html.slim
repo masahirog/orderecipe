@@ -5,11 +5,17 @@ li.add_li_material.col-md-12.col-xs-12.list-group-item.item.nested-fields.field.
     - if @base_menu.present?
       = f.object.material.name
       = f.hidden_field :material_id
+      = link_to edit_material_path(f.object.material),target:'_blank',class:'material_link' do
+        i class="fa-solid fa-arrow-up-right-from-square" style='margin-left:10px;'
     - else
       / = f.collection_select :material_id, @materials, :id, :name, {include_blank: true}, { class: "input_select_material col-md-12"}
       = f.collection_select :material_id, @materials, :id, :select_name, {include_blank: true}, { class: "input_select_material col-md-12",required: true,style:'width:calc(100% - 30px);'}
-    = link_to f.object.material,target:'_blank',class:'material_link' do
-      i class="fa-solid fa-arrow-up-right-from-square" style='margin-left:10px;'
+      - if f.object.id.present?
+        = link_to edit_material_path(f.object.material),target:'_blank',class:'material_link' do
+          i class="fa-solid fa-arrow-up-right-from-square" style='margin-left:10px;'
+      - else
+        a target="_blank" class="material_link" href=""
+          i class="fa-solid fa-arrow-up-right-from-square" style='margin-left:10px;'
   .cost_price.col-md-1.form-inline.text-center
     = f.object.material.cost_price if f.object.material.present?
 
@@ -42,7 +48,7 @@ li.add_li_material.col-md-12.col-xs-12.list-group-item.item.nested-fields.field.
         input.dietary_fiber value= f.object.material.food_ingredient.dietary_fiber style='display:none;'
         input.salt value= f.object.material.food_ingredient.salt style='display:none;'
       - else
-        span.name
+        a class="name" target="_blank" href="" -
         br
         span.hyoji
         input.calorie value=0 style='display:none;'
@@ -78,7 +84,11 @@ li.add_li_material.col-md-12.col-xs-12.list-group-item.item.nested-fields.field.
   .col-md-12.clearfix style="padding:5px 0 0 0;"
     span style='float:left;margin:8px 8px 0 0;' 成分計算：
     .gram_quantity style='float:left;'
-      = f.number_field :gram_quantity,class:'form-control input_gram_quantity'
+      - if f.object.material.present?
+        input.recipe_unit_gram_quantity style='display:none;' value=f.object.material.recipe_unit_gram_quantity
+      - else
+        input.recipe_unit_gram_quantity style='display:none;'
+      = f.number_field :gram_quantity,class:'form-control input_gram_quantity',readonly:true
     span style='float:left;margin:8px 0 0 8px;' g
     span style='float:left;margin:8px 0 0 24px;' カロリー：
     = f.number_field :calorie, class:'input_calorie',style:'width:50px;float:left;border-radius:4px;border:1px solid #ccc;margin-top:4px;background-color:#e6e6e6',readonly:true

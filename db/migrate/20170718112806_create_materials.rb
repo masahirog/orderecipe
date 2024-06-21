@@ -31,6 +31,7 @@ class CreateMaterials < ActiveRecord::Migration[4.2]
       t.date :price_update_date
       t.string :jancode,unique: true
       t.references :food_ingredient
+      t.float :recipe_unit_gram_quantity,:null => false,:default => 0
     end
   end
 end

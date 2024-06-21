@@ -8,7 +8,7 @@ $(document).on('turbolinks:load', function() {
     var unit = $(this).find(".recipe_unit").text()
     console.log(unit);
     eos_check(eos,u);
-    unit_check(unit,u);
+    // unit_check(unit,u);
     u += 1
   });
 
@@ -107,16 +107,16 @@ $(document).on('turbolinks:load', function() {
   });
 
 
-  function unit_check(unit,u){
-    if (unit=='g' || unit=='ml') {
-      $(".add_li_material").eq(u).find('.input_gram_quantity').attr('readonly',true).attr('style','background-color:#EBEBEB');
-      var amount = $(".add_li_material").eq(u).find('.amount_used_input').val();
-      $(".add_li_material").eq(u).find('.input_gram_quantity').val(amount);
-      calculate_food_ingredient(amount,u);
-    }else{
-      $(".add_li_material").eq(u).find('.input_gram_quantity').attr('readonly',false).attr('style','background-color: #ffa2a2;')
-    }
-  };
+  // function unit_check(unit,u){
+  //   if (unit=='g' || unit=='ml') {
+  //     $(".add_li_material").eq(u).find('.input_gram_quantity').attr('readonly',true).attr('style','background-color:#EBEBEB');
+  //     var amount = $(".add_li_material").eq(u).find('.amount_used_input').val();
+  //     $(".add_li_material").eq(u).find('.input_gram_quantity').val(amount);
+  //     calculate_food_ingredient(amount,u);
+  //   }else{
+  //     $(".add_li_material").eq(u).find('.input_gram_quantity').attr('readonly',false).attr('style','background-color: #ffa2a2;')
+  //   }
+  // };
 
   function eos_check(eos,u){
     if (eos==1) {
@@ -156,17 +156,13 @@ $(document).on('turbolinks:load', function() {
       var calculate_price = 0;
       var amount = 0;
     }else {
-      var calculate_price = Math.round( (cost_price * amount_used) * 100 ) / 100 ;
+      var calculate_price = Math.round( (cost_price * amount_used) * 100 ) / 100;
       $(this).parent(".add_li_material").children(".price_used").text(calculate_price);
       calculate_menu_price();
       var unit = $(".add_li_material").eq(u).find(".recipe_unit").text().trim();
-      if (unit=='g'||unit=='ml') {
-        $(this).parent(".add_li_material").find(".input_gram_quantity").val(amount_used);
-        var amount = amount_used;
-      }else{
-        $(this).parent(".add_li_material").find(".input_gram_quantity").val("");
-        var amount = 0;
-      }
+      var recipe_unit_gram_quantity = $(this).parent(".add_li_material").find(".recipe_unit_gram_quantity").val();
+      var amount = Math.round( (amount_used*recipe_unit_gram_quantity) * 100 ) / 100;
+      $(this).parent(".add_li_material").find(".input_gram_quantity").val(amount);
     }
     calculate_food_ingredient(amount,u);
     calculate_menu_nutrition();
@@ -180,6 +176,7 @@ $(document).on('turbolinks:load', function() {
     $('.eos-alert').hide();
     var u = $(".add_li_material").index($(this).parents('.add_li_material'));
     $(".add_li_material").eq(u).find(".amount_used_input").val("");
+    $(".add_li_material").eq(u).find(".input_gram_quantity").val("");
     var id = $(this).val();
     if (isNaN(id) == true) {} else{
       $.ajax({
@@ -231,6 +228,7 @@ $(document).on('turbolinks:load', function() {
     var material_cut_patterns = data.material.material_cut_patterns
     $(".add_li_material").eq(u).find(".material_link").attr('href',"/materials/"+id+"/edit")
     $(".add_li_material").eq(u).children(".sales_check").text(eos);
+    $(".add_li_material").eq(u).find(".recipe_unit_gram_quantity").val(data.material.recipe_unit_gram_quantity);
     $(".add_li_material").eq(u).children(".cost_price").text(cost);
     $(".add_li_material").eq(u).find(".recipe_unit").text(unit);
     $(".add_li_material").eq(u).children(".price_used").text(0);
@@ -242,7 +240,7 @@ $(document).on('turbolinks:load', function() {
       $(".add_li_material").eq(u).find('.material_cut_pattern').append($option_tag);
     });
     eos_check(eos,u)
-    unit_check(unit,u)
+    // unit_check(unit,u)
   };
 
   //メニュー価格の変更
@@ -309,13 +307,6 @@ $(document).on('turbolinks:load', function() {
     calculate_menu_nutrition();
   };
   
-  // input内のチェックと各カラムへの代入、materialデータベースに無ければ空欄にする
-  $(".material_ul").on('change','.input_gram_quantity', function(){
-    var amount = $(this).val();
-    var u = $(".add_li_material").index($(this).parents('.add_li_material'));
-    calculate_food_ingredient(amount,u);
-    calculate_menu_nutrition();
-  });
 
   function calculate_food_ingredient(amount,u){
     var food_ingredient = $(".add_li_material").eq(u).find(".food_ingredient").text();

@@ -247,6 +247,8 @@ table.table.table-list.table-striped
       tr
         td
           = link_to dmd.product.name,product_path(dmd.product)
+          - if MenuMaterial.where(menu_id:dmd.product.menus.where.not(category:'容器').ids).map{|mm|mm.gram_quantity}.include?(0.0)
+            span style='color:red;'  ※
         td = dmd.paper_menu_number
         td = dmd.sell_price
         td = dmd.product.cost_price

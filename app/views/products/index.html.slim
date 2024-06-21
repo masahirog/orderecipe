@@ -56,7 +56,10 @@ table.table
         td.product_id style="display:none;"
           = product.id
         td = product.brand.name
-        td.product_name = link_to "#{product.name}", "/products/#{product.id}/"
+        td.product_name
+          = link_to "#{product.name}", "/products/#{product.id}/"
+          - if MenuMaterial.where(menu_id:product.menus.where.not(category:'容器').ids).map{|mm|mm.gram_quantity}.include?(0.0)
+            span style='color:red;'  ※
         td = product.container.name if product.container.present?
         td 
           span = product.product_category
