@@ -23,6 +23,7 @@ class Menu < ApplicationRecord
   validates :cost_price, presence: true, numericality: true
   after_create :base_menu_id_check
   after_update :copy_menu_reflect
+  after_update :seibun_product_reflect
 
   enum category: {主食:1,主菜:2,副菜:3,容器:4,冷菜:5,温菜:6,揚げ物:7,焼き物:8,ご飯物:9,デザート:10}
   def self.search(params,group_id)
@@ -107,5 +108,20 @@ class Menu < ApplicationRecord
       end
     end
   end
+  
+  def seibun_product_reflect
+    updates_arr = []
+    self.products.each do |product|
+      product.calorie = product.menus.sum(:calorie).round(2)
+      product.protein = product.menus.sum(:protein).round(2)
+      product.lipid = product.menus.sum(:lipid).round(2)
+      product.carbohydrate = product.menus.sum(:carbohydrate).round(2)
+      product.dietary_fiber = product.menus.sum(:dietary_fiber).round(2)
+      product.salt = product.menus.sum(:salt).round(2)
+      updates_arr << product
+    end
+    Product.import updates_arr, on_duplicate_key_update:[:calorie,:protein,:lipid,:carbohydrate,:dietary_fiber,:salt]
+  end
+
   private
 end

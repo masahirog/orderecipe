@@ -1,6 +1,70 @@
-p#notice = notice
-
-
-=> link_to 'Edit', edit_food_ingredient_path(@food_ingredient)
-'|
-=< link_to 'Back', food_ingredients_path
+= link_to '成分計算を更新',reflect_seibun_food_ingredients_path(id:@food_ingredient.id),class:"btn btn-default btn-sm"
+.form-group
+	label 名前
+	p = @food_ingredient.name
+.form-group
+	label グループ
+	p = @food_ingredient.food_group
+.form-group
+	label 食材番号
+	p = @food_ingredient.food_number
+.form-group
+	label インデックス
+	p = @food_ingredient.index_number
+.form-group
+	label 補足
+	p = @food_ingredient.complement
+.form-group
+	label カロリー
+	p = @food_ingredient.calorie
+.form-group
+	label タンパク質
+	p = @food_ingredient.protein
+.form-group
+	label 脂質
+	p = @food_ingredient.lipid
+.form-group
+	label 炭水化物
+	p = @food_ingredient.carbohydrate
+.form-group
+	label 食物繊維
+	p = @food_ingredient.carbohydrate
+.form-group
+	label カリウム
+	p = @food_ingredient.potassium
+.form-group
+	label カルシウム
+	p = @food_ingredient.calcium
+.form-group
+	label ビタミンB1
+	p = @food_ingredient.vitamin_b1
+.form-group
+	label ビタミンB2
+	p = @food_ingredient.vitamin_b2
+.form-group
+	label ビタミンC
+	p = @food_ingredient.vitamin_c
+.form-group
+	label 塩
+	p = @food_ingredient.salt
+.form-group
+	label マグネシウム
+	p = @food_ingredient.magnesium
+.form-group
+	label 鉄
+	p = @food_ingredient.iron
+.form-group
+	label 亜鉛
+	p = @food_ingredient.zinc
+.form-group
+	label 銅
+	p = @food_ingredient.copper
+.form-group
+	label 葉酸
+	p = @food_ingredient.folic_acid
+.form-group
+	label ビタミンD
+	p = @food_ingredient.vitamin_d
+.form-group
+	label メモ
+	p = @food_ingredient.memo

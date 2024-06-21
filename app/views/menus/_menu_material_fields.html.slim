@@ -83,6 +83,7 @@ li.add_li_material.col-md-12.col-xs-12.list-group-item.item.nested-fields.field.
         span style='font-size:20px;margin:8px 0 0 8px;' class="glyphicon glyphicon-cog" aria-hidden="true"
   .col-md-12.clearfix style="padding:5px 0 0 0;"
     span style='float:left;margin:8px 8px 0 0;' 成分計算：
+    i class="fa-regular fa-pen-to-square edit_gram_quantity" style='float:left;margin:10px 8px 0 0;'
     .gram_quantity style='float:left;'
       - if f.object.material.present?
         input.recipe_unit_gram_quantity style='display:none;' value=f.object.material.recipe_unit_gram_quantity
@@ -102,3 +103,4 @@ li.add_li_material.col-md-12.col-xs-12.list-group-item.item.nested-fields.field.
     = f.number_field :dietary_fiber, class:'input_dietary_fiber',style:'width:50px;float:left;border-radius:4px;border:1px solid #ccc;margin-top:4px;background-color:#e6e6e6',readonly:true
     span style='float:left;margin:8px 0 0 8px;' 塩分：
     = f.number_field :salt, class:'input_salt',style:'width:50px;float:left;border-radius:4px;border:1px solid #ccc;margin-top:4px;background-color:#e6e6e6',readonly:true
+    i class="drag fa-solid fa-up-down-left-right pull-right" style='float:right;color:#dcdcdc;border:1px solid #dcdcdc;padding:3px;border-radius:3px;'

@@ -139,7 +139,7 @@
           = render 'menu_material_fields',{f: m}
           - i += 1
     - else
-      ul#detail-association-insertion-point.material_ul.list-group.ul-sortable style="list-style-type:none;cursor:move;"
+      ul#detail-association-insertion-point.material_ul.list-group.ul-sortable style="list-style-type:none;"
         = f.fields_for :menu_materials do |m|
           = render 'menu_material_fields',{f: m}
           - i += 1

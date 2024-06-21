@@ -1,5 +1,55 @@
 class MaterialsController < ApplicationController
   protect_from_forgery :except => [:change_additives]
+  def reflect_seibun
+    @material = Material.find(params[:id]) 
+    updates_arr = []
+    menu_ids = []
+    @material.menu_materials.each do |mm|
+      if mm.gram_quantity > 0
+        if mm.material.food_ingredient_id.present?
+          food_ingredient = mm.material.food_ingredient
+          mm.calorie = (food_ingredient.calorie * mm.gram_quantity).round(2)
+          mm.protein = (food_ingredient.protein * mm.gram_quantity).round(2)
+          mm.lipid = (food_ingredient.lipid * mm.gram_quantity).round(2)
+          mm.carbohydrate = (food_ingredient.carbohydrate * mm.gram_quantity).round(2)
+          mm.dietary_fiber = (food_ingredient.dietary_fiber * mm.gram_quantity).round(2)
+          mm.salt = (food_ingredient.salt * mm.gram_quantity).round(2)
+          updates_arr << mm
+          menu_ids << mm.menu_id
+        end
+      end
+    end
+    MenuMaterial.import updates_arr, on_duplicate_key_update:[:calorie,:protein,:lipid,:carbohydrate,:dietary_fiber,:salt]
+    menu_ids = menu_ids.uniq
+
+    updates_arr = []
+    Menu.where(id:menu_ids).each do |menu|
+      menu.calorie = menu.menu_materials.sum(:calorie).round(2)
+      menu.protein = menu.menu_materials.sum(:protein).round(2)
+      menu.lipid = menu.menu_materials.sum(:lipid).round(2)
+      menu.carbohydrate = menu.menu_materials.sum(:carbohydrate).round(2)
+      menu.dietary_fiber = menu.menu_materials.sum(:dietary_fiber).round(2)
+      menu.salt = menu.menu_materials.sum(:salt).round(2)
+      updates_arr << menu
+    end
+    Menu.import updates_arr, on_duplicate_key_update:[:calorie,:protein,:lipid,:carbohydrate,:dietary_fiber,:salt]
+
+
+    products = Product.joins(:menus).where(:menus =>{id:menu_ids})
+    updates_arr = []
+    products.each do |product|
+      product.calorie = product.menus.sum(:calorie).round(2)
+      product.protein = product.menus.sum(:protein).round(2)
+      product.lipid = product.menus.sum(:lipid).round(2)
+      product.carbohydrate = product.menus.sum(:carbohydrate).round(2)
+      product.dietary_fiber = product.menus.sum(:dietary_fiber).round(2)
+      product.salt = product.menus.sum(:salt).round(2)
+      updates_arr << product
+    end
+    Product.import updates_arr, on_duplicate_key_update:[:calorie,:protein,:lipid,:carbohydrate,:dietary_fiber,:salt]
+    redirect_to @material,info:'更新しました'
+  end
+
   def scan
     @materials = []
     @material = nil

@@ -7,6 +7,7 @@ $(document).on('turbolinks:load', function() {
   reset_row_order();
   menu_select2();
   cost_rate_calc();
+  calculate_seibun();
 
 
   //addアクション、menuの追加
@@ -68,6 +69,7 @@ $(document).on('turbolinks:load', function() {
       reset_row_order();
       calculate_total_calorie();
       cost_rate_calc();
+      calculate_seibun();
     },10);
   });
 
@@ -81,13 +83,44 @@ $(document).on('turbolinks:load', function() {
         dataType: "json",
     })
     .done(function(data) {
+      $(".add_li_menu").eq(u).find(".product_menu_calorie").val(data.menu.calorie);
+      $(".add_li_menu").eq(u).find(".product_menu_protein").val(data.menu.protein);
+      $(".add_li_menu").eq(u).find(".product_menu_lipid").val(data.menu.lipid);
+      $(".add_li_menu").eq(u).find(".product_menu_carbohydrate").val(data.menu.carbohydrate);
+      $(".add_li_menu").eq(u).find(".product_menu_dietary_fiber").val(data.menu.dietary_fiber);
+      $(".add_li_menu").eq(u).find(".product_menu_salt").val(data.menu.salt);
       get_menu_price(data,u);
       calculate_product_price();
       show_calorie(data,u);
       cost_rate_calc();
+      calculate_seibun();
    });
   });
 
+  function calculate_seibun(){
+    var calorie = 0;
+    var protein = 0;
+    var lipid = 0;
+    var carbohydrate = 0;
+    var dietary_fiber = 0;
+    var salt = 0;
+    $(".add_li_menu").each(function(){
+      if ($(this).find('.remove_menu').children().val()=='false') {
+        calorie += Number($(this).find(".product_menu_calorie").val());
+        protein += Number($(this).find(".product_menu_protein").val());
+        lipid += Number($(this).find(".product_menu_lipid").val());
+        carbohydrate += Number($(this).find(".product_menu_carbohydrate").val());
+        dietary_fiber += Number($(this).find(".product_menu_dietary_fiber").val());
+        salt += Number($(this).find(".product_menu_salt").val());
+      }
+    });
+    $(".calorie").val(Math.round(calorie * 100 ) / 100);
+    $(".protein").val(Math.round(protein * 100 ) / 100);
+    $(".lipid").val(Math.round(lipid * 100 ) / 100);
+    $(".carbohydrate").val(Math.round(carbohydrate * 100 ) / 100);
+    $(".dietary_fiber").val(Math.round(dietary_fiber * 100 ) / 100);
+    $(".salt").val(Math.round(salt * 100 ) / 100);
+  };
 
   //原価計算
   function calculate_product_price(){

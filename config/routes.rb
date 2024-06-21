@@ -257,7 +257,12 @@ Rails.application.routes.draw do
       post :bulk_delete
     end
   end
-  resources :food_ingredients
+  resources :food_ingredients do
+    collection do
+      get :reflect_seibun
+    end
+  end
+
   resources :menus do
     put :sort
     collection do
@@ -298,6 +303,7 @@ Rails.application.routes.draw do
   resources :customer_opinions
   resources :materials do
     collection do
+      get :reflect_seibun
       get :scan
       get :used_products
       get :materials_used_amount

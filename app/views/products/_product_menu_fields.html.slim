@@ -1,4 +1,20 @@
 li.add_li_menu.col-md-12.list-group-item.nested-fields.field[style="padding:5px 5px;"]
+  .menu_seibun
+    - if f.object.menu.present?
+      input.product_menu_calorie value= f.object.menu.calorie style='display:none;'
+      input.product_menu_protein value= f.object.menu.protein style='display:none;'
+      input.product_menu_lipid value= f.object.menu.lipid style='display:none;'
+      input.product_menu_carbohydrate value= f.object.menu.carbohydrate style='display:none;'
+      input.product_menu_dietary_fiber value= f.object.menu.dietary_fiber style='display:none;'
+      input.product_menu_salt value= f.object.menu.salt style='display:none;'
+    - else
+      input.product_menu_calorie value=0 style='display:none;'
+      input.product_menu_protein value=0 style='display:none;'
+      input.product_menu_lipid value=0 style='display:none;'
+      input.product_menu_carbohydrate value=0 style='display:none;'
+      input.product_menu_dietary_fiber value=0 style='display:none;'
+      input.product_menu_salt value=0 style='display:none;'
+
   .row_order[style="display:none;"]
     = f.number_field :row_order, class:"input_row_order form-control"
   .select_menu.col-md-3

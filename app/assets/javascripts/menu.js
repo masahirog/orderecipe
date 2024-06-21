@@ -46,6 +46,8 @@ $(document).on('turbolinks:load', function() {
   };
 //並び替え時のrow_order更新
   $(".material_ul.ul-sortable").sortable({
+    items: '.add_li_material',
+    handle: '.drag',
     update: function(){
       reset_row_order();
     }});
@@ -334,5 +336,13 @@ $(document).on('turbolinks:load', function() {
 
   };
 
+  $(".material_ul").on('click','.edit_gram_quantity', function(){
+    console.log($(this).parents('.add_li_material').find(".input_gram_quantity").attr('readonly'))
+    if ($(this).parents('.add_li_material').find(".input_gram_quantity").attr('readonly')=='readonly') {
+      $(this).parents('.add_li_material').find(".input_gram_quantity").attr('readonly',false);
+    }else{
+      $(this).parents('.add_li_material').find(".input_gram_quantity").attr('readonly',true);
+    }
+  });
 
 });
