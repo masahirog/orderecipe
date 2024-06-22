@@ -533,7 +533,7 @@ ActiveRecord::Schema.define(version: 2024_05_30_003841) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "menu_materials", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "menu_materials", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.integer "menu_id", null: false
     t.integer "material_id", null: false
     t.float "amount_used", default: 0.0, null: false
@@ -565,7 +565,7 @@ ActiveRecord::Schema.define(version: 2024_05_30_003841) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "menus", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "menus", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.string "roma_name"
     t.text "cook_the_day_before"
@@ -725,7 +725,7 @@ ActiveRecord::Schema.define(version: 2024_05_30_003841) do
     t.index ["product_id", "store_id"], name: "index_product_sales_potentials_on_product_id_and_store_id", unique: true
   end
 
-  create_table "products", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "products", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.integer "sell_price", null: false
     t.text "description"
@@ -820,7 +820,7 @@ ActiveRecord::Schema.define(version: 2024_05_30_003841) do
     t.integer "important_status"
   end
 
-  create_table "sales_report_staffs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "sales_report_staffs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "sales_report_id", null: false
     t.bigint "staff_id", null: false
     t.integer "smile"
@@ -837,7 +837,7 @@ ActiveRecord::Schema.define(version: 2024_05_30_003841) do
     t.index ["staff_id"], name: "index_sales_report_staffs_on_staff_id"
   end
 
-  create_table "sales_reports", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "sales_reports", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.integer "analysis_id", null: false
     t.integer "store_id", null: false
     t.date "date", null: false

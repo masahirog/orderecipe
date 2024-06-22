@@ -208,7 +208,7 @@ html lang="ja"
               - else
                 ul.nav.navbar-nav
                   li.menu_li = link_to "受注一覧", vendor_orders_path
-                  li.menu_li = link_to "在庫", vendor_material_vendor_stocks_path
+                  / li.menu_li = link_to "在庫", vendor_material_vendor_stocks_path
                   li.menu_li = link_to "ログアウト", destroy_user_session_path, :method => :delete
 
 
