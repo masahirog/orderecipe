@@ -128,10 +128,7 @@ class MenusController < ApplicationController
    end
   end
 
-  def include_menu
-    @product_menus = ProductMenu.includes(:product).where(menu_id: params[:id]).page(params[:page]).per(20)
-    @menus = Menu.all
-  end
+
   def include_update
     update_pms = params[:post]
     update_pms.each do |pm|

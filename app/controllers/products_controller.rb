@@ -2,6 +2,14 @@ class ProductsController < ApplicationController
   require 'net/https'
   require 'json'
 
+  def include_menu
+    @product_menus = ProductMenu.includes(:product).where(menu_id: params[:id]).page(params[:page]).per(20)
+    menu = Menu.find(params[:id])
+    @menus = [menu]
+  end
+
+
+
   def store_price_card
     if params["store_daily_menu_ids"].present?
       store_daily_menu_ids = params["store_daily_menu_ids"].values

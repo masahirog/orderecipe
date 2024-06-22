@@ -1,21 +1,20 @@
 $(document).on('turbolinks:load', function() {
-  calculate_menu_price();
-  reset_row_order();
-
-  u = 0
-  $(".add_li_material").each(function(){
-    var eos = $(this).children(".sales_check").text()
-    var unit = $(this).find(".recipe_unit").text()
-    console.log(unit);
-    eos_check(eos,u);
-    // unit_check(unit,u);
-    u += 1
-  });
-
-
-  $(".select_used_additives").select2();
-  $(".all_select_menu").select2();
-  material_select2();
+  var controller = $('body').data('controller');
+  if (controller == "menus") {
+    $(".select_used_additives").select2();
+    calculate_menu_price();
+    reset_row_order();
+    material_select2();
+    calculate_menu_nutrition();
+    u = 0
+    $(".add_li_material").each(function(){
+      var eos = $(this).children(".sales_check").text()
+      var unit = $(this).find(".recipe_unit").text()
+      eos_check(eos,u);
+      // unit_check(unit,u);
+      u += 1
+    });
+  }
 
   $('.add_material_fields').on('click',function(){
     setTimeout(function(){
@@ -25,7 +24,6 @@ $(document).on('turbolinks:load', function() {
     },5);
   });
 
-  calculate_menu_nutrition();
   function material_select2(){
     $(".input_select_material").select2({
       ajax: {
@@ -139,7 +137,6 @@ $(document).on('turbolinks:load', function() {
     last_li.find(".input_row_order").val(u);
   };
 
-  //米のやつにもつかってる
   function reset_row_order(){
     $(".add_li_material").each(function(i){
       $(this).find('.input_row_order').val(i)
@@ -242,12 +239,10 @@ $(document).on('turbolinks:load', function() {
       $(".add_li_material").eq(u).find('.material_cut_pattern').append($option_tag);
     });
     eos_check(eos,u)
-    // unit_check(unit,u)
   };
 
   //メニュー価格の変更
   function calculate_menu_price(){
-    var row_len =  $(".add_li_material").length
     var menu_price = 0;
     $(".add_li_material").each(function(){
       if ($(this).find(".remove_material").children("input").val()==1){
@@ -337,7 +332,6 @@ $(document).on('turbolinks:load', function() {
   };
 
   $(".material_ul").on('click','.edit_gram_quantity', function(){
-    console.log($(this).parents('.add_li_material').find(".input_gram_quantity").attr('readonly'))
     if ($(this).parents('.add_li_material').find(".input_gram_quantity").attr('readonly')=='readonly') {
       $(this).parents('.add_li_material').find(".input_gram_quantity").attr('readonly',false);
     }else{

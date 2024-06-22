@@ -7,7 +7,7 @@ h4 「配慮は必要、遠慮は不要！」
 
   .form-group
   	= f.label :staff_id, "スタッフ名"
-  	= f.collection_select :staff_id, @staffs, :id, :name, {include_blank:true},class:'form-control select_used_additives',required:true
+  	= f.collection_select :staff_id, @staffs, :id, :name, {include_blank:true},class:'form-control',required:true
   .form-group
   	= f.label :date, "日付"
   	= f.date_field :date, value:Date.today, class: 'form-control',required:true

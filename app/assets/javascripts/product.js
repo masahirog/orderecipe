@@ -1,14 +1,14 @@
 
 $(document).on('turbolinks:load', function() {
-  //materialの表示、原価計算
-  $(".add_li_menu").each(function() {
+  var controller = $('body').data('controller');
+  if (controller == "products") {
+    $(".all_select_menu").select2();
     calculate_product_price();
-  });
-  reset_row_order();
-  menu_select2();
-  cost_rate_calc();
-  calculate_seibun();
-
+    reset_row_order();
+    menu_select2();
+    cost_rate_calc();
+    calculate_seibun();
+  };
 
   //addアクション、menuの追加
   $('.add_menu_fields').on('click',function(){

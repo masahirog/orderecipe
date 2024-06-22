@@ -41,12 +41,12 @@ li.add_li_material.col-md-12.col-xs-12.list-group-item.item.nested-fields.field.
         = link_to f.object.material.food_ingredient.name,edit_food_ingredient_path(f.object.material.food_ingredient),class:"name",target:"_blank"
         br
         span.hyoji = "cal：#{f.object.material.food_ingredient.calorie.round(3)}　pro：#{f.object.material.food_ingredient.protein.round(3)}　lip：#{f.object.material.food_ingredient.lipid.round(3)}　car：#{f.object.material.food_ingredient.carbohydrate.round(3)}　fib：#{f.object.material.food_ingredient.dietary_fiber.round(3)}　salt：#{f.object.material.food_ingredient.salt}"
-        input.calorie value= f.object.material.food_ingredient.calorie style='display:none;'
-        input.protein value= f.object.material.food_ingredient.protein style='display:none;'
-        input.lipid value= f.object.material.food_ingredient.lipid style='display:none;'
-        input.carbohydrate value= f.object.material.food_ingredient.carbohydrate style='display:none;'
-        input.dietary_fiber value= f.object.material.food_ingredient.dietary_fiber style='display:none;'
-        input.salt value= f.object.material.food_ingredient.salt style='display:none;'
+        input.calorie value= f.object.material.food_ingredient.calorie 
+        input.protein value= f.object.material.food_ingredient.protein 
+        input.lipid value= f.object.material.food_ingredient.lipid 
+        input.carbohydrate value= f.object.material.food_ingredient.carbohydrate 
+        input.dietary_fiber value= f.object.material.food_ingredient.dietary_fiber 
+        input.salt value= f.object.material.food_ingredient.salt 
       - else
         a class="name" target="_blank" href="" -
         br

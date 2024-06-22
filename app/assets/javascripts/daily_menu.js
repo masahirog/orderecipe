@@ -1,5 +1,9 @@
 $(document).on('turbolinks:load', function() {
-  reset_row_order();
+  var controller = $('body').data('controller');
+  if (controller == "daily_menus") {
+    reset_row_order();
+    $('.input_select_product').select2();
+  };
 
   $('#daily_menu_details_area').on('keyup','.input_num',function(){
     var single_item_num = Number($(this).parents('.daily_menu_detail_tr').find('.single_item_number').val());

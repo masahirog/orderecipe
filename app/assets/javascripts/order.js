@@ -1,14 +1,13 @@
 $(document).on('turbolinks:load', function() {
-  // change_color();
+  var controller = $('body').data('controller');
+  if (controller == "orders") {
+    material_select2();
+    $('.material_search').select2();
+    first_input_check();
+  };
+
   $('[data-toggle="tooltip"]').tooltip();
   $('[data-toggle="popover"]').popover();
-  first_input_check();
-  $('.input_select_product').select2();
-  // $('.select_order_materials').select2({
-  //   placeholder: "発注する食材を選択"
-  // });
-  material_select2();
-  $('.material_search').select2();
 
   $('.fixed_flag').on('change',function(){
     submit_button_check();

@@ -9,7 +9,7 @@
 
 
   / = link_to "印刷する",print_menus_path(id:@menu.id,:format => :pdf), class:"btn btn-default",:target=>"_blank", style:"margin:0 10px 0 10px;"
-  = link_to '使用商品',include_menu_menus_path(id:@menu.id),class:"btn btn-default", style:"margin:0 10px 0 10px;"
+  = link_to '使用商品',include_menu_products_path(id:@menu.id),class:"btn btn-default", style:"margin:0 10px 0 10px;"
   = link_to '参照作成', new_menu_path(original_menu_id:@menu.id),class: "btn btn-default", style:"margin:0 10px 0 0px;"
 
   - unless @base_menu.present?

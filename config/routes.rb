@@ -269,13 +269,13 @@ Rails.application.routes.draw do
       post :print
       get :get_material
       get :get_food_ingredient
-      get :include_menu
       get :get_cost_price
       get :food_ingredient_search
     end
   end
   resources :products do
     collection do
+      get :include_menu
       get :price_card
       get :store_price_card
       get :edit_bb
@@ -286,7 +286,6 @@ Rails.application.routes.draw do
       get :serving_kana
       get :serving
       get :get_product
-      # get :recipe_romaji
       get :input_name_get_products
       post :print_preparation
       get :new_band

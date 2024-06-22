@@ -7,7 +7,7 @@
   = link_to 'メニュー詳細',menu_path(@menu),class:"btn btn-default", style:"margin:0 10px 0 10px;"
   = link_to "CSV", menu_path(id:@menu.id,format: 'csv'), class: "btn btn-default"
   = link_to "印刷する",print_menus_path(id:@menu.id,:format => :pdf), class:"btn btn-default",:target=>"_blank", style:"margin:0 10px 0 10px;"
-  = link_to '使用確認',include_menu_menus_path(id:@menu.id),class:"btn btn-default", style:"margin:0 10px 0 10px;"
+  = link_to '使用確認',include_menu_products_path(id:@menu.id),class:"btn btn-default", style:"margin:0 10px 0 10px;"
   / - unless @base_menu.present?
   /   button.btn.btn-default type="button" data-toggle="modal" data-target="#sampleModal" style="margin:0 10px 0 0px;" コピーする
   /   #sampleModal.modal.fade[tabindex="-1"]
