@@ -5,7 +5,7 @@
       ul
         - @food_ingredient.errors.full_messages.each do |message|
           li = message
-
+  input.id value="#{@food_ingredient.id}" style='display:none;'
   .form-group
     = f.label :name, "名称"
     = f.text_field :name, class:"form-control"
@@ -23,55 +23,55 @@
     = f.text_field :complement, class:"form-control"
   .form-group
     = f.label :calorie, "カロリー"
-    = f.number_field :calorie, class:"form-control"
+    = f.number_field :calorie, class:"form-control seibun_input"
   .form-group
     = f.label :protein, "タンパク質"
-    = f.number_field :protein, class:"form-control"
+    = f.number_field :protein, class:"form-control seibun_input"
   .form-group
     = f.label :lipid, "脂質"
-    = f.number_field :lipid, class:"form-control"
+    = f.number_field :lipid, class:"form-control seibun_input"
   .form-group
     = f.label :carbohydrate, "炭水化物"
-    = f.number_field :carbohydrate, class:"form-control"
+    = f.number_field :carbohydrate, class:"form-control seibun_input"
   .form-group
     = f.label :carbohydrate, "食物繊維"
-    = f.number_field :carbohydrate, class:"form-control"
+    = f.number_field :carbohydrate, class:"form-control seibun_input"
   .form-group
     = f.label :potassium, "カリウム"
-    = f.number_field :potassium, class:"form-control"
+    = f.number_field :potassium, class:"form-control seibun_input"
   .form-group
     = f.label :calcium, "カルシウム"
-    = f.number_field :calcium, class:"form-control"
+    = f.number_field :calcium, class:"form-control seibun_input"
   .form-group
     = f.label :vitamin_b1, "ビタミンB1"
-    = f.number_field :vitamin_b1, class:"form-control"
+    = f.number_field :vitamin_b1, class:"form-control seibun_input"
   .form-group
     = f.label :vitamin_b2, "ビタミンB2"
-    = f.number_field :vitamin_b2, class:"form-control"
+    = f.number_field :vitamin_b2, class:"form-control seibun_input"
   .form-group
     = f.label :vitamin_c, "ビタミンC"
-    = f.number_field :vitamin_c, class:"form-control"
+    = f.number_field :vitamin_c, class:"form-control seibun_input"
   .form-group
     = f.label :salt, "塩"
-    = f.number_field :salt, class:"form-control"
+    = f.number_field :salt, class:"form-control seibun_input"
   .form-group
     = f.label :magnesium, "マグネシウム"
-    = f.number_field :magnesium, class:"form-control"
+    = f.number_field :magnesium, class:"form-control seibun_input"
   .form-group
     = f.label :iron, "鉄"
-    = f.number_field :iron, class:"form-control"
+    = f.number_field :iron, class:"form-control seibun_input"
   .form-group
     = f.label :zinc, "亜鉛"
-    = f.number_field :zinc, class:"form-control"
+    = f.number_field :zinc, class:"form-control seibun_input"
   .form-group
     = f.label :copper, "銅"
-    = f.number_field :copper, class:"form-control"
+    = f.number_field :copper, class:"form-control seibun_input"
   .form-group
     = f.label :folic_acid, "葉酸"
-    = f.number_field :folic_acid, class:"form-control"
+    = f.number_field :folic_acid, class:"form-control seibun_input"
   .form-group
     = f.label :vitamin_d, "ビタミンD"
-    = f.number_field :vitamin_d, class:"form-control"
+    = f.number_field :vitamin_d, class:"form-control seibun_input"
   .form-group
     = f.label :memo, "メモ"
     = f.text_area :memo, class:"form-control",style:"height:10em;"
@@ -79,3 +79,10 @@
   .actions
     = f.submit "更新する",class:"btn btn-primary"
 
+javascript:
+  var id = Number($(".id").val());
+  console.log(id);
+  if (id == 0) {
+  }elsif (id < 21912) {
+    $('.seibun_input').attr('readonly',true);
+  };
