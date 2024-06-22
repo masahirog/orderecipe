@@ -71,6 +71,23 @@
 			/ 		td
 			/ 			input type="button" class='clear-btn btn btn-danger btn-sm' value="解除"
 javascript:
+
+    $(".input_select_material").select2({
+      ajax: {
+        url: "/menus/get_material/",
+        dataType: 'json',
+        delay: 50,
+        data: function(params) {
+          return {　q: params.term　};
+        },
+        processResults: function (data, params) {
+          return { results: $.map(data, function(obj) {
+              return { id: obj[0], text: obj[1] };
+            })
+          };
+        }
+      }
+    });
 	$(".clear-btn").on('click',function(){
 		$(this).parents('tr').find(".input_select_material").val(null).trigger("change");
 	});
