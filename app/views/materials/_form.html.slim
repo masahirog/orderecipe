@@ -115,7 +115,7 @@
       span.cost_unit_label style='float:left;padding:13px 0 0 0;font-weight:bold;font-size:16px;'
         = "1#{f.object.recipe_unit}" if action_name == 'edit'
       span style='float:left;padding:15px 10px 0 0;' あたり
-      = f.number_field :recipe_unit_gram_quantity, class:'form-control',style:'float:left;width:100px;'
+      = f.number_field :recipe_unit_gram_quantity, class:'form-control',style:'float:left;width:100px;', :step => 0.1
       span style='float:left;padding:15px 0 0 10px;' g
 
 
