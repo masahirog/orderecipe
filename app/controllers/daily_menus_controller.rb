@@ -407,7 +407,7 @@ class DailyMenusController < AdminController
   end
   def loading
     @loading_position = params[:loading_position]
-    @daily_menu = DailyMenu.find(params[:id])
+    @daily_menu = DailyMenu.includes(store_daily_menus:[:store,store_daily_menu_details:[product:[product_parts:[:common_product_part]]]]).find(params[:id])
     respond_to do |format|
       format.html
       format.csv do
@@ -430,10 +430,6 @@ class DailyMenusController < AdminController
     end
     redirect_to daily_menus_path
   end
-  # def upload_menu
-  #   update_result = DailyMenu.upload_menu(params[:file])
-  #   redirect_to daily_menus_path(), :notice => "メニューを登録しました"
-  # end
   def index
     today = Date.today
     if params[:start_date].present?

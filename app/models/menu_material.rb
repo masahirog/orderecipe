@@ -15,7 +15,6 @@ class MenuMaterial < ApplicationRecord
     MenuMaterial.where.not(id:self.id).where(base_menu_material_id:self.id).destroy_all
   end
 
-
   def self.seibun
     updates_arr = []
     material_ids = [26469,27539,30679,31269,19791,23691,25871,5811,5831,5911,5961,6211,23961,40481,6051,14021,15261,33304,
@@ -28,7 +27,6 @@ class MenuMaterial < ApplicationRecord
     MenuMaterial.import updates_arr, on_duplicate_key_update:[:gram_quantity]
     p updates_arr.length
   end
-
 
   def self.calculate_seibun
     updates_arr = []

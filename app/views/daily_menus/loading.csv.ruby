@@ -10,27 +10,110 @@ CSV.generate(bom) do |csv|
       else
         sdmd.product.product_parts.each do |pp|
           if @loading_position.to_i == pp.loading_position_before_type_cast
-            if pp.common_product_part_id.present?
-              amount = pp.amount*sdmd.number
-              if hash[sdm.store_id][pp.common_product_part_id].present?
-                hash[sdm.store_id][pp.common_product_part_id][:amount] += amount
-                hash[sdm.store_id][pp.common_product_part_id][:count] += 1
-                hash[sdm.store_id][pp.common_product_part_id][:number] += sdmd.number
+            if sdmd.product.product_category == "お弁当" || sdmd.product.product_category == "その他"
+              if sdm.store_id == 9 || sdm.store_id == 29
+                store_id = 39
+                store_name = "キッチン"
               else
-                hash[sdm.store_id][pp.common_product_part_id][:amount] = amount
-                hash[sdm.store_id][pp.common_product_part_id][:count] = 1
-                hash[sdm.store_id][pp.common_product_part_id][:cpp] = pp.common_product_part
-                hash[sdm.store_id][pp.common_product_part_id][:number] = sdmd.number
+                store_id = sdm.store_id
+                store_name = sdm.store.short_name
               end
             else
-              amount = number_with_precision(pp.amount*sdmd.number,precision:1, strip_insignificant_zeros: true, delimiter: ',')
-              if pp.memo.present?
-                part_name = "#{pp.name} ※"
+              store_id = sdm.store_id
+              store_name = sdm.store.short_name            
+            end
+            if sdmd.bento_fukusai_number > 0
+              if sdm.store_id == 9 || sdm.store_id == 29
+                if pp.common_product_part_id.present?
+                  amount = pp.amount*sdmd.number
+                  if hash[store_id][pp.common_product_part_id].present?
+                    hash[sdm.store_id][pp.common_product_part_id][:amount] += amount
+                    hash[sdm.store_id][pp.common_product_part_id][:count] += 1
+                    hash[sdm.store_id][pp.common_product_part_id][:number] += sdmd.sozai_number
+
+                    hash[39][pp.common_product_part_id][:amount] += amount
+                    hash[39][pp.common_product_part_id][:count] += 1
+                    hash[39][pp.common_product_part_id][:number] += sdmd.bento_fukusai_number
+
+                  else
+
+                    hash[sdm.store_id][pp.common_product_part_id][:amount] = amount
+                    hash[sdm.store_id][pp.common_product_part_id][:count] = 1
+                    hash[sdm.store_id][pp.common_product_part_id][:number] = sdmd.sozai_number
+                    hash[sdm.store_id][pp.common_product_part_id][:cpp] = pp.common_product_part
+
+                    hash[39][pp.common_product_part_id][:amount] = amount
+                    hash[39][pp.common_product_part_id][:count] = 1
+                    hash[39][pp.common_product_part_id][:number] = sdmd.bento_fukusai_number
+                    hash[39][pp.common_product_part_id][:cpp] = pp.common_product_part
+
+                  end
+                else
+
+                  souzai_amount = number_with_precision(pp.amount*sdmd.sozai_number,precision:1, strip_insignificant_zeros: true, delimiter: ',')
+                  bento_fukusai_amount = number_with_precision(pp.amount*sdmd.bento_fukusai_number,precision:1, strip_insignificant_zeros: true, delimiter: ',')
+                  
+                  if pp.memo.present?
+                    part_name = "#{pp.name} ※"
+                  else
+                    part_name = pp.name
+                  end
+
+                  parts_num = "パーツ：#{sdmd.product.product_parts.count}種"
+
+                  
+                  csv << [@daily_menu.start_time.strftime("%-m/%-d"),store_name,sdmd.product.name,"発注数：#{sdmd.sozai_number}人前",parts_num,part_name,"#{souzai_amount} #{pp.unit}",pp.container,pp.loading_container,""]
+
+                  csv << [@daily_menu.start_time.strftime("%-m/%-d"),'キッチン',sdmd.product.name,"副菜数：#{sdmd.bento_fukusai_number}人前",parts_num,part_name,"#{bento_fukusai_amount} #{pp.unit}",pp.container,pp.loading_container,""]
+                end
+
               else
-                part_name = pp.name
+                if pp.common_product_part_id.present?
+                  amount = pp.amount*sdmd.number
+                  if hash[store_id][pp.common_product_part_id].present?
+                    hash[store_id][pp.common_product_part_id][:amount] += amount
+                    hash[store_id][pp.common_product_part_id][:count] += 1
+                    hash[store_id][pp.common_product_part_id][:number] += sdmd.number
+                  else
+                    hash[store_id][pp.common_product_part_id][:amount] = amount
+                    hash[store_id][pp.common_product_part_id][:count] = 1
+                    hash[store_id][pp.common_product_part_id][:cpp] = pp.common_product_part
+                    hash[store_id][pp.common_product_part_id][:number] = sdmd.number
+                  end
+                else
+                  amount = number_with_precision(pp.amount*sdmd.number,precision:1, strip_insignificant_zeros: true, delimiter: ',')
+                  if pp.memo.present?
+                    part_name = "#{pp.name} ※"
+                  else
+                    part_name = pp.name
+                  end
+                  parts_num = "パーツ：#{sdmd.product.product_parts.count}種"
+                  csv << [@daily_menu.start_time.strftime("%-m/%-d"),store_name,sdmd.product.name,"発注数：#{sdmd.number}人前",parts_num,part_name,"#{amount} #{pp.unit}",pp.container,pp.loading_container,""]
+                end
               end
-              parts_num = "パーツ：#{sdmd.product.product_parts.count}種"
-              csv << [@daily_menu.start_time.strftime("%-m/%-d"),sdm.store.short_name,sdmd.product.name,"発注数：#{sdmd.number}人前",parts_num,part_name,"#{amount} #{pp.unit}",pp.container,pp.loading_container,""]
+            else
+              if pp.common_product_part_id.present?
+                amount = pp.amount*sdmd.number
+                if hash[store_id][pp.common_product_part_id].present?
+                  hash[store_id][pp.common_product_part_id][:amount] += amount
+                  hash[store_id][pp.common_product_part_id][:count] += 1
+                  hash[store_id][pp.common_product_part_id][:number] += sdmd.number
+                else
+                  hash[store_id][pp.common_product_part_id][:amount] = amount
+                  hash[store_id][pp.common_product_part_id][:count] = 1
+                  hash[store_id][pp.common_product_part_id][:cpp] = pp.common_product_part
+                  hash[store_id][pp.common_product_part_id][:number] = sdmd.number
+                end
+              else
+                amount = number_with_precision(pp.amount*sdmd.number,precision:1, strip_insignificant_zeros: true, delimiter: ',')
+                if pp.memo.present?
+                  part_name = "#{pp.name} ※"
+                else
+                  part_name = pp.name
+                end
+                parts_num = "パーツ：#{sdmd.product.product_parts.count}種"
+                csv << [@daily_menu.start_time.strftime("%-m/%-d"),store_name,sdmd.product.name,"発注数：#{sdmd.number}人前",parts_num,part_name,"#{amount} #{pp.unit}",pp.container,pp.loading_container,""]
+              end
             end
           end
         end
