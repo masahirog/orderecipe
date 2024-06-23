@@ -15,13 +15,15 @@ class MenuMaterial < ApplicationRecord
     MenuMaterial.where.not(id:self.id).where(base_menu_material_id:self.id).destroy_all
   end
 
+
   def self.seibun
     updates_arr = []
-    MenuMaterial.all.each do |mm|
-      if mm.material.recipe_unit == "g" ||mm.material.recipe_unit == "ml" 
-        mm.gram_quantity = mm.amount_used
-        updates_arr << mm
-      end
+    material_ids = [26469,27539,30679,31269,19791,23691,25871,5811,5831,5911,5961,6211,23961,40481,6051,14021,15261,33304,
+    40477,40479,22901,30539,27629,2011,12651,17131,17591,22471,23551,23921,25561,39814,40164,40515,33284,4761,31329,12501,34294]
+
+    MenuMaterial.where(material_id:material_ids,gram_quantity:0).each do |mm|
+      mm.gram_quantity = (mm.amount_used * mm.material.recipe_unit_gram_quantity).round(2)
+      updates_arr << mm
     end
     MenuMaterial.import updates_arr, on_duplicate_key_update:[:gram_quantity]
     p updates_arr.length
