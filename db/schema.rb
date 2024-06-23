@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_05_30_003841) do
+ActiveRecord::Schema.define(version: 2024_06_23_053209) do
 
   create_table "analyses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "store_id"
@@ -482,7 +482,7 @@ ActiveRecord::Schema.define(version: 2024_05_30_003841) do
     t.index ["date", "material_id"], name: "index_material_vendor_stocks_on_date_and_material_id", unique: true
   end
 
-  create_table "materials", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "materials", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.string "order_name"
     t.string "roma_name"
@@ -1207,6 +1207,19 @@ ActiveRecord::Schema.define(version: 2024_05_30_003841) do
     t.integer "origin_material_id"
     t.string "memo", collation: "utf8_general_ci"
     t.index ["date", "menu_material_id"], name: "index_temporary_menu_materials_on_date_and_menu_material_id", unique: true
+  end
+
+  create_table "temporary_product_menus", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "daily_menu_detail_id", null: false
+    t.bigint "product_menu_id", null: false
+    t.integer "menu_id", null: false
+    t.integer "original_menu_id", null: false
+    t.string "memo"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["daily_menu_detail_id", "product_menu_id"], name: "index_uniq", unique: true
+    t.index ["daily_menu_detail_id"], name: "index_temporary_product_menus_on_daily_menu_detail_id"
+    t.index ["product_menu_id"], name: "index_temporary_product_menus_on_product_menu_id"
   end
 
   create_table "to_store_message_stores", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|

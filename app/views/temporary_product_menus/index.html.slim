@@ -1,0 +1,39 @@
+h3 メニュー変更一覧
+.desctop_view
+  = month_calendar do |date|
+    div
+      = link_to date.strftime("%-m/%-d"),@daily_menus[date]
+    ul.list-group
+      - if @daily_menus[date].present?
+        - dm_id = @daily_menus[date].id
+        - if @hash[dm_id].present?
+          - @hash[dm_id].each do |data|
+            li.list-group-item.clearfix style=''
+              = link_to data[1][:menu].name,data[1][:menu],target:'_blank'
+              - data[1][:product_menus].each do |menu_data|
+                = link_to new_temporary_product_menu_path(menu_id:data[1][:original_menu].id),target:"_blank"
+                  p style='font-size:0.8em;margin-bottom:0;' = "・#{menu_data[1].product_menu.product.name}（#{data[1][:original_menu].name}）"
+        /             br
+        /             = "└ #{data[1][:memo]}"
+        /           div style='width:70px;float:right;text-align:right;font-size:1.2em;'
+        /         div
+                  / - data[1][:product_menus].each do |product_menu|
+
+
+css:
+  @media (min-width: 700px) {
+    .mobile_view {
+      display:none;
+    }
+    .desctop_view {
+      display:show;
+    }
+  }
+  @media (max-width: 700px) {
+    .mobile_view {
+      display:show;
+    }
+    .desctop_view {
+      display:none;
+    }
+  }

@@ -92,15 +92,32 @@ class Stock < ApplicationRecord
   end
 
   def self.calculate_date_all_material_used_amount(date)
-    @product_manufacturing = DailyMenuDetail.joins(:daily_menu).where(:daily_menus => {start_time:date}).group('product_id').sum(:manufacturing_number).to_a
-    @product_manufacturing.each do |pm|
-      product = Product.find(pm[0])
-      menu_materials = MenuMaterial.where(menu_id:product.menus.ids)
+    menu_num_hash = {}
+    daily_menu = DailyMenu.find_by(start_time:date)
+    daily_menu.daily_menu_details.each do |dmd|
+      product = dmd.product
+      num = dmd.manufacturing_number
+      product.product_menus.each do |pm|
+        tpm = TemporaryProductMenu.find_by(product_menu_id:pm.id,daily_menu_detail_id:dmd.id)
+        if tpm.present?
+          menu = tpm.menu
+        else
+          menu = pm.menu
+        end
+        if menu_num_hash[menu.id].present?
+          menu_num_hash[menu.id] += num
+        else
+          menu_num_hash[menu.id] = num
+        end
+      end
+    end
+    menu_num_hash.each do |data|
+      menu_materials = MenuMaterial.where(menu_id:data[0])
       menu_materials.each do |mm|
         if @hash[mm.material_id]
-          @hash[mm.material_id] += mm.amount_used * pm[1]
+          @hash[mm.material_id] += mm.amount_used * data[1]
         else
-          @hash[mm.material_id] = mm.amount_used * pm[1]
+          @hash[mm.material_id] = mm.amount_used * data[1]
         end
       end
     end

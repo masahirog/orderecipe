@@ -1,5 +1,5 @@
 class CutList < Prawn::Document
-  def initialize(bentos_num_h,date,list_pattern)
+  def initialize(daily_menu,date,list_pattern)
     # 初期設定。ここでは用紙のサイズを指定している。
     super(
       page_size: 'A4',
@@ -9,23 +9,30 @@ class CutList < Prawn::Document
     #日本語のフォント
     font "vendor/assets/fonts/ipaexg.ttf"
     menu_num_hash = {}
-    bentos_num_h.each do |prnm|
-      product = Product.find(prnm[0])
-      num = prnm[1][0]
-      product.menus.each do |menu|
-        if menu_num_hash[menu.id].present?
-          menu_num_hash[menu.id][0] += num
+    daily_menu.daily_menu_details.each do |dmd|
+      product = dmd.product
+      num = dmd.manufacturing_number
+
+      product.product_menus.each do |pm|
+        tpm = TemporaryProductMenu.find_by(product_menu_id:pm.id,daily_menu_detail_id:dmd.id)
+        if tpm.present?
+          menu = tpm.menu
         else
-          menu_num_hash[menu.id] = [num,prnm[1][1]]
+          menu = pm.menu
+        end
+        if menu_num_hash[menu.id].present?
+          menu_num_hash[menu.id] += num
+        else
+          menu_num_hash[menu.id] = num
         end
       end
     end
     material_cut_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     machine_cut_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     menu_num_hash.each do |menu_id,num_brand|
+
       menu = Menu.find(menu_id)
-      num = num_brand[0]
-      brand = num_brand[1]
+      num = num_brand
       menu_materials = menu.menu_materials.includes(:material,:menu).where(:materials => {measurement_flag:true})
       menu_materials.each do |mm|
         if mm.material_cut_pattern_id.present?
@@ -43,20 +50,20 @@ class CutList < Prawn::Document
             if machine_cut_hash[material_id][mm.material_cut_pattern_id].present?
               machine_cut_hash[material_id][mm.material_cut_pattern_id][0] += amount
               machine_cut_hash[material_id][mm.material_cut_pattern_id][2] += 1
-              machine_cut_hash[material_id][mm.material_cut_pattern_id][3] << [mm,num,brand]
+              machine_cut_hash[material_id][mm.material_cut_pattern_id][3] << [mm,num]
             else
               count = 1
-              machine_cut_hash[material_id][mm.material_cut_pattern_id] = [amount,material_name,count,[[mm,num,brand]]]
+              machine_cut_hash[material_id][mm.material_cut_pattern_id] = [amount,material_name,count,[[mm,num]]]
             end
 
           else
             if material_cut_hash[material_id][mm.material_cut_pattern_id].present?
               material_cut_hash[material_id][mm.material_cut_pattern_id][0] += amount
               material_cut_hash[material_id][mm.material_cut_pattern_id][2] += 1
-              material_cut_hash[material_id][mm.material_cut_pattern_id][3] << [mm,num,brand]
+              material_cut_hash[material_id][mm.material_cut_pattern_id][3] << [mm,num]
             else
               count = 1
-              material_cut_hash[material_id][mm.material_cut_pattern_id] = [amount,material_name,count,[[mm,num,brand]]]
+              material_cut_hash[material_id][mm.material_cut_pattern_id] = [amount,material_name,count,[[mm,num]]]
             end
           end
         end

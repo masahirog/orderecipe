@@ -1,0 +1,131 @@
+h3 = "デフォルトのメニュー：#{@menu.name}"
+= form_tag(:controller => "temporary_product_menus", :action => "ikkatsu_update") do
+  = hidden_field_tag :menu_id,@menu.id
+  = submit_tag "材料の変更", class:"btn btn-success pull-right", data: { confirm: "変更してよろしいですか？"}
+  .form-group
+    = link_to "＜#{@last}週",new_temporary_product_menu_path(date:@last,menu_id:@menu.id)
+    span ="　　#{@from}週　　"
+    = link_to "#{@next}週＞",new_temporary_product_menu_path(date:@next,menu_id:@menu.id)
+  table.table
+    thead
+      tr
+        th 日付
+        th 商品名
+        th 食数
+        th
+          input.all_checked type="checkbox"
+        td style='width: 200px;'
+          label メニューの変更
+          select.input_select_menu.form-control.bulk_change
+              option value="" 一括変更 （チェック済みを変更）
+          th
+            .input-group
+              input type="text" class="form-control origin_memo" placeholder="メモ"
+              span class="input-group-btn"
+                button type="button" class="btn btn-primary reflect_memo" 反映
+        th.text-right 解除
+    tbody
+      - @dmds_hash.each do |data|
+        - rowspan = data[1].count
+        - data[1].each_with_index do |dmd,i|
+          - dmd[1].each do |product_menu|
+            - if @hash[[dmd[0],product_menu[0]]]
+              - menu_id = @hash[[dmd[0],product_menu[0]]].menu_id
+            - else
+              - menu_id = ''
+            - if i == 0
+              tr 
+                td rowspan=rowspan = data[0].strftime("%Y/%-m/%-d(#{%w(日 月 火 水 木 金 土)[data[0].wday]})")
+                td = product_menu[1].product.name
+                td
+                td
+                  input.tmm_check_box type="checkbox"
+                td
+                  = select_tag("temporary_product_menu_#{dmd[0]}_#{product_menu[0]}_menu_id", options_for_select(@menus,menu_id), include_blank: true,class:"input_select_menu", name:"temporary_product_menu[#{dmd[0]}][#{product_menu[0]}][menu_id]",style:'width:300px;')
+                td
+                  - if @hash[[dmd[0],product_menu[0]]].present?
+                    = text_field_tag "temporary_product_menu[#{dmd[0]}][#{product_menu[0]}][memo]",@hash[[dmd[0],product_menu[0]]].memo,class:"form-control memo"
+                  - else
+                    = text_field_tag "temporary_product_menu[#{dmd[0]}][#{product_menu[0]}][memo]",'',class:"form-control memo"
+                td.text-right
+                  input type="button" class='clear-btn btn btn-danger btn-sm' value="解除"
+            - else
+              tr
+                td = product_menu[1].product.name
+                td 
+                td
+                  input.tmm_check_box type="checkbox"
+                td
+                  = select_tag("temporary_product_menu_#{dmd[0]}_#{product_menu[0]}_menu_id", options_for_select(@menus,menu_id), include_blank: true,class:"input_select_menu", name:"temporary_product_menu[#{dmd[0]}][#{product_menu[0]}][menu_id]",style:'width:300px;')
+                td
+                  - if @hash[[dmd[0],product_menu[0]]].present?
+                    = text_field_tag "temporary_product_menu[#{dmd[0]}][#{product_menu[0]}][memo]",@hash[[dmd[0],product_menu[0]]].memo,class:"form-control memo"
+                  - else
+                    = text_field_tag "temporary_product_menu[#{dmd[0]}][#{product_menu[0]}][memo]",'',class:"form-control memo"
+                td.text-right
+                  input type="button" class='clear-btn btn btn-danger btn-sm' value="解除"
+
+
+javascript:
+  $(".input_select_menu").select2({
+    ajax: {
+      url: "/products/get_menu/",
+      dataType: 'json',
+      delay: 50,
+      data: function(params) {
+        return {　q: params.term　};
+      },
+      processResults: function (data, params) {
+        return { results: $.map(data, function(obj) {
+            return { id: obj.id, text: obj.name };
+          })
+        };
+      }
+    },width:"100%"
+  });
+  $(".clear-btn").on('click',function(){
+    $(this).parents('tr').find(".input_select_menu").val(null).trigger("change");
+  });
+  $('.all_checked').on('change', function() {
+    if ( $(this).is(':checked') ){
+      $(".tmm_check_box").prop('checked', true);
+    }else{
+      $(".tmm_check_box").prop('checked', false);
+    }
+  });
+  // $(".all_select_menu").on("change",function(){
+  //   var id = $(this).val();
+  //   var name = $(".all_select_menu option:selected").text();
+  //   $(".product_include_menu").each(function(){
+  //     var prop = $(this).children(".product_check").children().prop('checked');
+  //     if (prop) {
+  //       var j = $(this).children(".select_menu").children().val();
+  //       $(this).children(".select_menu").children().val(id);
+  //       $(this).children(".select_menu").find(".select2-selection__rendered").text(name);
+  //     }else{
+  //     };
+  //   });
+  // });
+
+  $(".bulk_change").on('change',function(){
+    var menu_id = $(this).val();
+    console.log(menu_id)
+    var name = $(".bulk_change option:selected").text();
+    $("tr").each(function(){
+      if ( $(this).find(".tmm_check_box").is(':checked') ){
+        $(this).find(".input_select_menu").val(menu_id);
+        $(this).find(".select2-selection__rendered").text(name);
+      }else{
+      }
+    });
+  });
+
+  $(".reflect_memo").on('click',function(){
+    var memo = $(".origin_memo").val();
+    $("tr").each(function(){
+      if ( $(this).find(".tmm_check_box").is(':checked') ){
+        $(this).find(".memo").val(memo);
+      }else{
+      }
+    });
+  });

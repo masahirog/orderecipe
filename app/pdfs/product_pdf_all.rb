@@ -8,10 +8,10 @@ class ProductPdfAll < Prawn::Document
     #日本語のフォント
     font "vendor/assets/fonts/ipaexg.ttf"
     if controller == 'daily_menus'
-      daily_menu = DailyMenu.find(id)
+      daily_menu = DailyMenu.includes(daily_menu_details:[product:[product_menus:[:menu]]]).find(id)
       max_i = daily_menu.daily_menu_details.length
       product_ids = daily_menu.daily_menu_details.map{|dmd|dmd.product_id}
-      product_menus = ProductMenu.where(product_id:product_ids)
+      product_menus = ProductMenu.includes(:product).where(product_id:product_ids)
       same_menu_has = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
       product_menus.each do |pm|
         unless pm.menu.category == '容器'
@@ -24,9 +24,19 @@ class ProductPdfAll < Prawn::Document
           end
         end
       end
+      temporary_product_menus = TemporaryProductMenu.where(daily_menu_detail_id:daily_menu.daily_menu_details.ids).map{|tmp|[[tmp.daily_menu_detail_id,tmp.product_menu_id],tmp]}.to_h
       daily_menu.daily_menu_details.each_with_index do |dmd,i|
+
         product = dmd.product
-        menus = product.menus
+        menu_ids = []
+        product.product_menus.each do |pm|
+          if temporary_product_menus[[dmd.id,pm.id]].present?
+            menu_ids << temporary_product_menus[[dmd.id,pm.id]].menu_id
+          else
+            menu_ids << pm.menu_id
+          end
+        end
+        menus = Menu.includes(:menu_processes,:materials).where(id:menu_ids)
         alert = ''
         menus.ids.each do |menu_id|
           if same_menu_has[menu_id].present? && same_menu_has[menu_id]['count'] > 1

@@ -14,9 +14,8 @@ class Menu < ApplicationRecord
   accepts_nested_attributes_for :menu_processes, allow_destroy: true
   belongs_to :group
   has_many :food_ingredients, through: :menu_materials
-
   # after_update :update_product_cost_price
-
+  has_many :temporary_product_menus
   validates :name, presence: true, format: { with:/\A[^０-９ａ-ｚＡ-Ｚ]+\z/,
     message: "：全角英数字は使用出来ません。"}
   validates :category, presence: true

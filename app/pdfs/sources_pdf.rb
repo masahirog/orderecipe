@@ -10,7 +10,13 @@ class SourcesPdf < Prawn::Document
     material_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     daily_menu_details.each do |dmd|
-      dmd.product.menus.each do |menu|
+      dmd.product.product_menus.each do |pm|
+        tpm = TemporaryProductMenu.find_by(product_menu_id:pm.id,daily_menu_detail_id:dmd.id)
+        if tpm.present?
+          menu = tpm.menu
+        else
+          menu = pm.menu
+        end
         if hash[menu.id][dmd.daily_menu.start_time].present?
           hash[menu.id][dmd.daily_menu.start_time] += dmd.manufacturing_number
         else

@@ -444,25 +444,21 @@ class OrdersController < AdminController
       if @dates.count > 7
         redirect_to orders_path(store_id:params[:store_id]),:alert => '期間は7日以内で選択してください。'
       end
-      date = params[:make_date]
       @date_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
       @product_hash = {}
+      sdmds = StoreDailyMenuDetail.joins(:store_daily_menu).where(:store_daily_menus =>{store_id:params[:store_id],start_time:@dates}).map{|sdmd|[sdmd.product_id,sdmd.number]}.to_h
       @dates.each do |date|
-        sdmds = StoreDailyMenuDetail.joins(:store_daily_menu).where(:store_daily_menus =>{store_id:params[:store_id],start_time:date})
-        sdmds.each do |sdmd|
-          @date_hash[date][sdmd.product_id] = sdmd.number
-          if @product_hash[sdmd.product_id].present?
-            @product_hash[sdmd.product_id] += sdmd.number
-          else
-            @product_hash[sdmd.product_id] = sdmd.number
-          end
+        dm = DailyMenu.find_by(start_time:date)
+        dm.daily_menu_details.each do |dmd|
+          number = sdmds[dmd.product_id]
+          @product_hash[dmd.id] = number
         end
       end
       @product_hash.each do |bn|
         hash = {}
-        hash[:product_id] = bn[0]
+        hash[:daily_menu_detail_id] = bn[0]
         hash[:num] = bn[1]
-        hash[:make_date] = date
+        hash[:make_date] = @from
         order_products << hash
       end
       make_date = @from
@@ -477,17 +473,17 @@ class OrdersController < AdminController
       order_products = []
       bentos_num_h = {}
       DailyMenuDetail.joins(:daily_menu).where(:daily_menus => {start_time:@dates}).each do|dmd|
-        if bentos_num_h[dmd.product_id].present?
-          bentos_num_h[dmd.product_id]+=dmd.manufacturing_number
+        if bentos_num_h[dmd.id].present?
+          bentos_num_h[dmd.id]+=dmd.manufacturing_number
         else
-          bentos_num_h[dmd.product_id]=dmd.manufacturing_number
+          bentos_num_h[dmd.id]=dmd.manufacturing_number
         end
       end
       bentos_num_h.each do |bn|
         hash = {}
-        hash[:product_id] = bn[0]
+        hash[:daily_menu_detail_id] = bn[0]
         hash[:num] = bn[1]
-        hash[:make_date] = @from
+        hash[:make_date] = 
         order_products << hash
       end
       make_date = @to
@@ -508,10 +504,10 @@ class OrdersController < AdminController
       order_products = []
       date = params[:make_date]
       bentos_num_h = {}
-      DailyMenu.find_by(start_time:date).daily_menu_details.each{|dmd|bentos_num_h[dmd.product_id]=dmd.manufacturing_number}
+      DailyMenu.find_by(start_time:date).daily_menu_details.each{|dmd|bentos_num_h[dmd.id]=dmd.manufacturing_number}
       bentos_num_h.each do |bn|
         hash = {}
-        hash[:product_id] = bn[0]
+        hash[:daily_menu_detail_id] = bn[0]
         hash[:num] = bn[1]
         hash[:make_date] = date
         order_products << hash
@@ -579,19 +575,32 @@ class OrdersController < AdminController
       order_products = []
       make_date = @today
     end
-    product_ids = order_products.map{|op|op[:product_id]}
-    product_hash = Product.includes(:brand,:product_menus,[menus: [menu_materials: [material:[:vendor]]]]).where(id:product_ids).map{|product|[product.id,product]}.to_h
+
+    daily_menu_detail_ids = order_products.map{|op|op[:daily_menu_detail_id]}
+    dmds = DailyMenuDetail.where(id:daily_menu_detail_ids).map{|dmd|[dmd.id,dmd]}.to_h
+
+
+    # product_ids = order_products.map{|op|op[:product_id]}
+    # product_hash = Product.includes(:brand,:product_menus,[menus: [menu_materials: [material:[:vendor]]]]).where(id:product_ids).map{|product|[product.id,product]}.to_h
+    product_num = {}
     order_products.each do |po|
-      if po[:product_id].present? && po[:num].to_i > 0
-        product = product_hash[po[:product_id]]
-        @product_hash[po[:product_id]] = product
-        # @product_hash[po[:product_id]] = product.name
-        if po[:make_date].present?
-          @order.order_products.build(product_id:po[:product_id],serving_for:po[:num],make_date:po[:make_date])
+      if po[:daily_menu_detail_id].present? && po[:num].to_i > 0
+        daily_menu_detail = dmds[po[:daily_menu_detail_id]]
+        product = daily_menu_detail.product
+        @product_hash[product.id] = product  
+        if product_num[product.id].present?
+          product_num[product.id] += po[:num]
         else
-          @order.order_products.build(product_id:po[:product_id],serving_for:po[:num])
+          product_num[product.id] = po[:num]
         end
-        product.menus.each do |menu|
+        product.product_menus.each do |pm|
+          tpm = TemporaryProductMenu.find_by(product_menu_id:pm.id,daily_menu_detail_id:daily_menu_detail.id)
+          if tpm.present?
+            menu = tpm.menu
+          else
+            menu = pm.menu
+          end
+
           menu.menu_materials.each do |menu_material|
             if orderable_material_ids.include?(menu_material.material_id)
               if category.present?
@@ -605,6 +614,9 @@ class OrdersController < AdminController
           end
         end
       end
+    end
+    product_num.each do |data|
+      @order.order_products.build(product_id:data[0],serving_for:data[1])
     end
     @b_hash = Hash.new { |h,k| h[k] = {} }
     @arr.sort_by! { |a| a['vendor_id'] }.each do |info|

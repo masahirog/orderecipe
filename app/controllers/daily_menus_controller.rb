@@ -308,16 +308,7 @@ class DailyMenusController < AdminController
     day = date[8..9]
     date = Date.parse(date)
     @bentos_num_h = {}
-    if params['beji_kuru'] == "0"
-      daily_menu = DailyMenu.find(params[:daily_menu_id])
-      daily_menu.daily_menu_details.each do |dmd|
-        if @bentos_num_h[dmd.product_id].present?
-          @bentos_num_h[dmd.product_id][0] += dmd.manufacturing_number
-        else
-          @bentos_num_h[dmd.product_id] = [dmd.manufacturing_number,'bejihan']
-        end
-      end
-    elsif params['beji_kuru'] == "1"
+    if params['beji_kuru'] == "1"
       daily_menu = DailyMenu.find(params[:daily_menu_id])
       daily_menu.daily_menu_details.each do |dmd|
         if @bentos_num_h[dmd.product_id].present?
@@ -331,7 +322,7 @@ class DailyMenusController < AdminController
     respond_to do |format|
       format.html
       format.pdf do
-        pdf = CutList.new(@bentos_num_h,date,params[:list_pattern])
+        pdf = CutList.new(daily_menu,date,params[:list_pattern])
         send_data pdf.render,
         filename:    "#{date}.pdf",
         type:        "application/pdf",
@@ -556,7 +547,7 @@ class DailyMenusController < AdminController
   end
 
   def products_pdfs
-    daily_menu = DailyMenu.includes(daily_menu_details:[product:[menus:[:materials]]]).find(params[:daily_menu_id])
+    daily_menu = DailyMenu.find(params[:daily_menu_id])
     respond_to do |format|
       format.html
       format.pdf do
@@ -630,11 +621,11 @@ class DailyMenusController < AdminController
     daily_menu = DailyMenu.find(params[:daily_menu_id])
     date = daily_menu.start_time
     sort = params[:sort].to_i
-    @bentos_num_h = daily_menu.daily_menu_details.group(:product_id).sum(:manufacturing_number)
+    # @bentos_num_h = daily_menu.daily_menu_details.group(:product_id).sum(:manufacturing_number)
     respond_to do |format|
       format.html
       format.pdf do
-        pdf = MaterialPreparation.new(@bentos_num_h,date,mochiba,lang,sort,category)
+        pdf = MaterialPreparation.new(daily_menu,date,mochiba,lang,sort,category)
         send_data pdf.render,
         filename:    "#{date}.pdf",
         type:        "application/pdf",

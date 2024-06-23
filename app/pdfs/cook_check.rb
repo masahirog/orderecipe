@@ -64,9 +64,21 @@ class CookCheck < Prawn::Document
 
   def line_item_rows(daily_menu,position)
     data = [['商品名','メニュー名','チェック内容','チェック者']]
-    daily_menu.daily_menu_details.each_with_index do |dmd,i|
-      if MenuCookCheck.exists?(menu_id:dmd.product.menus.ids,check_position:position)
-        dmd.product.menus.each do |menu|
+    daily_menu_details = daily_menu.daily_menu_details
+    tpms = TemporaryProductMenu.where(daily_menu_detail_id:daily_menu_details.ids).map{|tpm|[[tpm.daily_menu_detail_id,tpm.product_menu_id],tpm]}.to_h
+    daily_menu_details.each_with_index do |dmd,i|
+      menus_ids = []
+      dmd.product.product_menus.each do |pm|
+        if tpms[[dmd.id,pm.id]].present?
+          menu_id = tpms[[dmd.id,pm.id]].menu_id
+        else
+          menu_id = pm.menu_id
+        end
+        menus_ids << menu_id
+      end
+      menus = Menu.where(id:menus_ids)
+      if MenuCookCheck.exists?(menu_id:menus_ids,check_position:position)
+        menus.each do |menu|
           menu.menu_cook_checks.where(check_position:position).each do |mcc|
             data << [dmd.product.name,menu.name,mcc.content,'']
           end

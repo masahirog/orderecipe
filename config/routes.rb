@@ -121,6 +121,12 @@ Rails.application.routes.draw do
       get :material_date
     end
   end
+  resources :temporary_product_menus do
+    collection do
+      post :ikkatsu_update
+      get :menu_date
+    end
+  end
   resources :items do
     collection do
       get :store_order

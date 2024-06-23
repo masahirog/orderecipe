@@ -47,7 +47,8 @@ html lang="ja"
                     ul.dropdown-menu role="menu" style='width:250px;'
                       h5 style='padding:0 10px;font-weight:bold;' べじはん
                       li = link_to "べじはん献立",daily_menus_path
-                      li = link_to "野菜の変更リスト",temporary_menu_materials_path
+                      li = link_to "一時的なメニュー変更",temporary_product_menus_path
+                      li = link_to "一時的な食材変更",temporary_menu_materials_path
                       li = link_to "各店舗発注品",bejihan_store_orders_list_orders_path(date:@today)
                       li = link_to "進捗ボード",tasks_path(store_id:39)
                       / li = link_to "時間内訳",staff_input_working_hours_path(group_id:current_user.group_id)

@@ -53,23 +53,6 @@
 					td.text-right
 						input type="button" class='clear-btn btn btn-danger btn-sm' value="解除"
 
-			/ - @dates.each_with_index do |date,i|
-			/ 	- tmm = @hash[date]
-			/ 	- if tmm.present?
-			/ 		- material_id = tmm.material_id
-			/ 		- bg = '#fafad2'
-			/ 	- else
-			/ 		- material_id = ''
-			/ 		- bg = '#ffffff'
-			/ 	tr style="background-color:#{bg}"
-			/ 		td = date.strftime("%Y/%-m/%-d(#{%w(日 月 火 水 木 金 土)[date.wday]})")
-			/ 		td = @dmds_hash[date].manufacturing_number if @dmds_hash[date]
-			/ 		td = "#{(@dmds_hash[date].manufacturing_number*@menu_material.amount_used).round.to_s(:delimited)} #{@menu_material.material.recipe_unit}" if @dmds_hash[date]
-			/ 		td
-			/ 			/ = select_tag :shohin_id, options_for_select(@shohin_ids,params[:shohin_id]),include_blank:'商品ID' , class: "form-control",placeholder:'商品ID'
-			/ 			= select_tag("temporary_menu_material_#{date}_material_id", options_for_select(@materials,material_id), include_blank: true,class:"input_select_material", name:"temporary_menu_material[#{date}][material_id]",style:'width:300px;')
-			/ 		td
-			/ 			input type="button" class='clear-btn btn btn-danger btn-sm' value="解除"
 javascript:
 
     $(".input_select_material").select2({
@@ -92,46 +75,33 @@ javascript:
 		$(this).parents('tr').find(".input_select_material").val(null).trigger("change");
 	});
 	$('.all_checked').on('change', function() {
-    	if ( $(this).is(':checked') ){
-    		$(".tmm_check_box").prop('checked', true);
-    	}else{
-    		$(".tmm_check_box").prop('checked', false);
-    	}
-  	});
-  	$(".all_select_menu").on("change",function(){
-  		var id = $(this).val();
-  		var name = $(".all_select_menu option:selected").text();
-  		$(".product_include_menu").each(function(){
-  			var prop = $(this).children(".product_check").children().prop('checked');
-			if (prop) {
-				var j = $(this).children(".select_menu").children().val();
-				$(this).children(".select_menu").children().val(id);
-				$(this).children(".select_menu").find(".select2-selection__rendered").text(name);
-			}else{
-			};
-  	  });
-  	});
-
-  	$(".bulk_change").on('change',function(){
-  		var material_id = $(this).val();
-  		var name = $(".bulk_change option:selected").text();
-  		$("tr").each(function(){
-  			if ( $(this).find(".tmm_check_box").is(':checked') ){
-  				console.log(material_id)
-  				console.log(name)
-  				$(this).find(".input_select_material").val(material_id);
+  	if ( $(this).is(':checked') ){
+  		$(".tmm_check_box").prop('checked', true);
+  	}else{
+  		$(".tmm_check_box").prop('checked', false);
+  	}
+	});
+  	
+	$(".bulk_change").on('change',function(){
+		var material_id = $(this).val();
+		var name = $(".bulk_change option:selected").text();
+		$("tr").each(function(){
+			if ( $(this).find(".tmm_check_box").is(':checked') ){
+				console.log(material_id)
+				console.log(name)
+				$(this).find(".input_select_material").val(material_id);
 				$(this).find(".select2-selection__rendered").text(name);
-  			}else{
-  			}
-  		});
-  	});
+			}else{
+			}
+		});
+	});
 
-  	$(".reflect_memo").on('click',function(){
-  		var memo = $(".origin_memo").val();
-  		$("tr").each(function(){
-  			if ( $(this).find(".tmm_check_box").is(':checked') ){
-  				$(this).find(".memo").val(memo);
-  			}else{
-  			}
-  		});
-  	});
+	$(".reflect_memo").on('click',function(){
+		var memo = $(".origin_memo").val();
+		$("tr").each(function(){
+			if ( $(this).find(".tmm_check_box").is(':checked') ){
+				$(this).find(".memo").val(memo);
+			}else{
+			}
+		});
+	});

@@ -1,5 +1,5 @@
 class MaterialPreparation < Prawn::Document
-  def initialize(bentos_num_h,date,mochiba,lang,sort,category)
+  def initialize(daily_menu,date,mochiba,lang,sort,category)
     # 初期設定。ここでは用紙のサイズを指定している。
     super(
       page_size: 'A4',
@@ -14,11 +14,17 @@ class MaterialPreparation < Prawn::Document
     products_arr = []
     hash = {}
     arr_hon = []
-    bentos_num_h.each do |prnm|
-      product = Product.find(prnm[0])
-      num = prnm[1]
-      products_arr << [product.name,prnm[1]]
-      product.menus.each do |menu|
+    daily_menu.daily_menu_details.each do |dmd|
+      product = dmd.product
+      num = dmd.manufacturing_number
+      products_arr << [product.name,num]
+      product.product_menus.each do |pm|
+        tpm = TemporaryProductMenu.find_by(product_menu_id:pm.id,daily_menu_detail_id:dmd.id)
+        if tpm.present?
+          menu = tpm.menu
+        else
+          menu = pm.menu
+        end
         menus << [menu.base_menu_id,menu.id,num]
       end
     end
