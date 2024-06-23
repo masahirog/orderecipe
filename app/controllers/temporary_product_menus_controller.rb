@@ -10,12 +10,12 @@ class TemporaryProductMenusController < ApplicationController
 
     params["temporary_product_menu"].each do |data|
       data[1].each do |pm_data|
+        product_menu_id = pm_data[0].to_i
+        daily_menu_detail_id = data[0].to_i
+        temporary_product_menu = tpms_hash[[daily_menu_detail_id,product_menu_id]]
         changed_menu_id = pm_data[1]['menu_id']
         memo = pm_data[1]['memo']
         if changed_menu_id.present?
-          daily_menu_detail_id = data[0].to_i
-          product_menu_id = pm_data[0].to_i
-          temporary_product_menu = tpms_hash[[daily_menu_detail_id,product_menu_id]]
           if temporary_product_menu.present?
             temporary_product_menu.menu_id = changed_menu_id
             temporary_product_menu.memo = memo
@@ -23,6 +23,8 @@ class TemporaryProductMenusController < ApplicationController
           else
             new_arr << TemporaryProductMenu.new(daily_menu_detail_id:daily_menu_detail_id,product_menu_id:product_menu_id,menu_id:changed_menu_id,original_menu_id:menu_id,memo:memo)
           end
+        else
+          temporary_product_menu.destroy if temporary_product_menu.present?
         end
       end
     end
