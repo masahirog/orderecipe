@@ -35,47 +35,51 @@ class StorePriceCard < Prawn::Document
             fill_color '000000'
 
             if product.food_label_name.length < 15
-              text_box(product.food_label_name,at: [210,h-15], width: 290, height: 50,size:20,valign: :bottom, leading: 3,align: :center)
+              text_box(product.food_label_name,at: [210,h-5], width: 290, height: 50,size:20,valign: :bottom, leading: 3,align: :center)
             elsif product.food_label_name.length < 17
-              text_box(product.food_label_name,at: [210,h-15], width: 290, height: 50,size:18,valign: :bottom, leading: 3,align: :center)
+              text_box(product.food_label_name,at: [210,h-5], width: 290, height: 50,size:18,valign: :bottom, leading: 3,align: :center)
             else
-              text_box(product.food_label_name,at: [210,h-15], width: 290, height: 50,size:17,valign: :bottom, leading: 4,align: :center)
+              text_box(product.food_label_name,at: [210,h-5], width: 290, height: 50,size:17,valign: :bottom, leading: 4,align: :center)
             end
 
 
             line_width 2
-            line [210, h-75], [500, h-75]
+            line [210, h-65], [500, h-65]
             stroke_color '000000'
             stroke
-
             fill_color '000000'
-            text_box("<font size='25'>#{product.sell_price}</font> 円",at: [325, h - 127], width: 100, height: 40,size:15,inline_format: true)
-
-            # text_box('〇〇〇〇〇',at: [194,h-130], width: 326, height: 50,size:15,valign: :center, leading: 3,align: :center)
-
+            x = 210
+            text_box("<font size='25'>#{product.sell_price}</font> 円",at: [x+150, h - 112], width: 100, height: 40,size:15,inline_format: true)
             font "vendor/assets/fonts/NotoSansJP-Medium.ttf"
-            text_box(product.contents,at: [215,h-85], width: 280, height: 30,size:11,valign: :top,align: :center, leading: 3)
-            text_box("一人前",at: [280, h - 137], width: 100, height: 40,size:13)
-            text_box("（税込 #{product.tax_including_sell_price} 円）",at: [305, h - 155], width: 100, height: 40,size:11)
-            font "vendor/assets/fonts/NotoSansJP-Black.ttf"
-            if product.product_category == "スイーツ・ドリンク"
-              fill_color 'F2684A'
-              fill_rounded_rectangle [420,h-128], 36, 36, 18
-              fill_color 'ffffff'
-              text_box("甘味",at: [420, h - 141], width: 36, height: 36, rotate_around: :center,align: :center,size:11)
-            else
-              fill_color '78B86D'
-              fill_rounded_rectangle [420,h-128], 36, 36, 18
-              fill_color 'ffffff'
-              text_box("週替",at: [420, h - 141], width: 36, height: 36, rotate_around: :center,align: :center,size:11)
-            end
+            text_box(product.sales_unit,at: [x+100, h - 120], width: 100, height: 40,size:13)
+            text_box("（税込 #{product.tax_including_sell_price} 円）",at: [x+210, h - 125], width: 100, height: 40,size:11)
+            text_box(product.contents,at: [215,h-75], width: 280, height: 30,size:11,valign: :top,align: :center, leading: 3)
 
+            font "vendor/assets/fonts/NotoSansJP-Black.ttf"
+            bounding_box([210, h - 150], :width => 290) do
+              font "vendor/assets/fonts/NotoSansJP-Medium.ttf"
+              data = [ ["カロリー", "たんぱく質", "脂質","炭水化物","食物繊維","糖質","塩分"],
+                 ["#{product.calorie.floor}kcal", "#{product.protein.floor(1)}g", "#{product.lipid.floor(1)}g","#{product.carbohydrate.floor(1)}g", "#{product.dietary_fiber.floor(1)}g",
+                  "#{(product.carbohydrate-product.dietary_fiber).floor(1)}g", "#{product.salt.floor(1)}g"] ]
+              table(data) do
+                cells.size = 8
+                cells.text_color = "333333"
+                cells.border_width = 0.4
+                cells.border_color = "c0c0c0"
+                cells.borders = []
+                row(0).borders = [:bottom]
+                cells.padding = [3,2,3,2]
+                cells.align = :center
+                self.column_widths = [50,50,40,40,40,35,35]
+              end
+            end
             if product.warm_flag == true
               fill_color 'ce5242'
-              fill_rounded_rectangle [465,h-128], 36, 36, 18
+              fill_rounded_rectangle [260,h-110], 30, 30, 15
               fill_color 'ffffff'
-              text_box("温め",at: [465, h - 141], width: 36, height: 36, rotate_around: :center,align: :center,size:11)
+              text_box("温め",at: [258, h - 120], width: 36, height: 36, rotate_around: :center,align: :center,size:10)
             end
+
           end
         else
           stroke do
@@ -100,30 +104,40 @@ class StorePriceCard < Prawn::Document
             stroke
 
             fill_color '000000'
-            text_box("<font size='30'>#{product.sell_price}</font> 円",at: [255, h - 123], width: 100, height: 40,size:15,inline_format: true)
 
+
+            x = 210
+            text_box("<font size='25'>#{product.sell_price}</font> 円",at: [x+150, h - 112], width: 100, height: 40,size:15,inline_format: true)
             font "vendor/assets/fonts/NotoSansJP-Medium.ttf"
+            text_box(product.sales_unit,at: [x+100, h - 120], width: 100, height: 40,size:13)
+            text_box("（税込 #{product.tax_including_sell_price} 円）",at: [x+210, h - 125], width: 100, height: 40,size:11)
             text_box(product.contents,at: [35,h-90], width: 465, height: 30,size:11,valign: :top,align: :center, leading: 3)
-            text_box("一人前",at: [210, h - 138], width: 100, height: 40,size:12)
-            text_box("（税込 #{product.tax_including_sell_price} 円）",at: [224, h - 155], width: 100, height: 40,size:13)
-            font "vendor/assets/fonts/NotoSansJP-Black.ttf"
-            if product.product_category == "スイーツ・ドリンク"
-              fill_color 'F2684A'
-              fill_rounded_rectangle [360,h-130], 36, 36, 18
-              fill_color 'ffffff'
-              text_box("甘味",at: [360, h - 142], width: 36, height: 36, rotate_around: :center,align: :center,size:12)
-            else
-              fill_color '78B86D'
-              fill_rounded_rectangle [360,h-130], 36, 36, 18
-              fill_color 'ffffff'
-              text_box("週替",at: [360, h - 142], width: 36, height: 36, rotate_around: :center,align: :center,size:12)
+
+
+
+            bounding_box([115, h - 150], :width => 290) do
+              font "vendor/assets/fonts/NotoSansJP-Medium.ttf"
+              data = [ ["カロリー", "たんぱく質", "脂質","炭水化物","食物繊維","糖質","塩分"],
+                 ["#{product.calorie.floor}kcal", "#{product.protein.floor(1)}g", "#{product.lipid.floor(1)}g","#{product.carbohydrate.floor(1)}g", "#{product.dietary_fiber.floor(1)}g",
+                  "#{(product.carbohydrate-product.dietary_fiber).floor(1)}g", "#{product.salt.floor(1)}g"] ]
+              table(data) do
+                cells.size = 8
+                cells.text_color = "333333"
+                cells.border_width = 0.4
+                cells.border_color = "c0c0c0"
+                cells.borders = []
+                row(0).borders = [:bottom]
+                cells.padding = [3,2,3,2]
+                cells.align = :center
+                self.column_widths = [50,50,40,40,40,35,35]
+              end
             end
 
             if product.warm_flag == true
               fill_color 'ce5242'
-              fill_rounded_rectangle [405,h-130], 36, 36, 18
+              fill_rounded_rectangle [260,h-110], 30, 30, 15
               fill_color 'ffffff'
-              text_box("温め",at: [405, h - 142], width: 36, height: 36, rotate_around: :center,align: :center,size:12)
+              text_box("温め",at: [258, h - 120], width: 36, height: 36, rotate_around: :center,align: :center,size:10)
             end
           end
         end
