@@ -30,8 +30,9 @@ class ProductsController < ApplicationController
   def price_card
     dmd_ids = params[:dmd_ids].values.reject(&:blank?)
     products = []
-    # daily_menu_detailsの価格を優先する
-    DailyMenuDetail.where(id:dmd_ids).each do |dmd|
+    # daily_menu_detailsの価格を優先する、dmd_idsをeachで回さないと重複が削除される
+    dmd_ids.each do |id|
+      dmd = DailyMenuDetail.find(id)
       product = dmd.product
       product.sell_price = dmd.sell_price
       product.tax_including_sell_price = (dmd.sell_price * 1.08).floor
