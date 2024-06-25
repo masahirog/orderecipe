@@ -34,27 +34,6 @@ button type="button" class="btn btn-default" data-toggle="modal" data-target="#b
         button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
 
 
-/ #barcode.modal.fade tabindex="-1"
-  = form_tag barcode_daily_menus_path(format: :pdf),:target => '_blank', :method => 'get' do
-    = hidden_field_tag :daily_menu_id,@daily_menu.id
-    .modal-dialog
-      .modal-content
-        .modal-header
-          h4.modal-title 選択
-        .modal-body.clearfix
-          .col-md-12
-            label メニュータイプ
-            br
-            = select_tag :menu_type, options_for_select([["週間メニューA4",0],["弁当",1]]), class: "form-control",style:'width:200px;float:left;'
-          br
-          .col-md-12
-            label 店舗
-            br
-            = select_tag :store_id, options_from_collection_for_select(current_user.group.stores.where(store_type:'sales'), :id, :name,params[:store_id]), class: "form-control",style:'width:200px;float:left;'
-        .modal-footer
-          = submit_tag "更新" ,class:"btn btn-primary"
-          button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
-
 
 button type="button" class="btn btn-default" data-toggle="modal" data-target="#pricecard" style='margin-left:10px;' プライスカード作成
 #pricecard.modal.fade tabindex="-1"
@@ -68,7 +47,7 @@ button type="button" class="btn btn-default" data-toggle="modal" data-target="#p
             .col-md-12
               label = i
               br
-              = select_tag "product_ids[#{i}]", options_from_collection_for_select(@products, :id, :name), class: "form-control",include_blank:true
+              = select_tag "dmd_ids[#{i}]", options_for_select(@products), class: "form-control",include_blank:true
             br
         .modal-footer
           = submit_tag "送信" ,class:"btn btn-primary"

@@ -28,10 +28,14 @@ class ProductsController < ApplicationController
 
 
   def price_card
-    product_ids = params[:product_ids].values.reject(&:blank?)
+    dmd_ids = params[:dmd_ids].values.reject(&:blank?)
     products = []
-    product_ids.each do |id|
-      products << Product.find(id)
+    # daily_menu_detailsの価格を優先する
+    DailyMenuDetail.where(id:dmd_ids).each do |dmd|
+      product = dmd.product
+      product.sell_price = dmd.sell_price
+      product.tax_including_sell_price = (dmd.sell_price * 1.08).floor
+      products << product
     end
     respond_to do |format|
       format.html

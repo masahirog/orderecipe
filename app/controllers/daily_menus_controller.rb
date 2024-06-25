@@ -77,8 +77,8 @@ class DailyMenusController < AdminController
     @hash = {}
     @daily_menu_details.each do |dmd|
       product = dmd.product
-      @products << product
-      daily_menu_ids = DailyMenu.where("id < ?",@daily_menu.id)
+      @products << [dmd.product.name,dmd.id]
+      daily_menu_ids = DailyMenu.where("start_time < ?",@daily_menu.start_time)
       @hash[dmd.product_id] = product.daily_menu_details.where(daily_menu_id:daily_menu_ids).count
     end
   end

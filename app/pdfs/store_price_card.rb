@@ -13,7 +13,14 @@ class StorePriceCard < Prawn::Document
   def card(store_daily_menu,n)
     font "vendor/assets/fonts/NotoSansJP-Black.ttf"
     product_ids = store_daily_menu.store_daily_menu_details.where(pricecard_need_flag:true).map{|sdmd|sdmd.product_id}
-    products = Product.where(id:product_ids)
+    products = []
+    # daily_menu_detailsを優先する
+    store_daily_menu.daily_menu.daily_menu_details.where(product_id:product_ids).each do |dmd|
+      product = dmd.product
+      product.sell_price = dmd.sell_price
+      product.tax_including_sell_price = (dmd.sell_price * 1.08).floor
+      products << product
+    end
     start_new_page if n > 0 && products.present?
     i = 0
     products.each_slice(4) do |products_data|
