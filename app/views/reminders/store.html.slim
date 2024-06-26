@@ -120,9 +120,9 @@ h3
             = link_to reminder.content,edit_reminder_path(reminder)
           td
             - if reminder.reminder_template_id.present?
-              - if reminder.reminder_template.image.present?
-                = link_to reminder.reminder_template.image.to_s, "data-lightbox" => reminder.reminder_template.image.to_s do
-                  = image_tag reminder.reminder_template.image.to_s ,class:"text-center img-responsive center-block",style:'max-height:100px;'
+              / - if reminder.reminder_template.image.present?
+              /   = link_to reminder.reminder_template.image.to_s, "data-lightbox" => reminder.reminder_template.image.to_s do
+              /     = image_tag reminder.reminder_template.image.to_s ,class:"text-center img-responsive center-block",style:'max-height:100px;'
           td = text_url_to_link(simple_format(h(reminder.memo))).html_safe
           td
             = form_with(model: reminder, data: {remote: true},id:"update_reminder_2_#{reminder.id}") do |f|
