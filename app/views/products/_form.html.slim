@@ -32,12 +32,7 @@
 
     .col-md-2
       = f.label :product_category, "カテゴリー"
-      - if current_user.group_id == 9
-        - categories = Product.product_categories.find_all{|k,v| v < 13 }.to_h.keys
-      - else
-        - categories = Product.product_categories.find_all{|k,v| v >= 13 }.to_h.keys
-
-      = f.select :product_category, options_for_select(categories,@product.product_category), {include_blank:true}, class: 'form-control'
+      = f.select :product_category, options_for_select(@categories,@product.product_category), {include_blank:true}, class: 'form-control'
     .col-md-2
       - unless current_user.group_id == 9
         = f.label :sub_category, "サブカテゴリー"

@@ -157,6 +157,11 @@ class ProductsController < ApplicationController
   end
 
   def edit
+    if current_user.group_id == 9
+      @categories = Product.product_categories.find_all{|k,v| v < 13 || v > 18 }.to_h.keys
+    else
+      @categories = Product.product_categories.find_all{|k,v| v < 13 || v < 19 }.to_h.keys
+    end
     @brands = Brand.where(group_id:current_user.group_id,unused_flag:false)
     @product = Product.includes(:product_menus,{menus: [:menu_materials,:materials]}).find(params[:id])
     @menus = @product.menus

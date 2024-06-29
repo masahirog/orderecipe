@@ -1,126 +1,193 @@
-h3 = "#{@store.name}店 献立組み"
-
 = form_with(url:input_multi_number_store_daily_menus_path, local: true) do |f|
   = f.hidden_field :store_id,value:@store.id
   = f.hidden_field :store_daily_menu_ids,value:params["store_daily_menu_ids"]
   / input.btn.btn-success.pull-right[type="submit" onclick="return confirm('ok?');" value="登録する"]
-  = f.submit '送信する',class:'btn btn-success pull-right', data: { confirm: "副菜の数等はOKですか？1人前で弁当5食計算です。",disable_with: '登録中...'} 
 
 
-  table.table.table-list.cocoon_are
+  table.table
     thead
-      tr
-        th.fixed01
-        th.fixed01 style='width:50px;'
-        th.fixed01
-        th.fixed01 ポテンシャル
-        - @store_daily_menus.each do |sdm|
+      tr.fixed01 style='background-color:#fffaf0;'
+        th style='width:300px;'
+        th style='width:50px;'
+        th style='width:80px;'
+        th style='width:150px;' 売上
+        - @store_daily_menus.each_with_index do |sdm,i|
+          th id="col-base-sales-#{i}" style="text-align:center;"
+    tbody#store_daily_menu_details_area
+      / tr.fixed02
+      /   td
+      /   td.text-right colspan=3 曜日別 惣菜販売平均
+      /   - @store_daily_menus.each_with_index do |sdm,i|
+      /     td id="col-fixed02-#{i}"
+      /       button type="button" class='yoso-reflect' style='margin-left:5px;' 反映
+      /       input value=i style='display:none;'
+
+      tr.fixed02 class='product_category_7'
+        td = f.submit '更新する',class:'', data: { confirm: "副菜の数等はOKですか？1人前で弁当5食計算です。",disable_with: '登録中...'} ,style:'background-color:#32cd32;height:28px;border:1px solid #32cd32;border-radius:3px;padding:4px 6px;color:#ffffff;'
+        td
+        td スープ
+        td
+          / = link_to 'ポテンシャル更新',reflesh_product_sales_potentials_path(product_ids:@products.ids,store_id:@store_id,store_daily_menu_ids:@store_daily_menus.ids), method: :post,class:'btn btn-default btn-sm', data: { confirm: 'ポテンシャルの値を、直近12日間のデータで更新しますか？' }
+        - @store_daily_menus.each_with_index do |sdm,i|
+          td.aaa class="col-base-#{i}"
+            input.product_category value=7 style='display:none;'
+            input style='width:60px;float:left;' class="total_sales_yoso input_number"
+            i class="fa-solid fa-circle-arrow-right yoso-reflect" style='float:left;margin:8px 4px;color:#32cd32;cursor:pointer;'
+            input style='width:60px;float:left;' class="total_sales_input readonly input_number" readonly=true
+            input style='width:80px;display:none;' class="col" value=i
+  
+      tr.fixed03 class='product_category_20'
+        td
+        td
+        td 副菜
+        td
+          / = link_to 'ポテンシャル更新',reflesh_product_sales_potentials_path(product_ids:@products.ids,store_id:@store_id,store_daily_menu_ids:@store_daily_menus.ids), method: :post,class:'btn btn-default btn-sm', data: { confirm: 'ポテンシャルの値を、直近12日間のデータで更新しますか？' }
+        - @store_daily_menus.each_with_index do |sdm,i|
+          td class="col-base-#{i}"
+            input.product_category value=20 style='display:none;'
+            input style='width:60px;float:left;' class="total_sales_yoso input_number"
+            i class="fa-solid fa-circle-arrow-right yoso-reflect" style='float:left;margin:8px 4px;color:#32cd32;cursor:pointer;'
+            input style='width:60px;float:left;' class="total_sales_input readonly input_number" readonly=true
+            input style='width:80px;display:none;' class="col" value=i
+      tr.fixed04 class='product_category_1'
+        td
+        td
+        td 主菜
+        td
+        - @store_daily_menus.each_with_index do |sdm,i|
+          td class="col-base-#{i}"
+            input.product_category value=1 style='display:none;'
+            input style='width:60px;float:left;' class="total_sales_yoso input_number"
+            i class="fa-solid fa-circle-arrow-right yoso-reflect" style='float:left;margin:8px 4px;color:#32cd32;cursor:pointer;'
+            input style='width:60px;float:left;' class="total_sales_input readonly input_number" readonly=true
+            input style='width:80px;display:none;' class="col" value=i
+      tr.fixed05 class='product_category_21'
+        td
+        td
+        td サラダ
+        td
+        - @store_daily_menus.each_with_index do |sdm,i|
+          td class="col-base-#{i}"
+            input.product_category value=21 style='display:none;'
+            input style='width:60px;float:left;' class="total_sales_yoso input_number"
+            i class="fa-solid fa-circle-arrow-right yoso-reflect" style='float:left;margin:8px 4px;color:#32cd32;cursor:pointer;'
+            input style='width:60px;float:left;' class="total_sales_input readonly input_number" readonly=true
+            input style='width:80px;display:none;' class="col" value=i
+      tr.fixed06 class='product_category_3'
+        td
+        td
+        td スイーツ
+        td
+        - @store_daily_menus.each_with_index do |sdm,i|
+          td class="col-base-#{i}"
+            input.product_category value=3 style='display:none;'
+            input style='width:60px;float:left;' class="total_sales_yoso input_number"
+            i class="fa-solid fa-circle-arrow-right yoso-reflect" style='float:left;margin:8px 4px;color:#32cd32;cursor:pointer;'
+            input style='width:60px;float:left;' class="total_sales_input readonly input_number" readonly=true
+            input style='width:80px;display:none;' class="col" value=i
+
+
+      tr.fixed07 class='product_category_19'
+        td
+        td
+        td カレー
+        td 
+        - @store_daily_menus.each_with_index do |sdm,i|
+          td class="col-base-#{i}"
+            input.product_category value=19 style='display:none;'
+            input style='width:60px;float:left;' class="total_sales_yoso input_number"
+            i class="fa-solid fa-circle-arrow-right yoso-reflect" style='float:left;margin:8px 4px;color:#32cd32;cursor:pointer;'
+            input style='width:60px;float:left;' class="total_sales_input readonly input_number" readonly=true
+            input style='width:80px;display:none;' class="col" value=i
+
+      tr.fixed08 class='product_category_5'
+        td
+        td
+        td 弁当
+        td 
+        - @store_daily_menus.each_with_index do |sdm,i|
+          td class="col-base-#{i}"
+            input.product_category value=5 style='display:none;'
+            input style='width:60px;float:left;' class="total_sales_yoso input_number"
+            i class="fa-solid fa-circle-arrow-right yoso-reflect" style='float:left;margin:8px 4px;color:#32cd32;cursor:pointer;'
+            input style='width:60px;float:left;' class="total_sales_input readonly input_number" readonly=true
+            input style='width:80px;display:none;' class="col" value=i
+      tr.fixed9 style='background-color:#fffaf0;'
+        td 商品名
+        td 売価
+        td J
+        td P
+        - @store_daily_menus.each_with_index do |sdm,i|
           - holiday = HolidayJapan.name(sdm.start_time)
           - if holiday.present?
-            th.fixed01 style='background-color:pink;text-align:center;'
-              - if sdm.event.present?
-                span style='color:red;' data-toggle="tooltip" data-placement="bottom" title="#{sdm.event}" 予約　
-              = sdm.start_time.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[sdm.start_time.wday]})")
-
+            td.clearfix
+              i class="all_yoso-reflect fa-solid fa-rotate" style='float:left;margin: 3px 10px 0 0;color:#32cd32;cursor:pointer;'
+              div type="button" class="col_fixed02_#{i}" data-container="body" data-html="true" data-toggle="popover" data-placement="bottom" data-content="#{render(partial: 'rireki',:locals => {wday:sdm.start_time.wday}).html_safe}" style='background-color:pink;text-align:center;cursor: pointer;float:left;'
+                - if sdm.event.present?
+                  span style='color:red;' data-toggle="tooltip" data-placement="bottom" title="#{sdm.event}" 予約　
+                = sdm.start_time.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[sdm.start_time.wday]})")
+              input style='display:none;' class="col" value=i
           - else
-            th.fixed01 style='text-align:center;'
-              - if sdm.event.present?
-                span style='color:red;' data-toggle="tooltip" data-placement="bottom" title="#{sdm.event}" 予約　
-              = sdm.start_time.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[sdm.start_time.wday]})")
+            td.clearfix
+              i class="all_yoso-reflect fa-solid fa-rotate" style='float:left;margin: 3px 10px 0 0;cursor: pointer;color:#32cd32;cursor:pointer;'
+              div type="button" class="col_fixed02_#{i}" data-container="body" data-html="true" data-toggle="popover" data-placement="bottom" data-content="#{render(partial: 'rireki',:locals => {wday:sdm.start_time.wday}).html_safe}" style='text-align:center;cursor: pointer;float:left;'
+                - if sdm.event.present?
+                  span style='color:red;' data-toggle="tooltip" data-placement="bottom" title="#{sdm.event}" 予約　
+                = sdm.start_time.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[sdm.start_time.wday]})")
+              input style='display:none;' class="col" value=i
 
-    tbody#store_daily_menu_details_area
-      tr
-        td.fixed02.text-right colspan=4 曜日別 惣菜販売平均
-        - @store_daily_menus.each_with_index do |sdm,i|
-          td.fixed02 id="col-fixed02-#{i}"
-            button type="button" class="btn btn-secondary col_fixed02_#{i}" data-container="body" data-html="true" data-toggle="popover" data-placement="bottom" data-content="#{render(partial: 'rireki',:locals => {wday:sdm.start_time.wday}).html_safe}"
-              - if @weekday_sales_sozai_number[sdm.start_time.wday]['total_num'].present?
-                = (@weekday_sales_sozai_number[sdm.start_time.wday]['total_num']/@weekday_sales_sozai_number[sdm.start_time.wday]['count'])
-            button type="button" class='btn btn-default btn-sm yoso-reflect' style='margin-left:5px;height:34.18px;' 反映
-            input value=i style='display:none;'
-  
-      tr
-        td.fixed03
-        td.fixed03
-        td.fixed03 惣菜▶
-        td.fixed03 = link_to 'ポテンシャル更新',reflesh_product_sales_potentials_path(product_ids:@products.ids,store_id:@store_id,store_daily_menu_ids:@store_daily_menus.ids), method: :post,class:'btn btn-default btn-sm', data: { confirm: 'ポテンシャルの値を、直近12日間のデータで更新しますか？' }
-        - @store_daily_menus.each_with_index do |sdm,i|
-          td.fixed03 id="col-base-#{i}"
-            input style='width:60px;float:left;' class="form-control total_sales_sozai_yoso"
-            input style='width:60px;float:left;' class="form-control total_sales_sozai_input" readonly=true
-            input style='width:80px;display:none;' class="col" value=i
-      tr
-        td.fixed04
-        td.fixed04
-        td.fixed04 弁当▶
-        td.fixed04 
-        - @store_daily_menus.each_with_index do |sdm,i|
-          td.fixed04 id="col-base-bento-#{i}"
-            input style='width:60px;float:left;' class="form-control total_sales_bento_yoso"
-            input style='width:60px;float:left;' class="form-control total_sales_bento_input" readonly=true
-            input style='width:80px;display:none;' class="col" value=i
-      tr
-        td.fixed05 商品名
-        td.fixed05 売価
-        td.fixed05 J
-        td.fixed05 P　売上▶
-        - @store_daily_menus.each_with_index do |sdm,i|
-          td.fixed05 id="col-base-sales-#{i}" style="text-align:center;"
 
-      - @products.each do |product|
-        - if product.bejihan_sozai_flag == true
-          - color = "#faf0e6"
-        - else
-          - color = '#ffffff'
-        tr style="background-color:#{color}"
-          td = link_to product.name,product,target:'_blank'
-          td
-            = product.sell_price.to_s(:delimited)
-            input value="#{product.sell_price}" style="display:none;" class='sell_price'
-          td = product.product_category
-          td
-            div style='float:left;margin:0 4px 0 0;'
-              -if @product_sales_potentials[product.id]
-                - potential = @product_sales_potentials[product.id]
-                span style='font-size:15px;' = link_to potential,store_product_sales_analyses_path(store_id:@store_id,product_id:product.id),target:'_blank'
+      - @product_ids.each do |data|
+        - if data[0] =="お弁当"
+          - data[1] = @bento_ids.each_with_object({}) do |key, result|
+            - result[key] = data[1][key] if data[1].key?(key)
+        - data[1].each do |id_product|
+          - product = id_product[1]
+          tr class= "tr_product_category_#{product.product_category_before_type_cast}"
+            td = link_to product.name,edit_product_path(product),target:'_blank'
+            td
+              = product.sell_price.to_s(:delimited)
+              input value="#{product.sell_price}" style="display:none;" class='sell_price'
+            td = product.product_category
+            td
+              div style='float:left;margin:0 4px 0 0;'
+                -if @product_sales_potentials[product.id]
+                  - potential = @product_sales_potentials[product.id]
+                  span style='font-size:15px;' = link_to potential,store_product_sales_analyses_path(store_id:@store_id,product_id:product.id),target:'_blank'
 
-              -else
-                = link_to "作成",store_product_sales_analyses_path(product_id:product.id,store_id:@store_id),class:'btn btn-default btn-sm',target:"_blank"
-              / - if product.bejihan_sozai_flag == true && @product_sales_potentials[product.id].present?
-                br
-                span style='font-size:12px;color:silver;' = "#{((@product_sales_potentials[product.id].to_f/@sozai_total_sales_potential)*100).round(1)}%"
-            - if product.bejihan_sozai_flag == true && @product_sales_potentials[product.id].present?
-              span style='margin:12px 0 0 4px;float:right;' %
-              input type='number' step='0.1' style='float:right;width:70px;' class="form-control rate" value="#{((@product_sales_potentials[product.id].to_f/@sozai_total_sales_potential)*100).round(1)}"
-              
+                -else
+                  = link_to "作成",store_product_sales_analyses_path(product_id:product.id,store_id:@store_id),class:'btn btn-default btn-sm',target:"_blank"
+                / - if product.bejihan_sozai_flag == true && @product_sales_potentials[product.id].present?
+                  br
+                  span style='font-size:12px;color:silver;' = "#{((@product_sales_potentials[product.id].to_f/@sozai_total_sales_potential)*100).round(1)}%"
+              - if @product_sales_potentials[product.id].present?
+                span style='margin:12px 0 0 4px;float:right;' %
+                input type='number' step='0.1' style='float:right;width:70px;' class="input_number rate" value="#{((@product_sales_potentials[product.id].to_f/@sales_potential[product.product_category])*100).round(1)}"
+                
 
-              / = "｜#{((@product_sales_potentials[product.id].to_f/@sozai_total_sales_potential)*100).round(1)}%"
-          - @store_daily_menus.each_with_index do |sdm,i|
-            td class="col_#{i}"
-              - if @store_daily_menu_details_hash[[sdm.id,product.id]].present?
-                .clearfix
-                  - if product.bejihan_sozai_flag == true
-                    input style='float:left;width:60px;' readonly='true' class="form-control yoso_input"
-                  -else
-                    input style='float:left;width:60px;' readonly='true' class="form-control"
-                  input.sales_potentials_rate value="#{(@product_sales_potentials[product.id].to_f/@sozai_total_sales_potential).round(3)}" style='display:none;'
-                  input.sozai_flag value="#{product.bejihan_sozai_flag}" style='display:none;'
-                  input.bento_flag value="#{product.product_category}" style='display:none;'
-                  input.col_i value="#{i}" style='display:none;'
-                  = f.number_field "store_daily_menu_details[#{@store_daily_menu_detail_ids_hash[[sdm.id,product.id]]}][sozai_number]",value:@store_daily_menu_details_hash[[sdm.id,product.id]], class:'form-control input-sdmd-number',style:"float:left;width:60px;", onClick:"this.select();"
-                - if @store_daily_menu_details_bento_fukusai_hash[[sdm.id,product.id]] > 0
+                / = "｜#{((@product_sales_potentials[product.id].to_f/@sozai_total_sales_potential)*100).round(1)}%"
+            - @store_daily_menus.each_with_index do |sdm,i|
+              td class="col_#{i}"
+                - if @store_daily_menu_details_hash[[sdm.id,product.id]].present?
                   .clearfix
-                    span style='width:60px;float:left;text-align:right;padding-top:5px;' 副菜：
-                    = f.number_field "store_daily_menu_details[#{@store_daily_menu_detail_ids_hash[[sdm.id,product.id]]}][fukusai_number]",value:@store_daily_menu_details_bento_fukusai_hash[[sdm.id,product.id]], class:'form-control input-sdmd-bento-fukusai-number',style:"float:left;width:60px;", onClick:"this.select();"
-                - elsif @store_daily_menu_details_bento_fukusai_hash[[sdm.id,product.id]] == 0
-                  .fukusai_zero.clearfix style="display:none;"
-                    span style='width:60px;float:left;text-align:right;padding-top:5px;color:silver;' 副菜：
-                    = f.number_field "store_daily_menu_details[#{@store_daily_menu_detail_ids_hash[[sdm.id,product.id]]}][fukusai_number]",value:@store_daily_menu_details_bento_fukusai_hash[[sdm.id,product.id]], class:'form-control input-sdmd-bento-fukusai-number',style:"float:left;width:60px;", onClick:"this.select();"
+                    input style='float:left;width:60px;' readonly='true' class="input_number yoso_input readonly"
+                    input.sales_potentials_rate value="#{(@product_sales_potentials[product.id].to_f/@sales_potential[product.product_category]).round(3)}" style='display:none;'
+                    input.col_i value="#{i}" style='display:none;'
+                    input.product_category value=product.product_category_before_type_cast style='display:none;'
+                    = f.number_field "store_daily_menu_details[#{@store_daily_menu_detail_ids_hash[[sdm.id,product.id]]}][sozai_number]",value:@store_daily_menu_details_hash[[sdm.id,product.id]], class:'input_number input-sdmd-number',style:"float:left;width:60px;", onClick:"this.select();"
+                  - if @store_daily_menu_details_bento_fukusai_hash[[sdm.id,product.id]] > 0
+                    .clearfix
+                      span style='width:60px;float:left;text-align:right;padding-top:5px;' 副菜：
+                      = f.number_field "store_daily_menu_details[#{@store_daily_menu_detail_ids_hash[[sdm.id,product.id]]}][fukusai_number]",value:@store_daily_menu_details_bento_fukusai_hash[[sdm.id,product.id]], class:'input_number input-sdmd-bento-fukusai-number',style:"float:left;width:60px;", onClick:"this.select();"
+                  - elsif @store_daily_menu_details_bento_fukusai_hash[[sdm.id,product.id]] == 0
+                    .fukusai_zero.clearfix style="display:none;"
+                      span style='width:60px;float:left;text-align:right;padding-top:5px;color:silver;' 副菜：
+                      = f.number_field "store_daily_menu_details[#{@store_daily_menu_detail_ids_hash[[sdm.id,product.id]]}][fukusai_number]",value:@store_daily_menu_details_bento_fukusai_hash[[sdm.id,product.id]], class:'input_number input-sdmd-bento-fukusai-number',style:"float:left;width:60px;", onClick:"this.select();"
 button.btn.btn-default.fukusai_show 副菜枠 表示
 button.btn.btn-default.fukusai_hide style="display:none;" 副菜枠 非表示
 css:
   .popover{
-    max-width: 100%; /* Max Width of the popover (depending on the container!) */
+    max-width: 100%;
   }
   
   .fixed01{
@@ -130,30 +197,65 @@ css:
   }
   .fixed02{
     position: sticky;
-    top: 35px;
+    top: 34px;
     background: #ffffff;
   }
   .fixed03{
     position: sticky;
-    top: 85px;
+    top: 74px;
     background: #ffffff;
   }
   .fixed04{
     position: sticky;
-    top: 130px;
+    top: 114px;
     background: #ffffff;
   }
   .fixed05{
     position: sticky;
-    top: 180px;
+    top: 154px;
     background: #ffffff;
   }
+  .fixed06{
+    position: sticky;
+    top: 194px;
+    background: #ffffff;
+  }
+  .fixed07{
+    position: sticky;
+    top: 234px;
+    background: #ffffff;
+  }
+  .fixed08{
+    position: sticky;
+    top: 274px;
+    background: #ffffff;
+  }
+  .fixed09{
+    position: sticky;
+    top: 314px;
+    background: #ffffff;
+  }
+  .input_number{
+    width:100px;
+    height:28px;
+    border:1px solid silver;
+    border-radius:3px;
+    padding:4px 6px;
+  }
+  .readonly{
+    background-color:#dcdcdc;
+  }
+
 javascript:
   $('[data-toggle="tooltip"]').tooltip({ container: 'body' });
-  $(".fixed04").each(function(i,ele){
+  $(".aaa").each(function(i,ele){
     var num = 0;
-    change(i,num)
-    bento_change(i,num)
+    var sales = 0;
+    var product_category = [1,2,3,4,5,7,11,19,20,21]
+    $.each(product_category, function(index, value) {
+      change(i,num,value)
+      change_sales(i,sales)
+    });
   });
   $('.input-sdmd-number').on('change',function(){
     if ($(this).val()=="" || $(this).val()>30 || $(this).val()<1 ){
@@ -164,10 +266,27 @@ javascript:
     var num = 0;
     var sales = 0;
     var i = $(this).parent().find(".col_i").val();
-    change(i,num)
-    bento_change(i,num)
+    var product_category = $(this).parent().find(".product_category").val();
+    change(i,num,product_category)
     change_sales(i,sales)
   });
+
+  function change(i,num,product_category){
+    $(".col_"+i).each(function(ii,element){
+      if ($(element).find(".input-sdmd-number").length && $(element).find(".product_category").val()==product_category) {
+        num += Number($(element).find(".input-sdmd-number").val());
+      }
+    });
+    $(".product_category_"+product_category).find(".col-base-"+i).find('.total_sales_input').val(num);
+    // var heikin = $(".col_fixed02_"+i).text();
+    // if (Math.abs(num - heikin)>50) {
+    //   $("#col-base-"+i).css("background-color","red");
+    //   $("#col-fixed02-"+i).css("background-color","red");
+    // }else{
+    //   $("#col-base-"+i).css("background-color","white");
+    //   $("#col-fixed02-"+i).css("background-color","white");
+    // };
+  }
 
   function change_sales(i,sales){
     $(".col_"+i).each(function(ii,element){
@@ -181,40 +300,15 @@ javascript:
   }
 
 
-  function change(i,num){
-    $(".col_"+i).each(function(ii,element){
-      if ($(element).find(".input-sdmd-number").length && $(element).find(".sozai_flag").val()=="true") {
-        num += Number($(element).find(".input-sdmd-number").val());
-      }
-    });
-
-    $("#col-base-"+i).find('.total_sales_sozai_input').val(num);
-    var heikin = $(".col_fixed02_"+i).text();
-    if (Math.abs(num - heikin)>50) {
-      $("#col-base-"+i).css("background-color","red");
-      $("#col-fixed02-"+i).css("background-color","red");
-    }else{
-      $("#col-base-"+i).css("background-color","white");
-      $("#col-fixed02-"+i).css("background-color","white");
-    };
-  }
-  function bento_change(i,num){
-    $(".col_"+i).each(function(ii,element){
-      if ($(element).find(".input-sdmd-number").length && $(element).find(".bento_flag").val()=="お弁当") {
-        num += Number($(element).find(".input-sdmd-number").val());
-      }
-    });
-    $("#col-base-bento-"+i).find('.total_sales_bento_input').val(num);
-  }
-
   $(".rate").on('change',function(){
     $(this).css('background-color','#ffc0cb')
     var float = Math.round($(this).val()*10)/1000;
-    console.log(float)
+    var product_category = $(this).parents('tr').find(".product_category").val();
+    console.log(product_category)
     $(this).parents('tr').find('.sales_potentials_rate').val(float);
     $(this).parents('tr').find(".yoso_input").each(function(index, element){
       if ($(element).val()) {
-        var total_sozai_number = $('#col-base-'+index).children(".total_sales_sozai_yoso").val();
+        var total_sozai_number = $(".product_category_"+product_category).find('#col-base-'+index).children(".total_sales_yoso").val();
         console.log(total_sozai_number)
         var yoso = Math.round(total_sozai_number * float);
         console.log(yoso)
@@ -222,17 +316,21 @@ javascript:
       }
     })
   });
-  $('.total_sales_sozai_yoso').on('change',function(){
-    var total_sozai_num = $(this).val();
+  $('.total_sales_yoso').on('change',function(){
+    var total_num = $(this).val();
+    var product_category = String($(this).parent().find('.product_category').val());
     var col = $(this).parent().find('.col').val();
-    $(".col_"+ String(col)).each(function(index, element){
-      var yoso = Math.round(total_sozai_num * $(element).find('.sales_potentials_rate').val())
-      $(element).find('.yoso_input').val(yoso);
+    $('.tr_product_category_'+ product_category).each(function(){
+      $(this).find(".col_"+ String(col)).each(function(index, element){
+        var yoso = Math.round(total_num * $(element).find('.sales_potentials_rate').val())
+        $(element).find('.yoso_input').val(yoso);
+      });
     });
   });
-  $(".yoso-reflect").on('click',function(){
-    var col = $(this).parent("td").children("input").val();
-    var total_sozai_num = $("#col-base-"+col).children(".total_sales_sozai_yoso").val();
+
+  
+  $(".all_yoso-reflect").on('click',function(){
+    var col = $(this).parent("td").find(".col").val();
     $(".col_"+ col).each(function(index, element){
       var yoso = $(element).find('.yoso_input').val();
       if ($(element).find('.yoso_input').length) {
@@ -241,9 +339,34 @@ javascript:
     });
     var num = 0;
     var sales = 0;
-    change(col,num)
+    var product_category = [1,2,3,4,5,7,11,19,20,21]
+    $.each(product_category, function(index, value) {
+      change(col,num,value)
+    });
+    change_sales(col,sales)    
+  });
+  $(".yoso-reflect").on('click',function(){
+    var product_category = String($(this).parents("tr").find(".product_category").val());
+    var col = $(this).parent("td").children(".col").val();
+    $(".tr_product_category_"+ product_category).each(function(){
+      $(this).find(".col_"+ col).each(function(index, element){
+        var yoso = $(element).find('.yoso_input').val();
+
+        if ($(element).find('.yoso_input').length) {
+          $(element).find('.input-sdmd-number').val(yoso);
+        }
+      });
+    });
+    var num = 0;
+    var sales = 0;
+    var product_category = [1,2,3,4,5,7,11,19,20,21]
+    $.each(product_category, function(index, value) {
+      change(col,num,value)
+    });
     change_sales(col,sales)
   });
+
+
   $(".fukusai_show").on('click',function(){
     $(".fukusai_zero").show();
     $(this).hide();
