@@ -6,7 +6,7 @@
 tr.nested-fields.item.daily_menu_detail_tr class=class_name
   td
     = link_to_remove_association '削除', f, class: 'btn btn-sm',  data: {confirm: '削除しますか？'}
-
+  td = f.object.row_order
   - if f.object.id.present?
     td.bejihan_sozai_flag_td
       = "true" if f.object.product.bejihan_sozai_flag == true
