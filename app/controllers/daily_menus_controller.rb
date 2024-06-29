@@ -116,6 +116,7 @@ class DailyMenusController < AdminController
               store_daily_menu_details = StoreDailyMenuDetail.where(store_daily_menu_id:store_daily_menu_ids,product_id:product_id_was)
               store_daily_menu_details.each do |sdmd|
                 sdmd.product_id = product_id
+                sdmd.row_order = paper_menu_number
                 update_sdmd_arr << sdmd
               end
             end
@@ -126,14 +127,14 @@ class DailyMenusController < AdminController
           if product_id.present?
             product = Product.find(product_id)
             new_arr << DailyMenuDetail.new(daily_menu_id:daily_menu_id,product_id:product_id,manufacturing_number:0,cost_price_per_product:product.cost_price,
-              total_cost_price:0,for_single_item_number:0,for_sub_item_number:0,sell_price:sell_price,paper_menu_number:paper_menu_number,change_flag:change_flag)
+              total_cost_price:0,for_single_item_number:0,for_sub_item_number:0,sell_price:sell_price,paper_menu_number:paper_menu_number,change_flag:change_flag,row_order:paper_menu_number)
           end
         end
       end
     end
     DailyMenuDetail.import new_arr
     DailyMenuDetail.import update_arr, on_duplicate_key_update:[:product_id,:sell_price,:change_flag]
-    StoreDailyMenuDetail.import update_sdmd_arr, on_duplicate_key_update:[:product_id]
+    StoreDailyMenuDetail.import update_sdmd_arr, on_duplicate_key_update:[:product_id,:row_order]
     DailyMenuDetail.where(id:delete_dmd_ids_arr).destroy_all
     redirect_to schedule_daily_menus_path(from:params[:from],to:params[:to],pattern:params[:pattern],create_from:params[:create_from]), :success => "更新完了！"
   end
