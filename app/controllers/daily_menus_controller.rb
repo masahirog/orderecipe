@@ -195,8 +195,8 @@ class DailyMenusController < AdminController
       DailyMenuDetail.includes([:product,:daily_menu]).where(daily_menu_id:weekly_daily_menus.ids).where(paper_menu_number:[24,25,26,27,28,29]).each do |dmd|
         @bento_menus[dmd.daily_menu.start_time][dmd.paper_menu_number] = dmd.product
       end
-      next_week_product_ids = DailyMenu.find_by(start_time:next_week_day).daily_menu_details.where(paper_menu_number:(1..16).to_a).map{|dmd|dmd.product_id}
-      @next_menus = Product.where(id:next_week_product_ids)
+      next_week_product_ids = DailyMenu.find_by(start_time:next_week_day).daily_menu_details.where(paper_menu_number:[1,2,3,4,5,6,7,8,9,10,11,12,16,22,23]).order(:paper_menu_number).map{|dmd|dmd.product_id}
+      @next_menus = Product.where(id:next_week_product_ids).order(['field(id,?)',next_week_product_ids])
     elsif params[:menu_type]=="1"
     elsif params[:menu_type]=="2"      
       from = from - 1
