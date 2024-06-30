@@ -135,7 +135,6 @@ class StoreDailyMenusController < AdminController
         end
       end
     end
-
     product_ids = @product_ids.values.map{|id|id.keys}.flatten
     product_sales_potentials = ProductSalesPotential.where(store_id:@store_id,product_id:product_ids)    
     @sales_potential = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
@@ -145,7 +144,6 @@ class StoreDailyMenusController < AdminController
     @product_sales_potentials = product_sales_potentials.map{|psp|[psp.product_id,psp.sales_potential]}.to_h
     min_date = @store_daily_menus.map{|sdm|sdm.start_time}.min
     @analyses = Analysis.includes(:store_daily_menu).where(store_id:@store_id).where('date > ?',min_date-60)
-    # @date_sales_sozai_number = @analyses.map{|analysis|[analysis.date,analysis.total_sozai_sales_number]}.to_h
     @weekday_sales_sozai_number = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     date_weather = StoreDailyMenu.where('start_time > ?',min_date-60).where(store_id:@store_id).map{|sdm|[sdm.start_time,sdm.weather]}.to_h
     analysis_products_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
