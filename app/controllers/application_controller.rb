@@ -53,14 +53,7 @@ class ApplicationController < ActionController::Base
   end
 
   def shibataya
-    session = GoogleDrive::Session.from_config("config.json")
-    sp = session.spreadsheet_by_url("https://docs.google.com/spreadsheets/d/1nEtGciXSJ2rBJDNCHVqWQC7mDQ9InGAqdPWwAy0c7hQ/edit#gid=0")
-    ws = sp.worksheet_by_title("シート1")
-    @employees = []
-    (2..ws.num_rows).each do |i|
-      @employees << [ws[i,2],ws[i,1]]
-    end
-
+    @employees = Staff.where(group_id:30,status:0).map{|staff|[staff.name,staff.staff_code]}
     if params[:date]
       @date = Date.parse(params[:date])
       if @date < @today || @today + 3 < @date
@@ -72,8 +65,9 @@ class ApplicationController < ActionController::Base
     @daily_menu = DailyMenu.find_by(start_time:@date)
     product_ids = []
     @pre_order = PreOrder.new
+    product_categories = [1,2,3,5,7,19,20,21,22]
     @daily_menu.daily_menu_details.includes([:product]).each do |dmd|
-      if dmd.product.product_category == "お弁当" || dmd.product.product_category == "ご飯・丼" || dmd.product.product_category == "惣菜" ||dmd.product.product_category == "スイーツ・ドリンク" ||dmd.product.product_category == "スープ"
+      if product_categories.include?(dmd.product.product_category_before_type_cast)
         tax_including_sell_price = (dmd.sell_price * 1.08).floor
         @pre_order.pre_order_products.build(product_id:dmd.product_id,order_num:0,welfare_price:0,employee_discount:0,tax_including_sell_price:tax_including_sell_price)
       end
