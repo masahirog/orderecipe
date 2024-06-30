@@ -27,7 +27,6 @@
         td
         td スープ
         td
-          / = link_to 'ポテンシャル更新',reflesh_product_sales_potentials_path(product_ids:@products.ids,store_id:@store_id,store_daily_menu_ids:@store_daily_menus.ids), method: :post,class:'btn btn-default btn-sm', data: { confirm: 'ポテンシャルの値を、直近12日間のデータで更新しますか？' }
         - @store_daily_menus.each_with_index do |sdm,i|
           td.aaa class="col-base-#{i}"
             input.product_category value=7 style='display:none;'
@@ -116,7 +115,10 @@
         td 商品名
         td 売価
         td J
-        td P
+        td
+          span ポテンシャル
+          = link_to reflesh_product_sales_potentials_path(product_ids:@product_ids,store_id:@store_id,store_daily_menu_ids:@store_daily_menus.ids), method: :post,class:'btn btn-default btn-sm', data: { confirm: 'ポテンシャルの値を、直近12日間のデータで更新しますか？' } do
+            i class="fa-solid fa-rotate" style='color:#32cd32;'
         - @store_daily_menus.each_with_index do |sdm,i|
           - holiday = HolidayJapan.name(sdm.start_time)
           - if holiday.present?
@@ -137,7 +139,7 @@
               input style='display:none;' class="col" value=i
 
 
-      - @product_ids.each do |data|
+      - @product_id_datas.each do |data|
         - if data[0] =="お弁当"
           - data[1] = @bento_ids.each_with_object({}) do |key, result|
             - result[key] = data[1][key] if data[1].key?(key)
@@ -304,14 +306,12 @@ javascript:
     $(this).css('background-color','#ffc0cb')
     var float = Math.round($(this).val()*10)/1000;
     var product_category = $(this).parents('tr').find(".product_category").val();
-    console.log(product_category)
+    console.log(float)
     $(this).parents('tr').find('.sales_potentials_rate').val(float);
     $(this).parents('tr').find(".yoso_input").each(function(index, element){
       if ($(element).val()) {
-        var total_sozai_number = $(".product_category_"+product_category).find('#col-base-'+index).children(".total_sales_yoso").val();
-        console.log(total_sozai_number)
-        var yoso = Math.round(total_sozai_number * float);
-        console.log(yoso)
+        var total_yoso = $(".product_category_"+product_category).find('.col-base-'+index).find(".total_sales_yoso").val();
+        var yoso = Math.round(total_yoso * float);
         $(element).val(yoso);
       }
     })

@@ -120,12 +120,12 @@ class StoreDailyMenusController < AdminController
     store_daily_menu_ids = params["store_daily_menu_ids"]
     @store_daily_menus = StoreDailyMenu.where(id:store_daily_menu_ids).order(:start_time)
     store_daily_menu_details = StoreDailyMenuDetail.includes([:product]).where(store_daily_menu_id:@store_daily_menus.ids).order(:row_order)
-    @product_ids = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    @product_id_datas = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     store_daily_menu_details.each do |sdmd|
       @store_daily_menu_detail_ids_hash[[sdmd.store_daily_menu_id,sdmd.product_id]]= sdmd.id
       @store_daily_menu_details_hash[[sdmd.store_daily_menu_id,sdmd.product_id]]= sdmd.sozai_number
       @store_daily_menu_details_bento_fukusai_hash[[sdmd.store_daily_menu_id,sdmd.product_id]]= sdmd.bento_fukusai_number
-      @product_ids[sdmd.product.product_category][sdmd.product_id] = sdmd.product unless @product_ids.values.include?(sdmd.product_id)
+      @product_id_datas[sdmd.product.product_category][sdmd.product_id] = sdmd.product unless @product_id_datas.values.include?(sdmd.product_id)
     end
     @bento_ids = []
     @store_daily_menus.each do |sdm|
@@ -135,10 +135,10 @@ class StoreDailyMenusController < AdminController
         end
       end
     end
-    product_ids = @product_ids.values.map{|id|id.keys}.flatten
-    product_sales_potentials = ProductSalesPotential.where(store_id:@store_id,product_id:product_ids)    
+    @product_ids = @product_id_datas.values.map{|id|id.keys}.flatten
+    product_sales_potentials = ProductSalesPotential.where(store_id:@store_id,product_id:@product_ids)    
     @sales_potential = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    @product_ids.each do |data|
+    @product_id_datas.each do |data|
       @sales_potential[data[0]] = product_sales_potentials.where(product_id:data[1].keys).sum(:sales_potential)
     end
     @product_sales_potentials = product_sales_potentials.map{|psp|[psp.product_id,psp.sales_potential]}.to_h
