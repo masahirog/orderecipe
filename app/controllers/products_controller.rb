@@ -2,6 +2,23 @@ class ProductsController < ApplicationController
   require 'net/https'
   require 'json'
 
+  def label
+    @product = Product.find(params[:id])
+    if params[:format] == 'csv'
+      @label_name = params[:label_name]
+      @number = params[:print_number].to_i
+      @sell_price = params[:sell_price]
+      @tax_including_sell_price = params[:tax_including_sell_price]
+    end
+    respond_to do |format|
+      format.html
+      format.csv do
+        send_data render_to_string, filename: "#{@product.food_label_name}.csv", type: :csv
+      end
+    end
+  end
+
+
   def include_menu
     @product_menus = ProductMenu.includes(:product).where(menu_id: params[:id]).page(params[:page]).per(20)
     menu = Menu.find(params[:id])

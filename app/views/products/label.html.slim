@@ -1,0 +1,33 @@
+h4 バーコード
+= form_tag label_products_path(format: :csv) do
+	= hidden_field_tag :id,@product.id
+	table.table
+		thead
+			tr
+				th スマレジコード
+				th 商品名
+				th 税
+				th 税抜価格
+				th 税込価格
+				th 枚数
+		tbody
+			tr
+				td = @product.smaregi_code
+				td = text_field_tag "label_name","#{@product.food_label_name}",class:'form-control',required:true
+				td.tax_rate = "8%"
+				td = number_field_tag "sell_price",@product.sell_price,class:'form-control sell_price',required:true
+				td = number_field_tag "tax_including_sell_price",@product.tax_including_sell_price,class:'form-control tax_including_sell_price',readonly:true,required:true
+				td = number_field_tag "print_number",1,class:'form-control print_number',required:true
+	= submit_tag "CSVダウンロード" ,class:"btn btn-primary pull-right"
+
+
+javascript:
+	$(".sell_price").on('change',function(){
+		var tr = $(this).parents('tr');
+		var sell_price = $(this).val();
+		if (tr.find(".tax_rate").text()=="8%") {
+			tr.find('.tax_including_sell_price').val(Math.floor(sell_price * 1.08 ));
+		}else{
+			tr.find('.tax_including_sell_price').val(Math.floor(sell_price * 1.1 ));
+		}
+	});

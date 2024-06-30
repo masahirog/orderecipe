@@ -281,6 +281,8 @@ Rails.application.routes.draw do
   end
   resources :products do
     collection do
+      get :label
+      post :label
       get :include_menu
       get :price_card
       get :store_price_card

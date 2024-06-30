@@ -18,6 +18,7 @@
 
   / = link_to '販売データ', product_sales_analyses_path(product_id:@product.id),class:'btn btn-primary', style:"margin:0 0 0 10px;float:left;"
 
+  = link_to "ラベル印刷",label_products_path(id:@product.id),class:'btn btn-default',style:'float:left;margin-left:10px;'
   - if @delete_flag == true
     = link_to "削除", @product, method: :delete,class:'btn btn-danger pull-right',data: { confirm: "ほんまに削除してええの？" },style:''
 
