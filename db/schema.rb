@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_06_23_053209) do
+ActiveRecord::Schema.define(version: 2024_07_01_023323) do
 
   create_table "analyses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "store_id"
@@ -1002,7 +1002,7 @@ ActiveRecord::Schema.define(version: 2024_06_23_053209) do
     t.index ["staff_id", "store_id"], name: "index_staff_stores_on_staff_id_and_store_id", unique: true
   end
 
-  create_table "staffs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "staffs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name", null: false
     t.text "memo"
     t.datetime "created_at", null: false
@@ -1015,6 +1015,7 @@ ActiveRecord::Schema.define(version: 2024_06_23_053209) do
     t.string "phone_number"
     t.integer "group_id", null: false
     t.string "short_name", null: false
+    t.string "slack_id"
   end
 
   create_table "stocks", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -1209,7 +1210,7 @@ ActiveRecord::Schema.define(version: 2024_06_23_053209) do
     t.index ["date", "menu_material_id"], name: "index_temporary_menu_materials_on_date_and_menu_material_id", unique: true
   end
 
-  create_table "temporary_product_menus", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "temporary_product_menus", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "daily_menu_detail_id", null: false
     t.bigint "product_menu_id", null: false
     t.integer "menu_id", null: false
@@ -1279,6 +1280,31 @@ ActiveRecord::Schema.define(version: 2024_06_23_053209) do
     t.string "name"
     t.string "delivery_able_wday", default: "0,1,2,3,4,5,6", null: false
     t.integer "user_id"
+  end
+
+  create_table "weekly_report_thanks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "weekly_report_id", null: false
+    t.bigint "staff_id", null: false
+    t.text "thanks"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["staff_id"], name: "index_weekly_report_thanks_on_staff_id"
+    t.index ["weekly_report_id"], name: "index_weekly_report_thanks_on_weekly_report_id"
+  end
+
+  create_table "weekly_reports", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "store_id", null: false
+    t.bigint "staff_id", null: false
+    t.date "date", null: false
+    t.text "goal"
+    t.text "plan"
+    t.text "do"
+    t.text "check"
+    t.text "action"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["staff_id"], name: "index_weekly_reports_on_staff_id"
+    t.index ["store_id"], name: "index_weekly_reports_on_store_id"
   end
 
   create_table "work_types", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|

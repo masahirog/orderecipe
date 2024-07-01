@@ -29,6 +29,11 @@
     = f.label :smaregi_hanbaiin_id, "スマレジ販売員ID"
     = f.text_field :smaregi_hanbaiin_id, class:"form-control"
   .form-group
+    = f.label :slack_id, "Slack UserID　"
+    = link_to "ID確認","https://scheduling.help.receptionist.jp/slack-id/#gsc.tab=0",target:'_blank'
+    = f.text_field :slack_id, class:"form-control"
+
+  .form-group
     = f.label :phone_number, "電話番号"
     = f.text_field :phone_number, class:"form-control"
   .form-group

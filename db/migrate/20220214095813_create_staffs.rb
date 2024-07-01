@@ -12,6 +12,7 @@ class CreateStaffs < ActiveRecord::Migration[5.2]
       t.string :phone_number
       t.integer :group_id,null:false
       t.string :short_name,null:false
+      t.string :slack_id
     end
   end
 end

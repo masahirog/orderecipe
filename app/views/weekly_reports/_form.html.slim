@@ -1,0 +1,142 @@
+.table-responsive style='overflow: scroll;'
+  table.table.layout-fixed
+    colgroup
+      col class="col1"
+      col class="col2"
+      col class="col3"
+    thead style='position: sticky;top:0;background-color:white;z-index:3;'
+      tr
+        th 店名
+        th 目標
+        th 進捗
+    tbody
+      tr
+        td キッチン
+        td
+          |・製造人件費：380万/月
+          br
+          |・食材原価率（包材なし）：27%
+          br
+          |・ヒット商品（3.5万円超/日）：5アイテム
+          br
+          |・B4B専門商品売上：100万
+
+        td
+      tr
+        td 東中野店
+        td
+          |・売上：
+          br
+          |・
+          br
+          |・
+
+        td
+      tr
+        td 新中野店
+        td
+          |・売上：
+          br
+          |・
+          br
+          |・
+        td
+      tr
+        td 新高円寺店
+        td
+          |・売上：
+          br
+          |・
+          br
+          |・
+        td
+      tr
+        td 沼袋店
+        td
+          |・売上：
+          br
+          |・
+          br
+          |・
+        td
+      tr
+        td 荻窪店
+        td
+          |・売上：
+          br
+          |・
+          br
+          |・
+        td
+             
+
+= form_with model: @weekly_report do |f|
+  .form-group
+    = f.label :staff_id, "スタッフ名",class:'required'
+    = f.collection_select :staff_id, @staffs, :id, :name, {include_blank:true},class:'form-control', required:true
+  .form-group
+    = f.label :store_id, "店舗",class:'required'
+    = f.collection_select :store_id, @stores, :id, :name, {include_blank:true},class:'form-control', required:true
+  .form-group
+    = f.label :date, "日付",class:'required'
+    = f.date_field :date,class:'form-control', required:true
+
+  / .form-group
+    = f.label :goal, "G：今月・今週のゴール"
+    = f.text_area :goal,class:'form-control'
+
+  .form-group
+    = f.label :plan, "P：今週の目標・計画"
+    = f.text_area :plan,class:'form-control', style:"height:10em;"
+
+  .form-group
+    = f.label :do, "D：実行したこと"
+    = f.text_area :do,class:'form-control', style:"height:10em;"
+
+  .form-group
+    = f.label :check, "C：振り返り・結果"
+    = f.text_area :check,class:'form-control', style:"height:10em;"
+
+  .form-group
+    = f.label :action, "A：次週の目標・計画"
+    = f.text_area :action,class:'form-control', style:"height:10em;"
+  
+  label 仲間へのありがとう
+  .form-group
+    ul.list-group#add_area
+      = f.fields_for :weekly_report_thanks do |wrt|
+        = render 'weekly_report_thank_fields', f:wrt
+    = link_to_add_association '追加', f, :weekly_report_thanks,class: 'btn btn-default',data: {association_insertion_node: '#add_area',association_insertion_method: 'append' }
+
+
+
+  .form-group
+    = f.label :slack_notify, "Slack通知"
+    = f.select :slack_notify,[["通知する",1],["通知しない",0]],{},class:'form-control'
+
+  .actions
+  = f.submit "保存する", data: { confirm: "確定する場合はSlackで通知してくださいね"} , class:"btn btn-primary"
+
+css:
+  .table-responsive th {
+    background-color:white;
+  }
+  table.layout-fixed {
+    table-layout: fixed;
+    border-collspace:separate;
+  }
+  .table th:first-child,td:first-child{
+    position: sticky;
+    left: 0;
+    background-color:white;
+  }
+  .col1{
+    width:100px;
+  }
+  .col2{
+    width:300px;
+  }
+  .col3{
+    width:200px;
+  }
+  

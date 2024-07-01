@@ -22,6 +22,7 @@ h3 = "#{@group.name}スタッフ一覧"
         th 状態
         th 社員番号
         th スマレジID
+        th SlackID
         th 電話
         th
           |並び順　
@@ -39,6 +40,7 @@ h3 = "#{@group.name}スタッフ一覧"
           td = staff.status
           td = staff.staff_code
           td = staff.smaregi_hanbaiin_id
+          td = staff.slack_id
           td = staff.phone_number
           td = number_field_tag "row[#{staff.id}]",{},class:'input_row_order form-control',style:'width:60px;',readonly:true
 javascript:

@@ -47,6 +47,7 @@ html lang="ja"
                     ul.dropdown-menu role="menu" style='width:250px;'
                       h5 style='padding:0 10px;font-weight:bold;' べじはん
                       li = link_to "べじはん献立",daily_menus_path
+                      li = link_to '店舗へのインフォメーション',to_store_messages_path
                       li = link_to "一時的なメニュー変更",temporary_product_menus_path
                       li = link_to "一時的な食材変更",temporary_menu_materials_path
                       li = link_to "各店舗発注品",bejihan_store_orders_list_orders_path(date:@today)
@@ -76,7 +77,7 @@ html lang="ja"
                       li = link_to "キッチン設定",edit_store_path(id:39)
                       li = link_to "全店舗一覧",stores_path()
                       li = link_to "SKY月間",sky_monthly_orders_path()
-
+                      li = link_to "週次レポート",new_weekly_report_path()
                   li.dropdown
                     a.dropdown-toggle href="#" data-toggle="dropdown" role="button"
                       |レシピ
@@ -106,15 +107,15 @@ html lang="ja"
                     ul.dropdown-menu role="menu" style='width:250px;'
                       li = link_to '出勤スタッフ一覧',date_attendance_staffs_path(date:@today)
                       li = link_to '柴田屋オーダー',pre_orders_path
-                      li = link_to '店舗へのインフォメーション',to_store_messages_path
                       li = link_to 'メニュー表',monthly_menus_daily_menus_path
-                      li = link_to '販売レポート',select_store_sales_reports_path
+                      li = link_to '日報',select_store_sales_reports_path
                       li = link_to "お客さまの声",customer_opinions_path
                       li = link_to "試食コメント",weekly_tastings_path(date:@today)
                       li = link_to 'シフト',shifts_path(date:@today,store_type:0)
                       li = link_to 'BejihanBook',manual_directories_path
                       li = link_to 'リマインダーテンプレート',reminder_templates_path(store_type:0)
                       li = link_to '掃除テンプレート',reminder_templates_path(category:'clean',store_type:0)
+                      li = link_to "週次レポート",new_weekly_report_path()
                   li.dropdown
                     a.dropdown-toggle href="#" data-toggle="dropdown" role="button"
                       |物販
@@ -147,7 +148,7 @@ html lang="ja"
                       li = link_to "LTVデータ",ltv_data_analyses_path
                       li = link_to "商品リピート",product_repeat_analyses_path
                       li = link_to "スタッフ",staffs_analyses_path
-
+                      li = link_to "週次レポート",weekly_reports_path()
                   li.dropdown
                     a.dropdown-toggle href="#" data-toggle="dropdown" role="button"
                       |設定

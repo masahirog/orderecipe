@@ -73,6 +73,7 @@ Rails.application.routes.draw do
       get :get_common_product_part
     end
   end
+  resources :weekly_reports
   resources :item_expiration_dates
   resources :item_store_stocks do
     collection do
