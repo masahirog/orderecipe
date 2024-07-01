@@ -27,352 +27,352 @@ class AnalysesController < AdminController
     end
   end
   def kpi
-    if params[:month].present?
-      @date = "#{params[:month]}-01".to_date
-      @month = params[:month]
-    else
-      @date = @today
-      @month = "#{@date.year}-#{sprintf("%02d",@date.month)}"
-    end
-    prev_month_date = @date.prev_month
-    prev_year_date = @date.prev_year
-    dates =(@date.beginning_of_month..@date.end_of_month).to_a
-    prev_month_dates = (prev_month_date.beginning_of_month..prev_month_date.end_of_month).to_a
-    prev_year_dates =(prev_year_date.beginning_of_month..prev_year_date.end_of_month).to_a
+    # if params[:month].present?
+    #   @date = "#{params[:month]}-01".to_date
+    #   @month = params[:month]
+    # else
+    #   @date = @today
+    #   @month = "#{@date.year}-#{sprintf("%02d",@date.month)}"
+    # end
+    # prev_month_date = @date.prev_month
+    # prev_year_date = @date.prev_year
+    # dates =(@date.beginning_of_month..@date.end_of_month).to_a
+    # prev_month_dates = (prev_month_date.beginning_of_month..prev_month_date.end_of_month).to_a
+    # prev_year_dates =(prev_year_date.beginning_of_month..prev_year_date.end_of_month).to_a
 
-    @store_daily_menus = StoreDailyMenu.where(start_time:dates)
-    prev_month_store_daily_menus = StoreDailyMenu.where(start_time:prev_month_dates)
-    prev_year_store_daily_menus = StoreDailyMenu.where(start_time:prev_year_dates)
+    # @store_daily_menus = StoreDailyMenu.where(start_time:dates)
+    # prev_month_store_daily_menus = StoreDailyMenu.where(start_time:prev_month_dates)
+    # prev_year_store_daily_menus = StoreDailyMenu.where(start_time:prev_year_dates)
     
-    @foods_budgets = @store_daily_menus.group(:store_id).sum(:foods_budget)
-    @goods_budgets = @store_daily_menus.group(:store_id).sum(:goods_budget)
-    @prev_month_foods_budgets = prev_month_store_daily_menus.group(:store_id).sum(:foods_budget)
-    @prev_month_goods_budgets = prev_month_store_daily_menus.group(:store_id).sum(:goods_budget)
-    @prev_year_foods_budgets = prev_year_store_daily_menus.group(:store_id).sum(:foods_budget)
-    @prev_year_goods_budgets = prev_year_store_daily_menus.group(:store_id).sum(:goods_budget)
+    # @foods_budgets = @store_daily_menus.group(:store_id).sum(:foods_budget)
+    # @goods_budgets = @store_daily_menus.group(:store_id).sum(:goods_budget)
+    # @prev_month_foods_budgets = prev_month_store_daily_menus.group(:store_id).sum(:foods_budget)
+    # @prev_month_goods_budgets = prev_month_store_daily_menus.group(:store_id).sum(:goods_budget)
+    # @prev_year_foods_budgets = prev_year_store_daily_menus.group(:store_id).sum(:foods_budget)
+    # @prev_year_goods_budgets = prev_year_store_daily_menus.group(:store_id).sum(:goods_budget)
 
 
-    analyses = Analysis.where(date:dates).where('transaction_count > ?',0)
-    prev_month_analyses = Analysis.where(date:prev_month_dates).where('transaction_count > ?',0)
-    prev_year_analyses = Analysis.where(date:prev_year_dates).where('transaction_count > ?',0)
+    # analyses = Analysis.where(date:dates).where('transaction_count > ?',0)
+    # prev_month_analyses = Analysis.where(date:prev_month_dates).where('transaction_count > ?',0)
+    # prev_year_analyses = Analysis.where(date:prev_year_dates).where('transaction_count > ?',0)
 
-    @stores_count = analyses.group(:store_id).count
-    prev_month_stores_count = prev_month_analyses.group(:store_id).count
-    prev_year_stores_count = prev_year_analyses.group(:store_id).count
+    # @stores_count = analyses.group(:store_id).count
+    # prev_month_stores_count = prev_month_analyses.group(:store_id).count
+    # prev_year_stores_count = prev_year_analyses.group(:store_id).count
 
-    @store_bumon_sales = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    @prev_month_store_bumon_sales = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    @prev_year_store_bumon_sales = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    # @store_bumon_sales = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    # @prev_month_store_bumon_sales = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    # @prev_year_store_bumon_sales = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     
-    [:sozai,:bento,:other,:vege,:good].each do |category|
-      @store_bumon_sales[category][:total] = 0
-      @prev_month_store_bumon_sales[category][:total] = 0
-      @prev_year_store_bumon_sales[category][:total] = 0
-    end
+    # [:sozai,:bento,:other,:vege,:good].each do |category|
+    #   @store_bumon_sales[category][:total] = 0
+    #   @prev_month_store_bumon_sales[category][:total] = 0
+    #   @prev_year_store_bumon_sales[category][:total] = 0
+    # end
 
-    store_sales = AnalysisCategory.where(analysis_id:analyses.ids).joins(:analysis).group('analyses.store_id').group(:smaregi_bumon_id).sum(:ex_tax_sales_amount)
-    prev_month_store_sales = AnalysisCategory.where(analysis_id:prev_month_analyses.ids).joins(:analysis).group('analyses.store_id').group(:smaregi_bumon_id).sum(:ex_tax_sales_amount)
-    prev_year_store_sales = AnalysisCategory.where(analysis_id:prev_year_analyses.ids).joins(:analysis).group('analyses.store_id').group(:smaregi_bumon_id).sum(:ex_tax_sales_amount)
+    # store_sales = AnalysisCategory.where(analysis_id:analyses.ids).joins(:analysis).group('analyses.store_id').group(:smaregi_bumon_id).sum(:ex_tax_sales_amount)
+    # prev_month_store_sales = AnalysisCategory.where(analysis_id:prev_month_analyses.ids).joins(:analysis).group('analyses.store_id').group(:smaregi_bumon_id).sum(:ex_tax_sales_amount)
+    # prev_year_store_sales = AnalysisCategory.where(analysis_id:prev_year_analyses.ids).joins(:analysis).group('analyses.store_id').group(:smaregi_bumon_id).sum(:ex_tax_sales_amount)
 
-    store_sales.keys.map{|store_bumon|store_bumon[0]}.uniq.each do |store_id|
-      [:sozai,:bento,:other,:vege,:good].each do |category|
-        @store_bumon_sales[category][:stores][store_id][:amount] = 0
-      end
-    end
+    # store_sales.keys.map{|store_bumon|store_bumon[0]}.uniq.each do |store_id|
+    #   [:sozai,:bento,:other,:vege,:good].each do |category|
+    #     @store_bumon_sales[category][:stores][store_id][:amount] = 0
+    #   end
+    # end
 
-    prev_month_store_sales.keys.map{|store_bumon|store_bumon[0]}.uniq.each do |store_id|
-      [:sozai,:bento,:other,:vege,:good].each do |category|
-        @prev_month_store_bumon_sales[category][:stores][store_id][:amount] = 0
-      end
-    end
+    # prev_month_store_sales.keys.map{|store_bumon|store_bumon[0]}.uniq.each do |store_id|
+    #   [:sozai,:bento,:other,:vege,:good].each do |category|
+    #     @prev_month_store_bumon_sales[category][:stores][store_id][:amount] = 0
+    #   end
+    # end
 
-    prev_year_store_sales.keys.map{|store_bumon|store_bumon[0]}.uniq.each do |store_id|
-      [:sozai,:bento,:other,:vege,:good].each do |category|
-        @prev_year_store_bumon_sales[category][:stores][store_id][:amount] = 0
-      end
-    end
+    # prev_year_store_sales.keys.map{|store_bumon|store_bumon[0]}.uniq.each do |store_id|
+    #   [:sozai,:bento,:other,:vege,:good].each do |category|
+    #     @prev_year_store_bumon_sales[category][:stores][store_id][:amount] = 0
+    #   end
+    # end
 
-    @store_chakuchi = {}
-    @prev_month_store_chakuchi = {}
-    @prev_year_store_chakuchi = {}
-    test(store_sales,@store_bumon_sales,@store_chakuchi,@stores_count,dates)
-    test(prev_month_store_sales,@prev_month_store_bumon_sales,@prev_month_store_chakuchi,prev_month_stores_count,prev_month_dates)
-    test(prev_year_store_sales,@prev_year_store_bumon_sales,@prev_year_store_chakuchi,prev_year_stores_count,prev_year_dates)
-    if params[:to]
-      @to = params[:to].to_date
-    else
-      @to = Date.today
-    end
-    if params[:from]
-      @from = params[:from].to_date
-    else
-      @from = @to - 30
-    end
-    @dates =(@from..@to).to_a
-    @analyses = Analysis.where(date:@dates).where('transaction_count > ?',0)
-    @days = @dates.count
-    @stores = current_user.group.stores.where(store_type:0)
-    @store_analyses = @analyses.includes(:store_daily_menu).map{|analysis|[[analysis.store_daily_menu.start_time,analysis.store_daily_menu.store_id],analysis]}.to_h
-    @date_analyses = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    @date_store_analyses = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    @analyses.each do |analysis|
-      @date_store_analyses[analysis.date][analysis.store_id][:sales_amount] = analysis.ex_tax_sales_amount
-      @date_store_analyses[analysis.date][analysis.store_id][:discount_amount] = analysis.discount_amount
-      @date_store_analyses[analysis.date][analysis.store_id][:loss_amount] = analysis.loss_amount
-      @date_store_analyses[analysis.date][analysis.store_id][:transaction_count] = analysis.transaction_count
-      @date_store_analyses[analysis.date][analysis.store_id][:sales_number] = analysis.total_sozai_sales_number
-      @date_store_analyses[analysis.date][analysis.store_id][:souzai_sales_amount] = analysis.analysis_categories.where(smaregi_bumon_id:[1,8]).sum(:ex_tax_sales_amount)
-    end
-    @date_sales = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    AnalysisCategory.includes(:analysis).where(analysis_id:@analyses.ids).each do |ac|
-      if [14,15,16,17,18].include?(ac.smaregi_bumon_id)
-        if @date_sales[ac.analysis.store_id][ac.analysis.date][:good].present?
-          @date_sales[ac.analysis.store_id][ac.analysis.date][:good] += ac.ex_tax_sales_amount
-        else
-          @date_sales[ac.analysis.store_id][ac.analysis.date][:good] = ac.ex_tax_sales_amount
-        end
-      else
-        if @date_sales[ac.analysis.store_id][ac.analysis.date][:souzai].present?
-          @date_sales[ac.analysis.store_id][ac.analysis.date][:souzai] += ac.ex_tax_sales_amount
-        else
-          @date_sales[ac.analysis.store_id][ac.analysis.date][:souzai] = ac.ex_tax_sales_amount
-        end
-      end
-    end
-    gon.sales_dates = @dates
-    souzai_datas = []
-    souzai_uriage_datas = []
-    colors = ['#46B061','#FBC527','#4F8DF5','#E64C3F','#FD7610']
-    if params[:last_to]
-      @last_to =  params[:last_to]
-    else
-      @last_to =  @from - 1
-    end
-    if params[:last_from]
-      @last_from =  params[:last_from]
-    else
-      @last_from = @last_to - @days
-    end
-    last_period = (@last_from..@last_to)
-    last_analyses = Analysis.where(date:last_period).where('transaction_count > ?',0)
-    last_average_sales_datas = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    last_analyses.each do |analysis|
-      if last_average_sales_datas[analysis.store_id][analysis.date.wday].present?
-        # last_average_sales_datas[analysis.store_id][analysis.date.wday][:souzai_sales_number] += analysis.total_sozai_sales_number
-        last_average_sales_datas[analysis.store_id][analysis.date.wday][:souzai_sales_amount] += analysis.analysis_categories.where(smaregi_bumon_id:[1,8]).sum(:ex_tax_sales_amount)
-        last_average_sales_datas[analysis.store_id][analysis.date.wday][:count] += 1
-      else
-        # last_average_sales_datas[analysis.store_id][analysis.date.wday][:souzai_sales_number] = analysis.total_sozai_sales_number
-        last_average_sales_datas[analysis.store_id][analysis.date.wday][:souzai_sales_amount] = analysis.analysis_categories.where(smaregi_bumon_id:[1,8]).sum(:ex_tax_sales_amount)
-        last_average_sales_datas[analysis.store_id][analysis.date.wday][:count] = 1
-      end
-    end
-    last_average_sales_datas.each do |data|
-      data[1].each do |data_more|
-        # last_average_sales_datas[data[0]][data_more[0]][:average] = (data_more[1][:souzai_sales_number].to_f/data_more[1][:count]).round(2)
-        last_average_sales_datas[data[0]][data_more[0]][:average_sales] = (data_more[1][:souzai_sales_amount].to_f/data_more[1][:count]).round(2)
-      end
-    end
-    @stores.each_with_index do |store,i|
-      souzai_uriage_data = []
-      @dates.sort.each do |date|
-        if @date_store_analyses[date][store.id].present?
-          if last_average_sales_datas[store.id][date.wday].present?
-            souzai_uriage_data << (@date_store_analyses[date][store.id][:souzai_sales_amount]/last_average_sales_datas[store.id][date.wday][:average_sales]*100).round
-          end
-        else
-          @date_store_analyses[date].delete(store.id)
-        end
-      end
-      souzai_uriage_datas << {
-        type: 'line',
-        label: store.short_name,
-        data: souzai_uriage_data,
-        backgroundColor: colors[i],
-        borderColor: colors[i],
-        fill: false,
-        stacked: false,
-        yAxisID: "y-axis-2",
-        # lineTension: 0.2,
-        pointRadius: 3
-      }
-    end
-    souzai_uriage_datas << {
-      type: 'line',
-      data: Array.new(@days,100),
-      backgroundColor: 'black',
-      borderColor: 'black',
-      fill: false,
-      stacked: false,
-      yAxisID: "y-axis-2",
-      pointRadius: 0
-    }
-    gon.souzai_datas = souzai_datas
-    gon.souzai_uriage_datas = souzai_uriage_datas
-
-
-    @weekly_clean_reminder_templates = ReminderTemplate.where(category:1,repeat_type:11)
-    @monthly_clean_reminder_templates = ReminderTemplate.where(category:1,repeat_type:12)
-    @weekly_clean_reminders = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    @monthly_clean_reminders = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    @reminders_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    @period_reminders_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    @weekly_clean_dates = []
-    Reminder.where(reminder_template_id:@weekly_clean_reminder_templates.ids,action_date:@dates,category:1).each do |reminder|
-      if @weekly_clean_reminders[reminder.store_id][reminder.action_date][reminder.status].present?
-        @weekly_clean_reminders[reminder.store_id][reminder.action_date][reminder.status] += 1
-      else
-        @weekly_clean_reminders[reminder.store_id][reminder.action_date][reminder.status] = 1
-      end
-      if @weekly_clean_reminders[reminder.store_id][reminder.action_date][:all].present?
-        @weekly_clean_reminders[reminder.store_id][reminder.action_date][:all] += 1
-      else
-        @weekly_clean_reminders[reminder.store_id][reminder.action_date][:all] = 1
-      end
-      @weekly_clean_dates << reminder.action_date
-    end
-    @weekly_clean_dates = @weekly_clean_dates.uniq.sort
-    Reminder.where(reminder_template_id:@monthly_clean_reminder_templates.ids,action_date:dates,category:1).each do |reminder|
-      if @monthly_clean_reminders[reminder.store_id][reminder.status].present?
-        @monthly_clean_reminders[reminder.store_id][reminder.status] += 1
-      else
-        @monthly_clean_reminders[reminder.store_id][reminder.status] = 1
-      end
-      if @monthly_clean_reminders[reminder.store_id][:all].present?
-        @monthly_clean_reminders[reminder.store_id][:all] += 1
-      else
-        @monthly_clean_reminders[reminder.store_id][:all] = 1
-      end
-    end
-
-    Reminder.where(action_date:dates,category:0).each do |reminder|
-      if @reminders_hash[reminder.store_id][:monthly][reminder.status].present?
-        @reminders_hash[reminder.store_id][:monthly][reminder.status] += 1
-      else
-        @reminders_hash[reminder.store_id][:monthly][reminder.status] = 1
-      end
-      if @reminders_hash[reminder.store_id][reminder.action_date][reminder.status].present?
-        @reminders_hash[reminder.store_id][reminder.action_date][reminder.status] += 1
-      else
-        @reminders_hash[reminder.store_id][reminder.action_date][reminder.status] = 1
-      end
-      if @reminders_hash[reminder.store_id][:monthly][:all].present?
-        @reminders_hash[reminder.store_id][:monthly][:all] += 1
-      else
-        @reminders_hash[reminder.store_id][:monthly][:all] = 1
-      end
-      if @reminders_hash[reminder.store_id][reminder.action_date][:all].present?
-        @reminders_hash[reminder.store_id][reminder.action_date][:all] += 1
-      else
-        @reminders_hash[reminder.store_id][reminder.action_date][:all] = 1
-      end
-    end
-    Reminder.where(action_date:@dates,category:0).each do |reminder|
-      if @period_reminders_hash[reminder.store_id][:monthly][reminder.status].present?
-        @period_reminders_hash[reminder.store_id][:monthly][reminder.status] += 1
-      else
-        @period_reminders_hash[reminder.store_id][:monthly][reminder.status] = 1
-      end
-      if @period_reminders_hash[reminder.store_id][reminder.action_date][reminder.status].present?
-        @period_reminders_hash[reminder.store_id][reminder.action_date][reminder.status] += 1
-      else
-        @period_reminders_hash[reminder.store_id][reminder.action_date][reminder.status] = 1
-      end
-
-      if reminder.important_status.present?
-        if @period_reminders_hash[reminder.store_id][reminder.action_date][:important_status][reminder.important_status].present?
-          @period_reminders_hash[reminder.store_id][reminder.action_date][:important_status][reminder.important_status] += 1
-        else
-          @period_reminders_hash[reminder.store_id][reminder.action_date][:important_status][reminder.important_status] = 1
-        end
-      end
-
-      if @period_reminders_hash[reminder.store_id][:monthly][:all].present?
-        @period_reminders_hash[reminder.store_id][:monthly][:all] += 1
-      else
-        @period_reminders_hash[reminder.store_id][:monthly][:all] = 1
-      end
-      if @period_reminders_hash[reminder.store_id][reminder.action_date][:all].present?
-        @period_reminders_hash[reminder.store_id][reminder.action_date][:all] += 1
-      else
-        @period_reminders_hash[reminder.store_id][reminder.action_date][:all] = 1
-      end
-    end
-
-    @shifts = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    Shift.includes(:staff).where(date:@dates,fix_shift_pattern_id:254).each do |shift|
-      if shift.present?
-        @shifts[shift.store_id][shift.date] = shift.staff.short_name
-      else
-        @shifts[shift.store_id][shift.date] = ""
-      end
-    end
-
-    @kaiin_datas = SmaregiMember.where(nyukaibi:@dates).group(:main_use_store,:nyukaibi).count
-    @stores_henkan = {"9"=>"higashi_nakano","19"=>"shin_nakano","29"=>'shinkoenji',"154"=>"numabukuro","164"=>"ogikubo"}
+    # @store_chakuchi = {}
+    # @prev_month_store_chakuchi = {}
+    # @prev_year_store_chakuchi = {}
+    # test(store_sales,@store_bumon_sales,@store_chakuchi,@stores_count,dates)
+    # test(prev_month_store_sales,@prev_month_store_bumon_sales,@prev_month_store_chakuchi,prev_month_stores_count,prev_month_dates)
+    # test(prev_year_store_sales,@prev_year_store_bumon_sales,@prev_year_store_chakuchi,prev_year_stores_count,prev_year_dates)
+    # if params[:to]
+    #   @to = params[:to].to_date
+    # else
+    #   @to = Date.today
+    # end
+    # if params[:from]
+    #   @from = params[:from].to_date
+    # else
+    #   @from = @to - 30
+    # end
+    # @dates =(@from..@to).to_a
+    # @analyses = Analysis.where(date:@dates).where('transaction_count > ?',0)
+    # @days = @dates.count
+    # @stores = current_user.group.stores.where(store_type:0)
+    # @store_analyses = @analyses.includes(:store_daily_menu).map{|analysis|[[analysis.store_daily_menu.start_time,analysis.store_daily_menu.store_id],analysis]}.to_h
+    # @date_analyses = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    # @date_store_analyses = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    # @analyses.each do |analysis|
+    #   @date_store_analyses[analysis.date][analysis.store_id][:sales_amount] = analysis.ex_tax_sales_amount
+    #   @date_store_analyses[analysis.date][analysis.store_id][:discount_amount] = analysis.discount_amount
+    #   @date_store_analyses[analysis.date][analysis.store_id][:loss_amount] = analysis.loss_amount
+    #   @date_store_analyses[analysis.date][analysis.store_id][:transaction_count] = analysis.transaction_count
+    #   @date_store_analyses[analysis.date][analysis.store_id][:sales_number] = analysis.total_sozai_sales_number
+    #   @date_store_analyses[analysis.date][analysis.store_id][:souzai_sales_amount] = analysis.analysis_categories.where(smaregi_bumon_id:[1,8]).sum(:ex_tax_sales_amount)
+    # end
+    # @date_sales = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    # AnalysisCategory.includes(:analysis).where(analysis_id:@analyses.ids).each do |ac|
+    #   if [14,15,16,17,18].include?(ac.smaregi_bumon_id)
+    #     if @date_sales[ac.analysis.store_id][ac.analysis.date][:good].present?
+    #       @date_sales[ac.analysis.store_id][ac.analysis.date][:good] += ac.ex_tax_sales_amount
+    #     else
+    #       @date_sales[ac.analysis.store_id][ac.analysis.date][:good] = ac.ex_tax_sales_amount
+    #     end
+    #   else
+    #     if @date_sales[ac.analysis.store_id][ac.analysis.date][:souzai].present?
+    #       @date_sales[ac.analysis.store_id][ac.analysis.date][:souzai] += ac.ex_tax_sales_amount
+    #     else
+    #       @date_sales[ac.analysis.store_id][ac.analysis.date][:souzai] = ac.ex_tax_sales_amount
+    #     end
+    #   end
+    # end
+    # gon.sales_dates = @dates
+    # souzai_datas = []
+    # souzai_uriage_datas = []
+    # colors = ['#46B061','#FBC527','#4F8DF5','#E64C3F','#FD7610']
+    # if params[:last_to]
+    #   @last_to =  params[:last_to]
+    # else
+    #   @last_to =  @from - 1
+    # end
+    # if params[:last_from]
+    #   @last_from =  params[:last_from]
+    # else
+    #   @last_from = @last_to - @days
+    # end
+    # last_period = (@last_from..@last_to)
+    # last_analyses = Analysis.where(date:last_period).where('transaction_count > ?',0)
+    # last_average_sales_datas = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    # last_analyses.each do |analysis|
+    #   if last_average_sales_datas[analysis.store_id][analysis.date.wday].present?
+    #     # last_average_sales_datas[analysis.store_id][analysis.date.wday][:souzai_sales_number] += analysis.total_sozai_sales_number
+    #     last_average_sales_datas[analysis.store_id][analysis.date.wday][:souzai_sales_amount] += analysis.analysis_categories.where(smaregi_bumon_id:[1,8]).sum(:ex_tax_sales_amount)
+    #     last_average_sales_datas[analysis.store_id][analysis.date.wday][:count] += 1
+    #   else
+    #     # last_average_sales_datas[analysis.store_id][analysis.date.wday][:souzai_sales_number] = analysis.total_sozai_sales_number
+    #     last_average_sales_datas[analysis.store_id][analysis.date.wday][:souzai_sales_amount] = analysis.analysis_categories.where(smaregi_bumon_id:[1,8]).sum(:ex_tax_sales_amount)
+    #     last_average_sales_datas[analysis.store_id][analysis.date.wday][:count] = 1
+    #   end
+    # end
+    # last_average_sales_datas.each do |data|
+    #   data[1].each do |data_more|
+    #     # last_average_sales_datas[data[0]][data_more[0]][:average] = (data_more[1][:souzai_sales_number].to_f/data_more[1][:count]).round(2)
+    #     last_average_sales_datas[data[0]][data_more[0]][:average_sales] = (data_more[1][:souzai_sales_amount].to_f/data_more[1][:count]).round(2)
+    #   end
+    # end
+    # @stores.each_with_index do |store,i|
+    #   souzai_uriage_data = []
+    #   @dates.sort.each do |date|
+    #     if @date_store_analyses[date][store.id].present?
+    #       if last_average_sales_datas[store.id][date.wday].present?
+    #         souzai_uriage_data << (@date_store_analyses[date][store.id][:souzai_sales_amount]/last_average_sales_datas[store.id][date.wday][:average_sales]*100).round
+    #       end
+    #     else
+    #       @date_store_analyses[date].delete(store.id)
+    #     end
+    #   end
+    #   souzai_uriage_datas << {
+    #     type: 'line',
+    #     label: store.short_name,
+    #     data: souzai_uriage_data,
+    #     backgroundColor: colors[i],
+    #     borderColor: colors[i],
+    #     fill: false,
+    #     stacked: false,
+    #     yAxisID: "y-axis-2",
+    #     # lineTension: 0.2,
+    #     pointRadius: 3
+    #   }
+    # end
+    # souzai_uriage_datas << {
+    #   type: 'line',
+    #   data: Array.new(@days,100),
+    #   backgroundColor: 'black',
+    #   borderColor: 'black',
+    #   fill: false,
+    #   stacked: false,
+    #   yAxisID: "y-axis-2",
+    #   pointRadius: 0
+    # }
+    # gon.souzai_datas = souzai_datas
+    # gon.souzai_uriage_datas = souzai_uriage_datas
 
 
-    @daily_items = DailyItem.where(date:dates,purpose:"物販")
-    @category_sum = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    @buppan_sum = {"estimated_sales_sum"=>0,"subtotal_price_sum"=>0,"arari_sum"=>0,"purchase_price_sum"=>0,"delivery_fee_sum"=>0}
-    ["野菜","果実","物産品","送料"].each do |category|
-      item_varieties = ItemVariety.joins(:item_type).where(:item_types => {category:category})
-      items = Item.where(item_variety_id:item_varieties.ids)
-      daily_items = @daily_items.where(item_id:items.ids)
-      subtotal_price_sum = daily_items.sum(:subtotal_price)
-      delivery_fee_sum = daily_items.sum(:delivery_fee)
-      purchase_price_sum = daily_items.map{|di|di.purchase_price * di.delivery_amount}.sum
-      estimated_sales = daily_items.sum(:estimated_sales)
-      arari = estimated_sales - subtotal_price_sum
-      @buppan_sum["estimated_sales_sum"] += estimated_sales
-      @buppan_sum["subtotal_price_sum"] += subtotal_price_sum
-      @buppan_sum["purchase_price_sum"] += purchase_price_sum
-      @buppan_sum["delivery_fee_sum"] += delivery_fee_sum
-      @buppan_sum["arari_sum"] += arari
-      @category_sum[category]["estimated_sales_sum"] = estimated_sales
-      @category_sum[category]["purchase_price_sum"] = purchase_price_sum
-      @category_sum[category]["delivery_fee_sum"] = delivery_fee_sum
-      @category_sum[category]["subtotal_price_sum"] = subtotal_price_sum
-      @category_sum[category]["arari_sum"] = arari
-      @category_sum[category]["arari_rate"] = (arari/estimated_sales.to_f*100).round(1) if estimated_sales > 0
-    end
-    sales_reports = SalesReport.where(date:@dates)
-    @sales_reports = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    sales_reports.each do |sr|
-      @sales_reports[sr.date][sr.store_id][:opot] = sr.one_pair_one_talk
-      @sales_reports[sr.date][sr.store_id][:tasting] = sr.tasting_number
-    end
+    # @weekly_clean_reminder_templates = ReminderTemplate.where(category:1,repeat_type:11)
+    # @monthly_clean_reminder_templates = ReminderTemplate.where(category:1,repeat_type:12)
+    # @weekly_clean_reminders = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    # @monthly_clean_reminders = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    # @reminders_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    # @period_reminders_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    # @weekly_clean_dates = []
+    # Reminder.where(reminder_template_id:@weekly_clean_reminder_templates.ids,action_date:@dates,category:1).each do |reminder|
+    #   if @weekly_clean_reminders[reminder.store_id][reminder.action_date][reminder.status].present?
+    #     @weekly_clean_reminders[reminder.store_id][reminder.action_date][reminder.status] += 1
+    #   else
+    #     @weekly_clean_reminders[reminder.store_id][reminder.action_date][reminder.status] = 1
+    #   end
+    #   if @weekly_clean_reminders[reminder.store_id][reminder.action_date][:all].present?
+    #     @weekly_clean_reminders[reminder.store_id][reminder.action_date][:all] += 1
+    #   else
+    #     @weekly_clean_reminders[reminder.store_id][reminder.action_date][:all] = 1
+    #   end
+    #   @weekly_clean_dates << reminder.action_date
+    # end
+    # @weekly_clean_dates = @weekly_clean_dates.uniq.sort
+    # Reminder.where(reminder_template_id:@monthly_clean_reminder_templates.ids,action_date:dates,category:1).each do |reminder|
+    #   if @monthly_clean_reminders[reminder.store_id][reminder.status].present?
+    #     @monthly_clean_reminders[reminder.store_id][reminder.status] += 1
+    #   else
+    #     @monthly_clean_reminders[reminder.store_id][reminder.status] = 1
+    #   end
+    #   if @monthly_clean_reminders[reminder.store_id][:all].present?
+    #     @monthly_clean_reminders[reminder.store_id][:all] += 1
+    #   else
+    #     @monthly_clean_reminders[reminder.store_id][:all] = 1
+    #   end
+    # end
 
-    @group = Group.find(9)
-    store_ids = @group.stores.where(store_type:'sales').ids
-    @fix_shift_patterns = FixShiftPattern.where(group_id:@group.id)
-    StaffStore.where(store_id:store_ids)
-    @staffs = Staff.joins(:staff_stores).where(status:0,:staff_stores => {store_id:store_ids}).order(:row).uniq
-    @jobcounts = Shift.where(date:@from..@to).joins(:fix_shift_pattern).where.not(:fix_shift_patterns => {working_hour:0}).group(:staff_id).count
-    @clean_done = Reminder.where(category:1).where(action_date:@from..@to).group(:do_staff).count
-    smaregi_members = SmaregiMember.where(nyukaibi:@from..@to)
-    kaiin_ids = smaregi_members.map{|sm|sm.kaiin_id}
-    @hash = {}
-    SmaregiTradingHistory.order("date desc").where(kaiin_id:kaiin_ids).where(date:@from..@to).where(torihikimeisai_id:1).each do |sth|
-      @hash[sth.kaiin_id] = sth
-    end
-    @staff_sinki_kaiin = {}
-    @hash.values.each do |sth|
-      if @staff_sinki_kaiin[sth.hanbaiin_id].present?
-        @staff_sinki_kaiin[sth.hanbaiin_id] += 1
-      else
-        @staff_sinki_kaiin[sth.hanbaiin_id] = 1
-      end
-    end
+    # Reminder.where(action_date:dates,category:0).each do |reminder|
+    #   if @reminders_hash[reminder.store_id][:monthly][reminder.status].present?
+    #     @reminders_hash[reminder.store_id][:monthly][reminder.status] += 1
+    #   else
+    #     @reminders_hash[reminder.store_id][:monthly][reminder.status] = 1
+    #   end
+    #   if @reminders_hash[reminder.store_id][reminder.action_date][reminder.status].present?
+    #     @reminders_hash[reminder.store_id][reminder.action_date][reminder.status] += 1
+    #   else
+    #     @reminders_hash[reminder.store_id][reminder.action_date][reminder.status] = 1
+    #   end
+    #   if @reminders_hash[reminder.store_id][:monthly][:all].present?
+    #     @reminders_hash[reminder.store_id][:monthly][:all] += 1
+    #   else
+    #     @reminders_hash[reminder.store_id][:monthly][:all] = 1
+    #   end
+    #   if @reminders_hash[reminder.store_id][reminder.action_date][:all].present?
+    #     @reminders_hash[reminder.store_id][reminder.action_date][:all] += 1
+    #   else
+    #     @reminders_hash[reminder.store_id][reminder.action_date][:all] = 1
+    #   end
+    # end
+    # Reminder.where(action_date:@dates,category:0).each do |reminder|
+    #   if @period_reminders_hash[reminder.store_id][:monthly][reminder.status].present?
+    #     @period_reminders_hash[reminder.store_id][:monthly][reminder.status] += 1
+    #   else
+    #     @period_reminders_hash[reminder.store_id][:monthly][reminder.status] = 1
+    #   end
+    #   if @period_reminders_hash[reminder.store_id][reminder.action_date][reminder.status].present?
+    #     @period_reminders_hash[reminder.store_id][reminder.action_date][reminder.status] += 1
+    #   else
+    #     @period_reminders_hash[reminder.store_id][reminder.action_date][reminder.status] = 1
+    #   end
+
+    #   if reminder.important_status.present?
+    #     if @period_reminders_hash[reminder.store_id][reminder.action_date][:important_status][reminder.important_status].present?
+    #       @period_reminders_hash[reminder.store_id][reminder.action_date][:important_status][reminder.important_status] += 1
+    #     else
+    #       @period_reminders_hash[reminder.store_id][reminder.action_date][:important_status][reminder.important_status] = 1
+    #     end
+    #   end
+
+    #   if @period_reminders_hash[reminder.store_id][:monthly][:all].present?
+    #     @period_reminders_hash[reminder.store_id][:monthly][:all] += 1
+    #   else
+    #     @period_reminders_hash[reminder.store_id][:monthly][:all] = 1
+    #   end
+    #   if @period_reminders_hash[reminder.store_id][reminder.action_date][:all].present?
+    #     @period_reminders_hash[reminder.store_id][reminder.action_date][:all] += 1
+    #   else
+    #     @period_reminders_hash[reminder.store_id][reminder.action_date][:all] = 1
+    #   end
+    # end
+
+    # @shifts = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    # Shift.includes(:staff).where(date:@dates,fix_shift_pattern_id:254).each do |shift|
+    #   if shift.present?
+    #     @shifts[shift.store_id][shift.date] = shift.staff.short_name
+    #   else
+    #     @shifts[shift.store_id][shift.date] = ""
+    #   end
+    # end
+
+    # @kaiin_datas = SmaregiMember.where(nyukaibi:@dates).group(:main_use_store,:nyukaibi).count
+    # @stores_henkan = {"9"=>"higashi_nakano","19"=>"shin_nakano","29"=>'shinkoenji',"154"=>"numabukuro","164"=>"ogikubo"}
+
+
+    # @daily_items = DailyItem.where(date:dates,purpose:"物販")
+    # @category_sum = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    # @buppan_sum = {"estimated_sales_sum"=>0,"subtotal_price_sum"=>0,"arari_sum"=>0,"purchase_price_sum"=>0,"delivery_fee_sum"=>0}
+    # ["野菜","果実","物産品","送料"].each do |category|
+    #   item_varieties = ItemVariety.joins(:item_type).where(:item_types => {category:category})
+    #   items = Item.where(item_variety_id:item_varieties.ids)
+    #   daily_items = @daily_items.where(item_id:items.ids)
+    #   subtotal_price_sum = daily_items.sum(:subtotal_price)
+    #   delivery_fee_sum = daily_items.sum(:delivery_fee)
+    #   purchase_price_sum = daily_items.map{|di|di.purchase_price * di.delivery_amount}.sum
+    #   estimated_sales = daily_items.sum(:estimated_sales)
+    #   arari = estimated_sales - subtotal_price_sum
+    #   @buppan_sum["estimated_sales_sum"] += estimated_sales
+    #   @buppan_sum["subtotal_price_sum"] += subtotal_price_sum
+    #   @buppan_sum["purchase_price_sum"] += purchase_price_sum
+    #   @buppan_sum["delivery_fee_sum"] += delivery_fee_sum
+    #   @buppan_sum["arari_sum"] += arari
+    #   @category_sum[category]["estimated_sales_sum"] = estimated_sales
+    #   @category_sum[category]["purchase_price_sum"] = purchase_price_sum
+    #   @category_sum[category]["delivery_fee_sum"] = delivery_fee_sum
+    #   @category_sum[category]["subtotal_price_sum"] = subtotal_price_sum
+    #   @category_sum[category]["arari_sum"] = arari
+    #   @category_sum[category]["arari_rate"] = (arari/estimated_sales.to_f*100).round(1) if estimated_sales > 0
+    # end
+    # sales_reports = SalesReport.where(date:@dates)
+    # @sales_reports = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    # sales_reports.each do |sr|
+    #   @sales_reports[sr.date][sr.store_id][:opot] = sr.one_pair_one_talk
+    #   @sales_reports[sr.date][sr.store_id][:tasting] = sr.tasting_number
+    # end
+
+    # @group = Group.find(9)
+    # store_ids = @group.stores.where(store_type:'sales').ids
+    # @fix_shift_patterns = FixShiftPattern.where(group_id:@group.id)
+    # StaffStore.where(store_id:store_ids)
+    # @staffs = Staff.joins(:staff_stores).where(status:0,:staff_stores => {store_id:store_ids}).order(:row).uniq
+    # @jobcounts = Shift.where(date:@from..@to).joins(:fix_shift_pattern).where.not(:fix_shift_patterns => {working_hour:0}).group(:staff_id).count
+    # @clean_done = Reminder.where(category:1).where(action_date:@from..@to).group(:do_staff).count
+    # smaregi_members = SmaregiMember.where(nyukaibi:@from..@to)
+    # kaiin_ids = smaregi_members.map{|sm|sm.kaiin_id}
+    # @hash = {}
+    # SmaregiTradingHistory.order("date desc").where(kaiin_id:kaiin_ids).where(date:@from..@to).where(torihikimeisai_id:1).each do |sth|
+    #   @hash[sth.kaiin_id] = sth
+    # end
+    # @staff_sinki_kaiin = {}
+    # @hash.values.each do |sth|
+    #   if @staff_sinki_kaiin[sth.hanbaiin_id].present?
+    #     @staff_sinki_kaiin[sth.hanbaiin_id] += 1
+    #   else
+    #     @staff_sinki_kaiin[sth.hanbaiin_id] = 1
+    #   end
+    # end
 
     
-    @sales_report_staffs = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    SalesReportStaff.where(sales_report_id:sales_reports.ids).each do |srs|
-      @sales_report_staffs[srs.staff_id][srs.sales_report.date][:sales_report] = srs.sales_report
-      @sales_report_staffs[srs.staff_id][srs.sales_report.date][:smile] = srs.smile
-      @sales_report_staffs[srs.staff_id][srs.sales_report.date][:eyecontact] = srs.eyecontact
-      @sales_report_staffs[srs.staff_id][srs.sales_report.date][:voice_volume] = srs.voice_volume
-    end
+    # @sales_report_staffs = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    # SalesReportStaff.where(sales_report_id:sales_reports.ids).each do |srs|
+    #   @sales_report_staffs[srs.staff_id][srs.sales_report.date][:sales_report] = srs.sales_report
+    #   @sales_report_staffs[srs.staff_id][srs.sales_report.date][:smile] = srs.smile
+    #   @sales_report_staffs[srs.staff_id][srs.sales_report.date][:eyecontact] = srs.eyecontact
+    #   @sales_report_staffs[srs.staff_id][srs.sales_report.date][:voice_volume] = srs.voice_volume
+    # end
   end
   def bumon_sales
     @to = Date.today
