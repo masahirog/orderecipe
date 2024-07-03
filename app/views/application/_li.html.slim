@@ -6,10 +6,7 @@ li.list-group-item.col-md-12.col-sm-12.col-xs-12 class="li_pre_order_products tr
     = pop.number_field :welfare_price,class:"welfare_price"
     = pop.number_field :employee_discount,class:"employee_discount"
   .col-md-10.col-sm-10.col-xs-10 style='padding:0 2px 0 0;'
-    - if pop.object.product.product_category == 'お弁当'
-      b = pop.object.product.food_label_name + "弁当"
-    - else
-      b = pop.object.product.food_label_name
+    b = pop.object.product.food_label_name
     - if pop.object.product.sell_price == 890 && pop.object.product.product_category == 'お弁当'
       br
       span style='font-size:0.8em;color:#a9a9a9;' 副菜3種&週替りポタージュ付
