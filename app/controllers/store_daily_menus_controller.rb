@@ -162,7 +162,7 @@ class StoreDailyMenusController < AdminController
       soup = "#{analysis_products_hash[analysis.id][7][:sales_number]}（#{analysis_products_hash[analysis.id][7][:manufacturing_number]}）"
       fukusai = "#{analysis_products_hash[analysis.id][20][:sales_number]}（#{analysis_products_hash[analysis.id][20][:manufacturing_number]}）"
       syusai = "#{analysis_products_hash[analysis.id][1][:sales_number]}（#{analysis_products_hash[analysis.id][1][:manufacturing_number]}）"
-      salad = "#{analysis_products_hash[analysis.id][21][:sales_number]}（#{analysis_products_hash[analysis.id][22][:manufacturing_number]}）"
+      salad = "#{analysis_products_hash[analysis.id][21][:sales_number]}（#{analysis_products_hash[analysis.id][21][:manufacturing_number]}）"
       bento = "#{analysis_products_hash[analysis.id][5][:sales_number]}（#{analysis_products_hash[analysis.id][5][:manufacturing_number]}）"
       curry = "#{analysis_products_hash[analysis.id][19][:sales_number]}（#{analysis_products_hash[analysis.id][19][:manufacturing_number]}）"
       sweets = "#{analysis_products_hash[analysis.id][3][:sales_number]}（#{analysis_products_hash[analysis.id][3][:manufacturing_number]}）"
