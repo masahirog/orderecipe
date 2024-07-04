@@ -358,29 +358,11 @@ class ProductsController < ApplicationController
     end
   end
 
-  # def download
-  #   url = URI.encode(params[:file_name])
-  #   data_path = open(url)
-  #   send_data data_path.read, disposition: 'attachment',
-  #   type: params[:type]
-  # end
   def download
-    # Dotenv.overload
-    # region='ap-northeast-1'
-    # bucket='bejihan-orderecipe'
-    # key=params[:key]
-    # credentials=Aws::Credentials.new(
-    #   ENV['ACCESS_KEY_ID'],
-    #   ENV['SECRET_ACCESS_KEY']
-    # )
-    # # send_dataのtypeはtypeで指定
-    # client=Aws::S3::Client.new(region:region, credentials:credentials)
-    # data=client.get_object(bucket:bucket, key:key).body
-    # send_file(params[:file_name].path , disposition: 'inline', type: params[:type])
-    @product = Product.find(params[:id])
+    product = Product.find(params[:id])
+    data = open(product.image.url)
+    send_data(data.read, type:product.image.file.content_type, filename: product.image.file.filename)
   end
-
-
 
   private
     def product_create_update

@@ -108,7 +108,10 @@ table.table
 					td
 						- if @price_card_hash[store.id]["product_id"][dmd.product_id] == true
 							|◯
-				td = image_tag dmd.product.image_url(:thumb) if dmd.product.image.present?
+				td.text-center
+					- if dmd.product.image.present?
+						= link_to download_products_path(id:dmd.product.id),method: :post do
+							= image_tag dmd.product.image_url(:thumb)
 				td = "●" if dmd.product.warm_flag == true
 				td
 					= link_to edit_bb_products_path(product_id:dmd.product.id),target:"_blank",style:'color:black;font-size:1.1em;'
@@ -149,4 +152,4 @@ table.table
 				td = dmd.sell_price
 				td = (dmd.sell_price*1.08).floor
 				td = ((dmd.sell_price*1.08).floor * 1.6 / 10).ceil*10
-				td = dmd.product.contents
+				td = simple_format(h(dmd.product.contents))

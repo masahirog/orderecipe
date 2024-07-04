@@ -289,7 +289,7 @@ Rails.application.routes.draw do
       get :store_price_card
       get :edit_bb
       get :black_board
-      get :download
+      post :download
       post :print
       get :get_menu_cost_price
       get :serving_kana

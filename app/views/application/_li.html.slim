@@ -7,16 +7,8 @@ li.list-group-item.col-md-12.col-sm-12.col-xs-12 class="li_pre_order_products tr
     = pop.number_field :employee_discount,class:"employee_discount"
   .col-md-10.col-sm-10.col-xs-10 style='padding:0 2px 0 0;'
     b = pop.object.product.food_label_name
-    - if pop.object.product.sell_price == 890 && pop.object.product.product_category == 'お弁当'
-      br
-      span style='font-size:0.8em;color:#a9a9a9;' 副菜3種&週替りポタージュ付
-    - elsif pop.object.product.sell_price == 790 && pop.object.product.product_category == 'お弁当'
-      br
-      span style='font-size:0.8em;color:#a9a9a9;' 副菜の数が3種
-    - elsif pop.object.product.sell_price == 690 && pop.object.product.product_category == 'お弁当'
-      br
-      span style='font-size:0.8em;color:#a9a9a9;' 副菜の数が2種
-    span style='font-size:0.7em;color:#a9a9a9;line-height:1.1em;display:block;margin-top:3px;' = pop.object.product.contents
+    span style='font-size:0.7em;color:#a9a9a9;line-height:1.1em;display:block;margin-top:3px;'
+      = simple_format(h(pop.object.product.contents))
   .col-md-2.col-sm-2.col-xs-2 style='padding:0;'
     - if pop.object.product.image.present?
       = link_to pop.object.product.image.url, "data-lightbox" => pop.object.product.image.url do
