@@ -88,7 +88,7 @@ class Analysis < ApplicationRecord
     message = "【#{Date.today}】 売上とその他重要指標の報告\n"+
     "https://bento-orderecipe.herokuapp.com/analyses/kpi/\n"
     attachment_images = [{image_url:"https://bejihan-orderecipe.s3.ap-northeast-1.amazonaws.com/daily_report/#{Date.today}_2.png"},{image_url: "https://bejihan-orderecipe.s3.ap-northeast-1.amazonaws.com/daily_report/#{Date.today}.png"}]
-    Slack::Notifier.new('https://hooks.slack.com/services/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', attachments: attachment_images).ping(message)
+    Slack::Notifier.new('https://hooks.slack.com/services/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', attachments: attachment_images).ping(message)
   end
 
 end

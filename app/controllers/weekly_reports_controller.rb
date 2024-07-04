@@ -38,7 +38,7 @@ class WeeklyReportsController < ApplicationController
         "ーーーーー\n"
         if params[:weekly_report]["slack_notify"]=="1"
           # Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'おつかれ様', icon_emoji: ':male-farmer:').ping(report)
-          Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'おつかれ様', icon_emoji: ':male-farmer:').ping(report)
+          Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'おつかれ様', icon_emoji: ':male-farmer:').ping(report)
         end
         if @weekly_report.weekly_report_thanks.present?
           @weekly_report.weekly_report_thanks.each do |wrt|
@@ -69,7 +69,7 @@ class WeeklyReportsController < ApplicationController
         "ーーーーー\n"
         if params[:weekly_report]["slack_notify"]=="1"
           # Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'おつかれ様', icon_emoji: ':male-farmer:').ping(report)
-          Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'おつかれ様', icon_emoji: ':male-farmer:').ping(report)
+          Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'おつかれ様', icon_emoji: ':male-farmer:').ping(report)
         end
         if @weekly_report.weekly_report_thanks.present?
           @weekly_report.weekly_report_thanks.each do |wrt|
