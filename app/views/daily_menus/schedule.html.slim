@@ -57,31 +57,31 @@
               - bc_color = "#ffffe0;"
               - daily_menu_id = daily_menu.id
               - class_name = "daily_menu_#{daily_menu_id}"
-            tr class="#{class_name}" style="display:#{display}background-color:#{bc_color}"
-              td style="background-color:#{bc_color}text-align:center;"
-                = link_to date.strftime("%-y/%-m/%-d(#{%w(日 月 火 水 木 金 土)[date.wday]})"),daily_menu,target:"_blank"
-                - if date.wday == 3
-                  i class="fa-solid fa-angles-down show_btn pull-right" style='cursor: pointer;margin-left: 10px;margin-top:5px;'
-                  i class="fa-solid fa-angles-up hide_btn pull-right" style='display:none;cursor: pointer;margin-top:5px;'
-              - (1..29).to_a.each do |i|
-                - if @daily_menu_details_hash[daily_menu.id][i].present?
-                  - if @daily_menu_details_hash[daily_menu.id][i]['change_flag'] == true
-                    - color = 'green'
+              tr class="#{class_name}" style="display:#{display}background-color:#{bc_color}"
+                td style="background-color:#{bc_color}text-align:center;"
+                  = link_to date.strftime("%-y/%-m/%-d(#{%w(日 月 火 水 木 金 土)[date.wday]})"),daily_menu,target:"_blank"
+                  - if date.wday == 3
+                    i class="fa-solid fa-angles-down show_btn pull-right" style='cursor: pointer;margin-left: 10px;margin-top:5px;'
+                    i class="fa-solid fa-angles-up hide_btn pull-right" style='display:none;cursor: pointer;margin-top:5px;'
+                - (1..29).to_a.each do |i|
+                  - if @daily_menu_details_hash[daily_menu.id][i].present?
+                    - if @daily_menu_details_hash[daily_menu.id][i]['change_flag'] == true
+                      - color = 'green'
+                    - else
+                      - color = 'black'
+                    - if @daily_menu_details_hash[daily_menu.id][i]['cost_rate'].to_f > 30
+                      - cost_color = 'red'
+                    - else
+                      - cost_color = 'black'
+                    td.product_name_td style="cursor: pointer;font-size:0.9em;" 
+                      - if @id_names[@daily_menu_details_hash[daily_menu.id][i]['product_id']].present?
+                        span.product_name style="color:#{color};" = @id_names[@daily_menu_details_hash[daily_menu.id][i]['product_id']].name
+                        span style="color:#{cost_color};" = "｜#{@daily_menu_details_hash[daily_menu.id][i]['sell_price']}｜#{@daily_menu_details_hash[daily_menu.id][i]['cost_rate']}%"
+                        - if @daily_menu_details_hash[daily_menu.id][i]['product_id'].present?
+                          = link_to product_path(id:@daily_menu_details_hash[daily_menu.id][i]['product_id']),target:"_blank"
+                            i class="fa-solid fa-up-right-from-square" style='cursor: pointer;margin-left: 10px;'
                   - else
-                    - color = 'black'
-                  - if @daily_menu_details_hash[daily_menu.id][i]['cost_rate'].to_f > 30
-                    - cost_color = 'red'
-                  - else
-                    - cost_color = 'black'
-                  td.product_name_td style="cursor: pointer;font-size:0.9em;" 
-                    - if @id_names[@daily_menu_details_hash[daily_menu.id][i]['product_id']].present?
-                      span.product_name style="color:#{color};" = @id_names[@daily_menu_details_hash[daily_menu.id][i]['product_id']].name
-                      span style="color:#{cost_color};" = "｜#{@daily_menu_details_hash[daily_menu.id][i]['sell_price']}｜#{@daily_menu_details_hash[daily_menu.id][i]['cost_rate']}%"
-                      - if @daily_menu_details_hash[daily_menu.id][i]['product_id'].present?
-                        = link_to product_path(id:@daily_menu_details_hash[daily_menu.id][i]['product_id']),target:"_blank"
-                          i class="fa-solid fa-up-right-from-square" style='cursor: pointer;margin-left: 10px;'
-                - else
-                  td.product_name
+                    td.product_name
 
     - if @pattern.present?
       
