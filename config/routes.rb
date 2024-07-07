@@ -299,6 +299,7 @@ Rails.application.routes.draw do
       post :print_preparation
       get :new_band
       get :get_menu
+      get :get_product_select2
     end
   end
   resources :tops

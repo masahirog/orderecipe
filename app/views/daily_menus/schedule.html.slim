@@ -20,7 +20,7 @@
       thead style="position: sticky;top:0;background-color:white;z-index:3;"
         tr
           th style='width:200px;' 名称
-          th 回数
+          th style='width:70px;'
       tbody
         - @products.each do |product|
           tr
@@ -28,7 +28,7 @@
               span.product_name style='cursor: pointer;' = product.name
             td
               = link_to product,target:"_blank"
-                i class="fa-solid fa-up-right-from-square" style='margin-left: 10px;'
+                = product.product_category
 
 
   .daily_menu_table style='width:calc(100% - 250px);float:left;'
@@ -109,7 +109,11 @@
                   td style="background-color:white;z-index:4;" = link_to date.strftime("%-Y/%-m/%-d(#{%w(日 月 火 水 木 金 土)[date.wday]})"),daily_menu,target:"_blank"
                   - (1..29).to_a.each do |i|
                     td class="td_#{i}" style="background-color:white;"
-                      = select_tag "daily_menus[#{daily_menu.id}]paper_menu_numbers[#{i}][product_id]", options_from_collection_for_select(@products, :id, :name,@create_menu_details_hash[daily_menu.id][i]['product_id']),include_blank:true, class: "form-control input_select_product"
+                      - if @create_menu_details_hash[daily_menu.id][i]['product'].present?
+                        - product = [@create_menu_details_hash[daily_menu.id][i]['product']]
+                      - else
+                        - product = []
+                      = select_tag "daily_menus[#{daily_menu.id}]paper_menu_numbers[#{i}][product_id]", options_from_collection_for_select(product, :id, :name,@create_menu_details_hash[daily_menu.id][i]['product_id']),include_blank:true, class: "form-control input_select2_product"
                       br
                       .clearfix style='margin-top: 3px;'
                         = number_field_tag "daily_menus[#{daily_menu.id}]paper_menu_numbers[#{i}][sell_price]",@create_menu_details_hash[daily_menu.id][i]["sell_price"], class: "sell_price",style:'width:70px;float:left;'
@@ -124,6 +128,27 @@
         = submit_tag "更新する",class:"btn btn-success"
 
 javascript:
+  $(".input_select2_product").select2({
+    ajax: {
+      url: "/products/get_product_select2/",
+      dataType: 'json',
+      delay: 50,
+      data: function(params) {
+        return {　q: params.term　};
+      },
+      processResults: function (data, params) {
+        return { results: $.map(data, function(obj) {
+            return { id: obj.id, text: obj.name };
+          })
+        };
+      }
+    },
+    width:"100%",
+    placeholder: '',
+    allowClear:true
+  });
+
+
   var obj = document.getElementsByClassName("schedule_table")[0];
   var bottom = obj.scrollHeight - obj.clientHeight;
   obj.scrollTop = bottom;
@@ -143,8 +168,17 @@ javascript:
 
   $(".syn_top_product").on('click',function(){
     var i = $(this).parent('th').attr("class");
-    var product_id = $(".tr_0").find(".td_"+i).children(".input_select_product").val();
-    $('.create_schedule_tr').not('.tr_0').find(".td_"+i).children(".input_select_product").val(product_id).trigger('change');
+    var product_id = $(".tr_0").find(".td_"+i).children(".input_select2_product").val();
+    var product_name = $(".tr_0").find(".td_"+i).children(".input_select2_product").select2('data')[0].text;
+    var sell_price = $(".tr_0").find(".td_"+i).find(".sell_price").val();
+    if (product_id) {
+      $('.create_schedule_tr').not('.tr_0').find(".td_"+i).children(".input_select2_product").append($("<option>").val(product_id).html(product_name));
+      $('.create_schedule_tr').not('.tr_0').find(".td_"+i).children(".input_select2_product").val(product_id);
+    }else{
+      $('.create_schedule_tr').not('.tr_0').find(".td_"+i).children(".input_select2_product").val('').html('');
+      // $('.create_schedule_tr').not('.tr_0').find(".td_"+i).children(".input_select2_product").val(product_id);
+    }
+    $('.create_schedule_tr').not('.tr_0').find(".td_"+i).find(".sell_price").val(sell_price);
   });
 
   $(".all_check").on("change",function(){
@@ -160,19 +194,23 @@ javascript:
   });
 
 
-  $(".input_select_product").on("change",function(){
+  $(".input_select2_product").on("change",function(){
     var product_id = parseInt($(this).val());
     var td = $(this).parent('td').attr("class");
     var tr = $(this).parents('tr').attr("class").split(' ')[0];
-    $.ajax({
-      url: "/products/get_product",
-      data: { product_id : product_id },
-      dataType: "json",
-      async: false
-    })
-    .done(function(data){
-      $("."+tr).children("."+td).find(".sell_price").val(data.sell_price);
-    });
+    if (product_id) {
+      $.ajax({
+        url: "/products/get_product",
+        data: { product_id : product_id },
+        dataType: "json",
+        async: false
+      })
+      .done(function(data){
+        $("."+tr).children("."+td).find(".sell_price").val(data.sell_price);
+      });
+    }else{
+      $("."+tr).children("."+td).find(".sell_price").val('');
+    }
   });
 
 

@@ -87,6 +87,13 @@ class ProductsController < ApplicationController
     end
   end
 
+  def get_product_select2
+    @products = Product.where(brand_id:111,status:1).where("name LIKE ?", "%#{params[:q]}%").first(20)
+    respond_to do |format|
+      format.json { render json: @products }
+    end
+  end
+
   def get_product
     @product = Product.find(params[:product_id])
     respond_to do |format|

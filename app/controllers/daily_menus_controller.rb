@@ -159,7 +159,7 @@ class DailyMenusController < AdminController
         @daily_menu_details_hash[dmd.daily_menu_id][dmd.paper_menu_number]['cost_rate'] = ''
       end
     end
-    @products = Product.where(status:1,brand_id:111)
+    @products = Product.where(status:1,brand_id:111).order(:product_category)
     @pattern = params[:pattern]
     if @pattern.present?
       if @pattern == "0"
@@ -174,11 +174,15 @@ class DailyMenusController < AdminController
       end
       @create_daily_menus = DailyMenu.where(start_time:days).order(:start_time)
       @create_menu_details_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+      @selected_products = []
       DailyMenuDetail.where(daily_menu_id:@create_daily_menus.ids).each do |dmd|
         @create_menu_details_hash[dmd.daily_menu_id][dmd.paper_menu_number]["product_id"] = dmd.product_id
         @create_menu_details_hash[dmd.daily_menu_id][dmd.paper_menu_number]["sell_price"] = dmd.sell_price
         @create_menu_details_hash[dmd.daily_menu_id][dmd.paper_menu_number]["change_flag"] = dmd.change_flag
+        @create_menu_details_hash[dmd.daily_menu_id][dmd.paper_menu_number]["product"] = dmd.product
+        @selected_products << dmd.product_id
       end
+      @selected_products = Product.where(id:@selected_products.uniq)
     end
   end
 
