@@ -142,7 +142,8 @@ class DailyMenusController < AdminController
   def schedule
     @from = Date.parse(params[:from])
     @to = Date.parse(params[:to])
-    @daily_menus = DailyMenu.where(start_time:@from..@to).order(:start_time)
+    @dates = (@from..@to).to_a.map{|date|date if date.wday == 3}
+    @daily_menus = DailyMenu.where(start_time:@dates).order(:start_time)
     @daily_menu_details = DailyMenuDetail.where(daily_menu_id:@daily_menus.ids)
     product_ids = @daily_menu_details.map{|dmd|dmd.product_id}.uniq
     @id_names = Product.where(id:product_ids).map{|product|[product.id,product]}.to_h
