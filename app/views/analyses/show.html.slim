@@ -38,7 +38,7 @@ table.table
 
 .form-group
   = link_to '計算', products_analyses_path(analysis_id:@analysis.id), method: :post,class:'btn btn-sm btn-primary'
-  = link_to '途中経過', progress_analyses_path(analysis_id:@analysis.id),class:'btn btn-sm btn-default',style:'margin-left:20px;'
+  / = link_to '途中経過', progress_analyses_path(analysis_id:@analysis.id),class:'btn btn-sm btn-default',style:'margin-left:20px;'
 
 / = link_to 'Orderecipeデータリセット',bulk_delete_analysis_products_analyses_path(analysis_id:@analysis.id), {method: :post, data: { confirm: '削除しますか？' },class:'btn btn-sm btn-danger pull-right'}
 table.table

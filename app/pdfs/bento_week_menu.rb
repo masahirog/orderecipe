@@ -39,15 +39,15 @@ class BentoWeekMenu < Prawn::Document
       text_box("① #{bento_menus[dates[i]][24].food_label_name}",at: [x+30,height-65], width: 350, height: 40,size:16)
       # text_box("#{bento_menus[dates[i]][24].sell_price}<font size='10'>円</font>",inline_format: true,at: [x+310,height-80], width: 350, height: 40,size:14)
       # text_box("税込 #{bento_menus[dates[i]][24].tax_including_sell_price}<font size='9'>円</font>",inline_format: true,at: [x+300,height-95], width: 350, height: 40,size:9)
-      text_box("690・790・890<font size='10'> 円</font>",inline_format: true,at: [x+240,height-90], width: 350, height: 40,size:14)
-      text_box("税込 745・853・961<font size='9'>円</font>",inline_format: true,at: [x+250,height-110], width: 350, height: 40,size:9)
+      # text_box("690・790・890<font size='10'> 円</font>",inline_format: true,at: [x+240,height-90], width: 350, height: 40,size:14)
+      # text_box("税込 745・853・961<font size='9'>円</font>",inline_format: true,at: [x+250,height-110], width: 350, height: 40,size:9)
 
 
       text_box("② #{bento_menus[dates[i]][25].food_label_name}",at: [x+30,height-135], width: 350, height: 40,size:16)
       # text_box("#{bento_menus[dates[i]][25].sell_price}<font size='10'>円</font>",inline_format: true,at: [x+310,height-150], width: 350, height: 40,size:14)
       # text_box("税込 #{bento_menus[dates[i]][25].tax_including_sell_price}<font size='9'>円</font>",inline_format: true,at: [x+300,height-165], width: 350, height: 40,size:9)
-      text_box("690・790・890<font size='10'> 円</font>",inline_format: true,at: [x+240,height-160], width: 350, height: 40,size:14)
-      text_box("税込 745・853・961<font size='9'>円</font>",inline_format: true,at: [x+250,height-180], width: 350, height: 40,size:9)
+      # text_box("690・790・890<font size='10'> 円</font>",inline_format: true,at: [x+240,height-160], width: 350, height: 40,size:14)
+      # text_box("税込 745・853・961<font size='9'>円</font>",inline_format: true,at: [x+250,height-180], width: 350, height: 40,size:9)
 
       if i == 1
         height = 430
@@ -66,13 +66,13 @@ class BentoWeekMenu < Prawn::Document
       fill_color '000000'
       text_box(dates[i].strftime("%-m月%-d日(#{%w(日 月 火 水 木 金 土)[dates[i].wday]})"),at: [x+10,height-15], width: 360, height: 30,size:20, valign: :center,align: :center)
       text_box("① #{bento_menus[dates[i]][24].food_label_name}",at: [x+30,height-65], width: 350, height: 40,size:16)
-      text_box("690・790・890<font size='10'> 円</font>",inline_format: true,at: [x+240,height-90], width: 350, height: 40,size:14)
-      text_box("税込 745・853・961<font size='9'>円</font>",inline_format: true,at: [x+250,height-110], width: 350, height: 40,size:9)
+      # text_box("690・790・890<font size='10'> 円</font>",inline_format: true,at: [x+240,height-90], width: 350, height: 40,size:14)
+      # text_box("税込 745・853・961<font size='9'>円</font>",inline_format: true,at: [x+250,height-110], width: 350, height: 40,size:9)
 
 
       text_box("② #{bento_menus[dates[i]][25].food_label_name}",at: [x+30,height-135], width: 350, height: 40,size:16)
-      text_box("690・790・890<font size='10'> 円</font>",inline_format: true,at: [x+240,height-160], width: 350, height: 40,size:14)
-      text_box("税込 745・853・961<font size='9'>円</font>",inline_format: true,at: [x+250,height-180], width: 350, height: 40,size:9)
+      # text_box("690・790・890<font size='10'> 円</font>",inline_format: true,at: [x+240,height-160], width: 350, height: 40,size:14)
+      # text_box("税込 745・853・961<font size='9'>円</font>",inline_format: true,at: [x+250,height-180], width: 350, height: 40,size:9)
 
       if i == 3
         height = 520
