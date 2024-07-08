@@ -455,15 +455,8 @@ class WeeklyMenuA4 < Prawn::Document
     bento_menus.each do |bm|
       bento_height = height +20
       date = bm[0].strftime("%-m/%-d\n(#{%w(日 月 火 水 木 金 土)[bm[0].wday]})")
-      if bm[0].wday == 6
-        fill_color "2626ff"
-      elsif bm[0].wday == 0
-        fill_color "d43732"
-      else
-        fill_color "000000"
-      end
-      text_box(date,at: [-17,height+6], width: 45, height: 180,size:9,align: :center,leading:4)
       fill_color "000000"
+      text_box(date,at: [-17,height+6], width: 45, height: 180,size:9,align: :center,leading:4)
       product_a = bm[1][24]
       if product_a.smaregi_code.present?
         barcode = Barby::Code128.new product_a.smaregi_code
@@ -504,7 +497,7 @@ class WeeklyMenuA4 < Prawn::Document
         stroke_bounds
       end
       text_box("#{product_c.sell_price}円（#{product_c.tax_including_sell_price}円）",at: [204,bento_height-16], width: 100, height: 40,size:7)
-      text_box(product_b.food_label_name,at: [300,bento_height+2], width: 170, height: 20,size:9, valign: :center)
+      text_box(product_b.food_label_name,at: [300,bento_height+2], width: 160, height: 20,size:9, valign: :center)
       bento_height -= 38
 
       product_a = bm[1][25]
@@ -546,7 +539,7 @@ class WeeklyMenuA4 < Prawn::Document
       bounding_box([254, bento_height+4], width: 20, height: 16) do
         stroke_bounds
       end
-      text_box(product_b.food_label_name,at: [300,bento_height+4], width: 140, height: 20,size:9, valign: :center)
+      text_box(product_b.food_label_name,at: [300,bento_height+4], width: 160, height: 20,size:9, valign: :center)
       bento_height -= 40
 
       line [-8, bento_height+86], [440, bento_height+86]
