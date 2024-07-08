@@ -27,7 +27,7 @@ class WeeklyMenuA4 < Prawn::Document
       text_box("<font size='18'>#{from.month}</font>月<font size='18'>#{from.day}</font>日（水）〜 <font size='18'>#{to.month}</font>月<font size='18'>#{to.day}</font>日（火）",
        inline_format: true,color:'ffffff',at: [-10,520],align: :center, width: 370, height: 40)
       text_box("今週のべじはんメニュー",at: [-10,498], width: 370, height: 40,align: :center,size:20, styles:[:bold] )
-      fill_color 'cc0000'
+      fill_color '000000'
       fill_rounded_rectangle [-15,540], 50, 50, 25
       fill_color 'ffffff'
       text_box("毎週\n替わる",at: [-7, cursor - 30], width: 40, height: 40,rotate: 20, rotate_around: :center,align: :center)
@@ -118,7 +118,7 @@ class WeeklyMenuA4 < Prawn::Document
     height = 460
     next_menus.each do |product|
       if product.warm_flag == true
-        fill_color 'ea9999'
+        fill_color '000000'
         text_box("●",at: [460,height-4], width: 350, height: 40,size:12)
       end
       fill_color "000000"
@@ -224,7 +224,7 @@ class WeeklyMenuA4 < Prawn::Document
               stroke_bounds
             end
             if product.warm_flag == true
-              fill_color 'ea9999'
+              fill_color '000000'
               text_box("●",at: [70,left_sozai_height-4], width: 350, height: 40,size:12)
             end
             fill_color '000000'
@@ -238,8 +238,9 @@ class WeeklyMenuA4 < Prawn::Document
               stroke_bounds
             end
             if product.warm_flag == true
-              fill_color 'ea9999'
+              fill_color '000000'
               text_box("●",at: [475,left_sozai_height-4], width: 350, height: 40,size:12)
+
             end
             fill_color '000000'
             text_box(product.food_label_name,at: [490,left_sozai_height+2], width: 210, height: 20,size:10, valign: :center)
@@ -361,7 +362,7 @@ class WeeklyMenuA4 < Prawn::Document
             stroke_bounds
           end
           if product.warm_flag == true
-            fill_color 'ea9999'
+            fill_color '000000'
             text_box("●",at: [475,left_sozai_height-4], width: 350, height: 40,size:12)
           end
           fill_color '000000'
@@ -414,7 +415,7 @@ class WeeklyMenuA4 < Prawn::Document
     #   text_box("　合計数：",size:8,at: [395,left_sozai_height-7])
     # end
     stroke do
-      fill_color 'ea9999'
+      fill_color '000000'
       text_box("●",size:7,at: [490,left_sozai_height-10])
       fill_color '000000'
       text_box(" の付いている商品は、電子レンジ 500Wで1分程を目安で温めてお召し上がり下さい",size:7,at: [500,left_sozai_height-10])
