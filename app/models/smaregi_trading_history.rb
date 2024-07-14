@@ -4,7 +4,7 @@ class SmaregiTradingHistory < ApplicationRecord
   belongs_to :analysis
 
   def self.hinban_toroku
-    hash = {"1841"=>16451,"1840"=>16442,"1839"=>16461,"1838"=>16453,"1837"=>16457,"1836"=>15954,"1835"=>16441}
+    hash = {"939"=>15564}
     arr = []
     SmaregiTradingHistory.where(date:Date.new(2024,07,01)..Date.new(2024,07,14),shohin_id:hash.keys).each do |sth|
       if sth.hinban.present?
