@@ -17,10 +17,9 @@ class SmaregiTradingHistory < ApplicationRecord
   end
 
 
-  def self.once_recalculate(date)
-    date = Date.parse(date)
-    from = date.beginning_of_month
-    to = date.end_of_month
+  def self.once_recalculate(from,date)
+    to = Date.parse(date)
+    from = Date.parse(from)
     dates = (from..to)
     Analysis.where(date:dates).each do |analysis|
       recalculate(analysis.id)
