@@ -99,7 +99,7 @@ class ApplicationController < ActionController::Base
   private
 
   def use_auth?
-    unless controller_name == 'pre_orders' || action_name == 'shibataya'|| action_name == 'shibataya_orders'|| action_name == 'shibataya_howto'
+    unless controller_name == 'pre_orders' || action_name == 'shibataya'|| action_name == 'shibataya_orders'|| action_name == 'shibataya_howto'|| action_name == 'list'
       true
     end
   end      
