@@ -80,7 +80,8 @@ span ※ピンク色は価格もしくは名前を変更した商品です
 table.table
 	thead
 		tr
-			th 過去販売
+			th 販売回数
+			th 品番
 			th 商品名
 			- @stores.each do |store|
 				th
@@ -93,7 +94,7 @@ table.table
 			th 定価
 			th お持ち帰り
 			th UberEats
-			th 説明文
+			th style='width:400px;' 説明文
 	tbody
 		- @daily_menu.daily_menu_details.each do |dmd|
 			- bgcolor = "#ffffff"
@@ -103,6 +104,7 @@ table.table
 					= @hash[dmd.product_id]
 					- if @hash[dmd.product_id].to_i < 7
 						span （新）
+				td = dmd.product.id
 				td = link_to dmd.product.food_label_name,dmd.product,target:'_blank'
 				- @stores.each do |store|
 					td
