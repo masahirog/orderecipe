@@ -48,6 +48,11 @@ table.table
       - color = "silver" unless product.status == '販売中'
       tr.products_li style="background-color:#{color}"
         td
+          - if product.image.present?
+            = link_to download_products_path(id:product.id),method: :post do
+              = image_tag product.image_url(:thumb)
+
+        td
           - if product.status == "販売中"
             span style='color:blue;'
               = product.status
