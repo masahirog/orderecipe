@@ -21,6 +21,13 @@ class CreateStoreDailyMenus < ActiveRecord::Migration[5.2]
       t.integer :goods_budget,null:false,default:0
       t.integer :revised_foods_budget,null:false,default:0
       t.integer :revised_goods_budget,null:false,default:0
+      t.integer :soup_make_num
+      t.integer :fukusai_make_num
+      t.integer :shusai_make_num
+      t.integer :salad_make_num
+      t.integer :sweets_make_num
+      t.integer :curry_make_num
+      t.integer :bento_make_num
     end
     add_index :store_daily_menus, [:daily_menu_id,:store_id,:start_time], unique: true, name: 'index_uniq'
   end

@@ -78,6 +78,37 @@ class PreOrdersController < ApplicationController
   end
 
   def edit
+    @pre_order = PreOrder.find(params[:id])
+    @pre_order_products = @pre_order.pre_order_products.map{|pop|pop.product_id}
+    @employees = Staff.where(group_id:30,status:0).map{|staff|[staff.name,staff.staff_code]}
+    @date = @pre_order.date
+    @daily_menu = DailyMenu.find_by(start_time:@date)
+    product_ids = []
+    product_categories = [1,2,3,5,7,8,19,20,21,22]
+    @daily_menu.daily_menu_details.includes([:product]).each do |dmd|
+      if @pre_order_products.include?(dmd.product_id)
+      else
+        if product_categories.include?(dmd.product.product_category_before_type_cast)
+          tax_including_sell_price = (dmd.sell_price * 1.08).floor
+          @pre_order.pre_order_products.build(product_id:dmd.product_id,order_num:0,welfare_price:0,employee_discount:0,tax_including_sell_price:tax_including_sell_price)
+        end
+      end
+    end
+    [14099,14714].each do |id|
+      if @pre_order_products.include?(id)
+      else
+        product = Product.find(id)
+        tax_including_sell_price = (product.sell_price * 1.08).floor
+        @pre_order.pre_order_products.build(product_id:id,order_num:0,welfare_price:0,employee_discount:0,tax_including_sell_price:tax_including_sell_price)
+      end
+    end
+    @stores = Store.where(id:[9,19,29,154,164])
+    @times = []
+    (11..20).each do |h|
+      ["00","15","30","45"].each do |m|
+        @times << "#{h}:#{m}"
+      end
+    end
   end
 
   def create
@@ -111,6 +142,12 @@ class PreOrdersController < ApplicationController
   end
 
   def update
+    params[:pre_order]["pre_order_products_attributes"].each do |pop|
+      if pop[1]["order_num"]=="0"
+        pop[1]["_destroy"]=1
+      end
+    end
+
     respond_to do |format|
       if @pre_order.update(pre_order_params)
         if @pre_order.status_before_type_cast == 0
@@ -120,7 +157,7 @@ class PreOrdersController < ApplicationController
         else
           @bg = '#ffffff'
         end
-        format.html { redirect_to '/shibataya', notice: "予約が完了しました。" }
+        format.html { redirect_to pre_orders_path(date:@pre_order.date), notice: "#{@pre_order.recipient_name}さんの予約を更新しました。" }
         format.js
       else
         format.html { render :edit, status: :unprocessable_entity }

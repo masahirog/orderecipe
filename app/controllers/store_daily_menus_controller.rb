@@ -374,6 +374,31 @@ class StoreDailyMenusController < AdminController
     end
   end
 
+  def make_num_update
+    @store_daily_menu = StoreDailyMenu.find(params[:id])
+    num = params[:num]
+    @category = params[:category]
+    if params[:category] == "7"
+      @store_daily_menu.update_column(:soup_make_num,num)
+    elsif params[:category] == "21"
+      @store_daily_menu.update_column(:salad_make_num,num)
+    elsif params[:category] == "20"
+      @store_daily_menu.update_column(:fukusai_make_num,num)
+    elsif params[:category] == "1"
+      @store_daily_menu.update_column(:shusai_make_num,num)
+    elsif params[:category] == "3"
+      @store_daily_menu.update_column(:sweets_make_num,num)
+    elsif params[:category] == "19"
+      @store_daily_menu.update_column(:curry_make_num,num)
+    elsif params[:category] == "5"
+      @store_daily_menu.update_column(:bento_make_num,num)
+    end
+    class_name = ".store_daily_menu_#{@store_daily_menu.id}_#{@category}_td"
+    respond_to do |format|
+      format.json { render json: { class_name: class_name } }
+    end
+  end
+
   def destroy
     @store_daily_menu.destroy
     respond_to do |format|
@@ -522,11 +547,7 @@ class StoreDailyMenusController < AdminController
     default_product_ids = [11429,13059]
     dmd_product_ids = default_product_ids
     @dmd_products = Product.where(id:dmd_product_ids)
-
-    # @tommoroww = DailyMenu.find_by(start_time:date+1)
-    # @yesterday = DailyMenu.find_by(start_time:date-1)
     @products = Product.where(brand_id:111)
-    # @store_daily_menu_details = @store_daily_menu.products
 
     respond_to do |format|
       if @store_daily_menu.save
@@ -549,6 +570,7 @@ class StoreDailyMenusController < AdminController
     def store_daily_menu_params
       params.require(:store_daily_menu).permit(:start_time,:total_num,:weather,:max_temperature,:min_temperature,:opentime_showcase_photo,:event,:store_id,:daily_menu_id,
         :showcase_photo_a,:showcase_photo_b,:signboard_photo,:opentime_showcase_photo_uploaded,:editable_flag,
+        :soup_make_num,:fukusai_make_num,:shusai_make_num,:salad_make_num,:sweets_make_num,:curry_make_num,:bento_make_num,
         store_daily_menu_photos_attributes: [:id,:store_daily_menu_id,:image],
         store_daily_menu_details_attributes: [:id,:store_daily_menu_id,:product_id,:number,:row_order,:_destroy,
           :actual_inventory,:carry_over,:sold_out_flag,:serving_plate_id,:signboard_flag,

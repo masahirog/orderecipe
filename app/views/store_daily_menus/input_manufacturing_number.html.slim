@@ -23,17 +23,21 @@
       /       input value=i style='display:none;'
 
       tr.fixed02 class='product_category_7'
-        td = f.submit '更新する',class:'', data: { confirm: "副菜の数等はOKですか？1人前で弁当5食計算です。",disable_with: '登録中...'} ,style:'background-color:#32cd32;height:28px;border:1px solid #32cd32;border-radius:3px;padding:4px 6px;color:#ffffff;'
+        td
+          / = f.submit '更新する',class:'', data: { confirm: "副菜の数等はOKですか？1人前で弁当5食計算です。",disable_with: '登録中...'} ,style:'background-color:#32cd32;height:28px;border:1px solid #32cd32;border-radius:3px;padding:4px 6px;color:#ffffff;'
+          input.btn.btn-success[type="button" onclick="submit();" value="登録する" style='background-color:#32cd32;height:28px;border:1px solid #32cd32;border-radius:3px;padding:4px 6px;color:#ffffff;']
+
         td
         td スープ
         td
         - @store_daily_menus.each_with_index do |sdm,i|
-          td.aaa class="col-base-#{i}"
+          td.aaa class="col-base-#{i} store_daily_menu_#{sdm.id}_#{7}_td"
             input.product_category value=7 style='display:none;'
-            input style='width:60px;float:left;' class="total_sales_yoso input_number"
+            input style='width:60px;float:left;' class="total_sales_yoso input_number" value="#{sdm.soup_make_num}"
             i class="fa-solid fa-circle-arrow-right yoso-reflect" style='float:left;margin:8px 4px;color:#32cd32;cursor:pointer;'
             input style='width:60px;float:left;' class="total_sales_input readonly input_number" readonly=true
             input style='width:80px;display:none;' class="col" value=i
+            input style='display:none;' class="store_daily_menu_id" value=sdm.id
   
       tr.fixed03 class='product_category_20'
         td
@@ -42,49 +46,52 @@
         td
           / = link_to 'ポテンシャル更新',reflesh_product_sales_potentials_path(product_ids:@products.ids,store_id:@store_id,store_daily_menu_ids:@store_daily_menus.ids), method: :post,class:'btn btn-default btn-sm', data: { confirm: 'ポテンシャルの値を、直近12日間のデータで更新しますか？' }
         - @store_daily_menus.each_with_index do |sdm,i|
-          td class="col-base-#{i}"
+          td class="col-base-#{i} store_daily_menu_#{sdm.id}_20_td"
             input.product_category value=20 style='display:none;'
-            input style='width:60px;float:left;' class="total_sales_yoso input_number"
+            input style='width:60px;float:left;' class="total_sales_yoso input_number" value="#{sdm.fukusai_make_num}"
             i class="fa-solid fa-circle-arrow-right yoso-reflect" style='float:left;margin:8px 4px;color:#32cd32;cursor:pointer;'
             input style='width:60px;float:left;' class="total_sales_input readonly input_number" readonly=true
             input style='width:80px;display:none;' class="col" value=i
+            input style='display:none;' class="store_daily_menu_id" value=sdm.id
       tr.fixed04 class='product_category_1'
         td
         td
         td 主菜
         td
         - @store_daily_menus.each_with_index do |sdm,i|
-          td class="col-base-#{i}"
+          td class="col-base-#{i} store_daily_menu_#{sdm.id}_1_td"
             input.product_category value=1 style='display:none;'
-            input style='width:60px;float:left;' class="total_sales_yoso input_number"
+            input style='width:60px;float:left;' class="total_sales_yoso input_number" value="#{sdm.shusai_make_num}"
             i class="fa-solid fa-circle-arrow-right yoso-reflect" style='float:left;margin:8px 4px;color:#32cd32;cursor:pointer;'
             input style='width:60px;float:left;' class="total_sales_input readonly input_number" readonly=true
             input style='width:80px;display:none;' class="col" value=i
+            input style='display:none;' class="store_daily_menu_id" value=sdm.id
       tr.fixed05 class='product_category_21'
         td
         td
         td サラダ
         td
         - @store_daily_menus.each_with_index do |sdm,i|
-          td class="col-base-#{i}"
+          td class="col-base-#{i} store_daily_menu_#{sdm.id}_21_td"
             input.product_category value=21 style='display:none;'
-            input style='width:60px;float:left;' class="total_sales_yoso input_number"
+            input style='width:60px;float:left;' class="total_sales_yoso input_number" value="#{sdm.salad_make_num}"
             i class="fa-solid fa-circle-arrow-right yoso-reflect" style='float:left;margin:8px 4px;color:#32cd32;cursor:pointer;'
             input style='width:60px;float:left;' class="total_sales_input readonly input_number" readonly=true
             input style='width:80px;display:none;' class="col" value=i
+            input style='display:none;' class="store_daily_menu_id" value=sdm.id
       tr.fixed06 class='product_category_3'
         td
         td
         td スイーツ
         td
         - @store_daily_menus.each_with_index do |sdm,i|
-          td class="col-base-#{i}"
+          td class="col-base-#{i} store_daily_menu_#{sdm.id}_3_td"
             input.product_category value=3 style='display:none;'
-            input style='width:60px;float:left;' class="total_sales_yoso input_number"
+            input style='width:60px;float:left;' class="total_sales_yoso input_number" value="#{sdm.sweets_make_num}"
             i class="fa-solid fa-circle-arrow-right yoso-reflect" style='float:left;margin:8px 4px;color:#32cd32;cursor:pointer;'
             input style='width:60px;float:left;' class="total_sales_input readonly input_number" readonly=true
             input style='width:80px;display:none;' class="col" value=i
-
+            input style='display:none;' class="store_daily_menu_id" value=sdm.id
 
       tr.fixed07 class='product_category_19'
         td
@@ -92,25 +99,26 @@
         td カレー
         td 
         - @store_daily_menus.each_with_index do |sdm,i|
-          td class="col-base-#{i}"
+          td class="col-base-#{i} store_daily_menu_#{sdm.id}_19_td"
             input.product_category value=19 style='display:none;'
-            input style='width:60px;float:left;' class="total_sales_yoso input_number"
+            input style='width:60px;float:left;' class="total_sales_yoso input_number" value="#{sdm.curry_make_num}"
             i class="fa-solid fa-circle-arrow-right yoso-reflect" style='float:left;margin:8px 4px;color:#32cd32;cursor:pointer;'
             input style='width:60px;float:left;' class="total_sales_input readonly input_number" readonly=true
             input style='width:80px;display:none;' class="col" value=i
-
+            input style='display:none;' class="store_daily_menu_id" value=sdm.id
       tr.fixed08 class='product_category_5'
         td
         td
         td 弁当
         td 
         - @store_daily_menus.each_with_index do |sdm,i|
-          td class="col-base-#{i}"
+          td class="col-base-#{i} store_daily_menu_#{sdm.id}_5_td"
             input.product_category value=5 style='display:none;'
-            input style='width:60px;float:left;' class="total_sales_yoso input_number"
+            input style='width:60px;float:left;' class="total_sales_yoso input_number" value="#{sdm.bento_make_num}"
             i class="fa-solid fa-circle-arrow-right yoso-reflect" style='float:left;margin:8px 4px;color:#32cd32;cursor:pointer;'
             input style='width:60px;float:left;' class="total_sales_input readonly input_number" readonly=true
             input style='width:80px;display:none;' class="col" value=i
+            input style='display:none;' class="store_daily_menu_id" value=sdm.id
       tr.fixed9 style='background-color:#fffaf0;'
         td 商品名
         td 売価
@@ -259,6 +267,22 @@ javascript:
       change_sales(i,sales)
     });
   });
+
+  $('.total_sales_yoso').each(function(){
+    var total_num = $(this).val();
+    var store_daily_menu_id = $(this).parent('td').find(".store_daily_menu_id").val();
+    var product_category = String($(this).parent().find('.product_category').val());
+    var col = $(this).parent().find('.col').val();
+    $('.tr_product_category_'+ product_category).each(function(){
+      $(this).find(".col_"+ String(col)).each(function(index, element){
+        var yoso = Math.round(total_num * $(element).find('.sales_potentials_rate').val())
+        $(element).find('.yoso_input').val(yoso);
+      });
+    });
+  });
+
+
+
   $('.input-sdmd-number').on('change',function(){
     if ($(this).val()=="" || $(this).val()>30 || $(this).val()<1 ){
       $(this).css('background-color','red')
@@ -318,6 +342,7 @@ javascript:
   });
   $('.total_sales_yoso').on('change',function(){
     var total_num = $(this).val();
+    var store_daily_menu_id = $(this).parent('td').find(".store_daily_menu_id").val();
     var product_category = String($(this).parent().find('.product_category').val());
     var col = $(this).parent().find('.col').val();
     $('.tr_product_category_'+ product_category).each(function(){
@@ -325,6 +350,21 @@ javascript:
         var yoso = Math.round(total_num * $(element).find('.sales_potentials_rate').val())
         $(element).find('.yoso_input').val(yoso);
       });
+    });
+    $.ajax({
+        url: "/store_daily_menus/make_num_update",
+        type:'POST',
+        data: { num : total_num,id : store_daily_menu_id,category:product_category},
+        headers: {
+          'X-CSRF-Token' : $('meta[name="csrf-token"]').attr('content')
+        },
+        dataType: "json",
+        async: false
+    })
+    .done(function(data) {
+      console.log(data['class_name'])
+      $(data['class_name']).find('.total_sales_yoso').css('background-color', '#FEC9C9');
+
     });
   });
 

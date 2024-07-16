@@ -65,12 +65,17 @@ class ApplicationController < ActionController::Base
     @daily_menu = DailyMenu.find_by(start_time:@date)
     product_ids = []
     @pre_order = PreOrder.new
-    product_categories = [1,2,3,5,7,19,20,21,22]
+    product_categories = [1,2,3,5,7,8,19,20,21,22]
     @daily_menu.daily_menu_details.includes([:product]).each do |dmd|
       if product_categories.include?(dmd.product.product_category_before_type_cast)
         tax_including_sell_price = (dmd.sell_price * 1.08).floor
         @pre_order.pre_order_products.build(product_id:dmd.product_id,order_num:0,welfare_price:0,employee_discount:0,tax_including_sell_price:tax_including_sell_price)
       end
+    end
+    [14099,14714].each do |id|
+      product = Product.find(id)
+      tax_including_sell_price = (product.sell_price * 1.08).floor
+      @pre_order.pre_order_products.build(product_id:id,order_num:0,welfare_price:0,employee_discount:0,tax_including_sell_price:tax_including_sell_price)
     end
     @stores = Store.where(id:[9,19,29,154,164])
     @times = []

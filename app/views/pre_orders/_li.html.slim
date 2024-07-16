@@ -10,6 +10,8 @@ li.list-group-item.col-md-12.col-sm-12 class="li_#{pre_order.id}" style="padding
         = f.select :status, options_for_select_from_enum(PreOrder, :status),{}, { class: "status_change form-control",style:""}
 
   .col-md-10.col-sm-10
+    .pull-right
+      = link_to "編集",edit_pre_order_path(pre_order),class:'btn btn-default btn-sm'
     div
       label 店舗：
       span = pre_order.store.name

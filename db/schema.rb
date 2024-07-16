@@ -1075,7 +1075,7 @@ ActiveRecord::Schema.define(version: 2024_07_01_023323) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "store_daily_menus", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "store_daily_menus", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "daily_menu_id", null: false
     t.integer "store_id", null: false
     t.date "start_time", null: false
@@ -1096,6 +1096,13 @@ ActiveRecord::Schema.define(version: 2024_07_01_023323) do
     t.integer "goods_budget", default: 0, null: false
     t.integer "revised_foods_budget", default: 0, null: false
     t.integer "revised_goods_budget", default: 0, null: false
+    t.integer "soup_make_num"
+    t.integer "fukusai_make_num"
+    t.integer "shusai_make_num"
+    t.integer "salad_make_num"
+    t.integer "sweets_make_num"
+    t.integer "curry_make_num"
+    t.integer "bento_make_num"
     t.index ["daily_menu_id", "store_id", "start_time"], name: "index_uniq", unique: true
   end
 
@@ -1282,7 +1289,7 @@ ActiveRecord::Schema.define(version: 2024_07_01_023323) do
     t.integer "user_id"
   end
 
-  create_table "weekly_report_thanks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "weekly_report_thanks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "weekly_report_id", null: false
     t.bigint "staff_id", null: false
     t.text "thanks"
@@ -1292,7 +1299,7 @@ ActiveRecord::Schema.define(version: 2024_07_01_023323) do
     t.index ["weekly_report_id"], name: "index_weekly_report_thanks_on_weekly_report_id"
   end
 
-  create_table "weekly_reports", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "weekly_reports", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "store_id", null: false
     t.bigint "staff_id", null: false
     t.date "date", null: false

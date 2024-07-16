@@ -406,6 +406,7 @@ Rails.application.routes.draw do
   end
   resources :store_daily_menus do
     collection do
+      post :make_num_update
       get :ou_menu_update
       get :budget
       post :budget_update
