@@ -7,14 +7,21 @@ CSV.generate(bom) do |csv|
   @daily_menus.each do |daily_menu|
     daily_menu.daily_menu_details.includes([product:[menus:[menu_materials:[:material]]]]).each do |dmd|
       num = dmd.manufacturing_number
-      dmd.product.menus.each do |menu|
+      dmd.product.product_menus.each do |pm|
+        tpm = TemporaryProductMenu.find_by(product_menu_id:pm.id,daily_menu_detail_id:dmd.id)
+        if tpm.present?
+          menu = tpm.menu
+        else
+          menu = pm.menu
+        end
+
         menu.menu_materials.each do |mm|
           if mm.source_group.present?
             if hash[daily_menu.id][menu.id][mm.source_group].present?
               if mm.post == 'タレ'
                 hash[daily_menu.id][menu.id][mm.source_group]['source_flag'] = true
               else
-                amount = (num * mm.amount_used).round(1)
+                amount = (num * mm.amount_used)
                 if hash[daily_menu.id][menu.id][mm.source_group]['add'][mm.id].present?
                   hash[daily_menu.id][menu.id][mm.source_group]['add'][mm.id]["amount"] += amount
                 else
@@ -31,7 +38,7 @@ CSV.generate(bom) do |csv|
                 hash[daily_menu.id][menu.id][mm.source_group]['source_flag'] = true
                 # hash[daily_menu.id][menu.id][mm.source_group]['add'][mm.id]["amount"] = 0
               else
-                amount = (num * mm.amount_used).round(1)
+                amount = (num * mm.amount_used)
                 hash[daily_menu.id][menu.id][mm.source_group]['add'][mm.id]["amount"] = amount
                 hash[daily_menu.id][menu.id][mm.source_group]['add'][mm.id]["material_name"] = mm.material.short_name
                 hash[daily_menu.id][menu.id][mm.source_group]['add'][mm.id]["recipe_unit"] = mm.material.recipe_unit
@@ -51,7 +58,7 @@ CSV.generate(bom) do |csv|
           menu_name = source_data[1]['menu_name']
           add_content = ''
           source_data[1]['add'].each do |add|
-            add_content += "#{add[1]['material_name']}：#{add[1]['amount']}#{add[1]['recipe_unit']}"
+            add_content += "#{add[1]['material_name']}：#{add[1]['amount'].round(1)}#{add[1]['recipe_unit']}"
           end
           csv << [date,menu_name,source_group,add_content]
         end
