@@ -5,6 +5,9 @@
         h4 = @date
         = f.hidden_field :date,value:@date
       .form-group
+        = f.label :status, "ステータス",class:'required'
+        = f.select :status, options_for_select_from_enum(PreOrder, :status),{}, { class: "status_change form-control",style:""}      
+      .form-group
         = f.label :store_id, "受取店舗名",class:'required'
         = f.collection_select :store_id, @stores, :id, :name, {include_blank:true},class:'form-control', required:true
 
