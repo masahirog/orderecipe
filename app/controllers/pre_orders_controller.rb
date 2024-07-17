@@ -164,12 +164,13 @@ class PreOrdersController < ApplicationController
   end
 
   def update
-    params[:pre_order]["pre_order_products_attributes"].each do |pop|
-      if pop[1]["order_num"]=="0"
-        pop[1]["_destroy"]=1
-      end
+    if params[:pre_order]["pre_order_products_attributes"].present?
+      params[:pre_order]["pre_order_products_attributes"].each do |pop|
+        if pop[1]["order_num"]=="0"
+          pop[1]["_destroy"]=1
+        end
+      end      
     end
-
     respond_to do |format|
       if @pre_order.update(pre_order_params)
         if @pre_order.status_before_type_cast == 0

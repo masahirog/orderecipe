@@ -1,6 +1,6 @@
 class PreOrder < ApplicationRecord
 
-	enum status: {新規注文:0,確認:1,準備完了:2,"受渡・決済完了":3,キャンセル:4}
+	enum status: {新規注文:0,確認:1,準備完了:2,受渡完了:5,"決済完了":3,キャンセル:4}
 
 	has_many :pre_order_products, dependent: :destroy
   	accepts_nested_attributes_for :pre_order_products, allow_destroy: true, reject_if: lambda { |attributes|
