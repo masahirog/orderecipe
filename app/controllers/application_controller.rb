@@ -65,7 +65,7 @@ class ApplicationController < ActionController::Base
     @daily_menu = DailyMenu.find_by(start_time:@date)
     product_ids = []
     @pre_order = PreOrder.new
-    product_categories = [1,2,3,5,7,8,19,20,21,22]
+    product_categories = [1,2,3,5,7,8,11,19,20,21,22]
     @daily_menu.daily_menu_details.includes([:product]).each do |dmd|
       if product_categories.include?(dmd.product.product_category_before_type_cast)
         tax_including_sell_price = (dmd.sell_price * 1.08).floor
