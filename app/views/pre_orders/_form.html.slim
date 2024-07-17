@@ -10,7 +10,10 @@
 
       .form-group
         = f.label :recipient_time, "受取時間",class:'required'
-        = f.select :recipient_time, options_for_select(@times,@pre_order.recipient_time.strftime('%H:%M')),{},class:'form-control', required:true
+        - if @pre_order.recipient_time.present?
+          = f.select :recipient_time, options_for_select(@times,@pre_order.recipient_time.strftime('%H:%M')),{},class:'form-control', required:true
+        - else
+          = f.select :recipient_time, options_for_select(@times,),{},class:'form-control', required:true
 
       .form-group
         = f.label :recipient_name, "名前（検索可）",class:'required'
@@ -39,7 +42,7 @@
         = f.number_field :total,class:'form-control total',readonly:true
 
       ul.list-group.form-group.col-md-12.col-sm-12.col-xs-12 style='padding: 0;'
-        - [['牛すじ煮込み',8],['お弁当',5],['カレー・プレート',19],['スープ',7],['副菜',20],['主菜',1],['サラダ',21],['スイーツ',3]].each do |category|
+        - [['牛すじ煮込み',8],['お弁当',5],['カレー・プレート',19],['スープ',7],['副菜',20],['主菜',1],['サラダ',21],['オプション',11],['スイーツ',3],["スープ大",22],['その他',12],['備品',4],['オードブル',6],['ご飯・丼',2]].each do |category|
           li.list-group-item.col-md-12.col-sm-12.col-xs-12 style='background-color:#f5f5f5;padding:5px 15px;'
             span = category[0]
           = f.fields_for :pre_order_products do |pop|

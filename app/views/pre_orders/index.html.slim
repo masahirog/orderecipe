@@ -1,5 +1,10 @@
-h3 柴田屋オーダ一覧
+.clearfix style='font-size:2em;'
+  span 柴田屋オーダ一覧　
+  = link_to new_pre_order_path(date:@date),style:'text-decoration:none;' do
+    i class="fa-solid fa-circle-plus" style="margin-right:5px;padding: 0;"
+
 = "#{@date.month}月 売上：#{@sales.to_s(:delimited)}円"
+
 .clearfix
   .pull-right
      = form_tag pre_orders_path(format: :csv), :method => 'get' do
@@ -15,7 +20,6 @@ h3 柴田屋オーダ一覧
           label 日付
           = date_field_tag :date, @date, class:"form-control float-left",style:'width:200px;'
         = submit_tag "表示" ,class:"btn btn-primary",style:'margin-top:25px;'
-
 ul.list-group.col-md-12.col-sm-12
   - @pre_orders.each do |pre_order|
     = render partial: "li", locals: { pre_order:pre_order }

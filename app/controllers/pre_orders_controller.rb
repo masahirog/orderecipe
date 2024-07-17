@@ -74,7 +74,29 @@ class PreOrdersController < ApplicationController
   end
 
   def new
-    @pre_order = PreOrder.new
+    @date = Date.parse(params[:date])
+    @pre_order = PreOrder.new(date:@date)
+    @employees = Staff.where(group_id:30,status:0).map{|staff|[staff.name,staff.staff_code]}
+    @daily_menu = DailyMenu.find_by(start_time:@date)
+    product_ids = []
+    @daily_menu.daily_menu_details.includes([:product]).each do |dmd|
+      tax_including_sell_price = (dmd.sell_price * 1.08).floor
+      @pre_order.pre_order_products.build(product_id:dmd.product_id,order_num:0,welfare_price:0,employee_discount:0,tax_including_sell_price:tax_including_sell_price)
+    end
+    [14099,14714].each do |id|
+      product = Product.find(id)
+      tax_including_sell_price = (product.sell_price * 1.08).floor
+      @pre_order.pre_order_products.build(product_id:id,order_num:0,welfare_price:0,employee_discount:0,tax_including_sell_price:tax_including_sell_price)
+    end
+    @stores = Store.where(id:[9,19,29,154,164])
+    @times = []
+    (11..20).each do |h|
+      ["00","15","30","45"].each do |m|
+        @times << "#{h}:#{m}"
+      end
+    end
+
+
   end
 
   def edit
