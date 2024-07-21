@@ -1,5 +1,11 @@
 class DailyMenusController < AdminController
   before_action :set_daily_menu, only: [:show, :update, :destroy]
+  def upload_menu
+    DailyMenu.upload_data(params[:file])
+    redirect_to schedule_daily_menus_path(from:params[:from],to:params[:to]), :notice => "CSVで更新しました"
+  end
+
+
   def kpi
     if params[:date].present?
       @date = Date.parse(params[:date])
@@ -16,8 +22,6 @@ class DailyMenusController < AdminController
     else
       @from = @to - 30
     end
-
-
   end
 
   def serving_list

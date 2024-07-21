@@ -34,17 +34,6 @@ button type="button" class="btn btn-default" data-toggle="modal" data-target="#s
         .modal-footer
           button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
           = submit_tag "登録",class:'btn btn-primary'
-/ button type="button" class="btn btn-default" data-toggle="modal" data-target="#upload" style='margin-right:10px;float:right;' CSV登録
-/ #upload.modal.fade tabindex="-1"
-  = form_tag upload_menu_daily_menus_path, multipart: true do
-    .modal-dialog style='width:1000px;'
-      .modal-content
-        .modal-header
-        .modal-body
-          = file_field_tag :file,class:'form-control',style:'padding:10px;height:100%;'
-        .modal-footer
-          button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
-          = submit_tag "アップロード",class:'btn btn-primary'
 
 button type="button" data-toggle="modal" data-target="#create_1month_modal" class='btn btn-default' style='margin-right:10px;float:right;' 1ヶ月分の枠を作成
 #create_1month_modal.modal.fade tabindex="-1"

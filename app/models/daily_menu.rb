@@ -11,6 +11,55 @@ class DailyMenu < ApplicationRecord
   after_destroy :input_stock
   after_update :update_sdmd_row_order
 
+
+  def self.upload_data(file)
+      new_dmds = []
+      update_dmds = []
+      # saved_smaregi_members = DailyMenuDetail.all.map{|sm|[sm.kaiin_id,sm]}.to_h
+      # member_raiten_kaisu = SmaregiTradingHistory.where.not(kaiin_id:nil).where(torihikimeisai_id:1,uchikeshi_kubun:0).group(:kaiin_id).count
+      dates = []
+      CSV.foreach file.path, {encoding: 'BOM|UTF-8', headers: true} do |row|
+        row = row.to_hash
+        date = row["日付"]
+        dates << date
+      end
+      dmd_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+      DailyMenuDetail.joins(:daily_menu).where(:daily_menus => {start_time:dates}).each do |dmd|
+        dmd_hash[dmd.daily_menu.start_time][dmd.paper_menu_number] = dmd
+        dmd_hash[dmd.daily_menu.start_time]["daily_menu_id"] = dmd.daily_menu_id
+      end
+
+      CSV.foreach file.path, {encoding: 'BOM|UTF-8', headers: true} do |row|
+        row = row.to_hash
+        date = row["日付"].to_date
+        if dmd_hash[date]['daily_menu_id'].present?
+          [24,25,26,27,28,29].each do |paper_menu_number|
+            product_id = row[paper_menu_number.to_s]
+            dmd = dmd_hash[date][paper_menu_number]
+            if product_id.present?
+              product = Product.find(product_id)
+              if product
+                sell_price = product.sell_price
+                if dmd.present?
+                  dmd.product_id = product_id
+                  update_dmds << dmd
+                else
+                  new_dmds << DailyMenuDetail.new(daily_menu_id:dmd_hash[date]['daily_menu_id'],product_id:product_id,paper_menu_number:paper_menu_number,sell_price:sell_price)
+                end
+              end
+            end
+          end
+        end
+      end
+      DailyMenuDetail.import update_dmds, on_duplicate_key_update:[:product_id]
+      DailyMenuDetail.import new_dmds
+      return
+    end
+
+
+
+
+
   def input_stock
     #saveされたdailymenuの日付を取得
     store_id = 39
