@@ -1,42 +1,44 @@
-li.add_li_material.col-md-12.col-xs-12.list-group-item.item.nested-fields.field.table-striped
+li.add_li_material.list-group-item.nested-fields
   = f.hidden_field :row_order, class:"input_row_order"
   = f.hidden_field :base_menu_material_id
-  .select_material.col-md-3.col-xs-6[style="padding:3px;"]
-    - if @base_menu.present?
-      = f.object.material.name
-      = f.hidden_field :material_id
-      = link_to edit_material_path(f.object.material),target:'_blank',class:'material_link' do
-        i class="fa-solid fa-arrow-up-right-from-square" style='margin-left:10px;'
-    - else
-      / = f.collection_select :material_id, @materials, :id, :name, {include_blank: true}, { class: "input_select_material col-md-12"}
-      = f.collection_select :material_id, @materials, :id, :select_name, {include_blank: true}, { class: "input_select_material col-md-12",required: true,style:'width:calc(100% - 30px);'}
-      - if f.object.id.present?
+  .clearfix
+    .select_material style="padding:3px;min-width:300px;float:left;width:30%;"
+      - if @base_menu.present?
+        = f.object.material.name
+        = f.hidden_field :material_id
         = link_to edit_material_path(f.object.material),target:'_blank',class:'material_link' do
           i class="fa-solid fa-arrow-up-right-from-square" style='margin-left:10px;'
       - else
-        a target="_blank" class="material_link" href=""
-          i class="fa-solid fa-arrow-up-right-from-square" style='margin-left:10px;'
-  .cost_price.col-md-1.form-inline.text-center
-    = f.object.material.cost_price if f.object.material.present?
+        / = f.collection_select :material_id, @materials, :id, :name, {include_blank: true}, { class: "input_select_material"}
+        = f.collection_select :material_id, @materials, :id, :select_name, {include_blank: true}, { class: "input_select_material",required: true,style:'width:calc(100% - 30px);'}
+        - if f.object.id.present?
+          = link_to edit_material_path(f.object.material),target:'_blank',class:'material_link' do
+            i class="fa-solid fa-arrow-up-right-from-square" style='margin-left:10px;'
+        - else
+          a target="_blank" class="material_link" href=""
+            i class="fa-solid fa-arrow-up-right-from-square" style='margin-left:10px;'
+    .cost_price.text-center style="min-width:100px;float:left;padding-top:10px;width:10%;"
+      = f.object.material.cost_price if f.object.material.present?
 
-  .sales_check[style="display:none;"]
-    = f.object.material.unused_flag if f.object.material.present?
-  .amount_used.col-md-2[style="display:inline-flex"]
-    div[style="padding-right:10px;"]
-      = f.number_field :amount_used, class:'amount_used_input form-control',required: true,placeholder:"使用量",step:"0.01"
-    span.recipe_unit[style="padding-top:10px;"]
-      = f.object.material.recipe_unit if f.object.material.present?
-  .price_used.col-md-1.text-center
-    = (f.object.material.cost_price * f.object.amount_used).round(2) if f.object.material.present? && f.object.amount_used.present?
-  .preparation.col-md-5.clearfix
-    = f.text_field :preparation, class:'preparation_input form-control',style:'float:left;width:calc(100% - 30px);',placeholder:"仕込みメモ"
-    .remove_material style='float:left;text-align:center;'
-      - unless @base_menu.present?
-        = link_to_remove_association f do
-          i class="fas fa-trash-alt" style='color:red;font-size:20px;margin:8px 0 0 8px;'
+    .sales_check style="display:none;"
+      = f.object.material.unused_flag if f.object.material.present?
+    .amount_used.clearfix style="min-width:180px;float:left;width:15%;"
+      div style="padding-right:10px;float:left;width:120px;"
+        = f.number_field :amount_used, class:'amount_used_input form-control',required: true,placeholder:"使用量",step:"0.01"
+      span.recipe_unit style="padding-top:10px;float:left;"
+        = f.object.material.recipe_unit if f.object.material.present?
+    .price_used.text-center style="min-width:100px;float:left;padding-top:10px;width:10%;"
+      / = (f.object.material.cost_price * f.object.amount_used).round(2) if f.object.material.present? && f.object.amount_used.present?
+      = (f.object.material.cost_price * f.object.amount_used).round(2) if f.object.material.present? && f.object.amount_used.present?
+    .preparation.clearfix style="float:left;min-width:300px;width:35%;"
+      = f.text_field :preparation, class:'preparation_input form-control',style:'float:left;width:calc(100% - 30px);',placeholder:"仕込みメモ"
+      .remove_material style='float:left;text-align:center;'
+        - unless @base_menu.present?
+          = link_to_remove_association f do
+            i class="fas fa-trash-alt" style='color:red;font-size:20px;margin:8px 0 0 8px;'
 
-  .col-md-12.menu_materials_li style="padding:5px 0 0 0;"
-    .col-md-4.food_ingredient style="font-size:0.8em;"
+  .menu_materials_li.clearfix style="padding:5px 0 0 0;"
+    .food_ingredient style="font-size:0.8em;float:left;min-width:300px;width:30%;"
       - if f.object.material.present? && f.object.material.food_ingredient_id.present?
         = link_to f.object.material.food_ingredient.name,edit_food_ingredient_path(f.object.material.food_ingredient),class:"name",target:"_blank"
         br
@@ -58,14 +60,14 @@ li.add_li_material.col-md-12.col-xs-12.list-group-item.item.nested-fields.field.
         input.dietary_fiber value=0 style='display:none;'
         input.salt value=0 style='display:none;'
 
-    .select_source_group.col-md-2.text-right
+    .select_source_group.text-right style="min-width:180px;float:left;margin-left:20px;width:15%;"
       span style="margin:8px 8px 0 0;float:left;width:70px;" グループ：
       = f.select :source_group, MenuMaterial.source_groups.keys.to_a, {include_blank:true}, class: 'form-control',style:'width:calc(100% - 80px);float:left;'
 
-    .select_post.col-md-2.text-right
+    .select_post.text-right style="min-width:180px;float:left;margin-left:20px;width:15%;"
       span style="margin:8px 8px 0 0;float:left;width:70px;" 担当：
       = f.select :post,MenuMaterial.posts.keys.to_a,{}, class: "form-control post",style:'width:calc(100% - 80px);float:left;'
-    .div_material_cut_pattern.col-md-4.clearfix
+    .div_material_cut_pattern.clearfix style="float:left;min-width:300px;margin-left:20px;width:35%;"
       - if f.object.material.present?
         - material_id = f.object.material.id
         - cut_patterns = []
@@ -81,7 +83,7 @@ li.add_li_material.col-md-12.col-xs-12.list-group-item.item.nested-fields.field.
       = f.collection_select :material_cut_pattern_id,cut_patterns, :id, :name, {include_blank:true}, { class: "form-control material_cut_pattern",style:"float:left;width:calc(100% - 30px);display:#{display};"}
       a href="/materials/#{material_id}/edit" target="_blank" style="display:#{display}"
         span style='font-size:20px;margin:8px 0 0 8px;' class="glyphicon glyphicon-cog" aria-hidden="true"
-  .col-md-12.clearfix style="padding:5px 0 0 0;"
+  .clearfix style="padding:5px 0 0 0;"
     span style='float:left;margin:8px 8px 0 0;' 成分計算：
     i class="fa-regular fa-pen-to-square edit_gram_quantity" style='float:left;margin:10px 8px 0 0;'
     .gram_quantity style='float:left;'

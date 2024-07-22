@@ -48,60 +48,57 @@
           = f.label :remove_image,"削除する"
           = f.check_box :remove_image
 
-  .col-md-12.form-group
+  .form-group
     = f.label :cook_the_day_before ,'レシピ'
     = f.text_area :cook_the_day_before, style:"height:10em;", class:"form-control"
-  .col-md-12.form-group
+  .form-group
     = f.label :cook_on_the_day ,'当日調理'
     = f.text_area :cook_on_the_day,style:"height:10em;", class: "form-control"
-  .col-md-12
-    table.table
-      thead
-        tr
-          th
-            span 当日仕上げ工程　　
-            = link_to_add_association '追加', f, :menu_last_processes,class:'btn btn-primary add_menu_last_process_fields',style:'margin-left:20px;',
-            data: {association_insertion_node: '#menu_last_process-add-point',association_insertion_method: 'append' }
-          th メモ
-          th
-      tbody#menu_last_process-add-point
-        = f.fields_for :menu_last_processes do |mlp|
-          = render 'menu_last_process_fields', f:mlp
-  .col-md-12
-    table.table
-      thead
-        tr
-          th
-            span 調理チェックリスト
-            = link_to_add_association '追加', f, :menu_cook_checks,class:'btn btn-primary add_menu_cook_check_fields',style:'margin-left:20px;',
-            data: {association_insertion_node: '#menu_cook_check-add-point',association_insertion_method: 'append' }
-          th 持ち場
-          th
-      tbody#menu_cook_check-add-point
-        = f.fields_for :menu_cook_checks do |mcc|
-          = render 'menu_cook_check_fields', f:mcc
+  table.table
+    thead
+      tr
+        th
+          span 当日仕上げ工程　　
+          = link_to_add_association '追加', f, :menu_last_processes,class:'btn btn-primary add_menu_last_process_fields',style:'margin-left:20px;',
+          data: {association_insertion_node: '#menu_last_process-add-point',association_insertion_method: 'append' }
+        th メモ
+        th
+    tbody#menu_last_process-add-point
+      = f.fields_for :menu_last_processes do |mlp|
+        = render 'menu_last_process_fields', f:mlp
+  table.table
+    thead
+      tr
+        th
+          span 調理チェックリスト
+          = link_to_add_association '追加', f, :menu_cook_checks,class:'btn btn-primary add_menu_cook_check_fields',style:'margin-left:20px;',
+          data: {association_insertion_node: '#menu_cook_check-add-point',association_insertion_method: 'append' }
+        th 持ち場
+        th
+    tbody#menu_cook_check-add-point
+      = f.fields_for :menu_cook_checks do |mcc|
+        = render 'menu_cook_check_fields', f:mcc
 
-  .col-md-12
-    table.table
-      thead
-        tr
-          th
-            span 写真付き調理工程　
-            = link_to_add_association '追加', f, :menu_processes,class:'btn btn-primary add_menu_process_fields',style:'margin-left:20px;',
-            data: {association_insertion_node: '#menu_process-add-point',association_insertion_method: 'append' }
-          th 写真
-          th
-      tbody#menu_process-add-point
-        = f.fields_for :menu_processes do |mp|
-          = render 'menu_process_fields', f:mp
+  table.table
+    thead
+      tr
+        th
+          span 写真付き調理工程　
+          = link_to_add_association '追加', f, :menu_processes,class:'btn btn-primary add_menu_process_fields',style:'margin-left:20px;',
+          data: {association_insertion_node: '#menu_process-add-point',association_insertion_method: 'append' }
+        th 写真
+        th
+    tbody#menu_process-add-point
+      = f.fields_for :menu_processes do |mp|
+        = render 'menu_process_fields', f:mp
 
-  .used_additives.col-md-12 style="margin:20px 0;"
+  .used_additives style="margin:20px 0;"
     = f.label :used_additives ,"使用食品添加物"
     - if f.object.used_additives.present?
       = f.select :used_additives, grouped_options_for_select(@ar,f.object.used_additives),{ include_hidden: false},{class:"select_used_additives col-md-12",multiple:true}
     - else
       = f.select :used_additives, grouped_options_for_select(@ar),{include_hidden: false},{class:"select_used_additives col-md-12",multiple:true}
-  table.col-md-12.table
+  table.table
     thead
       th カロリー(kcal)
       th タンパク質(g)
@@ -122,31 +119,23 @@
         = f.number_field :dietary_fiber,class:'form-control menu_dietary_fiber',readonly:true
       td
         = f.number_field :salt,class:'form-control menu_salt',readonly:true
-  .material_area
-    .col-md-12 style="margin:5px;"
-      label.col-md-3 食材・資材名
-      label.col-md-1.text-center 単価
-      label.col-md-2 使用量
-      label.col-md-1.text-center 原価
-      label.col-md-2 仕込み内容
-      / label.col-md-1 持ち場
-      / label.col-md-1
+  .material_area style="margin:5px;"
     - i=0
     / コピーメニューは順番をいじれないように調整
     - if @base_menu.present?
-      ul#detail-association-insertion-point.material_ul.list-group style="list-style-type:none;"
+      ul#detail-association-insertion-point.material_ul.list-group
         = f.fields_for :menu_materials do |m|
           = render 'menu_material_fields',{f: m}
           - i += 1
     - else
-      ul#detail-association-insertion-point.material_ul.list-group.ul-sortable style="list-style-type:none;"
+      ul#detail-association-insertion-point.material_ul.list-group.ul-sortable
         = f.fields_for :menu_materials do |m|
           = render 'menu_material_fields',{f: m}
           - i += 1
   - unless @base_menu.present?
-    .col-md-12.form-group style="margin-top:20px;"
+    .form-group style="margin-top:20px;"
       = link_to_add_association '材料追加', f, :menu_materials,class: 'btn btn-default add_material_fields',data: {association_insertion_node: '#detail-association-insertion-point',association_insertion_method: 'append' }
-  .action.col-md-12
+  .action
     = f.hidden_field :back_to, :value => @back_to
     / = f.submit '保存する',class:'btn btn-primary',onclick:"form.submit()"
     input.btn.btn-primary type="button" onclick="submit();" value="保存する"

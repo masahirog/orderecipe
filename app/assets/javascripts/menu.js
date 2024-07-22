@@ -8,7 +8,7 @@ $(document).on('turbolinks:load', function() {
     calculate_menu_nutrition();
     u = 0
     $(".add_li_material").each(function(){
-      var eos = $(this).children(".sales_check").text()
+      var eos = $(this).find(".sales_check").text()
       var unit = $(this).find(".recipe_unit").text()
       eos_check(eos,u);
       sabun_check(u);
@@ -146,20 +146,20 @@ $(document).on('turbolinks:load', function() {
 
   //amount_used変更でprice_used取得
   $(".material_ul").on('change','.amount_used', function(){
-    var u = $(".add_li_material").index($(this).parent(".add_li_material"));
-    var cost_price = $(this).parent(".add_li_material").children(".cost_price").html();
-    var amount_used = $(this).parent(".add_li_material").find(".amount_used_input").val();
+    var u = $(".add_li_material").index($(this).parents(".add_li_material"));
+    var cost_price = $(this).parents(".add_li_material").find(".cost_price").html();
+    var amount_used = $(this).parents(".add_li_material").find(".amount_used_input").val();
     if (isNaN(amount_used) == true){
       var calculate_price = 0;
       var amount = 0;
     }else {
       var calculate_price = Math.round( (cost_price * amount_used) * 100 ) / 100;
-      $(this).parent(".add_li_material").children(".price_used").text(calculate_price);
+      $(this).parents(".add_li_material").find(".price_used").text(calculate_price);
       calculate_menu_price();
       var unit = $(".add_li_material").eq(u).find(".recipe_unit").text().trim();
-      var recipe_unit_gram_quantity = $(this).parent(".add_li_material").find(".recipe_unit_gram_quantity").val();
+      var recipe_unit_gram_quantity = $(this).parents(".add_li_material").find(".recipe_unit_gram_quantity").val();
       var amount = Math.round( (amount_used*recipe_unit_gram_quantity) * 100 ) / 100;
-      $(this).parent(".add_li_material").find(".input_gram_quantity").val(amount);
+      $(this).parents(".add_li_material").find(".input_gram_quantity").val(amount);
     }
     calculate_food_ingredient(amount,u);
     calculate_menu_nutrition();
