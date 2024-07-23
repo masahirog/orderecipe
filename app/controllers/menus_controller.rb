@@ -80,6 +80,7 @@ class MenusController < ApplicationController
     @food_ingredients = FoodIngredient.all
     @menu = Menu.includes(:menu_materials,{materials:[:vendor,:material_food_additives]}).find(params[:id])
     @materials = @menu.materials
+
     if @menu.update(menu_create_update)
       if params["menu"]["back_to"].blank?
         redirect_to menu_path, success: "「#{@menu.name}」を更新しました。続けてメニューを作成する：<a href='/menus/new'>新規作成</a>".html_safe

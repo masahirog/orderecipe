@@ -161,6 +161,8 @@ $(document).on('turbolinks:load', function() {
       var amount = Math.round( (amount_used*recipe_unit_gram_quantity) * 100 ) / 100;
       $(this).parents(".add_li_material").find(".input_gram_quantity").val(amount);
     }
+    console.log(cost_price);
+    console.log(amount_used);
     calculate_food_ingredient(amount,u);
     calculate_menu_nutrition();
   });
@@ -252,7 +254,7 @@ $(document).on('turbolinks:load', function() {
     $(".add_li_material").each(function(){
       if ($(this).find(".remove_material").children("input").val()==1){
       }else{
-        var price_used = Number($(this).children(".price_used").html())
+        var price_used = Number($(this).find(".price_used").html())
         if (isNaN(price_used) == true ){}else{
         menu_price += price_used}
       }});
