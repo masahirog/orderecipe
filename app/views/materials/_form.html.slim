@@ -24,6 +24,10 @@
         = f.label :order_name, "発注書記載名",class:'required'
         = f.text_field :order_name, class:'form-control',required:true
       .col-md-12.form-group
+        = f.label :food_label_name, "原材料表示名(ラベルに表示されます)",class:'required'
+        = f.text_field :food_label_name, class:'form-control',required:true
+
+      .col-md-12.form-group
         = f.label :food_ingredient_id, "成分表示用食材"
         = f.collection_select :food_ingredient_id, FoodIngredient.all, :id, :name, {include_blank: true}, { class: "form-control select2"}
 

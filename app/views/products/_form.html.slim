@@ -142,6 +142,13 @@
         = f.label :food_label_content, "食品表示内容"
         .btn.btn-sm.btn-default.remake_foodlabel 生成
         = f.text_area :food_label_content, class:"form-control", style:"height:10em;"
+        textarea.form-control.origin_foodlabel style='display:none;'
+          = @data
+        textarea.form-control.origin_foodlabel_food_additives style='display:none;'
+          = @food_additives
+        textarea.form-control.origin_foodlabel_allergy style='display:none;'
+          = @allergy
+
     
   .col-md-12.form-group
     .col-md-6
@@ -243,7 +250,10 @@
 
 javascript:
   $(".remake_foodlabel").on('click',function(){
-    
+    var origin_foodlabel = $(".origin_foodlabel").val();
+    var food_additives = $(".origin_foodlabel_food_additives").val();
+    var allergy = $(".origin_foodlabel_allergy").val();
+    $("#product_food_label_content").val(origin_foodlabel+food_additives+allergy);    
   });
 
   $(".sell_price").on("change",function(){

@@ -13,12 +13,16 @@
   nav.alert.alert-danger.eos-alert.navbar-fixed-top style="display:none;"
     |  終売の食材を選択しています。食材を変更してください(((；ﾟДﾟ)))
   .form-group.col-md-12
-    .col-md-4
-      = f.label :name ,'メニュー名'
-      = f.text_field :name, class: "form-control", id: "material_name",style:"width:100%;"
-    .col-md-4
-      = f.label :short_name ,'省略名 ひらがな'
-      = f.text_field :short_name, class: "form-control", id: "material_name",style:"width:100%;"
+    .col-md-3
+      = f.label :name ,'メニュー名',class:"required"
+      = f.text_field :name, class: "form-control", id: "material_name",style:"width:100%;",required:true
+    .col-md-3
+      = f.label :short_name ,'省略名 ひらがな',class:"required"
+      = f.text_field :short_name, class: "form-control", id: "material_name",style:"width:100%;",required:true
+    .col-md-3
+      = f.label :food_label_name ,'食品表示用メニュー名',class:"required"
+      = f.text_field :food_label_name, class: "form-control", style:"width:100%;",required:true
+
     .col-md-2
       - if current_user.group_id == 9
         - categories = Menu.categories.find_all{|k,v| v < 5 }.to_h.keys
@@ -27,7 +31,7 @@
 
       = f.label :category ,'カテゴリー'
       = f.select :category, options_for_select(categories,@menu.category),{}, { class: "form-control",style:"width:100%;"}
-    .col-md-2
+    .col-md-1
       = f.label :cost_price, "メニュー原価"
       .clearfix
         = f.number_field :cost_price, :readonly => 'readonly',class: "menu_cost_price form-control",style:'float:left;width:80%;'
@@ -48,12 +52,19 @@
           = f.label :remove_image,"削除する"
           = f.check_box :remove_image
 
-  .form-group
-    = f.label :cook_the_day_before ,'レシピ'
-    = f.text_area :cook_the_day_before, style:"height:10em;", class:"form-control"
-  .form-group
-    = f.label :cook_on_the_day ,'当日調理'
-    = f.text_area :cook_on_the_day,style:"height:10em;", class: "form-control"
+    .form-group
+      .col-md-4
+        = f.label :cook_the_day_before ,'レシピ'
+        = f.text_area :cook_the_day_before, style:"height:10em;", class:"form-control"
+      .col-md-4
+        = f.label :cook_on_the_day ,'当日調理'
+        = f.text_area :cook_on_the_day,style:"height:10em;", class: "form-control"
+      .col-md-4
+        = f.label :food_label_contents, "食品表示内容"
+        .btn.btn-sm.btn-default.remake_foodlabel 再生成
+        = f.text_area :food_label_contents, class:"form-control", style:"height:10em;"
+        textarea.form-control.origin_foodlabel style='display:none;'
+          = @data.join(",")
   table.table
     thead
       tr
@@ -141,6 +152,11 @@
     input.btn.btn-primary type="button" onclick="submit();" value="保存する"
 
 javascript:
+  $(".remake_foodlabel").on('click',function(){
+    var origin_foodlabel = $(".origin_foodlabel").val();
+    $("#menu_food_label_contents").val(origin_foodlabel);
+  });
+
   $(document).on('turbolinks:load', function() {
     $('.add_li_material').each(function(){
       change_color(this)

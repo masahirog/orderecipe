@@ -31,24 +31,23 @@ class ApplicationController < ActionController::Base
     render template: 'errors/error_500', status: 500
   end
   def list
-    if params[:month].present?
-      @date = "#{params[:month]}-01".to_date
-      @month = params[:month]
+    if params[:date].present?
+      @date = Date.parse(params[:date])
       if @date < Date.parse('2024-01-01')
         flash[:notice] = "2024年1月以降を選択してください"
         @date = @today
-        @month = "#{@date.year}-#{sprintf("%02d",@date.month)}"
       end
     else
       @date = @today
-      @month = "#{@date.year}-#{sprintf("%02d",@date.month)}"
     end
-    dates =(@date.beginning_of_month..@date.end_of_month).to_a
-    @wednesdays = []
-    dates.each do |date|
-      @wednesdays << date if date.wday == 3
+    @daily_menu = DailyMenu.includes(daily_menu_details:[:product]).find_by(start_time:@date)
+
+    product_categories = [1,2,3,5,7,8,11,19,20,21,22]
+    @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    @daily_menu.daily_menu_details.each do |dmd|
+      @hash[dmd.product.product_category_before_type_cast][dmd.product_id] = dmd
     end
-    @daily_menus = DailyMenu.includes(daily_menu_details:[:product]).where(start_time:@wednesdays)
+    @gyusuji = Product.where(id:[14099,14714])
     render :layout => false
   end
 
