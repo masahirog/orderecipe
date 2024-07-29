@@ -20,6 +20,8 @@ class CreateMenus < ActiveRecord::Migration[4.2]
       t.float :carbohydrate,null:false,default:0
       t.float :dietary_fiber,null:false,default:0
       t.float :salt,null:false,default:0
+      t.string :food_label_name
+      t.text :food_label_contents
     end
   end
 end

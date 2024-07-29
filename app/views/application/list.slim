@@ -43,19 +43,26 @@ html
         table.table
           thead
             tr
-              th style='width:500px' 商品名
+              th style='width:40px' MS
+              th style='width:200px' 商品名
               th style='width:100px' カテゴリ
-              th style='width:100px' 税別価格
+              th style='width:100px' 税込価格
+              th style='width:200px' 商品説明
               th style='width:100px' 画像
           tbody
-            - daily_menu.daily_menu_details.joins(:product).order("products.product_category").each do |dmd|
+            - daily_menu.daily_menu_details.joins(:product).order("paper_menu_number").each do |dmd|
               - if dmd.sell_price > 0
                 tr
+                  td
+                    - if dmd.mealselect_flag == true
+                      |◯
                   td = dmd.product.food_label_name
                   td = dmd.product.product_category
-                  td = dmd.sell_price
+                  td = (dmd.sell_price * 1.08).floor
+                  td = simple_format(h(dmd.product.contents))
                   td
-                    = link_to dmd.product.image.to_s, "data-lightbox" => dmd.product.image.to_s do
-                      = image_tag dmd.product.image_url(:thumb) if dmd.product.image.present?
+                    - if dmd.product.image.present?
+                      = link_to download_products_path(id:dmd.product_id),method: :post do
+                        = image_tag dmd.product.image_url(:thumb)
 
     script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/js/lightbox.min.js" type="text/javascript"

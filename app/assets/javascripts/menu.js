@@ -233,11 +233,11 @@ $(document).on('turbolinks:load', function() {
     var eos = data.material.unused_flag;
     var material_cut_patterns = data.material.material_cut_patterns
     $(".add_li_material").eq(u).find(".material_link").attr('href',"/materials/"+id+"/edit")
-    $(".add_li_material").eq(u).children(".sales_check").text(eos);
+    $(".add_li_material").eq(u).find(".sales_check").text(eos);
     $(".add_li_material").eq(u).find(".recipe_unit_gram_quantity").val(data.material.recipe_unit_gram_quantity);
-    $(".add_li_material").eq(u).children(".cost_price").text(cost);
+    $(".add_li_material").eq(u).find(".cost_price").text(cost);
     $(".add_li_material").eq(u).find(".recipe_unit").text(unit);
-    $(".add_li_material").eq(u).children(".price_used").text(0);
+    $(".add_li_material").eq(u).find(".price_used").text(0);
     $(".add_li_material").eq(u).find(".div_material_cut_pattern").children('a').attr("href", "/materials/"+id+"/edit");
     $(".add_li_material").eq(u).find(".material_cut_pattern option").remove();
     $(".add_li_material").eq(u).find('.material_cut_pattern').append($('<option>').val('').text(''));

@@ -167,7 +167,7 @@ ActiveRecord::Schema.define(version: 2024_07_01_023323) do
     t.integer "adjustment_subtotal", default: 0, null: false
   end
 
-  create_table "daily_menu_details", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "daily_menu_details", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "daily_menu_id"
     t.bigint "product_id"
     t.integer "manufacturing_number", default: 0, null: false
@@ -186,6 +186,7 @@ ActiveRecord::Schema.define(version: 2024_07_01_023323) do
     t.integer "sell_price", default: 0, null: false
     t.integer "paper_menu_number"
     t.boolean "change_flag", default: false, null: false
+    t.boolean "mealselect_flag", default: false, null: false
     t.index ["daily_menu_id", "paper_menu_number"], name: "index_daily_menu_details_on_daily_menu_id_and_paper_menu_number", unique: true
     t.index ["daily_menu_id", "product_id"], name: "index_daily_menu_details_on_daily_menu_id_and_product_id", unique: true
     t.index ["daily_menu_id"], name: "index_daily_menu_details_on_daily_menu_id"
@@ -482,7 +483,7 @@ ActiveRecord::Schema.define(version: 2024_07_01_023323) do
     t.index ["date", "material_id"], name: "index_material_vendor_stocks_on_date_and_material_id", unique: true
   end
 
-  create_table "materials", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "materials", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
     t.string "order_name"
     t.string "roma_name"
@@ -515,6 +516,7 @@ ActiveRecord::Schema.define(version: 2024_07_01_023323) do
     t.string "jancode"
     t.integer "food_ingredient_id"
     t.float "recipe_unit_gram_quantity", default: 0.0, null: false
+    t.string "food_label_name"
   end
 
   create_table "menu_cook_checks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -565,7 +567,7 @@ ActiveRecord::Schema.define(version: 2024_07_01_023323) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "menus", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "menus", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
     t.string "roma_name"
     t.text "cook_the_day_before"
@@ -586,6 +588,8 @@ ActiveRecord::Schema.define(version: 2024_07_01_023323) do
     t.float "carbohydrate", default: 0.0, null: false
     t.float "dietary_fiber", default: 0.0, null: false
     t.float "salt", default: 0.0, null: false
+    t.string "food_label_name"
+    t.text "food_label_contents"
   end
 
   create_table "monthly_stocks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -1075,7 +1079,7 @@ ActiveRecord::Schema.define(version: 2024_07_01_023323) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "store_daily_menus", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "store_daily_menus", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.integer "daily_menu_id", null: false
     t.integer "store_id", null: false
     t.date "start_time", null: false

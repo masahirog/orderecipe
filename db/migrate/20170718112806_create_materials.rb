@@ -32,6 +32,7 @@ class CreateMaterials < ActiveRecord::Migration[4.2]
       t.string :jancode,unique: true
       t.references :food_ingredient
       t.float :recipe_unit_gram_quantity,:null => false,:default => 0
+      t.string :food_label_name
     end
   end
 end

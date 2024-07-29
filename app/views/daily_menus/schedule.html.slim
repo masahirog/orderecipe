@@ -86,6 +86,8 @@
                       - if @daily_menu_details_hash[daily_menu.id][i]['product_id'].present?
                         = link_to product_path(id:@daily_menu_details_hash[daily_menu.id][i]['product_id']),target:"_blank"
                           i class="fa-solid fa-up-right-from-square" style='cursor: pointer;margin-left: 10px;'
+                      - if @daily_menu_details_hash[daily_menu.id][i]['mealselect_flag'] == true
+                        span style='margin-left:5px;color:red;' MS
                 - else
                   td.product_name
     - if @pattern.present?
@@ -120,11 +122,16 @@
                       = select_tag "daily_menus[#{daily_menu.id}]paper_menu_numbers[#{i}][product_id]", options_from_collection_for_select(product, :id, :name,@create_menu_details_hash[daily_menu.id][i]['product_id']),include_blank:true, class: "form-control input_select2_product"
                       br
                       .clearfix style='margin-top: 3px;'
-                        = number_field_tag "daily_menus[#{daily_menu.id}]paper_menu_numbers[#{i}][sell_price]",@create_menu_details_hash[daily_menu.id][i]["sell_price"], class: "sell_price",style:'width:70px;float:left;'
+                        = number_field_tag "daily_menus[#{daily_menu.id}]paper_menu_numbers[#{i}][sell_price]",@create_menu_details_hash[daily_menu.id][i]["sell_price"], class: "sell_price",style:'width:50px;float:left;'
                         - if @create_menu_details_hash[daily_menu.id][i]["change_flag"].present?
-                          = check_box_tag "daily_menus[#{daily_menu.id}]paper_menu_numbers[#{i}][change_flag]",true,@create_menu_details_hash[daily_menu.id][i]["change_flag"], class: "change_flag_check",style:'width:70px;height:15px;float:left;margin:5px 0;'
+                          = check_box_tag "daily_menus[#{daily_menu.id}]paper_menu_numbers[#{i}][change_flag]",true,@create_menu_details_hash[daily_menu.id][i]["change_flag"], class: "change_flag_check",style:'width:50px;height:15px;float:left;margin:5px 0;'
                         - else
                           = check_box_tag "daily_menus[#{daily_menu.id}]paper_menu_numbers[#{i}][change_flag]",true,false, class: "change_flag_check",style:'width:70px;height:15px;float:left;margin:5px 0;'
+                        span style="float:left;margin:2px 2px 0 0;" M:
+                        - if @create_menu_details_hash[daily_menu.id][i]["mealselect_flag"].present?
+                          = check_box_tag "daily_menus[#{daily_menu.id}]paper_menu_numbers[#{i}][mealselect_flag]",true,@create_menu_details_hash[daily_menu.id][i]["mealselect_flag"], class: "mealselect_flag_check",style:'height:15px;float:left;margin:5px 0;'
+                        - else
+                          = check_box_tag "daily_menus[#{daily_menu.id}]paper_menu_numbers[#{i}][mealselect_flag]",true,false, class: "mealselect_flag_check",style:'height:15px;float:left;margin:5px 0;'
           = hidden_field_tag :from ,params[:from]
           = hidden_field_tag :to,params[:to]
           = hidden_field_tag :pattern,params[:pattern]

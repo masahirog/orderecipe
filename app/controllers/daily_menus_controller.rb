@@ -106,6 +106,11 @@ class DailyMenusController < AdminController
         else
           change_flag = false
         end
+        if data[1]["mealselect_flag"]=='true'
+          mealselect_flag = true
+        else
+          mealselect_flag = false
+        end
         daily_menu_detail = @dmd_hash[daily_menu_id][paper_menu_number]
         if daily_menu_detail.present?
           if product_id.present?
@@ -113,6 +118,7 @@ class DailyMenusController < AdminController
             daily_menu_detail.product_id = product_id
             daily_menu_detail.sell_price = sell_price
             daily_menu_detail.change_flag = change_flag
+            daily_menu_detail.mealselect_flag = mealselect_flag
             update_arr << daily_menu_detail
             if product_id_was == product_id
             else
@@ -130,14 +136,14 @@ class DailyMenusController < AdminController
         else
           if product_id.present?
             product = Product.find(product_id)
-            new_arr << DailyMenuDetail.new(daily_menu_id:daily_menu_id,product_id:product_id,manufacturing_number:0,cost_price_per_product:product.cost_price,
+            new_arr << DailyMenuDetail.new(daily_menu_id:daily_menu_id,product_id:product_id,manufacturing_number:0,cost_price_per_product:product.cost_price,mealselect_flag:mealselect_flag,
               total_cost_price:0,for_single_item_number:0,for_sub_item_number:0,sell_price:sell_price,paper_menu_number:paper_menu_number,change_flag:change_flag,row_order:paper_menu_number)
           end
         end
       end
     end
     DailyMenuDetail.import new_arr
-    DailyMenuDetail.import update_arr, on_duplicate_key_update:[:product_id,:sell_price,:change_flag]
+    DailyMenuDetail.import update_arr, on_duplicate_key_update:[:product_id,:sell_price,:change_flag,:mealselect_flag]
     StoreDailyMenuDetail.import update_sdmd_arr, on_duplicate_key_update:[:product_id,:row_order]
     DailyMenuDetail.where(id:delete_dmd_ids_arr).destroy_all
     redirect_to schedule_daily_menus_path(from:params[:from],to:params[:to],pattern:params[:pattern],create_from:params[:create_from]), :success => "更新完了！"
@@ -158,6 +164,7 @@ class DailyMenusController < AdminController
       @daily_menu_details_hash[dmd.daily_menu_id][dmd.paper_menu_number]['product_id'] = dmd.product_id
       @daily_menu_details_hash[dmd.daily_menu_id][dmd.paper_menu_number]['change_flag'] = dmd.change_flag
       @daily_menu_details_hash[dmd.daily_menu_id][dmd.paper_menu_number]['sell_price'] = dmd.sell_price
+      @daily_menu_details_hash[dmd.daily_menu_id][dmd.paper_menu_number]["mealselect_flag"] = dmd.mealselect_flag
       if dmd.sell_price > 0
         @daily_menu_details_hash[dmd.daily_menu_id][dmd.paper_menu_number]['cost_rate'] = ((cost/dmd.sell_price.to_f)*100).round(1)
       else
@@ -185,6 +192,7 @@ class DailyMenusController < AdminController
         @create_menu_details_hash[dmd.daily_menu_id][dmd.paper_menu_number]["sell_price"] = dmd.sell_price
         @create_menu_details_hash[dmd.daily_menu_id][dmd.paper_menu_number]["change_flag"] = dmd.change_flag
         @create_menu_details_hash[dmd.daily_menu_id][dmd.paper_menu_number]["product"] = dmd.product
+        @create_menu_details_hash[dmd.daily_menu_id][dmd.paper_menu_number]["mealselect_flag"] = dmd.mealselect_flag
         @selected_products << dmd.product_id
       end
       @selected_products = Product.where(id:@selected_products.uniq)
@@ -737,6 +745,6 @@ class DailyMenusController < AdminController
     def daily_menu_params
       params.require(:daily_menu).permit(:start_time,:total_manufacturing_number,:sozai_manufacturing_number,:stock_update_flag,
         daily_menu_details_attributes: [:id,:daily_menu_id,:product_id,:manufacturing_number,:row_order,:_destroy,:sell_price,:change_flag,
-          :serving_plate_id,:signboard_flag,:window_pop_flag,:sold_outed,:for_single_item_number,:for_sub_item_number,:adjustments,:paper_menu_number])
+          :serving_plate_id,:signboard_flag,:window_pop_flag,:sold_outed,:for_single_item_number,:for_sub_item_number,:adjustments,:paper_menu_number,:mealselect_flag])
     end
 end

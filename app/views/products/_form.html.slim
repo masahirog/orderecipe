@@ -134,23 +134,20 @@
           div
             = f.label :remove_display_image,"削除する"
             = f.check_box :remove_display_image
-    / .col-md-12.form-group
-      .col-md-4
-        = f.label :food_label_name, "食品表示名"
-        = f.text_field :food_label_name, class:"form-control"
+    .col-md-12.form-group
+      .col-md-6
+        = f.label :contents, "お客様用商品紹介文 30-40字程度（メニュー、プライスカード）"
+        = f.text_area :contents, class:"form-control", style:"height:10em;"
       .col-md-6
         = f.label :food_label_content, "食品表示内容"
-        = f.text_area :food_label_content, class:"form-control"
+        .btn.btn-sm.btn-default.remake_foodlabel 生成
+        = f.text_area :food_label_content, class:"form-control", style:"height:10em;"
     
   .col-md-12.form-group
-    .col-md-4
-      = f.label :contents, "お客様用商品紹介文 30-40字程度（メニュー、プライスカード）"
-      = f.text_area :contents, class:"form-control", style:"height:10em;"
-
-    .col-md-4
+    .col-md-6
       = f.label :description, "スタッフ用商品特徴メモ"
       = f.text_area :description, class:"form-control", style:"height:10em;"
-    .col-md-4
+    .col-md-6
       = f.label :serving_infomation, "1人前分量"
       = f.text_area :serving_infomation, class:"form-control", style:"height:10em;"
   table.table
@@ -245,6 +242,10 @@
 
 
 javascript:
+  $(".remake_foodlabel").on('click',function(){
+    
+  });
+
   $(".sell_price").on("change",function(){
     calculate_tax_including_sell_price();
   });
