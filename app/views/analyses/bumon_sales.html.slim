@@ -11,7 +11,7 @@ h3 部門販売データ
 		label style='float:left;' 店舗選択
 		= select_tag :store_id, options_from_collection_for_select(@stores, :id, :name,params[:store_id]),include_blank: true, class: "form-control",style:'width:200px;float:left;'
 		label style='float:left;' 項目選択
-		= select_tag :pattern, options_for_select([["金額",0],["アイテム数",1]],params[:pattern]), class: "form-control",style:'width:200px;float:left;'
+		= select_tag :pattern, options_for_select([["金額",0],["アイテム数",1]],params[:pattern]),include_blank:true, class: "form-control",style:'width:200px;float:left;'
 
 
 		label style='float:left;margin-right:10px;' 表示期間
@@ -23,14 +23,18 @@ h3 部門販売データ
 table.table
 	thead
 		tr
+			th 店
 			th 日付
+			th 客数
 			th 合計
 			- @bumon.each do |data|
 				th = "#{data[1]}(#{data[0]})"
 	tbody
 		- @analyses.each do |analysis|
 			tr
+				td = analysis.store.short_name
 				td = analysis.date
+				td = analysis.transaction_count
 				td
 					- if @pattern == "0"
 						= @hash[analysis.id].values.map{|ac|ac.ex_tax_sales_amount}.sum

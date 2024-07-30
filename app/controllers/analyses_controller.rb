@@ -382,7 +382,7 @@ class AnalysesController < AdminController
     @dates =(@from..@to).to_a
     @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @bumon = {"1"=>"惣菜","2"=>"ご飯・丼","3"=>"ドリ・デザ","4"=>"備品","5"=>"お弁当","6"=>"オードブル","7"=>"スープ","8"=>"惣菜（仕入れ）","9"=>"レジ修正","11"=>"オプション","13"=>"デリバリー商品","14"=>"野菜","15"=>"物産","16"=>"予約ギフト","17"=>"野菜","18"=>"果実","0"=>"他"}
-    if params[:store_id]
+    if params[:store_id].present?
       @store = Store.find(params[:store_id])
       @pattern = params[:pattern]
       @analyses = Analysis.where(date:@dates).where(store_id:@store.id).order(:date)
@@ -390,9 +390,12 @@ class AnalysesController < AdminController
         @hash[ac.analysis_id][ac.smaregi_bumon_id.to_i] = ac
       end
     else
-      @store = []
-      @analyses = []
-      @analysis_categories = []
+      @stores = current_user.group.stores
+      @pattern = params[:pattern]
+      @analyses = Analysis.where(date:@dates).where(store_id:@stores.ids).order(:date)
+      AnalysisCategory.where(analysis_id:@analyses.ids).each do |ac|
+        @hash[ac.analysis_id][ac.smaregi_bumon_id.to_i] = ac
+      end
     end
 
     respond_to do |format|
