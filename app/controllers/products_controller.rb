@@ -220,7 +220,7 @@ class ProductsController < ApplicationController
     @food_additives = ""
     allergy = Product.allergy_seiri(@product).join(",")
     if allergy.present?
-      @allergy = ",(一部に#{allergy}を含む)"
+      @allergy = "、(一部に#{allergy}を含む)"
     else
       @allergy = ""
     end
@@ -232,7 +232,7 @@ class ProductsController < ApplicationController
         else
           @data += "【#{menu.food_label_name}】#{menu.food_label_contents}"
         end
-        fas = FoodAdditive.where(id:menu.used_additives).map{|fa|fa.name}.join(",")
+        fas = FoodAdditive.where(id:menu.used_additives).map{|fa|fa.name}.join("、")
         if @food_additives.present?
           @food_additives += "、#{fas}"
         else

@@ -64,7 +64,7 @@
         .btn.btn-sm.btn-default.remake_foodlabel 再生成
         = f.text_area :food_label_contents, class:"form-control", style:"height:10em;"
         textarea.form-control.origin_foodlabel style='display:none;'
-          = @data.join(",")
+          = @data.join("、")
   table.table
     thead
       tr
