@@ -15,8 +15,18 @@ CSV.generate(bom) do |csv|
                 store_id = 39
                 store_name = "キッチン"
               else
-                store_id = sdm.store_id
-                store_name = sdm.store.short_name
+                if sdm.store_id == 19
+                  if sdmd.product.sell_price == 890
+                    store_id = 39
+                    store_name = "キッチン"
+                  else
+                    store_id = sdm.store_id
+                    store_name = sdm.store.short_name
+                  end
+                else
+                  store_id = sdm.store_id
+                  store_name = sdm.store.short_name
+                end
               end
             else
               store_id = sdm.store_id
@@ -30,38 +40,28 @@ CSV.generate(bom) do |csv|
                     hash[sdm.store_id][pp.common_product_part_id][:amount] += amount
                     hash[sdm.store_id][pp.common_product_part_id][:count] += 1
                     hash[sdm.store_id][pp.common_product_part_id][:number] += sdmd.sozai_number
-
                     hash[39][pp.common_product_part_id][:amount] += amount
                     hash[39][pp.common_product_part_id][:count] += 1
                     hash[39][pp.common_product_part_id][:number] += sdmd.bento_fukusai_number
-
                   else
-
                     hash[sdm.store_id][pp.common_product_part_id][:amount] = amount
                     hash[sdm.store_id][pp.common_product_part_id][:count] = 1
                     hash[sdm.store_id][pp.common_product_part_id][:number] = sdmd.sozai_number
                     hash[sdm.store_id][pp.common_product_part_id][:cpp] = pp.common_product_part
-
                     hash[39][pp.common_product_part_id][:amount] = amount
                     hash[39][pp.common_product_part_id][:count] = 1
                     hash[39][pp.common_product_part_id][:number] = sdmd.bento_fukusai_number
                     hash[39][pp.common_product_part_id][:cpp] = pp.common_product_part
-
                   end
                 else
-
                   souzai_amount = number_with_precision(pp.amount*sdmd.sozai_number,precision:1, strip_insignificant_zeros: true, delimiter: ',')
                   bento_fukusai_amount = number_with_precision(pp.amount*sdmd.bento_fukusai_number,precision:1, strip_insignificant_zeros: true, delimiter: ',')
-                  
                   if pp.memo.present?
                     part_name = "#{pp.name} ※"
                   else
                     part_name = pp.name
                   end
-
                   parts_num = "パーツ：#{sdmd.product.product_parts.count}種"
-
-                  
                   csv << [@daily_menu.start_time.strftime("%-m/%-d"),store_name,sdmd.product.name,"発注数：#{sdmd.sozai_number}人前",parts_num,part_name,"#{souzai_amount} #{pp.unit}",pp.container,pp.loading_container,""]
 
                   csv << [@daily_menu.start_time.strftime("%-m/%-d"),'キッチン',sdmd.product.name,"副菜数：#{sdmd.bento_fukusai_number}人前",parts_num,part_name,"#{bento_fukusai_amount} #{pp.unit}",pp.container,pp.loading_container,""]

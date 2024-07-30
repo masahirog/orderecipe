@@ -1,6 +1,11 @@
-p#notice = notice
-
-
-=> link_to 'Edit', edit_common_product_part_path(@common_product_part)
-'|
-=< link_to 'Back', common_product_parts_path
+h4 = @common_product_part.name
+table.table
+	thead
+		tr
+			th 商品名
+			th 分量
+	tbody
+		- @common_product_part.product_parts.each do |product_part|
+			tr
+				td = link_to product_part.product.name,edit_product_path(product_part.product)
+				td = product_part.amount
