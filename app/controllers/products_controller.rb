@@ -232,14 +232,10 @@ class ProductsController < ApplicationController
         else
           @data += "【#{menu.food_label_name}】#{menu.food_label_contents}"
         end
-        fas = FoodAdditive.where(id:menu.used_additives).map{|fa|fa.name}.join("、")
-        if @food_additives.present?
-          @food_additives += "、#{fas}"
-        else
-          @food_additives += "／#{fas}"
-        end
       end
     end
+    fas = FoodAdditive.where(id:@product.menus.map{|menu|menu.used_additives}.flatten.reject(&:blank?).uniq).map{|fa|fa.name}.join("、")
+    @food_additives += "／#{fas}"
   end
 
   def update
