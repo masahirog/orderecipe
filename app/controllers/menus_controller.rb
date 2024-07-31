@@ -44,6 +44,16 @@ class MenusController < ApplicationController
       @menu.menu_materials.build(row_order: 0)
       @ar = Menu.used_additives(@menu.materials)
     end
+    @origin_food_label_contents = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    @menu.menu_materials.where.not(material_id:1).each do |mm|
+      if @origin_food_label_contents[mm.material_id].present?
+        @origin_food_label_contents[mm.material_id][:amount] += mm.gram_quantity
+      else
+        @origin_food_label_contents[mm.material_id][:amount] = mm.gram_quantity
+        @origin_food_label_contents[mm.material_id][:material] = mm.material
+      end
+    end
+    @data = @origin_food_label_contents.sort{|a, b|b[1][:amount] <=> a[1][:amount]}.map{|data| data[1][:material].food_label_name}
   end
 
   def create
