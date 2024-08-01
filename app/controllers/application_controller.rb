@@ -83,7 +83,7 @@ class ApplicationController < ActionController::Base
       if product.product_category == "お弁当"
         @daily_menu.daily_menu_details.includes(product:[:menus]).where(paper_menu_number:[1,2,3]).each do |dmd|
           fukusai_product = dmd.product
-          allergy = Product.allergy_seiri(fukusai_product)
+          allergy += Product.allergy_seiri(fukusai_product)
           fukusai_product.product_menus.each do |pm|
             menu = pm.menu
             if menu.category == "容器"
@@ -109,7 +109,7 @@ class ApplicationController < ActionController::Base
         @data[dmd.product_id] += "／#{fas}"
       else
       end
-
+      allergy = allergy.uniq
       if allergy.present?
         @data[dmd.product_id] += "、(一部に#{allergy.join("、")}を含む)"
       else
