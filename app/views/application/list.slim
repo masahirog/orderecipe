@@ -65,7 +65,8 @@ html
                   td 牛すじ煮込み
                   td = (product.sell_price * 1.08).floor
                   td = simple_format(h(product.contents))
-                  td = simple_format(h(product.food_label_content))
+                  td
+                    = simple_format(h(product.food_label_content))
                   td
                   td
                   td
@@ -87,17 +88,31 @@ html
                       = dmd.product.food_label_name
                   td = dmd.product.product_category
                   td = (dmd.sell_price * 1.08).floor
-                  td = simple_format(h(dmd.product.contents))
+                  td= simple_format(h(dmd.product.contents))
                   td = dmd.product.sales_unit
-                  td = simple_format(h(dmd.product.food_label_content))
                   td
-                    span = "熱量：#{dmd.product.calorie.round}kcal、"
-                    span = "たんぱく質：#{dmd.product.protein.round(1)}g、"
-                    span = "脂質：#{dmd.product.lipid.round(1)}g、"
-                    span = "炭水化物：#{dmd.product.carbohydrate.round(1)}g、"
-                    span = "食物繊維：#{dmd.product.dietary_fiber.round(1)}g、"
-                    span = "糖質：#{(dmd.product.carbohydrate - dmd.product.dietary_fiber).round(1)}g、"
-                    span = "食塩相当量：#{dmd.product.salt.round(1)}g"
+                    - if dmd.product.product_category == "お弁当"
+                      = @data[dmd.product_id]
+                    - else
+                      = simple_format(h(dmd.product.food_label_content))
+                  td
+                    - if dmd.product.product_category == "お弁当"
+                      span = "熱量：#{@bento_seibun[dmd.product_id][:calorie].round}kcal、"
+                      span = "たんぱく質：#{@bento_seibun[dmd.product_id][:protein].round(1)}g、"
+                      span = "脂質：#{@bento_seibun[dmd.product_id][:lipid].round(1)}g、"
+                      span = "炭水化物：#{@bento_seibun[dmd.product_id][:carbohydrate].round(1)}g、"
+                      span = "食物繊維：#{@bento_seibun[dmd.product_id][:dietary_fiber].round(1)}g、"
+                      span = "糖質：#{(@bento_seibun[dmd.product_id][:carbohydrate] - @bento_seibun[dmd.product_id][:dietary_fiber]).round(1)}g、"
+                      span = "食塩相当量：#{@bento_seibun[dmd.product_id][:salt].round(1)}g"
+
+                    - else
+                      span = "熱量：#{dmd.product.calorie.round}kcal、"
+                      span = "たんぱく質：#{dmd.product.protein.round(1)}g、"
+                      span = "脂質：#{dmd.product.lipid.round(1)}g、"
+                      span = "炭水化物：#{dmd.product.carbohydrate.round(1)}g、"
+                      span = "食物繊維：#{dmd.product.dietary_fiber.round(1)}g、"
+                      span = "糖質：#{(dmd.product.carbohydrate - dmd.product.dietary_fiber).round(1)}g、"
+                      span = "食塩相当量：#{dmd.product.salt.round(1)}g"
                   td
                     - if dmd.product.image.present?
                       = link_to download_products_path(id:dmd.product_id),method: :post do

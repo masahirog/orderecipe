@@ -235,7 +235,11 @@ class ProductsController < ApplicationController
       end
     end
     fas = FoodAdditive.where(id:@product.menus.map{|menu|menu.used_additives}.flatten.reject(&:blank?).uniq).map{|fa|fa.name}.join("、")
-    @food_additives += "／#{fas}"
+    if fas.present?
+      @food_additives += "／#{fas}"
+    else
+      @food_additives += ""
+    end
   end
 
   def update

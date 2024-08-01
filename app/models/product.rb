@@ -63,7 +63,7 @@ class Product < ApplicationRecord
 
   def self.allergy_seiri(product)
     arr=[]
-    product.menus.each do |prme|
+    product.menus.includes([:materials]).each do |prme|
       prme.materials.each do |mate|
         arr << mate.allergy
       end
