@@ -24,10 +24,20 @@ li.list-group-item.col-md-12.col-sm-12.col-xs-12 class="li_pre_order_products tr
   .col-md-12.col-sm-12.col-xs-12 style='padding:5px 0 0 0;font-size:0.7em;line-height:1.2em;color:#a9a9a9;'
     span = "#{pop.object.product.sales_unit} あたり"
     br
-    span = "熱量：#{pop.object.product.calorie.round}kcal、"
-    span = "たんぱく質：#{pop.object.product.protein.round(1)}g、"
-    span = "脂質：#{pop.object.product.lipid.round(1)}g、"
-    span = "炭水化物：#{pop.object.product.carbohydrate.round(1)}g、"
-    span = "食物繊維：#{pop.object.product.dietary_fiber.round(1)}g、"
-    span = "糖質：#{(pop.object.product.carbohydrate - pop.object.product.dietary_fiber).round(1)}g、"
-    span = "食塩相当量：#{pop.object.product.salt.round(1)}g"
+    - if pop.object.product.product_category == "お弁当"
+      span = "熱量：#{@bento_seibun[pop.object.product_id][:calorie].round}kcal、"
+      span = "たんぱく質：#{@bento_seibun[pop.object.product_id][:protein].round(1)}g、"
+      span = "脂質：#{@bento_seibun[pop.object.product_id][:lipid].round(1)}g、"
+      span = "炭水化物：#{@bento_seibun[pop.object.product_id][:carbohydrate].round(1)}g、"
+      span = "食物繊維：#{@bento_seibun[pop.object.product_id][:dietary_fiber].round(1)}g、"
+      span = "糖質：#{(@bento_seibun[pop.object.product_id][:carbohydrate] - @bento_seibun[pop.object.product_id][:dietary_fiber]).round(1)}g、"
+      span = "食塩相当量：#{@bento_seibun[pop.object.product_id][:salt].round(1)}g"
+
+    - else
+      span = "熱量：#{pop.object.product.calorie.round}kcal、"
+      span = "たんぱく質：#{pop.object.product.protein.round(1)}g、"
+      span = "脂質：#{pop.object.product.lipid.round(1)}g、"
+      span = "炭水化物：#{pop.object.product.carbohydrate.round(1)}g、"
+      span = "食物繊維：#{pop.object.product.dietary_fiber.round(1)}g、"
+      span = "糖質：#{(pop.object.product.carbohydrate - pop.object.product.dietary_fiber).round(1)}g、"
+      span = "食塩相当量：#{pop.object.product.salt.round(1)}g"

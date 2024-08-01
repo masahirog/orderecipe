@@ -133,7 +133,73 @@ class ApplicationController < ActionController::Base
     product_ids = []
     @pre_order = PreOrder.new
     product_categories = [1,2,3,5,7,8,11,19,20,21,22]
-    @daily_menu.daily_menu_details.includes([:product]).each do |dmd|
+
+    @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    @data = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    @bento_seibun = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+
+    @daily_menu.daily_menu_details.includes(product:[:menus,product_menus:[:menu]]).each do |dmd|
+      allergy = Product.allergy_seiri(dmd.product)
+      product = dmd.product
+      @bento_seibun[product.id] = {calorie:0,protein:0,lipid:0,carbohydrate:0,dietary_fiber:0,salt:0}
+      product.product_menus.each do |pm|
+        tpm = TemporaryProductMenu.find_by(daily_menu_detail_id:dmd.id,product_menu_id:pm.id)
+        if tpm.present?
+          menu = tpm.menu
+        else
+          menu = pm.menu
+        end
+        if menu.category == "容器"
+        else
+          @bento_seibun[product.id][:calorie] += menu.calorie
+          @bento_seibun[product.id][:protein] += menu.protein
+          @bento_seibun[product.id][:lipid] += menu.lipid
+          @bento_seibun[product.id][:carbohydrate] += menu.carbohydrate
+          @bento_seibun[product.id][:dietary_fiber] += menu.dietary_fiber
+          @bento_seibun[product.id][:salt] += menu.salt
+          if @data[product.id].present?
+            @data[product.id] += "、【#{menu.food_label_name}】#{menu.food_label_contents}"
+          else
+            @data[product.id] = "【#{menu.food_label_name}】#{menu.food_label_contents}"
+          end
+        end
+      end
+      if product.product_category == "お弁当"
+        @daily_menu.daily_menu_details.includes(product:[:menus]).where(paper_menu_number:[1,2,3]).each do |dmd|
+          fukusai_product = dmd.product
+          allergy += Product.allergy_seiri(fukusai_product)
+          fukusai_product.product_menus.each do |pm|
+            menu = pm.menu
+            if menu.category == "容器"
+            else
+              @bento_seibun[product.id][:calorie] += (menu.calorie * 0.3)
+              @bento_seibun[product.id][:protein] += (menu.protein * 0.3)
+              @bento_seibun[product.id][:lipid] += (menu.lipid * 0.3)
+              @bento_seibun[product.id][:carbohydrate] += (menu.carbohydrate * 0.3)
+              @bento_seibun[product.id][:dietary_fiber] += (menu.dietary_fiber * 0.3)
+              @bento_seibun[product.id][:salt] += (menu.salt * 0.3)
+
+              if @data[product.id].present?
+                @data[product.id] += "、【#{menu.food_label_name}】#{menu.food_label_contents}"
+              else
+                @data[product.id] = "【#{menu.food_label_name}】#{menu.food_label_contents}"
+              end
+            end
+          end
+        end
+      end
+      fas = FoodAdditive.where(id:dmd.product.menus.map{|menu|menu.used_additives}.flatten.reject(&:blank?).uniq).map{|fa|fa.name}.join("、")
+      if fas.present?
+        @data[dmd.product_id] += "／#{fas}"
+      else
+      end
+      allergy = allergy.uniq
+      if allergy.present?
+        @data[dmd.product_id] += "、(一部に#{allergy.join("、")}を含む)"
+      else
+      end
+
+
       if product_categories.include?(dmd.product.product_category_before_type_cast)
         tax_including_sell_price = (dmd.sell_price * 1.08).floor
         @pre_order.pre_order_products.build(product_id:dmd.product_id,order_num:0,welfare_price:0,employee_discount:0,tax_including_sell_price:tax_including_sell_price)
