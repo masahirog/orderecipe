@@ -40,14 +40,22 @@ class ApplicationController < ActionController::Base
     else
       @date = @today
     end
-    @daily_menu = DailyMenu.includes(daily_menu_details:[:product]).find_by(start_time:@date)
-
-    product_categories = [1,2,3,5,7,8,11,19,20,21,22]
-    @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    @daily_menu.daily_menu_details.each do |dmd|
-      @hash[dmd.product.product_category_before_type_cast][dmd.product_id] = dmd
+    if params[:all_display_flag].present?
+      @daily_menu = DailyMenu.includes(daily_menu_details:[:product]).find_by(start_time:@date)
+      product_categories = [1,2,3,5,7,8,11,19,20,21,22]
+      @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+      @daily_menu.daily_menu_details.each do |dmd|
+        @hash[dmd.product.product_category_before_type_cast][dmd.product_id] = dmd
+      end
+    else
+      @daily_menu = DailyMenu.includes(daily_menu_details:[:product]).find_by(start_time:@date)
+      product_categories = [1,2,3,5,7,8,11,19,20,21,22]
+      @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+      @daily_menu.daily_menu_details.where(mealselect_flag:true).each do |dmd|
+        @hash[dmd.product.product_category_before_type_cast][dmd.product_id] = dmd
+      end
     end
-    @gyusuji = Product.where(id:[14099,14714])
+    @gyusuji = Product.where(id:[14099])
     render :layout => false
   end
 
