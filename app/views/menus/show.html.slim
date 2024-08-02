@@ -22,30 +22,37 @@
 .col-md-6
   table.table
     tr
-      th.active.col-md-4 メニュー名
+      th.col-md-4 メニュー名
       td = @menu.name
+    tr
+      th.col-md-4 成分表示
+      td
+        - if @menu.seibun_keisan_done_flag == false
+          span style='color:red;' 計算が未完了です
+        - else
+          span style='color:green;' OKです
 
     tr
-      th.active.col-md-4 メニュー原価
+      th.col-md-4 メニュー原価
       td = @menu.cost_price
 
     tr
-      th.active.col-md-4 アレルギー
+      th.col-md-4 アレルギー
       td
         = @arr.join('、')
     tr
-      th.active.col-md-4 使用食品添加物
+      th.col-md-4 使用食品添加物
       td
         - if @food_additives.present?
           = @food_additives.map{|fa|fa.name}.join('、')
     tr
-      th.active.col-md-4 前日調理
+      th.col-md-4 前日調理
       td = text_url_to_link(simple_format(h(@menu.cook_the_day_before))).html_safe
     / tr
-      / th.active.col-md-4 当日調理
+      / th.col-md-4 当日調理
       / td = text_url_to_link(simple_format(h(@menu.cook_on_the_day))).html_safe
     tr
-      th.active.col-md-4 盛り付けメモ
+      th.col-md-4 盛り付けメモ
       td = text_url_to_link(simple_format(h(@menu.serving_memo))).html_safe
   .col-md-6
     = image_tag @menu.image.to_s ,class:"text-center img-responsive center-block",style:'max-height:450px;'
@@ -99,7 +106,17 @@ table.table
     tbody
       - @menu.menu_materials.each do |mm|
         tr
-          td = link_to mm.material.name, edit_material_path(mm.material)
+          td
+            = link_to mm.material.name, edit_material_path(mm.material)
+            br
+            - if mm.material.food_ingredient_id.present? && mm.gram_quantity > 0
+            - elsif mm.material.food_ingredient_id.nil? && mm.gram_quantity > 0
+              span style='color:red;' = "使用量#{mm.gram_quantity}g、成分計算用の食材が未登録"
+            - elsif mm.material.food_ingredient_id.present? && mm.gram_quantity == 0
+              span style='color:red;' = "#{mm.material.food_ingredient.name}、使用量が未登録"
+            - else
+              span style='color:red;' = "成分表示の食材と、使用量をそれぞれ登録必要"
+
           td = link_to "登録", new_temporary_menu_material_path(menu_material_id:mm.id),target:"_blank"
           td = ActiveSupport::NumberHelper.number_to_rounded((mm.amount_used * mm.material.cost_price), strip_insignificant_zeros: true, :delimiter => ',', precision: 1)
           td = mm.material.vendor.name

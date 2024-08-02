@@ -20,6 +20,7 @@ class Menu < ApplicationRecord
     message: "：全角英数字は使用出来ません。"}
   validates :category, presence: true
   validates :cost_price, presence: true, numericality: true
+  before_save :seibun_check
   after_create :base_menu_id_check
   after_update :copy_menu_reflect
   after_update :seibun_product_reflect
@@ -121,6 +122,40 @@ class Menu < ApplicationRecord
     end
     Product.import updates_arr, on_duplicate_key_update:[:calorie,:protein,:lipid,:carbohydrate,:dietary_fiber,:salt]
   end
+
+  def seibun_check
+    if self.category == "容器"
+      seibun_keisan_done_flag = true
+    else
+      seibun_keisan_done_flag = true
+      self.menu_materials.each do |mm|
+        if mm.gram_quantity == 0 || mm.material.food_ingredient_id.nil?
+          seibun_keisan_done_flag = false
+        end
+      end
+    end
+    self.seibun_keisan_done_flag = seibun_keisan_done_flag
+  end
+
+  def self.all_seibun_check
+    updates_arr = []
+    Menu.all.each do |menu|
+      if menu.category == "容器"
+        seibun_keisan_done_flag = true
+      else
+        seibun_keisan_done_flag = true
+        menu.menu_materials.each do |mm|
+          if mm.gram_quantity == 0 || mm.material.food_ingredient_id.nil?
+            seibun_keisan_done_flag = false
+          end
+        end
+      end
+      menu.seibun_keisan_done_flag = seibun_keisan_done_flag
+      updates_arr << menu
+    end
+    Menu.import updates_arr, on_duplicate_key_update:[:seibun_keisan_done_flag]
+  end
+
 
   private
 end

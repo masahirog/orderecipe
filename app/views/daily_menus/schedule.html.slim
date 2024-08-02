@@ -79,8 +79,12 @@
                     - cost_color = 'red'
                   - else
                     - cost_color = 'black'
-                  td.product_name_td style="cursor: pointer;font-size:0.9em;" 
-                    - if @id_names[@daily_menu_details_hash[daily_menu.id][i]['product_id']].present?
+                  - if @id_names[@daily_menu_details_hash[daily_menu.id][i]['product_id']].present?
+                    - if @id_names[@daily_menu_details_hash[daily_menu.id][i]['product_id']].menus.exists?(seibun_keisan_done_flag:false)
+                      - bg = '#ffc0cb'
+                    - else
+                      - bg = 'white'
+                    td.product_name_td style="cursor: pointer;font-size:0.9em;background-color:#{bg};"
                       span.product_name style="color:#{color};" = @id_names[@daily_menu_details_hash[daily_menu.id][i]['product_id']].name
                       span style="color:#{cost_color};" = "｜#{@daily_menu_details_hash[daily_menu.id][i]['sell_price']}｜#{@daily_menu_details_hash[daily_menu.id][i]['cost_rate']}%"
                       - if @daily_menu_details_hash[daily_menu.id][i]['product_id'].present?
@@ -88,6 +92,8 @@
                           i class="fa-solid fa-up-right-from-square" style='cursor: pointer;margin-left: 10px;'
                       - if @daily_menu_details_hash[daily_menu.id][i]['mealselect_flag'] == true
                         span style='margin-left:5px;color:red;' MS
+                  - else
+                    td.product_name
                 - else
                   td.product_name
     - if @pattern.present?

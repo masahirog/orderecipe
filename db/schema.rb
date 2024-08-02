@@ -167,7 +167,7 @@ ActiveRecord::Schema.define(version: 2024_07_01_023323) do
     t.integer "adjustment_subtotal", default: 0, null: false
   end
 
-  create_table "daily_menu_details", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "daily_menu_details", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "daily_menu_id"
     t.bigint "product_id"
     t.integer "manufacturing_number", default: 0, null: false
@@ -590,6 +590,7 @@ ActiveRecord::Schema.define(version: 2024_07_01_023323) do
     t.float "salt", default: 0.0, null: false
     t.string "food_label_name"
     t.text "food_label_contents"
+    t.boolean "seibun_keisan_done_flag", default: false, null: false
   end
 
   create_table "monthly_stocks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -729,7 +730,7 @@ ActiveRecord::Schema.define(version: 2024_07_01_023323) do
     t.index ["product_id", "store_id"], name: "index_product_sales_potentials_on_product_id_and_store_id", unique: true
   end
 
-  create_table "products", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "products", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "name"
     t.integer "sell_price", null: false
     t.text "description"

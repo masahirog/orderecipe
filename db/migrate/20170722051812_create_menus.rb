@@ -22,6 +22,7 @@ class CreateMenus < ActiveRecord::Migration[4.2]
       t.float :salt,null:false,default:0
       t.string :food_label_name
       t.text :food_label_contents
+      t.boolean :seibun_keisan_done_flag,null:false,default:false
     end
   end
 end

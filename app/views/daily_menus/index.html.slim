@@ -78,6 +78,9 @@ button type="button" data-toggle="modal" data-target="#create_1month_modal" clas
         tr
           td
             = link_to dmd.product.name,product_path(dmd.product)
+            - if dmd.product.menus.exists?(seibun_keisan_done_flag:false)
+              br
+              span style='color:red;' 成分計算が未完了です
           td.text-right style='font-size:11px;'
             = dmd.manufacturing_number
 
