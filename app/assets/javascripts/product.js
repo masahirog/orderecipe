@@ -10,6 +10,7 @@ $(document).on('turbolinks:load', function() {
     calculate_seibun();
   };
 
+
   //addアクション、menuの追加
   $('.add_menu_fields').on('click',function(){
     setTimeout(function(){

@@ -22,7 +22,7 @@ class ProductsController < ApplicationController
   def include_menu
     @product_menus = ProductMenu.includes(:product).where(menu_id: params[:id]).page(params[:page]).per(20)
     menu = Menu.find(params[:id])
-    @menus = [menu]
+    @menus = Menu.all
   end
 
 

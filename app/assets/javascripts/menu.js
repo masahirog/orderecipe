@@ -87,6 +87,7 @@ $(document).on('turbolinks:load', function() {
       var prop = $(this).children(".product_check").children().prop('checked');
       if (prop) {
         var j = $(this).children(".select_menu").children().val();
+        console.log(name)
         $(this).children(".select_menu").children().val(id);
         $(this).children(".select_menu").find(".select2-selection__rendered").text(name);
       }else{
