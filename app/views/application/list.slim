@@ -82,7 +82,7 @@ html
                     span = "食塩相当量：#{product.salt.round(1)}g"
                   td
                     - if product.image.present?
-                      = link_to download_products_path(id:product.id),method: :post do
+                      = link_to image_download_path(id:product.id),method: :post do
                         = image_tag product.image_url(:thumb)
 
             - @hash[category[1]].each do |data|
@@ -126,7 +126,7 @@ html
                       span = "食塩相当量：#{dmd.product.salt.round(1)}g"
                   td
                     - if dmd.product.image.present?
-                      = link_to download_products_path(id:dmd.product_id),method: :post do
+                      = link_to image_download_path(id:dmd.product.id),method: :post do
                         = image_tag dmd.product.image_url(:thumb)
 
     script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/js/lightbox.min.js" type="text/javascript"

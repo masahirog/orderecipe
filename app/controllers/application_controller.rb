@@ -15,6 +15,13 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def image_download
+    product = Product.find(params[:id])
+    data = open(product.image.url)
+    send_data(data.read, type:product.image.file.content_type, filename: product.image.file.filename)
+
+  end
+
   def after_sign_in_path_for(resource)
     if current_user.admin?
       root_url
@@ -237,7 +244,7 @@ class ApplicationController < ActionController::Base
   private
 
   def use_auth?
-    unless controller_name == 'pre_orders' || action_name == 'shibataya'|| action_name == 'shibataya_orders'|| action_name == 'shibataya_howto'|| action_name == 'list'
+    unless controller_name == 'pre_orders' || action_name == 'shibataya'|| action_name == 'shibataya_orders'|| action_name == 'shibataya_howto'|| action_name == 'list'|| action_name == 'image_download'
       true
     end
   end      
