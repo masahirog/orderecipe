@@ -21,6 +21,7 @@ class CreateDailyMenuDetails < ActiveRecord::Migration[4.2][5.2]
       t.boolean :change_flag, default: 0, null: false
       t.index [:daily_menu_id,:product_id], unique: true
       t.boolean :mealselect_flag, default:false, null: false
+      t.integer :mealselect_num
     end
   end
 end

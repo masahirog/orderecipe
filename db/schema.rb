@@ -167,7 +167,7 @@ ActiveRecord::Schema.define(version: 2024_07_01_023323) do
     t.integer "adjustment_subtotal", default: 0, null: false
   end
 
-  create_table "daily_menu_details", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "daily_menu_details", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "daily_menu_id"
     t.bigint "product_id"
     t.integer "manufacturing_number", default: 0, null: false
@@ -187,6 +187,7 @@ ActiveRecord::Schema.define(version: 2024_07_01_023323) do
     t.integer "paper_menu_number"
     t.boolean "change_flag", default: false, null: false
     t.boolean "mealselect_flag", default: false, null: false
+    t.integer "mealselect_num"
     t.index ["daily_menu_id", "paper_menu_number"], name: "index_daily_menu_details_on_daily_menu_id_and_paper_menu_number", unique: true
     t.index ["daily_menu_id", "product_id"], name: "index_daily_menu_details_on_daily_menu_id_and_product_id", unique: true
     t.index ["daily_menu_id"], name: "index_daily_menu_details_on_daily_menu_id"

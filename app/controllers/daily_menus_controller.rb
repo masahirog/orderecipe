@@ -4,7 +4,23 @@ class DailyMenusController < AdminController
     DailyMenu.upload_data(params[:file])
     redirect_to schedule_daily_menus_path(from:params[:from],to:params[:to]), :notice => "CSVで更新しました"
   end
-
+  def mealselect_csv
+    date = params[:date]
+    @daily_menu = DailyMenu.find_by(start_time:date)
+    respond_to do |format|
+      format.html
+      format.csv do
+        send_data render_to_string, filename: "#{@daily_menu.start_time.strftime("%m%d")}_ミールセレクト.csv", type: :csv
+      end
+      format.pdf do
+        pdf = MealselectPdf.new(@daily_menu.id)
+        send_data pdf.render,
+        filename:    "#{@daily_menu.start_time.strftime("%m%d")}_ミールセレクト.pdf",
+        type:        "application/pdf",
+        disposition: "inline"
+      end
+    end    
+  end
 
   def kpi
     if params[:date].present?

@@ -14,6 +14,17 @@ class ApplicationController < ActionController::Base
       @stores = current_user.group.stores.where(store_type:0)
     end
   end
+  def mealselect_save
+    date = params[:date]
+    updates_arr = []
+    params[:mealselect_num].each do |data|
+      daily_menu_detail = DailyMenuDetail.find(data[0])
+      daily_menu_detail.mealselect_num = data[1]
+      updates_arr << daily_menu_detail
+    end
+    DailyMenuDetail.import updates_arr, on_duplicate_key_update:[:mealselect_num]
+    redirect_to list_path(date:date), :info => "個数を入力しました。"
+  end
 
   def image_download
     product = Product.find(params[:id])
@@ -244,7 +255,7 @@ class ApplicationController < ActionController::Base
   private
 
   def use_auth?
-    unless controller_name == 'pre_orders' || action_name == 'shibataya'|| action_name == 'shibataya_orders'|| action_name == 'shibataya_howto'|| action_name == 'list'|| action_name == 'image_download'
+    unless controller_name == 'pre_orders' || action_name == 'shibataya'|| action_name == 'shibataya_orders' || action_name == 'shibataya_howto'|| action_name == 'list'|| action_name == 'image_download' || action_name == "mealselect_save"
       true
     end
   end      

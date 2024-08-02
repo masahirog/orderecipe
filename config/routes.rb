@@ -52,6 +52,7 @@ Rails.application.routes.draw do
   end
   devise_for :users
   root 'analyses#kpi'
+  post '/mealselect_save' => 'application#mealselect_save'
   get '/list' => 'application#list'
   post '/image_download' => 'application#image_download'
   get '/shibataya' => 'application#shibataya'
@@ -345,6 +346,7 @@ Rails.application.routes.draw do
   end
   resources :daily_menus do
     collection do
+      get :mealselect_csv
       get :kpi
       get :serving_list
       get :description

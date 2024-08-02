@@ -33,100 +33,118 @@ html
                   li.user_nav.grid-6
                     = link_to "ログアウト", destroy_user_session_path, :method => :delete
     .all_body
-      p.notice = notice
+      - flash.each do |name, msg|
+        .col-md-12 class="alert alert-#{name}" role="alert"
+          = content_tag :div, raw(msg), :id => name
+
       .clearfix
         = form_tag list_path, :method => 'get' do
           = date_field_tag :date,@date,class:"form-control",style:'width:200px;float:left;margin-right:10px;'
           = label_tag "all_display_flag",' すべてのメニュー表示',style:'margin-right:20px;float:left;margin-top:5px;'
           = check_box_tag "all_display_flag",true,params['all_display_flag'],style:'float:left;margin-right:20px;margin-top:10px;'
           = submit_tag "表示" ,class:"btn btn-primary",style:"float:left;"
+        - if user_signed_in?
+          = link_to "シール",mealselect_csv_daily_menus_path(date:@date,format: :csv),class:'btn btn-default',style:'float:left;margin-left:20px;'
+
       h4 = "#{@daily_menu.start_time.strftime("%-m/%-d(#{%w(日 月 火 水 木 金 土)[@daily_menu.start_time.wday]})")}のメニュー"
-      table.table
-        thead
-          tr
-            th MS
-            th 商品名
-            th カテゴリ
-            th 税込価格
-            th 商品説明
-            th 内容量
-            th style='width:300px;' 原材料
-            th style='width:450px;' 栄養成分
-            th 画像
-        tbody
-          - [['牛すじ煮込み',8],['お弁当',5],['カレー・プレート',19],['スープ',7],['副菜',20],['主菜',1],['サラダ',21],['オプション',11],['スイーツ',3]].each do |category|
+      = form_tag mealselect_save_path , :method => 'post' do
+        = hidden_field_tag :date,@date
+        = submit_tag "保存する" ,class:"btn btn-success pull-right"
+        table.table
+          thead
             tr
-              td style='background-color:#f5f5f5;' colspan=9 = category[0]
-            - if category[1] == 8
-              - @gyusuji.each do |product|
-                tr
-                  td ◯
-                  td
-                    - if user_signed_in? && current_user.admin?
-                      = link_to product.food_label_name,product,target:'_blank'
-                    - else
-                      = product.food_label_name
+              th MS
+              th style='width:250px;' 商品名
+              th 内容量
+              th style='width:120px;' 税込価格
+              th style='width:80px;'  個数
+              th 商品説明・成分
+              th style='width:550px;' 原材料表示
+              th 画像
+          tbody
+            - [['牛すじ煮込み',8],['お弁当',5],['カレー・プレート',19],['スープ',7],['副菜',20],['主菜',1],['サラダ',21],['オプション',11],['スイーツ',3]].each do |category|
+              tr
+                td style='background-color:#f5f5f5;' colspan=9 = category[0]
+              - if category[1] == 8
+                - @gyusuji.each do |product|
+                  tr
+                    td ◯
+                    td
+                      - if user_signed_in? && current_user.admin?
+                        = link_to product.food_label_name,product,target:'_blank'
+                      - else
+                        = product.food_label_name
+                    td = product.sales_unit
+                    td = (product.sell_price * 1.08).floor
+                    td
+                    td
+                      = simple_format(h(product.contents))
+                      |ーーーーー
+                      br
 
-                  td 牛すじ煮込み
-                  td = (product.sell_price * 1.08).floor
-                  td = simple_format(h(product.contents))
-                  td = product.sales_unit
-                  td = simple_format(h(product.food_label_content))
-                  td
-                    span = "熱量：#{product.calorie.round}kcal、"
-                    span = "たんぱく質：#{product.protein.round(1)}g、"
-                    span = "脂質：#{product.lipid.round(1)}g、"
-                    span = "炭水化物：#{product.carbohydrate.round(1)}g、"
-                    span = "食物繊維：#{product.dietary_fiber.round(1)}g、"
-                    span = "糖質：#{(product.carbohydrate - product.dietary_fiber).round(1)}g、"
-                    span = "食塩相当量：#{product.salt.round(1)}g"
-                  td
-                    - if product.image.present?
-                      = link_to image_download_path(id:product.id),method: :post do
-                        = image_tag product.image_url(:thumb)
+                      span = "熱量：#{product.calorie.round}kcal、"
+                      span = "たんぱく質：#{product.protein.round(1)}g、"
+                      span = "脂質：#{product.lipid.round(1)}g、"
+                      span = "炭水化物：#{product.carbohydrate.round(1)}g、"
+                      br
+                      span = "食物繊維：#{product.dietary_fiber.round(1)}g、"
+                      span = "糖質：#{(product.carbohydrate - product.dietary_fiber).round(1)}g、"
+                      span = "食塩相当量：#{product.salt.round(1)}g"
 
-            - @hash[category[1]].each do |data|
-              - dmd = data[1]
-              - if dmd.sell_price > 0
-                tr
-                  td
-                    - if dmd.mealselect_flag == true
-                      |◯
-                  td
-                    - if user_signed_in? && current_user.admin?
-                      = link_to dmd.product.food_label_name,dmd.product,target:'_blank'
-                    - else
-                      = dmd.product.food_label_name
-                  td = dmd.product.product_category
-                  td = (dmd.sell_price * 1.08).floor
-                  td= simple_format(h(dmd.product.contents))
-                  td = dmd.product.sales_unit
-                  td
-                    - if dmd.product.product_category == "お弁当"
-                      = @data[dmd.product_id]
-                    - else
-                      = simple_format(h(dmd.product.food_label_content))
-                  td
-                    - if dmd.product.product_category == "お弁当"
-                      span = "熱量：#{@bento_seibun[dmd.product_id][:calorie].round}kcal、"
-                      span = "たんぱく質：#{@bento_seibun[dmd.product_id][:protein].round(1)}g、"
-                      span = "脂質：#{@bento_seibun[dmd.product_id][:lipid].round(1)}g、"
-                      span = "炭水化物：#{@bento_seibun[dmd.product_id][:carbohydrate].round(1)}g、"
-                      span = "食物繊維：#{@bento_seibun[dmd.product_id][:dietary_fiber].round(1)}g、"
-                      span = "糖質：#{(@bento_seibun[dmd.product_id][:carbohydrate] - @bento_seibun[dmd.product_id][:dietary_fiber]).round(1)}g、"
-                      span = "食塩相当量：#{@bento_seibun[dmd.product_id][:salt].round(1)}g"
+                    td
+                      = simple_format(h(product.food_label_content))
+                    td
+                      - if product.image.present?
+                        = link_to image_download_path(id:product.id),method: :post do
+                          = image_tag product.image_url(:thumb)
 
-                    - else
-                      span = "熱量：#{dmd.product.calorie.round}kcal、"
-                      span = "たんぱく質：#{dmd.product.protein.round(1)}g、"
-                      span = "脂質：#{dmd.product.lipid.round(1)}g、"
-                      span = "炭水化物：#{dmd.product.carbohydrate.round(1)}g、"
-                      span = "食物繊維：#{dmd.product.dietary_fiber.round(1)}g、"
-                      span = "糖質：#{(dmd.product.carbohydrate - dmd.product.dietary_fiber).round(1)}g、"
-                      span = "食塩相当量：#{dmd.product.salt.round(1)}g"
-                  td
-                    - if dmd.product.image.present?
-                      = link_to image_download_path(id:dmd.product.id),method: :post do
-                        = image_tag dmd.product.image_url(:thumb)
+              - @hash[category[1]].each do |data|
+                - dmd = data[1]
+                - if dmd.sell_price > 0
+                  tr
+                    td
+                      - if dmd.mealselect_flag == true
+                        |◯
+                    td
+                      - if user_signed_in? && current_user.admin?
+                        = link_to dmd.product.food_label_name,dmd.product,target:'_blank'
+                      - else
+                        = dmd.product.food_label_name
+                    td = dmd.product.sales_unit
+                    td = (dmd.sell_price * 1.08).floor
+                    td = number_field_tag "mealselect_num[#{dmd.id}]",dmd.mealselect_num,class:'form-control',style:'width:100%;'
+                    td
+                      = simple_format(h(dmd.product.contents))
+                      |ーーーーー
+                      br
+                      - if dmd.product.product_category == "お弁当"
+                        span = "熱量：#{@bento_seibun[dmd.product_id][:calorie].round}kcal、"
+                        span = "たんぱく質：#{@bento_seibun[dmd.product_id][:protein].round(1)}g、"
+                        span = "脂質：#{@bento_seibun[dmd.product_id][:lipid].round(1)}g、"
+                        span = "炭水化物：#{@bento_seibun[dmd.product_id][:carbohydrate].round(1)}g、"
+                        br
+                        span = "食物繊維：#{@bento_seibun[dmd.product_id][:dietary_fiber].round(1)}g、"
+                        span = "糖質：#{(@bento_seibun[dmd.product_id][:carbohydrate] - @bento_seibun[dmd.product_id][:dietary_fiber]).round(1)}g、"
+                        span = "食塩相当量：#{@bento_seibun[dmd.product_id][:salt].round(1)}g"
+
+                      - else
+                        span = "熱量：#{dmd.product.calorie.round}kcal、"
+                        span = "たんぱく質：#{dmd.product.protein.round(1)}g、"
+                        span = "脂質：#{dmd.product.lipid.round(1)}g、"
+                        span = "炭水化物：#{dmd.product.carbohydrate.round(1)}g、"
+                        br
+                        span = "食物繊維：#{dmd.product.dietary_fiber.round(1)}g、"
+                        span = "糖質：#{(dmd.product.carbohydrate - dmd.product.dietary_fiber).round(1)}g、"
+                        span = "食塩相当量：#{dmd.product.salt.round(1)}g"
+
+                    td
+                      - if dmd.product.product_category == "お弁当"
+                        = @data[dmd.product_id]
+                      - else
+                        = simple_format(h(dmd.product.food_label_content))
+                    td
+                      - if dmd.product.image.present?
+                        = link_to image_download_path(id:dmd.product.id),method: :post do
+                          = image_tag dmd.product.image_url(:thumb)
 
     script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.7.1/js/lightbox.min.js" type="text/javascript"
