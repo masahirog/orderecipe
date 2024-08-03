@@ -131,7 +131,7 @@ class SmaregiTradingHistory < ApplicationRecord
         hash[hinban][:discount_amount] += tanka_nebikikei
         hash[hinban][:net_sales_amount] += nebikigokei
         hash[hinban][:ex_tax_sales_amount] += product_zeinuki_uriage
-        if tanpin_nebiki_kubun == "10%OFF" || tanpin_nebiki_kubun == "20%OFF" || tanpin_nebiki_kubun == "30%OFF" || tanpin_nebiki_kubun == "50%OFF"
+        if tanpin_nebiki_kubun == "タイムセール"
           #ディスカウントにカウントするのはタイムセールのみ、クーポン等を含まず
           hash[hinban][:discount_number] += suryo
         end
