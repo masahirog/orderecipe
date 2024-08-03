@@ -98,6 +98,7 @@ class SmaregiTradingHistory < ApplicationRecord
       shain_nebiki_anbun = smaregi_trading_history.shain_nebiki_anbun.to_i
       sale_nebiki_anbun = smaregi_trading_history.sale_nebiki_anbun.to_i
       tanpin_waribiki = smaregi_trading_history.tanpin_waribiki
+      tanpin_nebiki_kubun = smaregi_trading_history.tanpin_nebiki_kubun
       product_zeinuki_uriage = nebikigokei - uchizeianbun
       nebiki_anubn = shokei_nebiki_anbun + point_nebiki_anbun + shain_nebiki_anbun + sale_nebiki_anbun
       analysis_category_hash[bumon_id] = {zeinuki_uriage:0,net_sales_amount:0,sales_number:0,sales_amount:0,discount_amount:0,loss_amount:0} unless analysis_category_hash[bumon_id].present?
@@ -130,7 +131,8 @@ class SmaregiTradingHistory < ApplicationRecord
         hash[hinban][:discount_amount] += tanka_nebikikei
         hash[hinban][:net_sales_amount] += nebikigokei
         hash[hinban][:ex_tax_sales_amount] += product_zeinuki_uriage
-        if tanpin_waribiki.present?
+        if tanpin_nebiki_kubun == "10%OFF" || tanpin_nebiki_kubun == "20%OFF" || tanpin_nebiki_kubun == "30%OFF" || tanpin_nebiki_kubun == "50%OFF"
+          #ディスカウントにカウントするのはタイムセールのみ、クーポン等を含まず
           hash[hinban][:discount_number] += suryo
         end
         if Time.parse(time) < Time.parse('16:00')
