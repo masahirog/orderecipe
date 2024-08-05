@@ -99,7 +99,7 @@ class ApplicationController < ActionController::Base
         end
       end
       if product.product_category == "お弁当"
-        @daily_menu.daily_menu_details.includes(product:[:menus]).where(paper_menu_number:[1,2,3]).each do |dmd|
+        @daily_menu.daily_menu_details.includes(product:[:menus]).where(paper_menu_number:[2,3]).each do |dmd|
           fukusai_product = dmd.product
           allergy += Product.allergy_seiri(fukusai_product)
           fukusai_product.product_menus.each do |pm|
@@ -183,7 +183,7 @@ class ApplicationController < ActionController::Base
         end
       end
       if product.product_category == "お弁当"
-        @daily_menu.daily_menu_details.includes(product:[:menus]).where(paper_menu_number:[1,2,3]).each do |dmd|
+        @daily_menu.daily_menu_details.includes(product:[:menus]).where(paper_menu_number:[2,3]).each do |dmd|
           fukusai_product = dmd.product
           allergy += Product.allergy_seiri(fukusai_product)
           fukusai_product.product_menus.each do |pm|

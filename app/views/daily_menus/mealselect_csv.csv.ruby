@@ -39,7 +39,7 @@ CSV.generate(bom) do |csv|
           end
         end
       end
-      daily_menu_details.includes(product:[:menus]).where(paper_menu_number:[1,2,3]).each do |dmd|
+      daily_menu_details.includes(product:[:menus]).where(paper_menu_number:[2,3]).each do |dmd|
         fukusai_product = dmd.product
         allergy += Product.allergy_seiri(fukusai_product)
         fukusai_product.product_menus.each do |pm|
