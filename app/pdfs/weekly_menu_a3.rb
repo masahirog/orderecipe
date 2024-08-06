@@ -47,7 +47,7 @@ class WeeklyMenuA3 < Prawn::Document
 
 
     text_box("煮込み <font size='20'>丼</font>",at: [210,gyusuji_height-2], width: 350, height: 40,size:14,inline_format: true)
-    text_box("<font size='13'>640</font>円",at: [290,gyusuji_height-10], width: 350, height: 40,size:10,inline_format: true)
+    text_box("<font size='13'>690</font>円",at: [290,gyusuji_height-10], width: 350, height: 40,size:10,inline_format: true)
     text_box("税込",at: [335,gyusuji_height-7], width: 350, height: 40,size:6)
     text_box("<font size='8'>745</font>円",at: [335,gyusuji_height-15], width: 350, height: 40,size:6,inline_format: true)
 
