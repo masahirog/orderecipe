@@ -41,15 +41,15 @@ class WeeklyMenuA3 < Prawn::Document
     stroke
     gyusuji_height = 390
     text_box("煮込み <font size='20'>単品</font>",at: [0,gyusuji_height-2], width: 350, height: 40,size:14,inline_format: true)
-    text_box("<font size='13'>440</font>円",at: [95,gyusuji_height-10], width: 350, height: 40,size:10,inline_format: true)
+    text_box("<font size='13'>490</font>円",at: [95,gyusuji_height-10], width: 350, height: 40,size:10,inline_format: true)
     text_box("税込",at: [135,gyusuji_height-7], width: 350, height: 40,size:6)
-    text_box("<font size='8'>475</font>円",at: [135,gyusuji_height-15], width: 350, height: 40,size:6,inline_format: true)
+    text_box("<font size='8'>529</font>円",at: [135,gyusuji_height-15], width: 350, height: 40,size:6,inline_format: true)
 
 
     text_box("煮込み <font size='20'>丼</font>",at: [210,gyusuji_height-2], width: 350, height: 40,size:14,inline_format: true)
     text_box("<font size='13'>640</font>円",at: [290,gyusuji_height-10], width: 350, height: 40,size:10,inline_format: true)
     text_box("税込",at: [335,gyusuji_height-7], width: 350, height: 40,size:6)
-    text_box("<font size='8'>691</font>円",at: [335,gyusuji_height-15], width: 350, height: 40,size:6,inline_format: true)
+    text_box("<font size='8'>745</font>円",at: [335,gyusuji_height-15], width: 350, height: 40,size:6,inline_format: true)
 
     gyusuji_height -=40
     text_box(" ー 選べるオプション ー",at: [0,gyusuji_height], width: 350, height: 40,size:10)
@@ -61,16 +61,16 @@ class WeeklyMenuA3 < Prawn::Document
 
 
     text_box("2.大根",at: [105,gyusuji_height-2], width: 350, height: 40,size:12)
-    text_box("80円",at: [147,gyusuji_height], width: 350, height: 40,size:9)
-    text_box("税込 86円",at: [147,gyusuji_height-10], width: 350, height: 40,size:6)
+    text_box("100円",at: [147,gyusuji_height], width: 350, height: 40,size:9)
+    text_box("税込 108円",at: [147,gyusuji_height-10], width: 350, height: 40,size:6)
 
     text_box("3.温泉卵",at: [195,gyusuji_height-2], width: 350, height: 40,size:12)
-    text_box("80円",at: [250,gyusuji_height], width: 350, height: 40,size:9)
-    text_box("税込 86円",at: [250,gyusuji_height-10], width: 350, height: 40,size:6)
+    text_box("100円",at: [250,gyusuji_height], width: 350, height: 40,size:9)
+    text_box("税込 108円",at: [250,gyusuji_height-10], width: 350, height: 40,size:6)
 
     text_box("4.煮卵",at: [300,gyusuji_height-2], width: 350, height: 40,size:12)
-    text_box("80円",at: [338,gyusuji_height], width: 350, height: 40,size:9)
-    text_box("税込 86円",at: [338,gyusuji_height-10], width: 350, height: 40,size:6)
+    text_box("100円",at: [338,gyusuji_height], width: 350, height: 40,size:9)
+    text_box("税込 108円",at: [338,gyusuji_height-10], width: 350, height: 40,size:6)
 
     fill_color '000000'
     left_sozai_height = 320

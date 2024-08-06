@@ -56,9 +56,9 @@ class WeeklyMenuA4 < Prawn::Document
       stroke_bounds
     end
     text_box("単品",at: [75,gyusuji_height-2], width: 350, height: 40,size:16)
-    text_box("<font size='13'>440</font>円",at: [110,gyusuji_height-5], width: 350, height: 40,size:9,inline_format: true)
+    text_box("<font size='13'>490</font>円",at: [110,gyusuji_height-5], width: 350, height: 40,size:9,inline_format: true)
     text_box("税込",at: [145,gyusuji_height-2], width: 350, height: 40,size:6)
-    text_box("<font size='8'>475</font>円",at: [145,gyusuji_height-10], width: 350, height: 40,size:6,inline_format: true)
+    text_box("<font size='8'>529</font>円",at: [145,gyusuji_height-10], width: 350, height: 40,size:6,inline_format: true)
 
     barcode = Barby::Code128.new 154
     barcode_blob = Barby::PngOutputter.new(barcode).to_png
@@ -69,9 +69,9 @@ class WeeklyMenuA4 < Prawn::Document
       stroke_bounds
     end
     text_box("丼",at: [280,gyusuji_height-2], width: 350, height: 40,size:16)
-    text_box("<font size='13'>640</font>円",at: [300,gyusuji_height-5], width: 350, height: 40,size:9,inline_format: true)
+    text_box("<font size='13'>690</font>円",at: [300,gyusuji_height-5], width: 350, height: 40,size:9,inline_format: true)
     text_box("税込",at: [335,gyusuji_height-2], width: 350, height: 40,size:6)
-    text_box("<font size='8'>691</font>円",at: [335,gyusuji_height-10], width: 350, height: 40,size:6,inline_format: true)
+    text_box("<font size='8'>745</font>円",at: [335,gyusuji_height-10], width: 350, height: 40,size:6,inline_format: true)
 
     gyusuji_height -=32 
 
@@ -87,22 +87,22 @@ class WeeklyMenuA4 < Prawn::Document
       stroke_bounds
     end
     text_box("大根",at: [120,gyusuji_height-2], width: 350, height: 40,size:12)
-    text_box("<font size='9'>80</font>円",at: [148,gyusuji_height], width: 350, height: 40,size:7,inline_format: true)
-    text_box("税込 86円",at: [148,gyusuji_height-10], width: 350, height: 40,size:6)
+    text_box("<font size='9'>100</font>円",at: [148,gyusuji_height], width: 350, height: 40,size:7,inline_format: true)
+    text_box("税込 108円",at: [148,gyusuji_height-10], width: 350, height: 40,size:6)
 
     bounding_box([185, gyusuji_height], width: 26, height: 16) do
       stroke_bounds
     end
     text_box("温泉卵",at: [215,gyusuji_height-2], width: 350, height: 40,size:12)
-    text_box("<font size='9'>80</font>円",at: [255,gyusuji_height], width: 350, height: 40,size:7,inline_format: true)
-    text_box("税込 86円",at: [255,gyusuji_height-10], width: 350, height: 40,size:6)
+    text_box("<font size='9'>100</font>円",at: [255,gyusuji_height], width: 350, height: 40,size:7,inline_format: true)
+    text_box("税込 108円",at: [255,gyusuji_height-10], width: 350, height: 40,size:6)
 
     bounding_box([290, gyusuji_height], width: 26, height: 16) do
       stroke_bounds
     end
     text_box("煮卵",at: [320,gyusuji_height-2], width: 350, height: 40,size:12)
-    text_box("<font size='9'>80</font>円",at: [348,gyusuji_height], width: 350, height: 40,size:7,inline_format: true)
-    text_box("税込 86円",at: [348,gyusuji_height-10], width: 350, height: 40,size:6)
+    text_box("<font size='9'>100</font>円",at: [348,gyusuji_height], width: 350, height: 40,size:7,inline_format: true)
+    text_box("税込 108円",at: [348,gyusuji_height-10], width: 350, height: 40,size:6)
 
   end
 
