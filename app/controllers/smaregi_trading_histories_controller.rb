@@ -1,39 +1,29 @@
+require "csv"
 class SmaregiTradingHistoriesController < AdminController
   before_action :set_smaregi_trading_history, only: %i[ show edit update destroy ]
   def member
-    if params[:store_ids].present?
-      params[:stores] = {}
-      checked_store_ids = params['store_ids']
-      @stores = Store.where(id:checked_store_ids)
-      @stores.each do |store|
-        params[:stores][store.id.to_s] = true
+    file = params[:file]
+    if file.present?
+      kaiin_ids = []
+      CSV.foreach(file.path,liberal_parsing:true, headers: true) do |row|
+        row = row.to_hash
+        kaiin_id = row["会員ID"]
+        kaiin_ids << kaiin_id if kaiin_id.present?
       end
-    elsif params[:stores].present?
-      checked_store_ids = params['stores'].keys
-      @stores = Store.where(id:checked_store_ids)
-      params[:store_ids] = checked_store_ids
+      if kaiin_ids.count < 50
+        @smaregi_trading_histories = SmaregiTradingHistory.where(kaiin_id:kaiin_ids,uchikeshi_kubun:0)
+        respond_to do |format|
+          format.html
+          format.csv do
+            send_data render_to_string, filename: "購入履歴.csv", type: :csv
+          end
+        end
+      else
+        redirect_to smaregi_members_analyses_path,danger:'会員IDの件数を50件以内に絞り込んでください'
+      end
     else
-      params[:stores] = {}
-      @stores = Store.where(group_id:current_user.group_id,store_type:'sales')
-      checked_store_ids = @stores.ids
-      params[:store_ids] = checked_store_ids
-      @stores.each do |store|
-        params[:stores][store.id.to_s] = true
-      end
+      redirect_to smaregi_members_analyses_path,danger:'ファイルを添付してください。'
     end
-    @smaregi_members = SmaregiMember.where(main_use_store:@stores.map{|store|store.smaregi_store_id})
-    if params[:order].present?
-      @smaregi_members = @smaregi_members.order("#{params[:order]} #{params[:sc]}")
-    end
-    @smaregi_members = @smaregi_members.page(params[:page]).per(50)
-    kaiin_ids = @smaregi_members.map{|sm|sm.kaiin_id}
-    @smaregi_trading_histories = SmaregiTradingHistory.where(kaiin_id:kaiin_ids)
-    respond_to do |format|
-      format.html
-      format.csv do
-        send_data render_to_string, filename: "member.csv", type: :csv
-      end
-    end    
   end
 
   def bulk_delete

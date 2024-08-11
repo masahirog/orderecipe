@@ -133,7 +133,6 @@ class ApplicationController < ActionController::Base
       else
       end
     end
-    @gyusuji = Product.where(id:[14099])
     render :layout => false
   end
 

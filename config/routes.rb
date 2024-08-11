@@ -260,7 +260,7 @@ Rails.application.routes.draw do
   end
   resources :smaregi_trading_histories do
     collection do
-      get :member
+      post :member
       post :upload_salesdatas
       get :analysis_data
       post :bulk_delete
