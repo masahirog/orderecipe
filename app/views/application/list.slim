@@ -54,6 +54,7 @@ html
           thead
             tr
               th MS
+              th ID
               th style='width:250px;' 商品名
               th 内容量
               th style='width:120px;' 税込価格
@@ -72,6 +73,8 @@ html
                     td
                       - if dmd.mealselect_flag == true
                         |◯
+                    td
+                      = dmd.product.smaregi_code
                     td
                       - if user_signed_in? && current_user.admin?
                         = link_to dmd.product.food_label_name,dmd.product,target:'_blank'
