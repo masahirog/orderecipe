@@ -2,7 +2,7 @@ require 'csv'
 bom = "\uFEFF"
 CSV.generate(bom) do |csv|
   hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-  csv_column_names = %w(商品名 原材料名 内容量 賞味期限 保存方法 販売者 販売単位 栄養成分 温め)
+  csv_column_names = %w(商品名 原材料名 内容量 賞味期限 保存方法 販売者 販売単位 栄養成分 温め バーコード)
   csv << csv_column_names
 
 
@@ -84,6 +84,7 @@ CSV.generate(bom) do |csv|
   end
   @daily_menu.daily_menu_details.where('mealselect_num > ?',0).each do |dmd|
     shohinmei = dmd.product.food_label_name
+    smaregi_code = dmd.product.smaregi_code
     genzairyo = @data[dmd.product_id]
     naiyoryo = dmd.product.sales_unit
     kigen = @daily_menu.start_time
@@ -98,7 +99,7 @@ CSV.generate(bom) do |csv|
     seibun = "エネルギー #{@seibun[dmd.product_id][:calorie].round.to_s(:delimited)}kcal、たんぱく質 #{@seibun[dmd.product_id][:protein].round(1)}g、脂質 #{@seibun[dmd.product_id][:lipid].round(1)}g、炭水化物 #{@seibun[dmd.product_id][:carbohydrate].round(1)}g、糖質 #{(@seibun[dmd.product_id][:carbohydrate] - @seibun[dmd.product_id][:dietary_fiber]).round(1)}g、食物繊維 #{@seibun[dmd.product_id][:dietary_fiber].round(1)}g、塩分相当量 #{@seibun[dmd.product_id][:salt].round(1)}g"
 
     dmd.mealselect_num.times do
-      csv << [shohinmei,genzairyo,naiyoryo,kigen,hozon,hanbaisha,hanbai_unit,seibun,atatame]
+      csv << [shohinmei,genzairyo,naiyoryo,kigen,hozon,hanbaisha,hanbai_unit,seibun,atatame,smaregi_code]
     end
   end  
 
