@@ -56,23 +56,6 @@
           = f.fields_for :pre_order_products do |pop|
             - if pop.object.product.product_category_before_type_cast == category[1]
               = render 'li', pop: pop
-        / li.list-group-item.col-md-12.col-sm-12.col-xs-12 style='background-color:#f5f5f5;padding:5px 15px;'
-        /   span スープ
-        / = f.fields_for :pre_order_products do |pop|
-        /   - if pop.object.product.product_category == '惣菜' ||pop.object.product.product_category == 'スープ'
-        /     = render 'li', pop: pop
-
-        / li.list-group-item.col-md-12.col-sm-12.col-xs-12 style='background-color:#f5f5f5;padding:5px 15px;'
-        /   span 副菜
-        / = f.fields_for :pre_order_products do |pop|
-        /   - if pop.object.product.product_category == '惣菜' ||pop.object.product.product_category == 'スープ'
-        /     = render 'li', pop: pop
-        / li.list-group-item.col-md-12.col-sm-12.col-xs-12 style='background-color:#f5f5f5;padding:5px 15px;'
-        /   span デザート
-        / = f.fields_for :pre_order_products do |pop|
-        /   - if pop.object.product.product_category == 'スイーツ・ドリンク'
-        /     = render 'li', pop: pop
-
       .actions style='margin-bottom:50px;text-align: center;'
         = f.submit "確定する", data: { confirm: "日時、商品、店舗にお間違いありませんか？"} , class:"btn btn-primary"
 

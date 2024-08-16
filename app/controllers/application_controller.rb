@@ -155,7 +155,7 @@ class ApplicationController < ActionController::Base
     @data = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @bento_seibun = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
 
-    @daily_menu.daily_menu_details.includes(product:[:menus,product_menus:[:menu]]).each do |dmd|
+    @daily_menu.daily_menu_details.includes(product:[:menus,product_menus:[:menu]]).where("manufacturing_number > ?",0).each do |dmd|
       allergy = Product.allergy_seiri(dmd.product)
       product = dmd.product
       @bento_seibun[product.id] = {calorie:0,protein:0,lipid:0,carbohydrate:0,dietary_fiber:0,salt:0}
