@@ -1,6 +1,6 @@
 tr.nested-fields.field.product_part_tr
   td
-    = f.collection_select :common_product_part_id, CommonProductPart.all, :id, :name, {include_blank: true}, { class: "form-control common_product_part_select"}
+    = f.collection_select :common_product_part_id, CommonProductPart.order(:name), :id, :view_name_and_product_name, {include_blank: true}, { class: "form-control common_product_part_select"}
   td
     - if f.object.common_product_part_id.present?
       span.span_name = f.object.name

@@ -5,6 +5,14 @@ class CommonProductPart < ApplicationRecord
 	enum loading_position: {積載:0,切出:1,調理場:2}
 	after_update :update_product_parts
 
+	def view_name_and_product_name
+		if self.product_name.present?
+			self.name + " 【 " + self.product_name + " 】"
+		else
+			self.name + " 【 - 】"
+		end
+	end
+	
 	def update_product_parts
 	    update_pps = []
 	    self.product_parts.each do |pp|
