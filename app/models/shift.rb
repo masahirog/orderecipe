@@ -27,6 +27,10 @@ class Shift < ApplicationRecord
 	    created_at = row["created_at"]
 	    updated_at = row["updated_at"]
 	    fixed_flag = row["fixed_flag"]
+	    start_time = row["start_time"]
+	    end_time = row["end_time"]
+	    rest_start_time = row["rest_start_time"]
+	    rest_end_time = row["rest_end_time"]
       if shifts[id].present?
         shift = shifts[id]
         shift.date = date
@@ -38,10 +42,15 @@ class Shift < ApplicationRecord
 				shift.created_at = created_at
 				shift.updated_at = updated_at
 				shift.fixed_flag = fixed_flag
+				shift.start_time = start_time
+				shift.end_time = end_time
+				shift.rest_start_time = rest_start_time
+				shift.rest_end_time = rest_end_time
         update_shifts << shift
       end
     end
-    Shift.import update_shifts, on_duplicate_key_update:[:date,:store_id,:staff_id,:shift_pattern_id,:fix_shift_pattern_id,:memo,:created_at,:updated_at,:fixed_flag]
+    Shift.import update_shifts, on_duplicate_key_update:[:date,:store_id,:staff_id,:shift_pattern_id,:fix_shift_pattern_id,:memo,:created_at,:updated_at,:fixed_flag,
+    	:start_time,:end_time,:rest_start_time,:rest_end_time]
     return
   end
 end
