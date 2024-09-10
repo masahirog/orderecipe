@@ -4,7 +4,7 @@ h3 = "#{@store.name} 売上管理"
     = link_to "#{@date.last_month.month}月＜",sales_analyses_path(date:@date.last_month,store_id:params[:store_id]),style:"font-size:1.5em;"
     span style='font-size:1.5em;' = "　#{@date.year}年#{@date.month}月　"
     = link_to "＞#{@date.next_month.month}月",sales_analyses_path(date:@date.next_month,store_id:params[:store_id]),style:"font-size:1.5em;"
-  = link_to "CSV",sales_analyses_path(from:params[:from],to:params[:to], :format => :csv),class:"btn btn-primary",style:'float:right;'
+  = link_to "CSV",sales_analyses_path(from:params[:from],to:params[:to],store_id:params[:store_id], :format => :csv),class:"btn btn-primary",style:'float:right;'
 
 .table-responsive style='overflow: scroll;'
   table.table.layout-fixed style='border-collapse:separate;'

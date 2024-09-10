@@ -901,7 +901,8 @@ class AnalysesController < AdminController
     else
       @date = Date.today
     end
-    @dates =(@date.beginning_of_month..@date.end_of_month).to_a
+    @dates = (Date.new(2022,1,1)..@date).to_a
+    # @dates =(@date.beginning_of_month..@date.end_of_month).to_a
     @analyses = Analysis.where(date:@dates).where(store_id:@store.id).order(:date)
     @date_analyses = @analyses.map{|analysis|[analysis.date,analysis]}.to_h
     @date_analysis_categories = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
@@ -1014,6 +1015,13 @@ class AnalysesController < AdminController
   end
 
   def smaregi_members
+    if params[:month].present?
+      @date = "#{params[:month]}-01".to_date
+      @month = params[:month]
+    else
+      @date = @today
+      @month = "#{@date.year}-#{sprintf("%02d",@date.month)}"
+    end
     if params[:store_ids].present?
       params[:stores] = {}
       checked_store_ids = params['store_ids']
