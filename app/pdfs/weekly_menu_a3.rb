@@ -16,6 +16,8 @@ class WeeklyMenuA3 < Prawn::Document
 
 
   def a3_ue(daily_menu,from,to,daily_menu_details)
+    next_day = daily_menu.start_time + 1
+    next_daily_menu = DailyMenu.find_by(start_time:next_day) 
 
     stroke do
       fill_color '000000'
@@ -78,15 +80,50 @@ class WeeklyMenuA3 < Prawn::Document
     menu_x = -5
     self.line_width = 1
     stroke_color 'a3a3a3'
-    left_sozai_height = left_sozai_height - 40
+    left_sozai_height = left_sozai_height - 30
 
-    [
-      [[1],"<font size='14'>野菜のポタージュ Potage Soup</font>　- 生産者さん直送の野菜で作ったポタージュ -"],
-      [[13,14],"<font size='14'>旬野菜のサラダ Salad</font>　- 季節の野菜を15品目使用したサラダ -"],
-      [[2,3,4,5,6],"<font size='14'>副菜 Side Dish</font>　- 野菜たっぷりの副菜 -"]
+
+    text_box("<font size='16'>お弁当</font>　  - お弁当は日替わり、美味しいと評判のお米は宮城県産 -",
+       inline_format: true,color:'ffffff',at: [menu_x,left_sozai_height], width: 400, height: 40,size:10)
+    self.line_width = 2
+    line [menu_x, left_sozai_height-20], [menu_x+375, left_sozai_height-20]
+    stroke_color 'd8d8d8'
+    stroke
+    self.line_width = 1
+
+    left_sozai_height -= 40
+
+    fill_color 'ea9999'
+    text_box("●",at: [menu_x,left_sozai_height-4], width: 350, height: 40,size:14)
+    fill_color '000000'
+    text_box("本日のお肉のお弁当",at: [menu_x +20,left_sozai_height+5], width: 250, height: 30,size:14, valign: :center)
+    text_box("890/790/690<font size='10'>円</font>",inline_format: true,at: [menu_x+220,left_sozai_height-5], width: 350, height: 40,size:14)
+    text_box("税込",at: [menu_x+320,left_sozai_height-5], width: 350, height: 40,size:6)
+    text_box("961/853/745円",at: [menu_x+320,left_sozai_height-12], width: 350, height: 40,size:8)
+    text_box("毎日主菜が入れ替わるお弁当です。主菜はお肉を使ったお料理です。",at: [menu_x+25,left_sozai_height-25], width: 320, height: 30,size:9, valign: :center)
+
+    left_sozai_height -= 70
+
+    fill_color 'ea9999'
+    text_box("●",at: [menu_x,left_sozai_height-4], width: 350, height: 40,size:14)
+    fill_color '000000'
+    text_box("本日のお魚のお弁当",at: [menu_x +20,left_sozai_height+5], width: 250, height: 30,size:14, valign: :center)
+    text_box("890/790/690<font size='10'>円</font>",inline_format: true,at: [menu_x+220,left_sozai_height-5], width: 350, height: 40,size:14)
+    text_box("税込",at: [menu_x+320,left_sozai_height-5], width: 350, height: 40,size:6)
+    text_box("961/853/745円",at: [menu_x+320,left_sozai_height-12], width: 350, height: 40,size:8)
+    text_box("毎日主菜が入れ替わるお弁当です。主菜はお魚を使ったお料理です。",at: [menu_x+25,left_sozai_height-25], width: 280, height: 30,size:9, valign: :center)
+
+    left_sozai_height -= 70
+
+
+
+    [ [[1],"<font size='14'>野菜のポタージュ Potage Soup</font>　- 生産者さん直送の野菜で作ったポタージュ -"],
+      [[13,14],"<font size='14'>野菜1日分の汁物 Okazu Soup</font>　- たっぷり野菜とたんぱく質も入ってボリューム満点 -"],
+      [[23],"<font size='14'>ライスプレート Rice Plate</font>　- カレーライスやガパオライスなどを週替りで -"],
+      [[22,22],"<font size='14'>スイーツ Sweets</font>　- 手作りした焼き菓子や生菓子を週替りで -"]
     ].each_with_index do |paper_menu_numbers,index|
-      left_sozai_height = 420 if index == 2
-      menu_x = 390 if index == 2
+      left_sozai_height = 420 if index == 1
+      menu_x = 390 if index == 1
       text_box(paper_menu_numbers[1],
          inline_format: true,color:'ffffff',at: [menu_x,left_sozai_height], width: 400, height: 40,size:8)
       self.line_width = 2
@@ -107,7 +144,7 @@ class WeeklyMenuA3 < Prawn::Document
         end
         if dmd.present?
           product = dmd.product
-          if index < 2
+          if index < 1
             if product.warm_flag == true
               fill_color 'ea9999'
               text_box("●",at: [-5,left_sozai_height-8], width: 350, height: 40,size:14)
@@ -119,6 +156,7 @@ class WeeklyMenuA3 < Prawn::Document
             text_box("税込",at: [350,left_sozai_height-5], width: 350, height: 40,size:6)
             text_box("#{product.tax_including_sell_price}円",at: [350,left_sozai_height-12], width: 350, height: 40,size:8)
             text_box(product.contents,at: [40,left_sozai_height-30], width: 320, height: 30,size:9, valign: :center)
+            left_sozai_height -= 70
           else
             if product.warm_flag == true
               fill_color 'ea9999'
@@ -131,8 +169,8 @@ class WeeklyMenuA3 < Prawn::Document
             text_box("税込",at: [745,left_sozai_height-5], width: 350, height: 40,size:6)
             text_box("#{product.tax_including_sell_price}円",at: [745,left_sozai_height-12], width: 350, height: 40,size:8)
             text_box(product.contents,at: [435,left_sozai_height-30], width: 320, height: 30,size:9, valign: :center)
+            left_sozai_height -= 80
           end
-          left_sozai_height -= 70
         end
       end
     end
@@ -140,10 +178,6 @@ class WeeklyMenuA3 < Prawn::Document
 
 
   def a3_shita(daily_menu,from,to,daily_menu_details,store)
-
-    next_day = daily_menu.start_time + 1
-    next_daily_menu = DailyMenu.find_by(start_time:next_day) 
-
     fill_color '000000'
     left_sozai_height = 510
     menu_x = -5
@@ -151,11 +185,10 @@ class WeeklyMenuA3 < Prawn::Document
     stroke_color 'a3a3a3'
 
     [
-      [[7,8,9,10,11,12],"<font size='14'>主菜 Main Dish</font>　- お肉、お魚でこだわりの一品 -"],
-      [[23],"<font size='14'>ライスプレート Rice Plate</font>　- カレーライスやガパオライスなどを週替りで -"],
-      [[22,22],"<font size='14'>スイーツ Sweets</font>　- 手作りした焼き菓子や生菓子を週替りで -"]
+      [[2,3,4,5,6],"<font size='14'>副菜 Side Dish</font>　- 野菜たっぷりの副菜 -"],
+      [[7,8,9,10,11,12],"<font size='14'>主菜 Main Dish</font>　- お肉、お魚でこだわりの一品 -"]
     ].each_with_index do |paper_menu_numbers,index|
-      left_sozai_height = 320 if index == 1
+      left_sozai_height = 510 if index == 1
       menu_x = 390 if index == 1
       text_box(paper_menu_numbers[1],
          inline_format: true,color:'ffffff',at: [menu_x,left_sozai_height], width: 400, height: 40,size:8)
@@ -188,41 +221,45 @@ class WeeklyMenuA3 < Prawn::Document
           text_box("税込",at: [menu_x + 355,left_sozai_height-5], width: 350, height: 40,size:6)
           text_box("#{product.tax_including_sell_price}円",at: [menu_x + 355,left_sozai_height-12], width: 350, height: 40,size:8)
           text_box(product.contents,at: [menu_x + 45,left_sozai_height-30], width: 320, height: 30,size:9, valign: :center)
-          left_sozai_height -= 70
+          if index == 1
+            left_sozai_height -= 70
+          else
+            left_sozai_height -= 80
+          end
         end
       end
     end
 
-    right_height = 510
-    text_box("<font size='16'>お弁当</font>　  - お弁当は日替わり、美味しいと評判のお米は宮城県産 -",
-       inline_format: true,color:'ffffff',at: [menu_x,right_height], width: 400, height: 40,size:10)
-    self.line_width = 2
-    line [menu_x, right_height-20], [menu_x+375, right_height-20]
-    stroke_color 'd8d8d8'
-    stroke
-    self.line_width = 1
+    # right_height = 510
+    # text_box("<font size='16'>お弁当</font>　  - お弁当は日替わり、美味しいと評判のお米は宮城県産 -",
+    #    inline_format: true,color:'ffffff',at: [menu_x,right_height], width: 400, height: 40,size:10)
+    # self.line_width = 2
+    # line [menu_x, right_height-20], [menu_x+375, right_height-20]
+    # stroke_color 'd8d8d8'
+    # stroke
+    # self.line_width = 1
 
-    right_height -= 40
+    # right_height -= 40
 
-    fill_color 'ea9999'
-    text_box("●",at: [menu_x,right_height-4], width: 350, height: 40,size:14)
-    fill_color '000000'
-    text_box("本日のお肉のお弁当",at: [menu_x +20,right_height+5], width: 250, height: 30,size:14, valign: :center)
-    text_box("890/790/690<font size='10'>円</font>",inline_format: true,at: [605,right_height-5], width: 350, height: 40,size:14)
-    text_box("税込",at: [705,right_height-5], width: 350, height: 40,size:6)
-    text_box("961/853/745円",at: [705,right_height-12], width: 350, height: 40,size:8)
-    text_box("毎日主菜が入れ替わるお弁当です。主菜はお肉を使ったお料理です。",at: [menu_x+25,right_height-25], width: 320, height: 30,size:9, valign: :center)
+    # fill_color 'ea9999'
+    # text_box("●",at: [menu_x,right_height-4], width: 350, height: 40,size:14)
+    # fill_color '000000'
+    # text_box("本日のお肉のお弁当",at: [menu_x +20,right_height+5], width: 250, height: 30,size:14, valign: :center)
+    # text_box("890/790/690<font size='10'>円</font>",inline_format: true,at: [605,right_height-5], width: 350, height: 40,size:14)
+    # text_box("税込",at: [705,right_height-5], width: 350, height: 40,size:6)
+    # text_box("961/853/745円",at: [705,right_height-12], width: 350, height: 40,size:8)
+    # text_box("毎日主菜が入れ替わるお弁当です。主菜はお肉を使ったお料理です。",at: [menu_x+25,right_height-25], width: 320, height: 30,size:9, valign: :center)
 
-    right_height -= 75
+    # right_height -= 75
 
-    fill_color 'ea9999'
-    text_box("●",at: [menu_x,right_height-4], width: 350, height: 40,size:14)
-    fill_color '000000'
-    text_box("本日のお魚のお弁当",at: [menu_x +20,right_height+5], width: 250, height: 30,size:14, valign: :center)
-    text_box("890/790/690<font size='10'>円</font>",inline_format: true,at: [605,right_height-5], width: 350, height: 40,size:14)
-    text_box("税込",at: [705,right_height-5], width: 350, height: 40,size:6)
-    text_box("961/853/745円",at: [705,right_height-12], width: 350, height: 40,size:8)
-    text_box("毎日主菜が入れ替わるお弁当です。主菜はお魚を使ったお料理です。",at: [menu_x+25,right_height-25], width: 280, height: 30,size:9, valign: :center)
+    # fill_color 'ea9999'
+    # text_box("●",at: [menu_x,right_height-4], width: 350, height: 40,size:14)
+    # fill_color '000000'
+    # text_box("本日のお魚のお弁当",at: [menu_x +20,right_height+5], width: 250, height: 30,size:14, valign: :center)
+    # text_box("890/790/690<font size='10'>円</font>",inline_format: true,at: [605,right_height-5], width: 350, height: 40,size:14)
+    # text_box("税込",at: [705,right_height-5], width: 350, height: 40,size:6)
+    # text_box("961/853/745円",at: [705,right_height-12], width: 350, height: 40,size:8)
+    # text_box("毎日主菜が入れ替わるお弁当です。主菜はお魚を使ったお料理です。",at: [menu_x+25,right_height-25], width: 280, height: 30,size:9, valign: :center)
 
 
     
@@ -238,10 +275,11 @@ class WeeklyMenuA3 < Prawn::Document
     fill_color '000000'
     text_box("<color rgb='ea9999'>●</color>の付いている商品は、電子レンジで温めてお召し上がりください。500Wで1分が目安です。",at: [470,30], width: 280, height: 30,size:10, valign: :center,inline_format: true)
 
-    image 'app/assets/images/logo.png', at: [10, 30], width: 150
-    text_box("#{store.name}",at: [180,32], width: 280, height: 40,size:14)
-    text_box("#{store.address}",at: [180,16], width: 280, height: 40,size:10)
-    text_box("TEL：#{store.phone}　営業時間： 11:00-21:00（無休）",at: [180,3], width: 280, height: 40,size:10)
+    image 'app/assets/images/logo.png', at: [5, 30], width: 150
+    text_box("#{store.name}",at: [170,32], width: 280, height: 40,size:14)
+    text_box("#{store.address}",at: [170,16], width: 280, height: 40,size:10)
+    text_box("営業時間： 11:00-20:00　定休日：毎月第一日曜、毎週月曜",at: [170,3], width: 280, height: 40,size:10)
+    # text_box("TEL：#{store.phone}　営業時間： 11:00-21:00（無休）",at: [180,3], width: 280, height: 40,size:10)
   end
 
 
