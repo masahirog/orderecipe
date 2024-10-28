@@ -1,6 +1,12 @@
 class SmaregiMember < ApplicationRecord
   enum sex: {minyuryoku:0,man:1,woman:2}
   enum main_use_store: {nyuryokunasi:0,higashi_nakano:1,shinkoenji:2,shin_nakano:3,numabukuro:4,ogikubo:5}
+
+  def self.download_rireki_data(file)
+
+    
+  end
+
   def self.update_sales_data
     smaregi_members = SmaregiMember.all.map{|sm|[sm.kaiin_id,sm]}.to_h
     smaregi_trading_histories = SmaregiTradingHistory.where.not(kaiin_id:nil).select(:torihiki_id,:torihiki_meisaikubun,:kaiin_id,:date,:gokei_point).order("date ASC").distinct(:torihiki_id)
