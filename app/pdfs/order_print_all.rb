@@ -60,7 +60,11 @@ class OrderPrintAll < Prawn::Document
       text "#{order.store.address}", :leading => 3
       text "TEL：#{order.store.phone}", :leading => 3
       text "No：#{vendor.management_id}", :leading => 3 if vendor.management_id.present?
-      text "株式会社べじはん", :leading => 3
+      if vendor.id == 11
+        text "株式会社べじはん", :leading => 3
+      else
+        text "株式会社結び", :leading => 3
+      end
     end
   end
 

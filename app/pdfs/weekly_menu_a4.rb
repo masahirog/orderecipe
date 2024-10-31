@@ -175,8 +175,7 @@ class WeeklyMenuA4 < Prawn::Document
 
     # image 'app/assets/images/logo.png', at: [410, 10], width: 100
     text_box("#{store.name}　#{store.address}",at: [470,12], width: 280, height: 40,size:8)
-    text_box("営業時間： 11:00-20:00　定休日：毎月第一日曜、毎週月曜",at: [470,-2], width: 400, height: 40,size:8)
-    # TEL：#{store.phone}
+    text_box("TEL：#{store.phone}　営業時間：11:00-20:00　定休日：毎月第一日曜、毎週月曜",at: [470,-2], width: 400, height: 40,size:8)
   end
 
 

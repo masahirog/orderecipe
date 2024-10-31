@@ -89,7 +89,7 @@ CSV.generate(bom) do |csv|
     naiyoryo = dmd.product.sales_unit
     kigen = @daily_menu.start_time
     hozon = "要冷蔵（10℃以下）"
-    hanbaisha = "株式会社べじはん 東京都中野区東中野1-35-1"
+    hanbaisha = "株式会社結び 東京都中野区東中野1-35-1"
     hanbai_unit = "#{dmd.product.sales_unit}あたり"
     if dmd.product.warm_flag == true
       atatame = "蓋を外して、電子レンジ 500wで1分を目安に温めて、お召し上がり下さい。"
