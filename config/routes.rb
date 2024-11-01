@@ -55,7 +55,7 @@ Rails.application.routes.draw do
   post '/mealselect_save' => 'application#mealselect_save'
   get '/list' => 'application#list'
   post '/image_download' => 'application#image_download'
-  get '/shibataya' => 'application#shibataya'
+  # get '/shibataya' => 'application#shibataya'
   get '/shibataya_orders' => 'application#shibataya_orders'
   get '/shibataya_howto' => 'application#shibataya_howto'
   post 'orders/new' => 'orders#new'
