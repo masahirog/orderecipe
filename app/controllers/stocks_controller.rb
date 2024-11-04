@@ -88,18 +88,21 @@ class StocksController < AdminController
   def update_monthly_stocks
     store_id = params[:store_id]
     date = params[:date]
+    to = date.to_date
+    from = to - 100
     @month_total_amount = {}
     # ids = Material.where(stock_management_flag:true).ids
-    stocks = Stock.where(store_id:store_id).where("date <= ?", date).order(date: :desc).uniq(&:material_id)
+    stocks = Stock.where(store_id:store_id).where(date:from..to).order(date: :desc).uniq(&:material_id)
     stocks.delete_if{|stock|stock.end_day_stock <= 0}
     total_amount = 0
     foods_amount = 0
     equipments_amount = 0
     expendables_amount = 0
-    # food_categories = ["meat","fish","vege","other_vege","other_food",'rice']
     stocks.each do |stock|
       material_price = (stock.end_day_stock * stock.material.cost_price)
       if stock.material.storage_place == "normal" || stock.material.storage_place == "freezing" || stock.material.storage_place == "refrigerate"
+        puts "material_id:#{stock.material.id}"
+        puts "price:#{material_price}"
         foods_amount += material_price
         total_amount += material_price
       elsif stock.material.storage_place == "pack"
