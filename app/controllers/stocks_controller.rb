@@ -99,7 +99,7 @@ class StocksController < AdminController
     equipments_amount = 0
     expendables_amount = 0
     stocks.each do |stock|
-      material_price = (stock.end_day_stock * stock.material.cost_price)
+      material_price = (stock.end_day_stock * stock.material.cost_price).round(1)
       if stock.material.storage_place == "normal" || stock.material.storage_place == "freezing" || stock.material.storage_place == "refrigerate"
         puts "material_id:#{stock.material.id}"
         puts "price:#{material_price}"
