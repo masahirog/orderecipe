@@ -13,9 +13,9 @@ ja:
         rice: 米
       storage_place:
         un_saved: 未登録
-        normal: 常温
-        refrigerate: 冷蔵
-        freezing: 冷凍
+        normal: 常温食材
+        refrigerate: 冷蔵食材
+        freezing: 冷凍食材
         pack: 包材
         equipment: 備品
     store_daily_menu:

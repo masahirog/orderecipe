@@ -96,16 +96,16 @@ class StocksController < AdminController
     foods_amount = 0
     equipments_amount = 0
     expendables_amount = 0
-    food_categories = ["meat","fish","vege","other_vege","other_food",'other_food']
+    # food_categories = ["meat","fish","vege","other_vege","other_food",'rice']
     stocks.each do |stock|
       material_price = (stock.end_day_stock * stock.material.cost_price)
-      if food_categories.include?(stock.material.category)
+      if stock.material.storage_place == "normal" || stock.material.storage_place == "freezing" || stock.material.storage_place == "refrigerate"
         foods_amount += material_price
         total_amount += material_price
-      elsif stock.material.category == 'packed'
+      elsif stock.material.storage_place == "pack"
         equipments_amount += material_price
         total_amount += material_price
-      elsif stock.material.category == 'consumable_item' ||stock.material.category == "cooking_item"
+      elsif stock.material.storage_place == "equipment"
         expendables_amount += material_price
         total_amount += material_price
       end

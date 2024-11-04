@@ -39,7 +39,7 @@
         = f.label :category, "カテゴリ",class:'required'
         = f.select :category, options_for_select_from_enum(Material, :category),{}, { class: "form-control",required:true}
       .col-md-12.form-group
-        = f.label :storage_place, "棚卸し分類",class:'required'
+        = f.label :storage_place, "棚卸し計上先の分類",class:'required'
         = f.select :storage_place, options_for_select_from_enum(Material, :storage_place),{}, { class: "form-control",required:true}
 
       .col-md-12.form-group
