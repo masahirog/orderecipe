@@ -3,7 +3,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '3.2.6'
 
-gem 'rails', '6.0.0'
+gem 'rails', '~> 6.1'
 gem 'mysql2', '>= 0.4.4', '< 0.6.0'
 gem 'puma', '~> 3.11'
 gem 'sass-rails', '~> 5.0'
@@ -61,6 +61,7 @@ gem 'rqrcode'
 gem 'selenium-webdriver'
 gem 'webdrivers'
 # gem 'twilio-ruby'
+gem 'mimemagic', '~> 0.3.10'
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
