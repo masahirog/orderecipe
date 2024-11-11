@@ -22,10 +22,10 @@ class DailyItemInvoice < Prawn::Document
     	end
 		bounding_box([0, 730], :width => 270, :height => 100) do
 	      	font_size 9
-	      	text "株式会社べじはん 御中", size: 15
+	      	text "株式会社結び 御中", size: 15
 	      	move_down 5
-	     	text "〒164-0011", :leading => 3
-			text "東京都中野区中央5-3-11 柴ビル5階", :leading => 3
+	     	text "〒207-0031", :leading => 3
+			text "東京都東大和市奈良橋3-539-17", :leading => 3
 			move_down 10
 			text "#{date.year}年#{date.month}月分を以下の通りご請求申し上げます。", :leading => 3, size: 11
 		end
