@@ -1,6 +1,7 @@
 class ProductsController < ApplicationController
   require 'net/https'
   require 'json'
+  require 'open-uri'
 
   def label
     @product = Product.find(params[:id])
@@ -98,7 +99,7 @@ class ProductsController < ApplicationController
     @product = Product.find(params[:product_id])
     respond_to do |format|
       format.html
-      format.json { render json: { bejihan_sozai_flag: @product.bejihan_sozai_flag,sell_price:@product.sell_price,sky_wholesale_price:@product.sky_wholesale_price } }
+      format.json { render json: { bejihan_sozai_flag: @product.bejihan_sozai_flag,sell_price:@product.sell_price } }
     end
   end
 
@@ -355,16 +356,16 @@ class ProductsController < ApplicationController
 
   def download
     product = Product.find(params[:id])
-    data = open(product.image.url)
+    data = URI.open(product.image.url)
     send_data(data.read, type:product.image.file.content_type, filename: product.image.file.filename)
   end
 
   private
     def product_create_update
       params.require(:product).permit(:name,:memo, :sell_price, :description, :contents, :image,:brand_id,:product_category,:bejihan_sozai_flag,
-                      :sky_wholesale_price,:sky_image,:sky_serving_infomation,:group_id,:sub_category,:reduced_tax_flag,:half_able_flag,
+                      :group_id,:sub_category,:reduced_tax_flag,:half_able_flag,
                       :food_label_name,:food_label_content,:status,:remove_image,:remove_image_for_one_person, :image_cache,:display_image,:image_for_one_person,:serving_infomation,:carryover_able_flag,
-                      :main_serving_plate_id,:sub_serving_plate_id,:container_id,:ozara_serving_infomation,:freezing_able_flag,:sky_split_information,:bejihan_only_flag,
+                      :main_serving_plate_id,:sub_serving_plate_id,:container_id,:ozara_serving_infomation,:freezing_able_flag,:bejihan_only_flag,
                       :smaregi_code,:warm_flag,:tax_including_sell_price,:sales_unit,:calorie,:protein,:lipid,:carbohydrate,:dietary_fiber,:salt,
                       :cost_price, product_menus_attributes: [:id, :product_id, :menu_id,:row_order, :_destroy],
                     product_parts_attributes: [:id,:product_id,:name,:amount,:unit, :_destroy,:memo,:container,:sticker_print_flag,:common_product_part_id,:loading_container,:loading_position],

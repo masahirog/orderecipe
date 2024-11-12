@@ -101,9 +101,6 @@
       = f.label :container_id, "盛り付け容器・皿"
       = f.collection_select :container_id, Container.where(group_id:current_user.group_id), :id, :name, {include_blank:true}, { class: "form-control"}
 
-    .col-md-6
-      = f.label :sky_split_information, "SKY卸時の分割目安 【1/2、1/3、分割不可】 等"
-      = f.text_field :sky_split_information, class:"form-control"
   .col-md-12.form-group
     .col-md-3
       = f.label :image, "公式写真"

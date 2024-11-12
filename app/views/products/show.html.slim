@@ -77,14 +77,12 @@ table.table
       th スマレジ商品コード
       th 大皿
       th 盛り付け容器・皿
-      th SKY卸時の分割目安
 
   tbody
     tr
       td = @product.smaregi_code
       td = @product.main_serving_plate_id
       td = @product.container.name if @product.container.present?
-      td = @product.sky_split_information
 
 table.table
   thead

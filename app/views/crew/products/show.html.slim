@@ -1,18 +1,6 @@
 h3 = "#{@product.food_label_name}"
 h4 = "（#{@product.name}）"
 .box26.clearfix
-  span class="box-title" SKY情報
-  .col-md-12
-    .col-md-6
-      label SKY_1人前写真
-      = link_to @product.sky_image.to_s, "data-lightbox" => @product.sky_image.to_s do
-        = image_tag @product.sky_image.to_s ,class:"text-center img-responsive center-block",style:'max-height:150px;'
-
-    .col-md-6
-      label SKY_1人前盛付
-      = text_url_to_link(simple_format(h(@product.sky_serving_infomation))).html_safe
-  = link_to "編集する",edit_crew_product_path(@product),class:'btn btn-primary pull-right'
-.box26.clearfix
   span class="box-title" べじはん情報
   .col-md-12
     label 温め

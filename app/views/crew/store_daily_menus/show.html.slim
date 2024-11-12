@@ -19,15 +19,11 @@ table.table.table-list
 
       th
       th
-      th style='background-color:#faebd7;' colspan=2 sake-ya
       th style='background-color:#fff0f5;'colspan=3 べじはん
     tr
       th 商品名
       th 発注数
       th 店舗調理
-      th 分割目安
-      th 仕入れ値
-      th 1人前
       th 売価
       th 工程
       th 1人前
@@ -47,26 +43,6 @@ table.table.table-list
           - if MenuLastProcess.where(menu_id:sdmd.product.menus.ids).present?
             |あり
           - else
-        td
-          = sdmd.product.sky_split_information
-        td
-          = "#{sdmd.product.sky_wholesale_price}円" if sdmd.product.sky_wholesale_price.present?
-        td
-          - if sdmd.product.sky_serving_infomation.present?
-            button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#sky_serving_infomation_#{sdmd.product_id}" style='' 盛付
-            .modal.fade tabindex="-1" ID="sky_serving_infomation_#{sdmd.product_id}"
-              .modal-dialog style='width:1000px;'
-                .modal-content
-                  .modal-header
-                    h4.modal-title = sdmd.product.name
-                  .modal-body.clearfix
-                    div style='width:50%;float:left;'
-                      = text_url_to_link(simple_format(h(sdmd.product.sky_serving_infomation))).html_safe
-                    div style='width:50%;float:left;'
-                      = image_tag sdmd.product.sky_image.to_s,class:"img-responsive",style:'max-width:250px;height: auto;'
-                  .modal-footer
-                    button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
-
         td
           = "#{sdmd.product.sell_price}円"
 

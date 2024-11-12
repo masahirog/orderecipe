@@ -60,14 +60,14 @@ html lang="ja"
                       h5 style='padding:0 10px;font-weight:bold;' 発注・在庫
                       li = link_to "発注",orders_path(store_id:39)
                       li = link_to "納品確認",deliveried_list_orders_path(store_id:39)
-                      li = link_to "はく刻確認",vendor_material_vendor_stocks_path(vendor_id:774)
+                      / li = link_to "はく刻確認",vendor_material_vendor_stocks_path(vendor_id:774)
                       li = link_to "野菜棚卸し",mobile_inventory_stocks_path(category:'vege',store_id:39),target:'_blank'
                       li = link_to "肉類棚卸し",mobile_inventory_stocks_path(category:'meat',store_id:39),target:'_blank'
                       li = link_to "スリホプリンタ インク発注",suriho_orders_path
                       li
                         a.clearfix href="/stocks/inventory?to=#{@today}&store_id=39"
                           span style='float:left;' 棚卸し
-                      li = link_to "棚卸し（スキャン）",scan_stocks_path
+                      / li = link_to "棚卸し（スキャン）",scan_stocks_path
                       li = link_to "月次棚卸し在庫",stocks_path(store_id:39)
                       h5 style='padding:0 10px;font-weight:bold;' その他
                       li = link_to 'シフト',shifts_path(date:@today,store_type:1)
@@ -77,9 +77,9 @@ html lang="ja"
                       li = link_to '掃除テンプレート',reminder_templates_path(category:'clean',store_type:1)
                       li = link_to 'シフトテンプレート',default_shifts_path(group_id:current_user.group_id,store_type:1)
                       li = link_to "キッチン設定",edit_store_path(id:39)
-                      li = link_to "全店舗一覧",stores_path()
-                      li = link_to "SKY月間",sky_monthly_orders_path()
-                      li = link_to 'ミールセレクト',list_path
+                      / li = link_to "全店舗一覧",stores_path()
+                      / li = link_to "SKY月間",sky_monthly_orders_path()
+                      / li = link_to 'ミールセレクト',list_path
                       li = link_to "週次レポート",new_weekly_report_path()
                   li.dropdown
                     a.dropdown-toggle href="#" data-toggle="dropdown" role="button"
@@ -90,7 +90,7 @@ html lang="ja"
                       li = link_to "メニュー",menus_path
                       li = link_to "食材・資材",materials_path
                       li = link_to "成分表示計算用食材一覧",food_ingredients_path
-                      li = link_to "JAN登録（スキャン）",scan_materials_path
+                      / li = link_to "JAN登録（スキャン）",scan_materials_path
                       li = link_to "仕入先",vendors_path
                       li = link_to "共通積載パーツ一覧",common_product_parts_path
                       li = link_to "食材月間使用確認",monthly_used_amount_materials_path
@@ -109,7 +109,7 @@ html lang="ja"
                       span.caret
                     ul.dropdown-menu role="menu" style='width:250px;'
                       li = link_to '出勤スタッフ一覧',date_attendance_staffs_path(date:@today)
-                      li = link_to '柴田屋オーダー',pre_orders_path
+                      / li = link_to '柴田屋オーダー',pre_orders_path
                       li = link_to 'メニュー表',monthly_menus_daily_menus_path
                       li = link_to '日報',select_store_sales_reports_path
                       li = link_to "お客さまの声",customer_opinions_path

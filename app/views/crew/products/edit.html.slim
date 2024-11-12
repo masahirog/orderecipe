@@ -8,20 +8,5 @@
   .form-group
     label べじはん定価：
     = "#{f.object.sell_price} 円"
-  .form-group
-    label SKY卸価格：
-    = "#{f.object.sky_wholesale_price} 円"
-  .form-group
-    = f.label :sky_image, "SKY商品写真"
-    = f.file_field :sky_image
-    .form-group
-      - if @product.sky_image?
-        = image_tag @product.sky_image.to_s,class:"img-responsive",style:'max-height:250px;'
-
-  .form-group
-    = f.label :sky_serving_infomation, "SKY盛り付け情報"
-    = f.text_area :sky_serving_infomation, class:"form-control", style:"height:10em;"
-
-
   .action.col-md-12
     input.btn.btn-success[type="button" onclick="submit();" value="登録する"]
