@@ -8,12 +8,10 @@
     "test": "test"
   },
   "dependencies": {
-    "aws-sdk": "^2.626.0",
     "chart.js": "^3.5.1",
     "chartkick": "^4.0.5",
     "dotenv": "^8.2.0",
-    "mysql": "^2.18.1",
-    "puppeteer": "^2.1.1"
+    "mysql": "^2.18.1"
   },
   "devDependencies": {},
   "scripts": {
