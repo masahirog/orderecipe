@@ -32,7 +32,9 @@
           td class="th_#{wh.id}"
             div style='padding: 2px 0 2px 0;'
                 - if @shift_hash[wh.staff_id].present?
+                  - if @shift_hash[wh.staff_id].fix_shift_pattern.present?
                     = @shift_hash[wh.staff_id].fix_shift_pattern.working_hour 
+                  - else
                 - else
                     span -
             div.working_hour style='padding: 3px 0 3px 0;' = (@working_hour_whwt_hash[wh.id]/60).round(1) if @working_hour_whwt_hash[wh.id]
