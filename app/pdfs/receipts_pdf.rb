@@ -19,7 +19,7 @@ class ReceiptsPdf < Prawn::Document
   def body(id,arr,stamp)
     if arr[0]==0
       move_down 10
-      image open(arr[1]), at: [-50, 750], width: 620
+      image URI.open(arr[1]), at: [-50, 750], width: 620
       image 'app/assets/images/taberu_stamp.png', at: [440, 630], width: 60 if stamp == "true"
     else
       bounding_box([0, 740], :width => 520, :height => 225) do

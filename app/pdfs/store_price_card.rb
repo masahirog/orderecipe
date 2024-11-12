@@ -34,7 +34,7 @@ class StorePriceCard < Prawn::Document
           stroke do
             font "vendor/assets/fonts/NotoSansJP-Black.ttf"
             # fill_color 'ffffff'
-            image open(product.image.url), at: [10, h], width:184
+            image URI.open(product.image.url), at: [10, h], width:184
             fill_color '000000'
             line_width 0.1
             stroke_color '808080'
