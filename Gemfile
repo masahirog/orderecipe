@@ -24,7 +24,7 @@ gem 'carrierwave'
 gem 'rmagick'
 gem 'fog-aws'
 gem "activerecord-import"
-gem 'prawn'
+gem 'prawn', '2.4.0'
 gem 'prawn-table'
 gem 'rails-i18n'
 gem 'dotenv-rails'

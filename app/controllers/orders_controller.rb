@@ -1,4 +1,22 @@
 class OrdersController < AdminController
+  def purchase_order_list
+    if params[:date]
+      delivery_date = params[:date]
+    else
+      delivery_date = Date.today
+    end
+    respond_to do |format|
+      format.html
+      format.pdf do
+        pdf = OrderPdfDate.new(delivery_date)
+        send_data pdf.render,
+          filename:    "#{delivery_date}_order_list.pdf",
+          type:        "application/pdf",
+          disposition: "inline"
+      end
+    end
+  end
+
   def sky_monthly
     @stores = Store.where(group_id:29)
     @material_store_orderables_ids = MaterialStoreOrderable.where(store_id:@stores.ids,orderable_flag:true).map{|mso|mso.material_id}.uniq

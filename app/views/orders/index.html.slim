@@ -3,8 +3,8 @@ span style='margin-right:40px;font-size:1.3em;' ="#{@store.short_name}　発注�
 .clearfix
   - if @store.id == 39
     = link_to "単品発注", new_order_path(store_id:params[:store_id]),class:"order btn btn-primary btn-sm",style:"float:left;margin-top:15px;"
-    button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#product_order_modal" style='float:left;margin-top:15px;margin-left:10px;' 商品発注
-    #product_order_modal.modal.fade tabindex="-1"
+    / button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#product_order_modal" style='float:left;margin-top:15px;margin-left:10px;' 商品発注
+    / #product_order_modal.modal.fade tabindex="-1"
       .modal-dialog
         .modal-content
           .modal-header
@@ -98,17 +98,21 @@ span style='margin-right:40px;font-size:1.3em;' ="#{@store.short_name}　発注�
 
   - if @store.id == 39
     = link_to "備品発注", new_order_path(bihin_flag:true,store_id:params[:store_id]),class:"order btn btn-primary btn-sm",style:"float:left;margin-top:15px;margin-left:10px;"
-  = form_tag orders_path, :method => 'get',style:"float:right;margin-top:15px;margin-left:10px;" do
+  / = form_tag orders_path, :method => 'get',style:"float:right;margin-top:15px;margin-left:10px;" do
     = hidden_field_tag :store_id,params[:store_id]
     = select_tag :material_id, options_from_collection_for_select(@materials, :id, :name,params[:material_id]),include_blank: '食材検索', class: "form-control material_search",style:"width:300px;"
     = submit_tag "検索" ,class:"btn btn-default btn-sm",style:'margin-left:10px;'
-  = link_to "納品確認",deliveried_list_orders_path(store_id:params[:store_id]),class:'btn btn-primary btn-sm',style:'float:right;margin-top:15px;margin-left:10px;'
+  = link_to "納品確認",deliveried_list_orders_path(store_id:params[:store_id]),class:'btn btn-default',style:'float:right;margin-left:10px;'
   / = link_to "月間発注CSV", monthly_data_orders_path(start_date:params[:start_date],store_id:params[:store_id],format:'csv'), class: "btn btn-default",style:'float:right;margin-right:10px;margin-top:15px;'
 
-  = form_tag monthly_data_orders_path(format: :csv),style:"float:right;margin-top:15px;margin-left:10px;",class:"clearfix", :method => 'get' do
-    = hidden_field_tag :store_id,params[:store_id]
-    = date_field_tag :start_date,params[:start_date],class:"form-control",style:"width:100px;float:left;"
-    = submit_tag "月間発注CSV" ,class:"btn btn-primary btn-sm",style:'margin-left:10px;float:left;'
+
+  div class="input-group pull-right"
+    = form_tag monthly_data_orders_path(format: :csv),style:"",class:"", :method => 'get' do
+      = hidden_field_tag :store_id,params[:store_id]
+      = date_field_tag :start_date,params[:start_date],class:"form-control",style:"width:150px;"
+      span class="input-group-btn"
+        / button type="button" class="btn btn-default" ボタン
+        = submit_tag "月間発注CSV" ,class:"btn btn-primary"
 
 table.table
   thead

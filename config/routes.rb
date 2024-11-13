@@ -329,6 +329,7 @@ Rails.application.routes.draw do
   end
   resources :orders do
     collection do
+      get :purchase_order_list
       get :sky_monthly
       get :monthly_data
       get :suriho

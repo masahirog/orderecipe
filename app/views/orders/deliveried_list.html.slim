@@ -8,6 +8,7 @@
     .form-group.col-md-2
       = submit_tag "検索" ,class:"btn btn-primary"
   = link_to "PDF",deliveried_list_orders_path(store_id:params[:store_id],vendor_id:params[:vendor_id],date:params[:date],format:'pdf'),class:'btn btn-primary pull-right'
+  = link_to "発注書一覧",purchase_order_list_orders_path(store_id:params[:store_id],date:params[:date],format:'pdf'),class:'btn btn-primary pull-right',style:"margin-right:20px;"
 h4 = "#{@store.short_name} 納品リスト"
 
 table.table
