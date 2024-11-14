@@ -60,7 +60,7 @@ gem 'webdrivers'
 # gem 'twilio-ruby'
 gem 'mimemagic', '~> 0.3.10'
 gem 'wicked_pdf'
-gem 'wkhtmltopdf-binary'
+# gem 'wkhtmltopdf-binary'
 
 
 group :development, :test do
