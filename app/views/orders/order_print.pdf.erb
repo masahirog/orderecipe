@@ -1,12 +1,9 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <%= wicked_pdf_stylesheet_link_tag 'application', media: 'all' %>
     <style>
-      @font-face {
-        font-family: 'IPAexGothic';
-        src: url('file://<%= Rails.root.join("vendor", "assets", "fonts", "ipaexg.ttf") %>') format('truetype');
-      }
-      body { font-family: 'IPAexGothic', sans-serif; }
+      body { font-family: 'IPAexGothic', sans-serif;}
       table { width: 100%; border-collapse: collapse;margin-top: 10px;}
       th, td { padding: 8px; border: 1px solid #696969; font-size: 16px; }
       p {margin:6px 0px;}

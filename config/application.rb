@@ -15,6 +15,7 @@ module Orderecipe
     config.generators.template_engine = :slim
     config.time_zone = 'Tokyo'
     config.active_record.default_timezone = :local
+    config.assets.paths << Rails.root.join("app", "assets", "fonts")
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers
