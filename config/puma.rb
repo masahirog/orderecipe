@@ -41,23 +41,32 @@ plugin :tmp_restart
 
 PumaWorkerKiller.enable_rolling_restart # 例: 定期的にワーカーを再起動
 
-if ENV.fetch("RAILS_ENV") == "production"
-  workers Integer(ENV['WEB_CONCURRENCY'] || 2)
-  # ElasticBeanstalkのpumaconf.rbのデフォルト設定
-  # directory '/var/app/current'
-  # threads 8, 32
-  # workers %x(grep -c processor /proc/cpuinfo)
-  # bind 'unix:///var/run/puma/my_app.sock'
-  # stdout_redirect '/var/log/puma/puma.log', '/var/log/puma/puma.log', true
-
-  # PumaWorkerKiller設定
-  before_fork do
-  	PumaWorkerKiller.config do |config|
-  		config.ram           = 1024 # 単位はMB。デフォルトは512MB
-    	config.frequency     = 10    # 単位は秒
-    	config.percent_usage = 0.90 # ramを90%以上を使用したらワーカー再起動
-    	config.rolling_restart_frequency = 6 * 3600 # 6時間
-  	end
-  	PumaWorkerKiller.start
+if ENV['RAILS_ENV'] == 'production'
+  workers ENV.fetch("WEB_CONCURRENCY") { 2 }
+  preload_app!
+  on_worker_boot do
+    PumaWorkerKiller.config do |config|
+      config.ram           = 1024 # 単位はMB
+      config.frequency     = 10    # 単位は秒
+      config.percent_usage = 0.90  # RAMの90%を超えたら再起動
+      config.rolling_restart_frequency = 6 * 3600 # 6時間
+    end
+    PumaWorkerKiller.start
   end
 end
+
+
+
+
+# if ENV.fetch("RAILS_ENV") == "production"
+#   workers Integer(ENV['WEB_CONCURRENCY'] || 2)
+#   before_fork do
+#   	PumaWorkerKiller.config do |config|
+#   		config.ram           = 1024 # 単位はMB。デフォルトは512MB
+#     	config.frequency     = 10    # 単位は秒
+#     	config.percent_usage = 0.90 # ramを90%以上を使用したらワーカー再起動
+#     	config.rolling_restart_frequency = 6 * 3600 # 6時間
+#   	end
+#   	PumaWorkerKiller.start
+#   end
+# end
