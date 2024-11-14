@@ -54,19 +54,3 @@ if ENV['RAILS_ENV'] == 'production'
     PumaWorkerKiller.start
   end
 end
-
-
-
-
-# if ENV.fetch("RAILS_ENV") == "production"
-#   workers Integer(ENV['WEB_CONCURRENCY'] || 2)
-#   before_fork do
-#   	PumaWorkerKiller.config do |config|
-#   		config.ram           = 1024 # 単位はMB。デフォルトは512MB
-#     	config.frequency     = 10    # 単位は秒
-#     	config.percent_usage = 0.90 # ramを90%以上を使用したらワーカー再起動
-#     	config.rolling_restart_frequency = 6 * 3600 # 6時間
-#   	end
-#   	PumaWorkerKiller.start
-#   end
-# end

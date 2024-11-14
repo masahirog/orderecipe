@@ -541,6 +541,7 @@ GEM
     wicked_pdf (2.8.2)
       activesupport
       ostruct
+    wkhtmltopdf-binary (0.12.6.8)
     zeitwerk (2.7.1)
 
 PLATFORMS
@@ -624,6 +625,7 @@ DEPENDENCIES
   web-console (>= 3.3.0)
   webdrivers
   wicked_pdf
+  wkhtmltopdf-binary
 
 RUBY VERSION
    ruby 3.2.6p234

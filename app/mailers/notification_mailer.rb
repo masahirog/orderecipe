@@ -8,7 +8,7 @@ class NotificationMailer < ActionMailer::Base
     @order = order
     @materials_this_vendor = Material.get_material_this_vendor(order.id,@vendor.id)
     num = @materials_this_vendor.map{|om|om.delivery_date}.uniq.length
-    filename = "order_#{order.id}_#{vendor.name}"
+    filename = "order_#{order.id}_#{vendor.name}.pdf"
     template_path = if vendor.id == 549 || vendor.id == 261
                       'orders/np_order_print'
                     else
@@ -44,7 +44,7 @@ class NotificationMailer < ActionMailer::Base
     @order = order
     @materials_this_vendor = Material.get_material_this_vendor(order.id,@vendor.id)
     num = @materials_this_vendor.map{|om|om.delivery_date}.uniq.length
-    filename = "order_#{order.id}_#{vendor.name}"
+    filename = "order_#{order.id}_#{vendor.name}.pdf"
     template_path = if vendor.id == 549 || vendor.id == 261
                       'orders/np_order_print'
                     else

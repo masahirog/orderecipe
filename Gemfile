@@ -60,7 +60,6 @@ gem 'webdrivers'
 # gem 'twilio-ruby'
 gem 'mimemagic', '~> 0.3.10'
 gem 'wicked_pdf'
-# gem 'wkhtmltopdf-binary'
 
 
 group :development, :test do
@@ -78,6 +77,7 @@ group :development do
   gem "letter_opener"
   gem 'derailed_benchmarks'
   gem 'derailed'
+  gem 'wkhtmltopdf-binary'
 end
 
 
