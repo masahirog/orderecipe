@@ -5,7 +5,7 @@
     <style>
       body { font-family: 'IPAexGothic', sans-serif;}
       table { width: 100%; border-collapse: collapse;margin-top: 10px;}
-      th, td { padding: 8px; border: 1px solid #696969; font-size: 12px; }
+      th, td { padding: 8px; border: 0.4px solid #696969; font-size: 12px; }
       p {margin:6px 0px;font-size: 12px;}
       .page-break { page-break-before: always; } /* 各ページの区切り */
       .clearfix::after { content: ""; clear: both; display: table; }
@@ -27,12 +27,12 @@
           </div>
           <h2 style="text-align: center;">発 注 書</h2>
           <div class="clearfix">
-            <div class="header-lead" style='float:left;;width:400px;background-color: red;'>
+            <div class="header-lead" style='float:left;;width:350px;'>
               <h3><%= @vendor.company_name %> 御中</h3>
               <p>TEL：<%= @vendor.company_phone %>　　FAX：<%= @vendor.company_fax %></p>
               <p>下記の通り発注致します。</p>
             </div>
-            <div class="header-addres" style="float: right;width:400px;margin-top:30px;background-color: blue;'>
+            <div class="header-addres" style="float: right;width:315px;margin-top:30px;'>
               <% if @vendor.id == 171 %>
                 <p>拠点ID: @order.store.orikane_store_code</p>
               <% end %>
