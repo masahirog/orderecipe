@@ -10,7 +10,7 @@
       table { width: 100%; border-collapse: collapse; margin-top: 20px; }
       th, td { padding: 8px; border: 1px solid #696969;font-size: 12px; }
       p {margin:0.6em 0em;}
-      .footer { margin-top: 12px; }
+      .footer { margin-top: 20px;font-size: 12px; }
       .page-break { page-break-before: always; }
       .clearfix::after { content: ""; clear: both; display: table; }
     </style>
@@ -27,7 +27,7 @@
           <hr>
           <div class="clearfix">
             <span style="float:left;">〒<%= @order.store.zip %> <%= @order.store.address %></span>
-            <span style="width:300px;float:right;">Tel: <%= @order.store.phone %> / Fax: 03-6837-5337</span>
+            <span style="width:300px;float:right;text-align: right;">Tel: <%= @order.store.phone %> / Fax: 03-6837-5337</span>
           </div>
         </div>
         <table>
@@ -57,7 +57,7 @@
         <!-- フッター部分 -->
         <div class="footer clearfix" >
           <div style="width: 300px;float: left;">
-            <p style="font-size:16px;">株式会社日本パッケージ　御中</p>
+            <p style="font-size:14px;">株式会社日本パッケージ　御中</p>
             <p>FAX：<%= @vendor.company_fax %></p>
             <p>TEL：<%= @vendor.company_phone %></p>
           </div>
@@ -68,8 +68,8 @@
               <p>金 ～11:00 ご注文 → 土 納品</p>
             </div>
             <div >
-              <p style="font-size:20px;">発注日：<%= Time.now.strftime("%-m月%-d日(#{%w(日 月 火 水 木 金 土)[Time.now.wday]})") %></p>
-              <p style="font-size:20px;">納品日：<%= date.strftime("%-m月%-d日(#{%w(日 月 火 水 木 金 土)[date.wday]})") %></p>
+              <p style="font-size:16px;">発注日：<%= Time.now.strftime("%-m月%-d日(#{%w(日 月 火 水 木 金 土)[Time.now.wday]})") %></p>
+              <p style="font-size:16px;">納品日：<%= date.strftime("%-m月%-d日(#{%w(日 月 火 水 木 金 土)[date.wday]})") %></p>
               <p>注文担当：<%= @order.staff_name %></p>
               <p>べじはんオーダーID：<%= @order.id %></p>
             </div>
