@@ -1,0 +1,81 @@
+<!-- app/views/orders/np_order_print.pdf.erb -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      body { font-family: 'IPAexGothic', sans-serif;}
+      .header { font-size: 16px; margin-top: 20px;}
+      .contact-info { float: left; width: 270px; font-size: 9px; }
+      .vendor-info { float: right; width: 240px; font-size: 9px; text-align: right; }
+      table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+      th, td { padding: 8px; border: 1px solid #696969;font-size: 14px; }
+      p {margin:0.6em 0em;}
+      .footer { margin-top: 20px; }
+      .page-break { page-break-before: always; }
+      .clearfix::after { content: ""; clear: both; display: table; }
+    </style>
+  </head>
+  <body>
+    <% uniq_date = @materials_this_vendor.pluck(:delivery_date).uniq %>
+    <% uniq_date.each_with_index do |date, i| %>
+      <div class="<%= 'page-break' if i > 0 %>">
+        <div class="header">
+          <div class="clearfix">
+            <h2 style="margin-bottom: 0px;float:left;"><%= @order.store.name %> 様 ご注文書</h2>
+            <h2 style="margin-bottom: 0px;float:right;"><%= @order.store.np_store_code %></h2>
+          </div>
+          <hr>
+          <div class="clearfix">
+            <span style="float:left;">〒<%= @order.store.zip %> <%= @order.store.address %></span>
+            <span style="width:300px;float:right;">Tel: <%= @order.store.phone %> / Fax: 03-6837-5337</span>
+          </div>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 70px;">商品コード</th>
+              <th style="width: 170px;">品名</th>
+              <th style="width: 70px;">入数</th>
+              <th style="width: 70px;">発注数量</th>
+              <th style="width: 150px;">備考</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% arr = @materials_this_vendor.select { |material| material.delivery_date == date } %>
+            <% arr.each do |mtv| %>
+              <tr>
+                <td><%= mtv.material.order_code %></td>
+                <td><%= mtv.material.order_name %></td>
+                <td style="text-align: center;"><%= number_with_precision(mtv.material.recipe_unit_quantity, precision: 1, strip_insignificant_zeros: true, delimiter: ',') %> <%= mtv.material.recipe_unit %> / <%= mtv.material.order_unit %></td>
+                <td style="text-align: center;"><%= number_with_precision((mtv.order_quantity.to_f / mtv.material.recipe_unit_quantity) * mtv.material.order_unit_quantity, precision: 1, strip_insignificant_zeros: true, delimiter: ',') %> <%= mtv.material.order_unit %></td>
+                <td><%= mtv.order_material_memo %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+
+        <!-- フッター部分 -->
+        <div class="footer clearfix" >
+          <div style="width: 300px;float: left;">
+            <p style="font-size:20px;">株式会社日本パッケージ　御中</p>
+            <p>FAX：<%= @vendor.company_fax %></p>
+            <p>TEL：<%= @vendor.company_phone %></p>
+          </div>
+          <div style="float: right;text-align:right;">
+            <div style="margin-bottom:10px;">
+              <p>＜リードタイム＞ 月 ～11:00 ご注文 → 火 納品</p>
+              <p>水 ～11:00 ご注文 → 木 納品</p>
+              <p>金 ～11:00 ご注文 → 土 納品</p>
+            </div>
+            <div >
+              <p style="font-size:24px;">発注日：<%= Time.now.strftime("%-m月%-d日(#{%w(日 月 火 水 木 金 土)[Time.now.wday]})") %></p>
+              <p style="font-size:24px;">納品日：<%= date.strftime("%-m月%-d日(#{%w(日 月 火 水 木 金 土)[date.wday]})") %></p>
+              <p>注文担当：<%= @order.staff_name %></p>
+              <p>べじはんオーダーID：<%= @order.id %></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </body>
+</html>

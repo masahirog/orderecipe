@@ -115,7 +115,7 @@ class StocksController < AdminController
     end
     item_number = stocks.length
     monthly_stock = MonthlyStock.find_by(date:date,store_id:store_id)
-    monthly_stock.update_attributes(item_number:item_number,total_amount:total_amount.round,foods_amount:foods_amount.round,equipments_amount:equipments_amount.round,expendables_amount:expendables_amount.round)
+    monthly_stock.update(item_number:item_number,total_amount:total_amount.round,foods_amount:foods_amount.round,equipments_amount:equipments_amount.round,expendables_amount:expendables_amount.round)
     redirect_to monthly_stocks_path(date:date),notice:"#{monthly_stock.store.name}拠点の#{monthly_stock.date.month}月の棚卸しを更新しました。"
   end
   def store_inventory

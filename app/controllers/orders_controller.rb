@@ -823,31 +823,46 @@ class OrdersController < AdminController
     @mail_vendors = Vendor.vendor_mail_index(params)
   end
 
-  def order_print
-    order_id = params[:id]
-    @order = Order.find(order_id)
-    if params[:vendor][:id].present?
-      vendor_id = params[:vendor][:id]
-      @vendor = Vendor.find(vendor_id)
-      @materials_this_vendor = Material.get_material_this_vendor(order_id,vendor_id)
-      respond_to do |format|
-       format.html
-       format.pdf do
-         if vendor_id == '549' || vendor_id == '261'
-           pdf = NpOrderPdf.new(@materials_this_vendor,@vendor,@order)
-         else
-           pdf = OrderPdf.new(@materials_this_vendor,@vendor,@order)
-         end
-         send_data pdf.render,
-           filename:    "#{@order.id}_#{@vendor.name}.pdf",
-           type:        "application/pdf",
-           disposition: "inline"
-         end
-       end
-     else
-       redirect_to order_path(@order), danger: "企業を選択してください。"
-     end
+def order_print
+  ##メール添付、FAX送信する際に、prawnだと文字化けする為WickedPdfを使用している
+  order_id = params[:id]
+  @order = Order.find(order_id)
+  
+  if params[:vendor][:id].present?
+    vendor_id = params[:vendor][:id]
+    @vendor = Vendor.find(vendor_id)
+    @materials_this_vendor = Material.get_material_this_vendor(order_id, vendor_id)
+    respond_to do |format|
+      format.html
+      format.pdf do
+        if vendor_id == '549' || vendor_id == '261'
+          render pdf: "#{@order.id}_#{@vendor.name}",
+                template: "orders/np_order_print.pdf.erb",
+                layout: 'layouts/pdf.html',
+                disposition: 'inline',
+                page_size: "A4",
+                orientation: "Portrait",
+                encoding: "UTF-8",
+                wkhtmltopdf: WickedPdf.config[:wkhtmltopdf],
+                font_name: "IPAexGothic"
+        else
+          render pdf: "#{@order.id}_#{@vendor.name}",
+                template: "orders/order_print.pdf.erb",
+                layout: 'layouts/pdf.html',
+                disposition: 'inline',
+                page_size: "A4",
+                orientation: "Portrait",
+                encoding: "UTF-8",
+                wkhtmltopdf: WickedPdf.config[:wkhtmltopdf],
+                font_name: "IPAexGothic"
+        end
+      end
+    end
+  else
+    redirect_to order_path(@order), alert: "企業を選択してください。"
   end
+end
+
 
   def print_all
     order = Order.includes(order_materials: [material: :vendor]).find(params[:id])

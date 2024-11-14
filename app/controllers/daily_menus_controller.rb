@@ -332,7 +332,7 @@ class DailyMenusController < AdminController
       end
     end
     DailyMenuDetail.import update_dmds, on_duplicate_key_update:[:for_single_item_number,:for_sub_item_number,:manufacturing_number]
-    daily_menu.update_attributes(total_manufacturing_number:total_manufacturing_number)
+    daily_menu.update(total_manufacturing_number: total_manufacturing_number)
 
     redirect_to daily_menu, :alert => "惣菜数を#{rate*100}%掛けに変更しました"
   end

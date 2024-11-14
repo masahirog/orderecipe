@@ -102,7 +102,7 @@ span style='margin-right:40px;font-size:1.3em;' ="#{@store.short_name}　発注�
     = hidden_field_tag :store_id,params[:store_id]
     = select_tag :material_id, options_from_collection_for_select(@materials, :id, :name,params[:material_id]),include_blank: '食材検索', class: "form-control material_search",style:"width:300px;"
     = submit_tag "検索" ,class:"btn btn-default btn-sm",style:'margin-left:10px;'
-  = link_to "納品確認",deliveried_list_orders_path(store_id:params[:store_id]),class:'btn btn-default',style:'float:right;margin-left:10px;'
+  / = link_to "納品確認",deliveried_list_orders_path(store_id:params[:store_id]),class:'btn btn-default',style:'float:right;margin-left:10px;'
   / = link_to "月間発注CSV", monthly_data_orders_path(start_date:params[:start_date],store_id:params[:store_id],format:'csv'), class: "btn btn-default",style:'float:right;margin-right:10px;margin-top:15px;'
 
 

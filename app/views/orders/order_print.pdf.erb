@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      @font-face {
+        font-family: 'IPAexGothic';
+        src: url('file://<%= Rails.root.join("vendor", "assets", "fonts", "ipaexg.ttf") %>') format('truetype');
+      }
+      body { font-family: 'IPAexGothic', sans-serif; }
+      table { width: 100%; border-collapse: collapse;margin-top: 10px;}
+      th, td { padding: 8px; border: 1px solid #696969; font-size: 16px; }
+      p {margin:6px 0px;}
+      .page-break { page-break-before: always; } /* 各ページの区切り */
+      .clearfix::after { content: ""; clear: both; display: table; }
+    </style>
+  </head>
+  <body>
+    <% uniq_date = @materials_this_vendor.pluck(:delivery_date).uniq %>
+    <% i = 0 %>
+    <% uniq_date.each do |date| %>
+      <% ii = 0 %>
+      <% arr=[] %>
+      <% @materials_this_vendor.each do |material| %>
+        <% arr << material if material.delivery_date == date %>
+      <% end %>
+      <% arr.each_slice(25).to_a.each do |data| %>
+        <div class="page<%= i > 0 ? ' page-break' : '' %>">
+          <div style="text-align:right;width:100%;float:left;">
+            <span style=''>オーダーID: <%= @order.id %></p>
+          </div>
+          <h1 style="text-align: center;">発 注 書</h1>
+          <div class="clearfix">
+            <div class="header-lead" style='float:left;;width:480px;'>
+              <h2><%= @vendor.company_name %> 御中</h2>
+              <p>TEL：<%= @vendor.company_phone %>　　FAX：<%= @vendor.company_fax %></p>
+              <p>下記の通り発注致します。</p>
+            </div>
+            <div class="header-addres" style="float: right;width:400px;margin-top:30px;font-size:0.9em;">
+              <% if @vendor.id == 171 %>
+                <p>拠点ID: @order.store.orikane_store_code</p>
+              <% end %>
+              <p style="font-size:20px;"><%= @order.store.name %> （株式会社結び）</h4>
+              <p>住所: <%= @order.store.address %></p>
+              <p>注文担当者: <%= @order.staff_name %></p>
+              <p>TEL: <%= @order.store.phone %> / FAX: 03-6837-5337</p>
+            </div>
+          </div>
+          <h3 style="margin-bottom:0;">
+            <%= date.strftime("%Y年%-m月%-d日(#{%w(日 月 火 水 木 金 土)[date.wday]})") %> 納品分【 <%= ii + 1 %> / <%= arr.each_slice(25).to_a.length %> 】
+          </h3>
+          <table>
+            <thead>
+              <tr>
+                <th style="width:100px;">商品コード</th>
+                <th style="width:350px;">品名</th>
+                <th style="width:100px;">数量</th>
+                <th style="width:330px;">備考</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% data.each do |mtv| %>
+                <tr>
+                  <td><%= mtv.material.order_code %></td>
+                  <td><%= mtv.material.order_name %></td>
+                  <td style="text-align: center;"><%= number_with_precision(
+                    (mtv.order_quantity.to_f / mtv.material.recipe_unit_quantity) * mtv.material.order_unit_quantity, precision: 1, strip_insignificant_zeros: true, delimiter: ','
+                  ) %> <%= mtv.material.order_unit %></td>
+                  <td><%= mtv.order_material_memo %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+        <% ii += 1 %>
+        <% i += 1 %>
+      <% end %>
+    <% end %>
+  </body>
+</html>

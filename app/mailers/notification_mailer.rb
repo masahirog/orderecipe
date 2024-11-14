@@ -8,12 +8,33 @@ class NotificationMailer < ActionMailer::Base
     @order = order
     @materials_this_vendor = Material.get_material_this_vendor(order.id,@vendor.id)
     num = @materials_this_vendor.map{|om|om.delivery_date}.uniq.length
-    filename = "#{Time.now.strftime('%y%m%d')}_order_fax.pdf"
-    if vendor.id == 549 ||vendor.id == 261
-      attachments[filename] = NpOrderPdf.new(@materials_this_vendor,@vendor,order).render
-    else
-      attachments[filename] = OrderPdf.new(@materials_this_vendor,@vendor,order).render
-    end
+    filename = "order_#{order.id}_#{vendor.name}"
+    template_path = if vendor.id == 549 || vendor.id == 261
+                      'orders/np_order_print'
+                    else
+                      'orders/order_print'
+                    end
+    pdf_html = render_to_string(
+      template: template_path,
+      layout: 'pdf',
+      encoding: 'UTF-8'
+    )
+    pdf = WickedPdf.new.pdf_from_string(pdf_html, encoding: 'UTF-8')
+    # PDFを一時ファイルに保存し、添付
+    temp_pdf = Tempfile.new(["order_#{order.id}_#{vendor.name}", '.pdf'], "#{Rails.root}/tmp")
+    temp_pdf.binmode
+    temp_pdf.write(pdf)
+    temp_pdf.rewind
+
+    # 添付ファイルとしてPDFを読み込み
+    attachments[filename] = {
+      mime_type: 'application/pdf',
+      content: File.read(temp_pdf.path)
+    }
+
+    temp_pdf.close
+    temp_pdf.unlink
+    #△この処理を挟まないと、メール送信時に文字化けする
     mail(subject: "CR36837533000",to:"movfax@mail01.lcloud.jp") do |format|
       format.text
     end
@@ -23,24 +44,32 @@ class NotificationMailer < ActionMailer::Base
     @order = order
     @materials_this_vendor = Material.get_material_this_vendor(order.id,@vendor.id)
     num = @materials_this_vendor.map{|om|om.delivery_date}.uniq.length
-    filename = "#{Time.now.strftime('%y%m%d')}_order_fax.pdf"
-    if vendor.id == 549 ||vendor.id == 261
-      attachments[filename] = NpOrderPdf.new(@materials_this_vendor,@vendor,order).render
-    else
-      attachments[filename] = OrderPdf.new(@materials_this_vendor,@vendor,order).render
-    end
-    mail(subject: "発注のご連絡",to:@vendor.company_mail) do |format|
-      format.text
-    end
-  end
+    filename = "order_#{order.id}_#{vendor.name}"
+    template_path = if vendor.id == 549 || vendor.id == 261
+                      'orders/np_order_print'
+                    else
+                      'orders/order_print'
+                    end
+    pdf_html = render_to_string(
+      template: template_path,
+      layout: 'pdf',
+      encoding: 'UTF-8'
+    )
+    pdf = WickedPdf.new.pdf_from_string(pdf_html, encoding: 'UTF-8')
+    # PDFを一時ファイルに保存し、添付
+    temp_pdf = Tempfile.new(["order_#{order.id}_#{vendor.name}", '.pdf'], "#{Rails.root}/tmp")
+    temp_pdf.binmode
+    temp_pdf.write(pdf)
+    temp_pdf.rewind
+    # 添付ファイルとしてPDFを読み込み
+    attachments[filename] = {
+      mime_type: 'application/pdf',
+      content: File.read(temp_pdf.path)
+    }
+    temp_pdf.close
+    temp_pdf.unlink
 
-  def coupon(store,to,coupon,souzai_url,bento_url,gyusuji_url)
-    @store = store
-    @coupon = coupon
-    @souzai_url = souzai_url
-    @bento_url = bento_url
-    @gyusuji_url = gyusuji_url
-    mail(subject: "【再送】アンケートのお礼｜べじはん",to:to,cc:'m.yamashita@shibata-ya.jp') do |format|
+    mail(subject: "発注のご連絡",to:@vendor.company_mail) do |format|
       format.text
     end
   end

@@ -40,7 +40,7 @@ html
                       li = link_to "各店舗発注品",bejihan_store_orders_list_orders_path(date:Date.today,store_id:19)
                       h5 style='padding:0 10px;font-weight:bold;' 発注・在庫
                       li = link_to "発注",orders_path(store_id:39)
-                      li = link_to "納品確認",deliveried_list_orders_path(store_id:39)
+                      li = link_to "納品確認（発注書一覧）",deliveried_list_orders_path(store_id:39)
                       li = link_to "野菜棚卸し",mobile_inventory_stocks_path(category:"vege",store_id:39),target:'_blank'
                       li = link_to "肉類棚卸し",mobile_inventory_stocks_path(category:'meat',store_id:39),target:'_blank'
                       li

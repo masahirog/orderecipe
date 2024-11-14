@@ -433,7 +433,7 @@ class StoreDailyMenusController < AdminController
     StoreDailyMenuDetail.import sdmds, on_duplicate_key_update:[:number]
     StoreDailyMenu.where(id:store_daily_menu_ids).each do |sdm|
       sum = sdm.store_daily_menu_details.sum(:number)
-      sdm.update_attributes(total_num:sum)
+      sdm.update(total_num:sum)
     end
     redirect_to store_daily_menus_path(store_id:store_id), success: "まとめて更新しました"
   end

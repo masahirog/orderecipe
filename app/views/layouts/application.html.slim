@@ -59,8 +59,7 @@ html lang="ja"
 
                       h5 style='padding:0 10px;font-weight:bold;' 発注・在庫
                       li = link_to "発注",orders_path(store_id:39)
-                      li = link_to "発注書一覧",purchase_order_list_orders_path(store_id:39)
-                      li = link_to "納品確認",deliveried_list_orders_path(store_id:39)
+                      li = link_to "納品確認（発注書一覧）",deliveried_list_orders_path(store_id:39)
                       / li = link_to "はく刻確認",vendor_material_vendor_stocks_path(vendor_id:774)
                       li = link_to "野菜棚卸し",mobile_inventory_stocks_path(category:'vege',store_id:39),target:'_blank'
                       li = link_to "肉類棚卸し",mobile_inventory_stocks_path(category:'meat',store_id:39),target:'_blank'

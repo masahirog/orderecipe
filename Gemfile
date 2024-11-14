@@ -24,7 +24,7 @@ gem 'carrierwave'
 gem 'rmagick'
 gem 'fog-aws'
 gem "activerecord-import"
-gem 'prawn', '2.4.0'
+gem 'prawn'
 gem 'prawn-table'
 gem 'rails-i18n'
 gem 'dotenv-rails'
@@ -34,18 +34,15 @@ gem 'active_hash'
 gem 'deep_cloneable'
 gem 'simple_calendar', '~> 2.0'
 gem 'business_time'
-# gem 'romaji'
+gem 'matrix'
 gem 'mail'
 gem "jquery-ui-rails"
 gem 'gon'
 # gem 'chart-js-rails', '~> 0.1.4'
 # gem 'aws-sdk'
 gem 'aws-sdk-s3'
-gem 'combine_pdf'
 gem 'google_drive'
 gem 'enum_help'
-
-
 gem 'chartkick'
 gem 'holiday_japan'
 gem 'jquery-datetimepicker-rails'
@@ -62,6 +59,9 @@ gem 'selenium-webdriver'
 gem 'webdrivers'
 # gem 'twilio-ruby'
 gem 'mimemagic', '~> 0.3.10'
+gem 'wicked_pdf'
+gem 'wkhtmltopdf-binary'
+
 
 group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
