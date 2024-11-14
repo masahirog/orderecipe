@@ -5,8 +5,8 @@
     <style>
       body { font-family: 'IPAexGothic', sans-serif;}
       table { width: 100%; border-collapse: collapse;margin-top: 10px;}
-      th, td { padding: 8px; border: 1px solid #696969; font-size: 16px; }
-      p {margin:6px 0px;}
+      th, td { padding: 8px; border: 1px solid #696969; font-size: 12px; }
+      p {margin:6px 0px;font-size: 12px;}
       .page-break { page-break-before: always; } /* 各ページの区切り */
       .clearfix::after { content: ""; clear: both; display: table; }
     </style>
@@ -25,26 +25,26 @@
           <div style="text-align:right;width:100%;float:left;">
             <span style=''>オーダーID: <%= @order.id %></p>
           </div>
-          <h1 style="text-align: center;">発 注 書</h1>
+          <h2 style="text-align: center;">発 注 書</h2>
           <div class="clearfix">
             <div class="header-lead" style='float:left;;width:480px;'>
-              <h2><%= @vendor.company_name %> 御中</h2>
+              <h3><%= @vendor.company_name %> 御中</h3>
               <p>TEL：<%= @vendor.company_phone %>　　FAX：<%= @vendor.company_fax %></p>
               <p>下記の通り発注致します。</p>
             </div>
-            <div class="header-addres" style="float: right;width:400px;margin-top:30px;font-size:0.9em;">
+            <div class="header-addres" style="float: right;width:400px;margin-top:30px;">
               <% if @vendor.id == 171 %>
                 <p>拠点ID: @order.store.orikane_store_code</p>
               <% end %>
-              <p style="font-size:20px;"><%= @order.store.name %> （株式会社結び）</h4>
+              <p style="font-size:14px;"><%= @order.store.name %> （株式会社結び）</h4>
               <p>住所: <%= @order.store.address %></p>
               <p>注文担当者: <%= @order.staff_name %></p>
               <p>TEL: <%= @order.store.phone %> / FAX: 03-6837-5337</p>
             </div>
           </div>
-          <h3 style="margin-bottom:0;">
+          <h4 style="margin-bottom:0;">
             <%= date.strftime("%Y年%-m月%-d日(#{%w(日 月 火 水 木 金 土)[date.wday]})") %> 納品分【 <%= ii + 1 %> / <%= arr.each_slice(25).to_a.length %> 】
-          </h3>
+          </h4>
           <table>
             <thead>
               <tr>
