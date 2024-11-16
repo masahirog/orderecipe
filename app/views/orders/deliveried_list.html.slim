@@ -19,29 +19,30 @@
           .modal-body.clearfix
             - @stores.each_with_index do |store,i|
               .col-md-6
-                = store.short_name
+                = "#{store.short_name}（#{@ordered_vendors_hash[store.id]["vendor_ids"].length}件）"
               .col-md-6
                 = check_box_tag "store_daily_menu_ids[#{store.id}]",true,false,class:'form-control'
           .modal-footer
             = submit_tag "送信" ,class:"btn btn-primary"
             button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
-h4 = "#{@store.short_name} 納品リスト"
-table.table
-  thead
-    tr
-      th
-      th 業者名
-      th 商品名
-      th.text-right 納品量
-      th メモ
-
-  tbody
-    - @hash.each do |material_order_quantity|
+- @stores.each do |store|
+  h4 = "#{store.short_name} 納品リスト"
+  table.table
+    thead
       tr
-        td = link_to 'オーダー',order_path(material_order_quantity[1][5]),target:'_blank'
-        td = material_order_quantity[1][6]
-        td = link_to material_order_quantity[1][2],material_path(material_order_quantity[0]),target:'_blank'
-        td.text-right
-          - order_amount = ActiveSupport::NumberHelper.number_to_rounded(((material_order_quantity[1][1] / material_order_quantity[1][0])*material_order_quantity[1][7]), strip_insignificant_zeros: true, :delimiter => ',')
-          = "#{order_amount} #{material_order_quantity[1][3]}"
-        td = material_order_quantity[1][4]
+        th style='width:100px;'
+        th style='width:250px;' 業者名
+        th style='width:350px;' 商品名
+        th.text-right style='width:140px;'  納品量
+        th メモ
+
+    tbody
+      - @hash[store.id].each do |material_order_quantity|
+        tr
+          td = link_to 'オーダー',order_path(material_order_quantity[1][5]),target:'_blank'
+          td = material_order_quantity[1][6]
+          td = link_to material_order_quantity[1][2],material_path(material_order_quantity[0]),target:'_blank'
+          td.text-right
+            - order_amount = ActiveSupport::NumberHelper.number_to_rounded(((material_order_quantity[1][1] / material_order_quantity[1][0])*material_order_quantity[1][7]), strip_insignificant_zeros: true, :delimiter => ',')
+            = "#{order_amount} #{material_order_quantity[1][3]}"
+          td = material_order_quantity[1][4]

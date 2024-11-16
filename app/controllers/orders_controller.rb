@@ -1,6 +1,6 @@
 class OrdersController < AdminController
   def purchase_order_list
-    if params[:date]
+    if params[:date].present?
       delivery_date = params[:date]
     else
       delivery_date = Date.today
@@ -157,19 +157,27 @@ class OrdersController < AdminController
       @date = @today
     end
     store_id = params[:store_id]
-    @store = Store.find(store_id)
     if params[:vendor_id].present?
       vendor_id = params[:vendor_id]
-      @order_materials = OrderMaterial.includes(:order,material:[:vendor]).where(:orders => {fixed_flag:true,store_id:store_id}).where(delivery_date:@date,un_order_flag:false).where(:materials => {vendor_id:vendor_id})
+      @order_materials = OrderMaterial.includes(:order,material:[:vendor]).where(:orders => {fixed_flag:true}).where(delivery_date:@date,un_order_flag:false).where(:materials => {vendor_id:vendor_id})
     else
-      @order_materials = OrderMaterial.includes(:order,material:[:vendor]).where(:orders => {fixed_flag:true,store_id:store_id}).where(delivery_date:@date,un_order_flag:false).order("vendors.id")
+      @order_materials = OrderMaterial.includes(:order,material:[:vendor]).where(:orders => {fixed_flag:true}).where(delivery_date:@date,un_order_flag:false).where.not(:materials => {vendor_id:559}).order("vendors.id")
     end
-    @hash = {}
+    @hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
+    @ordered_vendors_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
     @order_materials.each do |om|
-      if @hash[om.material_id].present?
-        @hash[om.material_id][1] += om.order_quantity.to_f
+      if @hash[om.order.store_id][om.material_id].present?
+        @hash[om.order.store_id][om.material_id][1] += om.order_quantity.to_f
       else
-        @hash[om.material_id] = [om.material.recipe_unit_quantity,om.order_quantity.to_f,om.material.order_name,om.material.order_unit,om.order_material_memo,om.order_id,om.material.vendor.name,om.material.order_unit_quantity]
+        @hash[om.order.store_id][om.material_id] = [om.material.recipe_unit_quantity,om.order_quantity.to_f,om.material.order_name,om.material.order_unit,om.order_material_memo,om.order_id,om.material.vendor.name,om.material.order_unit_quantity]
+      end
+      if @ordered_vendors_hash[om.order.store_id]['vendor_ids'].present?
+        if @ordered_vendors_hash[om.order.store_id]['vendor_ids'].include?(om.material.vendor_id) == true
+        else
+          @ordered_vendors_hash[om.order.store_id]['vendor_ids'] << om.material.vendor_id
+        end
+      else
+        @ordered_vendors_hash[om.order.store_id]['vendor_ids'] = [om.material.vendor_id]
       end
     end
     respond_to do |format|
