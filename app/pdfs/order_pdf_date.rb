@@ -1,23 +1,25 @@
 class OrderPdfDate < Prawn::Document
-  def initialize(delivery_date)
+  def initialize(delivery_date,store_ids)
     super(page_size: 'A4')
     font "vendor/assets/fonts/ipaexg.ttf"
-    stores = Store.where(id:[9,19,29,39,154,164])
+    stores = Store.where(id:store_ids)
+    first_flag = true
     stores.each do |store|
       order_materials = OrderMaterial.includes(:order,:material).joins(:order).where(:orders => {store_id:store.id,fixed_flag:true}).where(delivery_date:delivery_date).where(un_order_flag:false)
       vendor_ids = order_materials.map{|om|om.material.vendor_id}.uniq
-      vendor_ids.each_with_index do |vendor_id,i|
+      vendor_ids.each do |vendor_id|
         if vendor_id == 559
         else
           vendor = Vendor.find(vendor_id)
           oms = order_materials.joins(:material).where(:materials => {vendor_id:vendor_id})
           length = oms.each_slice(25).to_a.length
           oms.each_slice(25).to_a.each_with_index do |data,i|
+            start_new_page if first_flag == false
             header(delivery_date,i,length)
             header_lead(vendor)
             header_adress(store,vendor)
             table_content(data)
-            start_new_page
+            first_flag = false
           end
         end
       end

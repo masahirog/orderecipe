@@ -248,7 +248,8 @@ class SmaregiTradingHistory < ApplicationRecord
 
   def self.upload_data(form_date,smaregi_store_id,analysis_id,file)
     smaregi_trading_histories_arr = []
-    CSV.foreach file.path, {encoding: 'BOM|UTF-8', headers: true} do |row|
+    file_content = File.open(file.path, "r:BOM|UTF-8").read
+    CSV.parse(file_content, headers: true) do |row|
       row = row.to_hash
       torihiki_id = row["取引ID"]
       torihiki_nichiji = row["取引日時"]

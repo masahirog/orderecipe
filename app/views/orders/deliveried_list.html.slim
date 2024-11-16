@@ -1,4 +1,4 @@
-.col-md-12
+.col-md-12.clearfix
   = form_tag deliveried_list_orders_path, method: :get do
     = hidden_field_tag :store_id,params[:store_id]
     .form-group.col-md-2
@@ -8,9 +8,24 @@
     .form-group.col-md-2
       = submit_tag "検索" ,class:"btn btn-primary"
   / = link_to "PDF",deliveried_list_orders_path(store_id:params[:store_id],vendor_id:params[:vendor_id],date:params[:date],format:'pdf'),class:'btn btn-primary pull-right'
-  = link_to "発注書一覧",purchase_order_list_orders_path(store_id:params[:store_id],date:params[:date],format:'pdf'),class:'btn btn-primary pull-right',style:"margin-right:20px;",target:"_blank"
+  button type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#store_select_order_list_pdf" 発注書一覧
+  #store_select_order_list_pdf.modal.fade tabindex="-1"
+    = form_tag purchase_order_list_orders_path(format: :pdf),:target => '_blank', :method => 'get' do
+      = hidden_field_tag :date,params[:date]
+      .modal-dialog
+        .modal-content
+          .modal-header
+            h4.modal-title 店舗選択
+          .modal-body.clearfix
+            - @stores.each_with_index do |store,i|
+              .col-md-6
+                = store.short_name
+              .col-md-6
+                = check_box_tag "store_daily_menu_ids[#{store.id}]",true,false,class:'form-control'
+          .modal-footer
+            = submit_tag "送信" ,class:"btn btn-primary"
+            button.modal-close.btn.btn-default type="button" data-dismiss="modal" 閉じる
 h4 = "#{@store.short_name} 納品リスト"
-
 table.table
   thead
     tr

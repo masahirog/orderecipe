@@ -8,7 +8,6 @@ gem 'mysql2', '>= 0.4.4', '< 0.6.0'
 gem 'puma', '~> 3.11'
 gem 'sass-rails', '~> 5.0'
 gem 'uglifier', '>= 1.3.0'
-# gem 'coffee-rails', '~> 4.2'
 gem 'turbolinks', '~> 5'
 gem 'jbuilder', '~> 2.5'
 gem "jquery-rails"
@@ -38,8 +37,6 @@ gem 'matrix'
 gem 'mail'
 gem "jquery-ui-rails"
 gem 'gon'
-# gem 'chart-js-rails', '~> 0.1.4'
-# gem 'aws-sdk'
 gem 'aws-sdk-s3'
 gem 'google_drive'
 gem 'enum_help'
@@ -53,11 +50,8 @@ gem 'ancestry'
 gem 'redcarpet', '~> 2.3.0'  # マークダウン形式での表示
 gem 'coderay'
 gem 'rqrcode'
-# gem 'capybara', '>= 2.15', '< 4.0'
-# gem 'poltergeist'
 gem 'selenium-webdriver'
 gem 'webdrivers'
-# gem 'twilio-ruby'
 gem 'mimemagic', '~> 0.3.10'
 gem 'wicked_pdf'
 
@@ -69,7 +63,6 @@ end
 
 group :development do
   gem 'web-console', '>= 3.3.0'
-  # gem 'listen', '>= 3.0.5', '< 3.2'
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
   gem 'bullet'

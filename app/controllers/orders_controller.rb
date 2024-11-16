@@ -5,10 +5,11 @@ class OrdersController < AdminController
     else
       delivery_date = Date.today
     end
+    store_ids = params[:store_daily_menu_ids].keys
     respond_to do |format|
       format.html
       format.pdf do
-        pdf = OrderPdfDate.new(delivery_date)
+        pdf = OrderPdfDate.new(delivery_date,store_ids)
         send_data pdf.render,
           filename:    "#{delivery_date}_order_list.pdf",
           type:        "application/pdf",

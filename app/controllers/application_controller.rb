@@ -11,7 +11,7 @@ class ApplicationController < ActionController::Base
   def user_check
     @today = Date.today
     if user_signed_in? && current_user.group_id.present?
-      @stores = current_user.group.stores.where(store_type:0)
+      @stores = current_user.group.stores
     end
   end
   def mealselect_save

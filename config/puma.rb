@@ -18,12 +18,12 @@ if ENV['RAILS_ENV'] == 'production'
   
   on_worker_boot do
     puts "Worker booting... Starting PumaWorkerKiller"
-    # PumaWorkerKillerの設定
     PumaWorkerKiller.config do |config|
       config.ram           = ENV.fetch('PUMA_WORKER_RAM') { 1024 }.to_i
       config.frequency     = 10
       config.percent_usage = 0.90
       config.rolling_restart_frequency = 6 * 3600
+      config.reaper_status_logs = true
     end
     PumaWorkerKiller.start
   end
