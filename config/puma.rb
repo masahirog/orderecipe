@@ -17,6 +17,7 @@ if ENV['RAILS_ENV'] == 'production'
   preload_app!
   
   on_worker_boot do
+    puts "Worker booting... Starting PumaWorkerKiller"
     # PumaWorkerKillerの設定
     PumaWorkerKiller.config do |config|
       config.ram           = ENV.fetch('PUMA_WORKER_RAM') { 1024 }.to_i
