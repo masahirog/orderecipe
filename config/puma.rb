@@ -1,4 +1,5 @@
-# require 'puma_worker_killer'
+require 'puma_worker_killer'
+
 
 # max_threads_count = ENV.fetch("RAILS_MAX_THREADS") { 5 }
 # min_threads_count = ENV.fetch("RAILS_MIN_THREADS") { max_threads_count }
