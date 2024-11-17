@@ -54,7 +54,7 @@ if ENV.fetch("RAILS_ENV") == "production"
   PumaWorkerKiller.config do |config|
     config.ram           = 1024
     config.frequency     = 10   # 秒
-    config.percent_usage = 0.90 # RAM使用率90%超で再起動
+    config.percent_usage = 0.30 # RAM使用率90%超で再起動
     config.rolling_restart_frequency = 6 * 3600 # 6時間ごとに再起動
     config.reaper_status_logs = true # ログを有効化（任意）
   end
