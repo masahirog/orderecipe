@@ -80,7 +80,7 @@ html lang="ja"
                       / li = link_to "全店舗一覧",stores_path()
                       / li = link_to "SKY月間",sky_monthly_orders_path()
                       / li = link_to 'ミールセレクト',list_path
-                      li = link_to "週次レポート",new_weekly_report_path()
+                      / li = link_to "週次レポート",new_weekly_report_path()
                   li.dropdown
                     a.dropdown-toggle href="#" data-toggle="dropdown" role="button"
                       |レシピ
@@ -118,7 +118,7 @@ html lang="ja"
                       li = link_to 'BejihanBook',manual_directories_path
                       li = link_to 'リマインダーテンプレート',reminder_templates_path(store_type:0)
                       li = link_to '掃除テンプレート',reminder_templates_path(category:'clean',store_type:0)
-                      li = link_to "週次レポート",new_weekly_report_path()
+                      / li = link_to "週次レポート",new_weekly_report_path()
                   li.dropdown
                     a.dropdown-toggle href="#" data-toggle="dropdown" role="button"
                       |物販

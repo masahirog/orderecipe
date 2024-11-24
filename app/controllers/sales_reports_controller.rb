@@ -12,6 +12,7 @@ class SalesReportsController < AdminController
 
   def new
     @staffs = Staff.where(group_id:current_user.group_id,employment_status:1,status:0)
+    @all_staffs = Staff.where(group_id:current_user.group_id,status:0)
     date = params[:date]
     store_id = params[:store_id]
     staff_ids = Shift.includes(:staff,:fix_shift_pattern).order("staffs.staff_code").where(date:date,store_id:store_id).where.not(fix_shift_pattern_id: nil).where.not(:fix_shift_patterns => {working_hour:0}).map{|shift|shift.staff_id}
@@ -55,6 +56,7 @@ class SalesReportsController < AdminController
 
   def edit
     @staffs = Staff.where(group_id:current_user.group_id,employment_status:1,status:0)
+    @all_staffs = Staff.where(group_id:current_user.group_id,status:0)
     @analysis = @sales_report.analysis
     store_id = @analysis.store_id
     @store_daily_menu = @analysis.store_daily_menu
@@ -107,16 +109,15 @@ class SalesReportsController < AdminController
         " *廃棄率* ： #{((analysis.loss_amount.to_f/analysis.ex_tax_sales_amount)*100).round(1)}% （#{analysis.loss_amount.to_s(:delimited)}円）\n"+
         " *ロス率* ： #{(((analysis.loss_amount.to_f + analysis.discount_amount.to_f)/analysis.ex_tax_sales_amount)*100).round(1)}% （#{(analysis.loss_amount.to_f + analysis.discount_amount.to_f).round.to_s(:delimited)}円）\n"+
         " *野菜の廃棄* ： #{@sales_report.vegetable_waste_amount}円\n"+
-        " *現金誤差* ： #{@sales_report.cash_error}円\n"+
+        " *現金誤差不明* ： #{@sales_report.cash_error}円\n"+
         " *退勤時間* ： #{@sales_report.leaving_work.strftime("%-H:%M")}\n"+
         " *ワンペアワントーク実施率* ： #{(@sales_report.one_pair_one_talk*100).round}%\n"+
         " *試食実施数* ： #{@sales_report.tasting_number}\n"+
         " *試食内訳* ：\n#{@sales_report.other_memo}\n" +
         " *スタッフ別安心評価* ：#{sales_report_staffs}\n" +
-        " *課題・改善・その他* ：\n#{@sales_report.issue}\n\n"+
+        " *今日の気づき（良かったこと・課題・改善点）* ：\n#{@sales_report.issue}\n\n"+
         "ーーーーー\n"
         if params[:sales_report]["slack_notify"]=="1"
-          
           # Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'おつかれ様', icon_emoji: ':male-farmer:').ping(sales_form)
           Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'おつかれ様', icon_emoji: ':male-farmer:').ping(sales_form)
         end
@@ -129,14 +130,18 @@ class SalesReportsController < AdminController
             Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'かぶそ君', icon_emoji: ':male-scientist:').ping(kabusoku)
           end
         end
-        if @sales_report.good.present?
-          kindess_message = "#{Staff.find(@sales_report.staff_id).name} さんから\n"+
-          "ーーーーー\n"+
-          "#{@sales_report.good}"
-          if params[:sales_report]["slack_notify"]=="1"
-            Slack::Notifier.new("https://hooks.slack.com/services/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", username: '感謝', icon_emoji: ':hugging_face:').ping(kindess_message)
+
+
+        if @sales_report.sales_report_thanks.present?
+          @sales_report.sales_report_thanks.each do |srt|
+            kindess_message = "<@#{srt.staff.slack_id}> \n#{srt.thanks}（<@#{@sales_report.staff.slack_id}> さんから）\nーーーーー"
+            if params[:sales_report]["slack_notify"]=="1"
+              Slack::Notifier.new("https://hooks.slack.com/services/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", username: '感謝', icon_emoji: ':hugging_face:').ping(kindess_message)
+            end
           end
         end
+
+
         format.html { redirect_to sales_reports_path(store_id:@sales_report.store_id), success: "保存しました。" }
         format.json { render :show, status: :created, location: @sales_report }
       else
@@ -160,11 +165,12 @@ class SalesReportsController < AdminController
         " *ロス率* ： #{(((analysis.loss_amount.to_f + analysis.discount_amount.to_f)/analysis.ex_tax_sales_amount)*100).round(1)}% （#{(analysis.loss_amount.to_f + analysis.discount_amount.to_f).round.to_s(:delimited)}円）\n"+
         " *現金誤差* ： #{@sales_report.cash_error}円\n"+
         " *在庫感* ： 惣菜は#{sozai_ureyuki}、弁当は#{bento_ureyuki}、白米残#{kome_amari} kg\n\n"+
-        " *課題に感じた点* ：\n#{@sales_report.issue}\n\n"+
+        " *今日の気づき（良かったこと・課題・改善点）* ：\n#{@sales_report.issue}\n\n"+
         " *その他* ：\n#{@sales_report.other_memo}\n" +
         "ーーーーー\n"
         if params[:sales_report]["slack_notify"]=="1"
           Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'おつかれ様', icon_emoji: ':male-farmer:').ping(sales_form)
+          # Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'おつかれ様', icon_emoji: ':male-farmer:').ping(sales_form)
         end
         if @sales_report.excess_or_deficiency_number_memo
           kabusoku = " *惣菜の盛り付け過不足* \n"+
@@ -175,14 +181,19 @@ class SalesReportsController < AdminController
             Slack::Notifier.new("https://hooks.slack.com/services/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", username: 'かぶそ君', icon_emoji: ':male-scientist:').ping(kabusoku)
           end
         end
-        if @sales_report.good.present?
-          # kindess_message = "#{Staff.find(@sales_report.staff_id).name} さんから\n"+
-          "ーーーーー\n"+
-          "#{@sales_report.good}"
-          if params[:sales_report]["slack_notify"]=="1"
-            Slack::Notifier.new("https://hooks.slack.com/services/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", username: '感謝', icon_emoji: ':hugging_face:').ping(kindess_message)
+
+        if @sales_report.sales_report_thanks.present?
+          @sales_report.sales_report_thanks.each do |srt|
+            kindess_message = "<@#{srt.staff.slack_id}> \n#{srt.thanks}（<@#{@sales_report.staff.slack_id}> さんから）\nーーーーー"
+            if params[:sales_report]["slack_notify"]=="1"
+              # Slack::Notifier.new("https://hooks.slack.com/services/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", username: '感謝', icon_emoji: ':hugging_face:').ping(kindess_message)
+              Slack::Notifier.new("https://hooks.slack.com/services/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", username: '感謝', icon_emoji: ':hugging_face:').ping(kindess_message)
+            end
           end
         end
+
+
+
         format.html { redirect_to sales_report_path(store_id:@sales_report.store_id), success: "更新しました。" }
         format.json { render :show, status: :ok, location: @sales_report }
       else
@@ -208,6 +219,7 @@ class SalesReportsController < AdminController
     def sales_report_params
       params.require(:sales_report).permit(:store_id,:date,:staff_id,:sales_amount,:sales_count,:good,:issue,:other_memo,
         :analysis_id,:cash_error,:excess_or_deficiency_number_memo,:leaving_work,:vegetable_waste_amount,:one_pair_one_talk,:tasting_number,:tasting_atack,
-        sales_report_staffs_attributes:[:sales_report,:staff_id,:smile,:eyecontact,:voice_volume,:talk_speed,:speed,:total,:memo,:tasting])
+        sales_report_staffs_attributes:[:sales_report,:staff_id,:smile,:eyecontact,:voice_volume,:talk_speed,:speed,:total,:memo,:tasting],
+        sales_report_thanks_attributes:[:id,:sales_report_id,:staff_id,:thanks,:_destroy])
     end
 end

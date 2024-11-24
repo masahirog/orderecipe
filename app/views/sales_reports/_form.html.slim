@@ -204,15 +204,14 @@
     .clearfix
       = f.number_field :kome_amari,class:'form-control',style:'width:250px;float:left;',step: "0.1"
       span style='float:left;margin-top:10px;margin-left:20px;' kg
-  .form-group
-    = f.label :vegetable_waste_amount, "野菜の廃棄金額",class:'required'
-    .clearfix
-      = f.number_field :vegetable_waste_amount,class:'form-control', required: true,style:'width:250px;float:left;'
-      span style='float:left;margin-top:10px;margin-left:20px;' 円
+  / .form-group
+  /   = f.label :vegetable_waste_amount, "野菜の廃棄金額",class:'required'
+  /   .clearfix
+  = f.hidden_field :vegetable_waste_amount,class:'form-control',value:0, required: true,style:'width:250px;float:left;'
 
   .form-group
-    = f.label :cash_error, "現金誤差",class:'required'
-    = f.number_field :cash_error,class:'form-control', required: true
+    = f.label :cash_error, "不明な現金誤差"
+    = f.number_field :cash_error,class:'form-control'
 
   .form-group
     = f.label :one_pair_one_talk, "1日を通してのワンペアワントーク実施率",class:'required'
@@ -270,12 +269,21 @@
   / .form-group
     = f.label :good, "親切にできた点（自分・周りのスタッフ）"
     = f.text_area :good, class: "form-control", size: "10x7"
-  / .form-group
-    = f.label :issue, "備考"
-    = f.text_area :issue, class: "form-control", size: "10x7"
+  .form-group
+    = f.label :issue, "今日の気づき（良かったこと・課題・改善点）",class:'required'
+    = f.text_area :issue, class: "form-control", size: "10x7",required:true
   / .form-group
     = f.label :excess_or_deficiency_number_memo, "惣菜の盛り付け過不足の有無"
     = f.text_area :excess_or_deficiency_number_memo, class: "form-control", size: "10x7"
+
+  label 仲間へのありがとう
+  .form-group
+    ul.list-group#add_area
+      = f.fields_for :sales_report_thanks do |srt|
+        = render 'sales_report_thank_fields', f:srt
+    = link_to_add_association '追加', f, :sales_report_thanks,class: 'btn btn-default',data: {association_insertion_node: '#add_area',association_insertion_method: 'append' }
+
+
 
 
   .form-group

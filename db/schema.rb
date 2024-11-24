@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_07_01_023323) do
+ActiveRecord::Schema.define(version: 2024_11_24_073037) do
 
   create_table "analyses", charset: "utf8mb3", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "store_id"
@@ -837,6 +837,16 @@ ActiveRecord::Schema.define(version: 2024_07_01_023323) do
     t.integer "tasting"
     t.index ["sales_report_id"], name: "index_sales_report_staffs_on_sales_report_id"
     t.index ["staff_id"], name: "index_sales_report_staffs_on_staff_id"
+  end
+
+  create_table "sales_report_thanks", charset: "utf8mb3", force: :cascade do |t|
+    t.bigint "sales_report_id", null: false
+    t.bigint "staff_id", null: false
+    t.text "thanks"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["sales_report_id"], name: "index_sales_report_thanks_on_sales_report_id"
+    t.index ["staff_id"], name: "index_sales_report_thanks_on_staff_id"
   end
 
   create_table "sales_reports", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|

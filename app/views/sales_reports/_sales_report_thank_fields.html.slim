@@ -1,0 +1,8 @@
+li.list-group-item.nested-fields
+	= f.hidden_field :sales_report_id
+	div.form-group.clearfix
+		label style="float:left;margin:5px 10px 0 0;" to:
+		= f.collection_select :staff_id, @all_staffs, :id, :name, {include_blank:true},class:'form-control', required:true,style:'width:200px;float:left;'
+		= link_to_remove_association '削除', f, class:'btn btn-sm btn-danger pull-right',  data: {confirm: '削除しますか？'}
+	div.form-group
+		= f.text_area :thanks,class:'form-control',style:'height:5em;',placeholder:'内容'
