@@ -401,7 +401,7 @@ class AnalysesController < AdminController
     respond_to do |format|
       format.html
       format.csv do
-        send_data render_to_string, filename: "#{@store.id}_analysis_category.csv", type: :csv
+        send_data render_to_string, filename: "analysis_category.csv", type: :csv
       end
     end
   end
