@@ -1,7 +1,7 @@
 require 'csv'
 CSV.generate do |csv|
   csv_column_names = @bumon.map{|data|data[1]}
-  csv_column_names.unshift "日付", "合計"
+  csv_column_names.unshift "日付","店舗ID", "合計"
   csv << csv_column_names
   @analyses.each do |analysis|
     csv_data =[]
@@ -11,7 +11,7 @@ CSV.generate do |csv|
     else
       sum = @hash[analysis.id].values.map{|ac|ac.sales_number}.sum
     end
-    csv_data =[date,sum]
+    csv_data =[date,analysis.store_id,sum]
     @bumon.each do |data|
       if @hash[analysis.id][data[0].to_i].present?
         if @pattern == "0"
