@@ -340,7 +340,7 @@ class StocksController < AdminController
     material_ids = @stocks_h.keys
     respond_to do |format|
       format.html do
-        @materials = Material.where(id:material_ids).order("field(id, #{material_ids.join(',')})").page(params[:page]).per(50)
+        @materials = Material.where(id: material_ids).order(Arel.sql("field(id, #{material_ids.join(',')})")).page(params[:page]).per(50)
         @stock_hash ={}
         @materials.each do |material|
           stocks_arr = stocks.where(material_id:material.id).first(5)
@@ -348,11 +348,11 @@ class StocksController < AdminController
         end
       end
       format.csv do
-        @materials = Material.where(id:material_ids).order("field(id, #{material_ids.join(',')})")
+        @materials = Material.where(id: material_ids).order(Arel.sql("field(id, #{material_ids.join(',')})"))
         send_data render_to_string, filename: "#{Time.now.strftime('%Y%m%d')}_inventory.csv", type: :csv
       end
       format.pdf do
-        @materials = Material.where(id:material_ids).order("field(id, #{material_ids.join(',')})")
+        @materials = Material.where(id: material_ids).order(Arel.sql("field(id, #{material_ids.join(',')})"))
         pdf = InventoryPdf.new(@to,@materials,@stocks_h)
         send_data pdf.render,
         filename:    "#{@to}_棚卸し.pdf",
@@ -361,6 +361,7 @@ class StocksController < AdminController
       end
     end
   end
+
 
 
   # def monthly_inventory
