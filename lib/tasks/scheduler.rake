@@ -18,7 +18,7 @@ task :update_product_cost_price => :environment do
   Product.import update_products, :on_duplicate_key_update => [:cost_price], validate: false
 end
 
-# masahiro11g@gmailのアカウントでGASを書いている。未開封の新着メールがあれば、下記の2個のタスクを実行するという流れ。
+# bejihan.info@gmailのアカウントでGASを書いている。未開封の新着メールがあれば、下記の2個のタスクを実行するという流れ。
 # herokuの負荷を下げるために、こちらのスクリプトでチェックして必要なときだけOrderのタスクを実行する
 task :order_fax_status_check => :environment do
   Order.fax_send_check

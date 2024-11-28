@@ -1,7 +1,6 @@
 class NotificationMailer < ActionMailer::Base
 
-  # default from: "masahiro11g@gmail.com"
-  default from: "m.yamashita@shibata-ya.jp"
+  default from: "m.yamashita@bejihan.jp"
 
   def send_fax_order(order,vendor)
     @vendor = vendor

@@ -215,8 +215,8 @@ class Order < ApplicationRecord
     imap_port = 993 # ssl有効なら993、そうでなければ143
     imap = Net::IMAP.new(imap_host, imap_port, imap_usessl)
     # imapにログイン
-    imap_user = 'masahiro11g@gmail.com'
-    imap_passwd = ENV['MASAHIRO_MAIL_PASS']
+    imap_user = 'bejihan.info@gmail.com'
+    imap_passwd = 'harima1351'
 
     imap.login(imap_user, imap_passwd)
     search_criterias = [
