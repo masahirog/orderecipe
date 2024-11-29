@@ -30,7 +30,11 @@ class TemporaryProductMenusController < ApplicationController
     end
     TemporaryProductMenu.import update_arr, on_duplicate_key_update:[:menu_id,:memo]
     TemporaryProductMenu.import new_arr
-    redirect_to new_temporary_product_menu_path(menu_id:menu_id),success:'情報を更新しました。'
+    if params[:date].present?
+      redirect_to new_temporary_product_menu_path(menu_id:menu_id,date:params[:date]),success:'情報を更新しました。'
+    else
+      redirect_to new_temporary_product_menu_path(menu_id:menu_id),success:'情報を更新しました。'
+    end
   end
 
 

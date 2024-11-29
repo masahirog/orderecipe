@@ -19,8 +19,8 @@ class Stock < ApplicationRecord
       stocks_hash[stock.material_id] = stock
     end
     prev_stocks_hash = {}
-    # 半年だけ在庫を遡る
-    Stock.where(material_id:material_ids,store_id:store_id).where(date:(previous_day - 180)..previous_day).order('date asc').each do |stock|
+    # 3ヶ月在庫を遡る
+    Stock.where(material_id:material_ids,store_id:store_id).where(date:(previous_day - 90)..previous_day).order('date asc').each do |stock|
       prev_stocks_hash[stock.material_id] = stock
     end
     inventory_materials = []

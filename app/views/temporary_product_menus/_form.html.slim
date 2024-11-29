@@ -1,6 +1,7 @@
 h3 = "デフォルトのメニュー：#{@menu.name}"
 = form_tag(:controller => "temporary_product_menus", :action => "ikkatsu_update") do
   = hidden_field_tag :menu_id,@menu.id
+  = hidden_field_tag :date,params[:date]
   = submit_tag "材料の変更", class:"btn btn-success pull-right", data: { confirm: "変更してよろしいですか？"}
   .form-group
     = link_to "＜#{@last}週",new_temporary_product_menu_path(date:@last,menu_id:@menu.id)
