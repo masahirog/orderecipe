@@ -216,9 +216,9 @@ class Order < ApplicationRecord
     imap = Net::IMAP.new(imap_host, imap_port, imap_usessl)
     # imapにログイン
     imap_user = 'bejihan.info@gmail.com'
-    imap_passwd = 'harima1351'
-
+    imap_passwd = ENV['INFO_MAIL_PASS']
     imap.login(imap_user, imap_passwd)
+
     search_criterias = [
       'FROM','no-reply@mail01.lcloud.jp',
       'SINCE', (Date.today-1).strftime("%d-%b-%Y"),
