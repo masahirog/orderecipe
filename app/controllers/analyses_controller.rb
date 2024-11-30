@@ -892,6 +892,7 @@ class AnalysesController < AdminController
     SmaregiMember.update_sales_data
     redirect_to smaregi_members_analyses_path,notice:'更新しました。'
   end
+
   def sales
     @sales_hash = {goods:0,foods:0}
     @discount_hash = {goods:0,foods:0}
@@ -901,7 +902,7 @@ class AnalysesController < AdminController
     else
       @date = Date.today
     end
-    @dates =(@date.beginning_of_month..@date.end_of_month).to_a
+    @dates =(Date.new(2024,8,1)..@date.end_of_month).to_a
     @analyses = Analysis.where(date:@dates).where(store_id:@store.id).order(:date)
     @date_analyses = @analyses.map{|analysis|[analysis.date,analysis]}.to_h
     @date_analysis_categories = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }

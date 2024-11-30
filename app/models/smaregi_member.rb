@@ -47,7 +47,8 @@ class SmaregiMember < ApplicationRecord
     update_members = []
     saved_smaregi_members = SmaregiMember.all.map{|sm|[sm.kaiin_id,sm]}.to_h
     # member_raiten_kaisu = SmaregiTradingHistory.where.not(kaiin_id:nil).where(torihikimeisai_id:1,uchikeshi_kubun:0).group(:kaiin_id).count
-    CSV.foreach file.path, {encoding: 'BOM|UTF-8', headers: true} do |row|
+    # CSV.foreach file.path, {encoding: 'BOM|UTF-8', headers: true} do |row|
+    CSV.foreach(file.path,liberal_parsing:true, headers: true) do |row|
       row = row.to_hash
       kaiin_id = row["会員ID"].to_i
       kaiin_code = row["会員コード"]

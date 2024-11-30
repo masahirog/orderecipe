@@ -9,13 +9,13 @@ class Shift < ApplicationRecord
   def self.upload_data(file)
     update_shifts = []
     shift_ids = []
-    CSV.foreach file.path, {encoding: 'BOM|UTF-8', headers: true} do |row|
+		CSV.foreach(file.path,liberal_parsing:true, headers: true) do |row|
     	row = row.to_hash
 	  	id = row["id"]
 	  	shift_ids << id
 	  end
 		shifts = Shift.where(id:shift_ids).map{|shift|[shift.id,shift]}.to_h
-    CSV.foreach file.path, {encoding: 'BOM|UTF-8', headers: true} do |row|
+		CSV.foreach(file.path,liberal_parsing:true, headers: true) do |row|
       row = row.to_hash
 	    id = row["id"].to_i
 	    date = row["date"]

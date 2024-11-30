@@ -31,7 +31,26 @@ h3 時間帯別販売データ
   / - else
   /   p style='float:right;' CSVをダウンロードする場合は、期間を3ヶ月以内に指定してください
 
-h3 売上平均
+h3 日数
+.table-responsive style='overflow: scroll;'
+  table.table.layout-fixed style='border-collapse:separate;'
+    thead style='position: sticky;top:0;background-color:white;z-index:3;'
+      tr
+        th 店舗
+        - (10..21).each do |hour|
+          th = hour
+    tbody
+      - @months.each do |month|
+        tr
+          td = month
+          - (10..21).each do |hour|
+            td
+              - if @date_count[month].present?
+                = @date_count[month]
+
+
+
+h3 売上
 .table-responsive style='overflow: scroll;'
   table.table.layout-fixed style='border-collapse:separate;'
     thead style='position: sticky;top:0;background-color:white;z-index:3;'
@@ -46,7 +65,7 @@ h3 売上平均
           - (10..21).each do |hour|
             td
               - if @time_zone_sales[[month,hour.to_s]].present?
-                = (@time_zone_sales[[month,hour.to_s]]/@date_count[month]).to_s(:delimited)
+                = @time_zone_sales[[month,hour.to_s]].to_s(:delimited)
 
 h3 客数
 .table-responsive style='overflow: scroll;'
@@ -63,7 +82,7 @@ h3 客数
           - (10..21).each do |hour|
             td
               - if @time_zone_counts[[month,hour.to_s]].present?
-                = (@time_zone_counts[[month,hour.to_s]].to_f/@date_count[month]).round(1)
+                = @time_zone_counts[[month,hour.to_s]].to_s(:delimited)
 h3 惣菜
 .table-responsive style='overflow: scroll;'
   table.table.layout-fixed style='border-collapse:separate;'
@@ -79,7 +98,7 @@ h3 惣菜
           - (10..21).each do |hour|
             td
               - if @time_zone_sales_product[[month,hour.to_s,1]].present?
-                = (@time_zone_sales_product[[month,hour.to_s,1]].to_f/@date_count[month]).round(1)
+                = @time_zone_sales_product[[month,hour.to_s,1]].to_s(:delimited)
 
 h3 弁当
 .table-responsive style='overflow: scroll;'
@@ -96,7 +115,7 @@ h3 弁当
           - (10..21).each do |hour|
             td
               - if @time_zone_sales_product[[month,hour.to_s,5]].present?
-                = (@time_zone_sales_product[[month,hour.to_s,5]].to_f/@date_count[month]).round(1)
+                = @time_zone_sales_product[[month,hour.to_s,5]].to_s(:delimited)
 
 h3 セール販売金額
 .table-responsive style='overflow: scroll;'
@@ -112,7 +131,7 @@ h3 セール販売金額
           td = month
           - (10..21).each do |hour|
             - if @time_zone_sales_product[[month,hour.to_s]].present?
-              = (@time_zone_nebikigaku_gokei[[month,hour.to_s]].to_f/@date_count[month]).round(1)
+              = @time_zone_nebikigaku_gokei[[month,hour.to_s]].to_s(:delimited)
 
 
 h3 セール販売数量
@@ -129,4 +148,4 @@ h3 セール販売数量
           td = month
           - (10..21).each do |hour|
             - if @time_zone_sales_product[[month,hour.to_s]].present?
-              = (@time_zone_nebikisu_gokei[[month,hour.to_s]].to_f/@date_count[month]).round(1)
+              = @time_zone_nebikisu_gokei[[month,hour.to_s]].to_s(:delimited)

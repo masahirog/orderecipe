@@ -18,7 +18,7 @@ class DailyMenu < ApplicationRecord
       # saved_smaregi_members = DailyMenuDetail.all.map{|sm|[sm.kaiin_id,sm]}.to_h
       # member_raiten_kaisu = SmaregiTradingHistory.where.not(kaiin_id:nil).where(torihikimeisai_id:1,uchikeshi_kubun:0).group(:kaiin_id).count
       dates = []
-      CSV.foreach file.path, {encoding: 'BOM|UTF-8', headers: true} do |row|
+      CSV.foreach(file.path,liberal_parsing:true, headers: true) do |row|
         row = row.to_hash
         date = row["日付"]
         dates << date
@@ -29,7 +29,7 @@ class DailyMenu < ApplicationRecord
         dmd_hash[dmd.daily_menu.start_time]["daily_menu_id"] = dmd.daily_menu_id
       end
 
-      CSV.foreach file.path, {encoding: 'BOM|UTF-8', headers: true} do |row|
+      CSV.foreach(file.path,liberal_parsing:true, headers: true) do |row|
         row = row.to_hash
         date = row["日付"].to_date
         if dmd_hash[date]['daily_menu_id'].present?
