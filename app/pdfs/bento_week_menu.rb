@@ -22,7 +22,7 @@ class BentoWeekMenu < Prawn::Document
       fill_color '000000'
       fill_rounded_rectangle [-5,525], 770, 80, 4
       fill_color 'ffffff'
-      text_box("<font size='18'>#{from.month}</font>月<font size='18'>#{from.day}</font>日（水）〜  <font size='18'>#{to.month}</font>月<font size='18'>#{to.day}</font>日（火）",
+      text_box("<font size='18'>#{from.month}</font>月<font size='18'>#{from.day}</font>日（#{%w(日 月 火 水 木 金 土)[from.wday]}）〜  <font size='18'>#{to.month}</font>月<font size='18'>#{to.day}</font>日（#{%w(日 月 火 水 木 金 土)[to.wday]}）",
        inline_format: true,color:'ffffff',at: [-5,515],align: :center, width: 770, height: 40)
       text_box("日替わり弁当のご案内",at: [-5,493], width: 770, height: 40,align: :center,size:20)
       text_box("主菜を１日２種類（お肉とお魚）、日替わりでご用意しております。",at: [-5,468], width: 770, height: 40,align: :center,size:9)
