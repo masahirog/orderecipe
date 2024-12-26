@@ -95,9 +95,10 @@ class AnalysesController < AdminController
     @store_chakuchi = {}
     @prev_month_store_chakuchi = {}
     @prev_year_store_chakuchi = {}
-    test(store_sales,@store_bumon_sales,@store_chakuchi,@stores_count,dates)
-    test(prev_month_store_sales,@prev_month_store_bumon_sales,@prev_month_store_chakuchi,prev_month_stores_count,prev_month_dates)
-    test(prev_year_store_sales,@prev_year_store_bumon_sales,@prev_year_store_chakuchi,prev_year_stores_count,prev_year_dates)
+    @store_date_count = @store_daily_menus.where("foods_budget > ?",0).group(:store_id).count
+    test(store_sales,@store_bumon_sales,@store_chakuchi,@stores_count,@store_date_count)
+    test(prev_month_store_sales,@prev_month_store_bumon_sales,@prev_month_store_chakuchi,prev_month_stores_count,@store_date_count)
+    test(prev_year_store_sales,@prev_year_store_bumon_sales,@prev_year_store_chakuchi,prev_year_stores_count,@store_date_count)
     if params[:to]
       @to = params[:to].to_date
     else
@@ -139,7 +140,6 @@ class AnalysesController < AdminController
         end
       end
     end
-    gon.sales_dates = @dates
     souzai_datas = []
     souzai_uriage_datas = []
     colors = ['#46B061','#FBC527','#4F8DF5','#E64C3F','#FD7610']
@@ -184,32 +184,7 @@ class AnalysesController < AdminController
           @date_store_analyses[date].delete(store.id)
         end
       end
-      souzai_uriage_datas << {
-        type: 'line',
-        label: store.short_name,
-        data: souzai_uriage_data,
-        backgroundColor: colors[i],
-        borderColor: colors[i],
-        fill: false,
-        stacked: false,
-        yAxisID: "y-axis-2",
-        # lineTension: 0.2,
-        pointRadius: 3
-      }
     end
-    souzai_uriage_datas << {
-      type: 'line',
-      data: Array.new(@days,100),
-      backgroundColor: 'black',
-      borderColor: 'black',
-      fill: false,
-      stacked: false,
-      yAxisID: "y-axis-2",
-      pointRadius: 0
-    }
-    gon.souzai_datas = souzai_datas
-    gon.souzai_uriage_datas = souzai_uriage_datas
-
 
     @weekly_clean_reminder_templates = ReminderTemplate.where(category:1,repeat_type:11)
     @monthly_clean_reminder_templates = ReminderTemplate.where(category:1,repeat_type:12)
@@ -1753,7 +1728,7 @@ class AnalysesController < AdminController
     end
   end
 
-  def test(store_sales,store_bumon_sales,store_chakuchi,stores_count,dates)
+  def test(store_sales,store_bumon_sales,store_chakuchi,stores_count,store_date_count)
     store_sales.each do |data|
       bumon = data[0][1]
       if  [1,8].include?(bumon.to_i)
@@ -1776,11 +1751,11 @@ class AnalysesController < AdminController
     store_bumon_sales.each do |data|
       data[1][:stores].each do |stores_data|
         if data[1][:chakuchi].present?
-          data[1][:chakuchi] += (stores_data[1][:amount]/stores_count[stores_data[0]])*dates.count
+          data[1][:chakuchi] += (stores_data[1][:amount]/stores_count[stores_data[0]])*store_date_count[stores_data[0]]
         else
-          data[1][:chakuchi] = (stores_data[1][:amount]/stores_count[stores_data[0]])*dates.count
+          data[1][:chakuchi] = (stores_data[1][:amount]/stores_count[stores_data[0]])*store_date_count[stores_data[0]]
         end
-        stores_data[1][:chakuchi] = (stores_data[1][:amount]/stores_count[stores_data[0]])*dates.count
+        stores_data[1][:chakuchi] = (stores_data[1][:amount]/stores_count[stores_data[0]])*store_date_count[stores_data[0]]
       end
     end
     store_bumon_sales.values.map{|data|data[:stores]}.each do |data_more|

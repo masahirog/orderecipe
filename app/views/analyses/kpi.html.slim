@@ -299,20 +299,20 @@ table.table
 br
 hr
 br
-h3 惣菜売上（過去同曜日較）
-.clearfix
-	= form_tag kpi_analyses_path, :method => 'get' do
-		label style='margin-top:7px;float:left;' データ期間：
-		= date_field_tag :from, @from, class:"form-control float-left",style:'width:120px;float:left;'
-		div style="float:left;padding:8px;" 〜
-		= date_field_tag :to, @to, class:"form-control",style:'width:120px;float:left;margin-right:20px;'
+/ h3 惣菜売上（過去同曜日較）
+/ .clearfix
+/ 	= form_tag kpi_analyses_path, :method => 'get' do
+/ 		label style='margin-top:7px;float:left;' データ期間：
+/ 		= date_field_tag :from, @from, class:"form-control float-left",style:'width:120px;float:left;'
+/ 		div style="float:left;padding:8px;" 〜
+/ 		= date_field_tag :to, @to, class:"form-control",style:'width:120px;float:left;margin-right:20px;'
 
-		label style='margin-top:7px;float:left;' 過去の較期間：
-		= date_field_tag :last_from, @last_from, class:"form-control float-left",style:'width:120px;float:left;'
-		div style="float:left;padding:8px;" 〜
-		= date_field_tag :last_to, @last_to, class:"form-control",style:'width:120px;float:left;'
-		= submit_tag "期間変更" ,class:"btn btn-primary",style:"margin-left:10px;"
-canvas#chart2
+/ 		label style='margin-top:7px;float:left;' 過去の較期間：
+/ 		= date_field_tag :last_from, @last_from, class:"form-control float-left",style:'width:120px;float:left;'
+/ 		div style="float:left;padding:8px;" 〜
+/ 		= date_field_tag :last_to, @last_to, class:"form-control",style:'width:120px;float:left;'
+/ 		= submit_tag "期間変更" ,class:"btn btn-primary",style:"margin-left:10px;"
+/ canvas#chart2
 
 h3 日次数値確認
 .table-responsive style='height:600px;overflow: scroll;overscroll-behavior-x: contain;'
@@ -433,57 +433,6 @@ h3 日次数値確認
 	            td
 	              - if @sales_report_staffs[staff.id][date].present?
 	                = link_to "#{@sales_report_staffs[staff.id][date][:smile]}｜#{@sales_report_staffs[staff.id][date][:eyecontact]}｜#{@sales_report_staffs[staff.id][date][:voice_volume]}",@sales_report_staffs[staff.id][date][:sales_report]
-
-
-javascript:
-
-
-  // 1個目のグラフ
-  var ctx2 = document.getElementById("chart2").getContext('2d');
-  ctx2.canvas.height = 80;
-  var chart2 = new Chart(ctx2, {
-    type: 'bar',
-    data: {
-      labels: gon.sales_dates,
-      datasets: gon.souzai_uriage_datas
-    },
-    options: {
-      scales: {
-        xAxes: [{
-        	ticks: {
-            maxRotation: 40,
-            minRotation: 40
-          },
-        	offset: false,
-        	gridLines: {offsetGridLines:false},
-          stacked: true,
-          scaleLabel: {
-            display: true,
-            fontSize: 16
-          }
-        }],
-        yAxes: [{
-          stacked: false,
-          id: "y-axis-2",
-          type: "linear",
-          position: "left",
-          ticks: {
-            min: 0,
-            callback: function(label, index, labels) {
-              return label.toString() + "%";
-            }
-          }
-        }]
-      },
-      legend: {
-        labels:{
-          filter: function(items) {
-            return items.text != null;
-          }
-        }
-      }
-    }
-  });
 
 
 css:
