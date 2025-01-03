@@ -1751,11 +1751,20 @@ class AnalysesController < AdminController
     store_bumon_sales.each do |data|
       data[1][:stores].each do |stores_data|
         if data[1][:chakuchi].present?
-          data[1][:chakuchi] += (stores_data[1][:amount]/stores_count[stores_data[0]])*store_date_count[stores_data[0]]
+          if stores_count[stores_data[0]].present?
+            if store_date_count[stores_data[0]].present?
+              data[1][:chakuchi] += (stores_data[1][:amount]/stores_count[stores_data[0]])*store_date_count[stores_data[0]]
+            end
+          end
         else
           data[1][:chakuchi] = (stores_data[1][:amount]/stores_count[stores_data[0]])*store_date_count[stores_data[0]]
         end
-        stores_data[1][:chakuchi] = (stores_data[1][:amount]/stores_count[stores_data[0]])*store_date_count[stores_data[0]]
+        if stores_count[stores_data[0]].present?
+          if store_date_count[stores_data[0]].present?
+
+            stores_data[1][:chakuchi] = (stores_data[1][:amount]/stores_count[stores_data[0]])*store_date_count[stores_data[0]]
+          end
+        end
       end
     end
     store_bumon_sales.values.map{|data|data[:stores]}.each do |data_more|
