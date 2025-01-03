@@ -51,7 +51,7 @@ Rails.application.routes.draw do
     end
   end
   devise_for :users
-  root 'analyses#kpi'
+  root 'daily_menus#index'
   post '/mealselect_save' => 'application#mealselect_save'
   get '/list' => 'application#list'
   post '/image_download' => 'application#image_download'
