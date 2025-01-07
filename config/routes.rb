@@ -1,11 +1,6 @@
 Rails.application.routes.draw do
 
   namespace :vendor do
-    resources :material_vendor_stocks do
-      collection do
-        get :material
-      end
-    end
     resources :orders do
       collection do
         post :status_change
@@ -14,55 +9,17 @@ Rails.application.routes.draw do
   end
 
   namespace :crew do
-    root 'store_daily_menus#index'
-    get '/products/ikkatsu' => 'products#ikkatsu'
-    resources :store_daily_menus do
-      collection do
-        get :menu_information
-      end
-    end
-    resources :stores
     resources :products
-    resources :orders do
-      collection do
-        get :sky_monthly
-        get :monthly_data
-        get :send_order_fax
-        get :preparation_all
-        get :monthly
-        get :products_pdfs
-        get :material_info
-        get :print_all
-        post :material_reload
-        get :deliveried_list
-      end
-    end
   end
-  namespace :store do
-    resources :store_daily_menus do
-      collection do
-          post :sales_upload
-      end
-    end
-    resources :products do
-      collection do
-        get :download
-      end
-    end
-  end
+
   devise_for :users
   root 'daily_menus#index'
   post '/mealselect_save' => 'application#mealselect_save'
   get '/list' => 'application#list'
   post '/image_download' => 'application#image_download'
-  # get '/shibataya' => 'application#shibataya'
-  get '/shibataya_orders' => 'application#shibataya_orders'
-  get '/shibataya_howto' => 'application#shibataya_howto'
   post 'orders/new' => 'orders#new'
   post'orders/order_print/:id' => 'orders#order_print'
-  post "products/henkan" => "products#henkan"
   post'materials/include_update' => 'materials#include_update'
-  post "versions/:id/revert" => "versions#revert", :as => "revert_version"
   post'menus/include_update' => 'menus#include_update'
   post 'materials/change_additives' => 'materials#change_additives'
   resources :default_shifts do
@@ -75,7 +32,6 @@ Rails.application.routes.draw do
       get :get_common_product_part
     end
   end
-  resources :weekly_reports
   resources :item_expiration_dates
   resources :item_store_stocks do
     collection do
@@ -85,23 +41,12 @@ Rails.application.routes.draw do
   end
   resources :buppan_schedules
   resources :manual_directories
-  resources :material_vendor_stocks do
-    collection do
-      get :material
-    end
-  end
   resources :tasks do
     put :sort
   end
   
   get "working_hour_work_types/working_hour_change" => "working_hour_work_types#working_hour_change"
   get "working_hour_work_types/time_change" => "working_hour_work_types#time_change"
-  resources :pre_orders do
-    collection do
-      get :daily
-      get :monthly
-    end
-  end
   resources :working_hours do
     collection do
       get :detail
@@ -111,11 +56,6 @@ Rails.application.routes.draw do
       get :monthly
       post :create_work_times
       post :upload_data
-    end
-  end
-  resources :tastings do
-    collection do
-      get :weekly
     end
   end
   resources :temporary_menu_materials do
@@ -330,7 +270,6 @@ Rails.application.routes.draw do
   resources :orders do
     collection do
       get :purchase_order_list
-      get :sky_monthly
       get :monthly_data
       get :suriho
       get :bejihan_store_orders_list

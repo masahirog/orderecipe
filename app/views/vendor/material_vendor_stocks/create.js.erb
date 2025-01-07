@@ -1,4 +1,0 @@
-<% (@date..@date.end_of_month).to_a.each do |date| %>
-	$(".tr_<%= date.to_s %>").find(".td_<%= @material.id %>").html("<%= escape_javascript(render partial: 'vendor/material_vendor_stocks/td', locals: {date:date,material:@material}) %>");
-<% end %>
-$(".tr_<%= @date.to_s %>").find(".td_<%= @material.id %>").css("background-color","#fffaf0");

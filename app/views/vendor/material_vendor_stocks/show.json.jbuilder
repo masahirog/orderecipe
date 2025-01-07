@@ -1,1 +1,0 @@
-json.partial! "vendor_material_vendor_stocks/vendor_material_vendor_stock", vendor_material_vendor_stock: @vendor_material_vendor_stock

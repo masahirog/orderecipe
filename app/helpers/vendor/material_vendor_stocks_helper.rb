@@ -1,2 +1,0 @@
-module Vendor::MaterialVendorStocksHelper
-end

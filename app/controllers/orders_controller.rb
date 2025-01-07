@@ -18,44 +18,6 @@ class OrdersController < AdminController
     end
   end
 
-  def sky_monthly
-    @stores = Store.where(group_id:29)
-    @material_store_orderables_ids = MaterialStoreOrderable.where(store_id:@stores.ids,orderable_flag:true).map{|mso|mso.material_id}.uniq
-    @materials = Material.where(id:@material_store_orderables_ids,vendor_id:559)
-
-    if params[:month].present?
-      @date = "#{params[:month]}-01".to_date
-      @month = params[:month]
-    else
-      @date = @today
-      @month = "#{@date.year}-#{sprintf("%02d",@date.month)}"
-    end
-    @dates =(@date.beginning_of_month..@date.end_of_month).to_a
-    @order_materials = OrderMaterial.includes(:order,:material).joins(:order).where(:orders => {store_id:@stores.ids,fixed_flag:true}).where(delivery_date:@dates,material_id:@materials.ids).where(un_order_flag:false)
-    @material_quantity = @order_materials.group(:material_id).sum(:order_quantity)
-    @store_date_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    @store_material_hash = Hash.new { |h,k| h[k] = Hash.new(&h.default_proc) }
-    @order_materials.each do |om|
-      if @store_date_hash[[om.order.store_id,om.delivery_date]].present?
-        @store_date_hash[[om.order.store_id,om.delivery_date]] << om
-      else
-        @store_date_hash[[om.order.store_id,om.delivery_date]] = [om]
-      end
-      if @store_material_hash[[om.order.store_id,om.material_id]].present?
-        @store_material_hash[[om.order.store_id,om.material_id]] += om.order_quantity
-      else
-        @store_material_hash[[om.order.store_id,om.material_id]] = om.order_quantity
-      end
-    end
-    last_month_day = @date.beginning_of_month - 1
-    last_month_dates = (last_month_day.beginning_of_month..last_month_day).to_a
-    @last_month_order_materials = OrderMaterial.includes(:order,:material).joins(:order).where(:orders => {store_id:@stores.ids,fixed_flag:true}).where(delivery_date:last_month_dates,material_id:@materials.ids).where(un_order_flag:false)
-    @last_ordered_total = 0
-    @last_month_order_materials.each do |om|
-      sub_total = ((om.material.recipe_unit_price / om.material.order_unit_quantity)*(om.order_quantity.to_i/om.material.accounting_unit_quantity))
-      @last_ordered_total += sub_total
-    end
-  end
   def monthly_data
     if params[:start_date].present?
       date = params[:start_date].to_date

@@ -471,19 +471,6 @@ ActiveRecord::Schema.define(version: 2024_11_24_073037) do
     t.index ["material_id", "store_id"], name: "index_material_store_orderables_on_material_id_and_store_id", unique: true
   end
 
-  create_table "material_vendor_stocks", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.integer "material_id", null: false
-    t.date "date", null: false
-    t.integer "previous_end_day_stock", default: 0, null: false
-    t.integer "end_day_stock", default: 0, null: false
-    t.integer "shipping_amount"
-    t.integer "new_stock_amount"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.integer "estimated_amount"
-    t.index ["date", "material_id"], name: "index_material_vendor_stocks_on_date_and_material_id", unique: true
-  end
-
   create_table "materials", id: :integer, charset: "utf8mb3", force: :cascade do |t|
     t.string "name"
     t.string "order_name"
@@ -642,35 +629,6 @@ ActiveRecord::Schema.define(version: 2024_11_24_073037) do
     t.text "memo"
   end
 
-  create_table "pre_order_products", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.bigint "pre_order_id", null: false
-    t.bigint "product_id", null: false
-    t.integer "order_num", default: 0, null: false
-    t.integer "tax_including_sell_price", default: 0, null: false
-    t.integer "subtotal", default: 0, null: false
-    t.integer "welfare_price", default: 0, null: false
-    t.integer "employee_discount", default: 0, null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["pre_order_id"], name: "index_pre_order_products_on_pre_order_id"
-    t.index ["product_id"], name: "index_pre_order_products_on_product_id"
-  end
-
-  create_table "pre_orders", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.bigint "store_id", null: false
-    t.date "date", null: false
-    t.time "recipient_time", null: false
-    t.integer "employee_id"
-    t.string "recipient_name"
-    t.string "tel"
-    t.integer "status", default: 0, null: false
-    t.text "memo"
-    t.integer "total", default: 0, null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["store_id"], name: "index_pre_orders_on_store_id"
-  end
-
   create_table "product_bbs", charset: "utf8mb3", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "product_id", null: false
     t.string "image"
@@ -731,7 +689,7 @@ ActiveRecord::Schema.define(version: 2024_11_24_073037) do
     t.index ["product_id", "store_id"], name: "index_product_sales_potentials_on_product_id_and_store_id", unique: true
   end
 
-  create_table "products", id: :integer, charset: "utf8mb3", force: :cascade do |t|
+  create_table "products", id: :integer, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.integer "sell_price", null: false
     t.text "description"
@@ -839,7 +797,7 @@ ActiveRecord::Schema.define(version: 2024_11_24_073037) do
     t.index ["staff_id"], name: "index_sales_report_staffs_on_staff_id"
   end
 
-  create_table "sales_report_thanks", charset: "utf8mb3", force: :cascade do |t|
+  create_table "sales_report_thanks", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "sales_report_id", null: false
     t.bigint "staff_id", null: false
     t.text "thanks"
@@ -1203,21 +1161,6 @@ ActiveRecord::Schema.define(version: 2024_11_24_073037) do
     t.boolean "part_staffs_share_flag", default: false, null: false
   end
 
-  create_table "tastings", charset: "utf8mb3", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
-    t.integer "product_id"
-    t.integer "staff_id"
-    t.date "date"
-    t.text "comment"
-    t.integer "appearance"
-    t.integer "taste"
-    t.integer "total_evaluation"
-    t.integer "price_satisfaction"
-    t.integer "sell_price"
-    t.string "image"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-  end
-
   create_table "temporary_menu_materials", charset: "latin1", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "menu_material_id", null: false
     t.integer "material_id", null: false
@@ -1299,31 +1242,6 @@ ActiveRecord::Schema.define(version: 2024_11_24_073037) do
     t.string "name"
     t.string "delivery_able_wday", default: "0,1,2,3,4,5,6", null: false
     t.integer "user_id"
-  end
-
-  create_table "weekly_report_thanks", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.bigint "weekly_report_id", null: false
-    t.bigint "staff_id", null: false
-    t.text "thanks"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["staff_id"], name: "index_weekly_report_thanks_on_staff_id"
-    t.index ["weekly_report_id"], name: "index_weekly_report_thanks_on_weekly_report_id"
-  end
-
-  create_table "weekly_reports", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.bigint "store_id", null: false
-    t.bigint "staff_id", null: false
-    t.date "date", null: false
-    t.text "goal"
-    t.text "plan"
-    t.text "do"
-    t.text "check"
-    t.text "action"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["staff_id"], name: "index_weekly_reports_on_staff_id"
-    t.index ["store_id"], name: "index_weekly_reports_on_store_id"
   end
 
   create_table "work_types", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|

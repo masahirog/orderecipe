@@ -244,23 +244,17 @@ class StoreDailyMenusController < AdminController
     else
       date = Date.today
     end
-    if params[:store_id] == 'sky_all'
-      @stores = Store.where(group_id:29)
-      @store_daily_menus = StoreDailyMenu.where(start_time:date.in_time_zone.all_month,store_id:@stores.ids).includes(store_daily_menu_details:[:product])
-      product_ids = StoreDailyMenuDetail.includes([:store_daily_menu]).where(store_daily_menu_id:@store_daily_menus.ids).map{|sdmd|sdmd.product_id}.uniq
-    else
-      store_id = params[:store_id]
-      @store = Store.find(store_id)
-      @store_daily_menus = @store.store_daily_menus.where(start_time:date.in_time_zone.all_month).includes(store_daily_menu_details:[:product])
-      product_ids = StoreDailyMenuDetail.where(store_daily_menu_id:@store_daily_menus.ids).map{|sdmd|sdmd.product_id}.uniq
-      @last_process = {}
-      Product.where(id:product_ids).each do |product|
-        last_processes = MenuLastProcess.where(menu_id:product.menus.ids)
-        if last_processes.present?
-          @last_process[product.id] = "◯"
-        else
-          @last_process[product.id] = ""
-        end
+    store_id = params[:store_id]
+    @store = Store.find(store_id)
+    @store_daily_menus = @store.store_daily_menus.where(start_time:date.in_time_zone.all_month).includes(store_daily_menu_details:[:product])
+    product_ids = StoreDailyMenuDetail.where(store_daily_menu_id:@store_daily_menus.ids).map{|sdmd|sdmd.product_id}.uniq
+    @last_process = {}
+    Product.where(id:product_ids).each do |product|
+      last_processes = MenuLastProcess.where(menu_id:product.menus.ids)
+      if last_processes.present?
+        @last_process[product.id] = "◯"
+      else
+        @last_process[product.id] = ""
       end
     end
     respond_to do |format|

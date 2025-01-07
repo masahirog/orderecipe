@@ -1,9 +1,0 @@
-= form_for @material_vendor_stock do |f|
-  - if @material_vendor_stock.errors.any?
-    #error_explanation
-      h2 = "#{pluralize(@material_vendor_stock.errors.count, "error")} prohibited this material_vendor_stock from being saved:"
-      ul
-        - @material_vendor_stock.errors.full_messages.each do |message|
-          li = message
-
-  .actions = f.submit

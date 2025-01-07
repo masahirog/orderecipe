@@ -1,5 +1,4 @@
 class Product < ApplicationRecord
-  has_many :pre_order_products
   has_many :product_sales_potentials
   has_many :analysis_products
   belongs_to :group
@@ -30,9 +29,6 @@ class Product < ApplicationRecord
 
   has_many :product_pack_serving_informations, dependent: :destroy
   accepts_nested_attributes_for :product_pack_serving_informations, allow_destroy: true
-
-
-  has_many :tastings
   
   mount_uploader :image, ProductImageUploader
   mount_uploader :display_image, ProductImageUploader
