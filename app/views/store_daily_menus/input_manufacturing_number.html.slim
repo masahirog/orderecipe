@@ -66,14 +66,14 @@
             input style='width:60px;float:left;' class="total_sales_input readonly input_number" readonly=true
             input style='width:80px;display:none;' class="col" value=i
             input style='display:none;' class="store_daily_menu_id" value=sdm.id
-      tr.fixed05 class='product_category_21'
+      tr.fixed05 class='product_category_22'
         td
         td
-        td サラダ
+        td スープ大
         td
         - @store_daily_menus.each_with_index do |sdm,i|
-          td class="col-base-#{i} store_daily_menu_#{sdm.id}_21_td"
-            input.product_category value=21 style='display:none;'
+          td class="col-base-#{i} store_daily_menu_#{sdm.id}_22_td"
+            input.product_category value=22 style='display:none;'
             input style='width:60px;float:left;' class="total_sales_yoso input_number" value="#{sdm.salad_make_num}"
             i class="fa-solid fa-circle-arrow-right yoso-reflect" style='float:left;margin:8px 4px;color:#32cd32;cursor:pointer;'
             input style='width:60px;float:left;' class="total_sales_input readonly input_number" readonly=true
@@ -261,7 +261,7 @@ javascript:
   $(".aaa").each(function(i,ele){
     var num = 0;
     var sales = 0;
-    var product_category = [1,2,3,4,5,7,11,19,20,21]
+    var product_category = [1,2,3,4,5,7,11,19,20,22]
     $.each(product_category, function(index, value) {
       change(i,num,value)
       change_sales(i,sales)
@@ -379,7 +379,7 @@ javascript:
     });
     var num = 0;
     var sales = 0;
-    var product_category = [1,2,3,4,5,7,11,19,20,21]
+    var product_category = [1,2,3,4,5,7,11,19,20,22]
     $.each(product_category, function(index, value) {
       change(col,num,value)
     });
@@ -399,7 +399,7 @@ javascript:
     });
     var num = 0;
     var sales = 0;
-    var product_category = [1,2,3,4,5,7,11,19,20,21]
+    var product_category = [1,2,3,4,5,7,11,19,20,22]
     $.each(product_category, function(index, value) {
       change(col,num,value)
     });
