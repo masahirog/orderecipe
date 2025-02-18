@@ -10,69 +10,68 @@
           li
             = message
   .col-md-12
-    .col-md-6
-      .col-md-12.form-group
-        = f.label :name, "食材・資材名（余分な情報はメモへお願いします）",class:'required'
-        = f.text_field :name, class:'form-control name_ja',required:true
-      .col-md-12.form-group
-        = f.label :short_name, "省略名 ひらがな",class:'required'
-        = f.text_field :short_name, class:'form-control',required:true
-      .col-md-12.form-group
-        = f.label :roma_name, "ローマ字",class:'required'
-        = f.text_field :roma_name, class:'form-control',required:true
-      .col-md-12.form-group
-        = f.label :order_name, "発注書記載名",class:'required'
-        = f.text_field :order_name, class:'form-control',required:true
-      .col-md-12.form-group
-        = f.label :food_label_name, "原材料表示名(ラベルに表示されます)",class:'required'
-        = f.text_field :food_label_name, class:'form-control',required:true
+    .col-md-12.form-group
+      = f.label :name, "食材・資材名（余分な情報はメモへお願いします）",class:'required'
+      = f.text_field :name, class:'form-control name_ja',required:true
+    .col-md-12.form-group
+      = f.label :short_name, "省略名 ひらがな",class:'required'
+      = f.text_field :short_name, class:'form-control',required:true
+    .col-md-12.form-group
+      = f.label :roma_name, "ローマ字",class:'required'
+      = f.text_field :roma_name, class:'form-control',required:true
+    .col-md-12.form-group
+      = f.label :order_name, "発注書記載名",class:'required'
+      = f.text_field :order_name, class:'form-control',required:true
+    .col-md-12.form-group
+      = f.label :food_label_name, "原材料表示名(ラベルに表示されます)",class:'required'
+      = f.text_field :food_label_name, class:'form-control',required:true
 
-      .col-md-12.form-group
-        = f.label :food_ingredient_id, "成分表示用食材"
-        = f.collection_select :food_ingredient_id, FoodIngredient.all, :id, :name, {include_blank: true}, { class: "form-control select2"}
-
-
-      .col-md-12.form-group
-        = f.label :unused_flag, "販売ステータス",class:'required'
-        = f.select :unused_flag,[['使用中',false],['使用停止',true]],{selected:@material.unused_flag}, class:"form-control",required:true
-      .col-md-12.form-group
-        = f.label :category, "カテゴリ",class:'required'
-        = f.select :category, options_for_select_from_enum(Material, :category),{}, { class: "form-control",required:true}
-      .col-md-12.form-group
-        = f.label :storage_place, "棚卸し計上先の分類",class:'required'
-        = f.select :storage_place, options_for_select_from_enum(Material, :storage_place),{}, { class: "form-control",required:true}
-
-      .col-md-12.form-group
-        = f.label :measurement_flag, "仕込みの食材別シートに表示する"
-        = f.check_box :measurement_flag, class: "form-control"
-      .col-md-12.form-group
-        = f.label :vendor_id, "仕入先企業名",class:'required'
-        = f.collection_select :vendor_id, Vendor.where(group_id:current_user.group_id), :id, :name, {include_blank: true}, { class: "form-control",required:true}
-      .col-md-12.form-group
-        = f.label :vendor_stock_flag, "メーカー在庫品・受注品"
-        = f.select :vendor_stock_flag, [["在庫品", true], ["受注品", false]],{}, class: "form-control"
-
-      .col-md-12.form-group style="padding:0;"
-        .col-md-12
-          = f.label :delivery_deadline, "発注締め切り"
-        .col-md-8
-          = f.select :delivery_deadline,options_for_select(0..10,f.object.delivery_deadline),{}, class: "form-control"
-        .col-md-4 style="margin-top:10px;padding:0;"
-          | 営業日前
-      .col-md-12.form-group
-        = f.label :order_code, "業者管理コード"
-        = f.text_field :order_code, class:'form-control'
-      .col-md-12.form-group
-        = f.label :jancode, "JANコード"
-        = f.text_field :jancode, class:'form-control'
+    .col-md-12.form-group
+      = f.label :food_ingredient_id, "成分表示用食材"
+      = f.collection_select :food_ingredient_id, FoodIngredient.all, :id, :name, {include_blank: true}, { class: "form-control select2"}
 
 
-      - if current_user.admin?
+    .col-md-12.form-group
+      = f.label :unused_flag, "販売ステータス",class:'required'
+      = f.select :unused_flag,[['使用中',false],['使用停止',true]],{selected:@material.unused_flag}, class:"form-control",required:true
+    .col-md-12.form-group
+      = f.label :category, "カテゴリ",class:'required'
+      = f.select :category, options_for_select_from_enum(Material, :category),{}, { class: "form-control",required:true}
+    .col-md-12.form-group
+      = f.label :storage_place, "棚卸し計上先の分類",class:'required'
+      = f.select :storage_place, options_for_select_from_enum(Material, :storage_place),{}, { class: "form-control",required:true}
+
+    .col-md-12.form-group style='display:none;'
+      = f.label :measurement_flag, "仕込みの食材別シートに表示する"
+      = f.check_box :measurement_flag, class: "form-control"
+    .col-md-12.form-group
+      = f.label :vendor_id, "仕入先企業名",class:'required'
+      = f.collection_select :vendor_id, Vendor.where(group_id:current_user.group_id), :id, :name, {include_blank: true}, { class: "form-control",required:true}
+    .col-md-12.form-group style='display:none;'
+      = f.label :vendor_stock_flag, "メーカー在庫品・受注品"
+      = f.select :vendor_stock_flag, [["在庫品", true], ["受注品", false]],{}, class: "form-control"
+
+    .col-md-12.form-group style="padding:0;display:none;"
+      .col-md-12
+        = f.label :delivery_deadline, "発注締め切り"
+      .col-md-8
+        = f.select :delivery_deadline,options_for_select(0..10,f.object.delivery_deadline),{}, class: "form-control"
+      .col-md-4 style="margin-top:10px;padding:0;"
+        | 営業日前
+    .col-md-12.form-group
+      = f.label :order_code, "業者管理コード"
+      = f.text_field :order_code, class:'form-control'
+    .col-md-12.form-group style='display:none;'
+      = f.label :jancode, "JANコード"
+      = f.text_field :jancode, class:'form-control'
+
+
+      / - if current_user.admin?
         .col-md-12.form-group
           = f.label :target_material_id, "キッチン在庫管理同期食材"
           = f.collection_select :target_material_id, @materials, :id, :name, {include_blank: true}, { class: "form-control input_select_material"}
 
-    .col-md-6
+    / .col-md-6
       = f.label :image, "写真"
       = f.file_field :image
       = f.hidden_field :image_cache
@@ -185,7 +184,7 @@
       .col-md-1.form-group
         = label_tag :wheat, '小麦'
         = f.check_box  :allergy, {multiple: true, checked: @material.allergy.include?("wheat"),class:"form-control"}, 'wheat'
-  .modal-div.col-md-12.form-group style="padding:0;"
+  .modal-div.col-md-12.form-group style="padding:0;display: none;"
     .col-md-12
       = f.label :food_additive, "食品添加物[必須]", class:"",style:"padding:0;margin-left:20px;"
     ul.col-md-12.food_additive_ul.list-group style="list-style:none;margin:20px;"
