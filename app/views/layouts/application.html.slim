@@ -64,18 +64,18 @@ html lang="ja"
                       li = link_to "肉類棚卸し",mobile_inventory_stocks_path(category:'meat',store_id:39),target:'_blank'
                       li = link_to "スリホプリンタ インク発注",suriho_orders_path
                       li
-                        a.clearfix href="/stocks/inventory?to=#{@today}&store_id=39"
+                        / a.clearfix href="/stocks/inventory?to=#{@today}&store_id=39"
                           span style='float:left;' 棚卸し
                       / li = link_to "棚卸し（スキャン）",scan_stocks_path
-                      li = link_to "月次棚卸し在庫",stocks_path(store_id:39)
-                      h5 style='padding:0 10px;font-weight:bold;' その他
-                      li = link_to 'シフト',shifts_path(date:@today,store_type:1)
-                      li = link_to 'タイムカード',detail_working_hours_path,data: {"turbolinks" => false}
-                      li = link_to 'TC項目',work_types_path
-                      li = link_to 'リマインダーテンプレート',reminder_templates_path(store_type:1)
-                      li = link_to '掃除テンプレート',reminder_templates_path(category:'clean',store_type:1)
-                      li = link_to 'シフトテンプレート',default_shifts_path(group_id:current_user.group_id,store_type:1)
-                      li = link_to "キッチン設定",edit_store_path(id:39)
+                      li = link_to "月次棚卸し",stocks_path(store_id:39)
+                      / h5 style='padding:0 10px;font-weight:bold;' その他
+                      / li = link_to 'シフト',shifts_path(date:@today,store_type:1)
+                      / li = link_to 'タイムカード',detail_working_hours_path,data: {"turbolinks" => false}
+                      / li = link_to 'TC項目',work_types_path
+                      / li = link_to 'リマインダーテンプレート',reminder_templates_path(store_type:1)
+                      / li = link_to '掃除テンプレート',reminder_templates_path(category:'clean',store_type:1)
+                      / li = link_to 'シフトテンプレート',default_shifts_path(group_id:current_user.group_id,store_type:1)
+                      / li = link_to "キッチン設定",edit_store_path(id:39)
                       / li = link_to 'ミールセレクト',list_path
                   li.dropdown
                     a.dropdown-toggle href="#" data-toggle="dropdown" role="button"
@@ -85,12 +85,12 @@ html lang="ja"
                       li = link_to "商品一覧",products_path
                       li = link_to "メニュー",menus_path
                       li = link_to "食材・資材",materials_path
-                      li = link_to "成分表示計算用食材一覧",food_ingredients_path
+                      / li = link_to "成分表示計算用食材一覧",food_ingredients_path
                       / li = link_to "JAN登録（スキャン）",scan_materials_path
                       li = link_to "仕入先",vendors_path
                       li = link_to "共通積載パーツ一覧",common_product_parts_path
-                      li = link_to "食材月間使用確認",monthly_used_amount_materials_path
-                      li = link_to "野菜の使用量",materials_used_amount_materials_path
+                      / li = link_to "食材月間使用確認",monthly_used_amount_materials_path
+                      / li = link_to "野菜の使用量",materials_used_amount_materials_path
 
                   li.dropdown
                     a.dropdown-toggle href="#" data-toggle="dropdown" role="button"
@@ -123,40 +123,40 @@ html lang="ja"
                       li = link_to '品目・品種一覧',item_types_path
                       li = link_to '仕入先一覧',item_vendors_path
                       li = link_to '店舗',stores_item_store_stocks_path
-                      li = link_to '賞味期限管理',item_expiration_dates_path
+                      / li = link_to '賞味期限管理',item_expiration_dates_path
                   li.dropdown
                     a.dropdown-toggle href="#" data-toggle="dropdown" role="button"
                       |データ
                       span.caret
                     ul.dropdown-menu role="menu" style='width:250px;'
-                      li = link_to "販売KPI",kpi_analyses_path
-                      li = link_to "キッチンKPI",kitchen_kpi_analyses_path
-                      li = link_to "部門別販売データ",bumon_sales_analyses_path
-                      li = link_to "日別 野菜販売データ",vegetable_sales_analyses_path
-                      li = link_to "時間別 野菜販売データ",vegetable_time_sales_analyses_path
+                      li = link_to "売上データ",kpi_analyses_path
+                      / li = link_to "キッチンKPI",kitchen_kpi_analyses_path
+                      / li = link_to "部門別販売データ",bumon_sales_analyses_path
+                      / li = link_to "日別 野菜販売データ",vegetable_sales_analyses_path
+                      / li = link_to "時間別 野菜販売データ",vegetable_time_sales_analyses_path
                       li = link_to "ロス",loss_analyses_path
                       li = link_to "時間帯別データ",timezone_sales_analyses_path
-                      li = link_to "月次時間帯別データ",monthly_timezone_analyses_path
+                      / li = link_to "月次時間帯別データ",monthly_timezone_analyses_path
                       li = link_to "商品販売データ",product_sales_analyses_path
-                      li = link_to "牛すじ系",gyusuji_analyses_path
-                      li = link_to "会員",smaregi_members_analyses_path
-                      li = link_to "購買",smaregi_trading_histories_path
-                      li = link_to "店舗",stores_analyses_path
-                      li = link_to "LTVデータ",ltv_data_analyses_path
-                      li = link_to "商品リピート",product_repeat_analyses_path
-                      li = link_to "スタッフ",staffs_analyses_path
+                      / li = link_to "牛すじ系",gyusuji_analyses_path
+                      / li = link_to "会員",smaregi_members_analyses_path
+                      / li = link_to "購買",smaregi_trading_histories_path
+                      / li = link_to "店舗",stores_analyses_path
+                      / li = link_to "LTVデータ",ltv_data_analyses_path
+                      / li = link_to "商品リピート",product_repeat_analyses_path
+                      / li = link_to "スタッフ",staffs_analyses_path
                   li.dropdown
                     a.dropdown-toggle href="#" data-toggle="dropdown" role="button"
                       |設定
                       span.caret
                     ul.dropdown-menu role="menu"
                       li = link_to "スタッフ一覧",staffs_path(status:0,store_type:0)
-                      li = link_to "グループ",groups_path
+                      / li = link_to "グループ",groups_path
                       li = link_to "シフト枠",shift_frames_path
                       li = link_to '確定シフトパターン',fix_shift_patterns_path
-                      li = link_to 'タイムカード項目',work_types_path
-                      li = link_to "ブランド",brands_path
-                      li = link_to "盛り付け皿設定",serving_plates_path
+                      / li = link_to 'タイムカード項目',work_types_path
+                      / li = link_to "ブランド",brands_path
+                      / li = link_to "盛り付け皿設定",serving_plates_path
                       li = link_to "盛り付け包材設定",containers_path
                       li = link_to "ログアウト", destroy_user_session_path, :method => :delete
               - elsif current_user.id == 49
@@ -169,7 +169,7 @@ html lang="ja"
                       - @stores.each do |store|
                         li = link_to store.name,crew_products_path(store_id:store.id)
 
-                  li.menu_li = link_to 'キッチンシフト',shifts_path(date:@today,store_type:1)
+                  / li.menu_li = link_to 'キッチンシフト',shifts_path(date:@today,store_type:1)
                   li.menu_li = link_to 'ストアシフト',shifts_path(date:@today,store_type:0)
                   li.menu_li = link_to "お客さまの声",customer_opinions_path
                   li.menu_li = link_to "ログアウト", destroy_user_session_path, :method => :delete
