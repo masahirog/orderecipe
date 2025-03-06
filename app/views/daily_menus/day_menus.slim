@@ -16,7 +16,7 @@ button type="button" class="btn btn-default" data-toggle="modal" data-target="#b
 				.col-md-12.form-group
 					label A4メニュー
 					br
-					- current_user.group.stores.where(store_type:'sales').each do |store|
+					- @open_stores.where(store_type:'sales').each do |store|
 						= link_to store.short_name,barcode_daily_menus_path(menu_type:0,daily_menu_id:@daily_menu.id,store_id:store.id,format: :pdf),class:'btn btn-default btn-sm',target:'_blank',style:'margin-left:10px;'
 					br
 					br
@@ -60,7 +60,7 @@ button type="button" class="btn btn-default" data-toggle="modal" data-target="#p
         .modal-header
           h4.modal-title 店舗選択
         .modal-body.clearfix
-        	- @stores.each_with_index do |store,i|
+        	- @open_stores.each_with_index do |store,i|
         		.col-md-6
         			= "#{store.short_name}（#{@price_card_hash[store.id]["price_card_num"]}枚）"
         		.col-md-6
@@ -83,7 +83,7 @@ table.table
 			th 販売回数
 			th 品番
 			th 商品名
-			- @stores.each do |store|
+			- @open_stores.each do |store|
 				th
 					= link_to store.short_name,edit_store_daily_menu_path(@price_card_hash[store.id]["store_daily_menu_id"]),target:"_blank"
 			th 公式
@@ -106,7 +106,7 @@ table.table
 						span （新）
 				td = dmd.product.id
 				td = link_to dmd.product.food_label_name,dmd.product,target:'_blank'
-				- @stores.each do |store|
+				- @open_stores.each do |store|
 					td
 						- if @price_card_hash[store.id]["product_id"][dmd.product_id] == true
 							|◯

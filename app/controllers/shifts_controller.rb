@@ -53,13 +53,13 @@ class ShiftsController < ApplicationController
     group = Group.find(params[:group_id])
     if params[:store_type].present?
       @store_type = params[:store_type]
-      @stores = group.stores.where(store_type:@store_type)
+      @stores = group.stores.where(store_type:@store_type,close_flag:false)
     else
       @store_type = nil
-      @stores = group.stores
+      @stores = group.stores.where(close_flag:false)
     end
     if params[:stores]
-      @stores = Store.where(id:params['stores'].keys)
+      @stores = Store.where(id:params['stores'].keys,close_flag:false)
     else
       params[:stores] = {}
       @stores.each do |store|
@@ -135,13 +135,13 @@ class ShiftsController < ApplicationController
     @one_month = [*@date.beginning_of_month..@date.end_of_month]
     if params[:store_type].present?
       @store_type = params[:store_type]
-      @stores = group.stores.where(store_type:@store_type)
+      @stores = group.stores.where(store_type:@store_type,close_flag:false)
     else
       @store_type = nil
-      @stores = group.stores
+      @stores = group.stores.where(close_flag:false)
     end
     if params[:stores]
-      @stores = Store.where(id:params['stores'].keys)
+      @stores = Store.where(id:params['stores'].keys,close_flag:false)
     else
       params[:stores] = {}
       @stores.each do |store|
@@ -185,10 +185,10 @@ class ShiftsController < ApplicationController
     @shift_frames = @group.shift_frames
     if params[:store_type].present?
       @store_type = params[:store_type]
-      @stores = @group.stores.where(store_type:@store_type)
+      @stores = @group.stores.where(store_type:@store_type,close_flag:false)
     else
       @store_type = nil
-      @stores = @group.stores
+      @stores = @group.stores.where(close_flag:false)
     end
     params[:stores] = {}
     @stores.each do |store|
@@ -213,14 +213,14 @@ class ShiftsController < ApplicationController
 
     if params[:store_type].present?
       @store_type = params[:store_type]
-      @stores = @group.stores.includes(store_shift_frames:[:shift_frame]).where(store_type:@store_type)
+      @stores = @group.stores.includes(store_shift_frames:[:shift_frame]).where(store_type:@store_type,close_flag:false)
     else
       @store_type = nil
-      @stores = @group.stores.includes(store_shift_frames:[:shift_frame])
+      @stores = @group.stores.includes(store_shift_frames:[:shift_frame],close_flag:false)
     end
     staff_ids = @stores.map{|store|store.staff_ids}.flatten.uniq
     @one_month = [*@date.beginning_of_month..@date.end_of_month]
-    @stores = @group.stores.where.not(id:39)
+    @stores = @group.stores.where.not(id:39,close_flag:false)
     staff_ids = Staff.where(id:staff_ids,status:0)
     shifts = Shift.where(staff_id:staff_ids,date:@one_month)
     fixed_shift_ids = []
@@ -240,10 +240,10 @@ class ShiftsController < ApplicationController
      @group = current_user.group
     if params[:store_type].present?
       @store_type = params[:store_type]
-      @stores = @group.stores.includes(store_shift_frames:[:shift_frame]).where(store_type:@store_type)
+      @stores = @group.stores.includes(store_shift_frames:[:shift_frame]).where(store_type:@store_type,close_flag:false)
     else
       @store_type = nil
-      @stores = @group.stores.includes(store_shift_frames:[:shift_frame])
+      @stores = @group.stores.includes(store_shift_frames:[:shift_frame]).where(close_flag:false)
     end
 
     if params[:date]
@@ -335,7 +335,7 @@ class ShiftsController < ApplicationController
     @group = Group.find(params[:group_id])
 
     @shift_frames = @group.shift_frames
-    @stores = @group.stores
+    @stores = @group.stores.where(close_flag:false)
     if params[:stores]
       @checked_stores = Store.where(id:params['stores'].keys)
     else

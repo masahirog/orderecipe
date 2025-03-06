@@ -2,7 +2,7 @@ h3 = "店舗配送品一覧"
 .clearfix.form-group
   = form_tag bejihan_store_orders_list_orders_path, method: :get do
     = date_field_tag :date,params[:date], class:"form-control",style:'float:left;width:200px;'
-    = select_tag :store_id, options_from_collection_for_select(Store.all, :id, :short_name,params[:store_id]),include_blank: true, class: "form-control",style:'float:left;width:200px;margin-left:10px;'
+    = select_tag :store_id, options_from_collection_for_select(Store.where(close_flag:false), :id, :short_name,params[:store_id]),include_blank: true, class: "form-control",style:'float:left;width:200px;margin-left:10px;'
     = submit_tag "検索" ,class:"btn btn-primary",style:'float:left;margin-left:10px;'
   = link_to "印刷",bejihan_store_orders_list_orders_path(store_id:params[:store_id],date:params[:date],format:'pdf'),class:'btn btn-primary',style:'float:left;margin-left:10px;'
 

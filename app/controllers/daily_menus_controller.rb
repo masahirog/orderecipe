@@ -78,6 +78,7 @@ class DailyMenusController < AdminController
     # @today_after_daily_menus = @daily_menus.where('start_time >= ?',@today).order('start_time')    
   end
   def day_menus
+    @open_stores = current_user.group.stores.where(close_flag:false)
     @date = params[:start_time].to_date
     @daily_menu = DailyMenu.find_by(start_time:@date)
     @daily_menu_details = @daily_menu.daily_menu_details.includes([:product])
@@ -245,7 +246,7 @@ class DailyMenusController < AdminController
         if params[:menu_type]=="0"
           pdf = WeeklyMenuA4.new(@daily_menu,@daily_menu_details,@bento_menus,@next_menus,@store)  
         elsif params[:menu_type]=="1"
-          store_ids = current_user.group.stores.where(store_type:'sales').ids
+          store_ids = current_user.group.stores.where(store_type:'sales',close_flag:false).ids
           pdf = WeeklyMenuA3.new(@daily_menu,@daily_menu_details,store_ids)
         elsif params[:menu_type]=="2"
           pdf = BentoWeekMenu.new(@bento_menus,from,to)

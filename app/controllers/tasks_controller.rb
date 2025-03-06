@@ -12,7 +12,7 @@ class TasksController < ApplicationController
     else
       gon.task_id = ''
     end
-    stores = Store.where(group_id:current_user.group_id)
+    stores = Store.where(group_id:current_user.group_id,close_flag:false)
     if params[:staff_id].present?
       @staff = Staff.find(params[:staff_id])
       @tasks = Task.includes([:task_comments,:task_images,:task_staffs,task_stores:[:store]]).where(:task_staffs => {staff_id:params[:staff_id],read_flag:false}).where(group_id:current_user.group_id).rank(:row_order)
